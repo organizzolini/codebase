@@ -277,6 +277,38 @@ describe(EclipseEventService, () => {
       expect(result).toStrictEqual([]);
     });
 
+    it("leaves the type out of a span whose beginning carries none", () => {
+      const makeEvent = (word: string): DetectedCalendarEvent => ({
+        categories: [
+          "Astronomy",
+          "Astrology",
+          "Eclipse",
+          "Lunar",
+          "Geocentric",
+        ],
+        description: `Lunar Eclipse ${word} (Geocentric)`,
+        end: moment.utc("2024-03-25T07:00:00.000Z"),
+        start: moment.utc("2024-03-25T07:00:00.000Z"),
+        summary: `Lunar Eclipse ${word}`,
+      });
+      const beginning = makeEvent("begins");
+      const ending = makeEvent("ends");
+      vi.mocked(progressiveUtilitiesService.pairProgressiveEvents)
+        .mockReturnValueOnce([[beginning, ending]])
+        .mockReturnValue([]);
+
+      const [span] = service.detectProgressive([beginning, ending]);
+
+      expect(span?.description).toBe("Lunar Eclipse (Geocentric)");
+      expect(span?.categories).toStrictEqual([
+        "Astronomy",
+        "Astrology",
+        "Eclipse",
+        "Lunar",
+        "Geocentric",
+      ]);
+    });
+
     it("creates topocentric progressive events for solar and lunar eclipse ranges", () => {
       const solarBeginning: DetectedCalendarEvent = {
         categories: [
