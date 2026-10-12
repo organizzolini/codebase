@@ -5,7 +5,8 @@ import type { Body } from "../caelundas/caelundas.types";
 /**
  * Time-indexed ephemeris of horizontal coordinates (observer frame).
  *
- * Keys are ISO timestamps, values contain azimuth and elevation in degrees.
+ * Keys are ISO timestamps, values are {@link HorizonPosition}s. Positions are
+ * topocentric: parallax is applied for the observer's location.
  * Used for calculating rise, set, and culmination events.
  *
  * @see {@link getAzimuthElevationFromEphemeris} for data retrieval
@@ -84,7 +85,9 @@ export interface Ephemerides {
   illuminationEphemerisByBody: Record<Body, IlluminationEphemeris>;
 }
 
-/** Position in horizontal coordinates. */
+/**
+ * Where a body sits in one observer's sky at one minute, from its topocentric position.
+ */
 export interface HorizonPosition {
   /** Degrees from North, clockwise through East (0° North, 90° East, 180° South, 270° West). */
   azimuth: number;
@@ -94,8 +97,10 @@ export interface HorizonPosition {
   eclipticLongitude: number;
   /** Apparent (refracted) elevation of the center, degrees; refraction is dropped below the horizon. */
   elevation: number;
-  semidiameter?: number;
-  trueElevation?: number;
+  /** Topocentric angular radius, degrees: half the disc the observer sees. */
+  semidiameter: number;
+  /** True (airless, unrefracted) elevation of the center, degrees. */
+  trueElevation: number;
 }
 
 /**

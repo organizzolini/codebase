@@ -1,8 +1,11 @@
 // 🏷️ Types
-import type { AspectBodies } from "../aspects/aspects.types";
+import type { detectorFamilies } from "./perfective.constants";
 
-/**
- * Carries the aspect-body state produced for a single minute so it can be
- * threaded into the next iteration of the perfective detection loop.
- */
-export type PreviousAspectBodies = AspectBodies[];
+/** One family of detectors a sweep can run. */
+export type DetectorFamily = (typeof detectorFamilies)[number];
+
+/** How a sweep differs from detecting everything. */
+export interface PerfectiveOptions {
+  /** The families to run. Defaults to all of them. */
+  families?: ReadonlySet<DetectorFamily>;
+}

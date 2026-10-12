@@ -1,11 +1,4 @@
-import { describe, expect, it } from "vitest";
-
-import { PIPELINE_TEST_TIMEOUT_MILLISECONDS } from "./pipeline-window.constants";
-import { runPipelineWindow } from "./pipeline-window.functions";
-import {
-  assertReferenceEvents,
-  loadReferenceFixture,
-} from "./reference-fixtures.utilities";
+// ♟️ Constants
 
 /**
  * Whole-pipeline reference cases: each fixture names a window, an authority
@@ -13,9 +6,9 @@ import {
  * progressive passes must reproduce them within the fixture's tolerance.
  *
  * To add a case, commit a fixture under `testing/reference-fixtures/`, then
- * add its name here: a failing case goes in first, the fix after it.
+ * add its name to this list: a failing case goes in first, the fix after it.
  */
-const fixtureNames = [
+export const referenceFixtureNames: readonly string[] = [
   "horizons-lunar-apogee-2026-01-13",
   "horizons-lunar-perigee-2026-01-01",
   "horizons-chiron-jupiter-apogee-moon-kite-2026-10",
@@ -61,19 +54,3 @@ const fixtureNames = [
   "usno-solar-aphelion-2026-07-06",
   "usno-solar-perihelion-2026-01-03",
 ];
-
-describe.each(fixtureNames)("reference fixture %s", (name) => {
-  const fixture = loadReferenceFixture(name);
-
-  it(
-    `agrees with ${fixture.source.name}`,
-    { timeout: PIPELINE_TEST_TIMEOUT_MILLISECONDS },
-    async () => {
-      expect.hasAssertions();
-
-      const { events } = await runPipelineWindow(fixture.window);
-
-      assertReferenceEvents(events, fixture);
-    },
-  );
-});
