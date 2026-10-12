@@ -2020,12 +2020,20 @@ graph LR
   file_caelundas_cli_testing_major_aspects_utilities_ts["caelundas-cli/testing/major-aspects.utilities.ts"]
   file_caelundas_cli_testing_mocks_ts["caelundas-cli/testing/mocks.ts"]
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts["caelundas-cli/testing/moon-phases-reference.end-to-end.test.ts"]
-  file_caelundas_cli_testing_pipeline_reference_end_to_end_test_ts["caelundas-cli/testing/pipeline-reference.end-to-end.test.ts"]
+  file_caelundas_cli_testing_pipeline_reference_1_end_to_end_test_ts["caelundas-cli/testing/pipeline-reference-1.end-to-end.test.ts"]
+  file_caelundas_cli_testing_pipeline_reference_2_end_to_end_test_ts["caelundas-cli/testing/pipeline-reference-2.end-to-end.test.ts"]
+  file_caelundas_cli_testing_pipeline_reference_3_end_to_end_test_ts["caelundas-cli/testing/pipeline-reference-3.end-to-end.test.ts"]
+  file_caelundas_cli_testing_pipeline_reference_4_end_to_end_test_ts["caelundas-cli/testing/pipeline-reference-4.end-to-end.test.ts"]
+  file_caelundas_cli_testing_pipeline_reference_functions_ts["caelundas-cli/testing/pipeline-reference.functions.ts"]
   file_caelundas_cli_testing_pipeline_window_constants_ts["caelundas-cli/testing/pipeline-window.constants.ts"]
   file_caelundas_cli_testing_pipeline_window_end_to_end_test_ts["caelundas-cli/testing/pipeline-window.end-to-end.test.ts"]
   file_caelundas_cli_testing_pipeline_window_functions_ts["caelundas-cli/testing/pipeline-window.functions.ts"]
   file_caelundas_cli_testing_pipeline_window_module_ts["caelundas-cli/testing/pipeline-window.module.ts"]
   file_caelundas_cli_testing_pipeline_window_types_ts["caelundas-cli/testing/pipeline-window.types.ts"]
+  file_caelundas_cli_testing_reference_families_constants_ts["caelundas-cli/testing/reference-families.constants.ts"]
+  file_caelundas_cli_testing_reference_families_utilities_ts["caelundas-cli/testing/reference-families.utilities.ts"]
+  file_caelundas_cli_testing_reference_families_utilities_unit_test_ts["caelundas-cli/testing/reference-families.utilities.unit.test.ts"]
+  file_caelundas_cli_testing_reference_fixture_names_constants_ts["caelundas-cli/testing/reference-fixture-names.constants.ts"]
   file_caelundas_cli_testing_reference_fixtures_constants_ts["caelundas-cli/testing/reference-fixtures.constants.ts"]
   file_caelundas_cli_testing_reference_fixtures_types_ts["caelundas-cli/testing/reference-fixtures.types.ts"]
   file_caelundas_cli_testing_reference_fixtures_utilities_ts["caelundas-cli/testing/reference-fixtures.utilities.ts"]
@@ -4629,6 +4637,8 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts
+  file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
+  file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
@@ -4660,6 +4670,7 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
+  file_caelundas_cli_src_modules_aspects_aspects_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_aspects_aspects_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_module_ts --> file_caelundas_cli_src_modules_aspects_aspects_constants_ts
@@ -5267,6 +5278,8 @@ graph LR
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
+  file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_perfective_perfective_constants_ts
+  file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_perfective_perfective_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_phases_phases_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
@@ -5286,7 +5299,7 @@ graph LR
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
-  file_caelundas_cli_src_modules_perfective_perfective_types_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
+  file_caelundas_cli_src_modules_perfective_perfective_types_ts --> file_caelundas_cli_src_modules_perfective_perfective_constants_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
@@ -5378,6 +5391,7 @@ graph LR
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_utilities_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_utilities_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
@@ -5590,6 +5604,7 @@ graph LR
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
@@ -5823,9 +5838,15 @@ graph LR
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_module_ts
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_testing_reference_fixtures_utilities_ts
-  file_caelundas_cli_testing_pipeline_reference_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_constants_ts
-  file_caelundas_cli_testing_pipeline_reference_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_functions_ts
-  file_caelundas_cli_testing_pipeline_reference_end_to_end_test_ts --> file_caelundas_cli_testing_reference_fixtures_utilities_ts
+  file_caelundas_cli_testing_pipeline_reference_1_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_reference_functions_ts
+  file_caelundas_cli_testing_pipeline_reference_2_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_reference_functions_ts
+  file_caelundas_cli_testing_pipeline_reference_3_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_reference_functions_ts
+  file_caelundas_cli_testing_pipeline_reference_4_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_reference_functions_ts
+  file_caelundas_cli_testing_pipeline_reference_functions_ts --> file_caelundas_cli_testing_pipeline_window_constants_ts
+  file_caelundas_cli_testing_pipeline_reference_functions_ts --> file_caelundas_cli_testing_pipeline_window_functions_ts
+  file_caelundas_cli_testing_pipeline_reference_functions_ts --> file_caelundas_cli_testing_reference_families_utilities_ts
+  file_caelundas_cli_testing_pipeline_reference_functions_ts --> file_caelundas_cli_testing_reference_fixture_names_constants_ts
+  file_caelundas_cli_testing_pipeline_reference_functions_ts --> file_caelundas_cli_testing_reference_fixtures_utilities_ts
   file_caelundas_cli_testing_pipeline_window_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_constants_ts
   file_caelundas_cli_testing_pipeline_window_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_functions_ts
   file_caelundas_cli_testing_pipeline_window_functions_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
@@ -5837,6 +5858,13 @@ graph LR
   file_caelundas_cli_testing_pipeline_window_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_module_ts
   file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_input_input_types_ts
+  file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_perfective_perfective_types_ts
+  file_caelundas_cli_testing_reference_families_constants_ts --> file_caelundas_cli_src_modules_perfective_perfective_types_ts
+  file_caelundas_cli_testing_reference_families_utilities_ts --> file_caelundas_cli_src_modules_perfective_perfective_types_ts
+  file_caelundas_cli_testing_reference_families_utilities_ts --> file_caelundas_cli_testing_reference_families_constants_ts
+  file_caelundas_cli_testing_reference_families_utilities_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
+  file_caelundas_cli_testing_reference_families_utilities_unit_test_ts --> file_caelundas_cli_testing_reference_families_utilities_ts
+  file_caelundas_cli_testing_reference_families_utilities_unit_test_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
   file_caelundas_cli_testing_reference_fixtures_types_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_reference_fixtures_types_ts --> file_caelundas_cli_testing_reference_fixtures_constants_ts
   file_caelundas_cli_testing_reference_fixtures_utilities_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
@@ -11324,16 +11352,16 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-23-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-6021-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-793-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-6024-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-794-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-318-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1970-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1955-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1971-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1956-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-38-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-145-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1263-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3249-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1264-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3251-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -11488,9 +11516,9 @@ The workspace's call graph, traced by [callidescope](packages/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6227 |
+| Callables | 6230 |
 | Files | 1774 |
-| Calls traced | 6639 |
+| Calls traced | 6644 |
 | Call stacks | 1942 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
