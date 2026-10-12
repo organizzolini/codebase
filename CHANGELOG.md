@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.5](https://github.com/organizzolini/codebase/compare/v3.0.4...v3.0.5) (2026-10-12)
+
+### 📦 Build System
+
+* **configuration:** 📦️ pin python to 3.14 ([#1493](https://github.com/organizzolini/codebase/issues/1493)) ([6445506](https://github.com/organizzolini/codebase/commit/6445506945b01602944450ca4c7439d6216a6edd))
+
 ## [3.0.4](https://github.com/organizzolini/codebase/compare/v3.0.3...v3.0.4) (2026-10-09)
 
 ### 🐛 Bug Fixes
