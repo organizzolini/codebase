@@ -1,13 +1,13 @@
 ---
-name: push-deployment
+name: ship-changes
 description: "Carry reviewed open pull requests through CI, conflicts, the merge queue, release, and a check that the change works on main."
 argument-hint: "PR number(s) or URL(s); defaults to the current branch's pull request"
 disable-model-invocation: true
 ---
 
-# Push Deployment
+# Ship Changes
 
-Take each open, implemented, reviewed pull request from "open" to "verified on `main`". A pull request is done when its change is **observed working on `main`**, not when it merges.
+Begin where [submit-changes](../submit-changes/SKILL.md) ends. Take each open, implemented, reviewed pull request from "open" to "verified on `main`". A pull request is done when its change is **observed working on `main`**, not when it merges.
 
 Work on one pull request at a time through steps 1–5. With several, order them by dependency: independent ones enter the queue in parallel. A pull request whose base is another branch belongs to a **stack**: read [stacked-pull-requests.md](references/stacked-pull-requests.md) before step 1, since stacks change steps 1–3. When a check, hook, or release run fails for a reason that is not obvious, read [known-failures.md](references/known-failures.md). Close with one table row per pull request: number, outcome, release (or "none expected"), validation evidence.
 
