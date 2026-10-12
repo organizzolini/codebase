@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.6](https://github.com/organizzolini/codebase/compare/v3.0.5...v3.0.6) (2026-10-12)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 restore two lost fixes and speed up the end-to-end tests ([#1495](https://github.com/organizzolini/codebase/issues/1495)) ([f2a0312](https://github.com/organizzolini/codebase/commit/f2a03120dd80ae0bd48e84fcaee1fa3b2b6a88f5)), closes [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1428](https://github.com/organizzolini/codebase/issues/1428) [#1424](https://github.com/organizzolini/codebase/issues/1424) [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1428](https://github.com/organizzolini/codebase/issues/1428) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1430](https://github.com/organizzolini/codebase/issues/1430) [#1441](https://github.com/organizzolini/codebase/issues/1441) [#1444](https://github.com/organizzolini/codebase/issues/1444) [#1492](https://github.com/organizzolini/codebase/issues/1492) [#1496](https://github.com/organizzolini/codebase/issues/1496)
+
 ## [3.0.5](https://github.com/organizzolini/codebase/compare/v3.0.4...v3.0.5) (2026-10-12)
 
 ### 📦 Build System

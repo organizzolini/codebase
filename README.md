@@ -4637,6 +4637,8 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts
+  file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
+  file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
@@ -11514,9 +11516,9 @@ The workspace's call graph, traced by [callidescope](packages/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6227 |
+| Callables | 6230 |
 | Files | 1774 |
-| Calls traced | 6639 |
+| Calls traced | 6644 |
 | Call stacks | 1942 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
