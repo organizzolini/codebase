@@ -305,6 +305,45 @@ describe(PerfectiveService, () => {
       expect(result).toStrictEqual([seededEvent]);
     });
 
+    it("runs only the detector families the caller names", () => {
+      const date = moment.tz("2025-06-15", "America/New_York");
+      const minute = date.clone().startOf("day");
+      const ingressEvent = {
+        categories: ["Astronomy", "Astrology", "Ingress"],
+        description: "Sun enters Gemini",
+        end: minute,
+        start: minute,
+        summary: "ingress",
+      } satisfies DetectedCalendarEvent;
+
+      datetimeMock.generateDates.mockReturnValue([date]);
+      datetimeMock.generateMinutes.mockReturnValue([minute]);
+      ephemerisAggMock.getEphemerides.mockReturnValue(emptyEphemerides);
+      ingressesMock.detect.mockReturnValue([ingressEvent]);
+
+      const result = service.detect(baseInput, {
+        families: new Set(["ingresses"]),
+      });
+
+      expect(result).toStrictEqual([ingressEvent]);
+      expect(aspectsMock.seed).not.toHaveBeenCalled();
+      expect(aspectsMock.detect).not.toHaveBeenCalled();
+
+      for (const skipped of [
+        eclipsesMock,
+        retrogradesMock,
+        dailyCyclesMock,
+        monthlyLunarCycleMock,
+        annualSolarCycleMock,
+        twilightsMock,
+      ]) {
+        expect(skipped.detect).not.toHaveBeenCalled();
+      }
+
+      expect(monthlyLunarCycleMock.detectApsides).not.toHaveBeenCalled();
+      expect(phasesMock.getMartianPhaseEvents).not.toHaveBeenCalled();
+    });
+
     it("logs a completion summary with the total event count", () => {
       const date = moment.tz("2025-06-15", "America/New_York");
       datetimeMock.generateDates.mockReturnValue([date]);
