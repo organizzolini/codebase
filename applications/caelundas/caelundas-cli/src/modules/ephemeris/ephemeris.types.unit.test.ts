@@ -6,8 +6,6 @@ import type {
   CoordinateEphemeris,
   CoordinateEphemerisBody,
   Coordinates,
-  DiameterEphemeris,
-  DiameterEphemerisBody,
   DistanceEphemeris,
   DistanceEphemerisBody,
   IlluminationEphemeris,
@@ -81,8 +79,22 @@ describe("ephemeris.types", () => {
   describe("azimuthElevationEphemeris type", () => {
     it("accepts valid azimuth and elevation values", () => {
       const ephemeris: AzimuthElevationEphemeris = {
-        "2024-03-21T00:00:00.000Z": { azimuth: 90.5, elevation: 45.2 },
-        "2024-03-21T00:01:00.000Z": { azimuth: 91, elevation: 46 },
+        "2024-03-21T00:00:00.000Z": {
+          azimuth: 90.5,
+          eclipticLatitude: 0,
+          eclipticLongitude: 0,
+          elevation: 45.2,
+          semidiameter: 0.27,
+          trueElevation: 45.2,
+        },
+        "2024-03-21T00:01:00.000Z": {
+          azimuth: 91,
+          eclipticLatitude: 0,
+          eclipticLongitude: 0,
+          elevation: 46,
+          semidiameter: 0.27,
+          trueElevation: 46,
+        },
       };
 
       expect(ephemeris["2024-03-21T00:00:00.000Z"]?.azimuth).toBe(90.5);
@@ -91,7 +103,14 @@ describe("ephemeris.types", () => {
 
     it("accepts negative elevation values (below horizon)", () => {
       const ephemeris: AzimuthElevationEphemeris = {
-        "2024-03-21T00:00:00.000Z": { azimuth: 180, elevation: -15.5 },
+        "2024-03-21T00:00:00.000Z": {
+          azimuth: 180,
+          eclipticLatitude: 0,
+          eclipticLongitude: 0,
+          elevation: -15.5,
+          semidiameter: 0.27,
+          trueElevation: -15.5,
+        },
       };
 
       expect(ephemeris["2024-03-21T00:00:00.000Z"]?.elevation).toBeLessThan(0);
@@ -101,8 +120,16 @@ describe("ephemeris.types", () => {
   describe("illuminationEphemeris type", () => {
     it("accepts valid illumination fraction values", () => {
       const ephemeris: IlluminationEphemeris = {
-        "2024-03-21T00:00:00.000Z": { illumination: 0.567 },
-        "2024-03-21T00:01:00.000Z": { illumination: 0.568 },
+        "2024-03-21T00:00:00.000Z": {
+          illumination: 0.567,
+          magnitude: 0,
+          phaseAngle: 0,
+        },
+        "2024-03-21T00:01:00.000Z": {
+          illumination: 0.568,
+          magnitude: 0,
+          phaseAngle: 0,
+        },
       };
 
       expect(ephemeris["2024-03-21T00:00:00.000Z"]?.illumination).toBe(0.567);
@@ -110,10 +137,18 @@ describe("ephemeris.types", () => {
 
     it("accepts values between 0 and 1", () => {
       const darkMoon: IlluminationEphemeris = {
-        "2024-03-21T00:00:00.000Z": { illumination: 0.001 },
+        "2024-03-21T00:00:00.000Z": {
+          illumination: 0.001,
+          magnitude: 0,
+          phaseAngle: 0,
+        },
       };
       const fullMoon: IlluminationEphemeris = {
-        "2024-03-21T00:00:00.000Z": { illumination: 0.999 },
+        "2024-03-21T00:00:00.000Z": {
+          illumination: 0.999,
+          magnitude: 0,
+          phaseAngle: 0,
+        },
       };
 
       expect(darkMoon["2024-03-21T00:00:00.000Z"]?.illumination).toBeLessThan(
@@ -128,8 +163,8 @@ describe("ephemeris.types", () => {
   describe("distanceEphemeris type", () => {
     it("accepts valid distance values", () => {
       const ephemeris: DistanceEphemeris = {
-        "2024-03-21T00:00:00.000Z": { distance: 1.0001 },
-        "2024-03-21T00:01:00.000Z": { distance: 1.0002 },
+        "2024-03-21T00:00:00.000Z": { distance: 1.0001, distanceSpeed: 0 },
+        "2024-03-21T00:01:00.000Z": { distance: 1.0002, distanceSpeed: 0 },
       };
 
       expect(ephemeris["2024-03-21T00:00:00.000Z"]?.distance).toBe(1.0001);
@@ -137,10 +172,10 @@ describe("ephemeris.types", () => {
 
     it("accepts distance in astronomical units", () => {
       const sunDistance: DistanceEphemeris = {
-        "2024-03-21T00:00:00.000Z": { distance: 1 }, // ~1 AU
+        "2024-03-21T00:00:00.000Z": { distance: 1, distanceSpeed: 0 }, // ~1 AU
       };
       const marsDistance: DistanceEphemeris = {
-        "2024-03-21T00:00:00.000Z": { distance: 1.5 }, // ~1.5 AU
+        "2024-03-21T00:00:00.000Z": { distance: 1.5, distanceSpeed: 0 }, // ~1.5 AU
       };
 
       expect(sunDistance["2024-03-21T00:00:00.000Z"]?.distance).toBeCloseTo(
@@ -151,33 +186,6 @@ describe("ephemeris.types", () => {
         1.5,
         1,
       );
-    });
-  });
-
-  describe("diameterEphemeris type", () => {
-    it("accepts valid angular diameter values", () => {
-      const ephemeris: DiameterEphemeris = {
-        "2024-03-21T00:00:00.000Z": { diameter: 0.5334 },
-        "2024-03-21T00:01:00.000Z": { diameter: 0.5181 },
-      };
-
-      expect(ephemeris["2024-03-21T00:00:00.000Z"]?.diameter).toBe(0.5334);
-    });
-
-    it("accepts diameter values in degrees", () => {
-      const sunDiameter: DiameterEphemeris = {
-        "2024-03-21T00:00:00.000Z": { diameter: 0.5334 }, // ~0.53 degrees
-      };
-      const moonDiameter: DiameterEphemeris = {
-        "2024-03-21T00:00:00.000Z": { diameter: 0.5181 }, // ~0.52 degrees
-      };
-
-      expect(sunDiameter["2024-03-21T00:00:00.000Z"]?.diameter).toBeGreaterThan(
-        0.5,
-      );
-      expect(
-        moonDiameter["2024-03-21T00:00:00.000Z"]?.diameter,
-      ).toBeGreaterThan(0.5);
     });
   });
 
@@ -205,25 +213,18 @@ describe("ephemeris.types", () => {
       expect(bodies).toContain("venus");
     });
 
-    it("accepts sun and moon for DiameterEphemerisBody", () => {
-      const bodies: DiameterEphemerisBody[] = ["sun", "moon"];
-
-      expect(bodies).toHaveLength(2);
-      expect(bodies).toContain("sun");
-      expect(bodies).toContain("moon");
-    });
-
-    it("accepts sun, venus, mercury, mars for DistanceEphemerisBody", () => {
+    it("accepts sun, moon, venus, mercury, mars for DistanceEphemerisBody", () => {
       const bodies: DistanceEphemerisBody[] = [
         "sun",
+        "moon",
         "venus",
         "mercury",
         "mars",
       ];
 
-      expect(bodies).toHaveLength(4);
+      expect(bodies).toHaveLength(5);
       expect(bodies).toContain("sun");
-      expect(bodies).not.toContain("moon");
+      expect(bodies).toContain("moon");
     });
 
     it("accepts all bodies for CoordinateEphemerisBody", () => {

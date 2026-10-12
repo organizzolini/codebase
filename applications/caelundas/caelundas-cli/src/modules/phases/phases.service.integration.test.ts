@@ -88,9 +88,12 @@ describe("phases.events integration", () => {
     string,
     {
       distance: number;
+      distanceSpeed: number;
       illumination: number;
       latitude: number;
       longitude: number;
+      magnitude: number;
+      phaseAngle: number;
     }
   > {
     const step = config.step ?? 0.1;
@@ -98,9 +101,12 @@ describe("phases.events integration", () => {
       string,
       {
         distance: number;
+        distanceSpeed: number;
         illumination: number;
         latitude: number;
         longitude: number;
+        magnitude: number;
+        phaseAngle: number;
       }
     > = {};
 
@@ -109,9 +115,13 @@ describe("phases.events integration", () => {
       const time = baseTime.clone().add(index, "minutes");
       ephemeris[time.toISOString()] = {
         distance: config.distance + index * 0.001,
+        distanceSpeed: 0.001,
         illumination: config.illumination + index * 0.01,
         latitude: 0,
         longitude: config.longitude + index * step,
+        // Steadily dimming, so no minute is a greatest brilliancy.
+        magnitude: index * 0.001,
+        phaseAngle: 90,
       };
     }
 
@@ -144,7 +154,6 @@ describe("phases.events integration", () => {
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
         venusCoordinateEphemeris: venusEphemeris,
-        venusDistanceEphemeris: venusEphemeris,
         venusIlluminationEphemeris: venusEphemeris,
       });
 
@@ -183,7 +192,6 @@ describe("phases.events integration", () => {
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
         venusCoordinateEphemeris: venusEphemeris,
-        venusDistanceEphemeris: venusEphemeris,
         venusIlluminationEphemeris: venusEphemeris,
       });
 
@@ -220,7 +228,6 @@ describe("phases.events integration", () => {
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
         venusCoordinateEphemeris: venusEphemeris,
-        venusDistanceEphemeris: venusEphemeris,
         venusIlluminationEphemeris: venusEphemeris,
       });
 
@@ -250,7 +257,6 @@ describe("phases.events integration", () => {
 
       const events = service.getMercurianPhaseEvents({
         mercuryCoordinateEphemeris: mercuryEphemeris,
-        mercuryDistanceEphemeris: mercuryEphemeris,
         mercuryIlluminationEphemeris: mercuryEphemeris,
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
@@ -287,7 +293,6 @@ describe("phases.events integration", () => {
 
       const events = service.getMercurianPhaseEvents({
         mercuryCoordinateEphemeris: mercuryEphemeris,
-        mercuryDistanceEphemeris: mercuryEphemeris,
         mercuryIlluminationEphemeris: mercuryEphemeris,
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
@@ -322,7 +327,6 @@ describe("phases.events integration", () => {
 
       const events = service.getMercurianPhaseEvents({
         mercuryCoordinateEphemeris: mercuryEphemeris,
-        mercuryDistanceEphemeris: mercuryEphemeris,
         mercuryIlluminationEphemeris: mercuryEphemeris,
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
@@ -354,7 +358,6 @@ describe("phases.events integration", () => {
 
       const events = service.getMartianPhaseEvents({
         marsCoordinateEphemeris: marsEphemeris,
-        marsDistanceEphemeris: marsEphemeris,
         marsIlluminationEphemeris: marsEphemeris,
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
@@ -391,7 +394,6 @@ describe("phases.events integration", () => {
 
       const events = service.getMartianPhaseEvents({
         marsCoordinateEphemeris: marsEphemeris,
-        marsDistanceEphemeris: marsEphemeris,
         marsIlluminationEphemeris: marsEphemeris,
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,
@@ -426,7 +428,6 @@ describe("phases.events integration", () => {
 
       const events = service.getMartianPhaseEvents({
         marsCoordinateEphemeris: marsEphemeris,
-        marsDistanceEphemeris: marsEphemeris,
         marsIlluminationEphemeris: marsEphemeris,
         minute: currentMinute,
         sunCoordinateEphemeris: sunEphemeris,

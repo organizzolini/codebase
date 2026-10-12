@@ -57,6 +57,9 @@ describe(EphemerisAggregationService, () => {
     vi.mocked(
       constantsService.getSwissEphemerisConstantForBody,
     ).mockReturnValue(0);
+    vi.mocked(constantsService.isHorizonBody).mockImplementation(
+      (body: string) => body === "sun" || body === "moon",
+    );
     vi.mocked(constantsService.isNode).mockImplementation(
       (body: string) => body.includes("node") || body === "lunar perigee",
     );
@@ -66,13 +69,18 @@ describe(EphemerisAggregationService, () => {
     vi.mocked(coordinateService.getBodyCoordinatesWithDistance).mockReturnValue(
       {
         distance: 1.01,
+        distanceSpeed: 0,
         latitude: -1.2,
         longitude: 120.5,
       },
     );
     vi.mocked(horizonService.computeAzimuthElevationForMinute).mockReturnValue({
       azimuth: 180,
+      eclipticLatitude: 0,
+      eclipticLongitude: 0,
       elevation: 44.8,
+      semidiameter: 0.27,
+      trueElevation: 45,
     });
     vi.mocked(timeService.dateToJulianDays).mockReturnValue({
       julianDayEphemerisTime: 2_460_395.5,
@@ -103,13 +111,11 @@ describe(EphemerisAggregationService, () => {
     it("creates body lookup sets", () => {
       const result = service.buildEphemerisFeatureSets({
         azimuthElevationBodies: ["sun"],
-        diameterBodies: ["moon"],
         distanceBodies: ["sun"],
         illuminationBodies: ["moon"],
       });
 
       expect(result.azimuthElevationSet.has("sun")).toBe(true);
-      expect(result.diameterSet.has("moon")).toBe(true);
       expect(result.distanceSet.has("sun")).toBe(true);
       expect(result.illuminationSet.has("moon")).toBe(true);
     });
@@ -121,7 +127,6 @@ describe(EphemerisAggregationService, () => {
 
       expect(result.azimuthEntries).toHaveLength(0);
       expect(result.coordinateEntries).toHaveLength(0);
-      expect(result.diameterEntries).toHaveLength(0);
       expect(result.distanceEntries).toHaveLength(0);
       expect(result.illuminationEntries).toHaveLength(0);
     });
@@ -132,7 +137,6 @@ describe(EphemerisAggregationService, () => {
       const allEntries = service.buildEphemerisEntries();
       const featureSets = service.buildEphemerisFeatureSets({
         azimuthElevationBodies: [],
-        diameterBodies: [],
         distanceBodies: [],
         illuminationBodies: [],
       });
@@ -159,7 +163,6 @@ describe(EphemerisAggregationService, () => {
       const allEntries = service.buildEphemerisEntries();
       const featureSets = service.buildEphemerisFeatureSets({
         azimuthElevationBodies: ["sun"],
-        diameterBodies: ["sun"],
         distanceBodies: ["sun"],
         illuminationBodies: ["sun"],
       });
@@ -176,7 +179,6 @@ describe(EphemerisAggregationService, () => {
 
       expect(allEntries.coordinateEntries).toHaveLength(1);
       expect(allEntries.azimuthEntries).toHaveLength(1);
-      expect(allEntries.diameterEntries).toHaveLength(1);
       expect(allEntries.distanceEntries).toHaveLength(1);
       expect(allEntries.illuminationEntries).toHaveLength(1);
     });
@@ -185,7 +187,6 @@ describe(EphemerisAggregationService, () => {
       const allEntries = service.buildEphemerisEntries();
       const featureSets = service.buildEphemerisFeatureSets({
         azimuthElevationBodies: [],
-        diameterBodies: [],
         distanceBodies: [],
         illuminationBodies: [],
       });
@@ -202,7 +203,6 @@ describe(EphemerisAggregationService, () => {
 
       expect(allEntries.coordinateEntries).toHaveLength(1);
       expect(allEntries.azimuthEntries).toHaveLength(0);
-      expect(allEntries.diameterEntries).toHaveLength(0);
       expect(allEntries.distanceEntries).toHaveLength(0);
       expect(allEntries.illuminationEntries).toHaveLength(0);
       expect(

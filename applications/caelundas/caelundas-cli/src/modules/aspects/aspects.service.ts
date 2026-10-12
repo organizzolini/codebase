@@ -19,6 +19,7 @@ import type {
   CompositeAspectDetector,
   ProgressiveAspectDetector,
   SimpleAspectDetector,
+  SimpleAspectDetectorArguments,
 } from "./aspects.types";
 import type { Moment } from "moment-timezone";
 
@@ -68,6 +69,17 @@ export class AspectsService {
     }
   }
 
+  /**
+   * Identifies a compound event by its minute and its sorted categories, which
+   * hold its bodies, pattern, phase and focal body but not the body order its
+   * title happened to use.
+   */
+  private compoundEventKey(event: DetectedCalendarEvent): string {
+    return [event.start.valueOf(), ...event.categories.toSorted()].join(
+      "\u001F",
+    );
+  }
+
   /** Runs composite-aspect detectors against current and previous aspect-body snapshots. */
   private detectCompositeAspects(
     currentAspectBodies: AspectBodies[],
@@ -79,11 +91,16 @@ export class AspectsService {
       minute,
       previousAspectBodies,
     };
-    const detectedEvents: DetectedCalendarEvent[] = [];
+    const eventsByKey = new Map<string, DetectedCalendarEvent>();
     for (const compositeAspectDetector of this.compositeAspectDetectors) {
-      detectedEvents.push(...compositeAspectDetector.detect(sharedArguments));
+      for (const event of compositeAspectDetector.detect(sharedArguments)) {
+        const key = this.compoundEventKey(event);
+        if (!eventsByKey.has(key)) {
+          eventsByKey.set(key, event);
+        }
+      }
     }
-    return detectedEvents;
+    return [...eventsByKey.values()];
   }
 
   /** Runs all simple-aspect detectors for a minute and flattens their detected events. */
@@ -229,5 +246,27 @@ export class AspectsService {
       count: progressiveEvents.length,
     });
     return progressiveEvents;
+  }
+
+  /**
+   * Seeds the active-aspect registry for a sweep whose first minute is `minute`.
+   *
+   * Returns every simple aspect already in orb, so composers see the legs that
+   * formed before the window opened, and the compound aspects those legs make,
+   * as forming at the first minute. It emits no simple-aspect events.
+   */
+  seed(args: SimpleAspectDetectorArguments): {
+    aspectBodies: AspectBodies[];
+    events: DetectedCalendarEvent[];
+  } {
+    const aspectBodies = this.simpleAspectDetectors.flatMap(
+      (simpleAspectDetector) => simpleAspectDetector.detectActive(args),
+    );
+    const events = this.detectCompositeAspects(aspectBodies, args.minute, []);
+    this.logger.debug("🌱 Seeded the active aspects", undefined, {
+      aspects: aspectBodies.length,
+      events: events.length,
+    });
+    return { aspectBodies, events };
   }
 }
