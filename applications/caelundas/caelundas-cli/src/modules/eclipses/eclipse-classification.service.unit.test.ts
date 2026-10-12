@@ -56,6 +56,18 @@ describe(EclipseClassificationService, () => {
       },
     );
 
+    it("falls back to the Moon's present offset when it is not moving", () => {
+      const { current } = getTrackWindow({
+        crossTrack: 0.3,
+        kind: "lunar",
+        minutes: 0,
+      });
+
+      expect(service.getLunarEclipseType(current, current, current)).toBe(
+        "total",
+      );
+    });
+
     it("knows the type at first contact, hours before greatest eclipse", () => {
       const { current, next, previous } = getTrackWindow({
         crossTrack: 0.3,

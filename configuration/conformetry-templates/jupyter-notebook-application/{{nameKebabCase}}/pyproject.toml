@@ -2,7 +2,7 @@
 name = "{{nameKebabCase}}"
 version = "0.1.0"
 description = "TODO: add project description"
-requires-python = ">=3.14"
+requires-python = ">=3.14,<3.15"
 dependencies = [
   "pydantic>=2.0",
   "jupyter>=1.1",
