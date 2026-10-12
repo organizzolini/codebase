@@ -24,7 +24,7 @@ Completion: each item below holds, or is fixed and noted. Read the pull request 
 - **Ready for review**: `isDraft` is false. Continuous Integration skips drafts, so a draft shows no failures and no passes. `gh pr ready <n>` fixes it.
 - **Metadata**: all four description headings (🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related) carry real content; one `type:*` label matching the title's type; `scope:*` labels exactly matching the title's scopes; one `source:*` label; an assignee. A mismatch is cleared with `gh pr edit`.
 - **Title significance**: the title's type is at least as significant as the highest commit on the branch, because the squashed title alone decides the release.
-- **Signatures**: every commit on the branch shows verified (`required_signatures` is a repository rule). Unsigned commits go through [sign-commits](../sign-commits/SKILL.md).
+- **Signatures**: every commit on the branch reads `verified: true` from the API (`gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '.[].commit.verification.verified'`), because `required_signatures` is a repository rule. Local `git log %G?` is unreliable: it reports nothing when the machine lacks the signer's public key. Unsigned commits go through [sign-commits](../sign-commits/SKILL.md).
 - **Approval**: `@JimmyPaolini` has approved, per [CODEOWNERS](../../../.github/CODEOWNERS). Without it, stop and report; never request, dismiss, or route around a review.
 
 ## 1. Green CI
@@ -103,6 +103,7 @@ Check out the merge commit (or install the published version) and run every chec
 - **Repro**: the scenario from the pull request's 🧪 Testing section or linked issue, which failed before and must pass now.
 - **Published artifacts**: install each new version from a scratch directory _outside_ the workspace and import or run it. A workspace install proves nothing about the tarball.
 - **Deployed environment**: when the change's scope deploys (`infrastructure/`, an application with a chart), read [infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) and confirm the rollout and the service's behavior.
+- **Docs, skills, and other non-code changes**: every file the pull request added or changed exists on the merge commit with its merged content (`git fetch origin main`, then `git show origin/main:<path>`), and a skill is listed under `.agents/skills/`. These changes have no repro or artifact, so this and the check below are their evidence.
 - **Post-release `main`**: the CI run on the tip is green.
 
 A check that cannot be run is reported as skipped with the reason, never as passed. A failed validation is a **raise to the user** with the evidence, and a proposed follow-up pull request.
