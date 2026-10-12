@@ -283,6 +283,34 @@ describe(EphemerisService, () => {
       ).toBe(0.27);
     });
 
+    it("returns topocentric ecliptic latitude and longitude, not the elevation", () => {
+      const ephemeris: AzimuthElevationEphemeris = {
+        "2024-03-21T00:00:00.000Z": {
+          azimuth: 180,
+          eclipticLatitude: -0.4,
+          eclipticLongitude: 359.9,
+          elevation: 44.8,
+          semidiameter: 0.27,
+          trueElevation: 44.79,
+        },
+      };
+
+      expect(
+        service.getAzimuthElevationFromEphemeris(
+          ephemeris,
+          "2024-03-21T00:00:00.000Z",
+          "eclipticLongitude",
+        ),
+      ).toBe(359.9);
+      expect(
+        service.getAzimuthElevationFromEphemeris(
+          ephemeris,
+          "2024-03-21T00:00:00.000Z",
+          "eclipticLatitude",
+        ),
+      ).toBe(-0.4);
+    });
+
     it("returns coordinate values", () => {
       const ephemeris: CoordinateEphemeris = {
         "2024-03-21T00:00:00.000Z": { latitude: -1.2, longitude: 120.5 },
