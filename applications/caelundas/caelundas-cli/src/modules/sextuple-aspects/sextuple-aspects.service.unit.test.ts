@@ -16,6 +16,7 @@ import { SextupleAspectsService } from "./sextuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { Body } from "../caelundas/caelundas.types";
 
 /** Builds one hexagram boundary event for the shared progressive-step tests. */
 function buildHexagramBoundary(
@@ -44,6 +45,34 @@ function buildHexagramBoundary(
     summary: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
   };
 }
+
+function edge(
+  aspect: "sextile" | "trine",
+  first: Body,
+  second: Body,
+): AspectBodies {
+  return { aspect, bodies: [first, second] };
+}
+
+// Two grand trines, sun-mars-saturn and moon-venus-jupiter, whose members
+// alternate around a hexagon of sextiles.
+const trines = [
+  edge("trine", "sun", "mars"),
+  edge("trine", "mars", "saturn"),
+  edge("trine", "saturn", "sun"),
+  edge("trine", "moon", "venus"),
+  edge("trine", "venus", "jupiter"),
+  edge("trine", "jupiter", "moon"),
+];
+const sextiles = [
+  edge("sextile", "sun", "moon"),
+  edge("sextile", "moon", "mars"),
+  edge("sextile", "mars", "venus"),
+  edge("sextile", "venus", "saturn"),
+  edge("sextile", "saturn", "jupiter"),
+  edge("sextile", "jupiter", "sun"),
+];
+const hexagram: Body[] = ["sun", "mars", "saturn", "moon", "venus", "jupiter"];
 
 describe(SextupleAspectsService, () => {
   let service: SextupleAspectsService;
@@ -1092,6 +1121,58 @@ describe(SextupleAspectsService, () => {
         phaseSpy.mockRestore();
         buildHexagramSpy.mockRestore();
       });
+    });
+  });
+
+  describe("pruneHexagramCandidates", () => {
+    it("keeps every body of a hexagram", () => {
+      expect.hasAssertions();
+
+      const candidates = service.pruneHexagramCandidates(
+        hexagram,
+        trines,
+        sextiles,
+      );
+
+      expect(candidates.toSorted()).toStrictEqual(hexagram.toSorted());
+      expect(
+        composerService.findHexagramPattern(candidates, [
+          ...trines,
+          ...sextiles,
+        ]),
+      ).not.toBeNull();
+    });
+
+    it("drops a body with a single trine, and the bodies that stranding strands", () => {
+      expect.hasAssertions();
+
+      const candidates = service.pruneHexagramCandidates(
+        [...hexagram, "pluto", "neptune"],
+        [
+          ...trines,
+          edge("trine", "pluto", "sun"),
+          edge("trine", "neptune", "pluto"),
+        ],
+        [
+          ...sextiles,
+          edge("sextile", "pluto", "moon"),
+          edge("sextile", "neptune", "mars"),
+        ],
+      );
+
+      expect(candidates.toSorted()).toStrictEqual(hexagram.toSorted());
+    });
+
+    it("leaves nothing when no body has two trines and two sextiles", () => {
+      expect.hasAssertions();
+
+      expect(
+        service.pruneHexagramCandidates(
+          ["sun", "moon"],
+          [edge("trine", "sun", "moon")],
+          [edge("sextile", "sun", "moon")],
+        ),
+      ).toStrictEqual([]);
     });
   });
 });
