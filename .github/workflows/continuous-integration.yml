@@ -33,7 +33,7 @@ jobs:
   continuous-integration:
     name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ matrix.check.timeout || 12 }}
+    timeout-minutes: 12
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     strategy:
       fail-fast: false
@@ -61,7 +61,7 @@ jobs:
           # 12-minute limit; alone it takes about three. ic-suite's 36 packages
           # were most of what remained. Caelundas alone: its whole-pipeline
           # end-to-end tests take over two minutes locally and several times
-          # that on a runner, so its leg gets a longer limit.
+          # that on a runner, which alone outlasted the 12-minute limit.
           # The last leg, everything else, keeps
           # the `Test` name branch protection has always required. A leg whose
           # projects are unaffected runs nothing.
@@ -79,7 +79,6 @@ jobs:
             emoji: 🧑‍🔬
             exclude: "*,!caelundas-cli"
             shard: caelundas-cli
-            timeout: 30
           - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬
