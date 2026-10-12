@@ -31,6 +31,7 @@ describe(EclipseCalculationService, () => {
   let service: EclipseCalculationService;
   let eclipseEventService: DeepMocked<EclipseEventService>;
   let topocentricService: DeepMocked<EclipseTopocentricService>;
+  let classificationService: EclipseClassificationService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -55,6 +56,7 @@ describe(EclipseCalculationService, () => {
     service = await module.resolve(EclipseCalculationService);
     eclipseEventService = module.get(EclipseEventService);
     topocentricService = module.get(EclipseTopocentricService);
+    classificationService = module.get(EclipseClassificationService);
   });
 
   beforeEach(() => {
@@ -190,6 +192,55 @@ describe(EclipseCalculationService, () => {
     });
   });
 
+  describe("an unsettled eclipse type", () => {
+    it.each([
+      ["solar", "partial"],
+      ["lunar", "penumbral"],
+    ] as const)(
+      "builds a %s event as %s when the classifier cannot settle its type",
+      (kind, fallback) => {
+        const minute = moment.utc("2026-03-03T08:44:00.000Z");
+        const window = getTrackWindow({
+          crossTrack: 0.6,
+          kind,
+          minutes: -Math.round(contactMinutes(kind, 0.6)),
+        });
+        vi.spyOn(
+          classificationService,
+          "getSolarEclipseType",
+        ).mockReturnValueOnce(null);
+        vi.spyOn(
+          classificationService,
+          "getLunarEclipseType",
+        ).mockReturnValueOnce(null);
+        eclipseEventService.buildSolarEclipseEvent.mockReturnValue(
+          {} as DetectedCalendarEvent,
+        );
+        eclipseEventService.buildLunarEclipseEvent.mockReturnValue(
+          {} as DetectedCalendarEvent,
+        );
+
+        const result = service.getGeocentricEvents({
+          currentCoordinates: window.current,
+          minute,
+          nextCoordinates: window.next,
+          previousCoordinates: window.previous,
+        });
+
+        expect(result.events).toHaveLength(1);
+
+        const builderName =
+          kind === "solar"
+            ? "buildSolarEclipseEvent"
+            : "buildLunarEclipseEvent";
+
+        expect(eclipseEventService[builderName]).toHaveBeenCalledWith(
+          expect.objectContaining({ type: fallback }),
+        );
+      },
+    );
+  });
+
   describe("eclipse type stability", () => {
     it("keeps one type from P1 through P4 on a track that curves across a type boundary", () => {
       // The track bends away from the axis toward its ends, so its tangent
@@ -231,6 +282,34 @@ describe(EclipseCalculationService, () => {
   });
 
   describe("getTopocentricEventsForDetect", () => {
+    it("falls back to a penumbral lunar type when none was settled", () => {
+      const window = getTrackWindow({
+        crossTrack: 0.6,
+        kind: "lunar",
+        minutes: 0,
+      });
+      topocentricService.getTopocentricEvents.mockReturnValue([]);
+
+      service.getTopocentricEventsForDetect({
+        coordinates: {
+          currentCoordinates: window.current,
+          nextCoordinates: window.next,
+          previousCoordinates: window.previous,
+        },
+        geocentricPhases: { lunarPhases: [], lunarType: null },
+        minute: moment.utc("2026-03-03T11:34:00.000Z"),
+        moonAzimuthElevationEphemeris: {},
+        sunAzimuthElevationEphemeris: {},
+      });
+
+      expect(topocentricService.getTopocentricEvents).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isLunarMaximum: false,
+          lunarEclipseType: "penumbral",
+        }),
+      );
+    });
+
     it("passes on the geocentric lunar maximum and type", () => {
       const window = getTrackWindow({
         crossTrack: 0.6,

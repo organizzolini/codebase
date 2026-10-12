@@ -347,6 +347,47 @@ describe(EphemerisService, () => {
       ).toThrow("Missing distance at missing");
     });
 
+    it("throws when an optional horizon field is absent", () => {
+      const ephemeris: AzimuthElevationEphemeris = {
+        present: {
+          azimuth: 180,
+          eclipticLatitude: 0,
+          eclipticLongitude: 0,
+          elevation: 44.8,
+        },
+      };
+
+      expect(() =>
+        service.getAzimuthElevationFromEphemeris(
+          ephemeris,
+          "present",
+          "semidiameter",
+        ),
+      ).toThrow("Missing semidiameter at present");
+      expect(() =>
+        service.getAzimuthElevationFromEphemeris(
+          ephemeris,
+          "present",
+          "trueElevation",
+        ),
+      ).toThrow("Missing trueElevation at present");
+    });
+
+    it("throws when distance speed is absent", () => {
+      expect(() =>
+        service.getDistanceSpeedFromEphemeris({}, "missing"),
+      ).toThrow("Missing distance speed at missing");
+    });
+
+    it("throws when magnitude or phase angle is absent", () => {
+      expect(() =>
+        service.getMagnitudeFromEphemeris({}, "missing", "magnitude"),
+      ).toThrow("Missing magnitude at missing");
+      expect(() =>
+        service.getPhaseAngleFromEphemeris({}, "missing", "phase angle"),
+      ).toThrow("Missing phase angle at missing");
+    });
+
     it("throws when illumination accessor timestamp is missing", () => {
       expect(() =>
         service.getIlluminationFromEphemeris({}, "missing", "illumination"),

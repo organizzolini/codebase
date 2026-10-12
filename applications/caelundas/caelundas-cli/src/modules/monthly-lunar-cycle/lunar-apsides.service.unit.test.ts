@@ -154,4 +154,22 @@ describe(LunarApsidesService, () => {
 
     expect(events).toHaveLength(0);
   });
+
+  it("throws when the Moon's radial speed is missing for a sampled minute", () => {
+    expect.hasAssertions();
+
+    const ephemeris = createEphemeris([-3e-6, -2e-6, -1e-6, 2e-6, 3e-6]);
+    const missing = start.clone().add(3, "minutes").toISOString();
+    ephemeris[missing] = {
+      distance: 0.0024,
+      distanceSpeed: undefined,
+    } as never;
+
+    expect(() =>
+      service.detect({
+        minute: start.clone().add(2, "minutes"),
+        moonDistanceEphemeris: ephemeris,
+      }),
+    ).toThrow(`Missing distanceSpeed at ${missing}`);
+  });
 });
