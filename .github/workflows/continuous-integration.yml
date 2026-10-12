@@ -33,7 +33,7 @@ jobs:
   continuous-integration:
     name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: ${{ matrix.check.timeout || 12 }}
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     strategy:
       fail-fast: false
@@ -54,23 +54,32 @@ jobs:
           - target: guard-code
             name: Guard
             emoji: 💂
-          # Tests run in three legs that together cover every project once.
+          # Tests run in four legs that together cover every project once.
           # Meanderaw alone: uncached, it took over seven minutes beside every
           # other project's tests and waited for a free `--parallel` slot, so a
           # run that affects everything (an `nx.json` change) outlasted the
           # 12-minute limit; alone it takes about three. ic-suite's 36 packages
-          # were most of what remained. The third leg, everything else, keeps
+          # were most of what remained. Caelundas alone: its whole-pipeline
+          # end-to-end tests take over two minutes locally and several times
+          # that on a runner, so its leg gets a longer limit.
+          # The last leg, everything else, keeps
           # the `Test` name branch protection has always required. A leg whose
           # projects are unaffected runs nothing.
           - target: test-code
             name: Test
             emoji: 🧑‍🔬
-            exclude: meanderaw-cli,packages/ic-suite/**
+            exclude: caelundas-cli,meanderaw-cli,packages/ic-suite/**
           - target: test-code
             name: Test Meanderaw
             emoji: 🧑‍🔬
             exclude: "*,!meanderaw-cli"
             shard: meanderaw-cli
+          - target: test-code
+            name: Test Caelundas
+            emoji: 🧑‍🔬
+            exclude: "*,!caelundas-cli"
+            shard: caelundas-cli
+            timeout: 30
           - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬
