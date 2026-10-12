@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/organizzolini/codebase/compare/v3.1.0...v3.1.1) (2026-10-12)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 define LongitudesWindow once ([#1498](https://github.com/organizzolini/codebase/issues/1498)) ([de3aac8](https://github.com/organizzolini/codebase/commit/de3aac86875eac257e6175e6ea161d87617944bc)), closes [#1495](https://github.com/organizzolini/codebase/issues/1495) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1446](https://github.com/organizzolini/codebase/issues/1446) [#1429](https://github.com/organizzolini/codebase/issues/1429)
+
 ## [3.1.0](https://github.com/organizzolini/codebase/compare/v3.0.6...v3.1.0) (2026-10-12)
 
 ### ✨ Features
