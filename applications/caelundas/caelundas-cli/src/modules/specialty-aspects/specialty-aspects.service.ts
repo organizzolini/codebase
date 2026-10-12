@@ -13,6 +13,7 @@ import { SpecialtyAspectsProgressiveService } from "./specialty-aspects-progress
 
 import type {
   AspectBodies,
+  LongitudesWindow,
   SimpleAspectDetectorArguments,
 } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
@@ -22,7 +23,6 @@ import type {
   SpecialtyAspect,
 } from "../caelundas/caelundas.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
-import type { LongitudesWindow } from "./specialty-aspects.types";
 import type { Moment } from "moment-timezone";
 
 /**
