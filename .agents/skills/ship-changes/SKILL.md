@@ -25,7 +25,7 @@ Completion: each item below holds, or is fixed and noted. Read the pull request 
 - **Metadata**: all four description headings (🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related) carry real content; one `type:*` label matching the title's type; `scope:*` labels exactly matching the title's scopes; one `source:*` label; an assignee. A mismatch is cleared with `gh pr edit`.
 - **Title significance**: the title's type is at least as significant as the highest commit on the branch, because the squashed title alone decides the release.
 - **Signatures**: every commit on the branch reads `verified: true` from the API (`gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '.[].commit.verification.verified'`), because `required_signatures` is a repository rule. Local `git log %G?` is unreliable: it reports nothing when the machine lacks the signer's public key. Unsigned commits go through [sign-commits](../sign-commits/SKILL.md).
-- **Approval**: `@JimmyPaolini` has approved, per [CODEOWNERS](../../../.github/CODEOWNERS). Without it, stop and report; never request, dismiss, or route around a review.
+- **Review**: [CODEOWNERS](../../../.github/CODEOWNERS) names `@JimmyPaolini` as sole owner, and GitHub asks no one to approve a pull request its sole owner authored: the author's own pull requests merge with an empty `reviewDecision`. When the author is someone else, an approval from `@JimmyPaolini` must be on record, or stop and report. Never request, dismiss, or route around a review.
 
 ## 1. Green CI
 
@@ -60,14 +60,14 @@ Check `mergeable` after every push and whenever `main` moves. On `CONFLICTING`:
 
 Completion: the pull request's state is `MERGED`.
 
-Enqueue once step 1 holds, an approval from `@JimmyPaolini` is on record, no `do-not-merge` label is present, and review threads are resolved:
+Enqueue once step 1 holds, the Preflight review condition holds, no `do-not-merge` label is present, and review threads are resolved:
 
 ```bash
 gh pr merge <n> --squash --auto          # standalone pull request
 gh stack merge <top-pr> --yes --squash   # stack: gh pr merge cannot merge one
 ```
 
-Missing approval or an unresolved thread is a **raise to the user**; never route around it, and never pass `--admin`.
+A missing required review or an unresolved thread is a **raise to the user**; never route around it, and never pass `--admin`.
 
 The queue re-runs the check workflows on a merge commit built from `main` plus the queued pull requests (`merge_group` events; minimum wait 6 minutes, response timeout 32). Watch with `gh run list --event merge_group` and `gh pr view <n> --json state,mergeStateStatus`.
 
