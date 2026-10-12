@@ -333,6 +333,17 @@ describe(CalendarService, () => {
       expect(calendar.match(/END:VEVENT/g) || []).toHaveLength(2);
     });
 
+    it("rejects a timezone that is not in the IANA database", () => {
+      expect(() =>
+        service.buildFileContent({
+          description: "A test calendar description",
+          events: sampleEvents,
+          name: "Broken Calendar",
+          timezone: "Mars/Olympus_Mons",
+        }),
+      ).toThrow("Unknown IANA timezone: Mars/Olympus_Mons");
+    });
+
     it("handles empty events array", () => {
       const calendar = service.buildFileContent({
         description: "A test calendar description",

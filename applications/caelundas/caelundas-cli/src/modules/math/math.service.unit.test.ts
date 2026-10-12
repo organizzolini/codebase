@@ -245,6 +245,12 @@ describe(MathService, () => {
       expect(service.getCombinations([1, 2, 3], 0)).toStrictEqual([[]]);
     });
 
+    it("skips holes in a sparse array", () => {
+      const sparse = [1, undefined, 3] as unknown as number[];
+
+      expect(service.getCombinations(sparse, 2)).toStrictEqual([[1, 3]]);
+    });
+
     it("returns single-element combinations for k=1", () => {
       expect(service.getCombinations([1, 2, 3], 1)).toStrictEqual([
         [1],

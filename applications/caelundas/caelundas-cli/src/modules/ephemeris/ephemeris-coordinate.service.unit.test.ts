@@ -1,7 +1,13 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { calc, constants, type nod_aps_ut, set_topo } from "sweph";
+import {
+  calc,
+  constants,
+  type nod_aps_ut,
+  nod_aps_ut as nodApsUt,
+  set_topo,
+} from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 vi.mock("sweph", async (importOriginal) => {
@@ -127,6 +133,59 @@ describe(EphemerisCoordinateService, () => {
         start: moment.utc("2024-03-21T00:00:00.000Z"),
       }),
     ).toThrow("calc failed for south lunar node: calc failed");
+  });
+
+  describe("computeNodeBodyMinutes", () => {
+    const instant = moment.utc("2024-03-21T00:00:00.000Z");
+
+    it("reads the lunar perigee from the osculating perihelion", () => {
+      const result = service.computeNodeBodyMinutes({
+        body: "lunar perigee",
+        end: instant,
+        start: instant,
+      });
+
+      expect(result[instant.toISOString()]).toStrictEqual({
+        latitude: 0,
+        longitude: 90,
+      });
+    });
+
+    it("throws when the lunar perigee calculation fails", () => {
+      vi.mocked(nodApsUt).mockReturnValueOnce({
+        data: { perihelion: [0, 0, 0, 0, 0, 0] } as never,
+        error: "nod failed",
+        flag: -1,
+      });
+
+      expect(() =>
+        service.computeNodeBodyMinutes({
+          body: "lunar perigee",
+          end: instant,
+          start: instant,
+        }),
+      ).toThrow("nod_aps_ut failed for lunar perigee: nod failed");
+    });
+
+    it("offsets the south lunar node by 180 degrees", () => {
+      const result = service.computeNodeBodyMinutes({
+        body: "south lunar node",
+        end: instant,
+        start: instant,
+      });
+
+      expect(result[instant.toISOString()]?.longitude).toBe(300.5);
+    });
+
+    it("leaves other nodes at their computed longitude", () => {
+      const result = service.computeNodeBodyMinutes({
+        body: "lunar apogee",
+        end: instant,
+        start: instant,
+      });
+
+      expect(result[instant.toISOString()]?.longitude).toBe(120.5);
+    });
   });
 
   describe("getTopocentricBodyCoordinates", () => {

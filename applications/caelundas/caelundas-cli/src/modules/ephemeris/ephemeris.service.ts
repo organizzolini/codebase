@@ -189,22 +189,10 @@ export class EphemerisService {
     fieldName: keyof HorizonPosition,
   ): number {
     const data = ephemeris[timestamp];
-    if (data === undefined) {
+    if (data?.[fieldName] === undefined) {
       throw new Error(`Missing ${fieldName} at ${timestamp}`);
     }
-    if (fieldName === "semidiameter") {
-      if (data.semidiameter === undefined) {
-        throw new Error(`Missing ${fieldName} at ${timestamp}`);
-      }
-      return data.semidiameter;
-    }
-    if (fieldName === "trueElevation") {
-      if (data.trueElevation === undefined) {
-        throw new Error(`Missing ${fieldName} at ${timestamp}`);
-      }
-      return data.trueElevation;
-    }
-    return fieldName === "azimuth" ? data.azimuth : data.elevation;
+    return data[fieldName];
   }
 
   /**
