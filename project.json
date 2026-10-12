@@ -1162,7 +1162,7 @@
         }
       ],
       "options": {
-        "command": "uv run vulture . configuration/vulture_whitelist.py --min-confidence 80 --exclude '*/applications/*,*/packages/*,*/tools/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*'",
+        "command": "uv run vulture . configuration/vulture_whitelist.py --min-confidence 80 --exclude '*/applications/*,*/packages/*,*/tools/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*,*/.claude/*'",
         "cwd": "{projectRoot}"
       }
     },
