@@ -1,6 +1,7 @@
 // 🏷️ Types
 import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
 import type { Input } from "../src/modules/input/input.types";
+import type { DetectorFamily } from "../src/modules/perfective/perfective.types";
 
 /** What one sweep of the pipeline detected. */
 export interface PipelineWindow {
@@ -12,6 +13,12 @@ export interface PipelineWindow {
   perfective: DetectedCalendarEvent[];
   /** Span events the progressive pass built from the perfective ones. */
   progressive: DetectedCalendarEvent[];
+}
+
+/** How a sweep differs from running every detector. */
+export interface PipelineWindowOptions {
+  /** The detector families to run. Defaults to all of them. */
+  families?: ReadonlySet<DetectorFamily>;
 }
 
 /**

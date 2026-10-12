@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { PIPELINE_TEST_TIMEOUT_MILLISECONDS } from "./pipeline-window.constants";
 import { runPipelineWindow } from "./pipeline-window.functions";
+import { detectorFamiliesFor } from "./reference-families.utilities";
 import {
   assertReferenceEvents,
   loadReferenceFixture,
@@ -71,7 +72,9 @@ describe.each(fixtureNames)("reference fixture %s", (name) => {
     async () => {
       expect.hasAssertions();
 
-      const { events } = await runPipelineWindow(fixture.window);
+      const { events } = await runPipelineWindow(fixture.window, {
+        families: detectorFamiliesFor(fixture),
+      });
 
       assertReferenceEvents(events, fixture);
     },
