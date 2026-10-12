@@ -8,6 +8,7 @@ import { PipelineWindowModule } from "./pipeline-window.module";
 
 import type {
   PipelineWindow,
+  PipelineWindowOptions,
   PipelineWindowRequest,
 } from "./pipeline-window.types";
 
@@ -24,22 +25,28 @@ const sweeps = new Map<string, Promise<PipelineWindow>>();
  *
  * Results are cached per request for the life of the process, so a test file
  * can assert many reference cases against one sweep.
+ *
+ * Aspect detection and a few others dominate a sweep's cost, so a case that
+ * checks one kind of event names just those `families` and skips the rest.
  */
 export async function runPipelineWindow(
   request: PipelineWindowRequest,
+  options: PipelineWindowOptions = {},
 ): Promise<PipelineWindow> {
+  const { families } = options;
   const key = JSON.stringify([
     request.latitude,
     request.longitude,
     request.startDate,
     request.endDate,
+    families ? [...families].toSorted() : "all",
   ]);
   const cached = sweeps.get(key);
   if (cached) {
     return cached;
   }
 
-  const pending = sweep(request);
+  const pending = sweep(request, families);
   sweeps.set(key, pending);
   // A failed sweep must not poison later tests that share its window.
   pending.catch(() => sweeps.delete(key));
@@ -47,7 +54,10 @@ export async function runPipelineWindow(
 }
 
 /** Boots the detection application, runs both passes over the request, and shuts it down. */
-async function sweep(request: PipelineWindowRequest): Promise<PipelineWindow> {
+async function sweep(
+  request: PipelineWindowRequest,
+  families: PipelineWindowOptions["families"],
+): Promise<PipelineWindow> {
   const input = inputSchema.parse(request);
   const context = await NestFactory.createApplicationContext(
     PipelineWindowModule,
@@ -55,7 +65,9 @@ async function sweep(request: PipelineWindowRequest): Promise<PipelineWindow> {
   );
 
   try {
-    const perfective = context.get(PerfectiveService).detect(input);
+    const perfective = context
+      .get(PerfectiveService)
+      .detect(input, families ? { families } : {});
     const progressive = context.get(ProgressiveService).detect(perfective);
 
     return {

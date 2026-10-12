@@ -15,10 +15,13 @@ import { PhasesService } from "../phases/phases.service";
 import { RetrogradesService } from "../retrogrades/retrogrades.service";
 import { TwilightsService } from "../twilights/twilights.service";
 
+import { detectorFamilies } from "./perfective.constants";
+
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Coordinates, Ephemerides } from "../ephemeris/ephemeris.types";
 import type { Input } from "../input/input.types";
+import type { DetectorFamily, PerfectiveOptions } from "./perfective.types";
 import type { Moment } from "moment-timezone";
 
 /**
@@ -59,6 +62,7 @@ export class PerfectiveService {
   private detectDayEvents(args: {
     coordinates: Coordinates;
     date: Moment;
+    families: ReadonlySet<DetectorFamily>;
     /** Undefined on the sweep's first day, which seeds the registry instead. */
     previousAspectBodies: AspectBodies[] | undefined;
     timezone: string;
@@ -66,7 +70,7 @@ export class PerfectiveService {
     events: DetectedCalendarEvent[];
     previousAspectBodies: AspectBodies[];
   } {
-    const { coordinates, date, timezone } = args;
+    const { coordinates, date, families, timezone } = args;
     const startOfDay = date.clone().startOf("day");
     const endOfDay = date.clone().endOf("day");
     const ephemerides = this.ephemerisService.getEphemerides({
@@ -76,8 +80,8 @@ export class PerfectiveService {
       timezone,
     });
     const events: DetectedCalendarEvent[] = [];
-    let previousAspectBodies = args.previousAspectBodies;
-    if (previousAspectBodies === undefined) {
+    let previousAspectBodies = args.previousAspectBodies ?? [];
+    if (families.has("aspects") && args.previousAspectBodies === undefined) {
       const seeded = this.aspectsService.seed({
         coordinateEphemerisByBody: ephemerides.coordinateEphemerisByBody,
         minute: startOfDay,
@@ -89,11 +93,12 @@ export class PerfectiveService {
       startOfDay,
       endOfDay,
     )) {
-      const result = this.detectMinuteEvents(
-        minute,
+      const result = this.detectMinuteEvents({
         ephemerides,
+        families,
+        minute,
         previousAspectBodies,
-      );
+      });
       previousAspectBodies = result.aspectBodies;
       events.push(...result.events);
     }
@@ -101,21 +106,24 @@ export class PerfectiveService {
   }
 
   /** Detects all minute-level event families and returns both events and updated aspect-body state. */
-  private detectMinuteEvents(
-    minute: Moment,
-    ephemerides: Ephemerides,
-    previousAspectBodies: AspectBodies[],
-  ): { aspectBodies: AspectBodies[]; events: DetectedCalendarEvent[] } {
-    const { coordinateEphemerisByBody } = ephemerides;
-    const { aspectBodies, events: aspectEvents } = this.aspectsService.detect({
-      coordinateEphemerisByBody,
-      minute,
-      previousAspectBodies,
-    });
+  private detectMinuteEvents(args: {
+    ephemerides: Ephemerides;
+    families: ReadonlySet<DetectorFamily>;
+    minute: Moment;
+    previousAspectBodies: AspectBodies[];
+  }): { aspectBodies: AspectBodies[]; events: DetectedCalendarEvent[] } {
+    const { ephemerides, families, minute, previousAspectBodies } = args;
+    const { aspectBodies, events: aspectEvents } = families.has("aspects")
+      ? this.aspectsService.detect({
+          coordinateEphemerisByBody: ephemerides.coordinateEphemerisByBody,
+          minute,
+          previousAspectBodies,
+        })
+      : { aspectBodies: previousAspectBodies, events: [] };
     const events: DetectedCalendarEvent[] = [
       ...aspectEvents,
-      ...this.detectObservationalEvents(minute, ephemerides),
-      ...this.detectOrbitalEvents(minute, ephemerides),
+      ...this.detectObservationalEvents(minute, ephemerides, families),
+      ...this.detectOrbitalEvents(minute, ephemerides, families),
     ];
     return { aspectBodies, events };
   }
@@ -124,6 +132,7 @@ export class PerfectiveService {
   private detectObservationalEvents(
     minute: Moment,
     ephemerides: Ephemerides,
+    families: ReadonlySet<DetectorFamily>,
   ): DetectedCalendarEvent[] {
     const {
       azimuthElevationEphemerisByBody,
@@ -131,24 +140,30 @@ export class PerfectiveService {
       distanceEphemerisByBody,
     } = ephemerides;
     return [
-      ...this.eclipsesService.detect({
-        minute,
-        moonAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.moon,
-        moonCoordinateEphemeris: coordinateEphemerisByBody.moon,
-        moonDistanceEphemeris: distanceEphemerisByBody.moon,
-        sunAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.sun,
-        sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
-        sunDistanceEphemeris: distanceEphemerisByBody.sun,
-      }),
-      ...this.dailyCyclesService.detect({
-        minute,
-        moonAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.moon,
-        sunAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.sun,
-      }),
-      ...this.twilightsService.detect({
-        minute,
-        sunAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.sun,
-      }),
+      ...(families.has("eclipses")
+        ? this.eclipsesService.detect({
+            minute,
+            moonAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.moon,
+            moonCoordinateEphemeris: coordinateEphemerisByBody.moon,
+            moonDistanceEphemeris: distanceEphemerisByBody.moon,
+            sunAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.sun,
+            sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
+            sunDistanceEphemeris: distanceEphemerisByBody.sun,
+          })
+        : []),
+      ...(families.has("dailyCycles")
+        ? this.dailyCyclesService.detect({
+            minute,
+            moonAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.moon,
+            sunAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.sun,
+          })
+        : []),
+      ...(families.has("twilights")
+        ? this.twilightsService.detect({
+            minute,
+            sunAzimuthElevationEphemeris: azimuthElevationEphemerisByBody.sun,
+          })
+        : []),
     ];
   }
 
@@ -156,6 +171,7 @@ export class PerfectiveService {
   private detectOrbitalEvents(
     minute: Moment,
     ephemerides: Ephemerides,
+    families: ReadonlySet<DetectorFamily>,
   ): DetectedCalendarEvent[] {
     const {
       coordinateEphemerisByBody,
@@ -163,40 +179,54 @@ export class PerfectiveService {
       illuminationEphemerisByBody,
     } = ephemerides;
     return [
-      ...this.retrogradesService.detect({ coordinateEphemerisByBody, minute }),
-      ...this.ingressesService.detect({ coordinateEphemerisByBody, minute }),
-      ...this.monthlyLunarCycleService.detect({
-        minute,
-        moonCoordinateEphemeris: coordinateEphemerisByBody.moon,
-        sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
-      }),
-      ...this.monthlyLunarCycleService.detectApsides({
-        minute,
-        moonDistanceEphemeris: distanceEphemerisByBody.moon,
-      }),
-      ...this.annualSolarCycleService.detect({
-        minute,
-        sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
-        sunDistanceEphemeris: distanceEphemerisByBody.sun,
-      }),
-      ...this.phasesService.getMartianPhaseEvents({
-        marsCoordinateEphemeris: coordinateEphemerisByBody.mars,
-        marsIlluminationEphemeris: illuminationEphemerisByBody.mars,
-        minute,
-        sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
-      }),
-      ...this.phasesService.getMercurianPhaseEvents({
-        mercuryCoordinateEphemeris: coordinateEphemerisByBody.mercury,
-        mercuryIlluminationEphemeris: illuminationEphemerisByBody.mercury,
-        minute,
-        sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
-      }),
-      ...this.phasesService.getVenusianPhaseEvents({
-        minute,
-        sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
-        venusCoordinateEphemeris: coordinateEphemerisByBody.venus,
-        venusIlluminationEphemeris: illuminationEphemerisByBody.venus,
-      }),
+      ...(families.has("retrogrades")
+        ? this.retrogradesService.detect({ coordinateEphemerisByBody, minute })
+        : []),
+      ...(families.has("ingresses")
+        ? this.ingressesService.detect({ coordinateEphemerisByBody, minute })
+        : []),
+      ...(families.has("lunarCycle")
+        ? [
+            ...this.monthlyLunarCycleService.detect({
+              minute,
+              moonCoordinateEphemeris: coordinateEphemerisByBody.moon,
+              sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
+            }),
+            ...this.monthlyLunarCycleService.detectApsides({
+              minute,
+              moonDistanceEphemeris: distanceEphemerisByBody.moon,
+            }),
+          ]
+        : []),
+      ...(families.has("solarCycle")
+        ? this.annualSolarCycleService.detect({
+            minute,
+            sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
+            sunDistanceEphemeris: distanceEphemerisByBody.sun,
+          })
+        : []),
+      ...(families.has("phases")
+        ? [
+            ...this.phasesService.getMartianPhaseEvents({
+              marsCoordinateEphemeris: coordinateEphemerisByBody.mars,
+              marsIlluminationEphemeris: illuminationEphemerisByBody.mars,
+              minute,
+              sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
+            }),
+            ...this.phasesService.getMercurianPhaseEvents({
+              mercuryCoordinateEphemeris: coordinateEphemerisByBody.mercury,
+              mercuryIlluminationEphemeris: illuminationEphemerisByBody.mercury,
+              minute,
+              sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
+            }),
+            ...this.phasesService.getVenusianPhaseEvents({
+              minute,
+              sunCoordinateEphemeris: coordinateEphemerisByBody.sun,
+              venusCoordinateEphemeris: coordinateEphemerisByBody.venus,
+              venusIlluminationEphemeris: illuminationEphemerisByBody.venus,
+            }),
+          ]
+        : []),
     ];
   }
 
@@ -208,8 +238,15 @@ export class PerfectiveService {
    * Iterates day-by-day, computes per-day ephemerides, then scans minute-by-minute
    * to identify aspects, eclipses, retrogrades, ingresses, daily solar/lunar cycle events,
    * monthly lunar phases, annual solar cycle events, and twilight transitions.
+   *
+   * A caller that checks one kind of event can name just those detector
+   * families in `options.families`; the rest are skipped.
    */
-  detect(input: Input): DetectedCalendarEvent[] {
+  detect(
+    input: Input,
+    options: PerfectiveOptions = {},
+  ): DetectedCalendarEvent[] {
+    const { families = new Set(detectorFamilies) } = options;
     const { end, latitude, longitude, start, timezone } = input;
     const coordinates: Coordinates = [longitude, latitude];
     let previousAspectBodies: AspectBodies[] | undefined;
@@ -222,6 +259,7 @@ export class PerfectiveService {
       const result = this.detectDayEvents({
         coordinates,
         date,
+        families,
         previousAspectBodies,
         timezone,
       });

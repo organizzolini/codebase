@@ -43,8 +43,11 @@ export class SextupleAspectsService {
     const trines = aspectsByType.get("trine") || [];
     const sextiles = aspectsByType.get("sextile") || [];
     if (trines.length < 6 || sextiles.length < 6) return [];
-    const bodies =
-      this.sextupleAspectsComposerService.collectTrineBodies(trines);
+    const bodies = this.pruneHexagramCandidates(
+      this.sextupleAspectsComposerService.collectTrineBodies(trines),
+      trines,
+      sextiles,
+    );
     if (bodies.length < 6) return [];
     return this.processHexagramCombinations({
       combinations: this.mathService.getCombinations(bodies, 6),
@@ -151,5 +154,53 @@ export class SextupleAspectsService {
     }
 
     return progressiveEvents;
+  }
+
+  /**
+   * Drops bodies that cannot belong to any hexagram.
+   *
+   * A member of a hexagram trines two other members and sextiles two others,
+   * so a body with fewer than two of either among the remaining candidates is
+   * out. Removing one can strand its neighbors, so this repeats until none
+   * is left to remove. It only narrows the set the six-body combinations are
+   * drawn from; it never rules out a set that is a hexagram.
+   */
+  pruneHexagramCandidates(
+    bodies: Body[],
+    trines: AspectBodies[],
+    sextiles: AspectBodies[],
+  ): Body[] {
+    let candidates = new Set(bodies);
+    let pruned = true;
+    while (pruned) {
+      const counts = new Map<Body, { sextiles: Set<Body>; trines: Set<Body> }>(
+        [...candidates].map((body) => [
+          body,
+          { sextiles: new Set<Body>(), trines: new Set<Body>() },
+        ]),
+      );
+      for (const [edges, key] of [
+        [trines, "trines"],
+        [sextiles, "sextiles"],
+      ] as const) {
+        for (const { bodies: pair } of edges) {
+          counts.get(pair[0])?.[key].add(pair[1]);
+          counts.get(pair[1])?.[key].add(pair[0]);
+        }
+      }
+      const kept = new Set(
+        [...candidates].filter((body) => {
+          const count = counts.get(body);
+          return (
+            count !== undefined &&
+            count.trines.size >= 2 &&
+            count.sextiles.size >= 2
+          );
+        }),
+      );
+      pruned = kept.size < candidates.size;
+      candidates = kept;
+    }
+    return [...candidates];
   }
 }

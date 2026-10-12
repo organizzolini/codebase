@@ -157,6 +157,12 @@ describe(TripleAspectsComposerService, () => {
     });
   });
 
+  describe("empty progressive group", () => {
+    it("pairs nothing when the group has no events", () => {
+      expect(service.pairProgressiveGroup([])).toStrictEqual([]);
+    });
+  });
+
   describe("progressive helpers", () => {
     it("derives progressive keys and phases", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");

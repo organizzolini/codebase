@@ -178,4 +178,12 @@ describe(QuadrupleAspectsComposerService, () => {
     groupAspectsByTypeSpy.mockRestore();
     collectGrandCrossesForOpp1Spy.mockRestore();
   });
+
+  it("collects no progressive events from an empty group", () => {
+    const progressiveEvents: DetectedCalendarEvent[] = [];
+
+    service.collectProgressiveEventsFromGroup([], progressiveEvents);
+
+    expect(progressiveEvents).toStrictEqual([]);
+  });
 });
