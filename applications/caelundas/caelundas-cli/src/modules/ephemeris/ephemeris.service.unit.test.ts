@@ -375,6 +375,21 @@ describe(EphemerisService, () => {
       ).toThrow("Missing distance at missing");
     });
 
+    it("throws when distance speed is absent", () => {
+      expect(() =>
+        service.getDistanceSpeedFromEphemeris({}, "missing"),
+      ).toThrow("Missing distance speed at missing");
+    });
+
+    it("throws when magnitude or phase angle is absent", () => {
+      expect(() =>
+        service.getMagnitudeFromEphemeris({}, "missing", "magnitude"),
+      ).toThrow("Missing magnitude at missing");
+      expect(() =>
+        service.getPhaseAngleFromEphemeris({}, "missing", "phase angle"),
+      ).toThrow("Missing phase angle at missing");
+    });
+
     it("throws when illumination accessor timestamp is missing", () => {
       expect(() =>
         service.getIlluminationFromEphemeris({}, "missing", "illumination"),
