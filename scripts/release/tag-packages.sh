@@ -48,7 +48,7 @@ readonly PUSH_RETRY_DELAY="${PUSH_RETRY_DELAY:-20}"
 # changelog entry.
 versioned_files() {
   local file
-  for file in packages/ic-suite/*/*/CHANGELOG.md packages/ic-suite/*/*/package.json pnpm-lock.yaml; do
+  for file in projects/ic-suite/*/*/CHANGELOG.md projects/ic-suite/*/*/package.json pnpm-lock.yaml; do
     if [[ -e "${file}" ]]; then printf '%s\n' "${file}"; fi
   done
 }

@@ -81,7 +81,7 @@ stack anywhere the run reached rather than anywhere it was pointed. The
 per-project scoping that decides a gate's verdict is a different code path
 entirely.
 
-The two routinely disagree by several frames. `tools/synchronization`'s scoped
+The two routinely disagree by several frames. `projects/synchronization`'s scoped
 run prints `maximumDepthTraced:13`, while its gate passes at the declared 10
 and fails at 9 — ten is the number that project owns, and thirteen belongs to a
 dependency it was traced alongside.

@@ -120,7 +120,7 @@
   "sherif": {
     "ignoreDependency": [],
     "ignorePackage": [
-      "./applications/JimmyPaolini"
+      "./projects/JimmyPaolini"
     ],
     "ignoreRule": [
       "packages-without-package-json",

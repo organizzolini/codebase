@@ -100,94 +100,94 @@
 
 ### 🔮 affirmancy
 
-**🔮 [affirmancy](applications/affirmancy)** - Python LangChain + Ollama affirmation generator (LangGraph ReAct agent, SearxNG)\
+**🔮 [affirmancy](projects/affirmancy)** - Python LangChain + Ollama affirmation generator (LangGraph ReAct agent, SearxNG)\
 
 ### 🛰️ caelundas
 
 Swiss Ephemeris calendar generator that turns astronomical events into an `.ics` file
 
-**[caelundas-cli](applications/caelundas/caelundas-cli)** - Command-line application that detects astronomical events with Swiss Ephemeris and writes them to an `.ics` file\
-**[caelundas-web](applications/caelundas/caelundas-web)** - TanStack Start web application for browsing the astronomical events caelundas-cli detects
+**[caelundas-cli](projects/caelundas/caelundas-cli)** - Command-line application that detects astronomical events with Swiss Ephemeris and writes them to an `.ics` file\
+**[caelundas-web](projects/caelundas/caelundas-web)** - TanStack Start web application for browsing the astronomical events caelundas-cli detects
 
 ### 🔭 callidescope
 
 Call stack tracing toolchain that follows control flow through injected dependencies and reports where a stack got too deep
 
-**[callidescope-agents](packages/ic-suite/callidescope/callidescope-agents)** - Agent skills for the callidescope toolchain, published and installed back from the lockfile like any other vendored skill\
-**[callidescope-cli](packages/ic-suite/callidescope/callidescope-cli)** [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli) - Command-line host that builds the call graph with the TypeScript compiler API, resolves NestJS injected dependencies, and reports the deepest stack below every entry point\
-**[callidescope-configuration](packages/ic-suite/callidescope/callidescope-configuration)** [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration) - Reads `callidescope.config.ts` for entry-point rules, depth and breadth limits, exclusion globs, and output destinations\
-**[callidescope-core](packages/ic-suite/callidescope/callidescope-core)** [![npm](https://img.shields.io/npm/v/@callidescope/core?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/core) - The contracts leaf: the call graph, stack, frame, and finding vocabulary every other callidescope package speaks, holding no service and no NestJS module\
-**[callidescope-examples](packages/ic-suite/callidescope/callidescope-examples)** - A small codebase built to be traced, carrying one worked example per rule, finding, and output the toolchain has\
-**[callidescope-graph](packages/ic-suite/callidescope/callidescope-graph)** [![npm](https://img.shields.io/npm/v/@callidescope/graph?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/graph) - Builds the call graph from traced TypeScript source and measures its depth and breadth\
-**[callidescope-nx](packages/ic-suite/callidescope/callidescope-nx)** [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx) - Nx plugin inferring per-project `trace`, `depth`, and `breadth` targets that follow the Nx dependency graph, keeping every Nx dependency out of the packages that trace\
-**[callidescope-output](packages/ic-suite/callidescope/callidescope-output)** [![npm](https://img.shields.io/npm/v/@callidescope/output?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/output) - Renders call-graph findings into markdown, mermaid, and JSON output formats
+**[callidescope-agents](projects/ic-suite/callidescope/callidescope-agents)** - Agent skills for the callidescope toolchain, published and installed back from the lockfile like any other vendored skill\
+**[callidescope-cli](projects/ic-suite/callidescope/callidescope-cli)** [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli) - Command-line host that builds the call graph with the TypeScript compiler API, resolves NestJS injected dependencies, and reports the deepest stack below every entry point\
+**[callidescope-configuration](projects/ic-suite/callidescope/callidescope-configuration)** [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration) - Reads `callidescope.config.ts` for entry-point rules, depth and breadth limits, exclusion globs, and output destinations\
+**[callidescope-core](projects/ic-suite/callidescope/callidescope-core)** [![npm](https://img.shields.io/npm/v/@callidescope/core?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/core) - The contracts leaf: the call graph, stack, frame, and finding vocabulary every other callidescope package speaks, holding no service and no NestJS module\
+**[callidescope-examples](projects/ic-suite/callidescope/callidescope-examples)** - A small codebase built to be traced, carrying one worked example per rule, finding, and output the toolchain has\
+**[callidescope-graph](projects/ic-suite/callidescope/callidescope-graph)** [![npm](https://img.shields.io/npm/v/@callidescope/graph?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/graph) - Builds the call graph from traced TypeScript source and measures its depth and breadth\
+**[callidescope-nx](projects/ic-suite/callidescope/callidescope-nx)** [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx) - Nx plugin inferring per-project `trace`, `depth`, and `breadth` targets that follow the Nx dependency graph, keeping every Nx dependency out of the packages that trace\
+**[callidescope-output](projects/ic-suite/callidescope/callidescope-output)** [![npm](https://img.shields.io/npm/v/@callidescope/output?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/output) - Renders call-graph findings into markdown, mermaid, and JSON output formats
 
 ### 🕸️ codependix
 
 Dependency graph export toolchain that reads what each project depends on, renders it as JSON and Markdown diagrams, and gates the rules those graphs are judged against
 
-**[codependix-agents](packages/ic-suite/codependix/codependix-agents)** - Agent skills for the codependix toolchain, installable by any workspace that uses codependix\
-**[codependix-boundaries](packages/ic-suite/codependix/codependix-boundaries)** [![npm](https://img.shields.io/npm/v/@codependix/boundaries?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/boundaries) - Builds each level's graph for a workspace, judges it against the declared rules, and reports the edges and cycles that break them\
-**[codependix-cli](packages/ic-suite/codependix/codependix-cli)** [![npm](https://img.shields.io/npm/v/@codependix/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/cli) - Command-line host that exports a project's Nx, NestJS, and file-level dependency graphs as JSON and Markdown anchor blocks, and gates the rules over them\
-**[codependix-configuration](packages/ic-suite/codependix/codependix-configuration)** [![npm](https://img.shields.io/npm/v/@codependix/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/configuration) - Reads `codependix.config.ts`, resolves the command line over it, and produces one resolved run configuration\
-**[codependix-core](packages/ic-suite/codependix/codependix-core)** [![npm](https://img.shields.io/npm/v/@codependix/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/core) - The contracts leaf: the run and result vocabulary every other codependix package states its types in\
-**[codependix-examples](packages/ic-suite/codependix/codependix-examples)** - Twenty-one subjects built to be graphed, each carrying the guide codependix renders from it\
-**[codependix-file-imports](packages/ic-suite/codependix/codependix-file-imports)** [![npm](https://img.shields.io/npm/v/@codependix/file-imports?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/file-imports) - Builds a project's file-level import graph — a `typescript` module walking its own `ts.Program`, and a `python` module parsing `import`/`from ... import` statements\
-**[codependix-nestjs-modules](packages/ic-suite/codependix/codependix-nestjs-modules)** [![npm](https://img.shields.io/npm/v/@codependix/nestjs-modules?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nestjs-modules) - Explores a NestJS project's container and builds its module graph\
-**[codependix-nx](packages/ic-suite/codependix/codependix-nx)** [![npm](https://img.shields.io/npm/v/@codependix/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx) - Nx plugin inferring a per-project `codependix-gate` target that checks the boundaries charged to a project, built over its Nx dependency closure\
-**[codependix-nx-projects](packages/ic-suite/codependix/codependix-nx-projects)** [![npm](https://img.shields.io/npm/v/@codependix/nx-projects?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx-projects) - Builds a project's one-hop Nx dependency neighborhood from the Nx project graph\
-**[codependix-output](packages/ic-suite/codependix/codependix-output)** [![npm](https://img.shields.io/npm/v/@codependix/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/output) - Renders every graph as JSON, Markdown, and mermaid, routes each to its configured destination, and splices anchor blocks into place
+**[codependix-agents](projects/ic-suite/codependix/codependix-agents)** - Agent skills for the codependix toolchain, installable by any workspace that uses codependix\
+**[codependix-boundaries](projects/ic-suite/codependix/codependix-boundaries)** [![npm](https://img.shields.io/npm/v/@codependix/boundaries?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/boundaries) - Builds each level's graph for a workspace, judges it against the declared rules, and reports the edges and cycles that break them\
+**[codependix-cli](projects/ic-suite/codependix/codependix-cli)** [![npm](https://img.shields.io/npm/v/@codependix/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/cli) - Command-line host that exports a project's Nx, NestJS, and file-level dependency graphs as JSON and Markdown anchor blocks, and gates the rules over them\
+**[codependix-configuration](projects/ic-suite/codependix/codependix-configuration)** [![npm](https://img.shields.io/npm/v/@codependix/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/configuration) - Reads `codependix.config.ts`, resolves the command line over it, and produces one resolved run configuration\
+**[codependix-core](projects/ic-suite/codependix/codependix-core)** [![npm](https://img.shields.io/npm/v/@codependix/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/core) - The contracts leaf: the run and result vocabulary every other codependix package states its types in\
+**[codependix-examples](projects/ic-suite/codependix/codependix-examples)** - Twenty-one subjects built to be graphed, each carrying the guide codependix renders from it\
+**[codependix-file-imports](projects/ic-suite/codependix/codependix-file-imports)** [![npm](https://img.shields.io/npm/v/@codependix/file-imports?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/file-imports) - Builds a project's file-level import graph — a `typescript` module walking its own `ts.Program`, and a `python` module parsing `import`/`from ... import` statements\
+**[codependix-nestjs-modules](projects/ic-suite/codependix/codependix-nestjs-modules)** [![npm](https://img.shields.io/npm/v/@codependix/nestjs-modules?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nestjs-modules) - Explores a NestJS project's container and builds its module graph\
+**[codependix-nx](projects/ic-suite/codependix/codependix-nx)** [![npm](https://img.shields.io/npm/v/@codependix/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx) - Nx plugin inferring a per-project `codependix-gate` target that checks the boundaries charged to a project, built over its Nx dependency closure\
+**[codependix-nx-projects](projects/ic-suite/codependix/codependix-nx-projects)** [![npm](https://img.shields.io/npm/v/@codependix/nx-projects?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx-projects) - Builds a project's one-hop Nx dependency neighborhood from the Nx project graph\
+**[codependix-output](projects/ic-suite/codependix/codependix-output)** [![npm](https://img.shields.io/npm/v/@codependix/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/output) - Renders every graph as JSON, Markdown, and mermaid, routes each to its configured destination, and splices anchor blocks into place
 
 ### ⏲️ codometer
 
 Repository measurement toolchain that counts a codebase and reports what it found
 
-**[codometer-agents](packages/ic-suite/codometer/codometer-agents)** - Agent skills for the codometer toolchain, published and installed back from the lockfile like any other vendored skill\
-**[codometer-cli](packages/ic-suite/codometer/codometer-cli)** [![npm](https://img.shields.io/npm/v/@codometer/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/cli) - Command-line host that measures TypeScript, JavaScript, Python, JSON, markdown, and Jupyter notebooks, then writes the badge block in this README, a JSON report, or both\
-**[codometer-configuration](packages/ic-suite/codometer/codometer-configuration)** [![npm](https://img.shields.io/npm/v/@codometer/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/configuration) - Reads `codometer.config.ts` for exclusion globs, output destinations and their render/write callbacks, and the Python interpreter, and reads the command line that runs over it\
-**[codometer-core](packages/ic-suite/codometer/codometer-core)** [![npm](https://img.shields.io/npm/v/@codometer/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/core) - The contracts leaf: the statistics and report vocabulary a measurement produces, and the errors a configuration is refused with\
-**[codometer-examples](packages/ic-suite/codometer/codometer-examples)** - A sample corpus with known contents and one runnable example per thing codometer does, with tests that assert every number the guides quote\
-**[codometer-languages](packages/ic-suite/codometer/codometer-languages)** [![npm](https://img.shields.io/npm/v/@codometer/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/languages) - Every input language analyzer codometer measures, behind one `analyze()` call\
-**[codometer-measurement](packages/ic-suite/codometer/codometer-measurement)** [![npm](https://img.shields.io/npm/v/@codometer/measurement?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/measurement) - Finds the files a run measures, counts their size and whatever a configuration declares its own counters for, and holds every metric to its declared limit\
-**[codometer-output](packages/ic-suite/codometer/codometer-output)** [![npm](https://img.shields.io/npm/v/@codometer/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/output) - Every codometer output format - JSON reports, README badges, and the pull request change report - plus the destinations a run writes them to
+**[codometer-agents](projects/ic-suite/codometer/codometer-agents)** - Agent skills for the codometer toolchain, published and installed back from the lockfile like any other vendored skill\
+**[codometer-cli](projects/ic-suite/codometer/codometer-cli)** [![npm](https://img.shields.io/npm/v/@codometer/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/cli) - Command-line host that measures TypeScript, JavaScript, Python, JSON, markdown, and Jupyter notebooks, then writes the badge block in this README, a JSON report, or both\
+**[codometer-configuration](projects/ic-suite/codometer/codometer-configuration)** [![npm](https://img.shields.io/npm/v/@codometer/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/configuration) - Reads `codometer.config.ts` for exclusion globs, output destinations and their render/write callbacks, and the Python interpreter, and reads the command line that runs over it\
+**[codometer-core](projects/ic-suite/codometer/codometer-core)** [![npm](https://img.shields.io/npm/v/@codometer/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/core) - The contracts leaf: the statistics and report vocabulary a measurement produces, and the errors a configuration is refused with\
+**[codometer-examples](projects/ic-suite/codometer/codometer-examples)** - A sample corpus with known contents and one runnable example per thing codometer does, with tests that assert every number the guides quote\
+**[codometer-languages](projects/ic-suite/codometer/codometer-languages)** [![npm](https://img.shields.io/npm/v/@codometer/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/languages) - Every input language analyzer codometer measures, behind one `analyze()` call\
+**[codometer-measurement](projects/ic-suite/codometer/codometer-measurement)** [![npm](https://img.shields.io/npm/v/@codometer/measurement?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/measurement) - Finds the files a run measures, counts their size and whatever a configuration declares its own counters for, and holds every metric to its declared limit\
+**[codometer-output](projects/ic-suite/codometer/codometer-output)** [![npm](https://img.shields.io/npm/v/@codometer/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/output) - Every codometer output format - JSON reports, README badges, and the pull request change report - plus the destinations a run writes them to
 
 ### 👔 conformetry
 
 Template-driven code generation and conformance validation toolchain
 
-**[conformetry-agents](packages/ic-suite/conformetry/conformetry-agents)** - Agent skills for the conformetry toolchain, published and installed back from the lockfile like any other vendored skill\
-**[conformetry-cli](packages/ic-suite/conformetry/conformetry-cli)** [![npm](https://img.shields.io/npm/v/@conformetry/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/cli) - Command-line host that expands globs, prompts for inputs, and runs generation and validation\
-**[conformetry-configuration](packages/ic-suite/conformetry/conformetry-configuration)** [![npm](https://img.shields.io/npm/v/@conformetry/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/configuration) - Configuration loading, template and instance discovery, generator input resolution, and the placeholder rendering every template path needs\
-**[conformetry-core](packages/ic-suite/conformetry/conformetry-core)** [![npm](https://img.shields.io/npm/v/@conformetry/core?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/core) - Contracts leaf: difference, score, inventory, and language validator types, and nothing executable\
-**[conformetry-examples](packages/ic-suite/conformetry/conformetry-examples)** - Eleven runnable examples of the toolchain, each with its own configuration, template, instances, and guide, executed by CI so the guides cannot rot\
-**[conformetry-generation](packages/ic-suite/conformetry/conformetry-generation)** [![npm](https://img.shields.io/npm/v/@conformetry/generation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/generation) - Scaffold file generation, rendering each template through the configuration layer\
-**[conformetry-languages](packages/ic-suite/conformetry/conformetry-languages)** [![npm](https://img.shields.io/npm/v/@conformetry/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/languages) - Every language conformetry compares files with, as modules of one package, plus the resolution that picks them, the text fallback, the extension-agnostic existence pass, and the difference and scoring primitives they share\
-**[conformetry-nx](packages/ic-suite/conformetry/conformetry-nx)** [![npm](https://img.shields.io/npm/v/@conformetry/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/nx) - Nx plugin host with generators, executors, and the emitted-plugin bootstrap\
-**[conformetry-output](packages/ic-suite/conformetry/conformetry-output)** [![npm](https://img.shields.io/npm/v/@conformetry/output?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/output) - Every render target: the validation report and the template and instance inventory\
-**[conformetry-validation](packages/ic-suite/conformetry/conformetry-validation)** [![npm](https://img.shields.io/npm/v/@conformetry/validation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/validation) - Validation orchestration, language routing, and finding deduplication
+**[conformetry-agents](projects/ic-suite/conformetry/conformetry-agents)** - Agent skills for the conformetry toolchain, published and installed back from the lockfile like any other vendored skill\
+**[conformetry-cli](projects/ic-suite/conformetry/conformetry-cli)** [![npm](https://img.shields.io/npm/v/@conformetry/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/cli) - Command-line host that expands globs, prompts for inputs, and runs generation and validation\
+**[conformetry-configuration](projects/ic-suite/conformetry/conformetry-configuration)** [![npm](https://img.shields.io/npm/v/@conformetry/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/configuration) - Configuration loading, template and instance discovery, generator input resolution, and the placeholder rendering every template path needs\
+**[conformetry-core](projects/ic-suite/conformetry/conformetry-core)** [![npm](https://img.shields.io/npm/v/@conformetry/core?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/core) - Contracts leaf: difference, score, inventory, and language validator types, and nothing executable\
+**[conformetry-examples](projects/ic-suite/conformetry/conformetry-examples)** - Eleven runnable examples of the toolchain, each with its own configuration, template, instances, and guide, executed by CI so the guides cannot rot\
+**[conformetry-generation](projects/ic-suite/conformetry/conformetry-generation)** [![npm](https://img.shields.io/npm/v/@conformetry/generation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/generation) - Scaffold file generation, rendering each template through the configuration layer\
+**[conformetry-languages](projects/ic-suite/conformetry/conformetry-languages)** [![npm](https://img.shields.io/npm/v/@conformetry/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/languages) - Every language conformetry compares files with, as modules of one package, plus the resolution that picks them, the text fallback, the extension-agnostic existence pass, and the difference and scoring primitives they share\
+**[conformetry-nx](projects/ic-suite/conformetry/conformetry-nx)** [![npm](https://img.shields.io/npm/v/@conformetry/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/nx) - Nx plugin host with generators, executors, and the emitted-plugin bootstrap\
+**[conformetry-output](projects/ic-suite/conformetry/conformetry-output)** [![npm](https://img.shields.io/npm/v/@conformetry/output?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/output) - Every render target: the validation report and the template and instance inventory\
+**[conformetry-validation](projects/ic-suite/conformetry/conformetry-validation)** [![npm](https://img.shields.io/npm/v/@conformetry/validation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/validation) - Validation orchestration, language routing, and finding deduplication
 
 ### 🐺 lexico
 
 Latin-English dictionary suite: the web application, its components, its schema, and the ingestion that fills it
 
-**[lexico-web](applications/lexico/lexico-web)** - TanStack Start SSR dictionary web application\
-**[lexico-api](applications/lexico/lexico-api)** - NestJS GraphQL API exposing Latin dictionary, literature, and Relay cursor-based search\
-**[components-web](packages/components-web)** - Shared React component library using shadcn/ui and Radix primitives\
-**[lexico-entities](packages/lexico-entities)** - TypeORM entities, migrations, and grammatical enumerations for the dictionary and literature schema\
-**[lexico-cli](applications/lexico/lexico-cli)** - NestJS CLI that scrapes and loads dictionary, literature, and etymology sources
+**[lexico-web](projects/lexico/lexico-web)** - TanStack Start SSR dictionary web application\
+**[lexico-api](projects/lexico/lexico-api)** - NestJS GraphQL API exposing Latin dictionary, literature, and Relay cursor-based search\
+**[components-web](projects/components-web)** - Shared React component library using shadcn/ui and Radix primitives\
+**[lexico-entities](projects/lexico/lexico-entities)** - TypeORM entities, migrations, and grammatical enumerations for the dictionary and literature schema\
+**[lexico-cli](projects/lexico/lexico-cli)** - NestJS CLI that scrapes and loads dictionary, literature, and etymology sources
 
 ### 🏺 meanderaw
 
 Enumerate, measure, and classify greek meander patterns
 
-**[meanderaw-cli](applications/meanderaw/meanderaw-cli)** - CLI that enumerates Greek meander (key/fret) patterns into a Postgres database, measuring and classifying each by its Code\
-**[meanderaw-web](applications/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
+**[meanderaw-cli](projects/meanderaw/meanderaw-cli)** - CLI that enumerates Greek meander (key/fret) patterns into a Postgres database, measuring and classifying each by its Code\
+**[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
-**🐘 [database](packages/database)** - Shared Postgres package: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, and the `migration` target\
-**🪵 [logging](packages/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
-**↔️ [synchronization](tools/synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
-**✅ [validation](tools/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
-**🧑‍💻 [JimmyPaolini](applications/JimmyPaolini)** - GitHub profile site
+**🐘 [database](projects/database)** - Shared Postgres package: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, and the `migration` target\
+**🪵 [logging](projects/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
+**↔️ [synchronization](projects/synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
+**✅ [validation](projects/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
+**🧑‍💻 [JimmyPaolini](projects/JimmyPaolini)** - GitHub profile site
 
 ## 📖 Documentation
 
@@ -228,10 +228,10 @@ Template-driven code generation and conformance validation, templates synced fro
 | Template | Description |
 | -------- | ----------- |
 | `jupyter-notebook-application` | A standalone Python application template with a Jupyter notebook entry point, pytest/pyright/ruff tooling, and a shared uv workspace venv |
-| `nestjs-command-project` | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in applications/, packages/, or tools/ |
+| `nestjs-command-project` | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in projects/ |
 | `nestjs-graphql-application` | A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP |
 | `nestjs-service-project` | A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server |
-| `tanstack-application` | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in applications/ |
+| `tanstack-application` | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/ |
 | `nestjs-command-module` | A nest-commander command module template — command, module, constants, types, and unit test — for an existing NestJS command-line project |
 | `nestjs-dataloader-module` | A GraphQL dataloader module template — dataloader, module, types, and unit test — for batching lookups inside an existing NestJS project |
 | `nestjs-graphql-module` | A GraphQL module template — resolver, entities, args/input types, factories, constants, and unit test — for an existing NestJS project |
@@ -246,7 +246,7 @@ Template-driven code generation and conformance validation, templates synced fro
 
 ## 🕸️ Codependix
 
-The workspace's dependency graph, exported by [codependix](packages/ic-suite/codependix/codependix-cli), regenerated by `nx run codebase:codependix:write`.
+The workspace's dependency graph, exported by [codependix](projects/ic-suite/codependix/codependix-cli), regenerated by `nx run codebase:codependix:write`.
 
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
@@ -8502,8 +8502,11 @@ graph LR
   file_lexico_api_src_modules_literature_tokens_resolver_ts --> file_lexico_api_src_modules_literature_literature_utilities_ts
   file_lexico_api_src_modules_literature_tokens_resolver_ts --> file_lexico_api_src_modules_literature_token_entities_ts
   file_lexico_api_src_modules_literature_tokens_resolver_ts --> file_lexico_api_src_modules_literature_tokens_arguments_entities_ts
+  file_lexico_api_src_modules_literature_tokens_resolver_ts --> file_lexico_api_src_modules_words_word_entities_ts
+  file_lexico_api_src_modules_literature_tokens_resolver_ts --> file_lexico_api_src_modules_words_words_utilities_ts
   file_lexico_api_src_modules_literature_tokens_resolver_unit_test_ts --> file_lexico_api_src_modules_literature_literature_service_ts
   file_lexico_api_src_modules_literature_tokens_resolver_unit_test_ts --> file_lexico_api_src_modules_literature_tokens_resolver_ts
+  file_lexico_api_src_modules_literature_tokens_resolver_unit_test_ts --> file_lexico_api_src_modules_words_words_utilities_ts
   file_lexico_api_src_modules_macrons_macrons_module_ts --> file_lexico_api_src_modules_macrons_macrons_service_ts
   file_lexico_api_src_modules_macrons_macrons_service_ts --> file_lexico_api_src_modules_macrons_macrons_constants_ts
   file_lexico_api_src_modules_macrons_macrons_service_unit_test_ts --> file_lexico_api_src_modules_macrons_macrons_service_ts
@@ -8569,6 +8572,7 @@ graph LR
   file_lexico_api_src_modules_search_search_utilities_ts --> file_lexico_api_src_modules_search_search_types_ts
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_lexemes_lexeme_entities_ts
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_search_search_entities_ts
+  file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_search_search_types_ts
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_search_search_utilities_ts
   file_lexico_api_src_modules_words_word_form_entities_ts --> file_lexico_api_src_deletable_entities_ts
   file_lexico_api_src_modules_words_word_form_entities_ts --> file_lexico_api_src_lexico_api_types_ts
@@ -11429,7 +11433,7 @@ graph LR
 
 ## ⏲️ Codometer
 
-Repository statistics measured by [codometer](packages/ic-suite/codometer/codometer-cli), regenerated by `nx run codebase:codometer`.
+Repository statistics measured by [codometer](projects/ic-suite/codometer/codometer-cli), regenerated by `nx run codebase:codometer`.
 
 ### Repository
 
@@ -11643,7 +11647,7 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 
 ## 🔭 Callidescope
 
-The workspace's call graph, traced by [callidescope](packages/ic-suite/callidescope/callidescope-cli), regenerated by `nx run codebase:callidescope:write`. Projects are listed tightest-first: the rows at the top are the ones a ratchet cannot descend past.
+The workspace's call graph, traced by [callidescope](projects/ic-suite/callidescope/callidescope-cli), regenerated by `nx run codebase:callidescope:write`. Projects are listed tightest-first: the rows at the top are the ones a ratchet cannot descend past.
 
 | Measure | Value |
 | --- | --- |
@@ -11659,49 +11663,49 @@ The workspace's call graph, traced by [callidescope](packages/ic-suite/callidesc
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
-| `applications/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
-| `applications/lexico/lexico-web` | 9 | 9 | 0 | 9 |
-| `applications/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
-| `packages/components-web` | 3 | 3 | 0 | 7 |
-| `packages/database` | 4 | 4 | 0 | 4 |
-| `packages/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
-| `packages/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
-| `packages/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
-| `packages/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
-| `packages/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
-| `packages/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
-| `packages/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 8 |
-| `packages/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
-| `packages/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
-| `packages/logging` | 4 | 4 | 0 | 2 |
-| `tools/synchronization` | 10 | 10 | 0 | 10 |
-| `tools/validation` | 8 | 8 | 0 | 9 |
-| `applications/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
-| `packages/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
-| `packages/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
-| `packages/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
-| `packages/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
-| `packages/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
-| `packages/lexico-entities` | 0 | 3 | 3 | 0 |
-| `packages/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
-| `packages/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
-| `packages/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
-| `packages/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
-| `applications/caelundas/caelundas-web` | 0 | 6 | 6 | 0 |
-| `applications/meanderaw/meanderaw-web` | 0 | 6 | 6 | 0 |
-| `packages/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
-| `packages/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
-| `packages/ic-suite/codometer/codometer-languages` | 5 | 11 | 6 | 12 |
-| `packages/ic-suite/conformetry/conformetry-generation` | 2 | 8 | 6 | 4 |
-| `packages/ic-suite/conformetry/conformetry-output` | 0 | 6 | 6 | 4 |
-| `packages/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
-| `packages/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
-| `applications/lexico/lexico-api` | 8 | 17 | 9 | 10 |
-| `packages/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
+| `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
+| `projects/lexico/lexico-web` | 9 | 9 | 0 | 9 |
+| `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
+| `projects/components-web` | 3 | 3 | 0 | 7 |
+| `projects/database` | 4 | 4 | 0 | 4 |
+| `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
+| `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
+| `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
+| `projects/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
+| `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
+| `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
+| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 8 |
+| `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
+| `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
+| `projects/logging` | 4 | 4 | 0 | 2 |
+| `projects/synchronization` | 10 | 10 | 0 | 10 |
+| `projects/validation` | 8 | 8 | 0 | 9 |
+| `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
+| `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
+| `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
+| `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
+| `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
+| `projects/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
+| `projects/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
+| `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
+| `projects/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
+| `projects/caelundas/caelundas-web` | 0 | 6 | 6 | 0 |
+| `projects/meanderaw/meanderaw-web` | 0 | 6 | 6 | 0 |
+| `projects/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
+| `projects/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
+| `projects/ic-suite/codometer/codometer-languages` | 5 | 11 | 6 | 12 |
+| `projects/ic-suite/conformetry/conformetry-generation` | 2 | 8 | 6 | 4 |
+| `projects/ic-suite/conformetry/conformetry-output` | 0 | 6 | 6 | 4 |
+| `projects/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
+| `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
+| `projects/lexico/lexico-api` | 8 | 17 | 9 | 10 |
+| `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
 | `configuration` | 4 | 17 | 13 | 2 |
-| `packages/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
-| `packages/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
-| `packages/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |
+| `projects/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
+| `projects/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
+| `projects/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |
 
 ### Depth headroom
 

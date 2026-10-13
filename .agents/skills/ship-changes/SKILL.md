@@ -53,7 +53,7 @@ Check `mergeable` after every push and whenever `main` moves. On `CONFLICTING`:
 
 1. Merge `origin/main` into the branch (in a worktree session, the `mcp__ccd_host__sync_with_base_branch` tool), then run `pnpm exec nx sync`. Merge rather than rebase: a rebase flattens merge commits and breaks signatures. A stack is the exception: it needs linear history, so follow [stacked-pull-requests.md](references/stacked-pull-requests.md).
 2. Resolve by intent. Generated blocks (README codometer badges, callidescope and codependix reports) take either side, then regenerate with the matching `nx run <project>:<tool>:write`. Hand-written code that both sides changed is a **raise to the user** unless the two edits are independent lines.
-3. `pnpm-lock.yaml`: never initialize the `applications/JimmyPaolini` submodule; revert its lockfile entry, then `pnpm install --frozen-lockfile`.
+3. `pnpm-lock.yaml`: never initialize the `projects/JimmyPaolini` submodule; revert its lockfile entry, then `pnpm install --frozen-lockfile`.
 4. Run [validate-code](../validate-code/SKILL.md), commit, push, return to step 1.
 
 ## 3. Merge queue

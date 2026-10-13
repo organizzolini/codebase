@@ -29,7 +29,7 @@ fi
 affected="$(
   pnpm exec nx show projects --affected --json \
     --base="${NX_BASE}" --head="${NX_HEAD}" \
-    --projects='packages/ic-suite/**,validation'
+    --projects='projects/ic-suite/**,validation'
 )"
 
 if [[ "${affected}" == "[]" ]]; then
