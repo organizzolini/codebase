@@ -85,11 +85,7 @@ export class EphemerisPhenomenaService {
   }
 
   /**
-<<<<<<< HEAD
-   * Computes pheno (illumination, magnitude, phase angle and diameter) for a non-Sun body at a specific moment.
-=======
-   * Computes pheno illumination for a non-Sun body at a specific moment.
->>>>>>> origin/main
+   * Computes pheno illumination, magnitude, and phase angle for a non-Sun body at a specific moment.
    * Stores results into the provided ephemeris maps if requested.
    *
    * @throws When pheno_ut fails.
