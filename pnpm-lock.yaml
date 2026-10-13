@@ -919,9 +919,6 @@ importers:
       jsdom:
         specifier: 'catalog:'
         version: 30.1.1
-      json5:
-        specifier: 'catalog:'
-        version: 2.2.3
       knip:
         specifier: 'catalog:'
         version: 6.38.0
@@ -931,9 +928,6 @@ importers:
       lint-staged:
         specifier: 'catalog:'
         version: 17.5.1
-      lodash:
-        specifier: 'catalog:'
-        version: 4.18.1
       markdownlint-cli2:
         specifier: 'catalog:'
         version: 0.23.3(supports-color@10.2.2)
