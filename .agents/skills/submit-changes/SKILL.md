@@ -21,8 +21,8 @@ These rules are non-negotiable:
 - **NEVER** run destructive commands (`git reset`, `git clean`, `git checkout -- .`, `git push --force`, `git rebase`)
 - **NEVER** bypass hooks with `--no-verify`
 - **NEVER** disable signing with `--no-gpg-sign`
-- **NEVER** auto-fix pre-commit failures — report the failure and stop
-- On any failure: **report the error and stop immediately**
+- **NEVER** silence a pre-commit failure with a suppression comment, a loosened compiler option, a lint ignore, a raised limit, or a new dictionary word; fix only [easy failures](#if-pre-commit-hooks-fail) in the files you are submitting
+- On any other failure: **report the error and stop immediately**
 
 ## Automatic Change Analysis
 
@@ -97,7 +97,12 @@ Branch name format: `<type>/<scope>-<description>` (kebab-case, 2–4 keyword de
 
 ### If pre-commit hooks fail
 
-**Stop immediately.** Report the hook output so the user can see what failed. Do **NOT** apply fixes or proceed to push.
+Read the hook output, then sort the failure:
+
+- **Easy**: a mechanical failure whose root cause sits in a file this submission already changes, fixed by editing that file. Examples: a spell-check unknown word in text you wrote (reword it), a format or lint autofix (`nx run <project>:<target>:write`), a type error in a line you touched, a stale generated report in a touched project. Fix it, re-stage, and commit again. Allow **two** such rounds; a third failure, or one that differs from the last, is not easy.
+- **Not easy**: anything else. Examples: a file outside the diff, a dependency, lockfile, tsconfig, or limit change, a failing or weakened test, a failure with no clear root cause, or a failure that predates your change. **Stop immediately.** Report the hook output so the user can see what failed, and do **NOT** proceed to push.
+
+Never revert unrelated changes a hook leaves behind (for example a `pnpm-lock.yaml` rewritten by an auto-install) by guessing: read the diff, and revert only drift the change did not cause. Name every easy fix in the final summary.
 
 ### If commit succeeds
 
