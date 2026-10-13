@@ -167,8 +167,15 @@ module.exports = {
           "pnpm-lock.yaml",
           "projects/*/AGENTS.md",
           "projects/*/README.md",
-          "projects/*/*/AGENTS.md",
-          "projects/*/*/README.md",
+          // One glob per grouping folder, never `projects/*/*`: this plugin
+          // adds assets with `git add --force`, and `projects/*/*/README.md`
+          // also matches a gitignored `projects/<project>/dist/README.md`.
+          "projects/caelundas/*/AGENTS.md",
+          "projects/caelundas/*/README.md",
+          "projects/lexico/*/AGENTS.md",
+          "projects/lexico/*/README.md",
+          "projects/meanderaw/*/AGENTS.md",
+          "projects/meanderaw/*/README.md",
           "projects/ic-suite/*/*/CHANGELOG.md",
           "projects/ic-suite/*/*/package.json",
         ],
