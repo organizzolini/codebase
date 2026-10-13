@@ -45,7 +45,7 @@ export const PACKAGE_MANIFEST_SCHEMA = z.looseObject({
   version: z.string().min(1),
 });
 
-/** The complete list of 28 publishable package directories across the four IC suites. */
+/** The complete list of 29 publishable package directories across the four IC suites. */
 export const PUBLISHABLE_PACKAGE_PROJECTS = [
   // Conformetry (8)
   "projects/ic-suite/conformetry/conformetry-cli",
@@ -73,13 +73,14 @@ export const PUBLISHABLE_PACKAGE_PROJECTS = [
   "projects/ic-suite/callidescope/callidescope-nx",
   "projects/ic-suite/callidescope/callidescope-output",
 
-  // Codependix (8)
+  // Codependix (9)
   "projects/ic-suite/codependix/codependix-boundaries",
   "projects/ic-suite/codependix/codependix-cli",
   "projects/ic-suite/codependix/codependix-configuration",
   "projects/ic-suite/codependix/codependix-core",
   "projects/ic-suite/codependix/codependix-file-imports",
   "projects/ic-suite/codependix/codependix-nestjs-modules",
+  "projects/ic-suite/codependix/codependix-nx",
   "projects/ic-suite/codependix/codependix-nx-projects",
   "projects/ic-suite/codependix/codependix-output",
 ] as const;

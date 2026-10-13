@@ -20,6 +20,18 @@ export class AspectCalculationSupportService {
 
   // 🔐 Private Fields
 
+  /**
+   * Windows already read, by the body's ephemeris and then the minute.
+   *
+   * Every aspect family asks for the same body's window once per pair per
+   * minute, which is dozens of identical reads. Keying on the ephemeris
+   * object itself lets a day's entries go with it.
+   */
+  private readonly windowCache = new WeakMap<
+    CoordinateEphemeris,
+    Map<string, { current: number; next: number; previous: number }>
+  >();
+
   // 🔑 Public Fields
 
   // 🔏 Private Methods
@@ -59,11 +71,10 @@ export class AspectCalculationSupportService {
       return { eventMinute: currentMinute, phase: "forming" };
     }
 
+    // A leg's simple dissolving event marks its last minute in orb, and the
+    // registry drops the leg on that same minute, so the pattern dissolves then.
     if (!currentExists && previousExists) {
-      return {
-        eventMinute: currentMinute.clone().subtract(1, "minute"),
-        phase: "dissolving",
-      };
+      return { eventMinute: currentMinute, phase: "dissolving" };
     }
 
     return null;
@@ -92,11 +103,23 @@ export class AspectCalculationSupportService {
       nextMinute,
       previousMinute,
     } = args;
-    return this.ephemerisService.getLongitudesWindow({
-      ephemeris: coordinateEphemerisByBody[body],
+    const ephemeris = coordinateEphemerisByBody[body];
+    const key = `${previousMinute.valueOf()}:${minute.valueOf()}:${nextMinute.valueOf()}`;
+    const cached = this.windowCache.get(ephemeris)?.get(key);
+    if (cached) {
+      return cached;
+    }
+    const window = this.ephemerisService.getLongitudesWindow({
+      ephemeris,
       minute,
       next: nextMinute,
       previous: previousMinute,
     });
+    const byMinute =
+      this.windowCache.get(ephemeris) ??
+      new Map<string, { current: number; next: number; previous: number }>();
+    byMinute.set(key, window);
+    this.windowCache.set(ephemeris, byMinute);
+    return window;
   }
 }

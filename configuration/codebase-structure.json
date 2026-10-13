@@ -380,6 +380,9 @@
         "name": ".nxignore"
       },
       {
+        "name": ".python-version"
+      },
+      {
         "children": [
           {
             "ruleId": "kebab-case-folder"

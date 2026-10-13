@@ -1,3 +1,101 @@
+## 0.0.17 (2026-10-13)
+
+### 🩹 Fixes
+
+- **callidescope,codependix,configuration:** 🐛 harden the codependix nx plugin for consumers outside this workspace ([#1444](https://github.com/organizzolini/codebase/pull/1444), [#1433](https://github.com/organizzolini/codebase/issues/1433))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.18
+- Updated conformetry-generation to 0.0.18
+- Updated conformetry-validation to 0.0.17
+- Updated conformetry-output to 0.0.17
+
+## 0.0.16 (2026-10-13)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.17
+- Updated conformetry-generation to 0.0.17
+- Updated conformetry-validation to 0.0.16
+- Updated conformetry-output to 0.0.16
+
+## 0.0.15 (2026-10-13)
+
+### 🩹 Fixes
+
+- **caelundas,conformetry:** 🐛 require an explicit directory instead of defaulting the destination ([#1395](https://github.com/organizzolini/codebase/pull/1395))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.16
+- Updated conformetry-generation to 0.0.16
+- Updated conformetry-validation to 0.0.15
+- Updated conformetry-output to 0.0.15
+
+## 0.0.14 (2026-10-12)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.15
+- Updated conformetry-generation to 0.0.15
+- Updated conformetry-validation to 0.0.14
+- Updated conformetry-output to 0.0.14
+
+## 0.0.13 (2026-10-12)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.14
+- Updated conformetry-generation to 0.0.14
+- Updated conformetry-validation to 0.0.13
+- Updated conformetry-output to 0.0.13
+
+## 0.0.12 (2026-10-09)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.13
+- Updated conformetry-generation to 0.0.13
+- Updated conformetry-validation to 0.0.12
+- Updated conformetry-output to 0.0.12
+
+## 0.0.11 (2026-10-08)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.12
+- Updated conformetry-generation to 0.0.12
+- Updated conformetry-validation to 0.0.11
+- Updated conformetry-output to 0.0.11
+
+## 0.0.10 (2026-10-08)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.11
+- Updated conformetry-generation to 0.0.11
+- Updated conformetry-validation to 0.0.10
+- Updated conformetry-output to 0.0.10
+
+## 0.0.9 (2026-10-08)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.10
+- Updated conformetry-generation to 0.0.10
+- Updated conformetry-validation to 0.0.9
+- Updated conformetry-output to 0.0.9
+
+## 0.0.8 (2026-10-08)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.8
+- Updated conformetry-generation to 0.0.8
+- Updated conformetry-validation to 0.0.8
+- Updated conformetry-output to 0.0.8
+
 ## 0.0.7 (2026-10-08)
 
 ### 🧱 Updated Dependencies

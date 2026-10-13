@@ -21,8 +21,8 @@ These rules are non-negotiable:
 - **NEVER** run destructive commands (`git reset`, `git clean`, `git checkout -- .`, `git push --force`, `git rebase`)
 - **NEVER** bypass hooks with `--no-verify`
 - **NEVER** disable signing with `--no-gpg-sign`
-- **NEVER** auto-fix pre-commit failures — report the failure and stop
-- On any failure: **report the error and stop immediately**
+- **NEVER** silence a pre-commit failure with a suppression comment, a loosened compiler option, a lint ignore, a raised limit, or a new dictionary word; fix only [easy failures](#if-pre-commit-hooks-fail) in the files you are submitting
+- On any other failure: **report the error and stop immediately**
 
 ## Automatic Change Analysis
 
@@ -97,7 +97,12 @@ Branch name format: `<type>/<scope>-<description>` (kebab-case, 2–4 keyword de
 
 ### If pre-commit hooks fail
 
-**Stop immediately.** Report the hook output so the user can see what failed. Do **NOT** apply fixes or proceed to push.
+Read the hook output, then sort the failure:
+
+- **Easy**: a mechanical failure whose root cause sits in a file this submission already changes, fixed by editing that file. Examples: a spell-check unknown word in text you wrote (reword it), a format or lint autofix (`nx run <project>:<target>:write`), a type error in a line you touched, a stale generated report in a touched project. Fix it, re-stage, and commit again. Allow **two** such rounds; a third failure, or one that differs from the last, is not easy.
+- **Not easy**: anything else. Examples: a file outside the diff, a dependency, lockfile, tsconfig, or limit change, a failing or weakened test, a failure with no clear root cause, or a failure that predates your change. **Stop immediately.** Report the hook output so the user can see what failed, and do **NOT** proceed to push.
+
+Never revert unrelated changes a hook leaves behind (for example a `pnpm-lock.yaml` rewritten by an auto-install) by guessing: read the diff, and revert only drift the change did not cause. Name every easy fix in the final summary.
 
 ### If commit succeeds
 
@@ -117,10 +122,10 @@ gh pr list --head <branch> --state open
 
 1. Title: Same format as the commit message — `<type>(<scope>): <gitmoji> <subject>`
 2. Body: Auto-generate from the diff using the PR template structure (all 4 sections are mandatory and non-empty):
-   - **🌰 Summary**: Overall purpose in 1-2 sentences
-   - **📝 Details**: Bulleted list of meaningful changes
-   - **🧪 Testing**: Relevant `nx run <project>:<target>` commands and manual steps
-   - **🔗 Related**: Issue links discovered from branch name, commits, `gh issue list --search`, or related files/documentation (never omit or leave empty)
+   - **🌰 Summary**: Overall purpose as one plain paragraph of at most 48 words
+   - **📝 Details**: Only a bulleted list of meaningful changes, one marker throughout, at most 512 words
+   - **🧪 Testing**: Only an ordered list of `nx run <project>:<target>` commands and manual steps; indent any code block under its step
+   - **🔗 Related**: Opens with a `-` list of issue links discovered from branch name, commits, `gh issue list --search`, or related files/documentation (never omit or leave empty); anything may follow the list
 3. Pre-flight validate the PR body locally before submission:
 
    ```bash

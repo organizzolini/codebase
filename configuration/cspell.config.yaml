@@ -334,5 +334,11 @@ words:
   # Nx's project-discovery ignore file, read when listing a workspace's projects.
   - nxignore
   - openwiki
+  # The git feature (`git rerere`) that replays a recorded conflict resolution.
+  - rerere
+  # Observer sites in caelundas reference fixtures, checked against USNO.
+  - Reykjavík
+  - tromso
+  - Tromsø
   # The markdown heading style written as text underlined by === or ---.
   - setext

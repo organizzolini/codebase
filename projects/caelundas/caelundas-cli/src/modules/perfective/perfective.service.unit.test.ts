@@ -19,6 +19,7 @@ import { TwilightsService } from "../twilights/twilights.service";
 
 import { PerfectiveService } from "./perfective.service";
 
+import type { AspectBodies } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Input } from "../input/input.types";
 import type {
@@ -46,7 +47,6 @@ const baseInput: Input = {
 const emptyEphemerides = {
   azimuthElevationEphemerisByBody: {} as never,
   coordinateEphemerisByBody: {} as never,
-  diameterEphemerisByBody: {} as never,
   distanceEphemerisByBody: {} as never,
   illuminationEphemerisByBody: {} as never,
 };
@@ -65,13 +65,20 @@ describe(PerfectiveService, () => {
   const ephemerisAggMock = {
     getEphemerides: vi.fn<EphemerisService["getEphemerides"]>(),
   };
-  const aspectsMock = { detect: vi.fn<AspectsService["detect"]>() };
+  const aspectsMock = {
+    detect: vi.fn<AspectsService["detect"]>(),
+    seed: vi.fn<AspectsService["seed"]>(() => ({
+      aspectBodies: [],
+      events: [],
+    })),
+  };
   const eclipsesMock = { detect: vi.fn<EclipsesService["detect"]>() };
   const retrogradesMock = { detect: vi.fn<RetrogradesService["detect"]>() };
   const ingressesMock = { detect: vi.fn<IngressesService["detect"]>() };
   const dailyCyclesMock = { detect: vi.fn<DailyCyclesService["detect"]>() };
   const monthlyLunarCycleMock = {
     detect: vi.fn<MonthlyLunarCycleService["detect"]>(),
+    detectApsides: vi.fn<MonthlyLunarCycleService["detectApsides"]>(() => []),
   };
   const annualSolarCycleMock = {
     detect: vi.fn<AnnualSolarCycleService["detect"]>(),
@@ -208,6 +215,133 @@ describe(PerfectiveService, () => {
 
       expect(result).toContain(fakeEvent1);
       expect(result).toContain(fakeEvent2);
+    });
+
+    it("passes the Moon distance ephemeris to lunar apsis detection", () => {
+      const date = moment.tz("2025-06-15", "America/New_York");
+      const minute = date.clone().startOf("day");
+      const moonDistanceEphemeris = {
+        [minute.toISOString()]: { distance: 0.0025, distanceSpeed: 0 },
+      };
+      datetimeMock.generateDates.mockReturnValue([date]);
+      datetimeMock.generateMinutes.mockReturnValue([minute]);
+      ephemerisAggMock.getEphemerides.mockReturnValue({
+        ...emptyEphemerides,
+        distanceEphemerisByBody: { moon: moonDistanceEphemeris } as never,
+      });
+      aspectsMock.detect.mockReturnValue({ aspectBodies: [], events: [] });
+      aspectsMock.seed.mockReturnValue({ aspectBodies: [], events: [] });
+      for (const subMock of [
+        eclipsesMock,
+        retrogradesMock,
+        ingressesMock,
+        dailyCyclesMock,
+        monthlyLunarCycleMock,
+        annualSolarCycleMock,
+        twilightsMock,
+      ]) {
+        subMock.detect.mockReturnValue([]);
+      }
+
+      service.detect(baseInput);
+
+      expect(monthlyLunarCycleMock.detectApsides).toHaveBeenCalledWith({
+        minute,
+        moonDistanceEphemeris,
+      });
+    });
+
+    it("seeds the aspect registry from the window's first minute, once", () => {
+      const firstDate = moment.tz("2025-06-15", "America/New_York");
+      const secondDate = moment.tz("2025-06-16", "America/New_York");
+      const firstMinute = firstDate.clone().startOf("day");
+      const secondDayMinute = secondDate.clone().startOf("day");
+      const seededAspectBodies: AspectBodies[] = [
+        { aspect: "square", bodies: ["mars", "pluto"] },
+      ];
+      const seededEvent = {
+        categories: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
+        description: "Mars, Mercury, Pluto t-square forming",
+        end: firstMinute,
+        start: firstMinute,
+        summary: "seeded compound forming",
+      } satisfies DetectedCalendarEvent;
+
+      datetimeMock.generateDates.mockReturnValue([firstDate, secondDate]);
+      ephemerisAggMock.getEphemerides.mockReturnValue(emptyEphemerides);
+      datetimeMock.generateMinutes
+        .mockReturnValueOnce([firstMinute])
+        .mockReturnValueOnce([secondDayMinute]);
+      aspectsMock.seed.mockReturnValueOnce({
+        aspectBodies: seededAspectBodies,
+        events: [seededEvent],
+      });
+      aspectsMock.detect.mockReturnValue({ aspectBodies: [], events: [] });
+      for (const subMock of [
+        eclipsesMock,
+        retrogradesMock,
+        ingressesMock,
+        dailyCyclesMock,
+        monthlyLunarCycleMock,
+        annualSolarCycleMock,
+        twilightsMock,
+      ]) {
+        subMock.detect.mockReturnValue([]);
+      }
+
+      const result = service.detect(baseInput);
+
+      expect(aspectsMock.seed).toHaveBeenCalledExactlyOnceWith({
+        coordinateEphemerisByBody: emptyEphemerides.coordinateEphemerisByBody,
+        minute: firstMinute,
+      });
+      expect(aspectsMock.detect).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          minute: firstMinute,
+          previousAspectBodies: seededAspectBodies,
+        }),
+      );
+      expect(result).toStrictEqual([seededEvent]);
+    });
+
+    it("runs only the detector families the caller names", () => {
+      const date = moment.tz("2025-06-15", "America/New_York");
+      const minute = date.clone().startOf("day");
+      const ingressEvent = {
+        categories: ["Astronomy", "Astrology", "Ingress"],
+        description: "Sun enters Gemini",
+        end: minute,
+        start: minute,
+        summary: "ingress",
+      } satisfies DetectedCalendarEvent;
+
+      datetimeMock.generateDates.mockReturnValue([date]);
+      datetimeMock.generateMinutes.mockReturnValue([minute]);
+      ephemerisAggMock.getEphemerides.mockReturnValue(emptyEphemerides);
+      ingressesMock.detect.mockReturnValue([ingressEvent]);
+
+      const result = service.detect(baseInput, {
+        families: new Set(["ingresses"]),
+      });
+
+      expect(result).toStrictEqual([ingressEvent]);
+      expect(aspectsMock.seed).not.toHaveBeenCalled();
+      expect(aspectsMock.detect).not.toHaveBeenCalled();
+
+      for (const skipped of [
+        eclipsesMock,
+        retrogradesMock,
+        dailyCyclesMock,
+        monthlyLunarCycleMock,
+        annualSolarCycleMock,
+        twilightsMock,
+      ]) {
+        expect(skipped.detect).not.toHaveBeenCalled();
+      }
+
+      expect(monthlyLunarCycleMock.detectApsides).not.toHaveBeenCalled();
+      expect(phasesMock.getMartianPhaseEvents).not.toHaveBeenCalled();
     });
 
     it("logs a completion summary with the total event count", () => {

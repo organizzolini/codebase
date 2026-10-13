@@ -7,9 +7,9 @@
 # It steps aside, as main-tip.sh describes, both before semantic-release and
 # after a failed one. Before matters because semantic-release, finding `main`
 # ahead of it, skips the release and exits 0, and tag-packages.sh would then
-# commit the package versions on a stale commit. After matters because the
-# release commit runs the pre-commit hook for minutes before it pushes, and a
-# merge in that window gets the push rejected. Any other failure still fails.
+# commit the package versions on a stale commit. After matters because
+# semantic-release takes minutes before it pushes, and a merge in that window
+# gets the push rejected. Any other failure still fails.
 #
 # Inputs, all from the environment:
 #   GITHUB_TOKEN  a token allowed to push to `main`, create tags and releases
@@ -21,18 +21,6 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/main-tip.sh"
 
-# Prints, in a collapsed group, what the release commit's pre-commit hook ran.
-# semantic-release commits without showing the hook's output, which is most of
-# this step's time, and the hook leaves a copy in `last-lint-staged-output.log`.
-# A run that made no release commit has no copy, since checkout starts clean.
-print_hook_output() {
-  if [[ -f last-lint-staged-output.log ]]; then
-    echo "::group::🪝 The release commit's pre-commit hook"
-    cat last-lint-staged-output.log
-    echo "::endgroup::"
-  fi
-}
-
 base="$(git rev-parse HEAD)"
 
 if main_has_moved_from "${base}"; then
@@ -40,9 +28,14 @@ if main_has_moved_from "${base}"; then
   exit 0
 fi
 
+# The release commit and its push skip Husky's hooks. Every task in the
+# pre-commit hook only checks, and the merge queue already ran those checks on
+# this same content, so repeating them here only costs time: over 20 minutes
+# for a release that bumps most of the packages, which outran the job's
+# timeout. The release commit's content is a version, a changelog and a
+# lockfile written by Nx, and the push to `main` runs the full checks again.
 status=0
-pnpm semantic-release || status=$?
-print_hook_output
+HUSKY=0 pnpm semantic-release || status=$?
 if [[ "${status}" -eq 0 ]]; then
   exit 0
 fi

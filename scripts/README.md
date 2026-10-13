@@ -119,7 +119,7 @@ The devcontainer handles equivalent setup automatically.
 
 **What it does:**
 
-- Creates `.env` from `.env.default` for root, lexico, and caelundas (if not already present)
+- Creates `.env` from every `.env.default` in the repository (excluding `configuration/conformetry-templates/`), skipping any `.env` that already exists
 - Appends `LOCAL_WORKSPACE_FOLDER=$(pwd)` to root `.env` for docker-compose volume mounts
 - Sources `.env` file and exports environment variables
 
@@ -426,8 +426,9 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 | ------ | ------- | ------------ |
 | `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
 | `run-affected.sh` | `run-affected` | Runs `nx affected` for `TARGET` over `--base`/`--head`, or over `--stdin` with spelling files dropped when the change set has any and `INCLUDE_SPELLING` is not `true` |
+| `verify-publishable-packages.sh` | the 📦 Publishable Packages leg | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
-Both read everything from the environment, so either can be run locally. With
+All three read everything from the environment, so any of them can be run locally. With
 `pnpm` stubbed to print what it would have run:
 
 ```bash
@@ -707,8 +708,8 @@ version and the packages' versions, so a release adds one commit to `main`.
 
 | Script | Step | What it does |
 | ------ | ---- | ------------ |
-| `version-packages.sh` | 🏷️ Version Packages | Runs `nx release --skip-publish`, which versions each package and writes its `CHANGELOG.md` without committing, for semantic-release's release commit to carry |
-| `tag-packages.sh` | 🔖 Tag Packages | Commits any package versions semantic-release left uncommitted because the codebase had no release, then tags each newly versioned package `<project>@<version>` on `HEAD` and pushes the tags 6 at a time, since GitHub rejects a push that updates more than 6 refs |
+| `version-packages.sh` | 🏷️ Version Packages | Runs `tag-packages.sh` to push any tags an earlier run left missing, then runs `nx release --skip-publish`, which versions each package and writes its `CHANGELOG.md` without committing, for semantic-release's release commit to carry |
+| `tag-packages.sh` | 🔖 Tag Packages | Commits any package versions semantic-release left uncommitted because the codebase had no release, then tags each newly versioned package `<project>@<version>` on `HEAD` and pushes the tags 6 at a time, since GitHub rejects a push that updates more than 6 refs, retrying a rejected push |
 | `publish-packages.sh` | 📦 Publish Packages | Publishes every release-group package not yet on npm, with provenance, then mirrors each package to GitHub Packages as `@<owner>/<project>` |
 | `link-packages.sh` | 🔗 Link Packages | Creates a storage record on the organization's Linked artifacts page for every published npm version that has none, and lists the versions this run published for 🔏 Attest Packages |
 | `tag-codebase.sh` | 🔖 Tag Codebase | Runs semantic-release, stepping aside instead when `main` moved before it started or while its release commit was being made |

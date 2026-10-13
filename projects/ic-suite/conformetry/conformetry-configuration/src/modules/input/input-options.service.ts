@@ -1,13 +1,9 @@
-import path from "node:path";
-
 import { Injectable } from "@nestjs/common";
 import lodash from "lodash";
 
 import {
-  DEFAULT_GENERATED_OUTPUT_DIRECTORY,
   GENERATE_COMMAND_TOKEN,
   RESERVED_GENERATOR_OPTION_NAMES,
-  TARGET_DIRECTORY_OPTION_KEYS,
 } from "./input.constants";
 
 import type { JsonSchemaDefinition } from "../configuration/configuration.types";
@@ -164,40 +160,5 @@ export class InputOptionsService {
     }
 
     return normalized;
-  }
-
-  /**
-   * Resolves where generated files should land: an explicit output option, a
-   * resolved project root, or a directory named after the generator.
-   */
-  public resolveTargetDirectoryPath(args: {
-    defaultGeneratedOutputDirectory?: string;
-    generatorName: string;
-    options: Record<string, unknown>;
-    resolveProjectRootPath?: (projectName: string) => string | undefined;
-  }): string {
-    for (const optionKey of TARGET_DIRECTORY_OPTION_KEYS) {
-      const optionValue = args.options[optionKey];
-
-      if (typeof optionValue === "string") {
-        return optionValue;
-      }
-    }
-
-    const projectName = args.options["projectName"] ?? args.options["project"];
-
-    if (typeof projectName === "string") {
-      const projectRootPath = args.resolveProjectRootPath?.(projectName);
-
-      if (typeof projectRootPath === "string") {
-        return projectRootPath;
-      }
-    }
-
-    return path.join(
-      args.defaultGeneratedOutputDirectory ??
-        DEFAULT_GENERATED_OUTPUT_DIRECTORY,
-      args.generatorName,
-    );
   }
 }

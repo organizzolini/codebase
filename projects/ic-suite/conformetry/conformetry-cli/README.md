@@ -68,7 +68,7 @@ Renders one template folder into a target directory.
 | ---- | ------- |
 | `--template [name]` | Which template from the registry to render. Asked for when omitted |
 | `--config [path]` | Configuration file to read. Defaults to `configuration/conformetry.config.ts` |
-| `--directory [path]` | Where to write the rendered files |
+| `--directory [path]` | Where to write the rendered files. Required: the run is refused without it |
 
 A template's own inputs are passed as flags alongside these:
 

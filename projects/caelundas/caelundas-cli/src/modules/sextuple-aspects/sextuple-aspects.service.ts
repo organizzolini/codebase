@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import _ from "lodash";
 
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { MathService } from "../math/math.service";
+import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
 import { SextupleAspectsComposerService } from "./sextuple-aspects-composer.service";
 
@@ -23,6 +23,7 @@ export class SextupleAspectsService {
     private readonly sextupleAspectsComposerService: SextupleAspectsComposerService,
     private readonly mathService: MathService,
     private readonly compoundPhaseService: CompoundPhaseService,
+    private readonly progressiveUtilitiesService: ProgressiveUtilitiesService,
   ) {}
 
   // 🔐 Private Fields
@@ -42,8 +43,11 @@ export class SextupleAspectsService {
     const trines = aspectsByType.get("trine") || [];
     const sextiles = aspectsByType.get("sextile") || [];
     if (trines.length < 6 || sextiles.length < 6) return [];
-    const bodies =
-      this.sextupleAspectsComposerService.collectTrineBodies(trines);
+    const bodies = this.pruneHexagramCandidates(
+      this.sextupleAspectsComposerService.collectTrineBodies(trines),
+      trines,
+      sextiles,
+    );
     if (bodies.length < 6) return [];
     return this.processHexagramCombinations({
       combinations: this.mathService.getCombinations(bodies, 6),
@@ -134,40 +138,69 @@ export class SextupleAspectsService {
     const groupedEvents =
       this.sextupleAspectsComposerService.groupSextupleEventsByKey(events);
 
-    for (const group of Object.values(groupedEvents)) {
-      const sortedEvents = _.sortBy(group, "start");
-
-      for (let index = 0; index < sortedEvents.length; index++) {
-        const currentEvent = sortedEvents[index];
-
-        if (!currentEvent?.categories.includes("Forming")) {
-          continue;
-        }
-
-        for (
-          let secondIndex = index + 1;
-          secondIndex < sortedEvents.length;
-          secondIndex++
-        ) {
-          const potentialDissolvingEvent = sortedEvents[secondIndex];
-
-          if (!potentialDissolvingEvent) {
-            continue;
-          }
-
-          if (potentialDissolvingEvent.categories.includes("Dissolving")) {
-            progressiveEvents.push(
-              this.sextupleAspectsComposerService.buildProgressiveSextupleEvent(
-                currentEvent,
-                potentialDissolvingEvent,
-              ),
-            );
-            break;
-          }
-        }
+    for (const [groupKey, group] of Object.entries(groupedEvents)) {
+      const pairs = this.progressiveUtilitiesService.pairCompoundBoundaries(
+        group,
+        `Sextuple Aspect ${groupKey}`,
+      );
+      for (const [forming, dissolving] of pairs) {
+        progressiveEvents.push(
+          this.sextupleAspectsComposerService.buildProgressiveSextupleEvent(
+            forming,
+            dissolving,
+          ),
+        );
       }
     }
 
     return progressiveEvents;
+  }
+
+  /**
+   * Drops bodies that cannot belong to any hexagram.
+   *
+   * A member of a hexagram trines two other members and sextiles two others,
+   * so a body with fewer than two of either among the remaining candidates is
+   * out. Removing one can strand its neighbors, so this repeats until none
+   * is left to remove. It only narrows the set the six-body combinations are
+   * drawn from; it never rules out a set that is a hexagram.
+   */
+  pruneHexagramCandidates(
+    bodies: Body[],
+    trines: AspectBodies[],
+    sextiles: AspectBodies[],
+  ): Body[] {
+    let candidates = new Set(bodies);
+    let pruned = true;
+    while (pruned) {
+      const counts = new Map<Body, { sextiles: Set<Body>; trines: Set<Body> }>(
+        [...candidates].map((body) => [
+          body,
+          { sextiles: new Set<Body>(), trines: new Set<Body>() },
+        ]),
+      );
+      for (const [edges, key] of [
+        [trines, "trines"],
+        [sextiles, "sextiles"],
+      ] as const) {
+        for (const { bodies: pair } of edges) {
+          counts.get(pair[0])?.[key].add(pair[1]);
+          counts.get(pair[1])?.[key].add(pair[0]);
+        }
+      }
+      const kept = new Set(
+        [...candidates].filter((body) => {
+          const count = counts.get(body);
+          return (
+            count !== undefined &&
+            count.trines.size >= 2 &&
+            count.sextiles.size >= 2
+          );
+        }),
+      );
+      pruned = kept.size < candidates.size;
+      candidates = kept;
+    }
+    return [...candidates];
   }
 }

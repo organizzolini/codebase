@@ -8,6 +8,7 @@ import { LoggerService } from "@codebase/logging";
 
 import { ProgressiveAspectService } from "./progressive-aspect.service";
 
+import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 describe(ProgressiveAspectService, () => {
@@ -32,6 +33,42 @@ describe(ProgressiveAspectService, () => {
 
   it("is defined", () => {
     expect(service).toBeDefined();
+  });
+
+  it("groups every event under a fixed key when one is supplied", () => {
+    const makeEvent = (category: string): DetectedCalendarEvent => ({
+      categories: ["Aspect", category],
+      description: category,
+      end: moment.utc("2024-03-21T00:00:00.000Z"),
+      start: moment.utc("2024-03-21T00:00:00.000Z"),
+      summary: category,
+    });
+    const pairProgressiveEvents = vi
+      .fn<
+        (
+          beginnings: DetectedCalendarEvent[],
+          endings: DetectedCalendarEvent[],
+          label: string,
+        ) => [DetectedCalendarEvent, DetectedCalendarEvent][]
+      >()
+      .mockReturnValue([]);
+
+    service.buildSimpleAspectFamilyProgressiveEvents({
+      aspectCategory: "Aspect",
+      categoryLabel: "Simple",
+      events: [makeEvent("Forming"), makeEvent("Dissolving")],
+      fixedAspectGroupKey: "fixed",
+      getAspectGroupKey: (event) => event.summary,
+      getProgressiveEvent: (beginning) => beginning,
+      pairProgressiveEvents,
+    });
+
+    expect(pairProgressiveEvents).toHaveBeenCalledTimes(1);
+    expect(pairProgressiveEvents).toHaveBeenCalledWith(
+      [expect.objectContaining({ summary: "Forming" })],
+      [expect.objectContaining({ summary: "Dissolving" })],
+      "Simple fixed",
+    );
   });
 
   it("should build a stable group key", () => {
@@ -162,6 +199,33 @@ describe(ProgressiveAspectService, () => {
     });
 
     expect(events).toHaveLength(1);
+  });
+
+  it("warns instead of silently skipping a group with an empty key", () => {
+    const event = {
+      categories: ["Astronomy", "Major Aspect", "Forming"],
+      description: "bodies with no match",
+      end: moment.utc("2024-03-21T12:00:00.000Z"),
+      start: moment.utc("2024-03-21T12:00:00.000Z"),
+      summary: "bodies with no match",
+    };
+    mockLoggerService.warn.mockClear();
+
+    const events = service.buildProgressiveAspectEvents({
+      aspectCategory: "Major Aspect",
+      categoryLabel: "major aspect",
+      events: [event],
+      getAspectGroupKey: () => "",
+      getProgressiveEvent: (beginning) => beginning,
+      pairProgressiveEvents: () => [],
+    });
+
+    expect(events).toHaveLength(0);
+    expect(mockLoggerService.warn).toHaveBeenCalledWith(
+      expect.stringContaining("Skipping"),
+      undefined,
+      expect.objectContaining({ aspectCategory: "Major Aspect", events: 1 }),
+    );
   });
 
   describe("extractTypedAspectPartsOrThrow", () => {

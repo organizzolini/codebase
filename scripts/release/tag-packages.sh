@@ -11,12 +11,15 @@
 # A package is newly versioned when its `<project>@<version>` tag, the pattern
 # nx.json's `release.releaseTag` sets, does not exist yet. Checkout fetches
 # every tag, so only this release's are missing, and a re-run creates nothing
-# twice.
+# twice. A new package's hand-written `0.0.0` is never tagged as a release: it
+# has not been released, and its first release is still to come. It does get
+# a baseline tag first, so that release has a starting point: tag_baselines.
 #
 # GitHub rejects any push to this repository that updates more than 6 refs,
 # and a first release tags 20 or more packages, so the tags go 6 at a time. A
-# batch that fails leaves `main` already carrying the versions, and the
-# missing tags can be pushed from that commit without versioning again.
+# rejected batch is retried, since GitHub rejected one of v2.35.0's moments
+# after accepting the batch before it. Tags still missing when the run ends are
+# pushed by the next run, which runs this script before versioning.
 #
 # Inputs, all from the environment:
 #   GIT_COMMITTER_NAME, GIT_COMMITTER_EMAIL
@@ -33,6 +36,11 @@ source "$(dirname "${BASH_SOURCE[0]}")/main-tip.sh"
 
 # The most refs GitHub accepts in one push to this repository.
 readonly REFS_PER_PUSH=6
+
+# How many times a rejected batch of tags is pushed in all, and the seconds
+# between attempts, which tests can shorten.
+readonly PUSH_ATTEMPTS=4
+readonly PUSH_RETRY_DELAY="${PUSH_RETRY_DELAY:-20}"
 
 # Prints every file version-packages.sh may have written that exists. Globs
 # rather than git path patterns, which fail the whole `git add` when one
@@ -57,14 +65,44 @@ commit_leftover_versions() {
   fi
   echo "🏷️ No codebase release committed the package versions; committing them"
   base="$(git rev-parse HEAD)"
-  git commit --message "chore(release): 🔖 tag packages"
-  if ! git push origin HEAD:refs/heads/main; then
+  HUSKY=0 git commit --message "chore(release): 🔖 tag packages"
+  if ! HUSKY=0 git push origin HEAD:refs/heads/main; then
     if main_has_moved_from "${base}"; then
       step_aside_from "${base}"
       exit 0
     fi
     exit 1
   fi
+}
+
+# Gives each never-tagged release-group package a `<project>@0.0.0` baseline on
+# the commit before the one that added it, adding each tag it makes to `tags`.
+#
+# Nx writes a changelog from a package's previous tag and stops when it has
+# none. It reads the baseline as the current version, so the first release
+# versions every commit that touched the package, the one that added it
+# included. The baseline is an anchor, not a release: nothing is published from
+# it, and the first real tag follows on the release commit.
+#
+# A package with any tag, or a version other than `0.0.0`, is left alone, so a
+# released package that lost its tag is never restarted from its first commit;
+# tag_new_versions tags it at HEAD instead.
+tag_baselines() {
+  local group project root added parent
+  group="$(release_group)"
+  while read -r project root; do
+    if [[ "$(jq -r .version "${root}/package.json")" != "0.0.0" ]] ||
+      [[ -n "$(git tag --list "${project}@*")" ]]; then
+      continue
+    fi
+    added="$(git log --diff-filter=A --format=%H -- "${root}/package.json" | tail -n 1)"
+    if [[ -z "${added}" ]] || ! parent="$(git rev-parse --verify --quiet "${added}^")"; then
+      echo "❌ Cannot find the commit before ${project} was added" >&2
+      exit 1
+    fi
+    git tag --annotate "${project}@0.0.0" "${parent}" --message "${project}@0.0.0"
+    tags+=("${project}@0.0.0")
+  done <<<"${group}"
 }
 
 # Tags HEAD for every release-group package whose version has no tag yet,
@@ -74,7 +112,7 @@ tag_new_versions() {
   group="$(release_group)"
   while read -r project root; do
     tag="${project}@$(jq -r .version "${root}/package.json")"
-    if git rev-parse --quiet --verify "refs/tags/${tag}" >/dev/null; then
+    if [[ "${tag}" == *@0.0.0 ]] || git rev-parse --quiet --verify "refs/tags/${tag}" >/dev/null; then
       continue
     fi
     git tag --annotate "${tag}" --message "${tag}"
@@ -82,9 +120,22 @@ tag_new_versions() {
   done <<<"${group}"
 }
 
+# Pushes the given refs, trying again after a rejection, up to PUSH_ATTEMPTS
+# times in all.
+push_with_retries() {
+  local attempt
+  for ((attempt = 1; attempt < PUSH_ATTEMPTS; attempt++)); do
+    git push origin "$@" && return 0
+    echo "🔁 Push rejected; trying again in ${PUSH_RETRY_DELAY}s"
+    sleep "${PUSH_RETRY_DELAY}"
+  done
+  git push origin "$@"
+}
+
 commit_leftover_versions
 
 tags=()
+tag_baselines
 tag_new_versions
 echo "🏷️ Pushing ${#tags[@]} package tags, ${REFS_PER_PUSH} at a time"
 
@@ -93,5 +144,5 @@ for ((start = 0; start < ${#tags[@]}; start += REFS_PER_PUSH)); do
   for tag in "${tags[@]:start:REFS_PER_PUSH}"; do
     refs+=("refs/tags/${tag}")
   done
-  git push origin "${refs[@]}"
+  push_with_retries "${refs[@]}"
 done

@@ -7,7 +7,9 @@ import {
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { Injectable } from "@nestjs/common";
 
-import type { GraphRunContext } from "./run-context.types";
+import { emptySelectionError } from "./run-context.constants";
+
+import type { GraphRunContext, UnmatchedSelection } from "./run-context.types";
 import type {
   CodependixGraphType,
   CodependixProjectConfiguration,
@@ -15,7 +17,7 @@ import type {
   ResolvedCodependixConfiguration,
 } from "@codependix/configuration";
 import type { CodependixRunMode } from "@codependix/core";
-import type { NxProject } from "@codependix/nx-projects";
+import type { NxProject, NxProjectGraph } from "@codependix/nx-projects";
 
 /**
  * Resolves everything one run reads, once, before any pass runs.
@@ -42,6 +44,30 @@ export class RunContextService {
   // 🔏 Private Methods
 
   /**
+   * Whether the selection a configuration carries claims one project.
+   *
+   * The one place a project is read into the shape `isProjectSelected`
+   * matches against — its name, its root relative to the workspace, and its
+   * tags — so the run's selection and the probe for an entry that matched
+   * nothing cannot disagree about what a pattern matches.
+   */
+  private isSelectedBy(args: {
+    configuration: ResolvedCodependixConfiguration;
+    project: NxProject;
+    workingDirectory: string;
+  }): boolean {
+    return this.configurationService.isProjectSelected({
+      configuration: args.configuration,
+      projectName: args.project.name,
+      projectRoot: path.relative(
+        args.workingDirectory,
+        args.project.absoluteRoot,
+      ),
+      projectTags: args.project.tags,
+    });
+  }
+
+  /**
    * Loads every project's own `codependix.config.ts`, keyed by project name.
    *
    * Loaded once per run, up front, rather than once per graph-type pass: a
@@ -65,6 +91,37 @@ export class RunContextService {
     );
 
     return new Map(entries);
+  }
+
+  /**
+   * Widens the selected projects to the set every boundary graph is built
+   * over: their dependency closure, or the selection alone under
+   * `--no-dependencies`.
+   *
+   * Only the selection is judged. The rest of the closure is built so a
+   * finding the selected projects inherit from a dependency can be reported
+   * against it as a note, and so an Nx edge leaving the selection is still
+   * drawn. With no selection every project is selected, and the closure of
+   * every project is every project.
+   */
+  private resolveBuildProjects(args: {
+    configuration: ResolvedCodependixConfiguration;
+    graph: NxProjectGraph;
+    projects: NxProject[];
+    selectedProjects: NxProject[];
+  }): NxProject[] {
+    if (!args.configuration.selection.dependencies) {
+      return args.selectedProjects;
+    }
+
+    const closure = new Set(
+      this.neighborhoodService.resolveDependencyClosure(
+        args.graph,
+        args.selectedProjects.map((project) => project.name),
+      ),
+    );
+
+    return args.projects.filter((project) => closure.has(project.name));
   }
 
   /**
@@ -103,6 +160,36 @@ export class RunContextService {
   }
 
   /**
+   * Resolves the two project sets a run acts on: the selection it judges,
+   * and the build set every boundary graph is drawn over.
+   *
+   * A `--projects`/`--tags` selection matching no project is refused here,
+   * before any pass runs — see `emptySelectionError`. No selection at all
+   * selects every project, so only a named one can come back empty.
+   */
+  private resolveProjectSets(args: {
+    configuration: ResolvedCodependixConfiguration;
+    graph: NxProjectGraph;
+    projects: NxProject[];
+    workingDirectory: string;
+  }): Pick<GraphRunContext, "buildProjects" | "selectedProjects"> {
+    const { selection } = args.configuration;
+    const selectedProjects = this.selectProjects(args);
+
+    if (
+      selectedProjects.length === 0 &&
+      selection.projects.length + selection.tags.length > 0
+    ) {
+      throw emptySelectionError(selection);
+    }
+
+    return {
+      buildProjects: this.resolveBuildProjects({ ...args, selectedProjects }),
+      selectedProjects,
+    };
+  }
+
+  /**
    * Narrows every project to the set `--projects` and `--tags` named.
    *
    * A run naming neither selects every project, which is what keeps the
@@ -117,11 +204,10 @@ export class RunContextService {
     workingDirectory: string;
   }): NxProject[] {
     return args.projects.filter((project) =>
-      this.configurationService.isProjectSelected({
+      this.isSelectedBy({
         configuration: args.configuration,
-        projectName: project.name,
-        projectRoot: path.relative(args.workingDirectory, project.absoluteRoot),
-        projectTags: project.tags,
+        project,
+        workingDirectory: args.workingDirectory,
       }),
     );
   }
@@ -146,7 +232,11 @@ export class RunContextService {
       configurationPath: options.config,
       overrides: { exclude: options.exclude, include: options.include },
       searchDirectory: workingDirectory,
-      selection: { projects: options.projects, tags: options.tags },
+      selection: {
+        dependencies: options.dependencies,
+        projects: options.projects,
+        tags: options.tags,
+      },
     });
     const graph = await this.neighborhoodService.readProjectGraph(
       this.resolveProjectGraphPath(
@@ -162,18 +252,62 @@ export class RunContextService {
       await this.loadProjectConfigurations(projects);
 
     return {
+      ...this.resolveProjectSets({
+        configuration,
+        graph,
+        projects,
+        workingDirectory,
+      }),
       configuration,
       enabledGraphTypes: this.resolveEnabledGraphTypes(options),
       graph,
       mode,
       projectConfigurations,
       projects,
-      selectedProjects: this.selectProjects({
-        configuration,
-        projects,
-        workingDirectory,
-      }),
       workingDirectory,
+    };
+  }
+
+  /**
+   * The `--projects` patterns and `--tags` tags that matched no project.
+   *
+   * Each entry is probed alone, with the selection narrowed to it, so the
+   * answer is exactly what that entry would have selected had it been the
+   * only one given. Only meaningful for a context `build` returned: a
+   * selection in which *nothing* matched never gets that far, since `build`
+   * refuses it. What is left is the partial case — a misspelled name beside
+   * a correct one — which the run silently narrows past, judging fewer
+   * projects than were asked for.
+   */
+  findUnmatchedSelection(
+    context: Pick<
+      GraphRunContext,
+      "configuration" | "projects" | "workingDirectory"
+    >,
+  ): UnmatchedSelection {
+    const { configuration, projects, workingDirectory } = context;
+    const matches = (selection: {
+      projects: string[];
+      tags: string[];
+    }): boolean =>
+      projects.some((project) =>
+        this.isSelectedBy({
+          configuration: {
+            ...configuration,
+            selection: { ...configuration.selection, ...selection },
+          },
+          project,
+          workingDirectory,
+        }),
+      );
+
+    return {
+      projects: configuration.selection.projects.filter(
+        (entry) => !matches({ projects: [entry], tags: [] }),
+      ),
+      tags: configuration.selection.tags.filter(
+        (tag) => !matches({ projects: [], tags: [tag] }),
+      ),
     };
   }
 }

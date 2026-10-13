@@ -1,4 +1,8 @@
-import { ConfigurationService, InputError } from "@conformetry/configuration";
+import {
+  ConfigurationService,
+  InputError,
+  missingDirectoryError,
+} from "@conformetry/configuration";
 import { GenerationService } from "@conformetry/generation";
 import { Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
@@ -11,10 +15,7 @@ import {
   unknownTemplateError,
 } from "../../constants.js";
 
-import {
-  DEFAULT_GENERATED_DIRECTORY,
-  missingTemplateError,
-} from "./generate.constants";
+import { missingTemplateError } from "./generate.constants";
 
 import type { GenerateCommandOptions } from "./generate.types";
 import type {
@@ -82,21 +83,9 @@ export class GenerateCommand extends CommandRunner {
       template: templateName,
     });
 
-    const definition = configuration.find((generator) => {
-      return generator.name === templateName;
-    });
+    const definition = this.requireDefinition(configuration, templateName);
 
-    if (definition === undefined) {
-      this.logger.error("🚫 Rejected an unknown template", undefined, {
-        template: templateName,
-      });
-      throw unknownTemplateError({
-        availableTemplateNames: configuration.map(
-          (generator) => generator.name,
-        ),
-        templateName,
-      });
-    }
+    const directory = this.requireDirectory(options, definition.name);
 
     // Every input is required, which is what `conformetry-nx` has always told
     // Nx about the same generators: a conformetry generator substitutes each
@@ -112,15 +101,14 @@ export class GenerateCommand extends CommandRunner {
       rawArguments,
       schema,
     });
+
     const result = await this.generationService.runGenerator({
       definition: {
         name: definition.name,
         templateDirectoryPath: definition.templatePath,
       },
       inputs,
-      instancePath:
-        options.directory ??
-        `${DEFAULT_GENERATED_DIRECTORY}/${definition.name}`,
+      instancePath: directory,
     });
 
     // The file list is what the caller asked for, so it goes to stdout; the
@@ -169,6 +157,52 @@ export class GenerateCommand extends CommandRunner {
       });
       throw removedGeneratorOptionError();
     }
+  }
+
+  /** The configured template of that name, or a refusal listing the real ones. */
+  private requireDefinition(
+    configuration: ConformetryConfiguration,
+    templateName: string,
+  ): ConformetryConfiguration[number] {
+    const definition = configuration.find((generator) => {
+      return generator.name === templateName;
+    });
+
+    if (definition === undefined) {
+      this.logger.error("🚫 Rejected an unknown template", undefined, {
+        template: templateName,
+      });
+      throw unknownTemplateError({
+        availableTemplateNames: configuration.map(
+          (generator) => generator.name,
+        ),
+        templateName,
+      });
+    }
+
+    return definition;
+  }
+
+  /**
+   * The directory to write into, or a refusal when the caller named none.
+   *
+   * Required, unlike on the Nx host: nothing here can locate a project, so a
+   * missing flag would otherwise write somewhere the caller never chose. It is
+   * checked before any input is asked for, so nobody answers prompts for a
+   * run that was never going to happen.
+   */
+  private requireDirectory(
+    options: GenerateCommandOptions,
+    templateName: string,
+  ): string {
+    if (options.directory === undefined) {
+      this.logger.error("🚫 Rejected a run with no directory", undefined, {
+        template: templateName,
+      });
+      throw missingDirectoryError({ generatorName: templateName });
+    }
+
+    return options.directory;
   }
 
   /**

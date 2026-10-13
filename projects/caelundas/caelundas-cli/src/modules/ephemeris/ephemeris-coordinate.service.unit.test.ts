@@ -1,7 +1,13 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { calc, type nod_aps_ut } from "sweph";
+import {
+  calc,
+  constants,
+  type nod_aps_ut,
+  nod_aps_ut as nodApsUt,
+  set_topo,
+} from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 vi.mock("sweph", async (importOriginal) => {
@@ -24,6 +30,7 @@ vi.mock("sweph", async (importOriginal) => {
       error: "",
       flag: 258,
     }),
+    set_topo: vi.fn<typeof set_topo>(),
   };
 });
 
@@ -49,6 +56,7 @@ import { MathService } from "../math/math.service";
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
 import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
+import { SWISS_EPHEMERIS_FLAGS } from "./ephemeris.constants";
 
 describe(EphemerisCoordinateService, () => {
   const constantsService = {
@@ -125,5 +133,99 @@ describe(EphemerisCoordinateService, () => {
         start: moment.utc("2024-03-21T00:00:00.000Z"),
       }),
     ).toThrow("calc failed for south lunar node: calc failed");
+  });
+
+  describe("computeNodeBodyMinutes", () => {
+    const instant = moment.utc("2024-03-21T00:00:00.000Z");
+
+    it("reads the lunar perigee from the osculating perihelion", () => {
+      const result = service.computeNodeBodyMinutes({
+        body: "lunar perigee",
+        end: instant,
+        start: instant,
+      });
+
+      expect(result[instant.toISOString()]).toStrictEqual({
+        latitude: 0,
+        longitude: 90,
+      });
+    });
+
+    it("throws when the lunar perigee calculation fails", () => {
+      vi.mocked(nodApsUt).mockReturnValueOnce({
+        data: { perihelion: [0, 0, 0, 0, 0, 0] } as never,
+        error: "nod failed",
+        flag: -1,
+      });
+
+      expect(() =>
+        service.computeNodeBodyMinutes({
+          body: "lunar perigee",
+          end: instant,
+          start: instant,
+        }),
+      ).toThrow("nod_aps_ut failed for lunar perigee: nod failed");
+    });
+
+    it("offsets the south lunar node by 180 degrees", () => {
+      const result = service.computeNodeBodyMinutes({
+        body: "south lunar node",
+        end: instant,
+        start: instant,
+      });
+
+      expect(result[instant.toISOString()]?.longitude).toBe(300.5);
+    });
+
+    it("leaves other nodes at their computed longitude", () => {
+      const result = service.computeNodeBodyMinutes({
+        body: "lunar apogee",
+        end: instant,
+        start: instant,
+      });
+
+      expect(result[instant.toISOString()]?.longitude).toBe(120.5);
+    });
+  });
+
+  describe("getTopocentricBodyCoordinates", () => {
+    it("computes the position seen from the observer, not from Earth's center", () => {
+      const result = service.getTopocentricBodyCoordinates({
+        body: "moon",
+        julianDayEphemerisTime: 2_460_395.5,
+        observerLatitude: 39.949_309,
+        observerLongitude: -75.171_69,
+      });
+
+      expect(set_topo).toHaveBeenCalledWith(-75.171_69, 39.949_309, 0);
+      expect(calc).toHaveBeenLastCalledWith(
+        2_460_395.5,
+        0,
+        SWISS_EPHEMERIS_FLAGS | constants.SEFLG_TOPOCTR,
+      );
+      expect(result).toStrictEqual({
+        distance: 1.01,
+        distanceSpeed: 0,
+        latitude: -1.2,
+        longitude: 120.5,
+      });
+    });
+
+    it("throws when the topocentric calculation fails", () => {
+      vi.mocked(calc).mockReturnValueOnce({
+        data: [0, 0, 0, 0, 0, 0],
+        error: "calc failed",
+        flag: -1,
+      } as never);
+
+      expect(() =>
+        service.getTopocentricBodyCoordinates({
+          body: "moon",
+          julianDayEphemerisTime: 2_460_395.5,
+          observerLatitude: 39.949_309,
+          observerLongitude: -75.171_69,
+        }),
+      ).toThrow("calc failed for moon: calc failed");
+    });
   });
 });

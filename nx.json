@@ -89,6 +89,13 @@
         "gateTargetName": "callidescope-gate"
       },
       "plugin": "@callidescope/nx"
+    },
+    {
+      "options": {
+        "configurationPath": "configuration/codependix.config.ts",
+        "gateTargetName": "codependix-gate"
+      },
+      "plugin": "@codependix/nx"
     }
   ],
   "pluginsConfig": {
@@ -193,6 +200,20 @@
           "projects": ["tag:language:python", "tag:language:typescript"]
         },
         "inputs": ["^production", "dependency-versions", "production"]
+      },
+      {
+        "cache": true,
+        "dependsOn": ["^build"],
+        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/vite.library.config.ts`, which belongs to the root project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
+        "filter": {
+          "projects": ["projects/ic-suite/*/*"]
+        },
+        "inputs": [
+          "^production",
+          "{workspaceRoot}/configuration/vite.library.config.ts",
+          "dependency-versions",
+          "production"
+        ]
       }
     ],
     "build-projects": {
@@ -266,6 +287,7 @@
             "codependix-examples",
             "codependix-file-imports",
             "codependix-nestjs-modules",
+            "codependix-nx",
             "codependix-nx-projects",
             "codependix-output",
             "codometer-agents",
@@ -321,14 +343,7 @@
         "description": "The `projects/<domain>/` override of the default `codometer` entry above: every field is identical except the two relative paths, corrected from two directories below the workspace root to three. A full entry for the same reason as the `projects/ic-suite/<suite>/` one: Nx replaces a matching targetDefaults array entry wholesale rather than merging it.",
         "executor": "nx:run-commands",
         "filter": {
-          "projects": [
-            "caelundas-cli",
-            "lexico-api",
-            "lexico-cli",
-            "lexico-entities",
-            "lexico-web",
-            "meanderaw-cli"
-          ]
+          "projects": ["projects/*/*"]
         },
         "inputs": [
           "!{projectRoot}/codometer-report.json",
@@ -560,16 +575,13 @@
       "dependsOn": [
         "callidescope-gate",
         "check-catalog-manifests",
-        {
-          "projects": ["codebase"],
-          "target": "codependix"
-        },
         "check-lockfile",
         "check-readme-projects",
+        "codependix-gate",
         "conformetry-validate",
         "sync-vscode-extensions"
       ],
-      "description": "Aggregator for guard-code. `callidescope-gate` is callidescope's inferred per-project call-stack gate; it has no configurations, so the one `guard-code` is run with falls through to its defaults. `codependix` is pinned to the `codebase` project so every project's guard reaches the one workspace-wide boundary check, which Nx runs once however many projects are affected; `check` forwards to its `--check boundaries`.",
+      "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `codebase:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
       "executor": "nx:noop"
     },
     "knip": [

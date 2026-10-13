@@ -3,16 +3,76 @@ import _ from "lodash";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { LoggerService } from "@codebase/logging";
+
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { MathService } from "../math/math.service";
+import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
 import { SextupleAspectsComposerService } from "./sextuple-aspects-composer.service";
 import { SextupleAspectsService } from "./sextuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { Body } from "../caelundas/caelundas.types";
+
+/** Builds one hexagram boundary event for the shared progressive-step tests. */
+function buildHexagramBoundary(
+  phase: "Dissolving" | "Forming",
+  isoMinute: string,
+): DetectedCalendarEvent {
+  const minute = moment.utc(isoMinute);
+  return {
+    categories: [
+      "Astronomy",
+      "Astrology",
+      "Compound Aspect",
+      "Sextuple Aspect",
+      "Hexagram",
+      phase,
+      "Jupiter",
+      "Mars",
+      "Moon",
+      "Saturn",
+      "Sun",
+      "Venus",
+    ],
+    description: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
+    end: minute,
+    start: minute,
+    summary: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
+  };
+}
+
+function edge(
+  aspect: "sextile" | "trine",
+  first: Body,
+  second: Body,
+): AspectBodies {
+  return { aspect, bodies: [first, second] };
+}
+
+// Two grand trines, sun-mars-saturn and moon-venus-jupiter, whose members
+// alternate around a hexagon of sextiles.
+const trines = [
+  edge("trine", "sun", "mars"),
+  edge("trine", "mars", "saturn"),
+  edge("trine", "saturn", "sun"),
+  edge("trine", "moon", "venus"),
+  edge("trine", "venus", "jupiter"),
+  edge("trine", "jupiter", "moon"),
+];
+const sextiles = [
+  edge("sextile", "sun", "moon"),
+  edge("sextile", "moon", "mars"),
+  edge("sextile", "mars", "venus"),
+  edge("sextile", "venus", "saturn"),
+  edge("sextile", "saturn", "jupiter"),
+  edge("sextile", "jupiter", "sun"),
+];
+const hexagram: Body[] = ["sun", "mars", "saturn", "moon", "venus", "jupiter"];
 
 describe(SextupleAspectsService, () => {
   let service: SextupleAspectsService;
@@ -28,6 +88,8 @@ describe(SextupleAspectsService, () => {
         AspectPhaseEmojiService,
         ProgressiveCompoundEventService,
         MathService,
+        LoggerService,
+        ProgressiveUtilitiesService,
       ],
     }).compile();
     compoundPhaseService = await module.resolve(CompoundPhaseService);
@@ -274,6 +336,50 @@ describe(SextupleAspectsService, () => {
   });
 
   describe("detectProgressive", () => {
+    const spansOf = (events: DetectedCalendarEvent[]): string[][] =>
+      service
+        .detectProgressive(events)
+        .map((span) => [span.start.toISOString(), span.end.toISOString()]);
+
+    it("pairs two occurrences into two spans despite duplicate boundaries", () => {
+      const boundaries = [
+        ["Forming", "2026-10-20T08:00:00.000Z"],
+        ["Dissolving", "2026-10-20T19:30:00.000Z"],
+        ["Forming", "2026-10-27T03:15:00.000Z"],
+        ["Dissolving", "2026-10-27T11:45:00.000Z"],
+      ] as const;
+      const events = boundaries.flatMap(([phase, isoMinute]) => [
+        buildHexagramBoundary(phase, isoMinute),
+        buildHexagramBoundary(phase, isoMinute),
+      ]);
+
+      expect(spansOf(events)).toStrictEqual([
+        ["2026-10-20T08:00:00.000Z", "2026-10-20T19:30:00.000Z"],
+        ["2026-10-27T03:15:00.000Z", "2026-10-27T11:45:00.000Z"],
+      ]);
+    });
+
+    it("warns and skips an occurrence whose dissolving is missing", () => {
+      const warn = vi.spyOn(LoggerService.prototype, "warn");
+
+      const spans = spansOf([
+        buildHexagramBoundary("Forming", "2026-10-20T08:00:00.000Z"),
+        buildHexagramBoundary("Forming", "2026-10-27T03:15:00.000Z"),
+        buildHexagramBoundary("Dissolving", "2026-10-27T11:45:00.000Z"),
+      ]);
+
+      expect(spans).toStrictEqual([
+        ["2026-10-27T03:15:00.000Z", "2026-10-27T11:45:00.000Z"],
+      ]);
+      expect(warn).toHaveBeenCalledWith(
+        "🔀 Unpaired progressive events",
+        undefined,
+        expect.objectContaining({ unpairedBeginnings: 1 }),
+      );
+
+      warn.mockRestore();
+    });
+
     it("returns empty array for empty input", () => {
       const events = service.detectProgressive([]);
 
@@ -350,11 +456,10 @@ describe(SextupleAspectsService, () => {
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.start).toStrictEqual(formingEvent.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolvingEvent.start);
-      // Note: The emoji regex doesn't strip properly due to multi-byte chars
-      // Just verify it's attempting to strip and categories are correct
       expect(progressiveEvents[0]?.summary).toContain(
-        "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram",
       );
+      expect(progressiveEvents[0]?.summary).not.toContain("forming");
       expect(progressiveEvents[0]?.description).toBe(
         "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram",
       );
@@ -1016,6 +1121,58 @@ describe(SextupleAspectsService, () => {
         phaseSpy.mockRestore();
         buildHexagramSpy.mockRestore();
       });
+    });
+  });
+
+  describe("pruneHexagramCandidates", () => {
+    it("keeps every body of a hexagram", () => {
+      expect.hasAssertions();
+
+      const candidates = service.pruneHexagramCandidates(
+        hexagram,
+        trines,
+        sextiles,
+      );
+
+      expect(candidates.toSorted()).toStrictEqual(hexagram.toSorted());
+      expect(
+        composerService.findHexagramPattern(candidates, [
+          ...trines,
+          ...sextiles,
+        ]),
+      ).not.toBeNull();
+    });
+
+    it("drops a body with a single trine, and the bodies that stranding strands", () => {
+      expect.hasAssertions();
+
+      const candidates = service.pruneHexagramCandidates(
+        [...hexagram, "pluto", "neptune"],
+        [
+          ...trines,
+          edge("trine", "pluto", "sun"),
+          edge("trine", "neptune", "pluto"),
+        ],
+        [
+          ...sextiles,
+          edge("sextile", "pluto", "moon"),
+          edge("sextile", "neptune", "mars"),
+        ],
+      );
+
+      expect(candidates.toSorted()).toStrictEqual(hexagram.toSorted());
+    });
+
+    it("leaves nothing when no body has two trines and two sextiles", () => {
+      expect.hasAssertions();
+
+      expect(
+        service.pruneHexagramCandidates(
+          ["sun", "moon"],
+          [edge("trine", "sun", "moon")],
+          [edge("sextile", "sun", "moon")],
+        ),
+      ).toStrictEqual([]);
     });
   });
 });

@@ -2,6 +2,179 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.3](https://github.com/organizzolini/codebase/compare/v3.2.2...v3.2.3) (2026-10-13)
+
+### 📝 Documentation
+
+* **codependix,documentation:** 📝 tidy the codependix skills, attribution examples, and plugin ADR note ([#1445](https://github.com/organizzolini/codebase/issues/1445)) ([3e5441a](https://github.com/organizzolini/codebase/commit/3e5441ac38a89849d57d03041b039194ea126f40)), closes [#1441](https://github.com/organizzolini/codebase/issues/1441) [#1444](https://github.com/organizzolini/codebase/issues/1444) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1430](https://github.com/organizzolini/codebase/issues/1430) [#1430](https://github.com/organizzolini/codebase/issues/1430) [#1434](https://github.com/organizzolini/codebase/issues/1434) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1444](https://github.com/organizzolini/codebase/issues/1444)
+
+## [3.2.2](https://github.com/organizzolini/codebase/compare/v3.2.1...v3.2.2) (2026-10-13)
+
+### 🐛 Bug Fixes
+
+* **callidescope,codependix,configuration:** 🐛 harden the codependix nx plugin for consumers outside this workspace ([#1444](https://github.com/organizzolini/codebase/issues/1444)) ([05278c1](https://github.com/organizzolini/codebase/commit/05278c15044ce05d532dba652363465ea41cfd4c)), closes [#1433](https://github.com/organizzolini/codebase/issues/1433) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1441](https://github.com/organizzolini/codebase/issues/1441)
+
+## [3.2.1](https://github.com/organizzolini/codebase/compare/v3.2.0...v3.2.1) (2026-10-13)
+
+### 🐛 Bug Fixes
+
+* **codependix:** 🐛 warn on unmatched selection entries and harden the boundary report ([#1441](https://github.com/organizzolini/codebase/issues/1441)) ([4dd5def](https://github.com/organizzolini/codebase/commit/4dd5def7bf3192ad9763d7f343a1ef72350b7209)), closes [#1432](https://github.com/organizzolini/codebase/issues/1432) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1430](https://github.com/organizzolini/codebase/issues/1430)
+
+### 📝 Documentation
+
+* **documentation:** 📝 add affirmancy heading and fix readme project list breaks ([#1501](https://github.com/organizzolini/codebase/issues/1501)) ([cd8d701](https://github.com/organizzolini/codebase/commit/cd8d70166f4c0a308875007cdc0edd8393214867))
+
+## [3.2.0](https://github.com/organizzolini/codebase/compare/v3.1.1...v3.2.0) (2026-10-13)
+
+### ✨ Features
+
+* **codependix:** ✨ infer a per-project codependix-gate target from a new nx plugin ([#1429](https://github.com/organizzolini/codebase/issues/1429)) ([d09ee1a](https://github.com/organizzolini/codebase/commit/d09ee1a22c91e10470af55a35545fe504c8daf0c)), closes [#1201](https://github.com/organizzolini/codebase/issues/1201) [#1403](https://github.com/organizzolini/codebase/issues/1403) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1419](https://github.com/organizzolini/codebase/issues/1419)
+
+### 🐛 Bug Fixes
+
+* **caelundas,conformetry:** 🐛 require an explicit directory instead of defaulting the destination ([#1395](https://github.com/organizzolini/codebase/issues/1395)) ([c84885a](https://github.com/organizzolini/codebase/commit/c84885a96fb2939dedad303d904fa2f30b6495f1))
+* **deployments:** 🐛 baseline a new package's first release ([#1499](https://github.com/organizzolini/codebase/issues/1499)) ([63639a7](https://github.com/organizzolini/codebase/commit/63639a74cb34b9f49b4224ac032654922622e5cf)), closes [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1429](https://github.com/organizzolini/codebase/issues/1429)
+* **deployments:** 🐛 skip the pre-commit hook on release commits ([#1502](https://github.com/organizzolini/codebase/issues/1502)) ([8a83e1a](https://github.com/organizzolini/codebase/commit/8a83e1ae8981652b027be59663284ccd4c6dabcc)), closes [#1499](https://github.com/organizzolini/codebase/issues/1499)
+
+### 📝 Documentation
+
+* **documentation:** 📝 clean up local resources after ship-changes and let submit-changes fix easy hook failures ([#1500](https://github.com/organizzolini/codebase/issues/1500)) ([865bd18](https://github.com/organizzolini/codebase/commit/865bd1804c8896c76664ffebbf7e55db0d51eaff))
+* **documentation:** 📝 restructure readme project sections ([#1497](https://github.com/organizzolini/codebase/issues/1497)) ([6c36cef](https://github.com/organizzolini/codebase/commit/6c36cefd5df69b99e6aff9facdf8231002d1a9ed))
+
+## [3.1.1](https://github.com/organizzolini/codebase/compare/v3.1.0...v3.1.1) (2026-10-12)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 define LongitudesWindow once ([#1498](https://github.com/organizzolini/codebase/issues/1498)) ([de3aac8](https://github.com/organizzolini/codebase/commit/de3aac86875eac257e6175e6ea161d87617944bc)), closes [#1495](https://github.com/organizzolini/codebase/issues/1495) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1446](https://github.com/organizzolini/codebase/issues/1446) [#1429](https://github.com/organizzolini/codebase/issues/1429)
+
+## [3.1.0](https://github.com/organizzolini/codebase/compare/v3.0.6...v3.1.0) (2026-10-12)
+
+### ✨ Features
+
+* **validation,lexico-entities,dependencies:** ✨ hold pull request body sections to a shape and word limit ([#1446](https://github.com/organizzolini/codebase/issues/1446)) ([01cfc89](https://github.com/organizzolini/codebase/commit/01cfc89cf310dabeb8699f30835cb7327feb92bd)), closes [#1447](https://github.com/organizzolini/codebase/issues/1447) [#1399](https://github.com/organizzolini/codebase/issues/1399) [#1399](https://github.com/organizzolini/codebase/issues/1399)
+
+### 📝 Documentation
+
+* **documentation:** 📝 add ship-changes skill to carry pull requests through to main ([#1494](https://github.com/organizzolini/codebase/issues/1494)) ([eb556eb](https://github.com/organizzolini/codebase/commit/eb556ebeeea25f4b88abfddcef23313df3ab9335)), closes [.github/CONTRIBUTING.md#pull-request-process](https://github.com/.github/CONTRIBUTING.md/issues/pull-request-process)
+
+## [3.0.6](https://github.com/organizzolini/codebase/compare/v3.0.5...v3.0.6) (2026-10-12)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 restore two lost fixes and speed up the end-to-end tests ([#1495](https://github.com/organizzolini/codebase/issues/1495)) ([f2a0312](https://github.com/organizzolini/codebase/commit/f2a03120dd80ae0bd48e84fcaee1fa3b2b6a88f5)), closes [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1428](https://github.com/organizzolini/codebase/issues/1428) [#1424](https://github.com/organizzolini/codebase/issues/1424) [#1413](https://github.com/organizzolini/codebase/issues/1413) [#1428](https://github.com/organizzolini/codebase/issues/1428) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1430](https://github.com/organizzolini/codebase/issues/1430) [#1441](https://github.com/organizzolini/codebase/issues/1441) [#1444](https://github.com/organizzolini/codebase/issues/1444) [#1492](https://github.com/organizzolini/codebase/issues/1492) [#1496](https://github.com/organizzolini/codebase/issues/1496)
+
+## [3.0.5](https://github.com/organizzolini/codebase/compare/v3.0.4...v3.0.5) (2026-10-12)
+
+### 📦 Build System
+
+* **configuration:** 📦️ pin python to 3.14 ([#1493](https://github.com/organizzolini/codebase/issues/1493)) ([6445506](https://github.com/organizzolini/codebase/commit/6445506945b01602944450ca4c7439d6216a6edd))
+
+## [3.0.4](https://github.com/organizzolini/codebase/compare/v3.0.3...v3.0.4) (2026-10-09)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 generate the advertised lunar apogee and perigee ([#1420](https://github.com/organizzolini/codebase/issues/1420)) ([31b4b59](https://github.com/organizzolini/codebase/commit/31b4b59a275bd62c8f3c8bbf791d62c220213279)), closes [#1387](https://github.com/organizzolini/codebase/issues/1387) [#1388](https://github.com/organizzolini/codebase/issues/1388) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408) [#1378](https://github.com/organizzolini/codebase/issues/1378)
+* **caelundas:** 🐛 judge local eclipse visibility topocentrically ([#1428](https://github.com/organizzolini/codebase/issues/1428)) ([42ec02b](https://github.com/organizzolini/codebase/commit/42ec02b24a17dd892f1005f2d0cdc07d12e3b75b)), closes [#1372](https://github.com/organizzolini/codebase/issues/1372) [#1373](https://github.com/organizzolini/codebase/issues/1373) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1425](https://github.com/organizzolini/codebase/issues/1425)
+* **caelundas:** 🐛 seed compound aspects already in orb at the window start ([#1417](https://github.com/organizzolini/codebase/issues/1417)) ([29206b9](https://github.com/organizzolini/codebase/commit/29206b9c7a71ec1d3bad111ccf9bb3634ae4c76d)), closes [#1362](https://github.com/organizzolini/codebase/issues/1362) [#1363](https://github.com/organizzolini/codebase/issues/1363) [#1363](https://github.com/organizzolini/codebase/issues/1363) [#1359](https://github.com/organizzolini/codebase/issues/1359) [#1363](https://github.com/organizzolini/codebase/issues/1363) [#1356](https://github.com/organizzolini/codebase/issues/1356) [#1357](https://github.com/organizzolini/codebase/issues/1357) [#1358](https://github.com/organizzolini/codebase/issues/1358) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408) [#1359](https://github.com/organizzolini/codebase/issues/1359)
+* **caelundas:** 🐛 time geocentric eclipses by standard contacts ([#1425](https://github.com/organizzolini/codebase/issues/1425)) ([dfccd37](https://github.com/organizzolini/codebase/commit/dfccd37ba959f46745257d4effabe55f3c046183)), closes [#1372](https://github.com/organizzolini/codebase/issues/1372) [#1369](https://github.com/organizzolini/codebase/issues/1369) [#1370](https://github.com/organizzolini/codebase/issues/1370) [#1371](https://github.com/organizzolini/codebase/issues/1371) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1412](https://github.com/organizzolini/codebase/issues/1412)
+* **caelundas:** 🐛 wrap east/west and measure true elongation for planetary phases ([#1424](https://github.com/organizzolini/codebase/issues/1424)) ([46c11de](https://github.com/organizzolini/codebase/commit/46c11dea79c417b34bd44643905c85b6f1eb3994)), closes [#1374](https://github.com/organizzolini/codebase/issues/1374) [#1375](https://github.com/organizzolini/codebase/issues/1375) [#1376](https://github.com/organizzolini/codebase/issues/1376) [#1377](https://github.com/organizzolini/codebase/issues/1377) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408)
+
+### 📝 Documentation
+
+* **caelundas:** 📝 document the astronomical and astrological conventions ([#1422](https://github.com/organizzolini/codebase/issues/1422)) ([d749a36](https://github.com/organizzolini/codebase/commit/d749a3600d4a9a75c92972fc002e49a6458a9584)), closes [#1363](https://github.com/organizzolini/codebase/issues/1363) [#1366](https://github.com/organizzolini/codebase/issues/1366) [#1412](https://github.com/organizzolini/codebase/issues/1412) [#1383](https://github.com/organizzolini/codebase/issues/1383) [#1387](https://github.com/organizzolini/codebase/issues/1387) [#1366](https://github.com/organizzolini/codebase/issues/1366) [#1389](https://github.com/organizzolini/codebase/issues/1389) [#1390](https://github.com/organizzolini/codebase/issues/1390) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1414](https://github.com/organizzolini/codebase/issues/1414)
+
+## [3.0.3](https://github.com/organizzolini/codebase/compare/v3.0.2...v3.0.3) (2026-10-09)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 make peak ingress direction-aware ([#1418](https://github.com/organizzolini/codebase/issues/1418)) ([53b28bf](https://github.com/organizzolini/codebase/commit/53b28bf36273f40e33dfa9bcf13ca2ab0dcc5384)), closes [#1383](https://github.com/organizzolini/codebase/issues/1383) [#1384](https://github.com/organizzolini/codebase/issues/1384) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408)
+
+## [3.0.2](https://github.com/organizzolini/codebase/compare/v3.0.1...v3.0.2) (2026-10-09)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 report one solar perihelion and aphelion per year ([#1470](https://github.com/organizzolini/codebase/issues/1470)) ([fc3a634](https://github.com/organizzolini/codebase/commit/fc3a634393dec64db7158c808953c5e095e195d7)), closes [#1346](https://github.com/organizzolini/codebase/issues/1346) [#1387](https://github.com/organizzolini/codebase/issues/1387) [#1410](https://github.com/organizzolini/codebase/issues/1410) [#1346](https://github.com/organizzolini/codebase/issues/1346) [#1378](https://github.com/organizzolini/codebase/issues/1378) [#1379](https://github.com/organizzolini/codebase/issues/1379) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1410](https://github.com/organizzolini/codebase/issues/1410) [#1346](https://github.com/organizzolini/codebase/issues/1346)
+* **caelundas:** 🐛 time primary Moon phases by ecliptic longitude ([#1414](https://github.com/organizzolini/codebase/issues/1414)) ([ece0475](https://github.com/organizzolini/codebase/commit/ece0475539920233da5054107b19c4fe4a7fd0a9)), closes [#1380](https://github.com/organizzolini/codebase/issues/1380) [#1381](https://github.com/organizzolini/codebase/issues/1381) [#1408](https://github.com/organizzolini/codebase/issues/1408) [#1389](https://github.com/organizzolini/codebase/issues/1389)
+
+## [3.0.1](https://github.com/organizzolini/codebase/compare/v3.0.0...v3.0.1) (2026-10-08)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 detect exact conjunctions and oppositions by sign change ([#1413](https://github.com/organizzolini/codebase/issues/1413)) ([2318faf](https://github.com/organizzolini/codebase/commit/2318faf39ee303fb6b75bcb669131736c959589d)), closes [#1353](https://github.com/organizzolini/codebase/issues/1353) [#1354](https://github.com/organizzolini/codebase/issues/1354) [#1355](https://github.com/organizzolini/codebase/issues/1355) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408)
+
+## [3.0.0](https://github.com/organizzolini/codebase/compare/v2.35.5...v3.0.0) (2026-10-08)
+
+### ⚠ BREAKING CHANGES
+
+* **codependix:** 💥 charge boundary findings to the projects they belong to (#1409)
+
+### ✨ Features
+
+* **codependix:** ✨ print boundary findings in the markdown and json output ([#1415](https://github.com/organizzolini/codebase/issues/1415)) ([5031d07](https://github.com/organizzolini/codebase/commit/5031d07e7b37b41d63311603e16c29cc6efacc7a)), closes [#1409](https://github.com/organizzolini/codebase/issues/1409) [#1401](https://github.com/organizzolini/codebase/issues/1401) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1409](https://github.com/organizzolini/codebase/issues/1409)
+* **codependix:** 💥 charge boundary findings to the projects they belong to ([#1409](https://github.com/organizzolini/codebase/issues/1409)) ([ff4cce2](https://github.com/organizzolini/codebase/commit/ff4cce25cb7f41a16fbdafcfe61663b910a02c75)), closes [#1201](https://github.com/organizzolini/codebase/issues/1201) [#1400](https://github.com/organizzolini/codebase/issues/1400) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1201](https://github.com/organizzolini/codebase/issues/1201) [#1218](https://github.com/organizzolini/codebase/issues/1218)
+
+### 📝 Documentation
+
+* **codependix:** 📝 add an example for each boundary attribution rule ([#1419](https://github.com/organizzolini/codebase/issues/1419)) ([3da2f6e](https://github.com/organizzolini/codebase/commit/3da2f6e499ee2a25d3c7037ed43b72127df2d1b9)), closes [#1402](https://github.com/organizzolini/codebase/issues/1402) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1415](https://github.com/organizzolini/codebase/issues/1415) [#1409](https://github.com/organizzolini/codebase/issues/1409)
+
+## [2.35.5](https://github.com/organizzolini/codebase/compare/v2.35.4...v2.35.5) (2026-10-08)
+
+### 🐛 Bug Fixes
+
+* **ic-suite:** 🐛 exit non-zero when an ic-suite cli command throws ([#1486](https://github.com/organizzolini/codebase/issues/1486)) ([7cd6b5c](https://github.com/organizzolini/codebase/commit/7cd6b5c1af92d56ffd112e2ea5b4d84d91fabbd2)), closes [#1480](https://github.com/organizzolini/codebase/issues/1480) [#1480](https://github.com/organizzolini/codebase/issues/1480) [#1479](https://github.com/organizzolini/codebase/issues/1479) [#1480](https://github.com/organizzolini/codebase/issues/1480)
+
+## [2.35.4](https://github.com/organizzolini/codebase/compare/v2.35.3...v2.35.4) (2026-10-08)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 compute rise and set with topocentric parallax and standard altitude ([#1412](https://github.com/organizzolini/codebase/issues/1412)) ([191d6c2](https://github.com/organizzolini/codebase/commit/191d6c25159e5c0017b5ac2f4780ecd9f0027e5a)), closes [#1372](https://github.com/organizzolini/codebase/issues/1372) [#1366](https://github.com/organizzolini/codebase/issues/1366) [#1367](https://github.com/organizzolini/codebase/issues/1367) [#1368](https://github.com/organizzolini/codebase/issues/1368) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408)
+
+## [2.35.3](https://github.com/organizzolini/codebase/compare/v2.35.2...v2.35.3) (2026-10-08)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 end calendar lines with CRLF and fold them at 75 octets ([#1431](https://github.com/organizzolini/codebase/issues/1431)) ([0d86d6a](https://github.com/organizzolini/codebase/commit/0d86d6a35ff75f4111d945c87bae10593b7dca56)), closes [#1406](https://github.com/organizzolini/codebase/issues/1406) [#1406](https://github.com/organizzolini/codebase/issues/1406) [#1341](https://github.com/organizzolini/codebase/issues/1341)
+* **deployments:** 🐛 finish a partly tagged release instead of versioning it again ([#1476](https://github.com/organizzolini/codebase/issues/1476)) ([4400e0d](https://github.com/organizzolini/codebase/commit/4400e0dd505076c1a19591ecae407bd491f8b820))
+* **ic-suite:** 🐛 keep class and function names in the published ic-suite bundles ([#1472](https://github.com/organizzolini/codebase/issues/1472)) ([029082e](https://github.com/organizzolini/codebase/commit/029082e72981d16b634998b2a75156452e7b6ddd)), closes [#1208](https://github.com/organizzolini/codebase/issues/1208) [#1451](https://github.com/organizzolini/codebase/issues/1451) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1455](https://github.com/organizzolini/codebase/issues/1455) [#1456](https://github.com/organizzolini/codebase/issues/1456) [.github/CONTRIBUTING.md#release-process](https://github.com/.github/CONTRIBUTING.md/issues/release-process)
+* **synchronization:** 🐛 exit non-zero when a synchronization command throws ([#1485](https://github.com/organizzolini/codebase/issues/1485)) ([de6102f](https://github.com/organizzolini/codebase/commit/de6102f314ca664df013f0ba95ffc2aeb733dc57)), closes [#1477](https://github.com/organizzolini/codebase/issues/1477) [#1478](https://github.com/organizzolini/codebase/issues/1478) [#1477](https://github.com/organizzolini/codebase/issues/1477)
+* **validation:** 🐛 exit non-zero when a validation command throws ([#1477](https://github.com/organizzolini/codebase/issues/1477)) ([ce4ad45](https://github.com/organizzolini/codebase/commit/ce4ad450198c304da1ef86c017e4113d2c83eb97)), closes [#1475](https://github.com/organizzolini/codebase/issues/1475)
+
+## [2.35.2](https://github.com/organizzolini/codebase/compare/v2.35.1...v2.35.2) (2026-10-08)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 name every body identically across events ([#1407](https://github.com/organizzolini/codebase/issues/1407)) ([7068538](https://github.com/organizzolini/codebase/commit/7068538a56c26f25bd44262b4ca7c98d7f007fff)), closes [#1349](https://github.com/organizzolini/codebase/issues/1349) [#1350](https://github.com/organizzolini/codebase/issues/1350) [#1351](https://github.com/organizzolini/codebase/issues/1351)
+
+## [2.35.1](https://github.com/organizzolini/codebase/compare/v2.35.0...v2.35.1) (2026-10-08)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 detect stelliums by maximal clique ([#1427](https://github.com/organizzolini/codebase/issues/1427)) ([7db89f6](https://github.com/organizzolini/codebase/commit/7db89f65090364ad86f9275404fe5e8433eaa345)), closes [#1356](https://github.com/organizzolini/codebase/issues/1356) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1363](https://github.com/organizzolini/codebase/issues/1363) [#1364](https://github.com/organizzolini/codebase/issues/1364) [#1365](https://github.com/organizzolini/codebase/issues/1365) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1423](https://github.com/organizzolini/codebase/issues/1423) [#1410](https://github.com/organizzolini/codebase/issues/1410) [#1408](https://github.com/organizzolini/codebase/issues/1408) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1356](https://github.com/organizzolini/codebase/issues/1356)
+* **caelundas:** 🐛 emit a valid VTIMEZONE for every zone ([#1406](https://github.com/organizzolini/codebase/issues/1406)) ([ac2f025](https://github.com/organizzolini/codebase/commit/ac2f0255a368455cbd5adc5967e2068ea8a0c217)), closes [#1385](https://github.com/organizzolini/codebase/issues/1385) [#1386](https://github.com/organizzolini/codebase/issues/1386) [#1341](https://github.com/organizzolini/codebase/issues/1341)
+* **caelundas:** 🐛 emit each compound aspect once with correct titles and timing ([#1423](https://github.com/organizzolini/codebase/issues/1423)) ([01f3fa4](https://github.com/organizzolini/codebase/commit/01f3fa4da8c687b87dac82af21c445b1164559e7)), closes [#1410](https://github.com/organizzolini/codebase/issues/1410) [#1356](https://github.com/organizzolini/codebase/issues/1356) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1359](https://github.com/organizzolini/codebase/issues/1359) [#1360](https://github.com/organizzolini/codebase/issues/1360) [#1361](https://github.com/organizzolini/codebase/issues/1361) [#1362](https://github.com/organizzolini/codebase/issues/1362) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1410](https://github.com/organizzolini/codebase/issues/1410) [#1408](https://github.com/organizzolini/codebase/issues/1408) [#1417](https://github.com/organizzolini/codebase/issues/1417) [#1356](https://github.com/organizzolini/codebase/issues/1356)
+* **caelundas:** 🐛 pair progressive spans by occurrence ([#1410](https://github.com/organizzolini/codebase/issues/1410)) ([d66c080](https://github.com/organizzolini/codebase/commit/d66c0804893901ca0ba1e0df69fc47ebfa036ca7)), closes [#1346](https://github.com/organizzolini/codebase/issues/1346) [#1347](https://github.com/organizzolini/codebase/issues/1347) [#1348](https://github.com/organizzolini/codebase/issues/1348) [#1341](https://github.com/organizzolini/codebase/issues/1341) [#1408](https://github.com/organizzolini/codebase/issues/1408)
+
+## [2.35.0](https://github.com/organizzolini/codebase/compare/v2.34.2...v2.35.0) (2026-10-08)
+
+### ✨ Features
+
+* **caelundas,configuration:** ✨ scaffold the caelundas-web tanstack application ([#1397](https://github.com/organizzolini/codebase/issues/1397)) ([4759fff](https://github.com/organizzolini/codebase/commit/4759fff2089db64cdf4f26a1acdffda1b3dcf7d0)), closes [#1396](https://github.com/organizzolini/codebase/issues/1396) [#1395](https://github.com/organizzolini/codebase/issues/1395) [#1394](https://github.com/organizzolini/codebase/issues/1394)
+* **meanderaw,configuration:** ✨ scaffold meanderaw-web from the tanstack-application template ([#1396](https://github.com/organizzolini/codebase/issues/1396)) ([f723c45](https://github.com/organizzolini/codebase/commit/f723c45bbe281d766a2c6a2bf71d4b79f4e9164b)), closes [Organizzolini/codebase#1301](https://github.com/Organizzolini/codebase/issues/1301) [Organizzolini/codebase#1309](https://github.com/Organizzolini/codebase/issues/1309)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 measure every application three folders deep with the right path ([#1440](https://github.com/organizzolini/codebase/issues/1440)) ([a805b41](https://github.com/organizzolini/codebase/commit/a805b41c255628a5c404188f757a8316be160653))
+* **deployments:** 🐛 wait for new npm tarballs and never link an empty digest ([#1398](https://github.com/organizzolini/codebase/issues/1398)) ([745a902](https://github.com/organizzolini/codebase/commit/745a9029bd9c0db2eefa57bd84b007b28aacb71d)), closes [#1327](https://github.com/organizzolini/codebase/issues/1327) [#1327](https://github.com/organizzolini/codebase/issues/1327)
+* **scripts:** 🐛 bootstrap .env from every .env.default outside the conformetry templates ([#1443](https://github.com/organizzolini/codebase/issues/1443)) ([f42bfdc](https://github.com/organizzolini/codebase/commit/f42bfdc5a3398994088a3d1dcb33815943aa6b8e))
+
+### ⚡ Performance Improvements
+
+* **lexico,lexico-entities:** ⚡️ page reader relations as batched relay connections ([#1435](https://github.com/organizzolini/codebase/issues/1435)) ([b110cd5](https://github.com/organizzolini/codebase/commit/b110cd5a1363cdea1e9ea1dd8ec4e7ec12d2f669)), closes [1181/#1182](https://github.com/1181/codebase/issues/1182) [#1321](https://github.com/organizzolini/codebase/issues/1321) [#1336](https://github.com/organizzolini/codebase/issues/1336) [#1170](https://github.com/organizzolini/codebase/issues/1170) [#1321](https://github.com/organizzolini/codebase/issues/1321) [#1322](https://github.com/organizzolini/codebase/issues/1322) [#1323](https://github.com/organizzolini/codebase/issues/1323) [#1331](https://github.com/organizzolini/codebase/issues/1331)
+
+### ♻️ Code Refactoring
+
+* **lexico-entities,lexico:** ♻️ move lexico's graphql types into lexico-api, checked against its entities ([#1399](https://github.com/organizzolini/codebase/issues/1399)) ([6657d0d](https://github.com/organizzolini/codebase/commit/6657d0d678f8183ee76452d899831b3ef042634b)), closes [#1339](https://github.com/organizzolini/codebase/issues/1339) [#1263](https://github.com/organizzolini/codebase/issues/1263) [#1311](https://github.com/organizzolini/codebase/issues/1311)
+
 ## [2.34.2](https://github.com/organizzolini/codebase/compare/v2.34.1...v2.34.2) (2026-10-08)
 
 ### ♻️ Code Refactoring

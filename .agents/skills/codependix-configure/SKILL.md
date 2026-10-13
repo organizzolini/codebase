@@ -1,6 +1,6 @@
 ---
 name: codependix-configure
-description: Write or edit a codependix.config.ts — which graph types run, per-project overrides, include and exclude globs, the whole-workspace graph, where each export lands, and the boundary rules every built graph is judged against. Use when a workspace has no codependix configuration yet, when a run produced no output because everything resolved to target none, when adding a JSON or Markdown destination, when choosing between an anchor block and a standalone file, when a configuration is rejected for a missing destination or an empty selector, when adding a forbid, allow, or acyclic rule, or when deciding whether one configuration can describe every project in a workspace.
+description: Write or edit a codependix.config.ts — which graph types run, per-project overrides, include and exclude globs, the whole-workspace graph, where each export lands, and the boundary rules every built graph is judged against. Use when a workspace has no codependix configuration yet, when a run produced no output because everything resolved to target none, when adding a JSON or Markdown destination, when choosing between an anchor block and a standalone file, when a configuration is rejected for a missing destination or an empty selector, when adding a forbid, allow, or acyclic rule, when registering the per-project Nx gate, or when deciding whether one configuration can describe every project in a workspace.
 license: MIT
 ---
 
@@ -138,7 +138,8 @@ still wins over both. See `codependix-export`.
 
 A configuration naming `defaults` but no `include` is the one to watch for.
 It exports nothing while still exiting zero, and `--check boundaries` judges
-every project regardless of `include`, so the gate stays green. An export run
+every project regardless of `include` — or the projects `--projects` and
+`--tags` name — so the gate stays green. An export run
 warns when it happens — `🕸️ Selected no project to export`.
 
 An excluded project resolves to `target: "none"` for every graph type
@@ -200,10 +201,10 @@ draws the graph over the projects it named, and writes it wherever
 { projectGraph: "artifacts/graph.json" }
 ```
 
-A path, relative to the workspace root, to the JSON `nx graph
---file=graph.json` emits. Named, it is read instead of resolving the process
-working directory's own graph — the only way to graph a workspace the process
-is not standing in. Left out, nothing changes.
+A path, relative to the workspace root, to the JSON
+`nx graph --file=graph.json` emits. Named, it is read instead of resolving the
+process working directory's own graph — the only way to graph a workspace the
+process is not standing in. Left out, nothing changes.
 
 The file is **trusted**: only a file that is not a project graph at all is
 refused. See `codependix-export` for what that does and does not cover.
@@ -291,3 +292,69 @@ Four things to know before writing one:
 **Write rules that already hold.** A rule that arrives red is a backlog rather
 than a gate, and a red pipeline nobody can act on teaches people to ignore it.
 Verify a candidate rule against the whole workspace before committing it.
+
+### Which project a finding fails
+
+A finding is charged to projects, and a run fails only when one is charged to a
+project it judges. The rule kind decides who that is:
+
+| Finding | Charged to |
+| ------- | ---------- |
+| `forbid` match, or an edge no `allow` rule covers | The project owning the edge's **source**, and no other |
+| `acyclic` cycle | Every project owning a node on the cycle, so a cycle across A and B fails both |
+| Container that cannot boot | The project whose container failed, named with the owner of the failing class when that is another project |
+
+A project that merely depends on a project with a cycle or a forbidden edge is
+not failed: it sees the finding as a note, "in dependency". So a rule is
+written with the source project in mind — it is the one that has to change. A
+container that cannot boot is the exception: a dependent whose own container
+fails because a dependency's class could not evaluate fails too, since its
+container really cannot boot, and its failure names that dependency as the
+owner.
+
+## The per-project gate
+
+In an Nx workspace the `@codependix/nx` plugin infers a `codependix-gate` target
+for every project described by a `project.json`, except the workspace root. It
+runs `--check boundaries --projects <project>` over that project and its
+dependencies. A project Nx infers from a `package.json` alone gets no gate until
+it is given a `project.json`. Register the plugin once in `nx.json`:
+
+```json
+{
+  "plugins": [
+    {
+      "plugin": "@codependix/nx",
+      "options": {
+        "configurationPath": "configuration/codependix.config.ts",
+        "gateTargetName": "codependix-gate"
+      }
+    }
+  ]
+}
+```
+
+`configurationPath` names the one configuration every gate reads; omit it and
+`codependix.config.ts`, then `configuration/codependix.config.ts`, are
+searched. Nothing else is configured per project: the rules in `boundaries`
+judge every project the same way. See `codependix-export` for running a gate.
+
+The gate runs the command line under the `@swc-node/register` hooks the plugin
+registers itself, so the workspace installs nothing for them. The workspace root
+does need a `tsconfig.json` that emits decorator metadata, because the hooks
+read it from the working directory and NestJS constructor injection depends on
+it.
+
+The gate is cached. A project's own `codependix.config.*` is one of its cache
+inputs, so editing it re-runs that gate. So is the codependix command line
+itself: its `package.json` and sources when it is a package of the workspace, or
+its installed version when it comes from a registry. So is the workspace root's
+`tsconfig.json`, which the loader reads. Test files are not inputs, so a
+test-only edit to the tool invalidates no gate beyond that package's own and
+its dependents', while any other edit re-runs them all. A package the plugin
+cannot resolve loses only its own inputs, and Nx's logger warns naming it.
+
+A gate whose `projects` or `tags` select anything other than its own project —
+on the command line, in the target's options, or in a named Nx configuration —
+is never replayed from the cache, because it judges projects its inputs do not
+cover. A gate judging only its own project is cached as usual.
