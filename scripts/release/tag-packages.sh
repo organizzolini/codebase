@@ -11,8 +11,9 @@
 # A package is newly versioned when its `<project>@<version>` tag, the pattern
 # nx.json's `release.releaseTag` sets, does not exist yet. Checkout fetches
 # every tag, so only this release's are missing, and a re-run creates nothing
-# twice. A new package's hand-written `0.0.0` is never tagged: it has not been
-# released, and its first release is still to come.
+# twice. A new package's hand-written `0.0.0` is never tagged as a release: it
+# has not been released, and its first release is still to come. It does get
+# a baseline tag first, so that release has a starting point: tag_baselines.
 #
 # GitHub rejects any push to this repository that updates more than 6 refs,
 # and a first release tags 20 or more packages, so the tags go 6 at a time. A
@@ -74,6 +75,36 @@ commit_leftover_versions() {
   fi
 }
 
+# Gives each never-tagged release-group package a `<project>@0.0.0` baseline on
+# the commit before the one that added it, adding each tag it makes to `tags`.
+#
+# Nx writes a changelog from a package's previous tag and stops when it has
+# none. It reads the baseline as the current version, so the first release
+# versions every commit that touched the package, the one that added it
+# included. The baseline is an anchor, not a release: nothing is published from
+# it, and the first real tag follows on the release commit.
+#
+# A package with any tag, or a version other than `0.0.0`, is left alone, so a
+# released package that lost its tag is never restarted from its first commit;
+# tag_new_versions tags it at HEAD instead.
+tag_baselines() {
+  local group project root added parent
+  group="$(release_group)"
+  while read -r project root; do
+    if [[ "$(jq -r .version "${root}/package.json")" != "0.0.0" ]] ||
+      [[ -n "$(git tag --list "${project}@*")" ]]; then
+      continue
+    fi
+    added="$(git log --diff-filter=A --format=%H -- "${root}/package.json" | tail -n 1)"
+    if [[ -z "${added}" ]] || ! parent="$(git rev-parse --verify --quiet "${added}^")"; then
+      echo "❌ Cannot find the commit before ${project} was added" >&2
+      exit 1
+    fi
+    git tag --annotate "${project}@0.0.0" "${parent}" --message "${project}@0.0.0"
+    tags+=("${project}@0.0.0")
+  done <<<"${group}"
+}
+
 # Tags HEAD for every release-group package whose version has no tag yet,
 # adding each tag it makes to `tags`.
 tag_new_versions() {
@@ -104,6 +135,7 @@ push_with_retries() {
 commit_leftover_versions
 
 tags=()
+tag_baselines
 tag_new_versions
 echo "🏷️ Pushing ${#tags[@]} package tags, ${REFS_PER_PUSH} at a time"
 
