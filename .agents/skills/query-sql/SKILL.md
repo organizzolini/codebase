@@ -17,7 +17,7 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-- The local PostgreSQL container must be running. Use `nx run codebase:postgres-container:up` if needed.
+- The local PostgreSQL container must be running. Use `nx run infrastructure:postgres:up` if needed.
 - `psql` (PostgreSQL client) must be installed locally.
 - Know which project's data you are querying. Each database-backed project has its own database, schema, and role ([ADR 0022](../../../docs/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)):
 

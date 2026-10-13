@@ -16,18 +16,22 @@
 ### Deploy Application with Helm
 
 ```bash
-# Build, push, and deploy
-nx run caelundas-cli:docker-build
-nx run caelundas-cli:docker-push
-nx run caelundas-cli:helm-upgrade
-# → Release name: caelundas-20260125-143022
+helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
+  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml
 
-# Monitor and retrieve output
-kubectl get jobs -l app.kubernetes.io/name=caelundas -w
-nx run caelundas-cli:kubernetes-copy-files -- --release-name=caelundas-20260125-143022
+# Monitor the Job
+kubectl get jobs -w
 
 # Clean up
-nx run caelundas-cli:helm-uninstall -- --release-name=caelundas-20260125-143022
+helm uninstall <release-name>
+```
+
+### Run Local Services
+
+```bash
+nx run infrastructure:postgres:up
+nx run infrastructure:searxng:up
+nx run infrastructure:open-webui:up
 ```
 
 ### Provision Kubernetes Cluster
@@ -39,19 +43,17 @@ terraform plan -var="linode_token=$LINODE_API_TOKEN"
 terraform apply -var="linode_token=$LINODE_API_TOKEN"
 ```
 
-## Deployment Pipeline
+## Nx Targets
 
-```text
-Code → Docker Build → Push to GHCR → Helm Upgrade → K8s Job → Retrieve Output
-```
-
-1. **Build**: `nx run <app>:docker-build` (linux/amd64 platform)
-2. **Push**: `nx run <app>:docker-push` (to GHCR)
-3. **Secret**: `kubectl apply -f <app>/kubernetes/secret.yaml` (one-time)
-4. **Deploy**: `nx run <app>:helm-upgrade` (creates Job)
-5. **Monitor**: `kubectl get jobs -w`
-6. **Retrieve**: `nx run <app>:kubernetes-copy-files`
-7. **Clean**: `nx run <app>:helm-uninstall`
+| Target                              | Does                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------- |
+| `postgres`                          | `up`, `down`, `recreate` (removes the volume) for the local PostgreSQL    |
+| `searxng`                           | `up`, `down`, `open` for the SearxNG metasearch service                   |
+| `open-webui`                        | `up`, `down`, `open` for the Open WebUI service                           |
+| `terraform`                         | `plan` (default) or `import` against the cluster                          |
+| `trivy-config`                      | Trivy misconfiguration scan of the Terraform code                         |
+| `helm-lint`                         | Lint the `kubernetes-job` chart against its base values                   |
+| `compose-config`                    | Validate the Docker Compose file                                          |
 
 ## Documentation
 

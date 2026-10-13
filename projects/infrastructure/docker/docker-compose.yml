@@ -72,7 +72,7 @@ services:
 configs:
   # Inline rather than a bind-mounted file, so the shared container never
   # depends on the checkout or worktree that last recreated it. Runs only
-  # when the volume is empty: `nx run codebase:postgres-container:recreate`.
+  # when the volume is empty: `nx run infrastructure:postgres:recreate`.
   # For an existing volume, run it by hand for the new project instead:
   # `docker exec -e POSTGRES_PROJECTS=<project> postgres sh
   # /docker-entrypoint-initdb.d/databases.sh`, as the seed-postgres skill

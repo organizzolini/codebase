@@ -50,7 +50,7 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the build → push → deploy → retrieve → clean pipeline.
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets.
 
 ## Troubleshooting
 

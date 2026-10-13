@@ -216,21 +216,18 @@ Caelundas runs as a **Kubernetes Job** (not Deployment):
 ### Workflow
 
 ```bash
-# 1. Build and push image
-nx run caelundas-cli:docker-build
+# 1. Push the image (built for linux/amd64)
 docker push ghcr.io/organizzolini/caelundas:latest
 
-# 2. Deploy Job (auto-generated release name)
-nx run caelundas-cli:helm-upgrade
+# 2. Deploy Job
+helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
+  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml
 
 # 3. Monitor completion
 kubectl wait --for=condition=complete job/<job-name> --timeout=600s
 
-# 4. Retrieve output files
-nx run caelundas-cli:kubernetes-copy-files
-
-# 5. Clean up
-nx run caelundas-cli:helm-uninstall
+# 4. Clean up
+helm uninstall <release-name>
 kubectl delete pvc caelundas-output
 ```
 
@@ -238,27 +235,19 @@ kubectl delete pvc caelundas-output
 
 Uses [projects/infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
 
-**Values**: [projects/infrastructure/helm/kubernetes-job/values/caelundas-production.yaml](../../infrastructure/helm/kubernetes-job/values/caelundas-production.yaml)
+**Values**: [projects/infrastructure/helm/kubernetes-job/values/base.yaml](../../infrastructure/helm/kubernetes-job/values/base.yaml)
 
 See [kubernetes-deployment skill](../../../.agents/skills/kubernetes-deployment/SKILL.md) for Helm chart details.
 
 ### Environment Variables in K8s
 
-Stored as Kubernetes Secret (`caelundas-env-secret`):
-
-```bash
-kubectl apply -f projects/caelundas/caelundas-cli/kubernetes/secret.yaml
-```
+Stored as Kubernetes Secret (`caelundas-env-secret`), created in the cluster with `kubectl create secret`.
 
 ## Docker Workflow
 
 ### Build
 
-```bash
-nx run caelundas-cli:docker-build  # Builds for linux/amd64
-```
-
-**Platform targeting**: Always use `linux/amd64` for K8s deployment (Apple Silicon compatibility).
+**Platform targeting**: Always build with `--platform linux/amd64` for K8s deployment (Apple Silicon compatibility).
 
 See [docker-workflows skill](../../../.agents/skills/docker-workflows/SKILL.md) for multi-stage builds and GHCR integration.
 

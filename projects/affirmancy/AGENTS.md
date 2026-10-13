@@ -59,17 +59,17 @@ nx run affirmancy:ty                 # ty type checker (standalone)
 nx run affirmancy:bandit             # security linter
 
 # Open browser UIs
-nx run affirmancy:open-webui --configuration=open
-nx run affirmancy:searxng --configuration=open
+nx run infrastructure:open-webui:open
+nx run infrastructure:searxng:open
 
 # Docker service management
 nx run affirmancy:ollama --configuration=start
 nx run affirmancy:ollama --configuration=stop
 nx run affirmancy:ollama --configuration=pull-small   # pull gemma4:e2b
-nx run affirmancy:searxng --configuration=start
-nx run affirmancy:searxng --configuration=stop
-nx run affirmancy:open-webui --configuration=start
-nx run affirmancy:open-webui --configuration=stop
+nx run infrastructure:searxng:up
+nx run infrastructure:searxng:down
+nx run infrastructure:open-webui:up
+nx run infrastructure:open-webui:down
 ```
 
 ## Conventions
