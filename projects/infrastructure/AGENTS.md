@@ -7,14 +7,14 @@
 ### Helm (Batch Jobs)
 
 ```bash
-helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
-  --values infrastructure/helm/kubernetes-job/values/base.yaml
+helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
+  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml
 ```
 
 ### Terraform
 
 ```bash
-cd infrastructure/terraform
+cd projects/infrastructure/terraform
 terraform init
 terraform plan
 terraform apply
@@ -25,7 +25,7 @@ terraform apply
 ### Directory Structure
 
 ```text
-infrastructure/
+projects/infrastructure/
 ├── helm/
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning

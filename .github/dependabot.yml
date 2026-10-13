@@ -136,9 +136,9 @@ updates:
         patterns:
           - "*"
 
-  # infrastructure/terraform pins the linode/linode provider version.
+  # projects/infrastructure/terraform pins the linode/linode provider version.
   - package-ecosystem: terraform
-    directory: /infrastructure/terraform
+    directory: /projects/infrastructure/terraform
     schedule:
       interval: weekly
       day: friday

@@ -46,10 +46,10 @@
           "command": "$BROWSER http://localhost:3001"
         },
         "start": {
-          "command": "docker compose -f ../../infrastructure/docker/docker-compose.yml up -d open-webui"
+          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml up -d open-webui"
         },
         "stop": {
-          "command": "docker compose -f ../../infrastructure/docker/docker-compose.yml rm -sf open-webui"
+          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml rm -sf open-webui"
         }
       },
       "defaultConfiguration": "start",
@@ -69,10 +69,10 @@
           "command": "$BROWSER http://localhost:8889"
         },
         "start": {
-          "command": "docker compose -f ../../infrastructure/docker/docker-compose.yml up -d searxng"
+          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml up -d searxng"
         },
         "stop": {
-          "command": "docker compose -f ../../infrastructure/docker/docker-compose.yml rm -sf searxng"
+          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml rm -sf searxng"
         }
       },
       "defaultConfiguration": "start",

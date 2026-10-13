@@ -26,7 +26,7 @@ services:
   postgres:
     image: postgres:18-alpine
     container_name: postgres
-    env_file: ../../.env
+    env_file: ../../../.env
     environment:
       # Every database-backed project: adding one is adding its name here.
       POSTGRES_PROJECTS: caelundas lexico meanderaw
@@ -53,7 +53,7 @@ services:
     ports:
       - 8889:8080
     volumes:
-      - ../../projects/affirmancy/searxng.settings.yml:/etc/searxng/settings.yml:ro
+      - ../../affirmancy/searxng.settings.yml:/etc/searxng/settings.yml:ro
     environment:
       SEARXNG_BASE_URL: http://localhost:8889
     healthcheck:

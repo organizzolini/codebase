@@ -33,7 +33,7 @@ nx run caelundas-cli:helm-uninstall -- --release-name=caelundas-20260125-143022
 ### Provision Kubernetes Cluster
 
 ```bash
-cd infrastructure/terraform
+cd projects/infrastructure/terraform
 terraform init
 terraform plan -var="linode_token=$LINODE_API_TOKEN"
 terraform apply -var="linode_token=$LINODE_API_TOKEN"
@@ -56,5 +56,5 @@ Code → Docker Build → Push to GHCR → Helm Upgrade → K8s Job → Retrieve
 ## Documentation
 
 - **[AGENTS.md](AGENTS.md)**: Complete infrastructure architecture, Helm chart config, Terraform setup, troubleshooting
-- **[caelundas AGENTS.md](../projects/caelundas/caelundas-cli/AGENTS.md)**: Application deployment example
-- **[Main AGENTS.md](../AGENTS.md)**: Codebase architecture and Nx workflows
+- **[caelundas AGENTS.md](../caelundas/caelundas-cli/AGENTS.md)**: Application deployment example
+- **[Main AGENTS.md](../../AGENTS.md)**: Codebase architecture and Nx workflows

@@ -1,0 +1,120 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "infrastructure",
+  "projectType": "library",
+  "sourceRoot": "projects/infrastructure",
+  "tags": ["language:infrastructure", "type:package"],
+  "targets": {
+    "compose-config": {
+      "cache": true,
+      "description": "Validate the Docker Compose file without starting anything",
+      "executor": "nx:run-commands",
+      "inputs": ["{projectRoot}/docker/docker-compose.yml"],
+      "options": {
+        "command": "docker compose -f {projectRoot}/docker/docker-compose.yml config -q",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "helm-lint": {
+      "cache": true,
+      "description": "Lint the kubernetes-job Helm chart against its base values",
+      "executor": "nx:run-commands",
+      "inputs": ["{projectRoot}/helm/**/*"],
+      "options": {
+        "command": "helm lint {projectRoot}/helm/kubernetes-job --values {projectRoot}/helm/kubernetes-job/values/base.yaml",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "open-webui": {
+      "configurations": {
+        "down": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml rm -sf open-webui"
+        },
+        "open": {
+          "command": "$BROWSER http://localhost:3001"
+        },
+        "up": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml up -d open-webui"
+        }
+      },
+      "defaultConfiguration": "up",
+      "description": "Manage the Open WebUI Docker service (up, down, open)",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "postgres": {
+      "configurations": {
+        "down": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml down postgres"
+        },
+        "recreate": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml down -v postgres && docker compose -f {projectRoot}/docker/docker-compose.yml up -d postgres"
+        },
+        "up": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml up -d postgres"
+        }
+      },
+      "defaultConfiguration": "up",
+      "description": "Start, stop, or recreate the local PostgreSQL container (recreate removes the volume)",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "searxng": {
+      "configurations": {
+        "down": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml rm -sf searxng"
+        },
+        "open": {
+          "command": "$BROWSER http://localhost:8889"
+        },
+        "up": {
+          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml up -d searxng"
+        }
+      },
+      "defaultConfiguration": "up",
+      "description": "Manage the SearxNG Docker service (up, down, open)",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "terraform": {
+      "cache": false,
+      "configurations": {
+        "import": {
+          "command": "terraform import -input=false linode_lke_cluster.my_cluster $TF_VAR_linode_kubernetes_engine_cluster_id"
+        },
+        "plan": {
+          "command": "terraform plan"
+        }
+      },
+      "defaultConfiguration": "plan",
+      "description": "Run Terraform commands (plan, import)",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "terraform plan",
+        "cwd": "{projectRoot}/terraform"
+      }
+    },
+    "trivy-config": {
+      "cache": true,
+      "description": "Scan Terraform infrastructure code for misconfigurations using Trivy. Identical to what the Secure Code workflow runs, so a local run reproduces CI exactly. Requires trivy on PATH (the devcontainer installs it; otherwise `brew install trivy`).",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/terraform/**/*.tf",
+        "{workspaceRoot}/configuration/trivyignore",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "trivy config projects/infrastructure/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/trivyignore",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  }
+}

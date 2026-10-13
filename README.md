@@ -184,6 +184,7 @@ Enumerate, measure, and classify greek meander patterns
 **[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
 **🐘 [database](projects/database)** - Shared Postgres package: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, and the `migration` target\
+**🏗️ [infrastructure](projects/infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🪵 [logging](projects/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
 **↔️ [synchronization](projects/synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
 **✅ [validation](projects/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
@@ -200,7 +201,7 @@ Enumerate, measure, and classify greek meander patterns
 ### Architecture & Systems
 
 - [CI/CD Workflows](.github/workflows) - GitHub Actions workflows and the shared `setup-codebase` composite action
-- [Infrastructure](infrastructure/README.md) - Helm charts, Terraform, and the Kubernetes deployment pipeline
+- [Infrastructure](projects/infrastructure/README.md) - Helm charts, Terraform, and the Kubernetes deployment pipeline
 - [Dev Container](.devcontainer/README.md) - Containerized development environment
 - [Scripts](scripts/README.md) - Local setup and maintenance scripts
 

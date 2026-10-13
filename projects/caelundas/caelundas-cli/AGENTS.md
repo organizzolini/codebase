@@ -236,9 +236,9 @@ kubectl delete pvc caelundas-output
 
 ### Helm Chart
 
-Uses [infrastructure/helm/kubernetes-job](../../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
+Uses [projects/infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
 
-**Values**: [infrastructure/helm/kubernetes-job/values/caelundas-production.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-production.yaml)
+**Values**: [projects/infrastructure/helm/kubernetes-job/values/caelundas-production.yaml](../../infrastructure/helm/kubernetes-job/values/caelundas-production.yaml)
 
 See [kubernetes-deployment skill](../../../.agents/skills/kubernetes-deployment/SKILL.md) for Helm chart details.
 

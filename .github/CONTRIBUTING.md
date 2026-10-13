@@ -177,7 +177,6 @@ codebase/
 ├── docs/               # Architecture decision records and agent configuration
 ├── documentation/      # Development guides and planning notes
 ├── openwiki/           # Generated code documentation — do not hand-edit
-├── infrastructure/     # Docker, Helm charts, Terraform
 ├── scripts/            # Setup, git, and utility scripts
 └── .agents/skills/     # Agent skills; every other agent entrypoint symlinks here
 ```
