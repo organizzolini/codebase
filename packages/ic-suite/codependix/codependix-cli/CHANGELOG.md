@@ -1,3 +1,16 @@
+## 0.0.16 (2026-10-13)
+
+### 🚀 Features
+
+- **codependix:** ✨ infer a per-project codependix-gate target from a new nx plugin ([#1429](https://github.com/organizzolini/codebase/pull/1429), [#1403](https://github.com/organizzolini/codebase/issues/1403))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.16
+- Updated codependix-boundaries to 0.0.15
+- Updated codependix-output to 0.0.15
+- Updated codependix-core to 0.0.14
+
 ## 0.0.15 (2026-10-12)
 
 ### 🧱 Updated Dependencies

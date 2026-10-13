@@ -1,3 +1,13 @@
+## 0.0.16 (2026-10-13)
+
+### 🩹 Fixes
+
+- **caelundas,conformetry:** 🐛 require an explicit directory instead of defaulting the destination ([#1395](https://github.com/organizzolini/codebase/pull/1395))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.15
+
 ## 0.0.15 (2026-10-12)
 
 ### 🧱 Updated Dependencies

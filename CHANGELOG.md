@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.0](https://github.com/organizzolini/codebase/compare/v3.1.1...v3.2.0) (2026-10-13)
+
+### ✨ Features
+
+* **codependix:** ✨ infer a per-project codependix-gate target from a new nx plugin ([#1429](https://github.com/organizzolini/codebase/issues/1429)) ([d09ee1a](https://github.com/organizzolini/codebase/commit/d09ee1a22c91e10470af55a35545fe504c8daf0c)), closes [#1201](https://github.com/organizzolini/codebase/issues/1201) [#1403](https://github.com/organizzolini/codebase/issues/1403) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1419](https://github.com/organizzolini/codebase/issues/1419)
+
+### 🐛 Bug Fixes
+
+* **caelundas,conformetry:** 🐛 require an explicit directory instead of defaulting the destination ([#1395](https://github.com/organizzolini/codebase/issues/1395)) ([c84885a](https://github.com/organizzolini/codebase/commit/c84885a96fb2939dedad303d904fa2f30b6495f1))
+* **deployments:** 🐛 baseline a new package's first release ([#1499](https://github.com/organizzolini/codebase/issues/1499)) ([63639a7](https://github.com/organizzolini/codebase/commit/63639a74cb34b9f49b4224ac032654922622e5cf)), closes [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1429](https://github.com/organizzolini/codebase/issues/1429)
+* **deployments:** 🐛 skip the pre-commit hook on release commits ([#1502](https://github.com/organizzolini/codebase/issues/1502)) ([8a83e1a](https://github.com/organizzolini/codebase/commit/8a83e1ae8981652b027be59663284ccd4c6dabcc)), closes [#1499](https://github.com/organizzolini/codebase/issues/1499)
+
+### 📝 Documentation
+
+* **documentation:** 📝 clean up local resources after ship-changes and let submit-changes fix easy hook failures ([#1500](https://github.com/organizzolini/codebase/issues/1500)) ([865bd18](https://github.com/organizzolini/codebase/commit/865bd1804c8896c76664ffebbf7e55db0d51eaff))
+* **documentation:** 📝 restructure readme project sections ([#1497](https://github.com/organizzolini/codebase/issues/1497)) ([6c36cef](https://github.com/organizzolini/codebase/commit/6c36cefd5df69b99e6aff9facdf8231002d1a9ed))
+
 ## [3.1.1](https://github.com/organizzolini/codebase/compare/v3.1.0...v3.1.1) (2026-10-12)
 
 ### 🐛 Bug Fixes

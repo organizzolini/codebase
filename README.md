@@ -268,6 +268,7 @@ graph LR
   codependix_examples["codependix-examples"]
   codependix_file_imports["codependix-file-imports"]
   codependix_nestjs_modules["codependix-nestjs-modules"]
+  codependix_nx["codependix-nx"]
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
   codometer_agents["codometer-agents"]
@@ -344,6 +345,7 @@ graph LR
   codependix_examples --> codependix_output
   codependix_examples --> logging
   codependix_nestjs_modules --> logging
+  codependix_nx --> codependix_cli
   codependix_output --> codependix_boundaries
   codependix_output --> codependix_configuration
   codependix_output --> codependix_core
@@ -602,6 +604,9 @@ graph LR
   module_codependix_nestjs_modules_NestjsProjectModule["codependix-nestjs-modules/NestjsProjectModule"]
   module_codependix_nx_projects_NeighborhoodModule["codependix-nx-projects/NeighborhoodModule"]
   module_codependix_nx_projects_WorkspaceGraphModule["codependix-nx-projects/WorkspaceGraphModule"]
+  module_codependix_nx_GateModule["codependix-nx/GateModule"]
+  module_codependix_nx_MainModule["codependix-nx/MainModule"]
+  module_codependix_nx_PluginModule["codependix-nx/PluginModule"]
   module_codependix_output_AnchorsModule["codependix-output/AnchorsModule"]
   module_codependix_output_BoundariesModule["codependix-output/BoundariesModule"]
   module_codependix_output_BoundaryCheckModule["codependix-output/BoundaryCheckModule"]
@@ -1242,6 +1247,9 @@ graph LR
   module_codependix_configuration_ConfigurationModule --> module_codependix_configuration_InputModule
   module_codependix_configuration_ConfigurationModule --> module_codependix_configuration_OverrideResolutionModule
   module_codependix_nx_projects_WorkspaceGraphModule --> module_codependix_nx_projects_NeighborhoodModule
+  module_codependix_nx_GateModule --> module_codependix_nx_PluginModule
+  module_codependix_nx_MainModule --> module_codependix_nx_GateModule
+  module_codependix_nx_MainModule --> module_codependix_nx_PluginModule
   module_codependix_output_BoundaryCheckModule --> module_codependix_output_BoundariesModule
   module_codependix_output_BoundaryCheckModule --> module_codependix_output_ModuleGraphModule
   module_codependix_output_BoundaryCheckModule --> module_codependix_output_NeighborhoodModule
@@ -2641,6 +2649,35 @@ graph LR
   file_codependix_nx_projects_testing_setup_ts["codependix-nx-projects/testing/setup.ts"]
   file_codependix_nx_projects_vite_config_ts["codependix-nx-projects/vite.config.ts"]
   file_codependix_nx_projects_vitest_config_ts["codependix-nx-projects/vitest.config.ts"]
+  file_codependix_nx_callidescope_config_ts["codependix-nx/callidescope.config.ts"]
+  file_codependix_nx_codependix_config_ts["codependix-nx/codependix.config.ts"]
+  file_codependix_nx_codometer_config_ts["codependix-nx/codometer.config.ts"]
+  file_codependix_nx_eslint_config_ts["codependix-nx/eslint.config.ts"]
+  file_codependix_nx_src_executors_gate_executor_integration_test_ts["codependix-nx/src/executors/gate/executor.integration.test.ts"]
+  file_codependix_nx_src_executors_gate_executor_ts["codependix-nx/src/executors/gate/executor.ts"]
+  file_codependix_nx_src_executors_gate_executor_types_ts["codependix-nx/src/executors/gate/executor.types.ts"]
+  file_codependix_nx_src_executors_gate_executor_unit_test_ts["codependix-nx/src/executors/gate/executor.unit.test.ts"]
+  file_codependix_nx_src_index_ts["codependix-nx/src/index.ts"]
+  file_codependix_nx_src_index_unit_test_ts["codependix-nx/src/index.unit.test.ts"]
+  file_codependix_nx_src_main_module_ts["codependix-nx/src/main.module.ts"]
+  file_codependix_nx_src_modules_gate_gate_constants_ts["codependix-nx/src/modules/gate/gate.constants.ts"]
+  file_codependix_nx_src_modules_gate_gate_module_ts["codependix-nx/src/modules/gate/gate.module.ts"]
+  file_codependix_nx_src_modules_gate_gate_service_ts["codependix-nx/src/modules/gate/gate.service.ts"]
+  file_codependix_nx_src_modules_gate_gate_service_unit_test_ts["codependix-nx/src/modules/gate/gate.service.unit.test.ts"]
+  file_codependix_nx_src_modules_gate_gate_types_ts["codependix-nx/src/modules/gate/gate.types.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts["codependix-nx/src/modules/plugin/plugin-context.utilities.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts["codependix-nx/src/modules/plugin/plugin-context.utilities.unit.test.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts["codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_unit_test_ts["codependix-nx/src/modules/plugin/plugin-inputs.utilities.unit.test.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_constants_ts["codependix-nx/src/modules/plugin/plugin.constants.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_module_ts["codependix-nx/src/modules/plugin/plugin.module.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_service_ts["codependix-nx/src/modules/plugin/plugin.service.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_service_unit_test_ts["codependix-nx/src/modules/plugin/plugin.service.unit.test.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_types_ts["codependix-nx/src/modules/plugin/plugin.types.ts"]
+  file_codependix_nx_testing_mocks_ts["codependix-nx/testing/mocks.ts"]
+  file_codependix_nx_testing_setup_ts["codependix-nx/testing/setup.ts"]
+  file_codependix_nx_vite_config_ts["codependix-nx/vite.config.ts"]
+  file_codependix_nx_vitest_config_ts["codependix-nx/vitest.config.ts"]
   file_codependix_output_callidescope_config_ts["codependix-output/callidescope.config.ts"]
   file_codependix_output_codependix_config_ts["codependix-output/codependix.config.ts"]
   file_codependix_output_codometer_config_ts["codependix-output/codometer.config.ts"]
@@ -3182,6 +3219,7 @@ graph LR
   file_conformetry_configuration_src_modules_input_input_schema_service_ts["conformetry-configuration/src/modules/input/input-schema.service.ts"]
   file_conformetry_configuration_src_modules_input_input_schema_service_unit_test_ts["conformetry-configuration/src/modules/input/input-schema.service.unit.test.ts"]
   file_conformetry_configuration_src_modules_input_input_constants_ts["conformetry-configuration/src/modules/input/input.constants.ts"]
+  file_conformetry_configuration_src_modules_input_input_constants_unit_test_ts["conformetry-configuration/src/modules/input/input.constants.unit.test.ts"]
   file_conformetry_configuration_src_modules_input_input_module_ts["conformetry-configuration/src/modules/input/input.module.ts"]
   file_conformetry_configuration_src_modules_input_input_service_ts["conformetry-configuration/src/modules/input/input.service.ts"]
   file_conformetry_configuration_src_modules_input_input_service_unit_test_ts["conformetry-configuration/src/modules/input/input.service.unit.test.ts"]
@@ -6820,6 +6858,44 @@ graph LR
   file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_service_unit_test_ts --> file_codependix_nx_projects_src_modules_neighborhood_neighborhood_types_ts
   file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_service_unit_test_ts --> file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_service_ts
   file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_types_ts --> file_codependix_nx_projects_src_modules_neighborhood_neighborhood_types_ts
+  file_codependix_nx_src_executors_gate_executor_integration_test_ts --> file_codependix_nx_src_executors_gate_executor_ts
+  file_codependix_nx_src_executors_gate_executor_integration_test_ts --> file_codependix_nx_src_executors_gate_executor_types_ts
+  file_codependix_nx_src_executors_gate_executor_ts --> file_codependix_nx_src_executors_gate_executor_types_ts
+  file_codependix_nx_src_executors_gate_executor_ts --> file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_codependix_nx_src_executors_gate_executor_types_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
+  file_codependix_nx_src_executors_gate_executor_unit_test_ts --> file_codependix_nx_src_executors_gate_executor_ts
+  file_codependix_nx_src_executors_gate_executor_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts
+  file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
+  file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_index_ts
+  file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
+  file_codependix_nx_src_main_module_ts --> file_codependix_nx_src_modules_gate_gate_module_ts
+  file_codependix_nx_src_main_module_ts --> file_codependix_nx_src_modules_plugin_plugin_module_ts
+  file_codependix_nx_src_modules_gate_gate_module_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_modules_gate_gate_module_ts --> file_codependix_nx_src_modules_plugin_plugin_module_ts
+  file_codependix_nx_src_modules_gate_gate_service_ts --> file_codependix_nx_src_modules_gate_gate_constants_ts
+  file_codependix_nx_src_modules_gate_gate_service_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
+  file_codependix_nx_src_modules_gate_gate_service_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_main_module_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
+  file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
+  file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts
+  file_codependix_nx_src_modules_plugin_plugin_module_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_service_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
+  file_codependix_nx_src_modules_plugin_plugin_service_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
+  file_codependix_nx_src_modules_plugin_plugin_service_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
+  file_codependix_nx_src_modules_plugin_plugin_types_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
   file_codependix_output_src_modules_anchors_anchors_module_ts --> file_codependix_output_src_modules_anchors_anchors_service_ts
   file_codependix_output_src_modules_anchors_anchors_module_unit_test_ts --> file_codependix_output_src_modules_anchors_anchors_module_ts
   file_codependix_output_src_modules_anchors_anchors_module_unit_test_ts --> file_codependix_output_src_modules_anchors_anchors_service_ts
@@ -7534,6 +7610,7 @@ graph LR
   file_conformetry_configuration_src_modules_input_input_schema_service_ts --> file_conformetry_configuration_src_modules_configuration_configuration_types_ts
   file_conformetry_configuration_src_modules_input_input_schema_service_ts --> file_conformetry_configuration_src_modules_input_input_types_ts
   file_conformetry_configuration_src_modules_input_input_schema_service_unit_test_ts --> file_conformetry_configuration_src_modules_input_input_schema_service_ts
+  file_conformetry_configuration_src_modules_input_input_constants_unit_test_ts --> file_conformetry_configuration_src_modules_input_input_constants_ts
   file_conformetry_configuration_src_modules_input_input_module_ts --> file_conformetry_configuration_src_modules_input_input_options_service_ts
   file_conformetry_configuration_src_modules_input_input_module_ts --> file_conformetry_configuration_src_modules_input_input_prompting_service_ts
   file_conformetry_configuration_src_modules_input_input_module_ts --> file_conformetry_configuration_src_modules_input_input_schema_service_ts
@@ -11297,7 +11374,7 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6303-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6338-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-2.24_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-78-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-24-3178c6?style=flat-square)
@@ -11325,8 +11402,8 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-92-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-51-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-12-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-692-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1426-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-697-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1434-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -11347,16 +11424,16 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-23-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-6024-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-6031-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-794-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-318-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1971-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1956-16a34a?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-317-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1972-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1959-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-38-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-145-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1264-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3251-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1265-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3253-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -11386,16 +11463,16 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### Shell
 
 ![Shell Files](https://img.shields.io/badge/Shell_Files-48-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-3401-4eaa25?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-3426-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-48-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-303-0284c7?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-307-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-11-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-214-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-35-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-119-059669?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-215-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-36-8b5cf6?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-120-059669?style=flat-square)
 ![Shebangs](https://img.shields.io/badge/Shebangs-48-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-861-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-861-475569?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-876-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-876-475569?style=flat-square)
 
 ### SQL
 
@@ -11482,23 +11559,23 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-117-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19315-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19328-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-116-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-678-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-527-a78bfa?style=flat-square)
+![H3](https://img.shields.io/badge/H3-528-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5498-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-866-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4193-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5505-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-867-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4198-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-231-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1970-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-716-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-1969-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-720-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-407-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-10888-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-10912-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
