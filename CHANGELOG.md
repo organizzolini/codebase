@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.6](https://github.com/organizzolini/codebase/compare/v3.2.5...v3.2.6) (2026-10-13)
+
+### ♻️ Code Refactoring
+
+* **configuration,synchronization,validation:** ♻️ move root validation and sync targets into their projects ([#1508](https://github.com/organizzolini/codebase/issues/1508)) ([95be3b6](https://github.com/organizzolini/codebase/commit/95be3b642d3656eaca8ef4ee8730ae6a0827a3d3))
+
 ## [3.2.5](https://github.com/organizzolini/codebase/compare/v3.2.4...v3.2.5) (2026-10-13)
 
 ### 🐛 Bug Fixes
