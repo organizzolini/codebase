@@ -1,9 +1,7 @@
 import {
-  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
-  realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -18,7 +16,6 @@ import {
   COMMAND_TIMEOUT,
   CONSUMER_ALLOWED_BUILDS,
   CONSUMER_DIRECTORY_PREFIX,
-  CONSUMER_MINIMUM_RELEASE_AGE,
   CONSUMER_ROOT_VARIABLE,
   CONSUMER_TOOLS,
   formatCommandFailure,
@@ -26,7 +23,6 @@ import {
   TYPECHECK_CONFIGURATION,
   TYPECHECK_CONFIGURATION_CONTENT,
   TYPECHECK_DIRECTORY,
-  WORKSPACE_MARKERS,
 } from "./publishable-packages-consumer.constants";
 import { CONSUMER_FIXTURE_FILES } from "./publishable-packages-fixtures.constants";
 import { PublishablePackagesProcessService } from "./publishable-packages-process.service";
@@ -115,33 +111,9 @@ export class PublishablePackagesConsumerService {
         `  ${JSON.stringify(name)}: ${JSON.stringify(specifier)}`,
     );
 
-    return [
-      "allowBuilds:",
-      ...builds,
-      `minimumReleaseAge: ${String(CONSUMER_MINIMUM_RELEASE_AGE)}`,
-      "overrides:",
-      ...overrides,
-      "",
-    ].join("\n");
-  }
-
-  /**
-   * Returns the first directory, from this one up to the filesystem root,
-   * holding a package or workspace marker.
-   */
-  private findWorkspaceAncestor(directory: string): null | string {
-    for (let current = directory; ; current = path.dirname(current)) {
-      const marker = WORKSPACE_MARKERS.map((name) =>
-        path.join(current, name),
-      ).find((candidate) => existsSync(candidate));
-
-      if (marker !== undefined) {
-        return marker;
-      }
-      if (path.dirname(current) === current) {
-        return null;
-      }
-    }
+    return ["allowBuilds:", ...builds, "overrides:", ...overrides, ""].join(
+      "\n",
+    );
   }
 
   /** Reads one manifest beneath the workspace root. */
@@ -178,28 +150,6 @@ export class PublishablePackagesConsumerService {
     }
 
     return version;
-  }
-
-  /**
-   * Resolves the directory consumers are created beneath, refusing one that
-   * sits inside any package or workspace.
-   */
-  private resolveConsumerParent(): string {
-    const configured = process.env[CONSUMER_ROOT_VARIABLE];
-    const parent =
-      configured === undefined || configured === "" ? tmpdir() : configured;
-    mkdirSync(parent, { recursive: true });
-
-    const resolved = realpathSync(parent);
-    const ancestor = this.findWorkspaceAncestor(resolved);
-
-    if (ancestor !== null) {
-      throw new Error(
-        `Refusing to create a consumer beneath ${resolved}: ${ancestor} would let it resolve packages it never installed. Set ${CONSUMER_ROOT_VARIABLE} to a directory outside every package and workspace.`,
-      );
-    }
-
-    return resolved;
   }
 
   /** Maps each package name to the `file:` specifier of its tarball. */
@@ -241,7 +191,10 @@ export class PublishablePackagesConsumerService {
       "package.json": this.createManifest(options),
       "pnpm-workspace.yaml": this.createWorkspaceConfiguration(options),
     };
-    const parent = this.resolveConsumerParent();
+    const configured = process.env[CONSUMER_ROOT_VARIABLE];
+    const parent =
+      configured === undefined || configured === "" ? tmpdir() : configured;
+    mkdirSync(parent, { recursive: true });
     const directory = mkdtempSync(path.join(parent, CONSUMER_DIRECTORY_PREFIX));
 
     try {

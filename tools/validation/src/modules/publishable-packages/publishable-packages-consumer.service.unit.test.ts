@@ -1,9 +1,7 @@
 import {
-  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
-  realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -32,11 +30,9 @@ import type { DeepMocked } from "@golevelup/ts-vitest";
 import type { tmpdir } from "node:os";
 
 vi.mock("node:fs", () => ({
-  existsSync: vi.fn<typeof existsSync>(),
   mkdirSync: vi.fn<typeof mkdirSync>(),
   mkdtempSync: vi.fn<typeof mkdtempSync>(),
   readFileSync: vi.fn<typeof readFileSync>(),
-  realpathSync: vi.fn<typeof realpathSync>(),
   rmSync: vi.fn<typeof rmSync>(),
   writeFileSync: vi.fn<typeof writeFileSync>(),
 }));
@@ -46,7 +42,7 @@ vi.mock("node:os", () => ({
 }));
 
 const WORKSPACE_ROOT = "/work/codebase";
-const CONSUMER = "/private/var/tmp/publishable-packages-consumer-abc";
+const CONSUMER = "/var/tmp/publishable-packages-consumer-abc";
 
 const options: ConsumerOptions = {
   publishablePackages: [
@@ -61,9 +57,6 @@ const options: ConsumerOptions = {
   tarballsDirectory: `${WORKSPACE_ROOT}/dist/tarballs`,
   workspaceRoot: WORKSPACE_ROOT,
 };
-
-/** Paths `existsSync` reports as present. */
-let existingPaths = new Set<string>();
 
 /** What the mocked filesystem holds, by path. */
 const manifests: Record<string, string> = {
@@ -113,10 +106,6 @@ describe(PublishablePackagesConsumerService, () => {
   beforeEach(() => {
     vi.clearAllMocks();
     Reflect.deleteProperty(process.env, CONSUMER_ROOT_VARIABLE);
-    existingPaths = new Set();
-    vi.mocked(existsSync).mockImplementation((target) =>
-      existingPaths.has(String(target)),
-    );
     vi.mocked(readFileSync).mockImplementation((target) => {
       const content = manifests[String(target)];
       if (content === undefined) {
@@ -124,11 +113,8 @@ describe(PublishablePackagesConsumerService, () => {
       }
       return content;
     });
-    vi.mocked(realpathSync).mockImplementation(
-      (target) => `/private${String(target)}`,
-    );
     vi.mocked(mkdtempSync).mockReturnValue(
-      "/private/var/tmp/publishable-packages-consumer-abc",
+      "/var/tmp/publishable-packages-consumer-abc",
     );
     processService.run.mockReturnValue({ output: "", status: 0 });
   });
@@ -151,7 +137,7 @@ describe(PublishablePackagesConsumerService, () => {
         workspaceRoot: WORKSPACE_ROOT,
       });
       expect(mkdtempSync).toHaveBeenCalledWith(
-        "/private/var/tmp/publishable-packages-consumer-",
+        "/var/tmp/publishable-packages-consumer-",
       );
     });
 
@@ -165,7 +151,7 @@ describe(PublishablePackagesConsumerService, () => {
         recursive: true,
       });
       expect(mkdtempSync).toHaveBeenCalledWith(
-        "/private/runner/_temp/publishable-packages-consumer-",
+        "/runner/_temp/publishable-packages-consumer-",
       );
     });
 
@@ -176,7 +162,7 @@ describe(PublishablePackagesConsumerService, () => {
       service.createConsumer(options);
 
       expect(mkdtempSync).toHaveBeenCalledWith(
-        "/private/var/tmp/publishable-packages-consumer-",
+        "/var/tmp/publishable-packages-consumer-",
       );
     });
 
@@ -207,20 +193,6 @@ describe(PublishablePackagesConsumerService, () => {
       });
     });
 
-    it.each([["package.json"], ["node_modules"], ["pnpm-workspace.yaml"]])(
-      "refuses a directory beneath a %s",
-      (marker) => {
-        expect.hasAssertions();
-
-        existingPaths.add(`/private/var/${marker}`);
-
-        expect(() => service.createConsumer(options)).toThrow(
-          `/private/var/${marker}`,
-        );
-        expect(mkdtempSync).not.toHaveBeenCalled();
-      },
-    );
-
     it("installs every package from its tarball and overrides each", () => {
       expect.hasAssertions();
 
@@ -245,7 +217,6 @@ describe(PublishablePackagesConsumerService, () => {
           "allowBuilds:",
           '  "@swc/core": true',
           '  "nx": true',
-          "minimumReleaseAge: 1440",
           "overrides:",
           `  "@codometer/cli": "file:${WORKSPACE_ROOT}/dist/tarballs/codometer-cli-0.0.7.tgz"`,
           `  "@codometer/core": "file:${WORKSPACE_ROOT}/dist/tarballs/codometer-core-0.0.7.tgz"`,

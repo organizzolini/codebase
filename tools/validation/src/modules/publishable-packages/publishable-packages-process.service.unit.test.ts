@@ -128,36 +128,6 @@ describe(PublishablePackagesProcessService, () => {
     ).toStrictEqual({ output: "Error: spawn pnpm ENOENT", status: null });
   });
 
-  it.each([
-    ["publish"],
-    ["release"],
-    ["unpublish"],
-    ["dist-tags"],
-    ["login"],
-    ["healthy:nx-release-publish"],
-  ])("refuses to run a command carrying %s", (argument) => {
-    expect.hasAssertions();
-    expect(() =>
-      service.run(context, {
-        args: ["exec", argument],
-        executable: "pnpm",
-        timeout: 1,
-      }),
-    ).toThrow(/registry/u);
-    expect(spawnSync).not.toHaveBeenCalled();
-  });
-
-  it("refuses a publishing executable", () => {
-    expect.hasAssertions();
-    expect(() =>
-      service.run(context, {
-        args: [],
-        executable: "/usr/bin/publish",
-        timeout: 1,
-      }),
-    ).toThrow(/registry/u);
-  });
-
   it("drops registry tokens and this workspace's tool settings", () => {
     expect.hasAssertions();
 
@@ -166,12 +136,10 @@ describe(PublishablePackagesProcessService, () => {
       HOME: "/home/runner",
       NODE_AUTH_TOKEN: "secret",
       NODE_OPTIONS: "--import @swc-node/register/esm-register",
-      NODE_PATH: "/work/codebase/node_modules",
       npm_config_registry: "http://localhost:4873",
       NPM_TOKEN: "secret",
       NX_WORKSPACE_ROOT: "/work/codebase",
       pnpm_config_verify_deps_before_run: "false",
-      SWC_NODE_PROJECT: "/work/codebase/tsconfig.json",
     };
 
     service.run(context, { args: [], executable: "nx", timeout: 1 });

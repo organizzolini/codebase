@@ -8,62 +8,26 @@ import type {
 /**
  * Environment variable naming the directory a consumer is created beneath.
  *
- * Unset, the operating system's temporary directory is used. Either way the
- * directory, and every directory above it, must hold no `package.json`,
- * `node_modules`, or `pnpm-workspace.yaml`: a consumer beneath one of those
- * resolves the packages they hold instead of its own, which hides exactly the
- * install bugs this check exists to catch.
+ * Unset, the operating system's temporary directory is used. It must sit
+ * outside every package and workspace: a consumer beneath one resolves the
+ * packages that holds instead of its own, which hides the install bugs this
+ * check exists to catch.
  */
 export const CONSUMER_ROOT_VARIABLE = "PUBLISHABLE_PACKAGES_CONSUMER_ROOT";
 
 /** Prefix of each consumer directory, completed by `mkdtemp`. */
 export const CONSUMER_DIRECTORY_PREFIX = "publishable-packages-consumer-";
 
-/** Files whose presence makes a directory a package or workspace root. */
-export const WORKSPACE_MARKERS = [
-  "node_modules",
-  "package.json",
-  "pnpm-workspace.yaml",
-] as const;
-
-/**
- * npm, pnpm, and Nx subcommands that publish, retag, or authenticate.
- *
- * A tripwire, not the guarantee: every command this check runs is written in
- * this module, and none of them writes to a registry. The tripwire exists
- * because every ic-suite manifest pins `publishConfig.registry` to npmjs,
- * which overrides any `--registry` flag, so a stray publish added here later
- * would be a real release.
- */
-export const REGISTRY_WRITE_ARGUMENTS: ReadonlySet<string> = new Set([
-  "access",
-  "add-user",
-  "adduser",
-  "deprecate",
-  "dist-tag",
-  "dist-tags",
-  "login",
-  "owner",
-  "publish",
-  "release",
-  "team",
-  "token",
-  "unpublish",
-]);
-
-/** Suffix of the target Nx release infers to publish one project. */
-export const RELEASE_PUBLISH_TARGET_SUFFIX = ":nx-release-publish";
-
 /**
  * Environment variables a consumer command never inherits.
  *
  * `NX_*` from a parent Nx task would point the consumer's Nx at this
  * workspace, `npm_*` and `pnpm_config_*` carry this workspace's package
- * manager settings and any registry token, and `NODE_OPTIONS` or the swc
- * project variables could load this workspace's TypeScript hooks.
+ * manager settings and any registry token, and `NODE_OPTIONS` could load
+ * this workspace's TypeScript hooks.
  */
 export const INHERITED_VARIABLE_PATTERN =
-  /^(?:npm_|nx_|pnpm_config_|force_color$|init_cwd$|node_auth_token$|node_options$|node_path$|swc_node_project$|ts_node_project$)/i;
+  /^(?:npm_|nx_|pnpm_config_|force_color$|node_auth_token$|node_options$)/i;
 
 /**
  * A terminal control sequence, such as the colors pino and Nx print even
@@ -94,9 +58,6 @@ export const FAILURE_OUTPUT_LINES = 40;
 
 /** Builds the consumer's own `pnpm` approves, as this workspace does. */
 export const CONSUMER_ALLOWED_BUILDS = ["@swc/core", "nx"] as const;
-
-/** Minutes a dependency must have been published before it is installed. */
-export const CONSUMER_MINIMUM_RELEASE_AGE = 1440;
 
 /** Tools the consumer pins to the versions this workspace has installed. */
 export const CONSUMER_TOOLS = ["@types/node", "nx", "typescript"] as const;

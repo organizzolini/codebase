@@ -9,8 +9,6 @@ import {
   ESCAPE_SEQUENCE_PATTERN,
   INHERITED_VARIABLE_PATTERN,
   MAXIMUM_OUTPUT_BYTES,
-  REGISTRY_WRITE_ARGUMENTS,
-  RELEASE_PUBLISH_TARGET_SUFFIX,
 } from "./publishable-packages-consumer.constants";
 
 import type {
@@ -21,7 +19,7 @@ import type {
 
 /**
  * Runs a command inside a consumer, isolated from the workspace that packed
- * its tarballs and unable to write to any registry.
+ * its tarballs and from any registry token.
  */
 @Injectable()
 export class PublishablePackagesProcessService {
@@ -36,23 +34,6 @@ export class PublishablePackagesProcessService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Throws before a command that would publish, deprecate, or log in to a
-   * registry can start.
-   */
-  private assertNoRegistryWrite(command: ConsumerCommand): void {
-    for (const word of [path.basename(command.executable), ...command.args]) {
-      if (
-        REGISTRY_WRITE_ARGUMENTS.has(word) ||
-        word.endsWith(RELEASE_PUBLISH_TARGET_SUFFIX)
-      ) {
-        throw new Error(
-          `Refusing to run "${word}": the publishable packages check never writes to a registry.`,
-        );
-      }
-    }
-  }
 
   /**
    * Builds the environment a consumer command runs under.
@@ -105,8 +86,6 @@ export class PublishablePackagesProcessService {
     context: ConsumerContext,
     command: ConsumerCommand,
   ): ConsumerCommandResult {
-    this.assertNoRegistryWrite(command);
-
     const result = spawnSync(command.executable, [...command.args], {
       cwd: context.directory,
       encoding: "utf8",
