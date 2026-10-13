@@ -12,15 +12,8 @@
 # nx.json's `release.releaseTag` sets, does not exist yet. Checkout fetches
 # every tag, so only this release's are missing, and a re-run creates nothing
 # twice. A new package's hand-written `0.0.0` is never tagged as a release: it
-# has not been released, and its first release is still to come.
-#
-# That first release needs a starting point, though. Nx writes a changelog from
-# a package's previous tag and stops when it has none, so a package that has
-# never been tagged gets a `<project>@0.0.0` baseline on the commit before the
-# one that added it. Nx then reads that as its current version and versions
-# every commit that touched the package, the one that added it included. It is
-# an anchor, not a release: nothing is published from it, and the first real
-# tag follows when the release commit is tagged.
+# has not been released, and its first release is still to come. It does get
+# a baseline tag first, so that release has a starting point: tag_baselines.
 #
 # GitHub rejects any push to this repository that updates more than 6 refs,
 # and a first release tags 20 or more packages, so the tags go 6 at a time. A
@@ -82,10 +75,17 @@ commit_leftover_versions() {
   fi
 }
 
-# Tags the commit before each never-tagged release-group package was added with
-# a `<project>@0.0.0` baseline, adding each tag it makes to `tags`. A package
-# that has any tag, or whose version is no longer `0.0.0`, is left alone, so a
-# released package that lost its tag is not restarted from its first commit;
+# Gives each never-tagged release-group package a `<project>@0.0.0` baseline on
+# the commit before the one that added it, adding each tag it makes to `tags`.
+#
+# Nx writes a changelog from a package's previous tag and stops when it has
+# none. It reads the baseline as the current version, so the first release
+# versions every commit that touched the package, the one that added it
+# included. The baseline is an anchor, not a release: nothing is published from
+# it, and the first real tag follows on the release commit.
+#
+# A package with any tag, or a version other than `0.0.0`, is left alone, so a
+# released package that lost its tag is never restarted from its first commit;
 # tag_new_versions tags it at HEAD instead.
 tag_baselines() {
   local group project root added parent
