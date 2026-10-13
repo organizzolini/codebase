@@ -55,7 +55,7 @@ See [README.md](README.md) for the Helm deploy commands and the `nx run infrastr
 ## Troubleshooting
 
 - **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod and PVC. Usual causes are an image pull failure against GHCR, insufficient cluster CPU/memory, or an unbound PVC.
-- **PVCs outliving their Job** — PVCs are never deleted automatically when a Job or pod goes away. Remove them explicitly (`kubectl delete pvc <name>`) after retrieving output.
+- **PVCs outliving their Job** — PVCs are never deleted automatically when a Job or pod goes away. Remove them explicitly (`kubectl delete pvc <name>`) once you have what you need from it.
 - **`exec format error`** — the image was built for arm64. Rebuild with `--platform linux/amd64`.
 
 ## Key Files

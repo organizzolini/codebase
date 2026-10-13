@@ -219,9 +219,10 @@ Caelundas runs as a **Kubernetes Job** (not Deployment):
 # 1. Push the image (built for linux/amd64)
 docker push ghcr.io/organizzolini/caelundas:latest
 
-# 2. Deploy Job
+# 2. Deploy Job (base.yaml is a defaults template, so override the image)
 helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
-  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml
+  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml \
+  --set image.repository=ghcr.io/organizzolini/caelundas --set image.tag=latest
 
 # 3. Monitor completion
 kubectl wait --for=condition=complete job/<job-name> --timeout=600s
@@ -235,13 +236,17 @@ kubectl delete pvc caelundas-output
 
 Uses [projects/infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
 
-**Values**: [projects/infrastructure/helm/kubernetes-job/values/base.yaml](../../infrastructure/helm/kubernetes-job/values/base.yaml)
+**Values**: [base.yaml](../../infrastructure/helm/kubernetes-job/values/base.yaml) holds chart defaults only (its image is the placeholder `my-application`); there is no caelundas-specific values file, so override the image and `env` at deploy time.
 
 See [kubernetes-deployment skill](../../../.agents/skills/kubernetes-deployment/SKILL.md) for Helm chart details.
 
 ### Environment Variables in K8s
 
-Stored as Kubernetes Secret (`caelundas-env-secret`), created in the cluster with `kubectl create secret`.
+The chart references no Secret by default; to inject them, create one and point `env` at it with `valueFrom.secretKeyRef` (see the commented example in `base.yaml`):
+
+```bash
+kubectl create secret generic caelundas-env-secret --from-env-file=.env
+```
 
 ## Docker Workflow
 

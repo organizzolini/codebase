@@ -15,9 +15,12 @@
 
 ### Deploy Application with Helm
 
+`values/base.yaml` holds chart defaults, including a placeholder image (`my-application`), so override the image at deploy time.
+
 ```bash
 helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
-  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml
+  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml \
+  --set image.repository=<image> --set image.tag=<tag>
 
 # Monitor the Job
 kubectl get jobs -w
