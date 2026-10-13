@@ -7,6 +7,7 @@ How the engineering skills should consume this repository's domain documentation
 Two repository-specific notes:
 
 - **ADRs are always root-level.** A project subfolder set is enforced by `eslint-plugin-project-structure` (see [AGENTS.md](../../AGENTS.md)), and `docs/` is not in it — so a per-project `projects/<name>/docs/adr/` is a lint error. Every ADR goes in the root `docs/adr/`, whatever its scope.
+- **`docs/` is a symlink to `documentation/`.** The skills below say `docs/adr/` and `docs/agents/`; both resolve to `documentation/adr/` and `documentation/agents/`, where the files really live. Follow the paths as the skills print them, and see [AGENTS.md](../../AGENTS.md#documentation-lives-in-documentation) for why.
 - **Ignore the `src/<context>/` paths** in the multi-context example below. This workspace nests projects under `projects/`, not `src/`. The example is upstream's and is kept only for reference should this repository ever switch to multi-context.
 
 ## Before exploring, read these

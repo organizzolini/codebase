@@ -72,7 +72,7 @@ optionality nobody was spending — the fallback makes every run need the
 package regardless — so the specifier registry, the module loader, and the
 `loadLanguageModule` option went with it. The trade-off, and the three
 alternatives weighed against it, are recorded in
-[ADR 0006](../../../../docs/adr/0006-hold-every-conformetry-language-in-one-package.md).
+[ADR 0006](../../../../documentation/adr/0006-hold-every-conformetry-language-in-one-package.md).
 
 ## Exports
 

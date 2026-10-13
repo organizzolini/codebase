@@ -1525,6 +1525,18 @@ export default [
     },
   },
 
+  // 📚 OpenWiki bookkeeping
+  // `.last-update.json` is written by the OpenWiki CLI with `updatedAt` ahead
+  // of `model`. The generator rewrites it on every refresh, so sorting its keys
+  // here would be undone by the next scheduled run — and `documentation/` is
+  // linted as a whole, which reaches it now that `openwiki/` lives inside.
+  {
+    files: ["documentation/openwiki/.last-update.json"],
+    rules: {
+      "jsonc/sort-keys": "off",
+    },
+  },
+
   // 📋 YAML Files
   // YAML/YML linting with indent, quoting, and best practice rules
   ...eslintPluginYml.configs["flat/standard"].map((config) => ({
@@ -1651,7 +1663,7 @@ export default [
   // skills. Placement above is judged for those pages regardless.
   {
     files: ["**/*.md"],
-    ignores: [".agents/**", "openwiki/**"],
+    ignores: [".agents/**", "documentation/openwiki/**"],
     rules: {
       // Enable markdown-specific rules
       "markdown/fenced-code-language": "warn",

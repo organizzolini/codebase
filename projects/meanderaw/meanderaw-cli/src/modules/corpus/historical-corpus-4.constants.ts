@@ -7,7 +7,7 @@ import type { CorpusEntry } from "./corpus.types";
  * a one-shot script from the `output/` drawing tree this repository used to
  * commit, and deleted in the same pull request that added this file — see
  * `HISTORICAL_CORPUS` for what the whole set is, and
- * `docs/adr/0013-hold-the-historical-corpus-as-a-test-set.md` for why the
+ * `documentation/adr/0013-hold-the-historical-corpus-as-a-test-set.md` for why the
  * extraction ran once. The split is by printed line count rather than by
  * entry count, because an entry costs one line or six depending on how long
  * its Code is, and no chunk may cross the 512-line cap.
