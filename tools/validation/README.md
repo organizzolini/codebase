@@ -10,7 +10,7 @@ each one.
 
 ```bash
 nx run validation:start:pull-request-metadata     # labels and assignees against the title
-nx run validation:start:pull-request-body         # the four headings, non-empty sections, and no unfilled template comment
+nx run validation:start:pull-request-body         # the four headings, each section's shape and length, and no unfilled template comment
 nx run validation:start:catalog-manifests         # catalog:/workspace:* in every manifest
 nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
 ```
@@ -40,7 +40,7 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 | Check | Answers |
 | ----- | ------- |
 | `pull-request-metadata` | Do a pull request's labels and assignees agree with its title? |
-| `pull-request-body` | Does a pull request description carry all four headings with non-empty sections and no template comment left unfilled? |
+| `pull-request-body` | Does a pull request description carry all four headings, each section non-empty, in its shape, and within its word limit, with no template comment left unfilled? |
 | `catalog-manifests` | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
 | `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
 
@@ -71,6 +71,24 @@ actual content, and that no `<!-- … -->` prompt from
 survives unfilled. The comments are read from the template at runtime rather
 than listed here, so adding a prompt to the template starts it being checked
 with no code change.
+
+Each section is also parsed as CommonMark and held to one shape, with Summary
+and Details capped in words as `wc -w` counts them:
+
+| Section    | Holds                                           | Word limit |
+| ---------- | ----------------------------------------------- | ---------- |
+| 🌰 Summary | Only one paragraph                              | 48         |
+| 📝 Details | Only a bulleted list, one marker throughout     | 512        |
+| 🧪 Testing | Only an ordered list, whose items may hold code | —          |
+| 🔗 Related | A `-` list first, then anything                 | —          |
+
+Blocks that are nothing but comments are ignored. Details takes `-`, `*`, or
+`+` so long as one marker is used throughout, as markdownlint's MD004 does.
+Related is open-ended after its list so that an attribution line or any other
+trailer can close the description. The limits sit near the 75th percentile of
+past Summaries, to keep one readable at a glance, and between the 90th and 95th
+of past Details.
+The shapes and limits live in `SECTION_RULES`, not the template.
 
 ### `catalog-manifests`
 
@@ -111,9 +129,9 @@ Call stacks traced through `tools/validation`, deepest first. Each frame shows w
 
 | Measure | Value |
 | --- | --- |
-| Callables | 229 |
+| Callables | 250 |
 | Files | 57 |
-| Calls traced | 279 |
+| Calls traced | 304 |
 | Call stacks | 9 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
@@ -170,7 +188,29 @@ What this project is judged against, as declared in its own `callidescope.config
               └─> IssueMetadataService.find(…)(name: string): boolean [tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:261]
 ```
 
-**3. `PullRequestMetadataCommand.run`** — depth ≥ 8 · decorated-method
+**3. `PullRequestBodyCommand.run`** — depth 8 · decorated-method
+
+```text
+🚀 PullRequestBodyCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:143]
+   ↳ Checks the description and exits 0 or 1 on the verdict.
+  └─> PullRequestBodyService.checkBody(…): BodyVerdict [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:204]
+     ↳ The five lists of failures, from one description and the template's prompts.
+    └─> PullRequestBodyService.findMalformedSections(body: string): string[] [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:241]
+       ↳ Every section holding a block its shape does not allow.
+      └─> PullRequestBodyService.filter(…)(rule: SectionRule): boolean [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:244]
+        └─> PullRequestBodyService.holdsShape(…): boolean [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:100]
+           ↳ Whether a section's blocks have the shape its rule allows.
+          └─> PullRequestBodyService.isDashList(block: RootContent | undefined, content: string): boolean [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:132]
+             ↳ Whether a list block is unordered with every item marked by `-`.
+            └─> PullRequestBodyService.every(…)(item: ListItem): boolean [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:136]
+              └─> PullRequestBodyService.sourceOf(node: Node, content: string): string [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:171]
+                 ↳ The markdown a parsed node was read from, exactly as written.
+```
+
+<details>
+<summary>6 more call stacks</summary>
+
+**4. `PullRequestMetadataCommand.run`** — depth ≥ 8 · decorated-method
 
 ```text
 🚀 PullRequestMetadataCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264]
@@ -190,10 +230,7 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Whether this value can be read by property name at all.
 ```
 
-<details>
-<summary>6 more call stacks</summary>
-
-**4. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
+**5. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 PullRequestReleaseSignificanceCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212]
@@ -208,21 +245,6 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> PullRequestReleaseSignificanceService.parseConventionalSubject(subject: string, body?: string): ConventionalSubject | undefined [tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:260]
              ↳ Reads the type, scopes, and breaking marker out of a conventional subject line.
             └─> PullRequestReleaseSignificanceService.filter(…)(scope: string): boolean [tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:276]
-```
-
-**5. `PullRequestBodyCommand.run`** — depth 6 · decorated-method
-
-```text
-🚀 PullRequestBodyCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:131]
-   ↳ Checks the description and exits 0 or 1 on the verdict.
-  └─> PullRequestBodyService.checkBody(…): BodyVerdict [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:64]
-     ↳ The three lists of failures, from one description and the template's prompts.
-    └─> PullRequestBodyService.findEmptySections(body: string): string[] [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:83]
-       ↳ Every required heading whose section does not carry content.
-      └─> PullRequestBodyService.filter(…)(heading: string): boolean [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:106]
-        └─> PullRequestBodyService.cleanSectionContent(content: string): string [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:38]
-           ↳ Cleans section text by removing HTML comments and empty markdown list markers.
-          └─> PullRequestBodyService.filter(…)(line: string): boolean [tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:44]
 ```
 
 **6. `CatalogManifestsCommand.run`** — depth 5 · decorated-method
@@ -286,20 +308,21 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestMetadataCommand.run` | 8 | `PullRequestMetadataCommand.resolveMetadata`, `PullRequestMetadataCommand.failWithMessage`, `PullRequestMetadataService.parseTitle`, `PullRequestMetadataService.checkMetadata`, `PullRequestMetadataCommand.resolvePullRequestNumber`, `PullRequestMetadataCommand.reportFailures`, `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264` |
 
 <details>
-<summary>104 more callables</summary>
+<summary>115 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `IssueMetadataCommand.runBulkAudit` | 7 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.listOpenIssues`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.checkBulkIssues`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:257` |
 | `PublishablePackagesService.verifyPublishablePackages` | 6 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.createScratchDirectories`, `PublishablePackagesService.unpackTarballs`, `PublishablePackagesService.verifyAllTypechecks`, `PublishablePackagesService.verifyAllCliBinaries` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:455` |
 | `IssueMetadataCommand.readLiveMetadata` | 5 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure`, `IssueMetadataService.resolveFromDocument` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:153` |
+| `PullRequestBodyService.checkBody` | 5 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMalformedSections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findOversizedSections`, `PullRequestBodyService.findUnfilledComments` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:204` |
+| `PullRequestBodyCommand.run` | 5 | `PullRequestBodyCommand.resolveBody`, `PullRequestBodyService.checkBody`, `PullRequestBodyService.extractTemplateComments`, `PullRequestBodyCommand.every(…)`, `PullRequestBodyCommand.reportVerdict` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:143` |
 | `PullRequestMetadataService.checkMetadata` | 5 | `PullRequestMetadataService.groupLabels`, `PullRequestMetadataService.checkTypeLabel`, `PullRequestMetadataService.checkScopeLabels`, `PullRequestMetadataService.record`, `PullRequestMetadataService.checkSourceLabel` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:213` |
 | `PullRequestMetadataCommand.readLiveMetadata` | 5 | `PullRequestMetadataGithubService.isAvailable`, `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataGithubService.run`, `PullRequestMetadataGithubService.describeFailure`, `PullRequestMetadataService.resolveFromDocument` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:154` |
 | `PullRequestReleaseSignificanceService.checkSignificance` | 5 | `PullRequestReleaseSignificanceService.significanceRank`, `PullRequestReleaseSignificanceService.findMostSignificantCommit`, `PullRequestReleaseSignificanceService.findMissingScopes`, `PullRequestReleaseSignificanceService.describeSignificanceFailure`, `PullRequestReleaseSignificanceService.describeMissingScopeFailures` | `tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:215` |
 | `PullRequestReleaseSignificanceCommand.readLivePullRequest` | 5 | `PullRequestReleaseSignificanceGithubService.isAvailable`, `PullRequestReleaseSignificanceCommand.failWithUsageError`, `PullRequestReleaseSignificanceGithubService.run`, `PullRequestReleaseSignificanceGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromDocument` | `tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:114` |
 | `IssueMetadataService.checkBulkIssues` | 4 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:279` |
 | `IssueMetadataService.checkMetadata` | 4 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:362` |
-| `PullRequestBodyCommand.run` | 4 | `PullRequestBodyCommand.resolveBody`, `PullRequestBodyService.checkBody`, `PullRequestBodyService.extractTemplateComments`, `PullRequestBodyCommand.reportVerdict` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:131` |
 | `AuditGovernanceService.auditWorkflowContent` | 3 | `AuditGovernanceService.some(…)`, `AuditGovernanceService.some(…)`, `AuditGovernanceService.collectWorkflowJobViolations` | `tools/validation/src/modules/audit-governance/audit-governance.service.ts:57` |
 | `AuditGovernanceCommand.run` | 3 | `AuditGovernanceService.checkGovernance`, `AuditGovernanceCommand.reportCodeownersVerdict`, `AuditGovernanceCommand.reportWorkflowsVerdict` | `tools/validation/src/modules/audit-governance/audit-governance.command.ts:77` |
 | `IssueMetadataService.checkReleaseSignificanceViolation` | 3 | `IssueMetadataService.resolveIssueReleaseLevel`, `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:44` |
@@ -309,7 +332,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataService.resolveFromDocument` | 3 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataService.readLabelNames` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:427` |
 | `IssueMetadataCommand.resolveMetadata` | 3 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataCommand.readEnvironmentMetadata`, `IssueMetadataCommand.readLiveMetadata` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:229` |
 | `PublishablePackagesService.verifyCliBinary` | 3 | `PublishablePackagesService.unpackCliTarball`, `PublishablePackagesService.readPackageManifestBin`, `PublishablePackagesService.executeSpawnedBinary` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:300` |
-| `PullRequestBodyService.checkBody` | 3 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findUnfilledComments` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:64` |
+| `PullRequestBodyService.holdsShape` | 3 | `PullRequestBodyService.isDashList`, `PullRequestBodyService.filter(…)`, `PullRequestBodyService.bulletMarkersOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:100` |
+| `PullRequestBodyService.findMalformedSections` | 3 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:241` |
+| `PullRequestBodyService.filter(…)` | 3 | `PullRequestBodyService.cleanSectionContent`, `PullRequestBodyService.holdsShape`, `PullRequestBodyService.parseBlocks` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:244` |
+| `PullRequestBodyCommand.reportVerdict` | 3 | `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.reportList` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:91` |
 | `PullRequestMetadataService.groupLabels` | 3 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.filter(…)` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:254` |
 | `PullRequestMetadataService.resolveFromDocument` | 3 | `PullRequestMetadataService.describeError`, `PullRequestMetadataService.isRecord`, `PullRequestMetadataService.readNames` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:297` |
 | `PullRequestMetadataCommand.resolveMetadata` | 3 | `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataCommand.readEnvironmentMetadata`, `PullRequestMetadataCommand.readLiveMetadata` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:214` |
@@ -333,9 +359,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataCommand.reportFailures` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:183` |
 | `PublishablePackagesService.resolvePublishablePackages` | 2 | `PublishablePackagesService.resolveFamilyPackages`, `PublishablePackagesService.toSorted(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:418` |
 | `PublishablePackagesCommand.run` | 2 | `PublishablePackagesService.verifyPublishablePackages`, `formatPublishablePackagesSuccessMessage` | `tools/validation/src/modules/publishable-packages/publishable-packages.command.ts:40` |
-| `PullRequestBodyService.cleanSectionContent` | 2 | `PullRequestBodyService.filter(…)`, `PullRequestBodyService.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:38` |
-| `PullRequestBodyService.findMissingHeadings` | 2 | `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:120` |
-| `PullRequestBodyCommand.reportVerdict` | 2 | `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:73` |
+| `PullRequestBodyService.cleanSectionContent` | 2 | `PullRequestBodyService.filter(…)`, `PullRequestBodyService.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:74` |
+| `PullRequestBodyService.findEmptySections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:225` |
+| `PullRequestBodyService.findMissingHeadings` | 2 | `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:263` |
+| `PullRequestBodyService.findOversizedSections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.flatMap(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:270` |
 | `PullRequestMetadataService.checkSourceLabel` | 2 | `PullRequestMetadataService.map(…)`, `PullRequestMetadataService.map(…)` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:93` |
 | `PullRequestMetadataService.checkTypeLabel` | 2 | `PullRequestMetadataService.map(…)`, `PullRequestMetadataService.filter(…)` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:124` |
 | `PullRequestMetadataService.readNames` | 2 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.map(…)` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:199` |
@@ -370,12 +397,18 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PublishablePackagesService.unpackTarballs` | 1 | `PublishablePackagesService.filter(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:215` |
 | `PublishablePackagesService.verifyAllCliBinaries` | 1 | `PublishablePackagesService.verifyCliBinary` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:250` |
 | `PublishablePackagesService.verifyAllTypechecks` | 1 | `PublishablePackagesService.verifyPackageTypecheck` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:275` |
-| `PullRequestBodyService.extractTemplateComments` | 1 | `PullRequestBodyService.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:76` |
-| `PullRequestBodyService.findEmptySections` | 1 | `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:83` |
-| `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.cleanSectionContent` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:106` |
-| `PullRequestBodyService.findUnfilledComments` | 1 | `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:127` |
-| `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.prefixOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:133` |
-| `PullRequestBodyCommand.resolveBody` | 1 | `PullRequestBodyCommand.failWithUsageError` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:106` |
+| `PullRequestBodyService.bulletMarkersOf` | 1 | `PullRequestBodyService.sourceOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:46` |
+| `PullRequestBodyService.countWords` | 1 | `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:86` |
+| `PullRequestBodyService.isDashList` | 1 | `PullRequestBodyService.every(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:132` |
+| `PullRequestBodyService.every(…)` | 1 | `PullRequestBodyService.sourceOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:136` |
+| `PullRequestBodyService.parseBlocks` | 1 | `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:148` |
+| `PullRequestBodyService.splitSections` | 1 | `PullRequestBodyService.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:179` |
+| `PullRequestBodyService.extractTemplateComments` | 1 | `PullRequestBodyService.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:218` |
+| `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.cleanSectionContent` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:228` |
+| `PullRequestBodyService.flatMap(…)` | 1 | `PullRequestBodyService.countWords` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:273` |
+| `PullRequestBodyService.findUnfilledComments` | 1 | `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:291` |
+| `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.prefixOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:297` |
+| `PullRequestBodyCommand.resolveBody` | 1 | `PullRequestBodyCommand.failWithUsageError` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:118` |
 | `PullRequestMetadataGithubService.describeFailure` | 1 | `PullRequestMetadataGithubService.filter(…)` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts:47` |
 | `PullRequestMetadataGithubService.isAvailable` | 1 | `PullRequestMetadataGithubService.run` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts:56` |
 | `PullRequestMetadataService.nameOf` | 1 | `PullRequestMetadataService.isRecord` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:162` |
@@ -654,6 +687,7 @@ graph LR
   file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_constants_ts
   file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
   file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_pull_request_body_pull_request_body_constants_ts --> file_src_modules_pull_request_body_pull_request_body_types_ts
   file_src_modules_pull_request_body_pull_request_body_module_ts --> file_src_modules_pull_request_body_pull_request_body_command_ts
   file_src_modules_pull_request_body_pull_request_body_module_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
   file_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_command_ts
@@ -733,36 +767,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-12071-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-376.45_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-12597-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-393.51_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-92-3178c6?style=flat-square)
 
 ### TypeScript
 
 ![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-92-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-34-0ea5e9?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-35-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-41-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-265-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-278-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-33-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-14-8b5cf6?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-16-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-32-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-619-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-205-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-693-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-131-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-531-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-375-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-149-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-392-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-838-475569?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-647-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-224-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-738-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-133-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-547-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-378-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-155-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-405-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-874-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -783,16 +817,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-148-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-150-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-43-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-9-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-102-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-69-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-104-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-71-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-7-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-24-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-129-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-131-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML

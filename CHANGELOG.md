@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/organizzolini/codebase/compare/v3.1.0...v3.1.1) (2026-10-12)
+
+### 🐛 Bug Fixes
+
+* **caelundas:** 🐛 define LongitudesWindow once ([#1498](https://github.com/organizzolini/codebase/issues/1498)) ([de3aac8](https://github.com/organizzolini/codebase/commit/de3aac86875eac257e6175e6ea161d87617944bc)), closes [#1495](https://github.com/organizzolini/codebase/issues/1495) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1446](https://github.com/organizzolini/codebase/issues/1446) [#1429](https://github.com/organizzolini/codebase/issues/1429)
+
+## [3.1.0](https://github.com/organizzolini/codebase/compare/v3.0.6...v3.1.0) (2026-10-12)
+
+### ✨ Features
+
+* **validation,lexico-entities,dependencies:** ✨ hold pull request body sections to a shape and word limit ([#1446](https://github.com/organizzolini/codebase/issues/1446)) ([01cfc89](https://github.com/organizzolini/codebase/commit/01cfc89cf310dabeb8699f30835cb7327feb92bd)), closes [#1447](https://github.com/organizzolini/codebase/issues/1447) [#1399](https://github.com/organizzolini/codebase/issues/1399) [#1399](https://github.com/organizzolini/codebase/issues/1399)
+
+### 📝 Documentation
+
+* **documentation:** 📝 add ship-changes skill to carry pull requests through to main ([#1494](https://github.com/organizzolini/codebase/issues/1494)) ([eb556eb](https://github.com/organizzolini/codebase/commit/eb556ebeeea25f4b88abfddcef23313df3ab9335)), closes [.github/CONTRIBUTING.md#pull-request-process](https://github.com/.github/CONTRIBUTING.md/issues/pull-request-process)
+
 ## [3.0.6](https://github.com/organizzolini/codebase/compare/v3.0.5...v3.0.6) (2026-10-12)
 
 ### 🐛 Bug Fixes
