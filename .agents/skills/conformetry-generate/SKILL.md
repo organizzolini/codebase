@@ -60,7 +60,7 @@ the same generator behaves differently depending on how you invoke it.
 | Invocation | `nx g conformetry:<name>` | `conformetry generate --template <name>` |
 | Inputs | **every declared input is required** | none is ever required |
 | Missing input | refuses, or prompts | refuses when the template interpolates it |
-| Default destination | resolved from the workspace | `generated/<generator-name>` |
+| Default destination | resolved from the workspace; refused for a new project with no `type` | none: `--directory` is required |
 
 The remaining asymmetry is about _when_ a missing value is caught. The Nx path
 requires every declared input up front, so it refuses before rendering starts.
@@ -98,7 +98,8 @@ On the Nx path the destination is resolved in this order, first match winning:
 
 1. An explicit `--directory`.
 2. No `project` input — treated as a new project, placed by its `type` input
-   alongside projects of the same type.
+   alongside projects of the same type. With no `type` either, the run is
+   refused rather than written at the workspace root.
 3. A `module` input — placed in that existing module. Naming a module that does
    not exist is an error, not an invitation to create one.
 4. The generator's own scoped directory, from the first tagged pattern in its
@@ -110,9 +111,8 @@ Steps 4 and 5 are why a generator usually needs no destination at all: it knows
 where its own instances live. Reach for `--directory` when you are deliberately
 placing something outside that convention.
 
-On the command-line host only `--directory` applies, and its absence means
-`generated/<generator-name>` — a scratch location, not your source tree. Always
-pass `--directory` there when you mean to write into the workspace.
+On the command-line host only `--directory` applies, and it is required: a
+run without it is refused rather than written to a default location.
 
 ## Running without a person present
 

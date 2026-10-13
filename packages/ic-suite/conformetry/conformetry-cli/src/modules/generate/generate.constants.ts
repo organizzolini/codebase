@@ -2,9 +2,6 @@
 
 import { InputError } from "@conformetry/configuration";
 
-/** Directory generated output lands in when the caller names no target. */
-export const DEFAULT_GENERATED_DIRECTORY = "generated";
-
 /**
  * No template was supplied and none could be chosen.
  *
