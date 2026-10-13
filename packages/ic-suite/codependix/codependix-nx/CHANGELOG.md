@@ -1,3 +1,13 @@
+## 0.0.3 (2026-10-13)
+
+### 🩹 Fixes
+
+- **callidescope,codependix,configuration:** 🐛 harden the codependix nx plugin for consumers outside this workspace ([#1444](https://github.com/organizzolini/codebase/pull/1444), [#1433](https://github.com/organizzolini/codebase/issues/1433))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.18
+
 ## 0.0.2 (2026-10-13)
 
 ### 🧱 Updated Dependencies

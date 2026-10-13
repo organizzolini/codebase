@@ -2317,6 +2317,7 @@ graph LR
   file_callidescope_nx_src_executors_gate_executor_ts["callidescope-nx/src/executors/gate/executor.ts"]
   file_callidescope_nx_src_executors_gate_executor_types_ts["callidescope-nx/src/executors/gate/executor.types.ts"]
   file_callidescope_nx_src_executors_gate_executor_unit_test_ts["callidescope-nx/src/executors/gate/executor.unit.test.ts"]
+  file_callidescope_nx_src_executors_manifest_unit_test_ts["callidescope-nx/src/executors/manifest.unit.test.ts"]
   file_callidescope_nx_src_executors_trace_executor_ts["callidescope-nx/src/executors/trace/executor.ts"]
   file_callidescope_nx_src_executors_trace_executor_types_ts["callidescope-nx/src/executors/trace/executor.types.ts"]
   file_callidescope_nx_src_executors_trace_executor_unit_test_ts["callidescope-nx/src/executors/trace/executor.unit.test.ts"]
@@ -2659,6 +2660,9 @@ graph LR
   file_codependix_nx_src_executors_gate_executor_ts["codependix-nx/src/executors/gate/executor.ts"]
   file_codependix_nx_src_executors_gate_executor_types_ts["codependix-nx/src/executors/gate/executor.types.ts"]
   file_codependix_nx_src_executors_gate_executor_unit_test_ts["codependix-nx/src/executors/gate/executor.unit.test.ts"]
+  file_codependix_nx_src_executors_gate_hasher_ts["codependix-nx/src/executors/gate/hasher.ts"]
+  file_codependix_nx_src_executors_gate_hasher_unit_test_ts["codependix-nx/src/executors/gate/hasher.unit.test.ts"]
+  file_codependix_nx_src_executors_gate_loader_unit_test_ts["codependix-nx/src/executors/gate/loader.unit.test.ts"]
   file_codependix_nx_src_index_ts["codependix-nx/src/index.ts"]
   file_codependix_nx_src_index_unit_test_ts["codependix-nx/src/index.unit.test.ts"]
   file_codependix_nx_src_main_module_ts["codependix-nx/src/main.module.ts"]
@@ -2671,6 +2675,8 @@ graph LR
   file_codependix_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts["codependix-nx/src/modules/plugin/plugin-context.utilities.unit.test.ts"]
   file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts["codependix-nx/src/modules/plugin/plugin-inputs.utilities.ts"]
   file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_unit_test_ts["codependix-nx/src/modules/plugin/plugin-inputs.utilities.unit.test.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_ts["codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.ts"]
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_unit_test_ts["codependix-nx/src/modules/plugin/plugin-tsconfig.utilities.unit.test.ts"]
   file_codependix_nx_src_modules_plugin_plugin_constants_ts["codependix-nx/src/modules/plugin/plugin.constants.ts"]
   file_codependix_nx_src_modules_plugin_plugin_module_ts["codependix-nx/src/modules/plugin/plugin.module.ts"]
   file_codependix_nx_src_modules_plugin_plugin_service_ts["codependix-nx/src/modules/plugin/plugin.service.ts"]
@@ -3448,6 +3454,7 @@ graph LR
   file_conformetry_nx_src_modules_scope_scope_service_ts["conformetry-nx/src/modules/scope/scope.service.ts"]
   file_conformetry_nx_src_modules_scope_scope_service_unit_test_ts["conformetry-nx/src/modules/scope/scope.service.unit.test.ts"]
   file_conformetry_nx_src_modules_scope_scope_types_ts["conformetry-nx/src/modules/scope/scope.types.ts"]
+  file_conformetry_nx_testing_manifest_unit_test_ts["conformetry-nx/testing/manifest.unit.test.ts"]
   file_conformetry_nx_testing_mocks_ts["conformetry-nx/testing/mocks.ts"]
   file_conformetry_nx_testing_setup_ts["conformetry-nx/testing/setup.ts"]
   file_conformetry_nx_vite_config_ts["conformetry-nx/vite.config.ts"]
@@ -6868,8 +6875,14 @@ graph LR
   file_codependix_nx_src_executors_gate_executor_types_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
   file_codependix_nx_src_executors_gate_executor_unit_test_ts --> file_codependix_nx_src_executors_gate_executor_ts
   file_codependix_nx_src_executors_gate_executor_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_executors_gate_hasher_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
+  file_codependix_nx_src_executors_gate_hasher_ts --> file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts
+  file_codependix_nx_src_executors_gate_hasher_unit_test_ts --> file_codependix_nx_src_executors_gate_hasher_ts
+  file_codependix_nx_src_executors_gate_hasher_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_executors_gate_hasher_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
   file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts
   file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts
+  file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_ts
   file_codependix_nx_src_index_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
   file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_index_ts
   file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
@@ -6882,6 +6895,7 @@ graph LR
   file_codependix_nx_src_modules_gate_gate_service_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
   file_codependix_nx_src_modules_gate_gate_service_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
   file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
+  file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
   file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
   file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_main_module_ts
   file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
@@ -6894,6 +6908,12 @@ graph LR
   file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
   file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
   file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts
+  file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_inputs_utilities_ts
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_ts
+  file_codependix_nx_src_modules_plugin_plugin_tsconfig_utilities_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
   file_codependix_nx_src_modules_plugin_plugin_module_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
   file_codependix_nx_src_modules_plugin_plugin_service_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
   file_codependix_nx_src_modules_plugin_plugin_service_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
@@ -11377,7 +11397,7 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6338-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6329-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-2.24_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-78-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-24-3178c6?style=flat-square)
@@ -11591,13 +11611,13 @@ The workspace's call graph, traced by [callidescope](packages/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6328 |
-| Files | 1794 |
-| Calls traced | 6761 |
-| Call stacks | 1949 |
+| Callables | 6350 |
+| Files | 1796 |
+| Calls traced | 6791 |
+| Call stacks | 1950 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 372 |
+| Unfollowable calls | 377 |
 
 ### Projects
 

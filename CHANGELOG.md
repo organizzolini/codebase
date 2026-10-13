@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.2](https://github.com/organizzolini/codebase/compare/v3.2.1...v3.2.2) (2026-10-13)
+
+### 🐛 Bug Fixes
+
+* **callidescope,codependix,configuration:** 🐛 harden the codependix nx plugin for consumers outside this workspace ([#1444](https://github.com/organizzolini/codebase/issues/1444)) ([05278c1](https://github.com/organizzolini/codebase/commit/05278c15044ce05d532dba652363465ea41cfd4c)), closes [#1433](https://github.com/organizzolini/codebase/issues/1433) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1441](https://github.com/organizzolini/codebase/issues/1441)
+
 ## [3.2.1](https://github.com/organizzolini/codebase/compare/v3.2.0...v3.2.1) (2026-10-13)
 
 ### 🐛 Bug Fixes

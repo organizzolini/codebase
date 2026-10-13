@@ -1,3 +1,7 @@
+## 0.0.17 (2026-10-13)
+
+This was a version bump only for codometer-core to align it with other projects, there were no code changes.
+
 ## 0.0.16 (2026-10-13)
 
 This was a version bump only for codometer-core to align it with other projects, there were no code changes.
