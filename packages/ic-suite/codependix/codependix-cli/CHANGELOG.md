@@ -1,3 +1,16 @@
+## 0.0.17 (2026-10-13)
+
+### 🩹 Fixes
+
+- **codependix:** 🐛 warn on unmatched selection entries and harden the boundary report ([#1441](https://github.com/organizzolini/codebase/pull/1441), [#1432](https://github.com/organizzolini/codebase/issues/1432))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.17
+- Updated codependix-boundaries to 0.0.16
+- Updated codependix-output to 0.0.16
+- Updated codependix-core to 0.0.15
+
 ## 0.0.16 (2026-10-13)
 
 ### 🚀 Features

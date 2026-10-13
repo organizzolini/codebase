@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/organizzolini/codebase/compare/v3.2.0...v3.2.1) (2026-10-13)
+
+### 🐛 Bug Fixes
+
+* **codependix:** 🐛 warn on unmatched selection entries and harden the boundary report ([#1441](https://github.com/organizzolini/codebase/issues/1441)) ([4dd5def](https://github.com/organizzolini/codebase/commit/4dd5def7bf3192ad9763d7f343a1ef72350b7209)), closes [#1432](https://github.com/organizzolini/codebase/issues/1432) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1430](https://github.com/organizzolini/codebase/issues/1430)
+
+### 📝 Documentation
+
+* **documentation:** 📝 add affirmancy heading and fix readme project list breaks ([#1501](https://github.com/organizzolini/codebase/issues/1501)) ([cd8d701](https://github.com/organizzolini/codebase/commit/cd8d70166f4c0a308875007cdc0edd8393214867))
+
 ## [3.2.0](https://github.com/organizzolini/codebase/compare/v3.1.1...v3.2.0) (2026-10-13)
 
 ### ✨ Features

@@ -6567,6 +6567,7 @@ graph LR
   file_codependix_boundaries_src_modules_boundary_check_boundary_graph_service_ts --> file_codependix_boundaries_src_modules_boundaries_boundaries_types_ts
   file_codependix_boundaries_src_modules_boundary_check_boundary_graph_service_unit_test_ts --> file_codependix_boundaries_src_modules_boundary_check_boundary_graph_service_ts
   file_codependix_boundaries_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_codependix_boundaries_src_modules_boundaries_boundary_report_service_ts
+  file_codependix_boundaries_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_codependix_boundaries_src_modules_boundary_check_boundary_check_constants_ts
   file_codependix_boundaries_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_codependix_boundaries_src_modules_boundary_check_boundary_check_types_ts
   file_codependix_boundaries_src_modules_boundary_check_boundary_outcome_report_service_unit_test_ts --> file_codependix_boundaries_src_modules_boundaries_boundaries_types_ts
   file_codependix_boundaries_src_modules_boundary_check_boundary_outcome_report_service_unit_test_ts --> file_codependix_boundaries_src_modules_boundaries_boundary_report_service_ts
@@ -11590,94 +11591,68 @@ The workspace's call graph, traced by [callidescope](packages/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6251 |
-| Files | 1774 |
-| Calls traced | 6669 |
-| Call stacks | 1944 |
+| Callables | 6328 |
+| Files | 1794 |
+| Calls traced | 6761 |
+| Call stacks | 1949 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 371 |
+| Unfollowable calls | 372 |
 
 ### Projects
 
-#### `applications/lexico`
-
-- `lexico-cli` — Deepest: 17, Limit: 17, Headroom: 0, Widest: 8
-- `lexico-web` — Deepest: 9, Limit: 9, Headroom: 0, Widest: 9
-- `lexico-api` — Deepest: 8, Limit: 17, Headroom: 9, Widest: 10
-
-#### `applications/meanderaw`
-
-- `meanderaw-cli` — Deepest: 16, Limit: 16, Headroom: 0, Widest: 12
-- `meanderaw-web` — Deepest: 0, Limit: 6, Headroom: 6, Widest: 0
-
-#### `applications/caelundas`
-
-- `caelundas-cli` — Deepest: 15, Limit: 16, Headroom: 1, Widest: 12
-- `caelundas-web` — Deepest: 0, Limit: 6, Headroom: 6, Widest: 0
-
-#### `packages`
-
-- `components-web` — Deepest: 3, Limit: 3, Headroom: 0, Widest: 7
-- `database` — Deepest: 4, Limit: 4, Headroom: 0, Widest: 4
-- `logging` — Deepest: 4, Limit: 4, Headroom: 0, Widest: 2
-- `lexico-entities` — Deepest: 0, Limit: 3, Headroom: 3, Widest: 0
-
-#### `packages/ic-suite/callidescope`
-
-- `callidescope-cli` — Deepest: 15, Limit: 15, Headroom: 0, Widest: 10
-- `callidescope-nx` — Deepest: 17, Limit: 17, Headroom: 0, Widest: 7
-- `callidescope-configuration` — Deepest: 5, Limit: 8, Headroom: 3, Widest: 7
-- `callidescope-graph` — Deepest: 5, Limit: 11, Headroom: 6, Widest: 8
-- `callidescope-output` — Deepest: 4, Limit: 13, Headroom: 9, Widest: 7
-- `callidescope-core` — Deepest: 0, Limit: 17, Headroom: 17, Widest: 0
-
-#### `packages/ic-suite/codependix`
-
-- `codependix-boundaries` — Deepest: 12, Limit: 12, Headroom: 0, Widest: 7
-- `codependix-cli` — Deepest: 15, Limit: 15, Headroom: 0, Widest: 7
-- `codependix-core` — Deepest: 0, Limit: 1, Headroom: 1, Widest: 0
-- `codependix-output` — Deepest: 11, Limit: 14, Headroom: 3, Widest: 7
-- `codependix-nx-projects` — Deepest: 0, Limit: 4, Headroom: 4, Widest: 8
-- `codependix-configuration` — Deepest: 2, Limit: 7, Headroom: 5, Widest: 4
-- `codependix-nestjs-modules` — Deepest: 0, Limit: 5, Headroom: 5, Widest: 7
-- `codependix-file-imports` — Deepest: 0, Limit: 8, Headroom: 8, Widest: 8
-
-#### `packages/ic-suite/codometer`
-
-- `codometer-cli` — Deepest: 15, Limit: 15, Headroom: 0, Widest: 9
-- `codometer-core` — Deepest: 0, Limit: 1, Headroom: 1, Widest: 0
-- `codometer-configuration` — Deepest: 3, Limit: 9, Headroom: 6, Widest: 4
-- `codometer-languages` — Deepest: 5, Limit: 11, Headroom: 6, Widest: 12
-- `codometer-output` — Deepest: 4, Limit: 11, Headroom: 7, Widest: 16
-- `codometer-measurement` — Deepest: 0, Limit: 14, Headroom: 14, Widest: 9
-
-#### `packages/ic-suite/conformetry`
-
-- `conformetry-cli` — Deepest: 15, Limit: 15, Headroom: 0, Widest: 9
-- `conformetry-languages` — Deepest: 13, Limit: 13, Headroom: 0, Widest: 11
-- `conformetry-nx` — Deepest: 15, Limit: 15, Headroom: 0, Widest: 9
-- `conformetry-core` — Deepest: 0, Limit: 1, Headroom: 1, Widest: 0
-- `conformetry-configuration` — Deepest: 10, Limit: 14, Headroom: 4, Widest: 5
-- `conformetry-generation` — Deepest: 2, Limit: 8, Headroom: 6, Widest: 4
-- `conformetry-output` — Deepest: 0, Limit: 6, Headroom: 6, Widest: 4
-- `conformetry-validation` — Deepest: 0, Limit: 13, Headroom: 13, Widest: 10
-
-#### `tools`
-
-- `synchronization` — Deepest: 10, Limit: 10, Headroom: 0, Widest: 10
-- `validation` — Deepest: 8, Limit: 8, Headroom: 0, Widest: 9
-
-#### `configuration`
-
-- Configuration — Deepest: 4, Limit: 17, Headroom: 13, Widest: 2
+| Project | Deepest | Limit | Headroom | Widest |
+| --- | --- | --- | --- | --- |
+| `applications/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
+| `applications/lexico/lexico-web` | 9 | 9 | 0 | 9 |
+| `applications/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
+| `packages/components-web` | 3 | 3 | 0 | 7 |
+| `packages/database` | 4 | 4 | 0 | 4 |
+| `packages/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
+| `packages/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
+| `packages/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
+| `packages/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
+| `packages/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
+| `packages/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
+| `packages/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 8 |
+| `packages/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
+| `packages/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
+| `packages/logging` | 4 | 4 | 0 | 2 |
+| `tools/synchronization` | 10 | 10 | 0 | 10 |
+| `tools/validation` | 8 | 8 | 0 | 9 |
+| `applications/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
+| `packages/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
+| `packages/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
+| `packages/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
+| `packages/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
+| `packages/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
+| `packages/lexico-entities` | 0 | 3 | 3 | 0 |
+| `packages/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
+| `packages/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
+| `packages/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
+| `packages/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
+| `applications/caelundas/caelundas-web` | 0 | 6 | 6 | 0 |
+| `applications/meanderaw/meanderaw-web` | 0 | 6 | 6 | 0 |
+| `packages/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
+| `packages/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
+| `packages/ic-suite/codometer/codometer-languages` | 5 | 11 | 6 | 12 |
+| `packages/ic-suite/conformetry/conformetry-generation` | 2 | 8 | 6 | 4 |
+| `packages/ic-suite/conformetry/conformetry-output` | 0 | 6 | 6 | 4 |
+| `packages/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
+| `packages/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
+| `applications/lexico/lexico-api` | 8 | 17 | 9 | 10 |
+| `packages/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
+| `configuration` | 4 | 17 | 13 | 2 |
+| `packages/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
+| `packages/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
+| `packages/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |
 
 ### Depth headroom
 
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 16 |
+| 0 — at limit | 17 |
 | 1 | 1 |
 | 2–3 | 2 |
 | 4+ | 10 |
