@@ -1,3 +1,16 @@
+## 0.0.18 (2026-10-13)
+
+### 💅 Refactors
+
+- **configuration,codometer,validation:** ♻️ nest every project under a single projects folder ([#1439](https://github.com/organizzolini/codebase/pull/1439))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.19
+- Updated conformetry-generation to 0.0.19
+- Updated conformetry-validation to 0.0.18
+- Updated conformetry-output to 0.0.18
+
 ## 0.0.17 (2026-10-13)
 
 ### 🩹 Fixes

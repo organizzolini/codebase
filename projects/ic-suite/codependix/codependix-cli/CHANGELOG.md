@@ -1,3 +1,16 @@
+## 0.0.19 (2026-10-13)
+
+### 💅 Refactors
+
+- **configuration,codometer,validation:** ♻️ nest every project under a single projects folder ([#1439](https://github.com/organizzolini/codebase/pull/1439))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.19
+- Updated codependix-boundaries to 0.0.18
+- Updated codependix-output to 0.0.18
+- Updated codependix-core to 0.0.17
+
 ## 0.0.18 (2026-10-13)
 
 ### 🧱 Updated Dependencies

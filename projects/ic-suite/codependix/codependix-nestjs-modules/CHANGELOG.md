@@ -1,3 +1,9 @@
+## 0.0.17 (2026-10-13)
+
+### 💅 Refactors
+
+- **configuration,codometer,validation:** ♻️ nest every project under a single projects folder ([#1439](https://github.com/organizzolini/codebase/pull/1439))
+
 ## 0.0.16 (2026-10-13)
 
 This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.

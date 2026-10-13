@@ -158,9 +158,9 @@ Call stacks traced through `projects/validation`, deepest first. Each frame show
 
 | Measure | Value |
 | --- | --- |
-| Callables | 278 |
+| Callables | 279 |
 | Files | 62 |
-| Calls traced | 343 |
+| Calls traced | 345 |
 | Call stacks | 9 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
@@ -302,11 +302,11 @@ What this project is judged against, as declared in its own `callidescope.config
 🚀 CatalogManifestsCommand.run(): Promise<void> [projects/validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44]
    ↳ Checks every workspace manifest and exits 0 or 1 on the verdict.
   └─> CatalogManifestsCommand.flatMap(…)(this: undefined, manifestPath: string): string[] [projects/validation/src/modules/catalog-manifests/catalog-manifests.command.ts:50]
-    └─> CatalogManifestsService.validateManifestDependencies(manifestPath: string, manifest: PackageManifest): string[] [projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:86]
+    └─> CatalogManifestsService.validateManifestDependencies(manifestPath: string, manifest: PackageManifest): string[] [projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:98]
        ↳ Every mis-pinned dependency in one manifest, in every section.
-      └─> CatalogManifestsService.isInternalWorkspaceDependency(dependencyName: string): boolean [projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:39]
+      └─> CatalogManifestsService.isInternalWorkspaceDependency(dependencyName: string): boolean [projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:67]
          ↳ Whether this dependency names one of this workspace's own packages.
-        └─> CatalogManifestsService.some(…)(scope: string): boolean [projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:40]
+        └─> CatalogManifestsService.some(…)(scope: string): boolean [projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:68]
 ```
 
 **8. `LockfileCommand.run`** — depth 3 · decorated-method
@@ -342,7 +342,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PublishablePackagesService.verifyPublishablePackages` | 8 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.findMissingTarballs`, `formatMissingTarballsMessage`, `PublishablePackagesConsumerService.createConsumer`, `PublishablePackagesConsumerService.installConsumer`, `PublishablePackagesChecksService.verifyConsumer`, `PublishablePackagesConsumerService.removeConsumer` | `projects/validation/src/modules/publishable-packages/publishable-packages.service.ts:178` |
 
 <details>
-<summary>129 more callables</summary>
+<summary>130 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -428,8 +428,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestReleaseSignificanceCommand.reportFailures` | 2 | `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `projects/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:146` |
 | `AuditGovernanceService.parseCodeownersLines` | 1 | `AuditGovernanceService.parseCodeownersRule` | `projects/validation/src/modules/audit-governance/audit-governance.service.ts:172` |
 | `AuditGovernanceService.sliceJobsSection` | 1 | `AuditGovernanceService.findIndex(…)` | `projects/validation/src/modules/audit-governance/audit-governance.service.ts:221` |
-| `CatalogManifestsService.isInternalWorkspaceDependency` | 1 | `CatalogManifestsService.some(…)` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:39` |
-| `CatalogManifestsService.validateManifestDependencies` | 1 | `CatalogManifestsService.isInternalWorkspaceDependency` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:86` |
+| `CatalogManifestsService.isInternalWorkspaceDependency` | 1 | `CatalogManifestsService.some(…)` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:67` |
+| `CatalogManifestsService.resolveWorkspaceManifestPaths` | 1 | `CatalogManifestsService.findManifestPaths` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:81` |
+| `CatalogManifestsService.validateManifestDependencies` | 1 | `CatalogManifestsService.isInternalWorkspaceDependency` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:98` |
 | `IssueMetadataGithubService.describeFailure` | 1 | `IssueMetadataGithubService.filter(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata-github.service.ts:51` |
 | `IssueMetadataGithubService.isAvailable` | 1 | `IssueMetadataGithubService.run` | `projects/validation/src/modules/issue-metadata/issue-metadata-github.service.ts:60` |
 | `IssueMetadataService.checkTypeLabelPresence` | 1 | `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:163` |
@@ -851,8 +852,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-13978-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-437.87_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14015-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-439.33_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-100-3178c6?style=flat-square)
 
@@ -863,7 +864,7 @@ graph LR
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-44-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-313-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-314-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -872,15 +873,15 @@ graph LR
 ![Test Files](https://img.shields.io/badge/Test_Files-36-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-717-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-245-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-825-4ade80?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-718-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-246-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-827-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-137-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-608-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-610-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-441-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-183-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-455-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-983-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-456-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-988-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python

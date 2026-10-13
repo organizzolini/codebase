@@ -1,3 +1,13 @@
+## 0.0.4 (2026-10-13)
+
+### 💅 Refactors
+
+- **configuration,codometer,validation:** ♻️ nest every project under a single projects folder ([#1439](https://github.com/organizzolini/codebase/pull/1439))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.19
+
 ## 0.0.3 (2026-10-13)
 
 ### 🩹 Fixes

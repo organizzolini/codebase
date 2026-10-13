@@ -619,8 +619,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5787-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-172.67_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5781-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-172.51_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
@@ -629,7 +629,7 @@ graph LR
 ![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-143.16_kB_gzip-6b7280?style=flat-square)
 ![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-83.75_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-15.39_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-166.42_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-166.35_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -676,7 +676,7 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-160-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-158-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-36-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-106-0284c7?style=flat-square)

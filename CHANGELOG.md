@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/organizzolini/codebase/compare/v3.2.3...v3.2.4) (2026-10-13)
+
+### 📝 Documentation
+
+* **caelundas:** 📝 remove a committed conflict marker from the pheno jsdoc ([#1503](https://github.com/organizzolini/codebase/issues/1503)) ([fe7aa0e](https://github.com/organizzolini/codebase/commit/fe7aa0e3e6a963be3d64d73fe3b3549d39bc026e)), closes [organizzolini/codebase#1424](https://github.com/organizzolini/codebase/issues/1424)
+
+### ♻️ Code Refactoring
+
+* **configuration,codometer,validation:** ♻️ nest every project under a single projects folder ([#1439](https://github.com/organizzolini/codebase/issues/1439)) ([b6192f8](https://github.com/organizzolini/codebase/commit/b6192f8e3ee2e9ad6e767c73922ea62a516b0381)), closes [.github/CONTRIBUTING.md#workspace-structure](https://github.com/.github/CONTRIBUTING.md/issues/workspace-structure)
+
 ## [3.2.3](https://github.com/organizzolini/codebase/compare/v3.2.2...v3.2.3) (2026-10-13)
 
 ### 📝 Documentation

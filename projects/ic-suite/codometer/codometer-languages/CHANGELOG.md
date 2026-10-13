@@ -1,3 +1,14 @@
+## 0.0.18 (2026-10-13)
+
+### 💅 Refactors
+
+- **configuration,codometer,validation:** ♻️ nest every project under a single projects folder ([#1439](https://github.com/organizzolini/codebase/pull/1439))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.18
+- Updated codometer-core to 0.0.18
+
 ## 0.0.17 (2026-10-13)
 
 ### 🧱 Updated Dependencies
