@@ -1,6 +1,9 @@
 import path from "node:path";
 
-import { ConfigurationService } from "@conformetry/configuration";
+import {
+  ConfigurationService,
+  missingDirectoryError,
+} from "@conformetry/configuration";
 import { Injectable } from "@nestjs/common";
 import { getProjects, readProjectConfiguration } from "@nx/devkit";
 
@@ -141,14 +144,10 @@ export class PathsService {
     workspaceRoot: string;
   }): string {
     if (args.type === undefined) {
-      const generator =
-        args.generatorName === undefined
-          ? "This generator"
-          : `Generator ${args.generatorName}`;
-
-      throw new Error(
-        `${generator} cannot tell where to place a new project. Pass --directory=<parent folder> (the folder the project is created inside; its kebab-case name is appended), or declare a type input on the generator.`,
-      );
+      throw missingDirectoryError({
+        generatorName: args.generatorName,
+        hint: "Or declare a type input on the generator, so the project is placed beside the others of its type.",
+      });
     }
 
     return path.resolve(

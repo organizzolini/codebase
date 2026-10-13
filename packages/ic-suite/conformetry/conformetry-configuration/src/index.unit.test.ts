@@ -6,6 +6,7 @@ import {
   ConfigurationModule,
   ConfigurationService,
   InputError,
+  missingDirectoryError,
   missingInputError,
   MissingSubstitutionError,
   UnknownConfigurationFileTypeError,
@@ -18,6 +19,7 @@ describe("conformetry-configuration index", () => {
     expect(UnknownConfigurationFileTypeError).toBeDefined();
     expect(MissingSubstitutionError).toBeDefined();
     expect(InputError).toBeDefined();
+    expect(missingDirectoryError).toBeDefined();
     expect(missingInputError).toBeDefined();
     expect(ALL_TEMPLATES_SELECTION).toBeDefined();
   });

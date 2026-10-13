@@ -264,7 +264,7 @@ describe(PathsService, () => {
           workspaceRoot,
         }),
       ).rejects.toThrow(
-        "Generator tanstack-application cannot tell where to place a new project",
+        "Generator tanstack-application cannot tell where to write its output",
       );
     });
 
@@ -277,7 +277,7 @@ describe(PathsService, () => {
           workspaceRoot,
         }),
       ).rejects.toThrow(
-        /This generator cannot tell where to place a new project\. Pass --directory=<parent folder>.*or declare a type input/u,
+        /This generator cannot tell where to write its output\. Pass --directory=<parent folder>.*declare a type input/u,
       );
     });
 

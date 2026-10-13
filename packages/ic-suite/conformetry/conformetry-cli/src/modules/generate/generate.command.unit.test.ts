@@ -108,7 +108,7 @@ describe(GenerateCommand, () => {
 
   describe("run", () => {
     it("renders the named template and reports what it wrote", async () => {
-      await command.run([], { template: "widget" });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(generationService.runGenerator).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -129,12 +129,14 @@ describe(GenerateCommand, () => {
       );
     });
 
-    it("falls back to a directory named after the template", async () => {
+    it("refuses a run that names no directory, before asking for inputs", async () => {
       await command.run([], { template: "widget" });
 
-      expect(generationService.runGenerator).toHaveBeenCalledWith(
-        expect.objectContaining({ instancePath: "generated/widget" }),
-      );
+      expect(process.exitCode).toBe(1);
+      expect(generationService.runGenerator).not.toHaveBeenCalled();
+      expect(
+        configurationService.resolveGeneratorInputs,
+      ).not.toHaveBeenCalled();
     });
 
     it("reads the configuration path the caller named", async () => {
@@ -155,7 +157,7 @@ describe(GenerateCommand, () => {
     });
 
     it("logs a debug entry marker naming the template", async () => {
-      await command.run([], { template: "widget" });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(commandLogger.debug).toHaveBeenCalledWith(
         "🏗 Generating a conformetry instance",
@@ -180,7 +182,7 @@ describe(GenerateCommand, () => {
     // read, no CI check. It hands over the arguments and the schema, and the
     // input service refuses on its own where nobody can be asked.
     it("asks for the generator's inputs without deciding whether to prompt", async () => {
-      await command.run([], { template: "widget" });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       // An exact object rather than `objectContaining`: the point is that
       // nothing else — no `promptWhenMissing` — is passed alongside these two.
@@ -203,7 +205,7 @@ describe(GenerateCommand, () => {
       // Reported rather than thrown: nothing was generated, and the reader's
       // next move is to pass the flag it named.
       await expect(
-        command.run([], { template: "widget" }),
+        command.run([], { directory: "/tmp/out", template: "widget" }),
       ).resolves.toBeUndefined();
       expect(process.exitCode).toBe(1);
       expect(commandLogger.error).toHaveBeenCalledWith(
@@ -219,9 +221,9 @@ describe(GenerateCommand, () => {
         new Error("Rendering failed."),
       );
 
-      await expect(command.run([], { template: "widget" })).rejects.toThrow(
-        "Rendering failed.",
-      );
+      await expect(
+        command.run([], { directory: "/tmp/out", template: "widget" }),
+      ).rejects.toThrow("Rendering failed.");
     });
   });
 
@@ -231,7 +233,7 @@ describe(GenerateCommand, () => {
     it("never prompts when the caller named a template", async () => {
       vi.mocked(configurationService.isAtTerminal).mockReturnValue(true);
 
-      await command.run([], { template: "widget" });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(configurationService.promptForTemplate).not.toHaveBeenCalled();
       expect(generationService.runGenerator).toHaveBeenCalledWith(
@@ -247,7 +249,7 @@ describe(GenerateCommand, () => {
         "widget",
       );
 
-      await command.run([], {});
+      await command.run([], { directory: "/tmp/out" });
 
       // The loaded configuration itself, not a mapping of it: the picker can
       // then never disagree with what this command would actually run.
@@ -341,7 +343,7 @@ describe(GenerateCommand, () => {
         },
       ]);
 
-      await command.run([], { template: "widget" });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(configurationService.resolveGeneratorInputs).toHaveBeenCalledWith({
         rawArguments: expect.any(Array) as string[],
@@ -367,7 +369,7 @@ describe(GenerateCommand, () => {
         },
       ]);
 
-      await command.run([], { template: "widget" });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(configurationService.resolveGeneratorInputs).toHaveBeenCalledWith({
         rawArguments: expect.any(Array) as string[],

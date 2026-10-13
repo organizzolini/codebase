@@ -11,6 +11,7 @@ export type {
 export {
   ALL_TEMPLATES_SELECTION,
   InputError,
+  missingDirectoryError,
   missingInputError,
 } from "./modules/input/input.constants";
 export type {

@@ -1,5 +1,3 @@
-import path from "node:path";
-
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -110,69 +108,6 @@ describe(InputOptionsService, () => {
         nested: '{"a":1}',
         text: "value",
       });
-    });
-  });
-
-  describe("resolveTargetDirectoryPath", () => {
-    it("prefers an explicit output option", () => {
-      expect(
-        service.resolveTargetDirectoryPath({
-          generatorName: "example",
-          options: { outputPath: "/out" },
-        }),
-      ).toBe("/out");
-    });
-
-    it("resolves a project root when a project name is given", () => {
-      expect(
-        service.resolveTargetDirectoryPath({
-          generatorName: "example",
-          options: { project: "widget" },
-          resolveProjectRootPath: (projectName) => `packages/${projectName}`,
-        }),
-      ).toBe("packages/widget");
-    });
-
-    it("falls back to a directory named after the generator", () => {
-      expect(
-        service.resolveTargetDirectoryPath({
-          generatorName: "example",
-          options: {},
-        }),
-      ).toBe(path.join("generated", "example"));
-    });
-  });
-
-  describe("resolveTargetDirectoryPath fallbacks", () => {
-    it("uses the project root a caller resolves", () => {
-      expect(
-        service.resolveTargetDirectoryPath({
-          generatorName: "nestjs-service-module",
-          options: { project: "widgets" },
-          resolveProjectRootPath: () => "packages/widgets",
-        }),
-      ).toBe("packages/widgets");
-    });
-
-    it("falls back to a generator-named directory when the project is unknown", () => {
-      expect(
-        service.resolveTargetDirectoryPath({
-          defaultGeneratedOutputDirectory: "generated",
-          generatorName: "nestjs-service-module",
-          options: { project: "widgets" },
-          resolveProjectRootPath: () => undefined,
-        }),
-      ).toBe("generated/nestjs-service-module");
-    });
-
-    it("falls back when no resolver is supplied at all", () => {
-      expect(
-        service.resolveTargetDirectoryPath({
-          defaultGeneratedOutputDirectory: "generated",
-          generatorName: "nestjs-service-module",
-          options: { project: "widgets" },
-        }),
-      ).toBe("generated/nestjs-service-module");
     });
   });
 
