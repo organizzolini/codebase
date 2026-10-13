@@ -34,7 +34,7 @@ import type {
  * and `projects/ic-suite/codependix/codependix-nestjs-modules` now produce the same graphs through their own
  * anchor blocks, per issue #296, so both commands and their Nx targets were
  * removed outright rather than merely dropped from this list. Run
- * `nx run codebase:codependix` for what replaced them — there is nothing left
+ * `nx run configuration:codependix` for what replaced them — there is nothing left
  * here to invoke directly.
  */
 @Command({

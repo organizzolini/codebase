@@ -63,7 +63,7 @@ file by accident, because none of them is in there to adopt.
   change independent of this one — the six files this decision describes no
   longer exist, and `conformetry-languages` carries the one complete file that
   replaced them.
-- **One traced project is exempt, and cannot not be.** `configuration/` holds the
+- **One traced project is exempt, and cannot not be.** `projects/configuration/` holds the
   workspace configuration at its own root. A run reads one file in one role, and
   no second file may sit beside it under a name discovery would find, so that
   directory is judged by the workspace's own limits directly. It is the only

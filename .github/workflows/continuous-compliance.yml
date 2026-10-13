@@ -278,7 +278,7 @@ jobs:
             PULL_REQUEST_TITLE="$(gh pr view "$PULL_REQUEST_NUMBER" --json title -q .title)"
           fi
           echo "$PULL_REQUEST_TITLE" | \
-            npx commitlint --config configuration/commitlint.config.ts
+            npx commitlint --config projects/configuration/commitlint.config.ts
 
       # Validates pull request body against required template sections. Skipped
       # for a pull request Dependabot authored, whose body it writes itself;
@@ -316,7 +316,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           git log -1 --pretty=%s | \
-            npx commitlint --config configuration/commitlint.config.ts
+            npx commitlint --config projects/configuration/commitlint.config.ts
 
       # Validates the merge group's head commit, which is exactly what lands on
       # main. GitHub does not document the subject a queued squash commit
@@ -334,4 +334,4 @@ jobs:
           fi
           echo "🏷️ Linting merge group commit subject: ${COMMIT_SUBJECT}"
           echo "$COMMIT_SUBJECT" | \
-            npx commitlint --config configuration/commitlint.config.ts
+            npx commitlint --config projects/configuration/commitlint.config.ts

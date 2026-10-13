@@ -12,9 +12,9 @@
     "paths": {
       "@/*": ["../../components-web/src/*"],
       "@codebase/components-web": ["../../components-web/src/index.ts"],
-      "codebase/configuration/*": ["../../../configuration/*"],
+      "codebase/configuration/*": ["../../../projects/configuration/*"],
       "eslint-plugin-better-max-params": [
-        "../../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
+        "../../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "strict": true,
@@ -27,7 +27,7 @@
     ]
   },
   "exclude": [],
-  "extends": "../../../configuration/tsconfig.json",
+  "extends": "../../../projects/configuration/tsconfig.json",
   "include": [
     "callidescope.config.ts",
     "codependix.config.ts",

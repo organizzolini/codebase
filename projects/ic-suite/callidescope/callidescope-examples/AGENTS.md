@@ -136,7 +136,7 @@ Most of this package is code that would fail review if it were real, and that is
 the point:
 
 - `deep-stack` and `forwarding-stack` both breach `maximumDepth` on purpose.
-  `configuration/.callidescopeignore` is what keeps this package excluded from
+  `projects/configuration/.callidescopeignore` is what keeps this package excluded from
   the inferred `gate` target altogether — the callidescope Nx plugin withholds
   `gate` from an excluded project, since it never traces one. Removing that
   entry stops the exclusion, so the plugin infers `gate` here the same as
@@ -209,7 +209,7 @@ sources in its `inputs`, so the staleness is caught rather than cached over, and
 the three steps above are the fix. Their READMEs are not named there: this run
 measures those packages but publishes nothing into them.
 
-A root `configuration/*.config.ts` moves them too, which is less obvious. Two of
+A root `projects/configuration/*.config.ts` moves them too, which is less obvious. Two of
 those projects are in the closure only because this package's own
 `eslint.config.ts` and `codometer.config.ts` spread the root ones, which import
 `@codebase/logging/eslint` and `@codometer/configuration` — so removing an import

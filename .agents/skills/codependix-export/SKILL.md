@@ -249,7 +249,7 @@ replayed from the cache; one judging only its own project is cached as usual.
 The target declares no configurations, so an aggregator run with
 `--configuration=check` falls through to its defaults, as callidescope's
 `callidescope-gate` does. In this repository `guard-code` depends on it. The
-workspace-wide `codebase:codependix` target is write-only: it publishes the
+workspace-wide `configuration:codependix` target is write-only: it publishes the
 exports on the default branch and gates nothing.
 
 ## What the run reports

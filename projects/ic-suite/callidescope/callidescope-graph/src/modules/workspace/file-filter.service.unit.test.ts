@@ -137,7 +137,7 @@ describe(FileFilterService, () => {
     const workspaceRoot = path.resolve(process.cwd(), "..", "..", "..", "..");
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["configuration/.callidescopeignore"],
+      excludeFrom: ["projects/configuration/.callidescopeignore"],
       workspaceRoot,
     });
 

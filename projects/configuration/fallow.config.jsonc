@@ -1,0 +1,369 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "audit": {
+    "cacheMaxAgeDays": 7,
+    "deadCodeBaseline": null,
+    "gate": "all",
+    "healthBaseline": null,
+  },
+  "duplicates": {
+    "crossLanguage": true,
+    "ignore": [
+      "projects/**/src/modules/*-database/migrations/**/*.ts",
+    ],
+    "ignoreDefaults": true,
+    "ignoreImports": true,
+    "minLines": 12,
+    "minOccurrences": 2,
+    "minTokens": 24,
+    "mode": "mild",
+    "skipLocal": true,
+    "threshold": 6,
+  },
+  "ignoreDependencyOverrides": [
+    { "package": "axios" },
+    { "package": "brace-expansion" },
+    { "package": "conventional-changelog-conventionalcommits" },
+    { "package": "fast-uri" },
+    { "package": "js-yaml" },
+    { "package": "markdown-it" },
+    { "package": "ws" },
+  ],
+  "entry": [
+    "**/scripts/**/*.{js,mjs,ts,sh}",
+    "projects/**/src/index.ts",
+    "projects/**/src/main.ts",
+    "projects/**/src/modules/**/*.module.ts",
+    // Nx resolves these from executors.json and generators.json, which is not
+    // an import, so nothing reaches them through the module graph.
+    "projects/**/src/executors/**/executor.ts",
+    "projects/**/src/generators/**/generator.ts",
+    "projects/**/src/generators.ts",
+    "projects/**/src/repl.ts",
+    // A worker thread's entry point is spawned by URL, never imported.
+    "projects/**/src/worker.ts",
+    "projects/**/testing/**/*.ts",
+    // conformetry-examples: every example is read and run rather than imported,
+    // so nothing in the module graph reaches one. knip names the same paths in
+    // its own entry list for the same reason.
+    "projects/ic-suite/conformetry/conformetry-examples/examples/*/*.ts",
+    // codometer finds these by walking up from the project it is measuring,
+    // never by importing them, so nothing in the module graph reaches one.
+    // knip names the root file in its own entry list for the same reason.
+    "projects/**/codometer.config.cjs",
+    "projects/**/codometer.config.ts",
+    "codometer.config.ts",
+    // Read by the codometer command line, one per documented behavior, and
+    // reached by nothing in the module graph for the same reason.
+    "projects/ic-suite/codometer/codometer-examples/examples/**/*.config.ts",
+    // A project's own callidescope configuration, found the same way: a run
+    // resolves one beside every project it traces, by name, never by import.
+    // The workspace file this repository passes with `--config` sits under
+    // `projects/configuration/` and is already covered by the entry below.
+    "projects/**/callidescope.config.ts",
+    // A project's own codependix configuration, found the same way: a run
+    // resolves one beside every project it maps, by name, never by import.
+    // The workspace file this repository passes with `--config` sits under
+    // `projects/configuration/` and is already covered by the entry below.
+    "projects/**/codependix.config.ts",
+    "projects/configuration/**",
+    // Every fixture in the callidescope examples package exists to be traced,
+    // not imported — an orphan-root fixture is *defined* by having no caller.
+    // Declared as entry points rather than excluded, exactly as
+    // `projects/configuration/knip.config.ts` declares the same files, so what they
+    // import stays in the module graph instead of reading as unreachable too.
+    "projects/ic-suite/callidescope/callidescope-examples/examples/**/*.ts",
+    "projects/ic-suite/callidescope/callidescope-examples/src/**/*.ts",
+    // lexico names its client entry and generated route tree in
+    // vite.config.mts rather than importing them, and both sit under
+    // src/lib/ because a src/ root only admits entry-point names. The
+    // vite plugin detects a client entry by convention at src/client.tsx,
+    // so a relocated one has to be declared. knip names the same paths in
+    // its own entry list for the same reason.
+    "projects/lexico/lexico-web/src/lib/client.tsx",
+    "projects/lexico/lexico-web/src/lib/routeTree.gen.ts",
+    "projects/lexico/lexico-web/src/router.tsx",
+    "projects/caelundas/caelundas-cli/src/modules/caelundas-database/migrations/**/*.ts",
+    "projects/lexico/lexico-entities/src/modules/lexico-database/migrations/**/*.ts",
+    "projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/migrations/**/*.ts",
+    "projects/configuration/release.config.cjs",
+    "validate-branch-name.config.cjs",
+  ],
+  "health": {
+    "coverage": "coverage/coverage-final.json",
+    "coverageRoot": null,
+    "crapRefactorBand": 3,
+    "ignore": [
+      "**/__generated__/**",
+      "**/.conformetry/**",
+      "**/coverage/**",
+      "**/dist/**",
+      "**/src/lib/database.types.ts",
+      "**/routeTree.gen.ts",
+    ],
+    "maxCognitive": 12,
+    "maxCrap": 16,
+    "maxCyclomatic": 8,
+    "ownership": {
+      "botPatterns": [
+        "*\\[bot\\]*",
+        "*-service-account*",
+        "dependabot*",
+        "github-actions*",
+        "renovate*",
+        "svc-*",
+      ],
+      "emailMode": "handle",
+    },
+    "suggestInlineSuppression": false,
+    "thresholdOverrides": [],
+  },
+  "ignoreDependencyOverrides": [
+    { "package": "axios" },
+    { "package": "brace-expansion" },
+    { "package": "conventional-changelog-conventionalcommits" },
+    { "package": "fast-uri" },
+    { "package": "js-yaml" },
+    { "package": "markdown-it" },
+    { "package": "ws" },
+  ],
+  // Every entry here is one fallow reports the moment it is removed — the list
+  // was three times this size, and the surplus was config that had outlived
+  // whatever once needed it. It only became visible once `ignorePatterns`
+  // stopped dropping constants and testing files out of the module graph: with
+  // those files back, the imports they make count, and most of what the list
+  // was suppressing is simply used. `projects/configuration/knip.config.ts` carries the
+  // same reasons, split across the workspaces knip scopes each run to.
+  "ignoreDependencies": [
+    // Registered by name in nx.json's `plugins` array and loaded by Nx, so no
+    // static import proves it is used. It has to be a root dependency for Nx
+    // to resolve that name at all. `@conformetry/nx` needs no entry here only
+    // because `projects/configuration/conformetry.config.ts` imports its types.
+    "@callidescope/nx",
+    // `@codependix/nx`'s gate runs this package's `./main` export as a child
+    // process, resolving the entry from a specifier string rather than
+    // importing it — `projects/configuration/knip.config.ts` carries the same reason.
+    "@codependix/cli",
+    // Depended on so that pnpm links its `conformetry` bin into
+    // node_modules/.bin, which it does only for a root dependency. The bin now
+    // points at emitted JavaScript, so the link appears once the package has
+    // been built — before that pnpm warns and creates nothing, which is
+    // expected on a fresh clone rather than a broken install.
+    "@conformetry/cli",
+    // Depended on by codometer-examples so its tests spawn the command line
+    // they document; they resolve its entry point through the manifest and run
+    // it as a process rather than importing it.
+    "@codometer/cli",
+    // Declared by every service package for the conformance-scaffolded
+    // `testing/mocks.ts`, which only the packages whose tests mock a
+    // dependency go on to import.
+    "@golevelup/ts-vitest",
+    // Nx loads its plugins from nx.json by name rather than importing them.
+    "@nx/vitest",
+    // Registered on Nx command lines as a string
+    // (`node --import @swc-node/register/esm-register`) and by
+    // conformetry-nx's `src/bootstrap.mjs`, which passes it to `register()`.
+    // Neither is an import fallow can see.
+    "@swc-node/register",
+    // SWC runtime helpers, required by @swc-node/register for compiled TS.
+    "@swc/helpers",
+    // Invoked by the Nx target named after it rather than imported.
+    "license-checker",
+    // Invoked by the openwiki target rather than imported.
+    "openwiki",
+    // Started by the `@nx/js:verdaccio` executor behind the root
+    // `local-registry` target, which resolves it by name rather than importing
+    // it. Knip's Nx plugin reads that executor, so knip needs no entry.
+    "verdaccio",
+    // Apollo 5's Express integration, which @nestjs/apollo resolves by name
+    // when lexico-api's GraphQLModule starts. lexico-api's eslint.config.ts
+    // and knip workspace carve it out for the same reason.
+    "@as-integrations/express5",
+    // TypeORM's postgres driver, which TypeORM resolves by name at runtime.
+    // Both manifests declaring it also carve it out of `@nx/dependency-checks`
+    // in their own eslint.config.ts, for this same reason.
+    "pg",
+    // Runtime dependency of the inlined logger utility, not directly imported in package source.
+    "pino",
+    // Pretty-printing transport for pino in development mode, reached only
+    // through a runtime string in LoggerService so invisible to static analysis.
+    "pino-pretty",
+    // Invoked by the squawk target rather than imported.
+    "squawk-cli",
+    // Runtime dependency of the inlined @codebase/logging utility.
+    "pino",
+    // Reached only through a runtime transport string in Pino for development-mode
+    // pretty printing, so invisible to static import analysis.
+    "pino-pretty",
+    // TypeScript helper library, an implicit runtime dependency of compiled
+    // output.
+    "tslib",
+    // Invoked by the type-coverage target rather than imported.
+    "type-coverage",
+    // Side-by-side TypeScript 7, aliased in the catalog. The typecheck target
+    // invokes its `tsc` binary directly; nothing imports it, and
+    // typescript-eslint and @swc-node/register still require TypeScript 6.
+    "typescript-7",
+    "validate-branch-name",
+    // Dynamically loaded by vite-plugin-dts / unplugin-dts for declaration bundling via API Extractor.
+    "@microsoft/api-extractor",
+    // Imported by projects/configuration/vite.library.config.ts for declaration bundling — root-level workspace configuration read by build tooling, not code this repository ships in production.
+    "vite-plugin-dts",
+    // Imported by projects/configuration/conformetry.config.ts to validate generator
+    // inputs — root-level workspace configuration read by CLI tooling at
+    // build/lint time, not code this repository ships or runs in production.
+    "zod",
+  ],
+  "ignoreExports": [
+    {
+      "exports": ["*"],
+      "file": "**/routeTree.gen.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/lib/database.types.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/lib/auth.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/lib/bookmarks.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/lib/supabase.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/modules/database/database.module.ts",
+    },
+    {
+      "exports": ["*"],
+      "file": "**/src/modules/entities/entities.module.ts",
+    },
+  ],
+  "ignoreExportsUsedInFile": true,
+  "ignorePatterns": [
+    // pnpm-workspace.yaml's `projects/*` glob matches every direct child of
+    // `projects/`, including the pure grouping folders that hold no
+    // package.json of their own — `projects/ic-suite` nests the four IC-suite
+    // toolchains, and `projects/caelundas`, `projects/lexico`, and
+    // `projects/meanderaw` each nest one domain's projects. Their projects are
+    // matched by separate, more specific patterns.
+    "projects/caelundas",
+    "projects/ic-suite",
+    "projects/lexico",
+    "projects/meanderaw",
+    "**/*.min.js",
+    "**/.agents/skills/**/scripts/**",
+    "**/.claude/skills/**/scripts/**",
+    "**/.conformetry/**",
+    "**/.github/skills/**/scripts/**",
+    "**/.nx/**",
+    "**/.opencode/skills/**/scripts/**",
+    "**/.terraform/**",
+    "**/.venv/**",
+    "**/projects/lexico/lexico-cli/data/**",
+    "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts",
+    "**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts",
+    "**/build/**",
+    "**/conformetry-templates/**",
+    // 🕸️ Codependix example subjects: input to be graphed, unreachable from any
+    // entry point by construction. One carries a `tsconfig.json` the compiler is
+    // meant to refuse, and another a module that throws the moment it is
+    // imported, so neither belongs in a module graph of this repository's code.
+    "**/projects/ic-suite/codependix/codependix-examples/examples/*/*/**",
+    "**/coverage/**",
+    "**/data/library/**",
+    "**/data/wikipedia/**",
+    "**/data/wiktionary/**",
+    "**/dist/**",
+    "**/helm/**/templates/**",
+    "**/library.json",
+    "**/node_modules/**",
+    "**/projects/ic-suite/codometer/codometer-examples/examples/compiled/**",
+    "**/projects/ic-suite/codometer/codometer-examples/examples/corpus/**",
+    "**/projects/ic-suite/conformetry/conformetry-examples/examples/*/instances/**",
+    "**/projects/ic-suite/conformetry/conformetry-examples/examples/*/templates/**",
+    "**/pnpm-lock.yaml",
+    "**/src/lib/database.types.ts",
+    "**/routeTree.gen.ts",
+    "**/tmp/**",
+    "**/vite.config.*.timestamp*",
+    "**/vitest.config.*.timestamp*",
+    ".claude/skills/**",
+    ".github/copilot-instructions.md",
+    ".github/skills/**",
+    "projects/affirmancy/**",
+    "projects/JimmyPaolini/**",
+    "**/CHANGELOG.md",
+    "CLAUDE.md",
+    "notepads/**",
+  ],
+  // knip's `ignoreFiles`: spare a file the unused-file report without taking
+  // it out of the module graph. Excluding it outright — which
+  // `ignorePatterns` does — also hides what it imports, and a constants file
+  // is exactly where several of this repository's modules do their importing,
+  // so the files it reaches then read as unreachable themselves.
+  "overrides": [
+    {
+      "files": [
+        "**/src/**/*.constants.ts",
+        "**/src/**/*.types.ts",
+        "**/testing/mocks.ts",
+      ],
+      "rules": {
+        "unused-files": "off",
+      },
+    },
+  ],
+  "publicPackages": [],
+  // The dead-code rules knip also gates on are errors, because
+  // `fallow-dead-code` is one of `lint-code`'s checks and a `warn` reports
+  // without failing — an advisory severity on a gating target is a check that
+  // does nothing. Everything else stays advisory: cycles are dependency-cruiser's
+  // gate, and coverage-gaps, prop-drilling, and thin-wrapper belong to
+  // `fallow-health`, which is still advisory.
+  "rules": {
+    "boundary-violation": "warn",
+    "circular-dependencies": "warn",
+    "coverage-gaps": "warn",
+    "prop-drilling": "warn",
+    "re-export-cycle": "warn",
+    "thin-wrapper": "warn",
+    "unprovided-injects": "warn",
+    "unresolved-imports": "error",
+    "unused-dependencies": "error",
+    "unused-dev-dependencies": "error",
+    "unused-exports": "error",
+    "unused-files": "error",
+    "unused-types": "error",
+  },
+  "usedClassMembers": [
+    {
+      "extends": "CommandRunner",
+      // `synchronizationLabel` is read as `command.synchronizationLabel`
+      // through the `Synchronization` interface each command implements, which
+      // is a structural reference no class-member analysis follows.
+      "members": [
+        "parseDirectory",
+        "parseReadme",
+        "run",
+        "synchronizationLabel",
+      ],
+    },
+    {
+      // TypeORM calls the naming strategy it was handed; nothing in this
+      // repository calls either override directly.
+      "extends": "SnakeNamingStrategy",
+      "members": ["joinTableName", "tableName"],
+    },
+    {
+      "extends": "ConsoleLogger",
+      "members": ["debug", "error", "log", "setContext", "verbose", "warn"],
+    },
+    "ingest",
+  ],
+}

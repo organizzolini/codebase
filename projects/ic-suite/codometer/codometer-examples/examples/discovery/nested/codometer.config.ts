@@ -6,7 +6,7 @@ import type { CodometerConfiguration } from "@codometer/configuration";
  * Codometer searches for a configuration by walking **upward** from the folder
  * it was pointed at and taking the **first** file it finds. Three files are in
  * play above this one — this package's, and the workspace root's, which is
- * itself a re-export of `configuration/codometer.config.ts` — and none of them
+ * itself a re-export of `projects/configuration/codometer.config.ts` — and none of them
  * contributes anything to a run measuring this folder.
  *
  * That is visible rather than asserted, because the counter below exists

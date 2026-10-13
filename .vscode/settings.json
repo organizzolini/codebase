@@ -224,52 +224,52 @@
     "affirmancy": {
       "addWords": true,
       "name": "affirmancy",
-      "path": "${workspaceRoot}/configuration/.cspell/affirmancy.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/affirmancy.txt"
     },
     "ai": {
       "addWords": true,
       "name": "ai",
-      "path": "${workspaceRoot}/configuration/.cspell/ai.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/ai.txt"
     },
     "astronomy": {
       "addWords": true,
       "name": "astronomy",
-      "path": "${workspaceRoot}/configuration/.cspell/astronomy.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/astronomy.txt"
     },
     "ics": {
       "addWords": true,
       "name": "ics",
-      "path": "${workspaceRoot}/configuration/.cspell/ics.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/ics.txt"
     },
     "infrastructure": {
       "addWords": true,
       "name": "infrastructure",
-      "path": "${workspaceRoot}/configuration/.cspell/infrastructure.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/infrastructure.txt"
     },
     "lexico": {
       "addWords": true,
       "name": "lexico",
-      "path": "${workspaceRoot}/configuration/.cspell/lexico.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/lexico.txt"
     },
     "nasa-horizons": {
       "addWords": true,
       "name": "nasa-horizons",
-      "path": "${workspaceRoot}/configuration/.cspell/nasa-horizons.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/nasa-horizons.txt"
     },
     "python": {
       "addWords": true,
       "name": "python",
-      "path": "${workspaceRoot}/configuration/.cspell/python.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/python.txt"
     },
     "tooling": {
       "addWords": true,
       "name": "tooling",
-      "path": "${workspaceRoot}/configuration/.cspell/tooling.txt"
+      "path": "${workspaceRoot}/projects/configuration/.cspell/tooling.txt"
     }
   },
   "cSpell.diagnosticLevelFlaggedWords": "Information",
   "cSpell.enabled": true,
-  "cSpell.import": ["${workspaceFolder}/configuration/cspell.config.yaml"],
+  "cSpell.import": ["${workspaceFolder}/projects/configuration/cspell.config.yaml"],
   "cSpell.maxDuplicateProblems": 5,
   "cSpell.numSuggestions": 3,
   "cSpell.suggestionMenuType": "quickFix",
@@ -414,8 +414,8 @@
   "fallow.audit.gate": "all",
   "fallow.audit.statusBar.enabled": true,
   "fallow.autoDownload": false,
-  "fallow.configPath": "./configuration/fallow.config.jsonc",
-  "fallow.coverage.capturePath": "./configuration/fallow.config.jsonc",
+  "fallow.configPath": "./projects/configuration/fallow.config.jsonc",
+  "fallow.coverage.capturePath": "./projects/configuration/fallow.config.jsonc",
   "fallow.security.enabled": true,
   "files.associations": {
     "**/.vscode/*.json": "jsonc",
@@ -689,7 +689,7 @@
   "json.validate.enable": true,
   "jsonc.format.enable": true,
   "jsonc.validate.enable": false,
-  "markdownlint.configFile": "${workspaceFolder}/configuration/.markdownlint-cli2.jsonc",
+  "markdownlint.configFile": "${workspaceFolder}/projects/configuration/.markdownlint-cli2.jsonc",
   "markdownlint.severityForError": "Error",
   "markdownlint.severityForWarning": "Warning",
   "material-icon-theme.files.associations": {
@@ -819,18 +819,18 @@
   "outline.showFields": true,
   "outline.showProperties": true,
   "outline.showVariables": false,
-  "oxc.configPath": "configuration/oxlint.config.ts",
+  "oxc.configPath": "projects/configuration/oxlint.config.ts",
   "oxc.enable": true,
   "oxc.enable.oxfmt": true,
   "oxc.enable.oxlint": true,
-  "oxc.fmt.configPath": "configuration/oxfmt.config.ts",
+  "oxc.fmt.configPath": "projects/configuration/oxfmt.config.ts",
   "oxc.path.node": "/Users/jimmypaolini/.nvm/versions/node/v24.16.0/bin/node",
   "oxc.path.oxfmt": "node_modules/.bin/oxfmt",
   "oxc.useExecPath": false,
   "peacock.color": "#215732",
   "postman.mcp.notifications.postmanMCP": false,
   "postman.settings.dotenv-detection-notification-visibility": false,
-  "prettier.configPath": "configuration/prettier.config.ts",
+  "prettier.configPath": "projects/configuration/prettier.config.ts",
   "python.analysis.referencesCodeLens": true,
   "python.analysis.typeCheckingMode": "standard",
   "python.terminal.activateEnvironment": false,
@@ -846,7 +846,7 @@
   },
   "ruff.configuration": "/pyproject.toml",
   "ruff.configurationPreference": "editorOnly",
-  "ruff.exclude": ["configuration/conformetry-templates/**"],
+  "ruff.exclude": ["projects/configuration/conformetry-templates/**"],
   "ruff.interpreter": ["${workspaceFolder}/.venv/bin/python"],
   "ruff.nativeServer": "auto",
   "ruff.organizeImports": true,
@@ -891,7 +891,7 @@
   "security.workspace.trust.untrustedFiles": "open",
   "simpleBrowser.useIntegratedBrowser": true,
   "sqlfluff.config": "/pyproject.toml",
-  "sqlfluff.executablePath": "${workspaceFolder}/configuration/.venv/bin/sqlfluff",
+  "sqlfluff.executablePath": "${workspaceFolder}/projects/configuration/.venv/bin/sqlfluff",
   "sqlfluff.linter.diagnosticSeverity": "warning",
   "sqlfluff.linter.run": "onSave",
   "sqlfluff.workingDirectory": "${workspaceFolder}",

@@ -11,7 +11,7 @@ license: MIT
 - **Every build writes into its own project's `dist/`** — `projects/logging/dist`,
   `projects/caelundas/caelundas-cli/dist` — never a top-level one. `dist` is already
   gitignored and in the folder-structure rule's `ignorePatterns`.
-- **`configuration/tsconfig.json` sets `declaration: true`**, so every build
+- **`projects/configuration/tsconfig.json` sets `declaration: true`**, so every build
   emits `.d.ts` beside its `.js`. Turning it off silently removes the types a
   published package ships.
 - **A package's `main`, `types`, and `exports` point at TypeScript sources**, and

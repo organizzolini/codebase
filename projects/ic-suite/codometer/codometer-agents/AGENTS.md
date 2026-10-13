@@ -69,5 +69,5 @@ duplication is a deliberate choice rather than an oversight: each agent package
 is a standalone, installable unit whose only dependency should be what its own
 `package.json` declares, and every copy stays small enough — one file, under
 150 lines — that drift between them is easy to spot in review. `jscpd` runs
-advisory only (`nx run codebase:jscpd`, `|| true`, nothing in CI calls it), so
+advisory only (`nx run configuration:jscpd`, `|| true`, nothing in CI calls it), so
 this is not a gate any copy needs to clear.

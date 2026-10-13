@@ -1,4 +1,4 @@
-import { codometerConfiguration } from "../../configuration/codometer.config.js";
+import { codometerConfiguration } from "../../projects/configuration/codometer.config.js";
 
 /**
  * What this component library is measured by.
@@ -29,7 +29,7 @@ import { codometerConfiguration } from "../../configuration/codometer.config.js"
 export default {
   ...codometerConfiguration,
   // The vendored shadcn components, hooks, and utilities, which nobody here
-  // authored. `configuration/.codometerignore` has excluded them from the
+  // authored. `projects/configuration/.codometerignore` has excluded them from the
   // repository's own statistics since it was written, but an ignore file is
   // anchored to the directory being measured: its
   // `projects/components-web/src/components/` entry matches nothing when

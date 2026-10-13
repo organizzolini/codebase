@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../projects/configuration/callidescope.config.js";
 
 /**
  * What lexico is held to, measured rather than assumed.
@@ -13,7 +13,7 @@ import { projectDefaults } from "../../../configuration/callidescope.config.js";
  * this gate is green the day it arrives and the number is a starting point to
  * ratchet down from rather than a target to grow into.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {
@@ -21,7 +21,7 @@ export default {
   /**
    * The generated route tree. Its call stacks describe a code generator's
    * output rather than anything a person structured, so a depth finding here
-   * is not actionable — moved from `configuration/.callidescopeignore`, the
+   * is not actionable — moved from `projects/configuration/.callidescopeignore`, the
    * only project this pattern ever matched.
    */
   exclude: ["src/lib/routeTree.gen.ts"],

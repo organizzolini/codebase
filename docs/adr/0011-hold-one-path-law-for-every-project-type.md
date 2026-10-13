@@ -1,6 +1,6 @@
 # Hold one path law for every project type
 
-`configuration/codebase-structure.json` is a single set of path and naming rules
+`projects/configuration/codebase-structure.json` is a single set of path and naming rules
 applied to every project in the workspace, rather than a per-type ruleset. It
 matches paths and has no access to Nx tags, so a per-type rule would mean
 enumerating every project by name — a second source of truth that drifts from
@@ -9,7 +9,7 @@ the tags the moment a project is added.
 The split is that **this file is the universal path and naming law** —
 kebab-case folders, module file suffixes, entry-point names — and **conformetry
 owns what a project of a given type must contain.** Per-type shape is already
-enforced: `configuration/conformetry.config.ts` selects instances by tag
+enforced: `projects/configuration/conformetry.config.ts` selects instances by tag
 (`{ patterns: ["."], tags: ["framework:nest-commander"] }`), and
 `conformetry-validate` gates them.
 

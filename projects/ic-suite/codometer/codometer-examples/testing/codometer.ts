@@ -66,7 +66,7 @@ const commandLineEntry = path.resolve(
  * `/tmp`.
  *
  * `tmp/` is already ignored by `.gitignore` and by
- * `configuration/codebase-structure.json`, so nothing has to be taught about
+ * `projects/configuration/codebase-structure.json`, so nothing has to be taught about
  * it — the same arrangement `main.end-to-end.test.ts` uses for the same
  * reason.
  */

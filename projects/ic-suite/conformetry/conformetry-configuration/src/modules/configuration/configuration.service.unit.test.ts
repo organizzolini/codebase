@@ -375,7 +375,7 @@ describe(ConfigurationService, () => {
 
   it("loads the workspace configuration", async () => {
     const configuration = await service.loadConformetryConfiguration(
-      "configuration/conformetry.config.ts",
+      "projects/configuration/conformetry.config.ts",
     );
 
     expect(configuration.map((generator) => generator.name)).toContain(

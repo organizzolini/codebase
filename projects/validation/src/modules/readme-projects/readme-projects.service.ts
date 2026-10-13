@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 
 import {
   ROOT_README_PATH,
+  TEMPLATE_PLACEHOLDER_PATTERN,
   WORKSPACE_SCOPES,
 } from "./readme-projects.constants";
 
@@ -36,7 +37,8 @@ export class ReadmeProjectsService {
    * Every project path nested under `directoryPath`, at any depth. A
    * directory with its own `package.json` is a project and is not descended
    * into further; a directory without one is a grouping folder and is
-   * searched recursively.
+   * searched recursively. A directory named for a template placeholder is
+   * neither: the manifest inside it belongs to a project that does not exist.
    */
   private findProjectPaths(
     workspaceRoot: string,
@@ -45,7 +47,10 @@ export class ReadmeProjectsService {
     const projectPaths: string[] = [];
 
     for (const child of readdirSync(directoryPath, { withFileTypes: true })) {
-      if (!child.isDirectory()) {
+      if (
+        !child.isDirectory() ||
+        TEMPLATE_PLACEHOLDER_PATTERN.test(child.name)
+      ) {
         continue;
       }
 

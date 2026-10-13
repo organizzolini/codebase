@@ -3,13 +3,13 @@ import type { CallidescopeConfiguration } from "@callidescope/configuration";
 /**
  * The configuration the fixtures in this package are traced with.
  *
- * Deliberately not the workspace's. `configuration/callidescope.config.ts`
+ * Deliberately not the workspace's. `projects/configuration/callidescope.config.ts`
  * carries a ratchet — `maximumDepth: 17`, today's worst stack — because its job
  * is to stop the repository getting worse. This one carries the tool's own
  * defaults, because its job is to make the fixtures produce findings: a package
  * whose examples all pass demonstrates nothing.
  *
- * That is also why `configuration/.callidescopeignore` excludes this directory
+ * That is also why `projects/configuration/.callidescopeignore` excludes this directory
  * from the workspace run. Fixtures that exist to be too deep would otherwise
  * gain a `gate` target of their own: the callidescope Nx plugin withholds
  * `gate` from a project the workspace configuration excludes, because such a
@@ -26,7 +26,7 @@ import type { CallidescopeConfiguration } from "@callidescope/configuration";
  *   `limits.maximumBreadth`, breadth) through the inferred per-project `gate`
  *   target, scoped by `nx affected` to whatever a change touched; its
  *   committed report is published separately, by `nx run
- *   codebase:callidescope:write` on `main` only, because the call graph moves
+ *   configuration:callidescope:write` on `main` only, because the call graph moves
  *   on nearly every change;
  * - this package runs `--check reports`, because its fixtures are frozen. A
  *   report here goes stale when a fixture changed, when the resolver did, or

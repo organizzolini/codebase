@@ -177,7 +177,7 @@ project's Nx neighborhood and its file-level import graph. Regenerate all three
 with:
 
 ```bash
-nx run codebase:codependix:write
+nx run configuration:codependix:write
 ```
 
 ## Development

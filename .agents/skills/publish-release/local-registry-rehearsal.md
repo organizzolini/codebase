@@ -1,7 +1,7 @@
 # Local Registry Rehearsal
 
 A rehearsal publishes one package to the workspace's Verdaccio registry (the
-root `codebase:local-registry` target) and installs it into a project outside
+root `configuration:local-registry` target) and installs it into a project outside
 the workspace, proving the tarball a real release would ship actually imports.
 
 Every step keeps the publish **sealed** off npmjs.org. Two things otherwise
@@ -26,7 +26,7 @@ npmjs.org directly. Below, `<scratch>` is any directory outside the workspace,
    configuration alone and storage out of the workspace:
 
    ```bash
-   pnpm exec nx run codebase:local-registry --location none --storage <scratch>/storage
+   pnpm exec nx run configuration:local-registry --location none --storage <scratch>/storage
    ```
 
    Done when `curl -sf http://localhost:4873/-/ping` succeeds; retry it for up

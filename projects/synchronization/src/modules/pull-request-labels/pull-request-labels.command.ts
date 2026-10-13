@@ -26,7 +26,7 @@ import type {
 
 /**
  * CLI command that reconciles this repository's label vocabulary against
- * `configuration/conventional.config.cjs`.
+ * `projects/configuration/conventional.config.cjs`.
  *
  * Every `type:<name>`, every lowercased `scope:<name>`, and the three static
  * labels — `do-not-merge`, `source:agent`, and `source:human` — must exist

@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../../projects/configuration/callidescope.config.js";
 
 /**
  * What codometer-output is held to, measured rather than assumed.
@@ -13,7 +13,7 @@ import { projectDefaults } from "../../../../configuration/callidescope.config.j
  * this gate is green the day it arrives and the number is a starting point to
  * ratchet down from rather than a target to grow into.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {
