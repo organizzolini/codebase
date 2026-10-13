@@ -158,9 +158,9 @@ Call stacks traced through `tools/validation`, deepest first. Each frame shows w
 
 | Measure | Value |
 | --- | --- |
-| Callables | 250 |
-| Files | 57 |
-| Calls traced | 304 |
+| Callables | 278 |
+| Files | 62 |
+| Calls traced | 343 |
 | Call stacks | 9 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
@@ -217,7 +217,30 @@ What this project is judged against, as declared in its own `callidescope.config
               └─> IssueMetadataService.find(…)(name: string): boolean [tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:261]
 ```
 
-**3. `PullRequestBodyCommand.run`** — depth 8 · decorated-method
+**3. `PublishablePackagesCommand.run`** — depth 8 · decorated-method
+
+```text
+🚀 PublishablePackagesCommand.run(): Promise<void> [tools/validation/src/modules/publishable-packages/publishable-packages.command.ts:46]
+   ↳ Executes the publishable package tarball verification and exits 0 on success, 1 on failure.
+  └─> PublishablePackagesService.verifyPublishablePackages(workspaceRoot: string): PublishablePackagesVerificationResult [tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:178]
+     ↳ Installs every packed publishable package into a consumer outside the workspace and exercises it: each package's import…
+    └─> PublishablePackagesChecksService.verifyConsumer(…): string[] [tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238]
+       ↳ Runs every check against an installed consumer.
+      └─> PublishablePackagesChecksService.verifyBinaries(…): string[] [tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:62]
+         ↳ Runs each command line's `--help`, which loads its whole command tree.
+        └─> PublishablePackagesChecksService.flatMap(…)(this: undefined, binary: string): string[] [tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:70]
+          └─> PublishablePackagesChecksService.runBinary(…): ConsumerCommandResult [tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49]
+             ↳ Runs one of the consumer's installed executables.
+            └─> PublishablePackagesProcessService.run(context: ConsumerContext, command: ConsumerCommand): ConsumerCommandResult [tools/validation/src/modules/publishable-packages/publishable-packages-process.service.ts:85]
+               ↳ Runs one command in the consumer's directory and returns what it printed.
+              └─> PublishablePackagesProcessService.createEnvironment(context: ConsumerContext): NodeJS.ProcessEnv [tools/validation/src/modules/publishable-packages/publishable-packages-process.service.ts:47]
+                 ↳ Builds the environment a consumer command runs under.
+```
+
+<details>
+<summary>6 more call stacks</summary>
+
+**4. `PullRequestBodyCommand.run`** — depth 8 · decorated-method
 
 ```text
 🚀 PullRequestBodyCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:143]
@@ -236,10 +259,7 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ The markdown a parsed node was read from, exactly as written.
 ```
 
-<details>
-<summary>6 more call stacks</summary>
-
-**4. `PullRequestMetadataCommand.run`** — depth ≥ 8 · decorated-method
+**5. `PullRequestMetadataCommand.run`** — depth ≥ 8 · decorated-method
 
 ```text
 🚀 PullRequestMetadataCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264]
@@ -259,7 +279,7 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Whether this value can be read by property name at all.
 ```
 
-**5. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
+**6. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 PullRequestReleaseSignificanceCommand.run(passedParameters: string[]): Promise<void> [tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212]
@@ -276,7 +296,7 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> PullRequestReleaseSignificanceService.filter(…)(scope: string): boolean [tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:276]
 ```
 
-**6. `CatalogManifestsCommand.run`** — depth 5 · decorated-method
+**7. `CatalogManifestsCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 CatalogManifestsCommand.run(): Promise<void> [tools/validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44]
@@ -287,21 +307,6 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> CatalogManifestsService.isInternalWorkspaceDependency(dependencyName: string): boolean [tools/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:39]
          ↳ Whether this dependency names one of this workspace's own packages.
         └─> CatalogManifestsService.some(…)(scope: string): boolean [tools/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:40]
-```
-
-**7. `PublishablePackagesCommand.run`** — depth 5 · decorated-method
-
-```text
-🚀 PublishablePackagesCommand.run(): Promise<void> [tools/validation/src/modules/publishable-packages/publishable-packages.command.ts:40]
-   ↳ Executes the publishable package tarball verification and exits 0 on success, 1 on failure.
-  └─> PublishablePackagesService.verifyPublishablePackages(workspaceRoot: string): PublishablePackagesVerificationResult [tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:455]
-     ↳ Verifies that all publishable package tarballs install and typecheck cleanly, and that all CLI binaries execute…
-    └─> PublishablePackagesService.resolvePublishablePackages(workspaceRoot: string): PublishablePackage[] [tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:418]
-       ↳ Dynamically resolves all publishable packages in `packages/ic-suite`.
-      └─> PublishablePackagesService.resolveFamilyPackages(familyDirectory: string): PublishablePackage[] [tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:172]
-         ↳ Resolves publishable packages under a single toolchain family directory.
-        └─> PublishablePackagesService.parsePackageCandidate(familyDirectory: string, childName: string): null | PublishablePackage [tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:98]
-           ↳ Inspects a child directory and parses a PublishablePackage if publishable.
 ```
 
 **8. `LockfileCommand.run`** — depth 3 · decorated-method
@@ -334,16 +339,17 @@ What this project is judged against, as declared in its own `callidescope.config
 | --- | --- | --- | --- |
 | `IssueMetadataCommand.run` | 9 | `IssueMetadataCommand.runBulkAudit`, `IssueMetadataCommand.resolveMetadata`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataCommand.resolveIssueNumber`, `IssueMetadataCommand.reportFailures`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:308` |
 | `PullRequestReleaseSignificanceCommand.run` | 9 | `PullRequestReleaseSignificanceCommand.resolvePullRequestNumber`, `PullRequestReleaseSignificanceCommand.readLivePullRequest`, `PullRequestReleaseSignificanceCommand.failWithMessage`, `PullRequestReleaseSignificanceService.parseConventionalSubject`, `PullRequestReleaseSignificanceService.readReleaseRules`, `PullRequestReleaseSignificanceService.checkSignificance`, `PullRequestReleaseSignificanceCommand.reportFailures`, `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212` |
-| `PullRequestMetadataCommand.run` | 8 | `PullRequestMetadataCommand.resolveMetadata`, `PullRequestMetadataCommand.failWithMessage`, `PullRequestMetadataService.parseTitle`, `PullRequestMetadataService.checkMetadata`, `PullRequestMetadataCommand.resolvePullRequestNumber`, `PullRequestMetadataCommand.reportFailures`, `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264` |
+| `PublishablePackagesService.verifyPublishablePackages` | 8 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.findMissingTarballs`, `formatMissingTarballsMessage`, `PublishablePackagesConsumerService.createConsumer`, `PublishablePackagesConsumerService.installConsumer`, `PublishablePackagesChecksService.verifyConsumer`, `PublishablePackagesConsumerService.removeConsumer` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:178` |
 
 <details>
-<summary>115 more callables</summary>
+<summary>129 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
+| `PullRequestMetadataCommand.run` | 8 | `PullRequestMetadataCommand.resolveMetadata`, `PullRequestMetadataCommand.failWithMessage`, `PullRequestMetadataService.parseTitle`, `PullRequestMetadataService.checkMetadata`, `PullRequestMetadataCommand.resolvePullRequestNumber`, `PullRequestMetadataCommand.reportFailures`, `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264` |
 | `IssueMetadataCommand.runBulkAudit` | 7 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.listOpenIssues`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.checkBulkIssues`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:257` |
-| `PublishablePackagesService.verifyPublishablePackages` | 6 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.createScratchDirectories`, `PublishablePackagesService.unpackTarballs`, `PublishablePackagesService.verifyAllTypechecks`, `PublishablePackagesService.verifyAllCliBinaries` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:455` |
 | `IssueMetadataCommand.readLiveMetadata` | 5 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure`, `IssueMetadataService.resolveFromDocument` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:153` |
+| `PublishablePackagesChecksService.verifyConsumer` | 5 | `PublishablePackagesChecksService.verifyTypecheck`, `PublishablePackagesChecksService.verifyBinaries`, `PublishablePackagesChecksService.verifyProjectGraph`, `PublishablePackagesChecksService.verifyGenerator`, `PublishablePackagesChecksService.verifyPluginTarget` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238` |
 | `PullRequestBodyService.checkBody` | 5 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMalformedSections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findOversizedSections`, `PullRequestBodyService.findUnfilledComments` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:204` |
 | `PullRequestBodyCommand.run` | 5 | `PullRequestBodyCommand.resolveBody`, `PullRequestBodyService.checkBody`, `PullRequestBodyService.extractTemplateComments`, `PullRequestBodyCommand.every(…)`, `PullRequestBodyCommand.reportVerdict` | `tools/validation/src/modules/pull-request-body/pull-request-body.command.ts:143` |
 | `PullRequestMetadataService.checkMetadata` | 5 | `PullRequestMetadataService.groupLabels`, `PullRequestMetadataService.checkTypeLabel`, `PullRequestMetadataService.checkScopeLabels`, `PullRequestMetadataService.record`, `PullRequestMetadataService.checkSourceLabel` | `tools/validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:213` |
@@ -352,6 +358,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestReleaseSignificanceCommand.readLivePullRequest` | 5 | `PullRequestReleaseSignificanceGithubService.isAvailable`, `PullRequestReleaseSignificanceCommand.failWithUsageError`, `PullRequestReleaseSignificanceGithubService.run`, `PullRequestReleaseSignificanceGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromDocument` | `tools/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:114` |
 | `IssueMetadataService.checkBulkIssues` | 4 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:279` |
 | `IssueMetadataService.checkMetadata` | 4 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:362` |
+| `PublishablePackagesConsumerService.createConsumer` | 4 | `PublishablePackagesConsumerService.createTypecheckFiles`, `PublishablePackagesConsumerService.createManifest`, `PublishablePackagesConsumerService.createWorkspaceConfiguration`, `PublishablePackagesConsumerService.writeFiles` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:187` |
 | `AuditGovernanceService.auditWorkflowContent` | 3 | `AuditGovernanceService.some(…)`, `AuditGovernanceService.some(…)`, `AuditGovernanceService.collectWorkflowJobViolations` | `tools/validation/src/modules/audit-governance/audit-governance.service.ts:57` |
 | `AuditGovernanceCommand.run` | 3 | `AuditGovernanceService.checkGovernance`, `AuditGovernanceCommand.reportCodeownersVerdict`, `AuditGovernanceCommand.reportWorkflowsVerdict` | `tools/validation/src/modules/audit-governance/audit-governance.command.ts:77` |
 | `IssueMetadataService.checkReleaseSignificanceViolation` | 3 | `IssueMetadataService.resolveIssueReleaseLevel`, `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:44` |
@@ -360,7 +367,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataService.groupLabels` | 3 | `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:401` |
 | `IssueMetadataService.resolveFromDocument` | 3 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataService.readLabelNames` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:427` |
 | `IssueMetadataCommand.resolveMetadata` | 3 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataCommand.readEnvironmentMetadata`, `IssueMetadataCommand.readLiveMetadata` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:229` |
-| `PublishablePackagesService.verifyCliBinary` | 3 | `PublishablePackagesService.unpackCliTarball`, `PublishablePackagesService.readPackageManifestBin`, `PublishablePackagesService.executeSpawnedBinary` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:300` |
+| `PublishablePackagesChecksService.verifyProjectGraph` | 3 | `PublishablePackagesChecksService.runBinary`, `PublishablePackagesChecksService.every(…)`, `formatCommandFailure` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:179` |
+| `PublishablePackagesConsumerService.createManifest` | 3 | `PublishablePackagesConsumerService.resolveTarballs`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.readManifest` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:61` |
+| `PublishablePackagesConsumerService.createWorkspaceConfiguration` | 3 | `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.resolveTarballs` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:105` |
 | `PullRequestBodyService.holdsShape` | 3 | `PullRequestBodyService.isDashList`, `PullRequestBodyService.filter(…)`, `PullRequestBodyService.bulletMarkersOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:100` |
 | `PullRequestBodyService.findMalformedSections` | 3 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:241` |
 | `PullRequestBodyService.filter(…)` | 3 | `PullRequestBodyService.cleanSectionContent`, `PullRequestBodyService.holdsShape`, `PullRequestBodyService.parseBlocks` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:244` |
@@ -386,8 +395,16 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataCommand.failWithUsageError` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:87` |
 | `IssueMetadataCommand.readEnvironmentMetadata` | 2 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataService.resolveFromEnvironment` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:133` |
 | `IssueMetadataCommand.reportFailures` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `tools/validation/src/modules/issue-metadata/issue-metadata.command.ts:183` |
-| `PublishablePackagesService.resolvePublishablePackages` | 2 | `PublishablePackagesService.resolveFamilyPackages`, `PublishablePackagesService.toSorted(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:418` |
-| `PublishablePackagesCommand.run` | 2 | `PublishablePackagesService.verifyPublishablePackages`, `formatPublishablePackagesSuccessMessage` | `tools/validation/src/modules/publishable-packages/publishable-packages.command.ts:40` |
+| `PublishablePackagesProcessService.run` | 2 | `PublishablePackagesProcessService.createEnvironment`, `PublishablePackagesProcessService.filter(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages-process.service.ts:85` |
+| `PublishablePackagesChecksService.verifyBinaries` | 2 | `PublishablePackagesChecksService.flatMap(…)`, `PublishablePackagesChecksService.flatMap(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:62` |
+| `PublishablePackagesChecksService.flatMap(…)` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:70` |
+| `PublishablePackagesChecksService.verifyGenerator` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:86` |
+| `PublishablePackagesChecksService.verifyPluginTarget` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:138` |
+| `PublishablePackagesChecksService.verifyTypecheck` | 2 | `PublishablePackagesProcessService.run`, `formatCommandFailure` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:205` |
+| `PublishablePackagesConsumerService.installConsumer` | 2 | `PublishablePackagesProcessService.run`, `formatCommandFailure` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:219` |
+| `PublishablePackagesService.findMissingTarballs` | 2 | `PublishablePackagesService.filter(…)`, `PublishablePackagesService.map(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:46` |
+| `PublishablePackagesService.resolvePublishablePackages` | 2 | `PublishablePackagesService.resolveFamilyPackages`, `PublishablePackagesService.toSorted(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:138` |
+| `PublishablePackagesCommand.run` | 2 | `PublishablePackagesService.verifyPublishablePackages`, `formatPublishablePackagesSuccessMessage` | `tools/validation/src/modules/publishable-packages/publishable-packages.command.ts:46` |
 | `PullRequestBodyService.cleanSectionContent` | 2 | `PullRequestBodyService.filter(…)`, `PullRequestBodyService.map(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:74` |
 | `PullRequestBodyService.findEmptySections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:225` |
 | `PullRequestBodyService.findMissingHeadings` | 2 | `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:263` |
@@ -422,10 +439,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataService.parseFormAnswers` | 1 | `IssueMetadataService.extractFormField` | `tools/validation/src/modules/issue-metadata/issue-metadata.service.ts:416` |
 | `LockfileService.checkLockfile` | 1 | `LockfileService.runFrozenInstall` | `tools/validation/src/modules/lockfile/lockfile.service.ts:60` |
 | `LockfileCommand.run` | 1 | `LockfileService.checkLockfile` | `tools/validation/src/modules/lockfile/lockfile.command.ts:50` |
-| `PublishablePackagesService.resolveFamilyPackages` | 1 | `PublishablePackagesService.parsePackageCandidate` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:172` |
-| `PublishablePackagesService.unpackTarballs` | 1 | `PublishablePackagesService.filter(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:215` |
-| `PublishablePackagesService.verifyAllCliBinaries` | 1 | `PublishablePackagesService.verifyCliBinary` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:250` |
-| `PublishablePackagesService.verifyAllTypechecks` | 1 | `PublishablePackagesService.verifyPackageTypecheck` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:275` |
+| `PublishablePackagesChecksService.runBinary` | 1 | `PublishablePackagesProcessService.run` | `tools/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49` |
+| `PublishablePackagesConsumerService.map(…)` | 1 | `PublishablePackagesConsumerService.readToolVersion` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:63` |
+| `PublishablePackagesConsumerService.createTypecheckFiles` | 1 | `PublishablePackagesConsumerService.map(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:83` |
+| `PublishablePackagesConsumerService.readToolVersion` | 1 | `PublishablePackagesConsumerService.readManifest` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:140` |
+| `PublishablePackagesConsumerService.resolveTarballs` | 1 | `PublishablePackagesConsumerService.map(…)` | `tools/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:156` |
+| `PublishablePackagesService.resolveFamilyPackages` | 1 | `PublishablePackagesService.parsePackageCandidate` | `tools/validation/src/modules/publishable-packages/publishable-packages.service.ts:112` |
 | `PullRequestBodyService.bulletMarkersOf` | 1 | `PullRequestBodyService.sourceOf` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:46` |
 | `PullRequestBodyService.countWords` | 1 | `PullRequestBodyService.filter(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:86` |
 | `PullRequestBodyService.isDashList` | 1 | `PullRequestBodyService.every(…)` | `tools/validation/src/modules/pull-request-body/pull-request-body.service.ts:132` |
@@ -558,6 +577,14 @@ graph LR
   file_src_modules_lockfile_lockfile_service_ts["src/modules/lockfile/lockfile.service.ts"]
   file_src_modules_lockfile_lockfile_service_unit_test_ts["src/modules/lockfile/lockfile.service.unit.test.ts"]
   file_src_modules_lockfile_lockfile_types_ts["src/modules/lockfile/lockfile.types.ts"]
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts["src/modules/publishable-packages/publishable-packages-checks.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts["src/modules/publishable-packages/publishable-packages-checks.service.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts["src/modules/publishable-packages/publishable-packages-consumer.constants.ts"]
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts["src/modules/publishable-packages/publishable-packages-consumer.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts["src/modules/publishable-packages/publishable-packages-consumer.service.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts["src/modules/publishable-packages/publishable-packages-fixtures.constants.ts"]
+  file_src_modules_publishable_packages_publishable_packages_process_service_ts["src/modules/publishable-packages/publishable-packages-process.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts["src/modules/publishable-packages/publishable-packages-process.service.unit.test.ts"]
   file_src_modules_publishable_packages_publishable_packages_command_ts["src/modules/publishable-packages/publishable-packages.command.ts"]
   file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts["src/modules/publishable-packages/publishable-packages.command.unit.test.ts"]
   file_src_modules_publishable_packages_publishable_packages_constants_ts["src/modules/publishable-packages/publishable-packages.constants.ts"]
@@ -694,19 +721,47 @@ graph LR
   file_src_modules_lockfile_lockfile_service_ts --> file_src_modules_lockfile_lockfile_types_ts
   file_src_modules_lockfile_lockfile_service_unit_test_ts --> file_src_modules_lockfile_lockfile_constants_ts
   file_src_modules_lockfile_lockfile_service_unit_test_ts --> file_src_modules_lockfile_lockfile_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
   file_src_modules_publishable_packages_publishable_packages_command_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
   file_src_modules_publishable_packages_publishable_packages_command_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_publishable_packages_publishable_packages_command_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
   file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_command_ts
   file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
   file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
   file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
   file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_command_ts
   file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
   file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_command_ts
   file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
   file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
   file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
   file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
   file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
   file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
   file_src_modules_pull_request_body_pull_request_body_command_ts --> file_src_modules_pull_request_body_pull_request_body_constants_ts
@@ -796,36 +851,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-12597-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-393.51_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-13978-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-437.87_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-92-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-100-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-92-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-35-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-100-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-40-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-41-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-278-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-44-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-313-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-33-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-16-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-32-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-647-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-224-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-738-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-133-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-547-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-378-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-155-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-405-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-874-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-36-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-717-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-245-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-825-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-137-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-608-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-441-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-183-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-455-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-983-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -846,17 +901,17 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-150-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-43-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-9-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-104-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-71-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-155-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-44-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-10-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-106-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-72-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-7-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-24-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-131-dc2626?style=flat-square)
-![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-25-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-134-dc2626?style=flat-square)
+![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
 
@@ -937,13 +992,13 @@ graph LR
 ### Conventions
 
 ![Module Files](https://img.shields.io/badge/Module_Files-10-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-12-0284c7?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-15-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-9-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-9-ea580c?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-11-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-9-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-32-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-35-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.3](https://github.com/organizzolini/codebase/compare/v3.2.2...v3.2.3) (2026-10-13)
+
+### 📝 Documentation
+
+* **codependix,documentation:** 📝 tidy the codependix skills, attribution examples, and plugin ADR note ([#1445](https://github.com/organizzolini/codebase/issues/1445)) ([3e5441a](https://github.com/organizzolini/codebase/commit/3e5441ac38a89849d57d03041b039194ea126f40)), closes [#1441](https://github.com/organizzolini/codebase/issues/1441) [#1444](https://github.com/organizzolini/codebase/issues/1444) [#1429](https://github.com/organizzolini/codebase/issues/1429) [#1430](https://github.com/organizzolini/codebase/issues/1430) [#1430](https://github.com/organizzolini/codebase/issues/1430) [#1434](https://github.com/organizzolini/codebase/issues/1434) [#1221](https://github.com/organizzolini/codebase/issues/1221) [#1444](https://github.com/organizzolini/codebase/issues/1444)
+
 ## [3.2.2](https://github.com/organizzolini/codebase/compare/v3.2.1...v3.2.2) (2026-10-13)
 
 ### 🐛 Bug Fixes

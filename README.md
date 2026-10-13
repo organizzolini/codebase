@@ -4572,6 +4572,14 @@ graph LR
   file_validation_src_modules_lockfile_lockfile_service_ts["validation/src/modules/lockfile/lockfile.service.ts"]
   file_validation_src_modules_lockfile_lockfile_service_unit_test_ts["validation/src/modules/lockfile/lockfile.service.unit.test.ts"]
   file_validation_src_modules_lockfile_lockfile_types_ts["validation/src/modules/lockfile/lockfile.types.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts["validation/src/modules/publishable-packages/publishable-packages-checks.service.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages-checks.service.unit.test.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts["validation/src/modules/publishable-packages/publishable-packages-consumer.constants.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts["validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages-consumer.service.unit.test.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts["validation/src/modules/publishable-packages/publishable-packages-fixtures.constants.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts["validation/src/modules/publishable-packages/publishable-packages-process.service.ts"]
+  file_validation_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages-process.service.unit.test.ts"]
   file_validation_src_modules_publishable_packages_publishable_packages_command_ts["validation/src/modules/publishable-packages/publishable-packages.command.ts"]
   file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts["validation/src/modules/publishable-packages/publishable-packages.command.unit.test.ts"]
   file_validation_src_modules_publishable_packages_publishable_packages_constants_ts["validation/src/modules/publishable-packages/publishable-packages.constants.ts"]
@@ -11294,19 +11302,47 @@ graph LR
   file_validation_src_modules_lockfile_lockfile_service_ts --> file_validation_src_modules_lockfile_lockfile_types_ts
   file_validation_src_modules_lockfile_lockfile_service_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_constants_ts
   file_validation_src_modules_lockfile_lockfile_service_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
   file_validation_src_modules_publishable_packages_publishable_packages_command_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
   file_validation_src_modules_publishable_packages_publishable_packages_command_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_command_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
   file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_command_ts
   file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
   file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
   file_validation_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_validation_testing_mocks_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_process_service_ts
   file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_command_ts
   file_validation_src_modules_publishable_packages_publishable_packages_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
   file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_command_ts
   file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
   file_validation_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
   file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
   file_validation_src_modules_publishable_packages_publishable_packages_service_ts --> file_validation_src_modules_publishable_packages_publishable_packages_types_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_consumer_service_ts
   file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_constants_ts
   file_validation_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_service_ts
   file_validation_src_modules_pull_request_body_pull_request_body_command_ts --> file_validation_src_modules_pull_request_body_pull_request_body_constants_ts
@@ -11398,7 +11434,7 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6329-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-2.24_MB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-2.25_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-78-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-24-3178c6?style=flat-square)
 
@@ -11462,15 +11498,15 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-23-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3176-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3201-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-23-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-444-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-447-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1523-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3044-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1533-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3063-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-524-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-533-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -11485,17 +11521,17 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-48-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-3426-4eaa25?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-49-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-3468-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-48-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-307-0284c7?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-308-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-11-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-215-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-217-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-36-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-120-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-48-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-876-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-876-475569?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-49-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-895-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-895-475569?style=flat-square)
 
 ### SQL
 
@@ -11582,23 +11618,23 @@ Repository statistics measured by [codometer](packages/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-117-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19328-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19341-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-116-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-678-8b5cf6?style=flat-square)
+![H2](https://img.shields.io/badge/H2-679-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-528-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5505-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5506-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-867-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4198-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-231-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1969-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-720-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-1970-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-721-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-407-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-10912-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-10924-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -11611,10 +11647,10 @@ The workspace's call graph, traced by [callidescope](packages/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6350 |
-| Files | 1796 |
-| Calls traced | 6791 |
-| Call stacks | 1950 |
+| Callables | 6378 |
+| Files | 1801 |
+| Calls traced | 6830 |
+| Call stacks | 1955 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
 | Unfollowable calls | 377 |
