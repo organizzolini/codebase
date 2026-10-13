@@ -1,6 +1,6 @@
 # 🎨 Lexico Components
 
-**Shared React component library built on shadcn/ui and Radix UI primitives.**
+**Shared React component library built on shadcn/ui and Base UI primitives.**
 
 A collection of accessible, customizable UI components for the codebase, providing a consistent design system across applications. Built with Tailwind CSS, TypeScript, and shadcn/ui (New York style).
 
@@ -20,7 +20,7 @@ The interface half of the [Lexico](../lexico/lexico-web/README.md) suite:
 - **Themeable**: CSS variables for light/dark mode, customizable colors
 - **Type-Safe**: Full TypeScript support with strict mode
 - **Tree-Shakeable**: Only bundle components you actually use
-- **Radix UI Primitives**: Built on high-quality, unstyled component primitives
+- **Base UI Primitives**: Built on high-quality, unstyled component primitives
 
 ## Quick Start
 
@@ -241,7 +241,7 @@ nx run components-web:codometer
 # Limit: 512 KB gzipped, warning at 384 KB
 ```
 
-The 512 KB limit is a ratchet against the measured size, not a design target — the Vite library build bundles React and Radix into the output rather than externalizing them, even though React is a `peerDependency`. See `codometer.config.ts` for the full note.
+The 512 KB limit is a ratchet against the measured size, not a design target — the Vite library build bundles React and Base UI into the output rather than externalizing them, even though React is a `peerDependency`. See `codometer.config.ts` for the full note.
 
 ## Usage Examples
 
@@ -303,9 +303,7 @@ import {
 function ConfirmDialog() {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button>Open Dialog</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button />}>Open Dialog</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
@@ -332,8 +330,8 @@ import {
 function UserMenu() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost">Menu</Button>
+      <DropdownMenuTrigger render={<Button variant="ghost" />}>
+        Menu
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>Profile</DropdownMenuItem>
@@ -380,7 +378,7 @@ All components follow WCAG 2.1 Level AA standards:
 - ✅ ARIA attributes (screen reader announcements)
 - ✅ Color contrast (4.5:1 for text, 3:1 for UI)
 
-Built on Radix UI primitives which handle complex accessibility patterns automatically:
+Built on Base UI primitives which handle complex accessibility patterns automatically:
 
 - Focus trapping in dialogs
 - Roving focus in menus
@@ -428,7 +426,7 @@ For detailed architecture, component patterns, and development workflows:
 External resources:
 
 - [shadcn/ui Documentation](https://ui.shadcn.com/docs): Component reference and CLI
-- [Radix UI Documentation](https://www.radix-ui.com/primitives): Primitive APIs
+- [Base UI Documentation](https://base-ui.com/react/overview/quick-start): Primitive APIs
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs): Utility classes
 
 ## License

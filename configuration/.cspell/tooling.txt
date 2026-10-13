@@ -67,6 +67,7 @@ fontsource
 frontmatter
 futp
 ghaction
+gantt
 gitmodules
 groupable
 gitmoji
@@ -182,6 +183,7 @@ readonly
 reagent
 reflog
 repo
+reui
 rglob
 ruff
 sarif
@@ -192,6 +194,7 @@ serializers
 seroval
 sherif
 shiftsmart
+shiki
 signingkey
 smallint
 smol
