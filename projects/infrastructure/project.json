@@ -6,15 +6,16 @@
   "tags": ["language:infrastructure", "type:package"],
   "targets": {
     "compose-config": {
-      "cache": true,
-      "description": "Validate the Docker Compose file without starting anything",
+      "cache": false,
+      "description": "Validate the Docker Compose file without starting anything. Uncached on purpose: the compose file reads the workspace-root .env (env_file), which is gitignored and so cannot be declared as an input, and a cached pass would replay after .env goes missing or changes.",
       "executor": "nx:run-commands",
-      "inputs": ["{projectRoot}/docker/docker-compose.yml"],
       "options": {
         "command": "docker compose -f {projectRoot}/docker/docker-compose.yml config -q",
         "cwd": "{workspaceRoot}"
       }
     },
+    "format-code": {},
+    "guard-code": {},
     "helm-lint": {
       "cache": true,
       "description": "Lint the kubernetes-job Helm chart against its base values",
@@ -25,6 +26,7 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "markdown-lint": {},
     "open-webui": {
       "configurations": {
         "down": {
@@ -44,6 +46,7 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "oxfmt": {},
     "postgres": {
       "configurations": {
         "down": {
@@ -82,6 +85,8 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "secure-code": {},
+    "spell-check": {},
     "terraform": {
       "cache": false,
       "configurations": {
@@ -112,9 +117,10 @@
         }
       ],
       "options": {
-        "command": "trivy config projects/infrastructure/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/trivyignore",
+        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/trivyignore",
         "cwd": "{workspaceRoot}"
       }
-    }
+    },
+    "yaml-lint": {}
   }
 }

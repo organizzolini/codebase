@@ -40,48 +40,10 @@
         "cwd": "{projectRoot}"
       }
     },
-    "open-webui": {
-      "configurations": {
-        "open": {
-          "command": "$BROWSER http://localhost:3001"
-        },
-        "start": {
-          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml up -d open-webui"
-        },
-        "stop": {
-          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml rm -sf open-webui"
-        }
-      },
-      "defaultConfiguration": "start",
-      "description": "Manage the Open WebUI Docker service",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{projectRoot}"
-      }
-    },
     "pyright": {},
     "pytest": {},
     "ruff-format": {},
     "ruff-lint": {},
-    "searxng": {
-      "configurations": {
-        "open": {
-          "command": "$BROWSER http://localhost:8889"
-        },
-        "start": {
-          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml up -d searxng"
-        },
-        "stop": {
-          "command": "docker compose -f ../../projects/infrastructure/docker/docker-compose.yml rm -sf searxng"
-        }
-      },
-      "defaultConfiguration": "start",
-      "description": "Manage the SearxNG Docker service",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{projectRoot}"
-      }
-    },
     "spell-check": {},
     "test-coverage": {},
     "ty": {},
@@ -89,7 +51,6 @@
     "vulture": {},
     "yaml-lint": {},
     "build-projects": {},
-    "codometer": {},
     "deprecate-code": {},
     "format-code": {},
     "guard-code": {},

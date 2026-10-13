@@ -287,7 +287,7 @@
         }
       },
       "defaultConfiguration": "check",
-      "description": "Lint workspace root files with ESLint — config files, scripts, documentation, infrastructure, and every markdown file in the workspace. That trailing `**/*.md` is what gives `project-structure/folder-structure` reach over markdown paths, and it is a workspace-wide glob rather than a list of directories on purpose: an enumerated list only judges the directories somebody remembered to add, so it would not have caught openwiki/ — the undeclared directory that motivated the rule — and would not catch the next one. Markdown inside a project is judged twice, here and by that project's own eslint target, which costs a second and reports the same answer.",
+      "description": "Lint workspace root files with ESLint — config files, scripts, documentation, the infrastructure project (named explicitly rather than given its own eslint target, which would need a tsconfig just to lint an eslint.config.ts), and every markdown file in the workspace. That trailing `**/*.md` is what gives `project-structure/folder-structure` reach over markdown paths, and it is a workspace-wide glob rather than a list of directories on purpose: an enumerated list only judges the directories somebody remembered to add, so it would not have caught openwiki/ — the undeclared directory that motivated the rule — and would not catch the next one. Markdown inside a project is judged twice, here and by that project's own eslint target, which costs a second and reports the same answer.",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{projectRoot}"
@@ -514,7 +514,6 @@
         "{workspaceRoot}/configuration/**/*",
         "{workspaceRoot}/configuration/jscpd.config.json",
         "{workspaceRoot}/projects/**/*",
-        "{workspaceRoot}/projects/infrastructure/**/*",
         "{workspaceRoot}/scripts/**/*",
         "shared-globals",
         {
@@ -578,21 +577,20 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "markdownlint-cli2 --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'projects/infrastructure/**/*.md' 'scripts/**/*.md'"
+          "command": "markdownlint-cli2 --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md'"
         },
         "write": {
-          "command": "markdownlint-cli2 --fix --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'projects/infrastructure/**/*.md' 'scripts/**/*.md'"
+          "command": "markdownlint-cli2 --fix --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md'"
         }
       },
       "defaultConfiguration": "check",
-      "description": "Lint markdown files in workspace root (agents, scripts, documentation, infrastructure). Reaches .agents/ so this repository's own skills are linted like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the markdownlint configuration. The inputs enumerate exactly the globs the command lints, plus the markdownlint configuration and shared-globals, and `markdownlint-cli2` as an external dependency, so a markdownlint upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The workspace-wide default input is deliberately absent: it resolves to {projectRoot}/**/* for the root project, which made every root-owned file the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills markdownlint already ignores, so editing one of them no longer busts the cache for nothing.",
+      "description": "Lint markdown files in workspace root (agents, scripts, documentation). Reaches .agents/ so this repository's own skills are linted like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the markdownlint configuration. The inputs enumerate exactly the globs the command lints, plus the markdownlint configuration and shared-globals, and `markdownlint-cli2` as an external dependency, so a markdownlint upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The workspace-wide default input is deliberately absent: it resolves to {projectRoot}/**/* for the root project, which made every root-owned file the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills markdownlint already ignores, so editing one of them no longer busts the cache for nothing.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/*.md",
         "{projectRoot}/.agents/**/*.md",
         "{projectRoot}/docs/**/*.md",
         "{projectRoot}/documentation/**/*.md",
-        "{projectRoot}/projects/infrastructure/**/*.md",
         "{projectRoot}/scripts/**/*.md",
         "{workspaceRoot}/configuration/.markdownlint-cli2.jsonc",
         "shared-globals",
@@ -637,14 +635,14 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/' 'projects/infrastructure/'"
+          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/'"
         },
         "write": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/' 'projects/infrastructure/'"
+          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/'"
         }
       },
       "defaultConfiguration": "check",
-      "description": "Format workspace root files with oxfmt (config files, scripts, documentation, infrastructure)",
+      "description": "Format workspace root files with oxfmt (config files, scripts, documentation)",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/configuration/.oxfmtignore",
@@ -662,14 +660,14 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/' 'projects/infrastructure/' --ignore-pattern='projects/infrastructure/helm/**/templates'"
+          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/'"
         },
         "write": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/' 'projects/infrastructure/' --ignore-pattern='projects/infrastructure/helm/**/templates'"
+          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/'"
         }
       },
       "defaultConfiguration": "check",
-      "description": "Run Oxlint on workspace root files — config files, scripts, documentation, infrastructure, and the devcontainer sync scripts. That last path is named because the others hold no TypeScript at all today: `scripts/` went shell-only when the two dead root scripts were deleted, and oxlint exits non-zero when its paths match nothing, so a target covering only empty directories fails rather than passing vacuously. The devcontainer scripts are real TypeScript that nothing else here was linting.",
+      "description": "Run Oxlint on workspace root files — config files, scripts, documentation, and the devcontainer sync scripts. That last path is named because the others hold no TypeScript at all today: `scripts/` went shell-only when the two dead root scripts were deleted, and oxlint exits non-zero when its paths match nothing, so a target covering only empty directories fails rather than passing vacuously. The devcontainer scripts are real TypeScript that nothing else here was linting.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/configuration/oxlint.config.ts",
@@ -696,25 +694,6 @@
       "description": "Scan for fixable security vulnerabilities (check, which passes when the advisory registry is unreachable) or clean stale overrides and re-fix (write)",
       "executor": "nx:run-commands",
       "options": {}
-    },
-    "postgres-container": {
-      "configurations": {
-        "down": {
-          "command": "docker compose -f projects/infrastructure/docker/docker-compose.yml down postgres"
-        },
-        "recreate": {
-          "command": "docker compose -f projects/infrastructure/docker/docker-compose.yml down -v postgres && docker compose -f projects/infrastructure/docker/docker-compose.yml up -d postgres"
-        },
-        "up": {
-          "command": "docker compose -f projects/infrastructure/docker/docker-compose.yml up -d postgres"
-        }
-      },
-      "defaultConfiguration": "up",
-      "description": "Start, stop, or recreate the local PostgreSQL container (recreate removes the volume)",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
     },
     "postgres-data": {
       "configurations": {
@@ -871,7 +850,7 @@
     },
     "spell-check": {
       "cache": true,
-      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, infrastructure, notepads, openwiki, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The workspace-wide default input is deliberately absent: it resolves to {projectRoot}/**/* for the root project, which made every root-owned file the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
+      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, notepads, openwiki, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The workspace-wide default input is deliberately absent: it resolves to {projectRoot}/**/* for the root project, which made every root-owned file the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/*.{ts,tsx,js,jsx,md,yaml,yml,json}",
@@ -885,7 +864,6 @@
         "{projectRoot}/notepads/**",
         "{projectRoot}/openwiki/**",
         "{projectRoot}/planning/**",
-        "{projectRoot}/projects/infrastructure/**",
         "{projectRoot}/scripts/**",
         "{workspaceRoot}/configuration/.cspell/**",
         "{workspaceRoot}/configuration/cspell.config.yaml",
@@ -896,7 +874,7 @@
         }
       ],
       "options": {
-        "command": "cspell --config configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'configuration/**' 'docs/**' 'documentation/**' 'projects/infrastructure/**' 'notepads/**' 'openwiki/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
+        "command": "cspell --config configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'configuration/**' 'docs/**' 'documentation/**' 'notepads/**' 'openwiki/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
         "cwd": "{projectRoot}"
       }
     },
@@ -1028,40 +1006,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "terraform": {
-      "cache": false,
-      "configurations": {
-        "import": {
-          "command": "terraform import -input=false linode_lke_cluster.my_cluster $TF_VAR_linode_kubernetes_engine_cluster_id"
-        },
-        "plan": {
-          "command": "terraform plan"
-        }
-      },
-      "defaultConfiguration": "plan",
-      "description": "Run Terraform commands (plan, import)",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "terraform plan",
-        "cwd": "projects/infrastructure/terraform"
-      }
-    },
-    "trivy-config": {
-      "cache": true,
-      "description": "Scan Terraform infrastructure code for misconfigurations using Trivy. Identical to what the Secure Code workflow runs, so a local run reproduces CI exactly. Requires trivy on PATH (the devcontainer installs it; otherwise `brew install trivy`).",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/configuration/trivyignore",
-        "{workspaceRoot}/projects/infrastructure/terraform/**/*.tf",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "trivy config projects/infrastructure/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/trivyignore",
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "type-coverage": {
       "cache": true,
       "description": "Check TypeScript type coverage for workspace root (minimum 95%)",
@@ -1163,7 +1107,7 @@
     },
     "yaml-lint": {
       "cache": true,
-      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer and infrastructure compose files, the Helm chart and its values, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. pyproject.toml and uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
+      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer files, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. pyproject.toml and uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.devcontainer/**/*.{yaml,yml}",
@@ -1171,7 +1115,6 @@
         "{workspaceRoot}/configuration/cspell.config.yaml",
         "{workspaceRoot}/configuration/yamllint.yaml",
         "{workspaceRoot}/pnpm-workspace.yaml",
-        "{workspaceRoot}/projects/infrastructure/**/*.{yaml,yml}",
         "{workspaceRoot}/pyproject.toml",
         "{workspaceRoot}/uv.lock",
         {
@@ -1179,7 +1122,7 @@
         }
       ],
       "options": {
-        "command": "uv run yamllint -c configuration/yamllint.yaml .devcontainer .github configuration/cspell.config.yaml configuration/yamllint.yaml projects/infrastructure pnpm-workspace.yaml",
+        "command": "uv run yamllint -c configuration/yamllint.yaml .devcontainer .github configuration/cspell.config.yaml configuration/yamllint.yaml pnpm-workspace.yaml",
         "cwd": "{workspaceRoot}"
       }
     }
