@@ -98,6 +98,8 @@
 
 ## 💽 Projects
 
+### 🔮 affirmancy
+
 **🔮 [affirmancy](applications/affirmancy)** - Python LangChain + Ollama affirmation generator (LangGraph ReAct agent, SearxNG)\
 
 ### 🛰️ caelundas
@@ -176,16 +178,16 @@ Latin-English dictionary suite: the web application, its components, its schema,
 
 ### 🏺 meanderaw
 
-Greek meander (key/fret) applications that enumerate, measure, and classify meander patterns
+Enumerate, measure, and classify greek meander patterns
 
 **[meanderaw-cli](applications/meanderaw/meanderaw-cli)** - CLI that enumerates Greek meander (key/fret) patterns into a Postgres database, measuring and classifying each by its Code\
 **[meanderaw-web](applications/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
-**🐘 [database](packages/database)** - Shared Postgres package: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, and the `migration` target
-**🪵 [logging](packages/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`
-**🧑‍💻 [JimmyPaolini](applications/JimmyPaolini)** - GitHub profile site\
+**🐘 [database](packages/database)** - Shared Postgres package: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, and the `migration` target\
+**🪵 [logging](packages/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
 **↔️ [synchronization](tools/synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
-**✅ [validation](tools/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate
+**✅ [validation](tools/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
+**🧑‍💻 [JimmyPaolini](applications/JimmyPaolini)** - GitHub profile site
 
 ## 📖 Documentation
 
