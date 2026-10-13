@@ -122,7 +122,8 @@ const config = {
   // and sherif compare every manifest against every other, so the root project
   // has to run whether or not `affected` selected it.
   "**/package.json": (): string[] => [
-    "pnpm exec nx run-many --projects=codebase --targets=check-catalog-manifests,sherif,syncpack --outputStyle=static",
+    "pnpm exec nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
+    "pnpm exec nx run-many --projects=codebase --targets=sherif,syncpack --outputStyle=static",
   ],
 
   // 🔬 Static analysis and conformetry validation

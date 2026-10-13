@@ -12,6 +12,32 @@
   ],
   "targets": {
     "build-projects": {},
+    "catalog-manifests": {
+      "cache": true,
+      "description": "Enforce catalog: protocol for external dependencies in workspace package manifests. Named by `guard-code` through its targetDefault, so only a project that defines it runs it; its `inputs` read every manifest in the workspace, which is what pulls this project into the affected set when one changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts catalog-manifests",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
@@ -19,11 +45,68 @@
     "guard-code": {},
     "knip": {},
     "lint-code": {},
+    "lockfile": {
+      "cache": true,
+      "description": "Verify that pnpm-lock.yaml is in sync with package.json files. A `guard-code` dependency, and affected whenever a manifest, the workspace file, `.npmrc`, a patch, or the lockfile changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/.npmrc",
+        "{workspaceRoot}/patches/**/*",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts lockfile",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "markdown-lint": {},
     "oxfmt": {},
     "oxlint": {},
     "pack": {},
     "prettier": {},
+    "readme-projects": {
+      "cache": true,
+      "description": "Verify the root README links to every workspace project. A `guard-code` dependency, affected whenever a manifest or the root README changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/README.md",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts readme-projects",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "repl": {},
     "spell-check": {},
     "start": {
