@@ -57,5 +57,14 @@ describe("main end-to-end suite", () => {
       expect(output).toContain("TARGET is unset");
       expect(status).toBe(1);
     });
+
+    it("boots publishable-packages-gate and reaches its input check", () => {
+      expect.hasAssertions();
+
+      const { output, status } = runCommand("publishable-packages-gate");
+
+      expect(output).toContain("NX_BASE and NX_HEAD are unset");
+      expect(status).toBe(1);
+    });
   });
 });

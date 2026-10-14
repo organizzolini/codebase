@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import type { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import type { LoggerService } from "@codebase/logging";
 
@@ -15,6 +16,8 @@ type CommandFactoryRun = (
 
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
+const publishablePackagesGateModuleMock =
+  createMock<PublishablePackagesGateModule>();
 const runAffectedModuleMock = createMock<RunAffectedModule>();
 
 vi.mock("nest-commander", () => ({
@@ -39,6 +42,15 @@ vi.mock("@codebase/logging", () => ({
 
 // Mocked so that bootstrapping never reaches the real commands, which extend a
 // `nest-commander` class this suite has replaced.
+vi.mock(
+  "./modules/publishable-packages-gate/publishable-packages-gate.module",
+  () => ({
+    PublishablePackagesGateModule: function PublishablePackagesGateModule() {
+      return publishablePackagesGateModuleMock;
+    },
+  }),
+);
+
 vi.mock("./modules/run-affected/run-affected.module", () => ({
   RunAffectedModule: function RunAffectedModule() {
     return runAffectedModuleMock;

@@ -5,6 +5,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/logging";
 
 import { environmentSchema } from "./constants";
+import { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 
 /**
@@ -20,6 +21,7 @@ import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
     }),
     DiscoveryModule,
     LoggerModule,
+    PublishablePackagesGateModule,
     RunAffectedModule,
   ],
 })
