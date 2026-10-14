@@ -27,7 +27,14 @@
     "spell-check": {},
     "start": {
       "cache": false,
-      "configurations": {},
+      "configurations": {
+        "publishable-packages-gate": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/main.ts publishable-packages-gate"
+        },
+        "run-affected": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/main.ts run-affected"
+        }
+      },
       "description": "Run one publication command by name. Callers in CI set the variables each command reads, such as NX_BASE and NX_HEAD.",
       "executor": "nx:run-commands",
       "options": {

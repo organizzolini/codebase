@@ -5,8 +5,9 @@ description: |
   set unless `include-spelling` is set, and selecting every conformetry
   instance when a template changes if `include-templates` is set.
 
-  The logic, and why `--stdin` is only its fallback, lives in
-  `scripts/nx/run-affected.sh`.
+  The logic, and why `--stdin` is only its fallback, lives in the
+  `run-affected` command of the `publication` project. It needs the installed
+  dependencies, so this runs after `setup-codebase` has installed them.
 
 inputs:
   target:
@@ -37,5 +38,7 @@ runs:
         INCLUDE_SPELLING: ${{ inputs.include-spelling }}
         INCLUDE_TEMPLATES: ${{ inputs.include-templates }}
         SPELLING_PATHS: ^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$
-      run: bash scripts/nx/run-affected.sh
+      run: |
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          projects/publication/src/main.ts run-affected
       shell: bash

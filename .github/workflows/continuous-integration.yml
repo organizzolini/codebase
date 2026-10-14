@@ -99,12 +99,13 @@ jobs:
           # Packs every publishable ic-suite package and installs the tarballs
           # into a consumer outside the checkout, then runs its command lines
           # and one inferred target per Nx plugin. Runs whole, and only when an
-          # ic-suite package or the check is affected — see
-          # `scripts/nx/verify-publishable-packages.sh`. Never authenticates to
-          # a registry: no step is given an npm token, and setup-node is given
-          # no `registry-url`. Its first run on #1473 took 4m05s with nothing
-          # cached: 2m49s to pack and check, 34s of that in the consumer. 15
-          # minutes leaves room for a runner several times slower.
+          # ic-suite package or the check is affected — see the
+          # `publishable-packages-gate` command of the `publication` project.
+          # Never authenticates to a registry: no step is given an npm token,
+          # and setup-node is given no `registry-url`. Its first run on #1473
+          # took 4m05s with nothing cached: 2m49s to pack and check, 34s of
+          # that in the consumer. 15 minutes leaves room for a runner several
+          # times slower.
           - target: verify-publishable-packages
             name: Publishable Packages
             emoji: 📦
@@ -178,7 +179,9 @@ jobs:
         env:
           NX_VERBOSE_LOGGING: ${{ inputs.verbose || false }}
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
-        run: bash scripts/nx/verify-publishable-packages.sh
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/publication/src/main.ts publishable-packages-gate
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         id: run-check

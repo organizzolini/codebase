@@ -357,19 +357,27 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
 | `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-| `run-affected.sh` | `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
-| `verify-publishable-packages.sh` | the 📦 Publishable Packages leg | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
-All three read everything from the environment, so any of them can be run locally. With
-`pnpm` stubbed to print what it would have run:
+This one stays shell. `setup-codebase` runs it before `pnpm install`, and a job
+may skip the install altogether, so no NestJS command can run in its place.
+
+The other two affected-run steps are commands of the
+[publication](../projects/publication) project, called from the `run-affected`
+composite action and the 📦 Publishable Packages leg:
+
+| Command | What it does |
+| ------- | ------------ |
+| `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
+| `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
+
+All three read everything from the environment, so any of them can be run
+locally:
 
 ```bash
-mkdir -p /tmp/stub && printf '#!/bin/sh\necho "pnpm $*"; [ -t 0 ] || cat\n' >/tmp/stub/pnpm
-chmod +x /tmp/stub/pnpm
-PATH="/tmp/stub:$PATH" TARGET=test-code ARGUMENTS="--parallel=4" \
-  NX_BASE=004d1f58c^ NX_HEAD=004d1f58c bash scripts/nx/run-affected.sh
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
   bash scripts/nx/bound-base-to-push.sh
+TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
+  nx run publication:start:run-affected
 ```
 
 ## Notepads

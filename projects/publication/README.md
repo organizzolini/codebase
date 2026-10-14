@@ -1,3 +1,7 @@
+Commands that run in CI: `run-affected` (Nx affected runs, minus spelling files)
+and `publishable-packages-gate` (runs the publishable-packages check only when
+an ic-suite package is affected). See [AGENTS.md](AGENTS.md).
+
 ## Start
 
 ```bash

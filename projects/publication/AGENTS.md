@@ -31,6 +31,27 @@ src/main.ts
        └─ domain command modules            ← add under src/modules/
 ```
 
+### Commands
+
+Commands read their inputs from the environment, as the workflows and composite
+actions set them, print what they decide, and set the exit code. Anything that
+runs a child process goes through `ProcessRunnerService`, so a test replaces
+one class.
+
+| Command | Module | Called from |
+| ------- | ------ | ----------- |
+| `run-affected` | `src/modules/run-affected` | the `run-affected` composite action |
+| `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 📦 Publishable Packages leg of Continuous Integration |
+
+`src/modules/process-runner` holds the shared wrapper over `node:child_process`
+(`capture` returns the output, `stream` inherits it).
+
+Run one locally with `nx run publication:start:<command>`, setting the
+variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).
+
+Steps that run before `pnpm install` cannot live here, because a command needs
+the installed dependencies. `scripts/nx/bound-base-to-push.sh` is one.
+
 ### Directory Layout
 
 ```text
