@@ -280,9 +280,9 @@ describe(LinkPackagesCommand, () => {
 
     expect(reportLines).toStrictEqual([
       "🔗 Linking @tool/cli@1.0.0 to owner/codebase",
-      "HTTP 422",
+      "❌ @tool/cli@1.0.0: HTTP 422",
       "🔗 Linking @tool/core@2.0.0 to owner/codebase",
-      "HTTP 422",
+      "❌ @tool/core@2.0.0: HTTP 422",
     ]);
     expect(fs.readFileSync(outputFile, "utf8")).toBe("attest=true\n");
     expect(process.exitCode).toBe(1);
@@ -297,12 +297,15 @@ describe(LinkPackagesCommand, () => {
     });
     await runCommand(runner);
 
-    expect(reportLines).toStrictEqual(["curl: (22) 404", "curl: (22) 404"]);
+    expect(reportLines).toStrictEqual([
+      "❌ @tool/cli@1.0.0: curl: (22) 404",
+      "❌ @tool/core@2.0.0: curl: (22) 404",
+    ]);
     expect(fs.readFileSync(outputFile, "utf8")).toBe("");
     expect(process.exitCode).toBe(1);
   });
 
-  it("names records after the rehearsal registry", async () => {
+  it("records nothing on GitHub when rehearsing, but still lists what to attest", async () => {
     expect.hasAssertions();
 
     vi.stubEnv("NPM_REGISTRY", "http://localhost:4873");
@@ -315,10 +318,17 @@ describe(LinkPackagesCommand, () => {
     });
     await runCommand(runner);
 
-    expect(runner.lines).toContain(recordsLine("cli"));
-    expect(recordBodies).toStrictEqual([
-      expect.objectContaining({ registry_url: "http://localhost:4873/" }),
+    expect(runner.lines.some((line) => line.startsWith("gh "))).toBe(false);
+    expect(
+      runner.lines.some((line) =>
+        line.endsWith("http://localhost:4873/@tool/cli/-/cli-1.0.0.tgz"),
+      ),
+    ).toBe(true);
+    expect(reportLines).toStrictEqual([
+      "🧪 @tool/cli@1.0.0 is not recorded on GitHub in a rehearsal",
     ]);
+    expect(fs.readFileSync(outputFile, "utf8")).toBe("attest=true\n");
+    expect(process.exitCode).toBe(0);
   });
 
   it("fails, naming the variable, before reading the group", async () => {

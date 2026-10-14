@@ -43,7 +43,13 @@ export const environmentSchema = z.object({
     .string()
     .optional()
     .transform((value) => value || DEFAULT_DATA_DIRECTORY),
-  PUSH_RETRY_DELAY: z.string().optional(),
+  PUSH_RETRY_DELAY: z
+    .string()
+    .regex(
+      /^(?:\d+(?:\.\d+)?)?$/v,
+      "PUSH_RETRY_DELAY must be a number of seconds",
+    )
+    .optional(),
   RUNNER_TEMP: z.string().optional(),
   SPELLING_PATHS: z.string().optional(),
   TARGET: z.string().optional(),

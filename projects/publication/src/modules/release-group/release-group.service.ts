@@ -6,7 +6,10 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { describeError } from "../process-runner/process-runner.utilities";
+import {
+  describeError,
+  requireSuccess,
+} from "../process-runner/process-runner.utilities";
 
 import {
   DEFAULT_NPM_REGISTRY,
@@ -58,8 +61,9 @@ export class ReleaseGroupService {
   }
 
   /**
-   * Lists the group's members from a written project graph, or nothing when
-   * Nx could not say which projects are in the group or where one lives.
+   * Lists the group's members from a written project graph, failing with
+   * Nx's own error when it could not say which projects are in the group or
+   * where one lives.
    */
   private membersFrom(graphFile: string): ReleaseGroupMember[] {
     const releaseProjects = (
@@ -67,35 +71,32 @@ export class ReleaseGroupService {
         fs.readFileSync(path.resolve("nx.json"), "utf8"),
       ) as NxReleaseConfiguration
     ).release.projects.join(",");
-    const graphed = this.processRunner.capture("pnpm", [
-      "exec",
-      "nx",
-      "graph",
-      `--file=${graphFile}`,
-    ]);
-
-    if (graphed.status !== 0) {
-      return [];
-    }
-
-    const shown = this.processRunner.capture("pnpm", [
-      "exec",
-      "nx",
-      "show",
-      "projects",
-      "--projects",
-      releaseProjects,
-      "--json",
-    ]);
-
-    if (shown.status !== 0) {
-      return [];
-    }
+    requireSuccess(
+      this.processRunner.capture("pnpm", [
+        "exec",
+        "nx",
+        "graph",
+        `--file=${graphFile}`,
+      ]),
+      "pnpm exec nx graph",
+    );
+    const shown = requireSuccess(
+      this.processRunner.capture("pnpm", [
+        "exec",
+        "nx",
+        "show",
+        "projects",
+        "--projects",
+        releaseProjects,
+        "--json",
+      ]),
+      "pnpm exec nx show projects",
+    );
 
     const { nodes } = (
       JSON.parse(fs.readFileSync(graphFile, "utf8")) as ProjectGraphFile
     ).graph;
-    const projects = JSON.parse(shown.stdout) as string[];
+    const projects = JSON.parse(shown) as string[];
 
     return projects.map((project) => {
       const root = nodes[project]?.data.root;
@@ -126,6 +127,16 @@ export class ReleaseGroupService {
     ]);
 
     return viewed.status === 0;
+  }
+
+  /**
+   * Reports whether `NPM_REGISTRY` names a registry other than npmjs.org,
+   * which makes the run a rehearsal: no provenance, and no GitHub records.
+   *
+   * @returns Whether this run is a rehearsal.
+   */
+  public isRehearsal(): boolean {
+    return this.npmRegistry() !== DEFAULT_NPM_REGISTRY;
   }
 
   /**
@@ -161,14 +172,16 @@ export class ReleaseGroupService {
 
     try {
       members = this.membersFrom(path.join(directory, "graph.json"));
-    } catch {
-      members = [];
+    } catch (error: unknown) {
+      throw new Error(`${GROUP_UNREADABLE_MESSAGE}: ${describeError(error)}`, {
+        cause: error,
+      });
     } finally {
       fs.rmSync(directory, { force: true, recursive: true });
     }
 
     if (members.length === 0) {
-      throw new Error(GROUP_UNREADABLE_MESSAGE);
+      throw new Error(`${GROUP_UNREADABLE_MESSAGE}: Nx listed no projects`);
     }
 
     return members;

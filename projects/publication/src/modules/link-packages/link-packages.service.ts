@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { requireVariable } from "../process-runner/process-runner.utilities";
+import { NEWLY_PUBLISHED_FILE } from "../release-group/release-group.constants";
 import { ReleaseGroupService } from "../release-group/release-group.service";
 
 import {
@@ -14,7 +15,7 @@ import {
   ATTEST_OUTPUT_LINE,
   ATTESTATION_SUBJECTS_FILE,
   linkingMessage,
-  NEWLY_PUBLISHED_FILE,
+  rehearsalMessage,
   TARBALL_DOWNLOAD_FLAGS,
 } from "./link-packages.constants";
 
@@ -159,6 +160,10 @@ export class LinkPackagesService {
       return { lines: [], succeeded: true };
     }
 
+    if (context.rehearsal) {
+      return { lines: [rehearsalMessage(specifier)], succeeded: true };
+    }
+
     if (await this.hasStorageRecord(digest, context)) {
       return { lines: [alreadyLinkedMessage(specifier)], succeeded: true };
     }
@@ -168,7 +173,9 @@ export class LinkPackagesService {
     return {
       lines: [
         linkingMessage(specifier, context.repository),
-        ...(created.status === 0 ? [] : [created.stderr.trim()]),
+        ...(created.status === 0
+          ? []
+          : [`❌ ${specifier}: ${created.stderr.trim()}`]),
       ],
       succeeded: created.status === 0,
     };
@@ -213,7 +220,7 @@ export class LinkPackagesService {
       ]);
 
       if (fetched.status !== 0) {
-        throw new Error(fetched.stderr.trim());
+        throw new Error(`❌ ${specifier}: ${fetched.stderr.trim()}`);
       }
 
       return `sha256:${hash("sha256", fs.readFileSync(tarball))}`;
@@ -256,6 +263,7 @@ export class LinkPackagesService {
           .filter((line) => line !== ""),
       ),
       registryUrl: `${this.releaseGroupService.npmRegistry()}/`,
+      rehearsal: this.releaseGroupService.isRehearsal(),
       repository: inputs.repository,
       scratchDirectory: inputs.scratchDirectory,
       subjects,

@@ -113,6 +113,22 @@ describe(MainTipService, () => {
 
       expect(subject.hasMovedFrom("base")).toBe(false);
     });
+
+    it("prints why a fetch failed, so a step-aside it causes is explained", async () => {
+      expect.hasAssertions();
+
+      const errors: string[] = [];
+      vi.spyOn(console, "error").mockImplementation((line: unknown): void => {
+        errors.push(String(line));
+      });
+      const { service: subject } = await createService({
+        [FETCH]: failed("fatal: could not read from remote\n", 128),
+        [TIP]: succeeded("older\n"),
+      });
+
+      expect(subject.hasMovedFrom("base")).toBe(true);
+      expect(errors).toStrictEqual(["fatal: could not read from remote"]);
+    });
   });
 
   describe("head", () => {

@@ -1,8 +1,5 @@
 // ♟️ Constants
 
-/** Lists each `<name>@<version>` the publish step put on npm in this run. */
-export const NEWLY_PUBLISHED_FILE = "newly-published.txt";
-
 /** The checksums file `actions/attest` reads, beneath `RUNNER_TEMP`. */
 export const ATTESTATION_SUBJECTS_FILE = "attestation-subjects.txt";
 
@@ -31,6 +28,10 @@ export const TARBALL_DOWNLOAD_FLAGS = [
 /** Reports a package whose storage record exists. */
 export const alreadyLinkedMessage = (specifier: string): string =>
   `🔗 ${specifier} is already linked`;
+
+/** Reports a package a rehearsal leaves off the Linked artifacts page. */
+export const rehearsalMessage = (specifier: string): string =>
+  `🧪 ${specifier} is not recorded on GitHub in a rehearsal`;
 
 /** Reports a package about to be linked. */
 export const linkingMessage = (specifier: string, repository: string): string =>

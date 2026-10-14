@@ -72,12 +72,23 @@ version and the packages' versions, so a release adds one commit to `main`.
 All are safe to re-run: Nx versions only what changed since each package's
 last tag, tagging skips a tag that exists, pnpm skips a version npm already has,
 and so does the mirror for GitHub Packages and the link for a tarball with a
-storage record. To rehearse `publish-packages` and `link-packages` against the
-local Verdaccio registry (`configuration:local-registry`), point `NPM_REGISTRY` and
-`GITHUB_PACKAGES_REGISTRY` at it and follow the `publish-release` skill's
-rehearsal guide: `publishConfig.registry` must be stripped from a scratch
-manifest, `HOME` and the npm user config must be scratch ones, and npm refuses
-to publish a prerelease mirror, so rehearse with a plain version.
+storage record.
+
+Setting `NPM_REGISTRY` to anything but npmjs.org makes a run a rehearsal:
+`publish-packages` drops `--provenance` and refuses to start while
+`GITHUB_PACKAGES_REGISTRY` still names GitHub or any group package keeps a
+`publishConfig.registry` of its own (which beats `--registry`), and
+`link-packages` lists the tarballs to attest but makes no `gh api` call. A
+rehearsal against the local Verdaccio registry (`configuration:local-registry`)
+still needs a scratch `HOME` and npm user config, since the publish
+step appends its tokens to `~/.npmrc`; follow the `publish-release` skill's
+rehearsal guide, and version the packages plainly rather than as prereleases,
+which `npm publish` refuses to mirror without a tag.
+
+Unlike `run-affected`, the release services print as they go rather than
+returning a result for the command to print: they replace shell steps whose
+log is read live in CI, and the registry steps print each package's lines
+whole, in order, as its parallel call finishes.
 
 Run one locally with `nx run publication:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).

@@ -8,6 +8,8 @@ export interface LinkContext {
   published: ReadonlySet<string>;
   /** The npm registry each storage record names, with a trailing slash. */
   registryUrl: string;
+  /** Whether this run rehearses against another registry, recording nothing. */
+  rehearsal: boolean;
   /** `owner/name`, as the step reports it. */
   repository: string;
   /** The scratch directory tarballs are downloaded to. */

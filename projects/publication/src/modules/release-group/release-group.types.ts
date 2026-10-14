@@ -8,6 +8,7 @@ export interface NxReleaseConfiguration {
 /** The fields of a package manifest the release steps read. */
 export interface PackageManifest {
   name: string;
+  publishConfig?: { registry?: string };
   version: string;
 }
 

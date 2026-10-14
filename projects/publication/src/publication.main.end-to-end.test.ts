@@ -93,6 +93,16 @@ describe("main end-to-end suite", () => {
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
       });
     });
+
+    it("accepts only a number of seconds as PUSH_RETRY_DELAY", () => {
+      expect.hasAssertions();
+      expect(
+        environmentSchema.parse({ PUSH_RETRY_DELAY: "2.5" }),
+      ).toStrictEqual({ PUSH_RETRY_DELAY: "2.5" });
+      expect(() =>
+        environmentSchema.parse({ PUSH_RETRY_DELAY: "soon" }),
+      ).toThrow("PUSH_RETRY_DELAY must be a number of seconds");
+    });
   });
 
   // A dependency-injection gap fails only when the real container boots,

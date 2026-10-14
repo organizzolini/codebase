@@ -137,7 +137,7 @@ describe(ReleaseGroupService, () => {
       });
 
       expect(() => subject.readGroup()).toThrow(
-        "❌ Could not read the Nx release group",
+        "❌ Could not read the Nx release group: ❌ pnpm exec nx graph exited 1: graph failed",
       );
     });
 
@@ -147,7 +147,7 @@ describe(ReleaseGroupService, () => {
       const { service: subject } = await createService({ [SHOW]: failed() });
 
       expect(() => subject.readGroup()).toThrow(
-        "❌ Could not read the Nx release group",
+        "❌ Could not read the Nx release group: ❌ pnpm exec nx show projects exited 1",
       );
     });
 
@@ -159,7 +159,7 @@ describe(ReleaseGroupService, () => {
       });
 
       expect(() => subject.readGroup()).toThrow(
-        "❌ Could not read the Nx release group",
+        "❌ Could not read the Nx release group: no root for missing",
       );
     });
 
@@ -171,7 +171,7 @@ describe(ReleaseGroupService, () => {
       });
 
       expect(() => subject.readGroup()).toThrow(
-        "❌ Could not read the Nx release group",
+        "❌ Could not read the Nx release group: Nx listed no projects",
       );
     });
   });

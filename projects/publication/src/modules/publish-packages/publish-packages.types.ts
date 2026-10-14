@@ -21,5 +21,5 @@ export interface PublishInputs {
 
 /** The part of pnpm's publish summary this step reads. */
 export interface PublishSummary {
-  publishedPackages: { name: string; version: string }[];
+  publishedPackages?: { name: string; version: string }[];
 }

@@ -7,17 +7,19 @@ import { ConfigService } from "@nestjs/config";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { requireVariable } from "../process-runner/process-runner.utilities";
+import { NEWLY_PUBLISHED_FILE } from "../release-group/release-group.constants";
 import { ReleaseGroupService } from "../release-group/release-group.service";
 
 import {
   alreadyMirroredMessage,
   authenticationLine,
   DEFAULT_GITHUB_PACKAGES_REGISTRY,
+  MIRROR_UNSEALED_MESSAGE,
   mirroringMessage,
   MIRRORS_DIRECTORY,
-  NEWLY_PUBLISHED_FILE,
   PUBLISH_SUMMARY_FILE,
   PUBLISHING_MESSAGE,
+  unsealedMessage,
 } from "./publish-packages.constants";
 
 import type { Environment } from "../../publication.types";
@@ -81,7 +83,10 @@ export class PublishPackagesService {
     const unpacked = await this.packRenamed(root, mirror, context);
 
     if (unpacked.status !== 0) {
-      return { lines: [unpacked.stderr.trim()], succeeded: false };
+      return {
+        lines: [`❌ ${mirror}: ${unpacked.stderr.trim()}`],
+        succeeded: false,
+      };
     }
 
     const published = await this.processRunner.captureAsync("npm", [
@@ -212,7 +217,7 @@ export class PublishPackagesService {
       "-r",
       ...roots.flatMap((root) => ["--filter", `./${root}`]),
       "publish",
-      "--provenance",
+      ...(this.releaseGroupService.isRehearsal() ? [] : ["--provenance"]),
       "--no-git-checks",
       "--tag",
       "latest",
@@ -228,7 +233,7 @@ export class PublishPackagesService {
 
       fs.writeFileSync(
         published,
-        publishedPackages
+        (publishedPackages ?? [])
           .map(({ name, version }) => `${name}@${version}\n`)
           .join(""),
       );
@@ -248,7 +253,7 @@ export class PublishPackagesService {
       githubPackagesRegistry:
         configured === undefined || configured === ""
           ? DEFAULT_GITHUB_PACKAGES_REGISTRY
-          : configured,
+          : configured.replace(/\/+$/v, ""),
       githubPackagesToken: requireVariable(
         "GITHUB_PACKAGES_TOKEN",
         this.configService.get("GITHUB_PACKAGES_TOKEN", { infer: true }),
@@ -268,6 +273,38 @@ export class PublishPackagesService {
     };
   }
 
+  /**
+   * Refuses a rehearsal that would still reach a real registry: provenance
+   * needs a CI token, a package's `publishConfig.registry` overrides
+   * `--registry`, and the mirror would go to GitHub Packages. Checked before
+   * anything is written or published; a real release passes untouched.
+   */
+  private refuseUnsealedRehearsal(
+    roots: readonly string[],
+    inputs: PublishInputs,
+  ): void {
+    if (!this.releaseGroupService.isRehearsal()) {
+      return;
+    }
+
+    if (inputs.githubPackagesRegistry === DEFAULT_GITHUB_PACKAGES_REGISTRY) {
+      throw new Error(MIRROR_UNSEALED_MESSAGE);
+    }
+
+    for (const root of roots) {
+      const { name, publishConfig } =
+        this.releaseGroupService.readManifest(root);
+      const registry = publishConfig?.registry?.replace(/\/+$/v, "");
+
+      if (
+        registry !== undefined &&
+        registry !== this.releaseGroupService.npmRegistry()
+      ) {
+        throw new Error(unsealedMessage(name, registry));
+      }
+    }
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -283,6 +320,8 @@ export class PublishPackagesService {
     const roots = this.releaseGroupService
       .readGroup()
       .map((member) => member.root);
+
+    this.refuseUnsealedRehearsal(roots, inputs);
     const status = this.publishToNpm(roots, inputs);
 
     if (status !== 0) {

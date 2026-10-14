@@ -290,11 +290,80 @@ describe(PublishPackagesCommand, () => {
     await runCommand(runner);
 
     expect(runner.lines).toContain(
-      PUBLISH.replace("https://registry.npmjs.org", "http://localhost:4873"),
+      PUBLISH.replace(
+        "https://registry.npmjs.org",
+        "http://localhost:4873",
+      ).replace(" --provenance", ""),
     );
     expect(fs.readFileSync(path.join(home, ".npmrc"), "utf8")).toBe(
       "//localhost:4873/:_authToken=npm-token\n//localhost:4873/:_authToken=packages-token\n",
     );
+  });
+
+  it("refuses a rehearsal whose package would still publish to npmjs.org", async () => {
+    expect.hasAssertions();
+
+    vi.stubEnv("NPM_REGISTRY", "http://localhost:4873");
+    vi.stubEnv("GITHUB_PACKAGES_REGISTRY", "http://localhost:4873");
+    writeFile(
+      workspace,
+      "projects/ic-suite/tool/core/package.json",
+      JSON.stringify({
+        name: "@tool/core",
+        publishConfig: { registry: "https://registry.npmjs.org/" },
+        version: "2.0.0",
+      }),
+    );
+    const runner = new FakeProcessRunner(script());
+    await runCommand(runner);
+
+    expect(reportLines).toStrictEqual([
+      "❌ @tool/core publishes to https://registry.npmjs.org whatever NPM_REGISTRY says; strip its publishConfig.registry to rehearse",
+    ]);
+    expect(runner.streamed).toHaveLength(0);
+    expect(fs.existsSync(path.join(home, ".npmrc"))).toBe(false);
+    expect(process.exitCode).toBe(1);
+  });
+
+  it("refuses a rehearsal whose mirror would still go to GitHub Packages", async () => {
+    expect.hasAssertions();
+
+    vi.stubEnv("NPM_REGISTRY", "http://localhost:4873");
+    const runner = new FakeProcessRunner(script());
+    await runCommand(runner);
+
+    expect(reportLines).toStrictEqual([
+      "❌ Rehearsing against NPM_REGISTRY needs GITHUB_PACKAGES_REGISTRY pointed off GitHub too",
+    ]);
+    expect(runner.streamed).toHaveLength(0);
+    expect(process.exitCode).toBe(1);
+  });
+
+  it("drops a trailing slash from the mirror registry", async () => {
+    expect.hasAssertions();
+
+    vi.stubEnv("GITHUB_PACKAGES_REGISTRY", `${MIRROR_REGISTRY}/`);
+    const runner = new FakeProcessRunner(script());
+    await runCommand(runner);
+
+    expect(runner.lines).toContain(
+      `npm view @owner/cli@1.0.0 version --registry ${MIRROR_REGISTRY}`,
+    );
+  });
+
+  it("records nothing when pnpm's summary lists no packages", async () => {
+    expect.hasAssertions();
+
+    const runner = new FakeProcessRunner(script());
+    runner.effects[PUBLISH] = (): void => {
+      writeFile(workspace, "pnpm-publish-summary.json", "{}");
+    };
+    await runCommand(runner);
+
+    expect(
+      fs.readFileSync(path.join(runnerTemp, "newly-published.txt"), "utf8"),
+    ).toBe("");
+    expect(process.exitCode).toBe(0);
   });
 
   it("mirrors every package and fails when any mirror failed", async () => {
@@ -309,8 +378,8 @@ describe(PublishPackagesCommand, () => {
 
     expect(reportLines).toStrictEqual([
       "📦 Publishing the release group to npm",
-      "pack failed",
-      "tar failed",
+      "❌ @owner/cli: pack failed",
+      "❌ @owner/core: tar failed",
     ]);
     expect(process.exitCode).toBe(1);
   });

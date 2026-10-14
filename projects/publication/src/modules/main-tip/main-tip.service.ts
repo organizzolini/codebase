@@ -42,13 +42,24 @@ export class MainTipService {
    * Reports whether the remote's `main` is no longer the given commit.
    *
    * A failed fetch is not itself a failure: the comparison against whatever
-   * `FETCH_HEAD` then names decides, as it did in the shell script.
+   * `FETCH_HEAD` then names decides, as it did in the shell script. Its error
+   * is printed, so a run that steps aside after one says why.
    *
    * @param base - The commit this run started from.
    * @returns Whether `main` has moved on from it.
    */
   public hasMovedFrom(base: string): boolean {
-    this.processRunner.capture("git", ["fetch", "--quiet", "origin", "main"]);
+    const fetched = this.processRunner.capture("git", [
+      "fetch",
+      "--quiet",
+      "origin",
+      "main",
+    ]);
+
+    if (fetched.status !== 0) {
+      console.error(fetched.stderr.trim());
+    }
+
     const tip = this.processRunner.capture("git", ["rev-parse", "FETCH_HEAD"]);
 
     return tip.stdout.trim() !== base;
