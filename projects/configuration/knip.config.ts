@@ -295,6 +295,15 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // installation: NestJS CLI tool for developer-machine setup after Node exists
+    "projects/installation": {
+      entry: ["src/main.ts", "src/repl.ts"], // Main CLI entry + the REPL its own target runs
+      ignore: [
+        "testing/**", // Test fixtures and setup
+      ],
+      project: "src/**/*.ts",
+    },
+
     // validation: NestJS CLI tool for the repository's one-sided checks
     "projects/validation": {
       entry: ["src/validation.main.ts", "src/validation.repl.ts"], // Main CLI entry + the REPL its own target runs
