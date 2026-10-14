@@ -7,10 +7,10 @@
   "targets": {
     "compose-config": {
       "cache": false,
-      "description": "Validate the Docker Compose file without starting anything. Part of lint-code, so the Lint leg of continuous-integration.yml runs it, after copying .env.default to .env. Requires docker compose and a workspace-root .env locally. Uncached on purpose: the compose file reads the workspace-root .env (env_file), which is gitignored and so cannot be declared as an input, and a cached pass would replay after .env goes missing or changes.",
+      "description": "Validate the Docker Compose file without starting anything. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires docker compose. Creates the workspace-root .env from .env.default when it is missing (the documented bootstrap; .env is gitignored) and never touches an existing one. Uncached on purpose: the compose file reads the workspace-root .env (env_file), which is gitignored and so cannot be declared as an input, and a cached pass would replay after .env goes missing or changes.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "docker compose -f {projectRoot}/docker/docker-compose.yml config -q",
+        "command": "test -f .env || cp .env.default .env; docker compose -f {projectRoot}/docker/docker-compose.yml config -q",
         "cwd": "{workspaceRoot}"
       }
     },

@@ -630,7 +630,7 @@
         "sqlfluff-lint",
         "stylelint"
       ],
-      "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config also needs the gitignored root .env, which the Lint leg of continuous-integration.yml copies from .env.default.",
+      "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config creates the gitignored root .env from .env.default when it is missing.",
       "executor": "nx:noop"
     },
     "markdown-lint": [
