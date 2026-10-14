@@ -73,6 +73,7 @@ target, on `opened`/`reopened`, and nothing else names it.
 | `conformetry-generators`     | `projects/configuration/conformetry.config.ts`   | The generator table in `AGENTS.md`, between marker comments                                           |
 | `conventional-config`        | `projects/configuration/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
 | `devcontainer-configuration` | `.devcontainer/local/devcontainer.json`          | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
+| `installed-skills`           | `skills-lock.json`                               | The installed skills in `.agents/skills/`, restored from their sources. Run by `postinstall`          |
 | `pull-request-labels`        | `projects/configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
 | `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`               | The template embedded in the PR skill files                                                           |
 | `skill-exclusions`           | `skills-lock.json`                               | The installed-skill exclusion lists in five ignore files                                              |
