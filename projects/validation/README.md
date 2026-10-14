@@ -14,6 +14,7 @@ nx run validation:start:pull-request-body         # the four headings, each sect
 nx run validation:start:catalog-manifests         # catalog:/workspace:* in every manifest
 nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
 nx run validation:start:session-branch-name       # the checked-out branch against the naming convention
+nx run validation:start:session-worktree-name     # the linked worktree's directory name and gitignore status
 nx run validation:verify-publishable-packages     # pack ic-suite, install the tarballs, run the plugins
 ```
 
@@ -47,6 +48,7 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 | `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
 | `publishable-packages` | Do the packed ic-suite packages work when installed by someone else? |
 | `session-branch-name` | Does the checked-out branch follow `<type>/<scope>-<description>`? |
+| `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout? |
 
 ### `pull-request-metadata`
 
@@ -123,6 +125,21 @@ skill, and exits 1.
 Its standard output is only that context, never a log line, because the hook
 hands it to the agent word for word; which JSON shape it travels in is the
 hook emitter's business, not this command's.
+
+### `session-worktree-name`
+
+The worktree-name session hook, `scripts/git/validate-session-worktree-name.sh`,
+is a shim over this command, run from the root of the checkout the hook lives
+in. Only a linked worktree is judged: the main checkout, a submodule, a
+directory outside a repository, and a machine without `git` all print nothing
+and exit 0. A linked worktree must have a lowercase kebab-case directory name,
+and one inside the main checkout must be gitignored there, so that its
+contents are never committed. Every problem is printed at once, then the
+directive to invoke the using-git-worktrees skill, with exit 1.
+
+This check used to need nothing but `git`. As a command it needs a healthy
+`node_modules` too, a cost accepted for one way of writing session checks;
+the hook says to run `pnpm install` when that is what stops it.
 
 ### `publishable-packages`
 

@@ -141,6 +141,9 @@
         },
         "session-branch-name": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts session-branch-name"
+        },
+        "session-worktree-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts session-worktree-name"
         }
       },
       "description": "Run one validation check by name.",

@@ -11,6 +11,7 @@ import type { PullRequestMetadataModule } from "./modules/pull-request-metadata/
 import type { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import type { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
+import type { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
 import type { LoggerService } from "@codebase/logging";
 
 type CommandFactoryRun = (
@@ -36,6 +37,7 @@ const pullRequestReleaseSignificanceModuleMock =
 const publishablePackagesModuleMock = createMock<PublishablePackagesModule>();
 const readmeProjectsModuleMock = createMock<ReadmeProjectsModule>();
 const sessionBranchNameModuleMock = createMock<SessionBranchNameModule>();
+const sessionWorktreeNameModuleMock = createMock<SessionWorktreeNameModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -132,6 +134,12 @@ vi.mock("./modules/readme-projects/readme-projects.module", () => ({
 vi.mock("./modules/session-branch-name/session-branch-name.module", () => ({
   SessionBranchNameModule: function SessionBranchNameModule() {
     return sessionBranchNameModuleMock;
+  },
+}));
+
+vi.mock("./modules/session-worktree-name/session-worktree-name.module", () => ({
+  SessionWorktreeNameModule: function SessionWorktreeNameModule() {
+    return sessionWorktreeNameModuleMock;
   },
 }));
 

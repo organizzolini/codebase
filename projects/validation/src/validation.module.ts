@@ -14,6 +14,7 @@ import { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-
 import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
+import { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
 import { environmentSchema } from "./validation.constants";
 
 /**
@@ -39,6 +40,7 @@ import { environmentSchema } from "./validation.constants";
     PublishablePackagesModule,
     ReadmeProjectsModule,
     SessionBranchNameModule,
+    SessionWorktreeNameModule,
   ],
 })
 export class MainModule {}
