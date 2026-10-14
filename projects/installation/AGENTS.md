@@ -28,6 +28,8 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `environment-files`   | `modules/environment-files`               |
 | `dependencies`        | `modules/dependencies`                    |
 
+From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `setup.sh` runs the command with plain `node`, so the reset happens there.
+
 `setup` configures the shell before it installs software, as the script always did, so completions for tools installed in the same run are wired the next time it runs.
 
 ## Architecture Overview

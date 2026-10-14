@@ -121,7 +121,7 @@ export class ShellConfigurationService {
   /** Where Homebrew put nvm, which its startup script is sourced from. */
   private findNvmPrefix(): string {
     return this.processRunner
-      .run("brew", ["--prefix", "nvm"], { capture: true })
+      .runOrThrow("brew", ["--prefix", "nvm"], { capture: true })
       .stdout.trim();
   }
 

@@ -15,4 +15,6 @@ export function enterWorkspace(
   vi.spyOn(process, "cwd").mockReturnValue(workspace.root);
   vi.stubEnv("HOME", workspace.home);
   vi.stubEnv("SHELL", shell);
+  // These suites run under Nx, which sets this; the code under test reads it.
+  vi.stubEnv("NX_TASK_TARGET_PROJECT", undefined);
 }

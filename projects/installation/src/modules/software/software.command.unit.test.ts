@@ -403,6 +403,19 @@ describe(SoftwareCommand, () => {
       expect(summary).toContain("   kubectl:     Client Version: v1.31.0");
     });
 
+    it("prints only standard output for the tools that never merged the streams", async () => {
+      expect.hasAssertions();
+
+      const summary = await summarize({
+        "kubectl version --client --short": {
+          output: "Client Version: v1.27.0\nFlag --short has been deprecated\n",
+          stdout: "Client Version: v1.27.0\n",
+        },
+      });
+
+      expect(summary).toContain("   kubectl:     Client Version: v1.27.0");
+    });
+
     it("says so when a tool will not report a version", async () => {
       expect.hasAssertions();
 
@@ -447,6 +460,44 @@ describe(SoftwareCommand, () => {
         ),
       ).toBe("pinentry-program /opt/homebrew/bin/pinentry-mac\n");
       expect(report).toContain("👍 gpg-agent.conf already configured");
+    });
+  });
+
+  describe("signing failures and oddities", () => {
+    it("stops, writing nothing, when Homebrew cannot say where it lives", async () => {
+      expect.hasAssertions();
+
+      const { command: subject } = await createCommand({
+        ...HEALTHY_MACHINE,
+        responses: {
+          ...HEALTHY_MACHINE.responses,
+          "brew --prefix": { status: 1 },
+        },
+      });
+
+      await expect(subject.run()).rejects.toThrow("`brew --prefix` failed");
+
+      expect(
+        fs.existsSync(path.join(workspace.home, ".gnupg", "gpg-agent.conf")),
+      ).toBe(false);
+    });
+
+    it("takes a whole field as the key id when it holds no slash", async () => {
+      expect.hasAssertions();
+
+      const { command: subject } = await createCommand({
+        ...HEALTHY_MACHINE,
+        responses: {
+          ...HEALTHY_MACHINE.responses,
+          "gpg --list-secret-keys --keyid-format=long": {
+            stdout: "sec   AAAA1111BBBB2222 2024-01-01\n",
+          },
+        },
+      });
+
+      await subject.run();
+
+      expect(report).toContain("   Key ID: AAAA1111BBBB2222");
     });
   });
 

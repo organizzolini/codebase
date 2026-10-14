@@ -36,24 +36,24 @@ export class SoftwareInfraService {
     return [
       `   Node.js:     ${this.read("node", ["--version"])}`,
       `   pnpm:        ${this.read("pnpm", ["--version"])}`,
-      `   Python:      ${this.read("python3", ["--version"])}`,
+      `   Python:      ${this.readMerged("python3", ["--version"])}`,
       `   uv:          ${this.read("uv", ["--version"])}`,
-      `   Ollama:      ${this.read("ollama", ["--version"])}`,
-      `   Gitleaks:    ${this.read("gitleaks", ["version"], "not installed")}`,
+      `   Ollama:      ${this.readMerged("ollama", ["--version"])}`,
+      `   Gitleaks:    ${this.readMerged("gitleaks", ["version"], "not installed")}`,
       `   Terraform:   ${this.readTerraformVersion()}`,
       `   Trivy:       ${this.readTrivyVersion()}`,
       `   Supabase:    ${this.read("supabase", ["--version"])}`,
       `   Helm:        ${this.read("helm", ["version", "--short"])}`,
       `   kubectl:     ${this.readKubectlVersion()}`,
-      `   Docker:      ${this.read("docker", ["--version"], "not installed")}`,
+      `   Docker:      ${this.readMerged("docker", ["--version"], "not installed")}`,
     ];
   }
 
-  /** Runs a command and returns its trimmed output, or `fallback` when it fails. */
+  /** Runs a command and returns its trimmed standard output, or `fallback` when it fails. */
   private read(command: string, args: string[], fallback = ""): string {
     const result = this.processRunner.run(command, args, { capture: true });
 
-    return result.status === 0 ? result.output.trim() : fallback;
+    return result.status === 0 ? result.stdout.trim() : fallback;
   }
 
   /** kubectl's client version, the short form where it still exists. */
@@ -62,6 +62,13 @@ export class SoftwareInfraService {
       this.read("kubectl", ["version", "--client", "--short"]) ||
       this.read("kubectl", ["version", "--client"]).split("\n", 1).join("")
     );
+  }
+
+  /** Like `read`, with standard error merged in as `2>&1` would. */
+  private readMerged(command: string, args: string[], fallback = ""): string {
+    const result = this.processRunner.run(command, args, { capture: true });
+
+    return result.status === 0 ? result.output.trim() : fallback;
   }
 
   /** Terraform's version from its JSON form, or the first line of its text form. */
@@ -88,7 +95,9 @@ export class SoftwareInfraService {
 
   /** Trivy's version: the last word of the first line it prints. */
   private readTrivyVersion(): string {
-    const firstLine = this.read("trivy", ["--version"]).split("\n", 1).join("");
+    const firstLine = this.readMerged("trivy", ["--version"])
+      .split("\n", 1)
+      .join("");
 
     return firstLine.split(/\s+/u).slice(-1).join("");
   }

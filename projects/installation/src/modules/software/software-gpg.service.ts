@@ -43,7 +43,7 @@ export class SoftwareGpgService {
     const directory = path.join(os.homedir(), ".gnupg");
     const configuration = path.join(directory, "gpg-agent.conf");
     const prefix = this.processRunner
-      .run("brew", ["--prefix"], { capture: true })
+      .runOrThrow("brew", ["--prefix"], { capture: true })
       .stdout.trim();
 
     fs.mkdirSync(directory, { recursive: true });
@@ -114,7 +114,10 @@ export class SoftwareGpgService {
       .split("\n")
       .find((entry) => entry.startsWith("sec"));
 
-    return line?.split(/\s+/u)[1]?.split("/")[1];
+    const field = line?.split(/\s+/u)[1];
+
+    // `cut -d/ -f2` returns the whole field when it holds no slash.
+    return field?.slice(field.indexOf("/") + 1);
   }
 
   /** Installs GPG and pinentry-mac through Homebrew unless GPG is present. */

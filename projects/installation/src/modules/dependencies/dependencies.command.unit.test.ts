@@ -27,6 +27,7 @@ import { DependenciesService } from "./dependencies.service";
 
 import type { FakeMachine } from "../../../testing/fake-process-runner";
 import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
+import type { ProcessOptions } from "../process-runner/process-runner.types";
 
 const INSTALL_STEPS = ["pnpm install", "nx reset", "uv sync", "terraform init"];
 const CREDENTIALS = [
@@ -59,8 +60,12 @@ describe(DependenciesCommand, () => {
   /** Builds the command over the real service and the given fake machine. */
   const createCommand = async (
     machine: FakeMachine = {},
-  ): Promise<{ command: DependenciesCommand; commands: string[] }> => {
-    const { commands, runner } = createFakeProcessRunner(machine);
+  ): Promise<{
+    command: DependenciesCommand;
+    commands: string[];
+    options: Map<string, ProcessOptions>;
+  }> => {
+    const { commands, options, runner } = createFakeProcessRunner(machine);
     const module = await Test.createTestingModule({
       providers: [
         DependenciesCommand,
@@ -71,7 +76,11 @@ describe(DependenciesCommand, () => {
       ],
     }).compile();
 
-    return { command: await module.resolve(DependenciesCommand), commands };
+    return {
+      command: await module.resolve(DependenciesCommand),
+      commands,
+      options,
+    };
   };
 
   beforeEach(() => {
@@ -164,6 +173,7 @@ describe(DependenciesCommand, () => {
     fs.writeFileSync(path.join(workspace.root, ".env"), CREDENTIALS);
     const { command: subject, commands } = await createCommand({
       responses: {
+        "terraform output -raw kubeconfig": { stdout: "a3ViZQ==" },
         "terraform state list": { stdout: "linode_lke_cluster.cluster\n" },
       },
     });
@@ -188,6 +198,67 @@ describe(DependenciesCommand, () => {
     expect(commands).toStrictEqual(INSTALL_STEPS);
     expect(report.at(-1)).toBe(
       "👍 kubeconfig already exists at ~/.kube/config",
+    );
+  });
+
+  it("runs Terraform where its configuration lives, with the .env credentials", async () => {
+    expect.hasAssertions();
+
+    fs.writeFileSync(
+      path.join(workspace.root, ".env"),
+      [
+        "# credentials",
+        "",
+        "export TF_VAR_linode_token='single-quoted'",
+        "TF_VAR_linode_kubernetes_engine_cluster_id=lke99_1",
+        "NOT A VARIABLE",
+        "=orphan",
+      ].join("\n"),
+    );
+    vi.stubEnv("TF_VAR_linode_token", "from-the-process");
+    const { command: subject, options } = await createCommand({
+      responses: { "terraform output -raw kubeconfig": { stdout: "a3ViZQ==" } },
+    });
+
+    await subject.run();
+
+    expect(options.get("terraform init")?.cwd).toBe(
+      path.join(workspace.root, "infrastructure/terraform"),
+    );
+    expect(
+      options.get("terraform import linode_lke_cluster.cluster 99")
+        ?.environment,
+    ).toStrictEqual(
+      expect.objectContaining({ TF_VAR_linode_token: "single-quoted" }),
+    );
+  });
+
+  it("refuses to write a kubeconfig that is not valid base64", async () => {
+    expect.hasAssertions();
+
+    fs.writeFileSync(path.join(workspace.root, ".env"), CREDENTIALS);
+    const { command: subject } = await createCommand({
+      responses: { "terraform output -raw kubeconfig": { stdout: "!!!" } },
+    });
+
+    await expect(subject.run()).rejects.toThrow("not valid base64");
+
+    expect(fs.existsSync(path.join(workspace.home, ".kube", "config"))).toBe(
+      false,
+    );
+  });
+
+  it("leaves the Nx cache alone when run inside an Nx task", async () => {
+    expect.hasAssertions();
+
+    vi.stubEnv("NX_TASK_TARGET_PROJECT", "installation");
+    const { command: subject, commands } = await createCommand();
+
+    await subject.run();
+
+    expect(commands).not.toContain("nx reset");
+    expect(report).toContain(
+      "⚠️  Skipping Nx cache reset inside an Nx task. Run `nx reset` yourself.",
     );
   });
 

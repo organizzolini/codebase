@@ -2,7 +2,10 @@ import { createMock } from "@golevelup/ts-vitest";
 import { vi } from "vitest";
 
 import type { ProcessRunnerService } from "../src/modules/process-runner/process-runner.service";
-import type { ProcessResult } from "../src/modules/process-runner/process-runner.types";
+import type {
+  ProcessOptions,
+  ProcessResult,
+} from "../src/modules/process-runner/process-runner.types";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** What a fake machine is made of. */
@@ -27,6 +30,8 @@ export interface FakeProcessRunner {
   commands: string[];
   /** Every command line started detached, in order. */
   detached: string[];
+  /** The options each command line was run with, keyed by the line, last run winning. */
+  options: Map<string, ProcessOptions>;
   /** The fake, ready to be provided in place of the real service. */
   runner: DeepMocked<ProcessRunnerService>;
 }
@@ -45,8 +50,15 @@ export function createFakeProcessRunner(
   const installed = new Set(machine.installed);
   const counts = new Map<string, number>();
 
-  const run = (command: string, args: string[]): ProcessResult => {
+  const options = new Map<string, ProcessOptions>();
+
+  const run = (
+    command: string,
+    args: string[],
+    runOptions: ProcessOptions = {},
+  ): ProcessResult => {
     const line = toLine(command, args);
+    options.set(line, runOptions);
     commands.push(line);
     const sequence = machine.sequences?.[line];
     const response =
@@ -65,8 +77,12 @@ export function createFakeProcessRunner(
     };
   };
 
-  const runOrThrow = (command: string, args: string[]): ProcessResult => {
-    const result = run(command, args);
+  const runOrThrow = (
+    command: string,
+    args: string[],
+    runOptions: ProcessOptions = {},
+  ): ProcessResult => {
+    const result = run(command, args, runOptions);
 
     if (result.status !== 0) {
       throw new Error(`\`${toLine(command, args)}\` failed`);
@@ -92,7 +108,7 @@ export function createFakeProcessRunner(
     ),
   });
 
-  return { commands, detached, runner };
+  return { commands, detached, options, runner };
 }
 
 /** Renders a command and its arguments as one line. */

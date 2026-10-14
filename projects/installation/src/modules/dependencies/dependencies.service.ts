@@ -104,6 +104,50 @@ export class DependenciesService {
     return variables;
   }
 
+  /** Reads the kubeconfig Terraform outputs, which is base64, and decodes it. */
+  private readKubeconfig(options: {
+    cwd: string;
+    environment: NodeJS.ProcessEnv;
+  }): Buffer {
+    const output = this.processRunner.runOrThrow(
+      "terraform",
+      ["output", "-raw", "kubeconfig"],
+      { ...options, capture: true },
+    );
+    const decoded = Buffer.from(output.stdout, "base64");
+
+    // `base64 -d` refuses malformed input; `Buffer.from` quietly skips it.
+    if (
+      decoded.length === 0 ||
+      decoded.toString("base64") !== output.stdout.replaceAll(/\s/gu, "")
+    ) {
+      throw new Error("Terraform's kubeconfig output is not valid base64");
+    }
+
+    return decoded;
+  }
+
+  /**
+   * Resets the Nx cache, unless this is running inside an Nx task.
+   *
+   * `nx reset` stops the daemon and deletes the workspace data of the very
+   * Nx process running this, so from `nx run installation:start:*` it would
+   * pull the floor out from under itself.
+   */
+  private resetNxCache(): void {
+    if (process.env["NX_TASK_TARGET_PROJECT"] !== undefined) {
+      this.reporter.print(
+        "⚠️  Skipping Nx cache reset inside an Nx task. Run `nx reset` yourself.",
+      );
+
+      return;
+    }
+
+    this.reporter.print("🔄 Resetting Nx cache...");
+    this.processRunner.runOrThrow("nx", ["reset"]);
+    this.reporter.print("✅ Nx cache reset");
+  }
+
   /** Reduces a cluster id that may carry a node pool suffix to its digits. */
   private toClusterId(value: string): string {
     return value
@@ -134,14 +178,10 @@ export class DependenciesService {
       const options = { cwd: terraformDirectory, environment };
 
       this.importCluster(this.toClusterId(clusterValue), options);
-      const output = this.processRunner.runOrThrow(
-        "terraform",
-        ["output", "-raw", "kubeconfig"],
-        { ...options, capture: true },
-      );
+      const decoded = this.readKubeconfig(options);
 
       fs.mkdirSync(path.dirname(kubeconfig), { recursive: true });
-      fs.writeFileSync(kubeconfig, Buffer.from(output.stdout, "base64"));
+      fs.writeFileSync(kubeconfig, decoded);
       this.reporter.print("✅ kubeconfig saved to ~/.kube/config");
     }
   }
@@ -158,9 +198,7 @@ export class DependenciesService {
 
     // Nx caches task outputs keyed by input hashes. Resetting on first setup
     // keeps stale cache hits from leaking across developer machines.
-    this.reporter.print("🔄 Resetting Nx cache...");
-    this.processRunner.runOrThrow("nx", ["reset"]);
-    this.reporter.print("✅ Nx cache reset");
+    this.resetNxCache();
 
     this.reporter.print("🐍 Setting up Python virtual environment...");
     this.processRunner.runOrThrow("uv", ["sync"]);

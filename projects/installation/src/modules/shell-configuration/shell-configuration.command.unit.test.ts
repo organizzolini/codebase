@@ -208,6 +208,57 @@ describe(ShellConfigurationCommand, () => {
     );
   });
 
+  it("writes the pnpm and Terraform blocks as the shell will read them", async () => {
+    expect.hasAssertions();
+
+    enterWorkspace(workspace, "/bin/zsh");
+    const subject = await createCommand(["terraform"]);
+
+    await subject.run();
+
+    const zshrc = readHomeFile(".zshrc");
+
+    expect(zshrc).toContain(
+      [
+        "# codebase: pnpm global bin",
+        'export PNPM_HOME="$HOME/.local/share/pnpm"',
+        'case ":$PATH:" in *":$PNPM_HOME/bin:"*) ;; *) export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH" ;; esac',
+        "",
+      ].join("\n"),
+    );
+    expect(zshrc).toContain(
+      [
+        "# codebase: terraform completion",
+        "autoload -U +X bashcompinit && bashcompinit 2>/dev/null",
+        "complete -o nospace -C /usr/local/bin/terraform terraform",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  it("stops, writing nothing, when Homebrew cannot say where nvm is", async () => {
+    expect.hasAssertions();
+
+    enterWorkspace(workspace, "/bin/zsh");
+    const { runner } = createFakeProcessRunner({
+      responses: { "brew --prefix nvm": { status: 1 } },
+    });
+    const module = await Test.createTestingModule({
+      providers: [
+        ShellConfigurationCommand,
+        ShellConfigurationService,
+        ReporterService,
+        { provide: ProcessRunnerService, useValue: runner },
+        { provide: LoggerService, useValue: createMock<LoggerService>() },
+      ],
+    }).compile();
+    const subject = await module.resolve(ShellConfigurationCommand);
+
+    await expect(subject.run()).rejects.toThrow("`brew --prefix nvm` failed");
+
+    expect(fs.existsSync(path.join(workspace.home, ".zshrc"))).toBe(false);
+  });
+
   it("tells the user what to add by hand when the shell is unknown", async () => {
     expect.hasAssertions();
 

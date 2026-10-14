@@ -63,17 +63,16 @@ git clone https://github.com/Organizzolini/codebase.git
 cd codebase && bash scripts/local/setup.sh
 ```
 
-The script is a bootstrap stub. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs five stages in order:
+The script is a bootstrap stub. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
 
-| Stage | Step                                           | What it does                                                                     |
-| ----- | ---------------------------------------------- | -------------------------------------------------------------------------------- |
-| 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                  |
-| 2     | `scripts/local/software/brew.sh` and `node.sh` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                     |
-| 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                          |
-| 4     | `installation setup`                           | Configures the shell, installs the remaining tools, and creates the `.env` files |
-| 5     | `installation setup`                           | Runs `pnpm install`, `uv sync`, and Terraform setup, and writes kubeconfig       |
+| Stage | Step                                           | What it does                                                                                                                                   |
+| ----- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                                                                                |
+| 2     | `scripts/local/software/brew.sh` and `node.sh` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                   |
+| 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                                                                                        |
+| 4     | `installation setup`                           | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync`, and Terraform setup |
 
-A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`.
+A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`. Run from inside Nx, `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; run `nx reset` yourself.
 
 **What gets installed:**
 
@@ -84,7 +83,7 @@ A step that fails stops setup, and every step is safe to run again. To re-run on
 - **GnuPG** and `pinentry-mac`, because commits must be signed
 - **Infrastructure and quality tools** — `gitleaks`, `terraform`, `trivy`, `supabase`, `jq`, `gh`, `helm`, `kubectl`
 
-Stage 3 copies `.env.default` to `.env` for the workspace root and for **every** project that ships a template — existing `.env` files are never overwritten. It also appends `LOCAL_WORKSPACE_FOLDER` to the root `.env` so `docker-compose` volume mounts resolve.
+Stage 4 copies `.env.default` to `.env` for the workspace root and for **every** project that ships a template — existing `.env` files are never overwritten. It also appends `LOCAL_WORKSPACE_FOLDER` to the root `.env` so `docker-compose` volume mounts resolve.
 
 Setup prints a version summary at the end. If a tool is missing from it, re-run the script rather than installing by hand.
 
