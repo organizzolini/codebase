@@ -34,6 +34,12 @@
         "keep-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts keep-task-database"
         },
+        "link-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts link-packages"
+        },
+        "publish-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts publish-packages"
+        },
         "publishable-packages-gate": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts publishable-packages-gate"
         },

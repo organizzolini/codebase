@@ -6,6 +6,8 @@ import { LoggerModule } from "@codebase/logging";
 
 import { AdoptTaskDatabaseModule } from "./modules/adopt-task-database/adopt-task-database.module";
 import { KeepTaskDatabaseModule } from "./modules/keep-task-database/keep-task-database.module";
+import { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
+import { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
 import { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
@@ -29,6 +31,8 @@ import { environmentSchema } from "./publication.constants";
     DiscoveryModule,
     KeepTaskDatabaseModule,
     LoggerModule,
+    LinkPackagesModule,
+    PublishPackagesModule,
     PublishablePackagesGateModule,
     RunAffectedModule,
     TagCodebaseModule,

@@ -117,5 +117,23 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
       expect(boot.output).toContain(name);
     });
+
+    it("boots publish-packages and reaches its input check", () => {
+      expect.hasAssertions();
+
+      const { output, status } = runCommand("publish-packages");
+
+      expect(output).toContain("❌ GITHUB_PACKAGES_TOKEN is unset");
+      expect(status).toBe(1);
+    });
+
+    it("boots link-packages and reaches its input check", () => {
+      expect.hasAssertions();
+
+      const { output, status } = runCommand("link-packages");
+
+      expect(output).toContain("❌ GITHUB_OUTPUT is unset");
+      expect(status).toBe(1);
+    });
   });
 });

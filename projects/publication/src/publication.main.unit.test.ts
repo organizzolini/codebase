@@ -1,6 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
+import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
 import type { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import type { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import type { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
@@ -25,6 +27,8 @@ const runAffectedModuleMock = createMock<RunAffectedModule>();
 const tagCodebaseModuleMock = createMock<TagCodebaseModule>();
 const versionPackagesModuleMock = createMock<VersionPackagesModule>();
 const tagPackagesModuleMock = createMock<TagPackagesModule>();
+const publishPackagesModuleMock = createMock<PublishPackagesModule>();
+const linkPackagesModuleMock = createMock<LinkPackagesModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -78,6 +82,18 @@ vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
 vi.mock("./modules/tag-codebase/tag-codebase.module", () => ({
   TagCodebaseModule: function TagCodebaseModule() {
     return tagCodebaseModuleMock;
+  },
+}));
+
+vi.mock("./modules/link-packages/link-packages.module", () => ({
+  LinkPackagesModule: function LinkPackagesModule() {
+    return linkPackagesModuleMock;
+  },
+}));
+
+vi.mock("./modules/publish-packages/publish-packages.module", () => ({
+  PublishPackagesModule: function PublishPackagesModule() {
+    return publishPackagesModuleMock;
   },
 }));
 
