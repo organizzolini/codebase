@@ -197,6 +197,7 @@ describe(WiktionaryCommand, () => {
   });
 
   it("should warn when href points to index page", async () => {
+    existsSyncMock.mockReturnValue(false);
     await (
       command as unknown as {
         ingestWord: (
@@ -215,6 +216,7 @@ describe(WiktionaryCommand, () => {
   });
 
   it("should warn when latin section is missing", async () => {
+    existsSyncMock.mockReturnValue(false);
     vi.spyOn(
       command as unknown as {
         parseLatinSection: (href: string) => Promise<null | {
@@ -243,6 +245,7 @@ describe(WiktionaryCommand, () => {
   });
 
   it("should save entry when latin section exists", async () => {
+    existsSyncMock.mockReturnValue(false);
     const $ = cheerio.load('<div id="Latin"><p>latin content</p></div>');
     const saveWiktionaryEntrySpy = vi.spyOn(
       command as unknown as {
@@ -276,6 +279,43 @@ describe(WiktionaryCommand, () => {
     ).ingestWord("amo", "/wiki/amo", "lemma");
 
     expect(saveWiktionaryEntrySpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should skip a word whose page is already cached", async () => {
+    existsSyncMock.mockReturnValue(true);
+    const parseLatinSectionSpy = vi.spyOn(
+      command as unknown as {
+        parseLatinSection: (href: string) => Promise<null>;
+      },
+      "parseLatinSection",
+    );
+
+    await (
+      command as unknown as {
+        ingestWord: (
+          word: string,
+          urlPath: string,
+          category: string,
+        ) => Promise<void>;
+      }
+    ).ingestWord("amo", "/wiki/amo", "lemma");
+
+    expect(parseLatinSectionSpy).not.toHaveBeenCalled();
+  });
+
+  it("should identify itself with a user agent when fetching", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response("ok"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await (
+      command as unknown as {
+        fetchWithRetry: (url: string, retries: number) => Promise<Response>;
+      }
+    ).fetchWithRetry("https://example.com", 2);
+
+    expect(fetchMock).toHaveBeenCalledWith("https://example.com", {
+      headers: { "User-Agent": expect.stringContaining("lexico-cli") },
+    });
   });
 
   it("should return non-429 response immediately in retry fetch", async () => {
@@ -872,6 +912,7 @@ describe(WiktionaryCommand, () => {
   });
 
   it("should not append #Latin when href already includes it", async () => {
+    existsSyncMock.mockReturnValue(false);
     const parseLatinSectionSpy = vi
       .spyOn(
         command as unknown as {
