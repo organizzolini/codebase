@@ -51,6 +51,7 @@ body:
         - deployments
         - documentation
         - infrastructure
+        - installation
         - JimmyPaolini
         - lexico
         - components-web
