@@ -39,10 +39,13 @@ runs:
     # A cancellation can hit mid-write to the task-result database, and a
     # corrupt one saved here is inherited by every later job's `restore-keys`
     # fallback. See the `verify-task-database` command of the `publication`
-    # project for why the whole database is discarded. These steps run after
-    # `pnpm install`, so a command can stand in for the old shell script.
+    # project for why the whole database is discarded. These steps need the
+    # installed dependencies, so a job whose install never finished skips them
+    # rather than failing a second time.
     - name: 🩺 Verify Nx Cache Database
-      if: always() && inputs.nx-cache == 'true'
+      if: |
+        always() && inputs.nx-cache == 'true' &&
+        hashFiles('node_modules/.modules.yaml') != ''
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
@@ -52,7 +55,9 @@ runs:
     # save only the newest. See the `keep-task-database` command of the
     # `publication` project for the details.
     - name: 🪪 Keep One Nx Cache Database
-      if: always() && inputs.nx-cache == 'true'
+      if: |
+        always() && inputs.nx-cache == 'true' &&
+        hashFiles('node_modules/.modules.yaml') != ''
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \

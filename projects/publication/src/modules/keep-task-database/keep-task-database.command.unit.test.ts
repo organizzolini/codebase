@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import { createMock } from "@golevelup/ts-vitest";
 import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
@@ -131,5 +134,21 @@ describe(KeepTaskDatabaseCommand, () => {
     expect(printed).toStrictEqual([
       "::warning::Nx wrote a database beside the adopted one; keeping b-v15.db of: a-v15.db b-v15.db c-v15.db",
     ]);
+  });
+
+  it("keeps the earlier name when two databases are equally new", async () => {
+    expect.hasAssertions();
+
+    workspace.add("a-v15.db", 10);
+    workspace.add("b-v15.db", 10);
+    const when = new Date("2026-01-01T00:00:00Z");
+
+    for (const name of ["a-v15.db", "b-v15.db"]) {
+      fs.utimesSync(path.join(workspace.directory, name), when, when);
+    }
+
+    await runCommand();
+
+    expect(workspace.names()).toStrictEqual(["a-v15.db"]);
   });
 });

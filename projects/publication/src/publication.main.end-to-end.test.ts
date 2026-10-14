@@ -54,6 +54,19 @@ describe("main end-to-end suite", () => {
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
       });
     });
+
+    it("takes the defaults for empty values too", () => {
+      expect.hasAssertions();
+      expect(
+        environmentSchema.parse({
+          MACHINE_ID_FILES: "",
+          NX_WORKSPACE_DATA_DIRECTORY: "",
+        }),
+      ).toStrictEqual({
+        MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
+        NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
+      });
+    });
   });
 
   // A dependency-injection gap fails only when the real container boots,
