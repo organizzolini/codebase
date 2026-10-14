@@ -57,6 +57,18 @@ vi.mock("./modules/run-affected/run-affected.module", () => ({
   },
 }));
 
+vi.mock("./modules/verify-task-database/verify-task-database.module", () => ({
+  VerifyTaskDatabaseModule: function VerifyTaskDatabaseModule() {},
+}));
+
+vi.mock("./modules/adopt-task-database/adopt-task-database.module", () => ({
+  AdoptTaskDatabaseModule: function AdoptTaskDatabaseModule() {},
+}));
+
+vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
+  KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
+}));
+
 describe("main bootstrap", () => {
   const originalExitCode = process.exitCode;
 

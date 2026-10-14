@@ -17,7 +17,13 @@ const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../..");
 const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 
 /** The commands the container must register, each named in the help. */
-const COMMAND_NAMES = ["publishable-packages-gate", "run-affected"];
+const COMMAND_NAMES = [
+  "adopt-task-database",
+  "keep-task-database",
+  "publishable-packages-gate",
+  "run-affected",
+  "verify-task-database",
+];
 
 /** Runs the real command line once, asking only for its help. */
 const runHelp = (): { output: string; status: null | number } => {
@@ -41,9 +47,12 @@ const runHelp = (): { output: string; status: null | number } => {
 
 describe("main end-to-end suite", () => {
   describe("environment schema e2e", () => {
-    it("allows an empty environment", () => {
+    it("allows an empty environment, filling in what Nx itself defaults", () => {
       expect.hasAssertions();
-      expect(environmentSchema.parse({})).toStrictEqual({});
+      expect(environmentSchema.parse({})).toStrictEqual({
+        MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
+        NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
+      });
     });
   });
 

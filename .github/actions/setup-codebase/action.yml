@@ -269,7 +269,9 @@ runs:
 
     # Restored databases can be left structurally valid but page-corrupt by a
     # cancelled save. Nx fails hard on those, so discard them before the first
-    # task reads the cache.
+    # task reads the cache. This runs before `pnpm install`, so it stays
+    # shell: a NestJS command cannot run yet, and moving it after the install
+    # is gated on a measurement of the cache-hit counts.
     - name: 🩺 Verify Nx Cache Database
       if: inputs.nx-cache == 'true'
       shell: bash

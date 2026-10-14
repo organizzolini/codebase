@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import { afterEach, beforeEach, vi } from "vitest";
 
 import type { ProcessRunnerService } from "../src/modules/process-runner/process-runner.service";
@@ -13,6 +16,27 @@ export interface RecordedCall {
   args: readonly string[];
   executable: string;
   input?: string;
+}
+
+/**
+ * A task-database directory inside the workspace, for a test to fill.
+ *
+ * It sits under `.nx`, which is ignored, and never in the operating system's
+ * temporary directory: a fixture there passes on macOS and fails on a runner.
+ */
+export interface TaskDatabaseWorkspace {
+  /** Writes one database, and the companion files named by suffix. */
+  add: (name: string, ageSeconds: number, companions?: string[]) => void;
+  /** Removes the whole workspace. */
+  cleanup: () => void;
+  /** The absolute directory of databases the commands are pointed at. */
+  directory: string;
+  /** Every file in the directory, by name. */
+  names: () => string[];
+  /** The text of one file in the directory. */
+  read: (name: string) => string;
+  /** Writes a file beside the database directory, and returns its path. */
+  writeBeside: (name: string, text: string) => string;
 }
 
 /**
@@ -62,6 +86,44 @@ export class FakeProcessRunner implements Pick<
 
     return this.streamStatus;
   }
+}
+
+/** Makes an empty task-database directory in the workspace. */
+export function createTaskDatabaseWorkspace(): TaskDatabaseWorkspace {
+  const parent = path.resolve(import.meta.dirname, "../../../.nx");
+
+  fs.mkdirSync(parent, { recursive: true });
+
+  const root = fs.mkdtempSync(path.join(parent, "publication-test-"));
+  const directory = path.join(root, "workspace-data");
+
+  fs.mkdirSync(directory);
+
+  return {
+    add: (name, ageSeconds, companions = []) => {
+      const when = new Date(Date.now() - ageSeconds * 1000);
+
+      for (const suffix of ["", ...companions]) {
+        const file = path.join(directory, `${name}${suffix}`);
+
+        fs.writeFileSync(file, `${name}${suffix}`);
+        fs.utimesSync(file, when, when);
+      }
+    },
+    cleanup: () => {
+      fs.rmSync(root, { force: true, recursive: true });
+    },
+    directory,
+    names: () => fs.readdirSync(directory).toSorted(),
+    read: (name) => fs.readFileSync(path.join(directory, name), "utf8"),
+    writeBeside: (name, text) => {
+      const file = path.join(root, name);
+
+      fs.writeFileSync(file, text);
+
+      return file;
+    },
+  };
 }
 
 /**
