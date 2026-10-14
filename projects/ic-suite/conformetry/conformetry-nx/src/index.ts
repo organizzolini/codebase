@@ -85,9 +85,9 @@ export default conformetryPlugin;
  * Runs one configured generator against an Nx tree.
  *
  * This is the machinery a consumer's generated generator wrappers call. The
- * published package deliberately declares no generators of its own: which
- * generators exist is a property of the consumer's configuration, not of this
- * package, so `nx g @conformetry/nx:anything` resolves nothing by
+ * published package declares no scaffolding generators of its own, only
+ * `sync`: which generators exist is a property of the consumer's
+ * configuration, so `nx g @conformetry/nx:<anything else>` resolves nothing by
  * design.
  */
 export async function runConformetryGenerator(args: {
