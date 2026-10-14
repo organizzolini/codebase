@@ -1,4 +1,6 @@
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
+import { text } from "node:stream/consumers";
 
 import { Injectable } from "@nestjs/common";
 
@@ -47,6 +49,47 @@ export class ProcessRunnerService {
       status: result.status ?? ABNORMAL_EXIT_STATUS,
       stderr: `${result.stderr}${failure}`,
       stdout: result.stdout,
+    };
+  }
+
+  /**
+   * Runs a command without blocking, so several can run at once, and returns
+   * what it printed once it ends. Its standard input is closed at once.
+   *
+   * @param executable - The program to run, looked up on `PATH`.
+   * @param args - Its arguments, passed verbatim with no shell between.
+   * @returns Both output streams and the exit code.
+   */
+  public async captureAsync(
+    executable: string,
+    args: readonly string[],
+  ): Promise<CapturedProcess> {
+    const child = spawn(executable, [...args], {
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const printed = Promise.allSettled([
+      text(child.stdout),
+      text(child.stderr),
+    ]);
+
+    try {
+      await once(child, "close");
+    } catch (error: unknown) {
+      await printed;
+
+      return {
+        status: ABNORMAL_EXIT_STATUS,
+        stderr: String(error),
+        stdout: "",
+      };
+    }
+
+    const [stdout, stderr] = await printed;
+
+    return {
+      status: child.exitCode ?? ABNORMAL_EXIT_STATUS,
+      stderr: stderr.status === "fulfilled" ? stderr.value : "",
+      stdout: stdout.status === "fulfilled" ? stdout.value : "",
     };
   }
 

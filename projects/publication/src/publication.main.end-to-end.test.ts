@@ -22,10 +22,17 @@ const COMMAND_NAMES = [
   "keep-task-database",
   "publishable-packages-gate",
   "run-affected",
+  "tag-codebase",
+  "tag-packages",
   "verify-task-database",
+  "version-packages",
 ];
 
-/** Runs the real command line once, asking only for its help. */
+/**
+ * Runs the real command line once, asking only for its help, with the release
+ * inputs left out and git pointed at no repository, so nothing it boots can
+ * fetch, commit, tag, or push from a test.
+ */
 const runHelp = (): { output: string; status: null | number } => {
   const result = spawnSync(
     process.execPath,
@@ -38,7 +45,26 @@ const runHelp = (): { output: string; status: null | number } => {
     {
       cwd: WORKSPACE_ROOT,
       encoding: "utf8",
-      env: { ...process.env, FORCE_COLOR: "0", NODE_OPTIONS: "" },
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0",
+        GIT_DIR: path.join(
+          WORKSPACE_ROOT,
+          "projects/publication/tmp/no-repository",
+        ),
+        GITHUB_ENV: "",
+        GITHUB_OUTPUT: "",
+        GITHUB_PACKAGES_TOKEN: "",
+        GITHUB_REPOSITORY: "",
+        GITHUB_REPOSITORY_OWNER: "",
+        GITHUB_TOKEN: "",
+        NODE_OPTIONS: "",
+        NPM_TOKEN: "",
+        NX_BASE: "",
+        NX_HEAD: "",
+        RUNNER_TEMP: "",
+        TARGET: "",
+      },
     },
   );
 

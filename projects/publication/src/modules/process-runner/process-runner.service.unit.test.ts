@@ -1,15 +1,29 @@
-import { spawnSync } from "node:child_process";
+import {
+  ChildProcess,
+  spawn,
+  spawnSync,
+  type SpawnSyncReturns,
+} from "node:child_process";
+import { Readable } from "node:stream";
 
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ProcessRunnerService } from "./process-runner.service";
 
-import type { SpawnSyncReturns } from "node:child_process";
+import type * as childProcess from "node:child_process";
 
-vi.mock("node:child_process", () => ({
-  spawnSync: vi.fn<typeof spawnSync>(),
-}));
+vi.mock("node:child_process", async (importOriginal) => {
+  const actual = await importOriginal<typeof childProcess>();
+
+  return {
+    // `captureAsync` runs real processes in the integration suite; only an
+    // output stream that breaks needs a fake one.
+    ChildProcess: actual.ChildProcess,
+    spawn: vi.fn<typeof spawn>(),
+    spawnSync: vi.fn<typeof spawnSync>(),
+  };
+});
 
 /** What `spawnSync` hands back, as much of it as this service reads. */
 interface SpawnCompletion {
@@ -115,6 +129,31 @@ describe(ProcessRunnerService, () => {
       completeWith({ status: null });
 
       expect(service.stream("pnpm", [])).toBe(1);
+    });
+  });
+
+  describe("captureAsync", () => {
+    it("reports output streams that broke as printing nothing", async () => {
+      expect.hasAssertions();
+
+      const broken = (): Readable =>
+        new Readable({
+          read(): void {
+            this.destroy(new Error("stream broke"));
+          },
+        });
+      const child = Object.assign(new ChildProcess(), {
+        stderr: broken(),
+        stdout: broken(),
+      });
+      vi.mocked(spawn).mockReturnValue(child);
+      setImmediate(() => {
+        child.emit("close", 0);
+      });
+
+      await expect(
+        service.captureAsync("npm", ["view"]),
+      ).resolves.toStrictEqual({ status: 1, stderr: "", stdout: "" });
     });
   });
 });

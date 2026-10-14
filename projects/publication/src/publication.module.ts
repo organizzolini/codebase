@@ -8,7 +8,10 @@ import { AdoptTaskDatabaseModule } from "./modules/adopt-task-database/adopt-tas
 import { KeepTaskDatabaseModule } from "./modules/keep-task-database/keep-task-database.module";
 import { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
+import { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
+import { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import { VerifyTaskDatabaseModule } from "./modules/verify-task-database/verify-task-database.module";
+import { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
 import { environmentSchema } from "./publication.constants";
 
 /**
@@ -28,7 +31,10 @@ import { environmentSchema } from "./publication.constants";
     LoggerModule,
     PublishablePackagesGateModule,
     RunAffectedModule,
+    TagCodebaseModule,
+    TagPackagesModule,
     VerifyTaskDatabaseModule,
+    VersionPackagesModule,
   ],
 })
 export class MainModule {}

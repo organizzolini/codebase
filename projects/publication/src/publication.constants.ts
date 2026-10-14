@@ -17,6 +17,13 @@ const DEFAULT_MACHINE_ID_FILES = "/var/lib/dbus/machine-id /etc/machine-id";
  */
 export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),
+  GITHUB_ENV: z.string().optional(),
+  GITHUB_OUTPUT: z.string().optional(),
+  GITHUB_PACKAGES_REGISTRY: z.string().optional(),
+  GITHUB_PACKAGES_TOKEN: z.string().optional(),
+  GITHUB_REPOSITORY: z.string().optional(),
+  GITHUB_REPOSITORY_OWNER: z.string().optional(),
+  GITHUB_TOKEN: z.string().optional(),
   INCLUDE_SPELLING: z.string().optional(),
   INCLUDE_TEMPLATES: z.string().optional(),
   /**
@@ -27,6 +34,8 @@ export const environmentSchema = z.object({
     .string()
     .optional()
     .transform((value) => value || DEFAULT_MACHINE_ID_FILES),
+  NPM_REGISTRY: z.string().optional(),
+  NPM_TOKEN: z.string().optional(),
   NX_BASE: z.string().optional(),
   NX_HEAD: z.string().optional(),
   /** Where Nx keeps its task-result database; the override Nx itself reads. */
@@ -34,6 +43,8 @@ export const environmentSchema = z.object({
     .string()
     .optional()
     .transform((value) => value || DEFAULT_DATA_DIRECTORY),
+  PUSH_RETRY_DELAY: z.string().optional(),
+  RUNNER_TEMP: z.string().optional(),
   SPELLING_PATHS: z.string().optional(),
   TARGET: z.string().optional(),
   TEMPLATE_PATHS: z.string().optional(),
