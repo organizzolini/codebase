@@ -6,4 +6,8 @@ export const environmentSchema = z.object({
   CI: z.string().optional(),
   /** Set by GitHub Actions; read the same way as `CI`. */
   GITHUB_ACTIONS: z.string().optional(),
+  /** Set to anything to make `installed-skills write` restore present skills too. */
+  SKILLS_INSTALL_FORCE: z.string().optional(),
+  /** Set to anything to make `installed-skills write` leave skills alone. */
+  SKIP_SKILLS_INSTALL: z.string().optional(),
 });

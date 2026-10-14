@@ -4,6 +4,7 @@ import { LoggerModule } from "@codebase/logging";
 
 import { SynchronizationService } from "../synchronization/synchronization.service";
 
+import { InstalledSkillsProcessService } from "./installed-skills-process.service";
 import { InstalledSkillsCommand } from "./installed-skills.command";
 import { InstalledSkillsService } from "./installed-skills.service";
 
@@ -21,6 +22,7 @@ import { InstalledSkillsService } from "./installed-skills.service";
   imports: [LoggerModule],
   providers: [
     InstalledSkillsCommand,
+    InstalledSkillsProcessService,
     InstalledSkillsService,
     SynchronizationService,
   ],

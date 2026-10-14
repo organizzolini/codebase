@@ -37,3 +37,12 @@ export const LOCAL_REMEDIATION = [
 /** Why missing skills matter, printed under the list of them. */
 export const MISSING_SKILLS_CONSEQUENCE =
   '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-with-docs" are unavailable.';
+
+/** How to try a failed restore again, attached to every warning about one. */
+export const RETRY_HINT = `Retry with '${RESTORE_COMMAND}'`;
+
+/** The `skills` subcommand that restores every locked skill from its source. */
+export const RESTORE_ARGUMENTS = ["experimental_install"] as const;
+
+/** The skills CLI as linked into the workspace, relative to its root. */
+export const LOCAL_SKILLS_BINARY = "node_modules/.bin/skills";
