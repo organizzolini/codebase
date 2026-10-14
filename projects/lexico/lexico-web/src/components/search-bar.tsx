@@ -99,7 +99,10 @@ export function SearchBar(
             type="search"
             value={query}
           />
-          <InputGroupAddon align="inline-end">
+          <InputGroupAddon
+            align="inline-end"
+            className="has-[>button]:mr-0"
+          >
             <InputGroupButton
               aria-label="Search"
               size="icon-sm"
