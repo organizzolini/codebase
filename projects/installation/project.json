@@ -26,7 +26,24 @@
     "spell-check": {},
     "start": {
       "cache": false,
-      "description": "Run the post-Node developer-machine setup, or one of its steps by name.",
+      "configurations": {
+        "dependencies": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts dependencies"
+        },
+        "environment-files": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts environment-files"
+        },
+        "setup": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts setup"
+        },
+        "shell-configuration": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts shell-configuration"
+        },
+        "software": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts software"
+        }
+      },
+      "description": "Run one setup command by name: setup, shell-configuration, software, environment-files, or dependencies.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts",

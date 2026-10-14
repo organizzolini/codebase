@@ -4,14 +4,31 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: <!-- Briefly describe the specific purpose of this CLI application -->
+**Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. A behavior-preserving port of what `scripts/local/` used to do in shell.
 
 ### Run Locally
 
 ```bash
-cp .env.default .env  # Fill in required environment variables
-nx run installation:start
+bash scripts/local/setup.sh                      # A fresh machine: the stub installs Node, then calls `setup`
+nx run installation:start:setup                  # Everything this project does, in order
+nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 ```
+
+## What belongs here, and what deliberately does not
+
+The commands run on Node, so whatever installs Node cannot be one of them. These stay in `scripts/local/` as the bootstrap stub: `setup.sh` itself, `software/brew.sh`, and `software/node.sh` (nvm, Node, pnpm, nx, Husky's init file), plus `scripts/utilities.sh`. The stub runs `pnpm install` before calling `setup`, because the commands are written in the packages it installs; the `dependencies` command then runs it again, which is a no-op.
+
+Every command spawns processes only through `ProcessRunnerService` and prints only through `ReporterService`, so a test replaces the whole machine with `testing/fake-process-runner.ts` and runs against a real temporary workspace from `testing/temporary-workspace.ts`. That workspace lives under `node_modules`, never the operating system's temporary directory: a child spawned from there cannot resolve this project's loader on Linux.
+
+| Command               | Module                                    |
+| --------------------- | ----------------------------------------- |
+| `setup`               | `modules/setup`                           |
+| `shell-configuration` | `modules/shell-configuration`             |
+| `software`            | `modules/software` (one service per tool) |
+| `environment-files`   | `modules/environment-files`               |
+| `dependencies`        | `modules/dependencies`                    |
+
+`setup` configures the shell before it installs software, as the script always did, so completions for tools installed in the same run are wired the next time it runs.
 
 ## Architecture Overview
 
