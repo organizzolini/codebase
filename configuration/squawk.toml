@@ -1,30 +1,5 @@
-pg-version = "18.0"
-exclude-path = [
-  "**/projects/lexico/lexico-web/supabase/migrations/*",
-  "**/projects/lexico/lexico-entities/src/modules/lexico-database/migrations/*",
-]
-
-[rules]
-# Index safety — prevent table locks during index operations
-ban-concurrent-index-creation-in-transaction = "error"
-require-concurrent-index-creation = "warn"
-require-concurrent-index-deletion = "warn"
-
-# Data safety — destructive/breaking schema changes
-ban-drop-database = "error"
-ban-drop-column = "warn"
-renaming-column = "warn"
-changing-column-type = "warn"
-
-# Constraint safety — prevent blocking table scans
-constraint-missing-not-valid = "warn"
-disallowed-unique-constraint = "warn"
-adding-field-with-default = "warn"
-
-# Migration resilience — use IF EXISTS / idempotent statements
-prefer-robust-stmts = "warn"
-
-# Type recommendations
-prefer-text-field = "off"
-prefer-bigint-over-int = "warn"
-prefer-identity = "warn"
+# squawk reads snake_case keys and silently ignores any it does not know, so a
+# misspelled key never applies. Only these keys exist: pg_version, excluded_rules,
+# excluded_paths, and assume_in_transaction. Rule severities cannot be set here.
+pg_version = "18.0"
+excluded_rules = ["prefer-text-field"]
