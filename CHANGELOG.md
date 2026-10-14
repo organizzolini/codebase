@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.8](https://github.com/organizzolini/codebase/compare/v3.2.7...v3.2.8) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **conformetry:** 🐛 let the sync generator run under nx g ([#1560](https://github.com/organizzolini/codebase/issues/1560)) ([570279e](https://github.com/organizzolini/codebase/commit/570279e7d74b1bce517a78611e4754e2c01e211f))
+
+## [3.2.7](https://github.com/organizzolini/codebase/compare/v3.2.6...v3.2.7) (2026-10-14)
+
+### 📝 Documentation
+
+* **documentation,configuration,deployments:** 📝 consolidate docs and openwiki into documentation behind symlinks ([#1507](https://github.com/organizzolini/codebase/issues/1507)) ([af71371](https://github.com/organizzolini/codebase/commit/af713719da5c29a3103eb58c5fd53998a6fbcfc1))
+
 ## [3.2.6](https://github.com/organizzolini/codebase/compare/v3.2.5...v3.2.6) (2026-10-13)
 
 ### ♻️ Code Refactoring
