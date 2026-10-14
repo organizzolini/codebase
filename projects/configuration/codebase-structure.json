@@ -426,14 +426,6 @@
         "name": "codependix-workspace-graph.json"
       },
       {
-        "children": [
-          {
-            "ruleId": "kebab-case-folder"
-          },
-          {
-            "ruleId": "any-file"
-          }
-        ],
         "name": "docs"
       },
       {
@@ -473,14 +465,6 @@
         "name": "nx.json"
       },
       {
-        "children": [
-          {
-            "ruleId": "kebab-case-folder"
-          },
-          {
-            "ruleId": "any-file"
-          }
-        ],
         "name": "openwiki"
       },
       {

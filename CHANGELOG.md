@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.6](https://github.com/organizzolini/codebase/compare/v3.2.5...v3.2.6) (2026-10-13)
+
+### ♻️ Code Refactoring
+
+* **configuration,synchronization,validation:** ♻️ move root validation and sync targets into their projects ([#1508](https://github.com/organizzolini/codebase/issues/1508)) ([95be3b6](https://github.com/organizzolini/codebase/commit/95be3b642d3656eaca8ef4ee8730ae6a0827a3d3))
+
+## [3.2.5](https://github.com/organizzolini/codebase/compare/v3.2.4...v3.2.5) (2026-10-13)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 keep gitignored dist readmes out of release commits ([#1506](https://github.com/organizzolini/codebase/issues/1506)) ([e7e0733](https://github.com/organizzolini/codebase/commit/e7e0733b8ee8851ffdfc8866e9eb0c1253919dc2)), closes [#1439](https://github.com/organizzolini/codebase/issues/1439) [organizzolini/codebase#1439](https://github.com/organizzolini/codebase/issues/1439)
+
 ## [3.2.4](https://github.com/organizzolini/codebase/compare/v3.2.3...v3.2.4) (2026-10-13)
 
 ### 📝 Documentation

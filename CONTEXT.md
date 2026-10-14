@@ -237,13 +237,13 @@ field present, and a traced project with no file at all a refusal. Nothing is
 **inherited** — there is no per-field fallback to a second file and no record
 of whether a number was declared or handed down, because the spread put every
 number in the project's own file where a reader can see it. See
-[ADR 0007](docs/adr/0007-complete-project-configurations.md).
+[ADR 0007](documentation/adr/0007-complete-project-configurations.md).
 _Avoid_: Inherited, fallback, cascade
 
 Callidescope has no notion of a **module** and measures no **cohesion**. It once
 derived a `<project>:<subtree>` module identifier to report module spread and
 misplaced callables against; both findings and the identifier were removed — see
-[ADR 0006](docs/adr/0006-narrow-callidescope-to-depth-and-breadth.md). A
+[ADR 0006](documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md). A
 callable belongs to a **project** and to a file, and to nothing between them.
 
 ## Codependix
@@ -316,7 +316,7 @@ downward, plus an optional `nx` plugin layer above `cli` where one exists
 (callidescope, codependix, and conformetry). This pull request lands the vocabulary
 first, by design: the `layer:*` tags below arrive with each toolchain's own
 pull request, not with this one, so no package carries one yet. See
-[ADR 0013](docs/adr/0013-name-the-ic-suite-layers.md) for the sharp test that
+[ADR 0013](documentation/adr/0013-name-the-ic-suite-layers.md) for the sharp test that
 decides layer membership, the rejected alternative, and the no-shared-package
 constraint.
 

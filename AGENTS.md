@@ -43,12 +43,12 @@ sub-issues without asking.
    manual request. Confirm breakdown, publish tickets/sub-issues, and **stop**.
    Reach for [wayfinder](.agents/skills/wayfinder/SKILL.md) if work exceeds one
    session. (Ignore `writing-plans` / `docs/superpowers/specs/` hand-offs; see
-   [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md)).
+   [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
 4. **Handoff**: Run [handoff](.agents/skills/handoff/SKILL.md) only on manual
    request for multi-session work. Post the `# Handoff` comment on the spec issue
    (see [Handoffs](#handoffs)) and **stop**.
 5. **Build**: Set tickets to `status:in-progress` before testing (see
-   [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md)).
+   [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).
    - **Multi-ticket spec**: Dispatch each parent issue to a fresh subagent
      ([subagent-driven-development](.agents/skills/subagent-driven-development/SKILL.md));
      never implement sequentially in this session. Parallelize independent tickets
@@ -197,7 +197,7 @@ nx show projects
 ```
 
 [`README.md`](README.md) carries the annotated table, one row per project, and
-`nx run codebase:check-readme-projects` fails when it misses one.
+`nx run validation:readme-projects` fails when it misses one.
 
 **A commit scope is not a project.** The scope vocabulary is the closed set in
 [Conventional Naming](.github/CONTRIBUTING.md#commit-guidelines), and it collapses each toolchain to
@@ -292,6 +292,32 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 `.agents/skills/` and this file are the single sources of truth.
 Use the [symlink-files](.agents/skills/symlink-files/SKILL.md) skill to understand how other entry points mirror them.
 
+### Documentation Lives in `documentation/`
+
+Architecture decision records, agent configuration, guides, planning notes,
+and the generated OpenWiki pages all live under `documentation/`. Two root
+symlinks keep tools that hard-code the old paths working:
+
+| Symlink    | Target                   | Why it exists                                                                          |
+| ---------- | ------------------------ | -------------------------------------------------------------------------------------- |
+| `docs`     | `documentation`          | Vendored skills read and write `docs/adr/`, `docs/agents/`, and `docs/superpowers/`    |
+| `openwiki` | `documentation/openwiki` | The OpenWiki CLI hard-codes its output directory, with no flag or setting to change it |
+
+Wherever a skill or tool says `docs/<path>`, it means `documentation/<path>`:
+read and write through either spelling, but **write `documentation/` in anything
+this repository authors**. Never create a real `docs/` or `openwiki/` directory —
+`projects/configuration/codebase-structure.json` declares both as leaves, so the structure
+check fails if one appears. Do not edit the vendored skills to change a path;
+they are overwritten by `skills update`.
+
+The scheduled `openwiki code --update` writes through the `openwiki` link and
+needs nothing from you. `openwiki code --init` is the exception: it refuses a
+symlinked wiki directory ("expected a real directory"). To re-initialize, replace
+the link with an empty `openwiki/` directory, run it, move the result into
+`documentation/openwiki/`, and restore the link. `.openwikiignore` keeps
+`documentation/openwiki/` out of OpenWiki's own source fingerprint, so its output
+never counts as a change to the repository.
+
 ### Session Hooks
 
 Startup scripts run at the start of every agent session and inject their failure as additional context. **Fix what they report before writing any code.** Use the [agent-session-hooks](.agents/skills/agent-session-hooks/SKILL.md) skill to understand how they work or to add a new check.
@@ -325,17 +351,17 @@ inside it.
 ### Agent Skills Configuration
 
 The [mattpocock/skills](https://github.com/mattpocock/skills) engineering skills
-read their per-repository configuration from `docs/agents/`. Edit these files
+read their per-repository configuration from `documentation/agents/`. Edit these files
 directly; re-run `/setup-matt-pocock-skills` only to switch issue trackers or
 start over.
 
-| Concern       | Setting                                                                                                                    | Reference                                                      |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Issue tracker | GitHub Issues in `Organizzolini/codebase`, via the `gh` CLI — a spec, then one issue per pull request, then one per commit | [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md) |
-| Triage labels | The five canonical roles mapped onto this repository's `status:` label family                                              | [`docs/agents/triage-labels.md`](docs/agents/triage-labels.md) |
-| Domain docs   | Single-context — one root `CONTEXT.md` plus root `docs/adr/`                                                               | [`docs/agents/domain.md`](docs/agents/domain.md)               |
+| Concern       | Setting                                                                                                                    | Reference                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Issue tracker | GitHub Issues in `Organizzolini/codebase`, via the `gh` CLI — a spec, then one issue per pull request, then one per commit | [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md) |
+| Triage labels | The five canonical roles mapped onto this repository's `status:` label family                                              | [`documentation/agents/triage-labels.md`](documentation/agents/triage-labels.md) |
+| Domain docs   | Single-context — one root `CONTEXT.md` plus root `documentation/adr/`                                                      | [`documentation/agents/domain.md`](documentation/agents/domain.md)               |
 
-`CONTEXT.md` and `docs/adr/` are both populated now.
+`CONTEXT.md` and `documentation/adr/` are both populated now.
 [domain-modeling](.agents/skills/domain-modeling/SKILL.md) grows them lazily, as
 terms and decisions actually get resolved — so add to them when a decision
 lands, rather than scaffolding ahead of the work.

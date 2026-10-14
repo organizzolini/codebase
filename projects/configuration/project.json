@@ -177,10 +177,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "eslint {args} --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\" --config projects/configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'docs/' 'scripts/' 'documentation/' 'infrastructure/' '**/*.md' 'projects/configuration/project.json'"
+          "command": "eslint {args} --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\" --config projects/configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'scripts/' 'documentation/' 'infrastructure/' '**/*.md' 'projects/configuration/project.json'"
         },
         "write": {
-          "command": "eslint {args} --fix --config projects/configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'docs/' 'scripts/' 'documentation/' 'infrastructure/' '**/*.md' 'projects/configuration/project.json'"
+          "command": "eslint {args} --fix --config projects/configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'scripts/' 'documentation/' 'infrastructure/' '**/*.md' 'projects/configuration/project.json'"
         }
       },
       "defaultConfiguration": "check",
@@ -505,10 +505,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
+          "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
         },
         "write": {
-          "command": "markdownlint-cli2 --fix --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
+          "command": "markdownlint-cli2 --fix --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -518,7 +518,6 @@
         "{projectRoot}/**/*.md",
         "{workspaceRoot}/*.md",
         "{workspaceRoot}/.agents/**/*.md",
-        "{workspaceRoot}/docs/**/*.md",
         "{workspaceRoot}/documentation/**/*.md",
         "{workspaceRoot}/infrastructure/**/*.md",
         "{workspaceRoot}/projects/configuration/.markdownlint-cli2.jsonc",
@@ -537,10 +536,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/' 'infrastructure/' 'projects/configuration/project.json' 'projects/configuration/*.md'"
+          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'infrastructure/' 'projects/configuration/project.json' 'projects/configuration/*.md'"
         },
         "write": {
-          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/' 'infrastructure/' 'projects/configuration/project.json' 'projects/configuration/*.md'"
+          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'infrastructure/' 'projects/configuration/project.json' 'projects/configuration/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -553,30 +552,6 @@
         "workspace-files",
         {
           "externalDependencies": ["oxfmt"]
-        }
-      ],
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
-    "oxlint": {
-      "cache": true,
-      "configurations": {
-        "check": {
-          "command": "oxlint --config projects/configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/' 'infrastructure/' --ignore-pattern='infrastructure/helm/**/templates'"
-        },
-        "write": {
-          "command": "oxlint --config projects/configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/' 'infrastructure/' --ignore-pattern='infrastructure/helm/**/templates'"
-        }
-      },
-      "defaultConfiguration": "check",
-      "description": "Run Oxlint on workspace root files — config files, scripts, documentation, infrastructure, and the devcontainer sync scripts. That last path is named because the others hold no TypeScript at all today: `scripts/` went shell-only when the two dead root scripts were deleted, and oxlint exits non-zero when its paths match nothing, so a target covering only empty directories fails rather than passing vacuously. The devcontainer scripts are real TypeScript that nothing else here was linting.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/projects/configuration/oxlint.config.ts",
-        "workspace-files",
-        {
-          "externalDependencies": ["oxlint"]
         }
       ],
       "options": {
@@ -688,7 +663,7 @@
     },
     "spell-check": {
       "cache": true,
-      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, infrastructure, notepads, openwiki, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The `workspace-files` input this project defines is deliberately absent: it spans every file no project owns, which would make every one the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
+      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, infrastructure, notepads, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The `workspace-files` input this project defines is deliberately absent: it spans every file no project owns, which would make every one the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*",
@@ -697,11 +672,9 @@
         "{workspaceRoot}/.devcontainer/**",
         "{workspaceRoot}/.github/**",
         "{workspaceRoot}/.vscode/**",
-        "{workspaceRoot}/docs/**",
         "{workspaceRoot}/documentation/**",
         "{workspaceRoot}/infrastructure/**",
         "{workspaceRoot}/notepads/**",
-        "{workspaceRoot}/openwiki/**",
         "{workspaceRoot}/planning/**",
         "{workspaceRoot}/projects/configuration/**",
         "{workspaceRoot}/projects/configuration/.cspell/**",
@@ -714,7 +687,7 @@
         }
       ],
       "options": {
-        "command": "cspell --config projects/configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'projects/configuration/**' 'docs/**' 'documentation/**' 'infrastructure/**' 'notepads/**' 'openwiki/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
+        "command": "cspell --config projects/configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'projects/configuration/**' 'documentation/**' 'infrastructure/**' 'notepads/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
         "cwd": "{workspaceRoot}"
       }
     },

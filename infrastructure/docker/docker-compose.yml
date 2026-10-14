@@ -76,7 +76,7 @@ configs:
   # For an existing volume, run it by hand for the new project instead:
   # `docker exec -e POSTGRES_PROJECTS=<project> postgres sh
   # /docker-entrypoint-initdb.d/databases.sh`, as the seed-postgres skill
-  # and docs/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
+  # and documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
   # describe.
   #
   # For each project in `POSTGRES_PROJECTS`: a `<project>_username` role, a

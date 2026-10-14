@@ -85,7 +85,7 @@ staged `package.json` matches all three, so all four commands run.
 | Staged file pattern                     | Commands lint-staged runs                                                                                                                                                                                      |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `{**/package.json,pnpm-workspace.yaml}` | `validation lockfile`, run as the CLI directly rather than through its Nx target                                                                                                                               |
-| `**/package.json`                       | `nx run-many --projects=codebase --targets=check-catalog-manifests,sherif,syncpack`                                                                                                                            |
+| `**/package.json`                       | `nx run-many --projects=validation --targets=catalog-manifests`, then `nx run-many --projects=codebase --targets=sherif,syncpack`                                                                              |
 | `*` (every staged path)                 | `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=… --base=HEAD --head=<staged-commit>`, then `nx run-many --targets=conformetry-validate` |
 
 There is deliberately no per-file-type row any more. `lint-code` is an
@@ -93,7 +93,7 @@ There is deliberately no per-file-type row any more. `lint-code` is an
 leaf target declares the config files it reads in its own `inputs` — so staging
 `projects/configuration/knip.config.ts` re-runs `knip` and cache-hits the rest, with no
 hand-written mapping to drift. Anything the old table routed by hand
-(`sync-vscode-extensions`, `markdown-lint`, `yaml-lint`, `spell-check`) is now
+(`vscode-extensions`, `markdown-lint`, `yaml-lint`, `spell-check`) is now
 reached through that `dependsOn` list.
 
 Each derivation synchronization target is named in the same invocation rather
@@ -249,7 +249,7 @@ Config: [projects/affirmancy/project.json](../../../projects/affirmancy/project.
 
 #### Sync checks
 
-Every synchronization command is its own Nx target on the `synchronization` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `pull-request-template`, and `skill-exclusions` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no `synchronization:synchronize` aggregate target — those were retired when the work moved into [projects/synchronization](../../../projects/synchronization). `lint-code`'s dependents name each derivation target directly.
+Every synchronization command is its own Nx target on the `synchronization` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `pull-request-template`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no `synchronization:synchronize` aggregate target — those were retired when the work moved into [projects/synchronization](../../../projects/synchronization). `lint-code`'s dependents name each derivation target directly.
 
 The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per issue #296: [codependix](../../../projects/ic-suite/codependix/codependix-cli) now derives the same NestJS module graphs and Nx neighborhood graphs through its own anchor blocks, gated per project by `codependix-gate` and published by `nx run configuration:codependix:write` instead.
 
@@ -260,7 +260,7 @@ The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per
 | `nx run synchronization:devcontainer-configuration:check` | `:write`                                | Cloud and local devcontainer configs share common fields                                                                                                                      |
 | `nx run synchronization:pull-request-template:check`      | `:write`                                | [.github/PULL_REQUEST_TEMPLATE.md](../../../.github/PULL_REQUEST_TEMPLATE.md) in sync with skills and prompts                                                                 |
 | `nx run synchronization:skill-exclusions:check`           | `:write`                                | Installed-skill exclusion lists match `skills-lock.json`                                                                                                                      |
-| `nx run codebase:sync-vscode-extensions:check`            | `:write`                                | `.vscode/extensions.json` matches devcontainer extension lists                                                                                                                |
+| `nx run synchronization:vscode-extensions:check`          | `:write`                                | `.vscode/extensions.json` matches devcontainer extension lists                                                                                                                |
 | none on a branch (see below)                              | `nx run configuration:codependix:write` | Each project's README codependix blocks match its real Nx, NestJS, and import graphs                                                                                          |
 
 A broken dependency boundary is not a sync check. `codependix-gate` is inferred per project and runs inside `guard-code`, so a boundary failure names the project it is charged to — run `pnpm exec nx run <project>:codependix-gate` to reproduce it, and read it with the [codependix-triage](../codependix-triage/SKILL.md) skill. The README blocks in the table are published from the default branch, so a branch has no check on them, and `configuration:codependix:write` is the only way to regenerate one by hand.
@@ -269,14 +269,14 @@ A broken dependency boundary is not a sync check. `codependix-gate` is inferred 
 
 There is no command that regenerates a skills table of contents. The synchronization module that once maintained the `AGENTS.md` skills list was retired along with the list itself: agents are handed the installed skills directly, so reading [.agents/skills](../../../.agents/skills) is what tells you which ones exist. A new skill needs no synchronization run — a skill added to `skills-lock.json` does, because `skill-exclusions` derives the exclusion blocks from it.
 
-#### `check-lockfile` (package.json / pnpm-workspace.yaml changes)
+#### `lockfile` (package.json / pnpm-workspace.yaml changes)
 
 Command: `validation lockfile`, the [lockfile](../../../projects/validation/src/modules/lockfile/lockfile.command.ts) check
 
-lint-staged runs it as the CLI directly rather than through its `codebase:check-lockfile` Nx target, so one command does not cost another project graph build. Run it by hand through the target:
+lint-staged runs it as the CLI directly rather than through its `validation:lockfile` Nx target, so one command does not cost another project graph build. Run it by hand through the target:
 
 ```bash
-pnpm exec nx run codebase:check-lockfile
+pnpm exec nx run validation:lockfile
 ```
 
 #### `commitlint` (commit-msg hook)
@@ -322,7 +322,7 @@ pnpm exec nx run synchronization:conventional-config:write
 pnpm exec nx run synchronization:devcontainer-configuration:write
 pnpm exec nx run synchronization:pull-request-template:write
 pnpm exec nx run synchronization:skill-exclusions:write
-pnpm exec nx run codebase:sync-vscode-extensions:write
+pnpm exec nx run synchronization:vscode-extensions:write
 pnpm exec nx run configuration:codependix:write
 
 # Or every derivation at once
@@ -348,7 +348,7 @@ pnpm exec nx affected --target=knip,vulture --configuration=check --files=<stage
 
 # Validate sync checks fixed themselves (re-run the check configuration)
 pnpm exec nx run-many --targets=conformetry-generators,conventional-config,devcontainer-configuration,pull-request-template,skill-exclusions --configuration=check
-pnpm exec nx run codebase:sync-vscode-extensions:check
+pnpm exec nx run synchronization:vscode-extensions:check
 ```
 
 **If all `--configuration=check` commands pass**, the fixes are confirmed working. Proceed to Step 5.
@@ -366,7 +366,7 @@ pnpm exec nx run codebase:sync-vscode-extensions:check
 | `markdown-lint` (`MD024/no-duplicate-heading`) | Check whether duplicate headings also contain duplicate content. If content is verbatim duplicated, remove only the extra block. If content differs, keep both content blocks and rename one heading to a distinct, specific title.                                                                                                                                                                                                                                                                                                  |
 | `yaml-lint`                                    | Fix YAML syntax errors per `projects/configuration/yamllint.yaml` rules.                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `stylelint`                                    | Fix CSS issues per `projects/configuration/stylelint.config.cjs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `check-lockfile`                               | Run `pnpm install` to regenerate `pnpm-lock.yaml`. Do NOT stage the lockfile — leave it unstaged for the user to review. **Lesson**: Any manual change to a `package.json` or workspace config often requires this.                                                                                                                                                                                                                                                                                                                  |
+| `lockfile`                                     | Run `pnpm install` to regenerate `pnpm-lock.yaml`. Do NOT stage the lockfile — leave it unstaged for the user to review. **Lesson**: Any manual change to a `package.json` or workspace config often requires this.                                                                                                                                                                                                                                                                                                                  |
 | `commitlint`                                   | Fix the commit message. See format below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `validate-branch-name`                         | Rename the branch with `git branch -m <new-valid-name>`. See format above.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `vulture` (Python)                             | Fix the flagged unused code, or add a `# noqa` comment. The project-local `.vulture_whitelist.py` and global `projects/configuration/vulture_whitelist.py` are both read. Min-confidence is 80.                                                                                                                                                                                                                                                                                                                                      |
@@ -537,7 +537,7 @@ Remaining Actions
 | commitlint                          | [projects/configuration/commitlint.config.ts](../../../projects/configuration/commitlint.config.ts)                                                                                        |
 | validate-branch-name                | [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs)                                                                                                                |
 | Conventional commits (types/scopes) | [projects/configuration/conventional.config.cjs](../../../projects/configuration/conventional.config.cjs)                                                                                  |
-| check-lockfile                      | [projects/validation/src/modules/lockfile/lockfile.constants.ts](../../../projects/validation/src/modules/lockfile/lockfile.constants.ts)                                                  |
+| lockfile                            | [projects/validation/src/modules/lockfile/lockfile.constants.ts](../../../projects/validation/src/modules/lockfile/lockfile.constants.ts)                                                  |
 
 ### Git Conventions
 

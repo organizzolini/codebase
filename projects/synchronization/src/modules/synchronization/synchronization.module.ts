@@ -9,6 +9,8 @@ import { PackageManifestsModule } from "../package-manifests/package-manifests.m
 import { PullRequestLabelsModule } from "../pull-request-labels/pull-request-labels.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
+import { VscodeExtensionsModule } from "../vscode-extensions/vscode-extensions.module";
+import { VscodeSettingsModule } from "../vscode-settings/vscode-settings.module";
 
 import { SynchronizationCommand } from "./synchronization.command";
 import { SynchronizationService } from "./synchronization.service";
@@ -34,6 +36,8 @@ import { SynchronizationService } from "./synchronization.service";
     PullRequestLabelsModule,
     PullRequestTemplateModule,
     SkillExclusionsModule,
+    VscodeExtensionsModule,
+    VscodeSettingsModule,
   ],
   providers: [SynchronizationCommand, SynchronizationService],
 })

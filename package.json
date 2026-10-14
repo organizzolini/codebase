@@ -64,11 +64,9 @@
     "jiti": "catalog:",
     "jscpd": "catalog:",
     "jsdom": "catalog:",
-    "json5": "catalog:",
     "knip": "catalog:",
     "license-checker": "catalog:",
     "lint-staged": "catalog:",
-    "lodash": "catalog:",
     "markdownlint-cli2": "catalog:",
     "nx": "catalog:",
     "openwiki": "catalog:",
@@ -129,5 +127,5 @@
     ]
   },
   "type": "module",
-  "version": "3.2.4"
+  "version": "3.2.6"
 }

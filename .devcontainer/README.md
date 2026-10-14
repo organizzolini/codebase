@@ -151,7 +151,6 @@ The `.devcontainer/scripts` directory contains helper scripts for container setu
 | ------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------- |
 | `post-create-command.sh`  | Enables pnpm, installs dependencies                                                                   | `postCreateCommand` |
 | `post-attach-command.sh`  | Verifies installed tool versions (Node.js, pnpm, Supabase CLI, etc.)                                  | `postAttachCommand` |
-| `sync-vscode-settings.ts` | Merges `.vscode/settings.json` into VS Code Machine settings so workspace settings apply in-container | `postCreateCommand` |
 | `test-devcontainer.sh`    | Validates tool versions and configuration; runnable locally and in CI                                 | Manual / CI         |
 
 ## Testing

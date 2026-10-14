@@ -853,7 +853,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14015-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-439.33_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-442.29_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-100-3178c6?style=flat-square)
 
@@ -902,16 +902,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-155-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-44-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-10-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-106-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-72-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-238-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-53-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-19-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-136-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-119-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-7-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-25-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-134-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-63-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-202-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML

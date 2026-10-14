@@ -14,6 +14,9 @@
 **/dist
 **/helm/**/templates/**
 **/node_modules
+# OpenWiki's generated pages and its `.last-update.json` bookkeeping, which the
+# generator rewrites on every refresh.
+**/documentation/openwiki/**
 **/out
 **/routeTree.gen.ts
 **/tmp

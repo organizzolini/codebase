@@ -123,7 +123,8 @@ const config = {
   // and the `configuration` project, which owns those two, have to run whether
   // or not `affected` selected them.
   "**/package.json": (): string[] => [
-    "pnpm exec nx run-many --projects=codebase,configuration --targets=check-catalog-manifests,sherif,syncpack --outputStyle=static",
+    "pnpm exec nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
+    "pnpm exec nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",
   ],
 
   // 🔬 Static analysis and conformetry validation

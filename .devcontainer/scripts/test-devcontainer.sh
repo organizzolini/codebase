@@ -234,10 +234,10 @@ done
 # 🧩 Extensions list consistency
 echo ""
 echo "🧩 VS Code extensions / recommendations sync"
-if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run codebase:sync-vscode-extensions:check 2>&1); then
+if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run synchronization:vscode-extensions:check 2>&1); then
   pass "VS Code extensions are in sync"
 else
-  fail "VS Code extensions are out of sync — run: pnpm exec nx run codebase:sync-vscode-extensions:write"
+  fail "VS Code extensions are out of sync — run: pnpm exec nx run synchronization:vscode-extensions:write"
   printf '%s\n' "${SYNC_OUTPUT}" | sed 's/^/    /'
 fi
 
@@ -299,10 +299,10 @@ fi
 # ⚙️ VS Code Machine settings sync
 echo ""
 echo "⚙️  VS Code Machine settings sync"
-if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run codebase:sync-vscode-settings:check 2>&1); then
+if SYNC_OUTPUT=$(cd "${WORKSPACE_ROOT}" && pnpm exec nx run synchronization:vscode-settings:check 2>&1); then
   pass "VS Code Machine settings are in sync"
 else
-  fail "VS Code Machine settings are out of sync — run: pnpm exec nx run codebase:sync-vscode-settings:write"
+  fail "VS Code Machine settings are out of sync — run: pnpm exec nx run synchronization:vscode-settings:write"
   printf '%s\n' "${SYNC_OUTPUT}" | sed 's/^/    /'
 fi
 

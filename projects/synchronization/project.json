@@ -215,6 +215,47 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "vscode-extensions": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-extensions check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-extensions write && pnpm exec nx run configuration:oxfmt:write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles both devcontainer configurations' extension lists against `.vscode/extensions.json`. `check` runs on a pull request and as part of `guard-code`; `write` copies the recommendations into each devcontainer's `extensions` and `recommendations`, then formats the result.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/.devcontainer/cloud/devcontainer.json",
+        "{workspaceRoot}/.devcontainer/local/devcontainer.json",
+        "{workspaceRoot}/.vscode/extensions.json",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "vscode-settings": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-settings check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-settings write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Merges `.vscode/settings.json` into the VS Code Machine settings under `/root/.vscode-server`, which persist across devcontainer rebuilds. Uncached because its result depends on a file outside the workspace, and absent from `start` because only a devcontainer has that path. The devcontainer's `postCreateCommand` runs `write`.",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "yaml-lint": {}
   }
 }
