@@ -1,8 +1,14 @@
-import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useRouter,
+  useRouterState,
+} from "@tanstack/react-router";
 import { createServerFn as createServerFunction } from "@tanstack/react-start";
 import lodash from "lodash";
 import { useCallback } from "react";
 import { z } from "zod";
+
+import { Button } from "@codebase/components-web";
 
 import { SearchBar } from "../components/search-bar";
 import { SearchLanding } from "../components/search-landing";
@@ -146,6 +152,7 @@ const getSearch = createServerFunction({ method: "GET" })
  */
 export const Route = createFileRoute("/search")({
   component: SearchPage,
+  errorComponent: SearchError,
   head: ({ match }) => {
     const { query } = match.search;
 
@@ -177,6 +184,28 @@ export const Route = createFileRoute("/search")({
 });
 
 // 🧩 Component
+
+/**
+ * What the page shows when the API cannot answer, with a way to ask again.
+ */
+function SearchError(): ReactNode {
+  const router = useRouter();
+
+  return (
+    <section className="space-y-4 text-center">
+      <h1 className="sr-only">Search</h1>
+      <p className="text-muted-foreground">Search is unavailable right now.</p>
+      <Button
+        onClick={() => {
+          void router.invalidate();
+        }}
+        variant="outline"
+      >
+        Try again
+      </Button>
+    </section>
+  );
+}
 
 /**
  * The search page: a search bar over either the landing logo or the results.

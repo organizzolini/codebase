@@ -63,6 +63,19 @@ describe("search", () => {
     expect(screen.getByTestId("search-landing")).toBeDefined();
   });
 
+  it("says search is unavailable when the API cannot answer", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>().mockRejectedValue(new Error("connection refused")),
+    );
+
+    await renderRoute("/search?query=amo");
+
+    await expect(
+      screen.findByText("Search is unavailable right now."),
+    ).resolves.toBeDefined();
+  });
+
   it("shows Latin and English matches together, best first", async () => {
     stubApi(
       [
