@@ -58,6 +58,8 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `helm-lint`                         | Lint the `kubernetes-job` chart against its base values                   |
 | `compose-config`                    | Validate the Docker Compose file                                          |
 
+`helm-lint` and `compose-config` also run in CI: `lint-code` depends on both, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. Locally they need `helm`, and `docker compose` with a root `.env` copied from `.env.default`.
+
 ## Documentation
 
 - **[AGENTS.md](AGENTS.md)**: Complete infrastructure architecture, Helm chart config, Terraform setup, troubleshooting

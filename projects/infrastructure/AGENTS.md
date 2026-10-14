@@ -50,7 +50,7 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets.
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint` and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Troubleshooting
 

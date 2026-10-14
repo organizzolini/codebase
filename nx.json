@@ -621,14 +621,16 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
+        "compose-config",
         "eslint",
+        "helm-lint",
         "oxlint",
         "ruff-lint",
         "shellcheck",
         "sqlfluff-lint",
         "stylelint"
       ],
-      "description": "Aggregator for lint-code",
+      "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config also needs the gitignored root .env, which the Lint leg of continuous-integration.yml copies from .env.default.",
       "executor": "nx:noop"
     },
     "markdown-lint": [

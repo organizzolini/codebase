@@ -163,6 +163,15 @@ jobs:
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
         run: bash scripts/nx/verify-publishable-packages.sh
 
+      # `compose-config`, part of `lint-code`, reads the gitignored root `.env`
+      # through the compose file's `env_file`. `cp -n` never replaces one.
+      - name: 📄 Create Environment File
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'lint-code'
+        run: cp -n .env.default .env
+        shell: bash
+
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         id: run-check
         if: >-
