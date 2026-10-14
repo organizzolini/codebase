@@ -342,7 +342,8 @@ finished. The pull request's run uploads its cache as an artifact in
 this repository.
 
 The `cleanup-codebase` action runs after the install, so its two steps are
-commands of the [publication](../projects/publication) project:
+commands (which open the databases with the built-in `node:sqlite`, not the
+`sqlite3` binary) of the [publication](../projects/publication) project:
 `verify-task-database` and `keep-task-database` (which keeps only the newest
 database, and warns if there was more than one). The `adopt-task-database`
 command is the same as the script and is tested, ready for the move.

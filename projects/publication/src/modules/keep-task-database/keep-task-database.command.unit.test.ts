@@ -13,11 +13,7 @@ import {
 
 import { LoggerService } from "@codebase/logging";
 
-import {
-  createTaskDatabaseWorkspace,
-  FakeProcessRunner,
-} from "../../../testing/mocks";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { createTaskDatabaseWorkspace } from "../../../testing/mocks";
 import { TaskDatabaseService } from "../task-database/task-database.service";
 
 import { KeepTaskDatabaseCommand } from "./keep-task-database.command";
@@ -52,7 +48,6 @@ describe(KeepTaskDatabaseCommand, () => {
         TaskDatabaseService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: ProcessRunnerService, useValue: new FakeProcessRunner({}) },
       ],
     }).compile();
 

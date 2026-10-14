@@ -3,8 +3,6 @@ import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-
 import { TaskDatabaseService } from "./task-database.service";
 
 describe(TaskDatabaseService, () => {
@@ -15,10 +13,6 @@ describe(TaskDatabaseService, () => {
       providers: [
         TaskDatabaseService,
         { provide: ConfigService, useValue: createMock<ConfigService>() },
-        {
-          provide: ProcessRunnerService,
-          useValue: createMock<ProcessRunnerService>(),
-        },
       ],
     }).compile();
 

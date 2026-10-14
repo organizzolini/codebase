@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 
 import { afterEach, beforeEach, vi } from "vitest";
 
@@ -25,10 +26,14 @@ export interface RecordedCall {
  * temporary directory: a fixture there passes on macOS and fails on a runner.
  */
 export interface TaskDatabaseWorkspace {
-  /** Writes one database, and the companion files named by suffix. */
+  /** Writes one file that is not a database, and the companions named by suffix. */
   add: (name: string, ageSeconds: number, companions?: string[]) => void;
+  /** Writes a real SQLite database holding this many cached task results. */
+  addDatabase: (name: string, ageSeconds: number, rows: number) => void;
   /** Removes the whole workspace. */
   cleanup: () => void;
+  /** Overwrites the middle of a real database, so its header still reads fine. */
+  damage: (name: string) => void;
   /** The absolute directory of databases the commands are pointed at. */
   directory: string;
   /** Every file in the directory, by name. */
@@ -110,8 +115,31 @@ export function createTaskDatabaseWorkspace(): TaskDatabaseWorkspace {
         fs.utimesSync(file, when, when);
       }
     },
+    addDatabase: (name, ageSeconds, rows) => {
+      const file = path.join(directory, name);
+      const connection = new DatabaseSync(file);
+
+      connection.exec("CREATE TABLE cache_outputs (hash TEXT, payload TEXT)");
+      for (let row = 0; row < rows; row += 1) {
+        connection
+          .prepare("INSERT INTO cache_outputs VALUES (?, ?)")
+          .run(`hash-${row}`, "x".repeat(200));
+      }
+      connection.close();
+
+      const when = new Date(Date.now() - ageSeconds * 1000);
+
+      fs.utimesSync(file, when, when);
+    },
     cleanup: () => {
       fs.rmSync(root, { force: true, recursive: true });
+    },
+    damage: (name) => {
+      const file = path.join(directory, name);
+      const bytes = fs.readFileSync(file);
+
+      bytes.fill(0xff, 4096, bytes.length);
+      fs.writeFileSync(file, bytes);
     },
     directory,
     names: () => fs.readdirSync(directory).toSorted(),

@@ -1,10 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
   adoptedMessage,
@@ -35,10 +34,7 @@ import type { AdoptionPlan, TaskDatabaseReport } from "./task-database.types";
 export class TaskDatabaseService {
   // 🏗 Dependency Injection
 
-  constructor(
-    private readonly configService: ConfigService<Environment>,
-    private readonly processRunner: ProcessRunnerService,
-  ) {}
+  constructor(private readonly configService: ConfigService<Environment>) {}
 
   // 🔐 Private Fields
 
@@ -48,12 +44,11 @@ export class TaskDatabaseService {
 
   /** How many task results a database holds, as text. */
   private countCachedResults(database: string): string {
-    const result = this.processRunner.capture("sqlite3", [
-      database,
-      CACHED_RESULTS_QUERY,
-    ]);
-
-    return result.status === 0 ? result.stdout.trim() : UNKNOWN_ROWS;
+    try {
+      return this.query(database, CACHED_RESULTS_QUERY).join("\n");
+    } catch {
+      return UNKNOWN_ROWS;
+    }
   }
 
   /** Where Nx keeps the database, honouring the override Nx itself reads. */
@@ -76,6 +71,18 @@ export class TaskDatabaseService {
       if (database !== kept) {
         this.discard(database);
       }
+    }
+  }
+
+  /**
+   * Answers what SQLite itself says of a database: `ok` for a sound one, the
+   * problems found for a damaged one, or why it could not be opened at all.
+   */
+  private integrityOf(database: string): string {
+    try {
+      return this.query(database, INTEGRITY_QUERY).join("\n");
+    } catch (error) {
+      return String(error);
     }
   }
 
@@ -132,6 +139,20 @@ export class TaskDatabaseService {
       kind: "adopt",
       restored,
     };
+  }
+
+  /** Runs one query, and returns the first column of every row as text. */
+  private query(database: string, sql: string): string[] {
+    const connection = new DatabaseSync(database);
+
+    try {
+      return connection
+        .prepare(sql)
+        .all()
+        .map((row) => String(Object.values(row)[0]));
+    } finally {
+      connection.close();
+    }
   }
 
   /** This machine's id, from the first readable, non-empty id file. */
@@ -242,11 +263,7 @@ export class TaskDatabaseService {
     const lines: string[] = [];
 
     for (const database of this.list()) {
-      const answer = this.processRunner.capture("sqlite3", [
-        database,
-        INTEGRITY_QUERY,
-      ]);
-      const result = `${answer.stdout}${answer.stderr}`.trim();
+      const result = this.integrityOf(database);
 
       if (result !== "ok") {
         lines.push(corruptMessage(database, result));
