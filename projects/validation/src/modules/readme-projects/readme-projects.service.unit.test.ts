@@ -126,6 +126,20 @@ describe(ReadmeProjectsService, () => {
       ]);
     });
 
+    it("finds a config-only project that has a project.json and no package.json", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["infrastructure"]);
+
+      existingPaths.add("/workspace/projects/infrastructure/project.json");
+      scopeChildren.set("/workspace/projects/infrastructure", ["helm"]);
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
+        "projects/infrastructure",
+      ]);
+    });
+
     it("does not descend into a project's own subfolders looking for more projects", () => {
       expect.hasAssertions();
 
@@ -148,6 +162,28 @@ describe(ReadmeProjectsService, () => {
       readmeDocument = "# codebase";
 
       expect(service.readRootReadme("/workspace")).toBe("# codebase");
+    });
+  });
+
+  describe("a config-only project end to end", () => {
+    it("is undocumented until the README links it, then documented", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["infrastructure"]);
+      existingPaths.add("/workspace/projects/infrastructure/project.json");
+
+      const projectPaths = service.resolveWorkspaceProjectPaths("/workspace");
+
+      expect(
+        service.findUndocumentedProjectPaths(projectPaths, "# codebase"),
+      ).toStrictEqual(["projects/infrastructure"]);
+      expect(
+        service.findUndocumentedProjectPaths(
+          projectPaths,
+          "- **[infra](projects/infrastructure)** - Deploy config",
+        ),
+      ).toStrictEqual([]);
     });
   });
 

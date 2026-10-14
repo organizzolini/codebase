@@ -4,6 +4,7 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 
 import {
+  PROJECT_MARKER_FILES,
   ROOT_README_PATH,
   WORKSPACE_SCOPES,
 } from "./readme-projects.constants";
@@ -12,9 +13,11 @@ import {
  * Finds every workspace project and says which ones the root README does not
  * link to.
  *
- * A project is any directory with its own `package.json` under `projects/`,
- * at any depth below its grouping folders — the same definition the catalog
- * policy scans by. Documented means the README links to that project's
+ * A project is any directory with its own `package.json` or `project.json`
+ * under `projects/`, at any depth below its grouping folders — the same set
+ * `nx show projects` prints, config-only projects included. The catalog
+ * policy scans `package.json` alone, on purpose: only manifests hold
+ * dependencies. Documented means the README links to that project's
  * directory somewhere as `[name](scope/name)`; nothing enforces the
  * surrounding prose, grouping, or description.
  */
@@ -34,9 +37,9 @@ export class ReadmeProjectsService {
 
   /**
    * Every project path nested under `directoryPath`, at any depth. A
-   * directory with its own `package.json` is a project and is not descended
-   * into further; a directory without one is a grouping folder and is
-   * searched recursively.
+   * directory with its own `package.json` or `project.json` is a project and
+   * is not descended into further; a directory with neither is a grouping
+   * folder and is searched recursively.
    */
   private findProjectPaths(
     workspaceRoot: string,
@@ -50,9 +53,12 @@ export class ReadmeProjectsService {
       }
 
       const childPath = path.join(directoryPath, child.name);
-      const manifestPath = path.join(childPath, "package.json");
 
-      if (existsSync(manifestPath)) {
+      if (
+        PROJECT_MARKER_FILES.some((marker) =>
+          existsSync(path.join(childPath, marker)),
+        )
+      ) {
         projectPaths.push(path.relative(workspaceRoot, childPath));
         continue;
       }

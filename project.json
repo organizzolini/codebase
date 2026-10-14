@@ -159,6 +159,7 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/**/project.json",
         "{workspaceRoot}/README.md",
         {
           "input": "production",
