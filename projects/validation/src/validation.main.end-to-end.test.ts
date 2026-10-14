@@ -176,7 +176,7 @@ describe("main end-to-end suite", () => {
         "❌ Worktree directory is not gitignored:",
       );
       expect(result.stdout).toMatch(
-        /\n\n🚨 Invoke the using-git-worktrees skill to configure a compliant isolated workspace\.$/u,
+        /[^\n]\n🚨 Invoke the using-git-worktrees skill to configure a compliant isolated workspace\.$/u,
       );
     }, 150_000);
   });

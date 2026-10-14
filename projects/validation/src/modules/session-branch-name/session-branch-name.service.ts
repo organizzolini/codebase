@@ -76,7 +76,9 @@ export class SessionBranchNameService {
 
     return {
       errorMessage: configuration[ERROR_MESSAGE_FIELD],
-      pattern: new RegExp(configuration.pattern, "u"),
+      // No flags, as validate-branch-name compiles it, so an escape the
+      // pre-push hook accepts never makes this check throw instead.
+      pattern: new RegExp(configuration.pattern),
     };
   }
 }

@@ -59,7 +59,7 @@ export class SessionWorktreeNameCommand extends CommandRunner {
     }
 
     process.stdout.write(
-      `${violations.join("\n\n")}\n\n${USING_GIT_WORKTREES_DIRECTIVE}`,
+      `${violations.join("\n\n")}\n${USING_GIT_WORKTREES_DIRECTIVE}`,
     );
     process.exitCode = 1;
   }

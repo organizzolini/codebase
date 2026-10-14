@@ -233,7 +233,6 @@ describe(SessionWorktreeNameCommand, () => {
       [
         '❌ Invalid worktree directory name: "My_Worktree"',
         "   Worktree directory names must be lowercase kebab-case (letters, numbers, hyphens). Avoid spaces, uppercase characters, and special symbols.",
-        "",
         WORKTREE_DIRECTIVE,
       ].join("\n"),
     );
@@ -253,7 +252,6 @@ describe(SessionWorktreeNameCommand, () => {
       [
         `❌ Worktree directory is not gitignored: "${worktree}"`,
         "   Project-local worktrees inside the repository root must be ignored by .gitignore to prevent committing worktree contents.",
-        "",
         WORKTREE_DIRECTIVE,
       ].join("\n"),
     );
@@ -269,7 +267,7 @@ describe(SessionWorktreeNameCommand, () => {
     expect(printed()).toMatch(
       /^❌ Invalid worktree directory name: "Linked"\n.*\n\n❌ Worktree directory is not gitignored: /u,
     );
-    expect(printed().endsWith(`\n\n${WORKTREE_DIRECTIVE}`)).toBe(true);
+    expect(printed().endsWith(`contents.\n${WORKTREE_DIRECTIVE}`)).toBe(true);
     expect(process.exitCode).toBe(1);
   });
 

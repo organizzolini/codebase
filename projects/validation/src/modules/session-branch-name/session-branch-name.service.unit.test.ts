@@ -44,4 +44,12 @@ describe(SessionBranchNameService, () => {
     expect(rules.pattern.test("dependabot/npm/zod")).toBe(true);
     expect(rules.pattern.test("Refactor/validation")).toBe(false);
   });
+
+  // validate-branch-name compiles the pattern without the unicode flag, under
+  // which an escape it accepts, such as \-, would be a syntax error here.
+  it("compiles the pattern as validate-branch-name does, without flags", () => {
+    vi.spyOn(process, "cwd").mockReturnValue(REPOSITORY_ROOT);
+
+    expect(service.readBranchNameRules().pattern.flags).toBe("");
+  });
 });
