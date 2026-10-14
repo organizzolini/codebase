@@ -157,19 +157,13 @@ const config: KnipConfig = {
     },
 
     // lexico: TanStack Start SSR web application with Supabase backend.
-    // The client entry and the generated route tree are named in
-    // `vite.config.mts` rather than imported, so knip is told where they are;
-    // both sit under `src/lib/` because `codebase-structure.json` restricts a
-    // `src/` root to entry-point names.
+    // The client entry and the generated route tree are named by the TanStack
+    // Start plugin rather than imported, so knip is told where they are.
     "projects/lexico/lexico-web": {
       entry: [
-        "src/lib/client.tsx",
-        "src/lib/routeTree.gen.ts",
+        "src/client.tsx",
         "src/router.tsx",
-      ],
-      ignore: [
-        "src/lib/auth.ts", // Supabase auth utilities (used at runtime)
-        "src/lib/bookmarks.ts", // Bookmark feature module (used at runtime)
+        "src/routes/routeTree.gen.ts",
       ],
       ignoreDependencies: [
         "vitest", // Used by tests and Vitest config; Knip may miss it when test sources are excluded

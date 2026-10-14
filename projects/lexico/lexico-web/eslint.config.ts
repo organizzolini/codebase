@@ -6,15 +6,9 @@ export default [
 
   // 🚫 Project Ignores
   {
-    // Ignore Supabase Edge Functions (Deno runtime, separate tsconfig) and generated files
-    ignores: ["supabase/functions/**", "src/lib/routeTree.gen.ts"],
+    ignores: ["src/routes/routeTree.gen.ts"],
   },
 
-  // � Per-file Rule Overrides
-  {
-    files: ["src/routes/settings.tsx"],
-    rules: { "no-alert": "off" },
-  },
   // ⚛️ React Component Complexity Overrides
   // Components naturally have more JSX branches, state, and conditional rendering
   // than plain functions — allow 2× the base limits for TSX files.

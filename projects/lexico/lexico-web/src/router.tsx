@@ -1,6 +1,6 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
-import { routeTree } from "./lib/routeTree.gen";
+import { routeTree } from "./routes/routeTree.gen";
 
 /**
  * Creates and configures the application router.

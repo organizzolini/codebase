@@ -7,13 +7,12 @@ import {
   useMatches,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Bookmark, BookOpen, Info, Search, User, Wrench } from "lucide-react";
+import { Search } from "lucide-react";
 
 import {
   Button,
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -29,7 +28,7 @@ import {
 import applicationCss from "@codebase/components-web/styles/globals.css?url";
 
 import { Logo } from "../components/layout";
-import { getCurrentUser } from "../lib/auth";
+import lexicoCss from "../styles/application.css?url";
 
 import type { ReactNode } from "react";
 
@@ -44,34 +43,15 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { href: "/search", icon: <Search className="h-5 w-5" />, label: "Search" },
-  {
-    href: "/bookmarks",
-    icon: <Bookmark className="h-5 w-5" />,
-    label: "Bookmarks",
-  },
-  {
-    href: "/library",
-    icon: <BookOpen className="h-5 w-5" />,
-    label: "Literature",
-  },
-  { href: "/tools", icon: <Wrench className="h-5 w-5" />, label: "Grammar" },
-];
-
-const accountItems: NavigationItem[] = [
-  { href: "/settings", icon: <User className="h-5 w-5" />, label: "User" },
-  { href: "/about", icon: <Info className="h-5 w-5" />, label: "About" },
 ];
 
 export const Route = createRootRoute({
-  beforeLoad: async () => {
-    const user = await getCurrentUser();
-    return { user };
-  },
   component: RootComponent,
   head: () => ({
     links: [
       { href: "/favicon.ico", rel: "icon" },
       { href: applicationCss, rel: "stylesheet" },
+      { href: lexicoCss, rel: "stylesheet" },
     ],
     meta: [
       {
@@ -104,7 +84,7 @@ interface RootDocumentProperties {
 
 /**
  * Application sidebar: a rail that collapses to icons, with the brand in the
- * header, navigation in a labelled group, and account links in the footer.
+ * header and navigation in a labelled group.
  */
 function ApplicationSidebar(): ReactNode {
   const matches = useMatches();
@@ -123,7 +103,7 @@ function ApplicationSidebar(): ReactNode {
               size="lg"
               tooltip="Lexico"
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#66023C]">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <Logo width={18} />
               </span>
               <span className="grid min-w-0 flex-1 text-left leading-tight group-data-[collapsible=icon]:sr-only">
@@ -155,17 +135,6 @@ function ApplicationSidebar(): ReactNode {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          {accountItems.map((item) => (
-            <NavigationLink
-              key={item.href}
-              currentPath={currentPath}
-              item={item}
-            />
-          ))}
-        </SidebarMenu>
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

@@ -37,7 +37,9 @@
       "**/*.spec.tsx",
       "**/*.test.ts",
       "**/*.test.tsx",
-      "**/routeTree.gen.ts"
+      "**/routeTree.gen.ts",
+      "src/router.tsx",
+      "testing/**"
     ],
     "strict": true
   },

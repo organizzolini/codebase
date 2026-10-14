@@ -81,14 +81,11 @@
     // import stays in the module graph instead of reading as unreachable too.
     "projects/ic-suite/callidescope/callidescope-examples/examples/**/*.ts",
     "projects/ic-suite/callidescope/callidescope-examples/src/**/*.ts",
-    // lexico names its client entry and generated route tree in
-    // vite.config.mts rather than importing them, and both sit under
-    // src/lib/ because a src/ root only admits entry-point names. The
-    // vite plugin detects a client entry by convention at src/client.tsx,
-    // so a relocated one has to be declared. knip names the same paths in
-    // its own entry list for the same reason.
-    "projects/lexico/lexico-web/src/lib/client.tsx",
-    "projects/lexico/lexico-web/src/lib/routeTree.gen.ts",
+    // lexico's client entry and generated route tree are named by the TanStack
+    // Start plugin rather than imported, so they are declared as entry points.
+    // knip names the same paths in its own entry list.
+    "projects/lexico/lexico-web/src/client.tsx",
+    "projects/lexico/lexico-web/src/routes/routeTree.gen.ts",
     "projects/lexico/lexico-web/src/router.tsx",
     "projects/caelundas/caelundas-cli/src/modules/caelundas-database/migrations/**/*.ts",
     "projects/lexico/lexico-entities/src/modules/lexico-database/migrations/**/*.ts",
@@ -229,14 +226,6 @@
     {
       "exports": ["*"],
       "file": "**/src/lib/database.types.ts",
-    },
-    {
-      "exports": ["*"],
-      "file": "**/src/lib/auth.ts",
-    },
-    {
-      "exports": ["*"],
-      "file": "**/src/lib/bookmarks.ts",
     },
     {
       "exports": ["*"],
