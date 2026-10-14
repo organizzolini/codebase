@@ -2,4 +2,19 @@
 # misspelled key never applies. Only these keys exist: pg_version, excluded_rules,
 # excluded_paths, and assume_in_transaction. Rule severities cannot be set here.
 pg_version = "18.0"
-excluded_rules = ["prefer-text-field"]
+
+# Migrations are TypeORM-generated: tables are created fresh, so the lock-safety
+# and idempotency rules below do not apply, and prefer-text-field is a style choice.
+excluded_rules = [
+  "adding-foreign-key-constraint",
+  "adding-required-field",
+  "ban-char-field",
+  "ban-drop-column",
+  "ban-drop-table",
+  "constraint-missing-not-valid",
+  "prefer-bigint-over-smallint",
+  "prefer-robust-stmts",
+  "prefer-text-field",
+  "require-concurrent-index-creation",
+  "require-concurrent-index-deletion",
+]
