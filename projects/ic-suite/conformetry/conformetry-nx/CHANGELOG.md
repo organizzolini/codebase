@@ -1,3 +1,9 @@
+## 0.0.20 (2026-10-14)
+
+### 🩹 Fixes
+
+- **conformetry:** 🐛 let the sync generator run under nx g ([#1560](https://github.com/organizzolini/codebase/pull/1560))
+
 ## 0.0.19 (2026-10-13)
 
 ### 🧱 Updated Dependencies
