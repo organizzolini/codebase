@@ -63,14 +63,17 @@ git clone https://github.com/Organizzolini/codebase.git
 cd codebase && bash scripts/local/setup.sh
 ```
 
-The script runs four stages in order, each sourced so that shell changes carry forward:
+The script is a bootstrap stub. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs five stages in order:
 
-| Stage | Script                          | What it does                                                    |
-| ----- | ------------------------------- | --------------------------------------------------------------- |
-| 1     | `scripts/utilities.sh`          | Validates the working directory, loads `.env`, enables `set -e` |
-| 2     | `scripts/local/software.sh`     | Installs system tools and configures the shell                  |
-| 3     | `scripts/local/environment.sh`  | Creates `.env` files from `.env.default` templates              |
-| 4     | `scripts/local/dependencies.sh` | Runs `pnpm install`, `uv sync`, and Terraform setup             |
+| Stage | Step                                           | What it does                                                                     |
+| ----- | ---------------------------------------------- | -------------------------------------------------------------------------------- |
+| 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                  |
+| 2     | `scripts/local/software/brew.sh` and `node.sh` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                     |
+| 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                          |
+| 4     | `installation setup`                           | Configures the shell, installs the remaining tools, and creates the `.env` files |
+| 5     | `installation setup`                           | Runs `pnpm install`, `uv sync`, and Terraform setup, and writes kubeconfig       |
+
+A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`.
 
 **What gets installed:**
 
@@ -566,7 +569,7 @@ Pull requests require owner approval before merging.
 
 ## Environment Variables
 
-Each project ships a `.env.default` template with safe placeholder values. `scripts/local/environment.sh` copies each to `.env` during setup and never overwrites an existing one. To do it by hand, copy `.env.default` to `.env` in the directory you need and fill in the values.
+Each project ships a `.env.default` template with safe placeholder values. The installation project's `environment-files` command copies each to `.env` during setup and never overwrites an existing one. To do it by hand, copy `.env.default` to `.env` in the directory you need and fill in the values.
 
 ### Root (`.env.default`)
 

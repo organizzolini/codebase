@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /** Where Terraform's configuration lives, relative to the workspace root. */
-export const TERRAFORM_DIRECTORY = "infrastructure/terraform";
+export const TERRAFORM_DIRECTORY = "projects/infrastructure/terraform";
 
 /** The Terraform address of the cluster this project manages. */
 export const CLUSTER_RESOURCE_ADDRESS = "linode_lke_cluster.cluster";
