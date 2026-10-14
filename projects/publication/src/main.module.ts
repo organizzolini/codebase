@@ -5,6 +5,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/logging";
 
 import { environmentSchema } from "./constants";
+import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 
 /**
  * Root NestJS application module.
@@ -19,6 +20,7 @@ import { environmentSchema } from "./constants";
     }),
     DiscoveryModule,
     LoggerModule,
+    RunAffectedModule,
   ],
 })
 export class MainModule {}

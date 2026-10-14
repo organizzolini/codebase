@@ -1,6 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import type { LoggerService } from "@codebase/logging";
 
 type CommandFactoryRun = (
@@ -14,6 +15,7 @@ type CommandFactoryRun = (
 
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
+const runAffectedModuleMock = createMock<RunAffectedModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -32,6 +34,14 @@ vi.mock("@codebase/logging", () => ({
   LoggerModule: function LoggerModule() {},
   LoggerService: function LoggerService() {
     return loggerServiceMock;
+  },
+}));
+
+// Mocked so that bootstrapping never reaches the real commands, which extend a
+// `nest-commander` class this suite has replaced.
+vi.mock("./modules/run-affected/run-affected.module", () => ({
+  RunAffectedModule: function RunAffectedModule() {
+    return runAffectedModuleMock;
   },
 }));
 
