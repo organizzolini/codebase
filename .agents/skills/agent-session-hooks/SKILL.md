@@ -33,4 +33,4 @@ Each script is registered twice, once per harness, and both registrations point 
 
 When adding a check: put the script under `scripts/git/`, emit through `scripts/git/emit-session-hook-context.sh` so both harnesses can read it, and register it in both places.
 
-Why the credential checks resolve the session's own token and signing configuration rather than the hook shell's, and why a hook can fail but never hang, is in [ADR 0010](../../docs/adr/0010-judge-the-credentials-a-session-really-uses.md).
+Why the credential checks resolve the session's own token and signing configuration rather than the hook shell's, and why a hook can fail but never hang, is in [ADR 0010](../../documentation/adr/0010-judge-the-credentials-a-session-really-uses.md).

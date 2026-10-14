@@ -57,7 +57,7 @@ jobs:
             ## 📝 Details
 
             - Install and run OpenWiki in repository code mode
-            - Update documentation under `openwiki/`
+            - Update documentation under `documentation/openwiki/`
             - Reuse the existing scheduled + manual workflow entrypoint
             - Publish changes on `docs/codebase-refresh-documentation`
 
@@ -78,7 +78,7 @@ jobs:
               )
             }})*
           add-paths: |
-            openwiki/**
+            documentation/openwiki/**
             AGENTS.md
             .github/workflows/refresh-documentation.yml
           # The type:, scope:, and source: labels and the assignee are what

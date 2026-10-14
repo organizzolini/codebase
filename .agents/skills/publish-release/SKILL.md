@@ -28,7 +28,7 @@ license: MIT
 
 Why the manifest fields stay on sources, which `publishConfig` fields pnpm
 actually applies, and why shrinking the Nx plugin closure buys nothing is
-[ADR 0009](../../docs/adr/0009-keep-manifest-fields-on-typescript-sources.md). **Do
+[ADR 0009](../../documentation/adr/0009-keep-manifest-fields-on-typescript-sources.md). **Do
 not point `main` or `exports` at `dist/`** — it deadlocks the plugin graph load
 and breaks `fallow-dead-code` and `vitest`.
 

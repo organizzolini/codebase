@@ -8,6 +8,8 @@ import { DevcontainerConfigurationModule } from "../devcontainer-configuration/d
 import { PullRequestLabelsModule } from "../pull-request-labels/pull-request-labels.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
+import { VscodeExtensionsModule } from "../vscode-extensions/vscode-extensions.module";
+import { VscodeSettingsModule } from "../vscode-settings/vscode-settings.module";
 
 import { SynchronizationCommand } from "./synchronization.command";
 import { SynchronizationModule } from "./synchronization.module";
@@ -31,6 +33,8 @@ describe(SynchronizationModule, () => {
     expect(imports).toContain(PullRequestLabelsModule);
     expect(imports).toContain(PullRequestTemplateModule);
     expect(imports).toContain(SkillExclusionsModule);
+    expect(imports).toContain(VscodeExtensionsModule);
+    expect(imports).toContain(VscodeSettingsModule);
 
     expect(providers).toBeDefined();
     expect(providers).toContain(SynchronizationCommand);

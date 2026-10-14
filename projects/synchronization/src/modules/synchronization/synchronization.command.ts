@@ -10,6 +10,7 @@ import { PackageManifestsCommand } from "../package-manifests/package-manifests.
 import { PullRequestLabelsCommand } from "../pull-request-labels/pull-request-labels.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
+import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
 import { SynchronizationService } from "./synchronization.service";
 
@@ -55,6 +56,7 @@ export class SynchronizationCommand extends CommandRunner {
     private readonly pullRequestTemplateCommand: PullRequestTemplateCommand,
     private readonly skillExclusionsCommand: SkillExclusionsCommand,
     private readonly synchronizationModeService: SynchronizationService,
+    private readonly vscodeExtensionsCommand: VscodeExtensionsCommand,
   ) {
     super();
     this.logger.setContext(SynchronizationCommand.name);
@@ -71,7 +73,10 @@ export class SynchronizationCommand extends CommandRunner {
    *
    * A command registered in the module but left out here would never run as
    * part of `all`, and nothing else would notice — its own Nx target would
-   * still catch drift on its own.
+   * still catch drift on its own. `vscode-settings` is left out on purpose: it
+   * writes the Machine settings under `/root/.vscode-server`, which only a
+   * devcontainer has, so a run of everything on any other machine would fail
+   * on it.
    */
   private getCommands(): SynchronizableCommand[] {
     return [
@@ -82,6 +87,7 @@ export class SynchronizationCommand extends CommandRunner {
       this.pullRequestLabelsCommand,
       this.pullRequestTemplateCommand,
       this.skillExclusionsCommand,
+      this.vscodeExtensionsCommand,
     ];
   }
 

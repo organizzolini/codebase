@@ -68,14 +68,16 @@ target, on `opened`/`reopened`, and nothing else names it.
 
 ## What it synchronizes
 
-| Command                      | Source                                   | Destination                                                                                           |
-| ---------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `conformetry-generators`     | `configuration/conformetry.config.ts`    | The generator table in `AGENTS.md`, between marker comments                                           |
-| `conventional-config`        | `configuration/conventional.config.cjs`  | The commit type and scope tables, commitlint, and release configuration                               |
-| `devcontainer-configuration` | `.devcontainer/local/devcontainer.json`  | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
-| `pull-request-labels`        | `configuration/conventional.config.cjs`  | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
-| `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`       | The template embedded in the PR skill files                                                           |
-| `skill-exclusions`           | `skills-lock.json`                       | The installed-skill exclusion lists in five ignore files                                              |
+| Command                      | Source                                  | Destination                                                                                           |
+| ---------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `conformetry-generators`     | `configuration/conformetry.config.ts`   | The generator table in `AGENTS.md`, between marker comments                                           |
+| `conventional-config`        | `configuration/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
+| `devcontainer-configuration` | `.devcontainer/local/devcontainer.json` | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
+| `pull-request-labels`        | `configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
+| `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`      | The template embedded in the PR skill files                                                           |
+| `skill-exclusions`           | `skills-lock.json`                      | The installed-skill exclusion lists in five ignore files                                              |
+| `vscode-extensions`          | `.vscode/extensions.json`               | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
+| `vscode-settings`            | `.vscode/settings.json`                 | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
 
 ### Pull request labels
 
@@ -191,13 +193,13 @@ Call stacks traced through `projects/synchronization`, deepest first. Each frame
 
 | Measure | Value |
 | --- | --- |
-| Callables | 223 |
-| Files | 55 |
-| Calls traced | 242 |
-| Call stacks | 11 |
-| Deepest stack | 10 |
+| Callables | 240 |
+| Files | 63 |
+| Calls traced | 255 |
+| Call stacks | 13 |
+| Deepest stack | 9 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 10 |
+| Unfollowable calls | 13 |
 
 ### Limits
 
@@ -210,32 +212,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `SynchronizationCommand.run`** — depth ≥ 10 · decorated-method
-
-```text
-🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [projects/synchronization/src/modules/synchronization/synchronization.command.ts:120]
-   ↳ Runs every synchronization, exiting once if any reported drift.
-  └─> SynchronizationCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [projects/synchronization/src/modules/synchronization/synchronization.command.ts:142]
-     ↳ Runs every synchronization and reports whether all succeeded.
-    └─> ConventionalConfigCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [projects/synchronization/src/modules/conventional-config/conventional-config.command.ts:70]
-       ↳ Synchronizes conventional-commit config and reports success without exiting.
-      └─> ConventionalConfigService.runSynchronization(mode: string): boolean [projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:240]
-         ↳ Runs the workflow in check or write mode, reporting whether it succeeded.
-        └─> ConventionalConfigService.handleCheckMode(context: SyncContext): boolean [projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:126]
-           ↳ Check mode: validates all configuration files are in sync with conventional.config.cjs, reporting success rather than…
-          └─> ConventionalConfigValidatorsService.checkAllSkillsSync(config: ConventionalConfig, skillFiles: string[]): boolean [projects/synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:155]
-             ↳ Validates that every configured skill file has synchronized type/scope tables.
-            └─> ConventionalConfigValidatorsService.checkSkillSync(config: ConventionalConfig, skillFile: string): boolean [projects/synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:293]
-               ↳ Validates a skill file's type/scope markdown tables against source config.
-              └─> ConventionalConfigValidatorsService.checkMarkerSync(…): boolean [projects/synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:41]
-                 ↳ Checks that a named marker block in a skill file matches the source config values.
-                └─> ConventionalConfigValidatorsService.readMarkerValues(…): { skillValues: string[]; } | undefined [projects/synchronization/src/modules/conventional-config/conventional-config-validators.service.ts:76]
-                   ↳ Extracts and returns parsed table values from a named marker block, or undefined if missing.
-                  └─> ConventionalConfigIoService.extractMarkerContent(content: string, markerName: string): string | undefined [projects/synchronization/src/modules/conventional-config/conventional-config-io.service.ts:127]
-                     ↳ Extracts text content between named HTML comment markers.
-```
-
-**2. `ConventionalConfigCommand.run`** — depth 9 · decorated-method
+**1. `ConventionalConfigCommand.run`** — depth 9 · decorated-method
 
 ```text
 🚀 ConventionalConfigCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [projects/synchronization/src/modules/conventional-config/conventional-config.command.ts:51]
@@ -258,7 +235,7 @@ What this project is judged against, as declared in its own `callidescope.config
                    ↳ Extracts text content between named HTML comment markers.
 ```
 
-**3. `IssueLabelsCommand.run`** — depth 7 · decorated-method
+**2. `IssueLabelsCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 IssueLabelsCommand.run(): Promise<void> [projects/synchronization/src/modules/issue-labels/issue-labels.command.ts:158]
@@ -276,10 +253,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Whether this value can be read by property name at all.
 ```
 
-<details>
-<summary>8 more call stacks</summary>
-
-**4. `PullRequestLabelsCommand.run`** — depth 7 · decorated-method
+**3. `PullRequestLabelsCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 PullRequestLabelsCommand.run(passedParameters: string[]): Promise<void> [projects/synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:281]
@@ -294,6 +268,27 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> PullRequestLabelsService.isTrackedLabel(labelName: string): boolean [projects/synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:45]
              ↳ Whether this reconciliation owns the label with this name.
             └─> PullRequestLabelsService.some(…)(prefix: string): boolean [projects/synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:46]
+```
+
+<details>
+<summary>10 more call stacks</summary>
+
+**4. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
+
+```text
+🚀 VscodeExtensionsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187]
+   ↳ Runs the vscode-extensions sync command in check or write mode.
+  └─> VscodeExtensionsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:206]
+     ↳ Synchronizes both devcontainer extension lists and reports success without exiting.
+    └─> VscodeExtensionsCommand.map(…)(…): boolean [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:213]
+      └─> VscodeExtensionsCommand.synchronizeDevcontainer(…): boolean [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:139]
+         ↳ Brings one devcontainer into line, or reports how it differs, and says whether it was current.
+        └─> VscodeExtensionsCommand.reportDrift(…): void [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:109]
+           ↳ Reports every list of one devcontainer that differs from the source.
+          └─> VscodeExtensionsCommand.reportDifferences(difference: ExtensionListDifference): void [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:95]
+             ↳ Logs every entry that differs between the source list and a devcontainer's list.
+            └─> VscodeExtensionsCommand.hasSameEntries(left: string[], right: string[]): boolean [projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:62]
+               ↳ Whether two lists hold the same entries, in any order.
 ```
 
 **5. `ConformetryGeneratorsCommand.run`** — depth ≥ 6 · decorated-method
@@ -376,7 +371,33 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Returns true if the feature key refers to a Docker-in-Docker or Docker-outside-of-Docker feature.
 ```
 
-**10. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
+**10. `VscodeSettingsCommand.run`** — depth 4 · decorated-method
+
+```text
+🚀 VscodeSettingsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [projects/synchronization/src/modules/vscode-settings/vscode-settings.command.ts:102]
+   ↳ Runs the vscode-settings sync command in check or write mode.
+  └─> SynchronizationService.resolveSynchronizationModeOrExit(options: SynchronizationModeResolutionOptions): SynchronizationMode [projects/synchronization/src/modules/synchronization/synchronization.service.ts:59]
+     ↳ Resolves synchronization mode or exits the process when the mode is invalid.
+    └─> SynchronizationService.resolveModeValue(…): SynchronizationModeResolutionResult [projects/synchronization/src/modules/synchronization/synchronization.service.ts:40]
+       ↳ Resolves mode value and indicates whether it is valid without side effects.
+      └─> SynchronizationService.isSynchronizationMode(modeValue: string): modeValue is SynchronizationMode [projects/synchronization/src/modules/synchronization/synchronization.service.ts:54]
+         ↳ Returns true when the provided value is a supported synchronization mode.
+```
+
+**11. `SynchronizationCommand.run`** — depth ≥ 4 · decorated-method
+
+```text
+🚀 SynchronizationCommand.run(passedParameters: string[]): Promise<void> [projects/synchronization/src/modules/synchronization/synchronization.command.ts:126]
+   ↳ Runs every synchronization, exiting once if any reported drift.
+  └─> SynchronizationService.resolveSynchronizationModeOrExit(options: SynchronizationModeResolutionOptions): SynchronizationMode [projects/synchronization/src/modules/synchronization/synchronization.service.ts:59]
+     ↳ Resolves synchronization mode or exits the process when the mode is invalid.
+    └─> SynchronizationService.resolveModeValue(…): SynchronizationModeResolutionResult [projects/synchronization/src/modules/synchronization/synchronization.service.ts:40]
+       ↳ Resolves mode value and indicates whether it is valid without side effects.
+      └─> SynchronizationService.isSynchronizationMode(modeValue: string): modeValue is SynchronizationMode [projects/synchronization/src/modules/synchronization/synchronization.service.ts:54]
+         ↳ Returns true when the provided value is a supported synchronization mode.
+```
+
+**12. `SynchronizationMarkersService.extractContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.extractContent(content: string, markerName: string): string | undefined [projects/synchronization/src/modules/synchronization/synchronization-markers.service.ts:44]
@@ -387,7 +408,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders the opening marker comment for a marker name.
 ```
 
-**11. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
+**13. `SynchronizationMarkersService.replaceContent`** — depth 3 · orphan-root
 
 ```text
 🚀 SynchronizationMarkersService.replaceContent(content: string, markerName: string, replacement: string): string [projects/synchronization/src/modules/synchronization/synchronization-markers.service.ts:65]
@@ -404,28 +425,28 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `SynchronizationCommand.synchronize` | 10 | `SynchronizationCommand.getCommands`, `ConformetryGeneratorsCommand.synchronize`, `ConventionalConfigCommand.synchronize`, `DevcontainerConfigurationCommand.synchronize`, `PackageManifestsCommand.synchronize`, `PullRequestLabelsCommand.synchronize`, `PullRequestTemplateCommand.synchronize`, `SkillExclusionsCommand.synchronize`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `projects/synchronization/src/modules/synchronization/synchronization.command.ts:142` |
 | `PullRequestLabelsCommand.reconcile` | 9 | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure`, `PullRequestLabelsService.planReconciliation`, `PullRequestLabelsService.parseRepositoryLabels`, `PullRequestLabelsService.readExpectedLabels`, `PullRequestLabelsCommand.describeError`, `PullRequestLabelsCommand.reportPlan`, `PullRequestLabelsCommand.reportStaleLabels` | `projects/synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:175` |
 | `ConventionalConfigService.handleCheckMode` | 8 | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigValidatorsService.checkAllSkillsSync`, `ConventionalConfigValidatorsService.checkAllTemplatesSync`, `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigValidatorsService.checkReleaseRulesSync`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigValidatorsService.checkPresetConfigSync`, `ConventionalConfigIoService.getPresetConfigTypes` | `projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:126` |
+| `ConventionalConfigService.handleWriteMode` | 7 | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigService.filter(…)`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.writeSettingsSync`, `ConventionalConfigIoService.writeSkillSync`, `ConventionalConfigIoService.writeIssueTemplateSync`, `ConventionalConfigService.syncReleaseConfigIfNeeded` | `projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:182` |
 
 <details>
-<summary>95 more callables</summary>
+<summary>104 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `ConventionalConfigService.handleWriteMode` | 7 | `ConventionalConfigValidatorsService.checkSettingsSync`, `ConventionalConfigService.filter(…)`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.writeSettingsSync`, `ConventionalConfigIoService.writeSkillSync`, `ConventionalConfigIoService.writeIssueTemplateSync`, `ConventionalConfigService.syncReleaseConfigIfNeeded` | `projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:182` |
 | `ConventionalConfigIoService.writeReleaseConfigSync` | 6 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.appendToReleaseRules`, `ConventionalConfigIoService.appendToPresetTypes` | `projects/synchronization/src/modules/conventional-config/conventional-config-io.service.ts:290` |
 | `ConventionalConfigService.runSynchronization` | 6 | `ConventionalConfigService.loadConventionalConfig`, `ConventionalConfigService.map(…)`, `ConventionalConfigIoService.parseSettingsScopes`, `ConventionalConfigService.map(…)`, `ConventionalConfigService.handleCheckMode`, `ConventionalConfigService.handleWriteMode` | `projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:240` |
 | `PackageManifestsService.checkPackageManifest` | 6 | `PackageManifestsService.readPackageManifest`, `PackageManifestsService.deriveMetadata`, `PackageManifestsService.compareStringField`, `PackageManifestsService.compareBugsField`, `PackageManifestsService.compareRepositoryField`, `PackageManifestsService.filter(…)` | `projects/synchronization/src/modules/package-manifests/package-manifests.service.ts:125` |
 | `PullRequestLabelsService.planReconciliation` | 6 | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.filter(…)` | `projects/synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:66` |
 | `ConventionalConfigService.syncReleaseConfigIfNeeded` | 5 | `ConventionalConfigService.loadReleaseConfig`, `ConventionalConfigService.filter(…)`, `ConventionalConfigIoService.getReleaseRulesTypes`, `ConventionalConfigIoService.getPresetConfigTypes`, `ConventionalConfigIoService.writeReleaseConfigSync` | `projects/synchronization/src/modules/conventional-config/conventional-config.service.ts:93` |
-| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `projects/synchronization/src/modules/synchronization/synchronization.command.ts:89` |
+| `SynchronizationCommand.reportResults` | 5 | `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)`, `SynchronizationCommand.map(…)`, `SynchronizationCommand.filter(…)` | `projects/synchronization/src/modules/synchronization/synchronization.command.ts:95` |
 | `IssueLabelsCommand.resolvePlan` | 4 | `IssueLabelsCommand.readIssueNumber`, `IssueLabelsService.parseFormAnswers`, `IssueLabelsCommand.readExistingLabelNames`, `IssueLabelsService.missingLabels` | `projects/synchronization/src/modules/issue-labels/issue-labels.command.ts:130` |
 | `ConventionalConfigIoService.writeSkillSync` | 4 | `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.generateMarkdownTable`, `ConventionalConfigIoService.replaceMarkerContent` | `projects/synchronization/src/modules/conventional-config/conventional-config-io.service.ts:353` |
 | `PackageManifestsService.checkAll` | 4 | `PackageManifestsService.readRootManifest`, `PackageManifestsService.map(…)`, `PackageManifestsService.filter(…)`, `PackageManifestsService.filter(…)` | `projects/synchronization/src/modules/package-manifests/package-manifests.service.ts:100` |
 | `PullRequestLabelsCommand.reportPlan` | 4 | `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsCommand.describePlan`, `PullRequestLabelsCommand.createLabels`, `PullRequestLabelsCommand.updateLabels` | `projects/synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:215` |
 | `PullRequestLabelsCommand.synchronize` | 4 | `PullRequestLabelsCommand.reconcile`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsCommand.describeError`, `PullRequestLabelsCommand.mirrorToStepSummary` | `projects/synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:300` |
 | `PullRequestTemplateCommand.synchronize` | 4 | `PullRequestTemplateCommand.map(…)`, `PullRequestTemplateCommand.loadTemplate`, `PullRequestTemplateCommand.handleCheckMode`, `PullRequestTemplateCommand.handleWriteMode` | `projects/synchronization/src/modules/pull-request-template/pull-request-template.command.ts:221` |
+| `VscodeExtensionsCommand.synchronizeDevcontainer` | 4 | `VscodeExtensionsCommand.readDevcontainer`, `VscodeExtensionsCommand.isCurrent`, `VscodeExtensionsCommand.reportDrift`, `VscodeExtensionsCommand.write` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:139` |
 | `IssueLabelsCommand.run` | 3 | `IssueLabelsCommand.resolvePlan`, `IssueLabelsGithubService.isAvailable`, `IssueLabelsCommand.addLabel` | `projects/synchronization/src/modules/issue-labels/issue-labels.command.ts:158` |
 | `ConformetryGeneratorsCommand.synchronize` | 3 | `ConformetryGeneratorsCommand.readGenerators`, `ConformetryGeneratorsCommand.checkSync`, `ConformetryGeneratorsCommand.writeSync` | `projects/synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:206` |
 | `ConventionalConfigIoService.writeIssueTemplateSync` | 3 | `ConventionalConfigIoService.writeIssueTemplateDropdown`, `ConventionalConfigIoService.map(…)`, `ConventionalConfigIoService.map(…)` | `projects/synchronization/src/modules/conventional-config/conventional-config-io.service.ts:258` |
@@ -439,6 +460,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestLabelsCommand.updateLabels` | 3 | `PullRequestLabelsGithubService.run`, `PullRequestLabelsCommand.appendToReport`, `PullRequestLabelsGithubService.describeFailure` | `projects/synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:251` |
 | `SkillExclusionsCommand.writeSync` | 3 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock`, `SkillExclusionsCommand.map(…)` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:144` |
 | `SkillExclusionsCommand.synchronize` | 3 | `SkillExclusionsCommand.readSkillNames`, `SkillExclusionsCommand.writeSync`, `SkillExclusionsCommand.findStaleFiles` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:180` |
+| `VscodeSettingsCommand.synchronize` | 3 | `VscodeSettingsCommand.readMachineSettings`, `VscodeSettingsCommand.findDrift`, `VscodeSettingsCommand.write` | `projects/synchronization/src/modules/vscode-settings/vscode-settings.command.ts:121` |
+| `SynchronizationCommand.synchronize` | 3 | `SynchronizationCommand.getCommands`, `SynchronizationCommand.reportResults`, `SynchronizationCommand.every(…)` | `projects/synchronization/src/modules/synchronization/synchronization.command.ts:148` |
 | `IssueLabelsService.missingLabels` | 2 | `IssueLabelsService.filter(…)`, `IssueLabelsService.labelsFromAnswers` | `projects/synchronization/src/modules/issue-labels/issue-labels.service.ts:77` |
 | `IssueLabelsCommand.addLabel` | 2 | `IssueLabelsGithubService.run`, `IssueLabelsGithubService.describeFailure` | `projects/synchronization/src/modules/issue-labels/issue-labels.command.ts:57` |
 | `IssueLabelsCommand.readLabelNames` | 2 | `IssueLabelsCommand.filter(…)`, `IssueLabelsCommand.map(…)` | `projects/synchronization/src/modules/issue-labels/issue-labels.command.ts:118` |
@@ -467,7 +490,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SkillExclusionsCommand.filter(…)` | 2 | `SkillExclusionsCommand.readExclusionFile`, `SkillExclusionsCommand.renderBlock` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:72` |
 | `SkillExclusionsCommand.readExclusionFile` | 2 | `SkillExclusionsCommand.renderStartMarker`, `SkillExclusionsCommand.renderEndMarker` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:82` |
 | `SkillExclusionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SkillExclusionsCommand.synchronize` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:165` |
-| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `projects/synchronization/src/modules/synchronization/synchronization.command.ts:120` |
+| `VscodeExtensionsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeExtensionsCommand.synchronize` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187` |
+| `VscodeSettingsCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `VscodeSettingsCommand.synchronize` | `projects/synchronization/src/modules/vscode-settings/vscode-settings.command.ts:102` |
+| `SynchronizationCommand.run` | 2 | `SynchronizationService.resolveSynchronizationModeOrExit`, `SynchronizationCommand.synchronize` | `projects/synchronization/src/modules/synchronization/synchronization.command.ts:126` |
 | `SynchronizationMarkersService.locateMarkers` | 2 | `SynchronizationMarkersService.getStartMarker`, `SynchronizationMarkersService.getEndMarker` | `projects/synchronization/src/modules/synchronization/synchronization-markers.service.ts:24` |
 | `IssueLabelsGithubService.describeFailure` | 1 | `IssueLabelsGithubService.filter(…)` | `projects/synchronization/src/modules/issue-labels/issue-labels-github.service.ts:43` |
 | `IssueLabelsGithubService.isAvailable` | 1 | `IssueLabelsGithubService.run` | `projects/synchronization/src/modules/issue-labels/issue-labels-github.service.ts:52` |
@@ -506,6 +531,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestTemplateCommand.filter(…)` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `projects/synchronization/src/modules/pull-request-template/pull-request-template.command.ts:134` |
 | `SkillExclusionsCommand.readSkillNames` | 1 | `SkillExclusionsCommand.toSorted(…)` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:115` |
 | `SkillExclusionsCommand.renderBlock` | 1 | `SkillExclusionsCommand.map(…)` | `projects/synchronization/src/modules/skill-exclusions/skill-exclusions.command.ts:127` |
+| `VscodeExtensionsCommand.isCurrent` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:67` |
+| `VscodeExtensionsCommand.reportDifferences` | 1 | `VscodeExtensionsCommand.hasSameEntries` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:95` |
+| `VscodeExtensionsCommand.reportDrift` | 1 | `VscodeExtensionsCommand.reportDifferences` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:109` |
+| `VscodeExtensionsCommand.synchronize` | 1 | `VscodeExtensionsCommand.map(…)` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:206` |
+| `VscodeExtensionsCommand.map(…)` | 1 | `VscodeExtensionsCommand.synchronizeDevcontainer` | `projects/synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:213` |
 | `SynchronizationMarkersService.extractContent` | 1 | `SynchronizationMarkersService.locateMarkers` | `projects/synchronization/src/modules/synchronization/synchronization-markers.service.ts:44` |
 | `SynchronizationMarkersService.replaceContent` | 1 | `SynchronizationMarkersService.locateMarkers` | `projects/synchronization/src/modules/synchronization/synchronization-markers.service.ts:65` |
 
@@ -555,6 +585,8 @@ flowchart LR
   SkillExclusionsModule
   SynchronizationModule
   TemplateDiscoveryModule
+  VscodeExtensionsModule
+  VscodeSettingsModule
   ConfigurationModule --> InputModule
   ConfigurationModule --> InstanceDiscoveryModule
   ConfigurationModule --> InstanceGroupModule
@@ -574,6 +606,8 @@ flowchart LR
   SynchronizationModule --> PullRequestLabelsModule
   SynchronizationModule --> PullRequestTemplateModule
   SynchronizationModule --> SkillExclusionsModule
+  SynchronizationModule --> VscodeExtensionsModule
+  SynchronizationModule --> VscodeSettingsModule
   TemplateDiscoveryModule --> RenderingModule
 ```
 
@@ -662,6 +696,16 @@ graph LR
   file_src_modules_synchronization_synchronization_service_ts["src/modules/synchronization/synchronization.service.ts"]
   file_src_modules_synchronization_synchronization_service_unit_test_ts["src/modules/synchronization/synchronization.service.unit.test.ts"]
   file_src_modules_synchronization_synchronization_types_ts["src/modules/synchronization/synchronization.types.ts"]
+  file_src_modules_vscode_extensions_vscode_extensions_command_ts["src/modules/vscode-extensions/vscode-extensions.command.ts"]
+  file_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts["src/modules/vscode-extensions/vscode-extensions.command.unit.test.ts"]
+  file_src_modules_vscode_extensions_vscode_extensions_constants_ts["src/modules/vscode-extensions/vscode-extensions.constants.ts"]
+  file_src_modules_vscode_extensions_vscode_extensions_module_ts["src/modules/vscode-extensions/vscode-extensions.module.ts"]
+  file_src_modules_vscode_extensions_vscode_extensions_types_ts["src/modules/vscode-extensions/vscode-extensions.types.ts"]
+  file_src_modules_vscode_settings_vscode_settings_command_ts["src/modules/vscode-settings/vscode-settings.command.ts"]
+  file_src_modules_vscode_settings_vscode_settings_command_unit_test_ts["src/modules/vscode-settings/vscode-settings.command.unit.test.ts"]
+  file_src_modules_vscode_settings_vscode_settings_constants_ts["src/modules/vscode-settings/vscode-settings.constants.ts"]
+  file_src_modules_vscode_settings_vscode_settings_module_ts["src/modules/vscode-settings/vscode-settings.module.ts"]
+  file_src_modules_vscode_settings_vscode_settings_types_ts["src/modules/vscode-settings/vscode-settings.types.ts"]
   file_src_repl_ts["src/repl.ts"]
   file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
@@ -817,6 +861,7 @@ graph LR
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_vscode_extensions_vscode_extensions_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_conventional_config_conventional_config_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
@@ -827,6 +872,7 @@ graph LR
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_vscode_extensions_vscode_extensions_command_ts
   file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_conventional_config_conventional_config_module_ts
@@ -837,6 +883,8 @@ graph LR
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_command_ts
   file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_vscode_extensions_vscode_extensions_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_vscode_settings_vscode_settings_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_conventional_config_conventional_config_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
@@ -846,8 +894,30 @@ graph LR
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_command_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
   file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_vscode_extensions_vscode_extensions_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_vscode_settings_vscode_settings_module_ts
   file_src_modules_synchronization_synchronization_service_ts --> file_src_modules_synchronization_synchronization_types_ts
   file_src_modules_synchronization_synchronization_service_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_vscode_extensions_vscode_extensions_constants_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_vscode_extensions_vscode_extensions_types_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_src_modules_vscode_extensions_vscode_extensions_command_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_src_modules_vscode_extensions_vscode_extensions_constants_ts
+  file_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_vscode_extensions_vscode_extensions_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_extensions_vscode_extensions_module_ts --> file_src_modules_vscode_extensions_vscode_extensions_command_ts
+  file_src_modules_vscode_settings_vscode_settings_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_settings_vscode_settings_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_vscode_settings_vscode_settings_command_ts --> file_src_modules_vscode_settings_vscode_settings_constants_ts
+  file_src_modules_vscode_settings_vscode_settings_command_ts --> file_src_modules_vscode_settings_vscode_settings_types_ts
+  file_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_src_modules_vscode_settings_vscode_settings_command_ts
+  file_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_src_modules_vscode_settings_vscode_settings_constants_ts
+  file_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_vscode_settings_vscode_settings_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_vscode_settings_vscode_settings_module_ts --> file_src_modules_vscode_settings_vscode_settings_command_ts
   file_src_repl_ts --> file_src_main_module_ts
   file_src_repl_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
 ```
@@ -859,36 +929,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10056-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-331.13_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-82-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10997-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-362.76_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-92-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-82-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-24-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-92-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-28-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-38-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-198-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-44-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-222-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-25-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-27-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-18-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-30-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-468-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-197-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-513-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-152-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-539-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-397-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-99-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-348-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-745-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-34-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-512-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-212-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-542-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-182-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-577-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-453-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-113-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-384-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-797-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-3-ca8a04?style=flat-square)
 
 ### Python
@@ -909,16 +979,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-289-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-70-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-177-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-138-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-330-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-80-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-202-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-155-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-12-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-14-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-55-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-235-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-60-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-265-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -999,14 +1069,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-10-7c3aed?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-12-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-10-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-9-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-9-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-9-db2777?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-11-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-11-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-11-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-23-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-25-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)

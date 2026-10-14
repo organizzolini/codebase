@@ -93,96 +93,6 @@
       },
       "outputs": []
     },
-    "check-catalog-manifests": {
-      "cache": true,
-      "description": "Enforce catalog: protocol for external dependencies in workspace package manifests",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/**/package.json",
-        {
-          "input": "production",
-          "projects": ["logging", "validation"]
-        },
-        {
-          "externalDependencies": [
-            "@nestjs/common",
-            "@nestjs/config",
-            "@nestjs/core",
-            "@swc-node/register",
-            "nest-commander",
-            "reflect-metadata",
-            "zod"
-          ]
-        }
-      ],
-      "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts catalog-manifests",
-        "cwd": "{workspaceRoot}"
-      },
-      "outputs": []
-    },
-    "check-lockfile": {
-      "cache": true,
-      "description": "Verify that pnpm-lock.yaml is in sync with package.json files",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/**/package.json",
-        "{workspaceRoot}/.npmrc",
-        "{workspaceRoot}/patches/**/*",
-        "{workspaceRoot}/pnpm-lock.yaml",
-        "{workspaceRoot}/pnpm-workspace.yaml",
-        {
-          "input": "production",
-          "projects": ["logging", "validation"]
-        },
-        {
-          "externalDependencies": [
-            "@nestjs/common",
-            "@nestjs/config",
-            "@nestjs/core",
-            "@swc-node/register",
-            "nest-commander",
-            "reflect-metadata",
-            "zod"
-          ]
-        }
-      ],
-      "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts lockfile",
-        "cwd": "{workspaceRoot}"
-      },
-      "outputs": []
-    },
-    "check-readme-projects": {
-      "cache": true,
-      "description": "Verify the root README links to every workspace project",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/**/package.json",
-        "{workspaceRoot}/**/project.json",
-        "{workspaceRoot}/README.md",
-        {
-          "input": "production",
-          "projects": ["logging", "validation"]
-        },
-        {
-          "externalDependencies": [
-            "@nestjs/common",
-            "@nestjs/config",
-            "@nestjs/core",
-            "@swc-node/register",
-            "nest-commander",
-            "reflect-metadata",
-            "zod"
-          ]
-        }
-      ],
-      "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts readme-projects",
-        "cwd": "{workspaceRoot}"
-      },
-      "outputs": []
-    },
     "codependix": {
       "cache": true,
       "configurations": {
@@ -256,17 +166,6 @@
         "cwd": "{projectRoot}"
       }
     },
-    "comply-code": {
-      "cache": false,
-      "dependsOn": [
-        "reconcile-pull-request-labels",
-        "validate-branch-name",
-        "validate-pull-request-body",
-        "validate-pull-request-release-significance",
-        "validate-pull-request-title"
-      ],
-      "executor": "nx:noop"
-    },
     "conformetry-generate": {
       "cache": false,
       "description": "Run the conformetry generate command from the workspace root",
@@ -281,10 +180,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "eslint {args} --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\" --config configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'docs/' 'scripts/' 'documentation/' 'projects/infrastructure/' '**/*.md'"
+          "command": "eslint {args} --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\" --config configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'scripts/' 'documentation/' 'projects/infrastructure/' '**/*.md'"
         },
         "write": {
-          "command": "eslint {args} --fix --config configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'docs/' 'scripts/' 'documentation/' 'projects/infrastructure/' '**/*.md'"
+          "command": "eslint {args} --fix --config configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'scripts/' 'documentation/' 'projects/infrastructure/' '**/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -578,10 +477,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "markdownlint-cli2 --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md'"
+          "command": "markdownlint-cli2 --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md'"
         },
         "write": {
-          "command": "markdownlint-cli2 --fix --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'docs/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md'"
+          "command": "markdownlint-cli2 --fix --config configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -590,7 +489,6 @@
       "inputs": [
         "{projectRoot}/*.md",
         "{projectRoot}/.agents/**/*.md",
-        "{projectRoot}/docs/**/*.md",
         "{projectRoot}/documentation/**/*.md",
         "{projectRoot}/scripts/**/*.md",
         "{workspaceRoot}/configuration/.markdownlint-cli2.jsonc",
@@ -636,10 +534,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/'"
+          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/'"
         },
         "write": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'docs/' 'scripts/' 'documentation/'"
+          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/'"
         }
       },
       "defaultConfiguration": "check",
@@ -651,30 +549,6 @@
         "default",
         {
           "externalDependencies": ["oxfmt"]
-        }
-      ],
-      "options": {
-        "cwd": "{projectRoot}"
-      }
-    },
-    "oxlint": {
-      "cache": true,
-      "configurations": {
-        "check": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/'"
-        },
-        "write": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} '*.ts' '*.js' '.devcontainer/scripts/' 'scripts/' 'documentation/'"
-        }
-      },
-      "defaultConfiguration": "check",
-      "description": "Run Oxlint on workspace root files — config files, scripts, documentation, and the devcontainer sync scripts. That last path is named because the others hold no TypeScript at all today: `scripts/` went shell-only when the two dead root scripts were deleted, and oxlint exits non-zero when its paths match nothing, so a target covering only empty directories fails rather than passing vacuously. The devcontainer scripts are real TypeScript that nothing else here was linting.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/configuration/oxlint.config.ts",
-        "default",
-        {
-          "externalDependencies": ["oxlint"]
         }
       ],
       "options": {
@@ -789,14 +663,6 @@
         "cwd": "{projectRoot}"
       }
     },
-    "reconcile-pull-request-labels": {
-      "cache": false,
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "if [ -n \"$PULL_REQUEST_NUMBER\" ]; then NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts pull-request-labels write; else echo \"Skipping label reconciliation\"; fi",
-        "cwd": "{projectRoot}"
-      }
-    },
     "secure-code": {},
     "secure-code-ci": {
       "cache": false,
@@ -851,7 +717,7 @@
     },
     "spell-check": {
       "cache": true,
-      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, notepads, openwiki, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The workspace-wide default input is deliberately absent: it resolves to {projectRoot}/**/* for the root project, which made every root-owned file the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
+      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, notepads, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The workspace-wide default input is deliberately absent: it resolves to {projectRoot}/**/* for the root project, which made every root-owned file the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/*.{ts,tsx,js,jsx,md,yaml,yml,json}",
@@ -860,10 +726,8 @@
         "{projectRoot}/.github/**",
         "{projectRoot}/.vscode/**",
         "{projectRoot}/configuration/**",
-        "{projectRoot}/docs/**",
         "{projectRoot}/documentation/**",
         "{projectRoot}/notepads/**",
-        "{projectRoot}/openwiki/**",
         "{projectRoot}/planning/**",
         "{projectRoot}/scripts/**",
         "{workspaceRoot}/configuration/.cspell/**",
@@ -875,7 +739,7 @@
         }
       ],
       "options": {
-        "command": "cspell --config configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'configuration/**' 'docs/**' 'documentation/**' 'notepads/**' 'openwiki/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
+        "command": "cspell --config configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'configuration/**' 'documentation/**' 'notepads/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
         "cwd": "{projectRoot}"
       }
     },
@@ -929,56 +793,6 @@
       "options": {
         "command": "uv run sqlfluff {args} --config pyproject.toml notepads",
         "cwd": "{workspaceRoot}"
-      }
-    },
-    "sync-vscode-extensions": {
-      "cache": true,
-      "configurations": {
-        "check": {
-          "command": "tsx .devcontainer/scripts/sync-vscode-extensions.ts check"
-        },
-        "write": {
-          "command": "tsx .devcontainer/scripts/sync-vscode-extensions.ts write && nx run codebase:oxfmt:write"
-        }
-      },
-      "defaultConfiguration": "check",
-      "description": "Validate that VS Code extensions are synchronized between .vscode/extensions.json and both devcontainer configurations (check) or sync them (write)",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/.devcontainer/cloud/devcontainer.json",
-        "{projectRoot}/.devcontainer/local/devcontainer.json",
-        "{projectRoot}/.devcontainer/scripts/sync-vscode-extensions.ts",
-        "{projectRoot}/.vscode/extensions.json",
-        {
-          "externalDependencies": ["tsx"]
-        }
-      ],
-      "options": {
-        "command": "tsx .devcontainer/scripts/sync-vscode-extensions.ts"
-      }
-    },
-    "sync-vscode-settings": {
-      "cache": true,
-      "configurations": {
-        "check": {
-          "command": "tsx .devcontainer/scripts/sync-vscode-settings.ts check"
-        },
-        "write": {
-          "command": "tsx .devcontainer/scripts/sync-vscode-settings.ts write"
-        }
-      },
-      "defaultConfiguration": "write",
-      "description": "Validate that VS Code Machine settings contain all workspace settings (check) or merge workspace settings into Machine settings (write)",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/.devcontainer/scripts/sync-vscode-settings.ts",
-        "{projectRoot}/.vscode/settings.json",
-        {
-          "externalDependencies": ["tsx"]
-        }
-      ],
-      "options": {
-        "command": "tsx .devcontainer/scripts/sync-vscode-settings.ts"
       }
     },
     "syncpack": {
@@ -1053,30 +867,6 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "if [ -n \"$BRANCH_NAME\" ]; then validate-branch-name -t \"$BRANCH_NAME\"; else validate-branch-name; fi",
-        "cwd": "{projectRoot}"
-      }
-    },
-    "validate-pull-request-body": {
-      "cache": false,
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "if [ -n \"$PULL_REQUEST_NUMBER\" ] && [ \"$GITHUB_ACTOR\" != \"dependabot[bot]\" ]; then gh pr view \"$PULL_REQUEST_NUMBER\" --json body -q .body > pull_request_body.md && NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts pull-request-body pull_request_body.md && rm pull_request_body.md; else echo \"Skipping PR body validation\"; fi",
-        "cwd": "{projectRoot}"
-      }
-    },
-    "validate-pull-request-release-significance": {
-      "cache": false,
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "if [ -n \"$PULL_REQUEST_NUMBER\" ]; then NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts pull-request-release-significance \"$PULL_REQUEST_NUMBER\"; else echo \"Skipping release significance\"; fi",
-        "cwd": "{projectRoot}"
-      }
-    },
-    "validate-pull-request-title": {
-      "cache": false,
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "if [ -n \"$PULL_REQUEST_TITLE\" ]; then echo \"$PULL_REQUEST_TITLE\" | commitlint --config configuration/commitlint.config.ts; else echo \"Skipping PR title validation\"; fi",
         "cwd": "{projectRoot}"
       }
     },

@@ -12,6 +12,7 @@ import { PackageManifestsCommand } from "../package-manifests/package-manifests.
 import { PullRequestLabelsCommand } from "../pull-request-labels/pull-request-labels.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
+import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
 import { SynchronizationCommand } from "./synchronization.command";
 import { SynchronizationService } from "./synchronization.service";
@@ -27,6 +28,7 @@ describe(SynchronizationCommand, () => {
   let pullRequestLabels: PullRequestLabelsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;
   let skillExclusions: SkillExclusionsCommand;
+  let vscodeExtensions: VscodeExtensionsCommand;
 
   /** The delegates in the order the aggregate reports them. */
   function getDelegates(): SynchronizableCommand[] {
@@ -37,6 +39,7 @@ describe(SynchronizationCommand, () => {
       pullRequestLabels,
       pullRequestTemplate,
       skillExclusions,
+      vscodeExtensions,
     ];
   }
 
@@ -98,6 +101,12 @@ describe(SynchronizationCommand, () => {
             synchronizationLabel: "skill-exclusions",
           }),
         },
+        {
+          provide: VscodeExtensionsCommand,
+          useValue: createMock<VscodeExtensionsCommand>({
+            synchronizationLabel: "vscode-extensions",
+          }),
+        },
       ],
     }).compile();
 
@@ -111,6 +120,7 @@ describe(SynchronizationCommand, () => {
     pullRequestLabels = await module.resolve(PullRequestLabelsCommand);
     pullRequestTemplate = await module.resolve(PullRequestTemplateCommand);
     skillExclusions = await module.resolve(SkillExclusionsCommand);
+    vscodeExtensions = await module.resolve(VscodeExtensionsCommand);
   });
 
   beforeEach(() => {
@@ -157,6 +167,10 @@ describe(SynchronizationCommand, () => {
         {
           provide: SkillExclusionsCommand,
           useValue: createMock<SkillExclusionsCommand>(),
+        },
+        {
+          provide: VscodeExtensionsCommand,
+          useValue: createMock<VscodeExtensionsCommand>(),
         },
       ],
     }).compile();
@@ -246,6 +260,7 @@ describe(SynchronizationCommand, () => {
     await command.run(["check"]);
 
     expect(skillExclusions.synchronize).toHaveBeenCalledWith("check");
+    expect(vscodeExtensions.synchronize).toHaveBeenCalledWith("check");
   });
 
   it("exits with code 1 when any command reports drift", async () => {

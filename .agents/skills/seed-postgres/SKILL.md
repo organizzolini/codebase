@@ -148,12 +148,12 @@ docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb
 The script stops at the first object that already exists, so name only the
 projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
 it deletes the volume and every row in it. See
-[ADR 0022](../../../docs/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
+[ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
 for meanderaw's one exception.
 
 ## Notes
 
-- Every database-backed project has its own database, schema, and role ([ADR 0022](../../../docs/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)): `lexico_development`.`lexico`, `meanderaw_development`.`meanderaw`, and `caelundas_development`.`caelundas`. The dictionary and literature targets always read and write `lexico_development` with `-n lexico`; the other targets act on the database the root `.env`'s `POSTGRES_DB` names, `postgres` by default, unless given `--database`. Every target connects with the root's unprefixed `POSTGRES_*`, the shared container's admin login.
+- Every database-backed project has its own database, schema, and role ([ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)): `lexico_development`.`lexico`, `meanderaw_development`.`meanderaw`, and `caelundas_development`.`caelundas`. The dictionary and literature targets always read and write `lexico_development` with `-n lexico`; the other targets act on the database the root `.env`'s `POSTGRES_DB` names, `postgres` by default, unless given `--database`. Every target connects with the root's unprefixed `POSTGRES_*`, the shared container's admin login.
 - To dump a whole project, dump its database: `nx run codebase:postgres-data:dump-database --database=lexico_development`.
 - Lexico's tables used to live in `postgres`.`public`. A volume from before the move still holds that copy until the maintainer drops it; the [lexico-entities README](../../../projects/lexico/lexico-entities/README.md) documents the one-time move.
 

@@ -161,32 +161,20 @@ pnpm exec nx run codebase:install-skills --configuration=force
 
 - `0` - Always, by design; skills are agent context, not a build input
 
-### sync-vscode-extensions.ts
+### VS Code extensions and settings
 
-> Located in `.devcontainer/scripts/sync-vscode-extensions.ts`
+> Implemented in [projects/synchronization](../projects/synchronization), not as scripts.
 
-**Purpose:** Sync VS Code extensions between `.vscode/extensions.json` and both devcontainer configurations (`.devcontainer/local/devcontainer.json` and `.devcontainer/cloud/devcontainer.json`).
-
-**Usage:**
+**Purpose:** Keep `.vscode/extensions.json` and both devcontainer configurations' extension lists in step, and merge `.vscode/settings.json` into the VS Code Machine settings inside a devcontainer.
 
 ```bash
-# Via Nx (recommended)
-nx run codebase:sync-vscode-extensions:check    # Validate both configs are in sync (default)
-nx run codebase:sync-vscode-extensions:write    # Update both devcontainer.json files
-
-# Direct
-tsx .devcontainer/scripts/sync-vscode-extensions.ts [check|write]
+nx run synchronization:vscode-extensions:check    # Validate both configs are in sync (default)
+nx run synchronization:vscode-extensions:write    # Update both devcontainer.json files
+nx run synchronization:vscode-settings:check      # Machine settings hold every workspace key
+nx run synchronization:vscode-settings:write      # Merge workspace settings into Machine settings
 ```
 
-**Use cases:**
-
-- Pre-commit hook (auto-runs when `.vscode/extensions.json` or either devcontainer file is staged)
-- Manual sync after adding extensions
-
-**Exit codes:**
-
-- `0` - In sync or successfully synced
-- `1` - Out of sync (check mode) or failed
+`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is left out of `synchronization:start` and run by `post-create-command.sh`.
 
 ### sync-devcontainer-configuration.ts
 
@@ -575,7 +563,7 @@ pnpm clean
 Check if lockfile needs updating:
 
 ```bash
-pnpm exec nx run codebase:check-lockfile
+pnpm exec nx run validation:lockfile
 ```
 
 If out of sync:
@@ -696,7 +684,7 @@ pnpm install
 Verify sync:
 
 ```bash
-pnpm exec nx run codebase:check-lockfile
+pnpm exec nx run validation:lockfile
 ```
 
 ## Release Scripts
