@@ -11,6 +11,10 @@ This directory contains shell scripts for:
 - **Nx** - The CI steps around Nx: its affected runs and the task-result database CI caches (in `nx/`)
 - **Release** - The CI steps that version and publish the ic-suite packages (in `release/`)
 
+> **The shell floor.** Which scripts stay shell, and why, is decided in
+> [ADR 0026](../documentation/adr/0026-keep-a-small-shell-floor-under-the-scripts.md).
+> A script that is not on that floor belongs in a NestJS command.
+
 ## Quick Start
 
 ### Initial Setup (macOS)
