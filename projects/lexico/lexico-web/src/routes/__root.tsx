@@ -15,14 +15,12 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarRail,
   SidebarTrigger,
 } from "@codebase/components-web";
 import applicationCss from "@codebase/components-web/styles/globals.css?url";
@@ -121,7 +119,6 @@ function ApplicationSidebar(): ReactNode {
         role="navigation"
       >
         <SidebarGroup>
-          <SidebarGroupLabel>Study</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
@@ -135,7 +132,6 @@ function ApplicationSidebar(): ReactNode {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   );
 }
