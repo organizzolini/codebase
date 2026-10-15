@@ -217,5 +217,5 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 - [src/main.module.ts](src/main.module.ts): Root NestJS module
 - [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
+- [project.json](project.json): Nx targets (`build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template

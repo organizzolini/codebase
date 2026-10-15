@@ -288,7 +288,7 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 - [src/modules/synchronization/synchronization.module.ts](src/modules/synchronization/synchronization.module.ts): Root NestJS module
 - [src/modules/synchronization/synchronization.constants.ts](src/modules/synchronization/synchronization.constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
+- [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template
 - [src/main.module.ts](src/main.module.ts): Root NestJS module
 - [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
