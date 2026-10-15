@@ -403,6 +403,7 @@ graph LR
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
+  database --> logging
   lexico_api --> database
   lexico_api --> lexico_entities
   lexico_api --> logging
@@ -824,6 +825,12 @@ graph LR
   module_conformetry_validation_TypescriptModule["conformetry-validation/TypescriptModule"]
   module_conformetry_validation_ValidationModule["conformetry-validation/ValidationModule"]
   module_database_DatabaseModule["database/DatabaseModule"]
+  module_database_DiscoveryModule["database/DiscoveryModule"]
+  module_database_ExportModule["database/ExportModule"]
+  module_database_ImportModule["database/ImportModule"]
+  module_database_LoggerModule["database/LoggerModule"]
+  module_database_MainModule["database/MainModule"]
+  module_database_PostgresClientModule["database/PostgresClientModule"]
   module_lexico_api_DatabaseModule["lexico-api/DatabaseModule"]
   module_lexico_api_GraphQLModule["lexico-api/GraphQLModule"]
   module_lexico_api_GraphQLSchemaBuilderModule["lexico-api/GraphQLSchemaBuilderModule"]
@@ -1562,6 +1569,11 @@ graph LR
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_LanguagesModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_RunnerModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_ScoringModule
+  module_database_ExportModule --> module_database_PostgresClientModule
+  module_database_ImportModule --> module_database_PostgresClientModule
+  module_database_MainModule --> module_database_DiscoveryModule
+  module_database_MainModule --> module_database_ExportModule
+  module_database_MainModule --> module_database_ImportModule
   module_lexico_api_DatabaseModule --> module_lexico_api_TypeOrmModule
   module_lexico_api_GraphQLModule --> module_lexico_api_GraphQLSchemaBuilderModule
   module_lexico_api_LexemesModule --> module_lexico_api_TypeOrmModule
@@ -3607,6 +3619,13 @@ graph LR
   file_database_codometer_config_ts["database/codometer.config.ts"]
   file_database_eslint_config_ts["database/eslint.config.ts"]
   file_database_scripts_extract_migration_sql_ts["database/scripts/extract-migration-sql.ts"]
+  file_database_src_database_main_end_to_end_test_ts["database/src/database.main.end-to-end.test.ts"]
+  file_database_src_database_main_ts["database/src/database.main.ts"]
+  file_database_src_database_main_unit_test_ts["database/src/database.main.unit.test.ts"]
+  file_database_src_database_module_ts["database/src/database.module.ts"]
+  file_database_src_database_module_unit_test_ts["database/src/database.module.unit.test.ts"]
+  file_database_src_database_repl_ts["database/src/database.repl.ts"]
+  file_database_src_database_repl_unit_test_ts["database/src/database.repl.unit.test.ts"]
   file_database_src_index_ts["database/src/index.ts"]
   file_database_src_modules_database_database_testing_utilities_integration_test_ts["database/src/modules/database/database-testing.utilities.integration.test.ts"]
   file_database_src_modules_database_database_constants_ts["database/src/modules/database/database.constants.ts"]
@@ -3625,11 +3644,53 @@ graph LR
   file_database_src_modules_database_postgres_container_types_ts["database/src/modules/database/postgres-container.types.ts"]
   file_database_src_modules_database_postgres_container_utilities_integration_test_ts["database/src/modules/database/postgres-container.utilities.integration.test.ts"]
   file_database_src_modules_database_postgres_container_utilities_ts["database/src/modules/database/postgres-container.utilities.ts"]
+  file_database_src_modules_export_export_arguments_command_integration_test_ts["database/src/modules/export/export-arguments.command.integration.test.ts"]
+  file_database_src_modules_export_export_dry_run_command_integration_test_ts["database/src/modules/export/export-dry-run.command.integration.test.ts"]
+  file_database_src_modules_export_export_dry_run_command_unit_test_ts["database/src/modules/export/export-dry-run.command.unit.test.ts"]
+  file_database_src_modules_export_export_missing_table_command_integration_test_ts["database/src/modules/export/export-missing-table.command.integration.test.ts"]
+  file_database_src_modules_export_export_missing_table_command_unit_test_ts["database/src/modules/export/export-missing-table.command.unit.test.ts"]
+  file_database_src_modules_export_export_preflight_command_integration_test_ts["database/src/modules/export/export-preflight.command.integration.test.ts"]
+  file_database_src_modules_export_export_schema_command_unit_test_ts["database/src/modules/export/export-schema.command.unit.test.ts"]
+  file_database_src_modules_export_export_command_integration_test_ts["database/src/modules/export/export.command.integration.test.ts"]
+  file_database_src_modules_export_export_command_ts["database/src/modules/export/export.command.ts"]
+  file_database_src_modules_export_export_command_unit_test_ts["database/src/modules/export/export.command.unit.test.ts"]
+  file_database_src_modules_export_export_constants_ts["database/src/modules/export/export.constants.ts"]
+  file_database_src_modules_export_export_module_ts["database/src/modules/export/export.module.ts"]
+  file_database_src_modules_export_export_types_ts["database/src/modules/export/export.types.ts"]
+  file_database_src_modules_import_import_clean_data_command_integration_test_ts["database/src/modules/import/import-clean-data.command.integration.test.ts"]
+  file_database_src_modules_import_import_clean_data_command_unit_test_ts["database/src/modules/import/import-clean-data.command.unit.test.ts"]
+  file_database_src_modules_import_import_clean_command_integration_test_ts["database/src/modules/import/import-clean.command.integration.test.ts"]
+  file_database_src_modules_import_import_clean_command_unit_test_ts["database/src/modules/import/import-clean.command.unit.test.ts"]
+  file_database_src_modules_import_import_dry_run_command_integration_test_ts["database/src/modules/import/import-dry-run.command.integration.test.ts"]
+  file_database_src_modules_import_import_dry_run_command_unit_test_ts["database/src/modules/import/import-dry-run.command.unit.test.ts"]
+  file_database_src_modules_import_import_preflight_command_integration_test_ts["database/src/modules/import/import-preflight.command.integration.test.ts"]
+  file_database_src_modules_import_import_schema_command_integration_test_ts["database/src/modules/import/import-schema.command.integration.test.ts"]
+  file_database_src_modules_import_import_schema_command_unit_test_ts["database/src/modules/import/import-schema.command.unit.test.ts"]
+  file_database_src_modules_import_import_command_integration_test_ts["database/src/modules/import/import.command.integration.test.ts"]
+  file_database_src_modules_import_import_command_ts["database/src/modules/import/import.command.ts"]
+  file_database_src_modules_import_import_command_unit_test_ts["database/src/modules/import/import.command.unit.test.ts"]
+  file_database_src_modules_import_import_constants_ts["database/src/modules/import/import.constants.ts"]
+  file_database_src_modules_import_import_module_ts["database/src/modules/import/import.module.ts"]
+  file_database_src_modules_import_import_types_ts["database/src/modules/import/import.types.ts"]
+  file_database_src_modules_postgres_client_postgres_client_constants_ts["database/src/modules/postgres-client/postgres-client.constants.ts"]
+  file_database_src_modules_postgres_client_postgres_client_module_ts["database/src/modules/postgres-client/postgres-client.module.ts"]
+  file_database_src_modules_postgres_client_postgres_client_service_ts["database/src/modules/postgres-client/postgres-client.service.ts"]
+  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts["database/src/modules/postgres-client/postgres-client.service.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_client_types_ts["database/src/modules/postgres-client/postgres-client.types.ts"]
+  file_database_src_modules_postgres_client_postgres_client_utilities_ts["database/src/modules/postgres-client/postgres-client.utilities.ts"]
+  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-client.utilities.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_dump_utilities_ts["database/src/modules/postgres-client/postgres-dump.utilities.ts"]
+  file_database_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-dump.utilities.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts["database/src/modules/postgres-client/postgres-truncate.utilities.ts"]
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-truncate.utilities.unit.test.ts"]
+  file_database_testing_command_line_runner_ts["database/testing/command-line-runner.ts"]
   file_database_testing_database_testing_types_ts["database/testing/database-testing.types.ts"]
   file_database_testing_database_testing_utilities_ts["database/testing/database-testing.utilities.ts"]
+  file_database_testing_fixture_database_ts["database/testing/fixture-database.ts"]
   file_database_testing_fixtures_fixture_database_module_ts["database/testing/fixtures/fixture-database.module.ts"]
   file_database_testing_fixtures_gadget_entity_ts["database/testing/fixtures/gadget.entity.ts"]
   file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts["database/testing/fixtures/migrations/1767225600000-create-widgets.ts"]
+  file_database_testing_fixtures_migrations_1767225600001_create_parts_ts["database/testing/fixtures/migrations/1767225600001-create-parts.ts"]
   file_database_testing_fixtures_sample_greeting_constants_ts["database/testing/fixtures/sample-greeting.constants.ts"]
   file_database_testing_fixtures_sample_greeting_module_ts["database/testing/fixtures/sample-greeting.module.ts"]
   file_database_testing_fixtures_sample_widgets_module_ts["database/testing/fixtures/sample-widgets.module.ts"]
@@ -8356,6 +8417,12 @@ graph LR
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_module_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_service_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_types_ts
+  file_database_src_database_main_ts --> file_database_src_database_module_ts
+  file_database_src_database_module_ts --> file_database_src_modules_export_export_module_ts
+  file_database_src_database_module_ts --> file_database_src_modules_import_import_module_ts
+  file_database_src_database_module_unit_test_ts --> file_database_src_database_module_ts
+  file_database_src_database_module_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_database_repl_ts --> file_database_src_database_module_ts
   file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_src_modules_database_database_utilities_ts
   file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_database_testing_types_ts
   file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_database_testing_utilities_ts
@@ -8397,11 +8464,127 @@ graph LR
   file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_database_utilities_ts
   file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_postgres_container_constants_ts
   file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_postgres_container_types_ts
+  file_database_src_modules_export_export_arguments_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_arguments_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_export_export_dry_run_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_dry_run_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_export_export_dry_run_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_dry_run_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_export_export_missing_table_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_missing_table_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_export_export_missing_table_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_missing_table_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_export_export_preflight_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_preflight_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_export_export_schema_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_schema_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_database_database_types_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_export_export_constants_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_export_export_types_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_database_src_modules_export_export_command_unit_test_ts --> file_database_src_modules_export_export_command_ts
+  file_database_src_modules_export_export_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_export_export_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_export_export_constants_ts --> file_database_src_modules_export_export_types_ts
+  file_database_src_modules_export_export_constants_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_export_export_module_ts --> file_database_src_modules_export_export_command_ts
+  file_database_src_modules_export_export_module_ts --> file_database_src_modules_postgres_client_postgres_client_module_ts
+  file_database_src_modules_export_export_types_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
+  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
+  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
+  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
+  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_import_import_clean_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_clean_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
+  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
+  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_import_import_dry_run_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_dry_run_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_import_import_preflight_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_preflight_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_import_import_schema_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_schema_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_import_import_schema_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_import_import_schema_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_schema_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_import_import_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
+  file_database_src_modules_import_import_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
+  file_database_src_modules_import_import_command_integration_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_command_integration_test_ts --> file_database_testing_fixture_database_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_import_import_constants_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_import_import_types_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_database_src_modules_import_import_command_unit_test_ts --> file_database_src_modules_import_import_command_ts
+  file_database_src_modules_import_import_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_import_import_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_import_import_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_import_import_constants_ts --> file_database_src_modules_import_import_types_ts
+  file_database_src_modules_import_import_constants_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_import_import_constants_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_import_import_module_ts --> file_database_src_modules_import_import_command_ts
+  file_database_src_modules_import_import_module_ts --> file_database_src_modules_postgres_client_postgres_client_module_ts
+  file_database_src_modules_import_import_types_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_client_constants_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_client_module_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_truncate_utilities_ts
+  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
+  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_postgres_client_postgres_client_utilities_ts --> file_database_src_modules_database_database_constants_ts
+  file_database_src_modules_postgres_client_postgres_client_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_client_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
+  file_database_src_modules_postgres_client_postgres_dump_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_dump_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_truncate_utilities_ts
+  file_database_testing_command_line_runner_ts --> file_database_src_database_module_ts
   file_database_testing_database_testing_types_ts --> file_database_src_modules_database_database_types_ts
   file_database_testing_database_testing_types_ts --> file_database_src_modules_database_postgres_container_types_ts
   file_database_testing_database_testing_utilities_ts --> file_database_src_modules_database_database_module_ts
   file_database_testing_database_testing_utilities_ts --> file_database_src_modules_database_postgres_container_utilities_ts
   file_database_testing_database_testing_utilities_ts --> file_database_testing_database_testing_types_ts
+  file_database_testing_fixture_database_ts --> file_database_src_modules_database_database_types_ts
+  file_database_testing_fixture_database_ts --> file_database_src_modules_database_postgres_container_utilities_ts
+  file_database_testing_fixture_database_ts --> file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_database_testing_fixture_database_ts --> file_database_testing_fixtures_migrations_1767225600001_create_parts_ts
   file_database_testing_fixtures_fixture_database_module_ts --> file_database_src_modules_database_database_module_ts
   file_database_testing_fixtures_fixture_database_module_ts --> file_database_testing_fixtures_widget_entity_ts
   file_database_testing_fixtures_gadget_entity_ts --> file_database_src_modules_database_entities_identifiable_entity_ts
@@ -11783,9 +11966,9 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6086-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-2.23_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-71-4a4a4a?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6092-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-2.24_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-70-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-22-3178c6?style=flat-square)
 
 ### TypeScript
@@ -11811,8 +11994,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-60-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-41-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-12-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-708-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1422-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-710-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1424-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -11832,31 +12015,31 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-23-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-5784-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-744-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-296-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1833-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1841-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-38-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-132-0ea5e9?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-24-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-5794-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-740-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-302-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1839-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1848-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-40-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-137-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1202-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3051-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1211-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3067-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-20-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3008-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3045-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-20-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-418-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-420-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-76-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1422-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2866-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1430-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2882-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-491-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-496-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -11871,17 +12054,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-50-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-3502-4eaa25?style=flat-square)
-![Shell Functions](https://img.shields.io/badge/Shell_Functions-48-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-311-0284c7?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-53-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-3814-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-53-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-334-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-218-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-37-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-120-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-50-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-910-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-910-475569?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-240-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-48-8b5cf6?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-121-059669?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-53-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-957-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-957-475569?style=flat-square)
 
 ### SQL
 
@@ -11967,24 +12150,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-116-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19280-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-115-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-672-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-524-a78bfa?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-115-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19122-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-114-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-669-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-521-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5488-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-860-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4176-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5458-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-855-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4152-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-232-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-1975-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-709-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-706-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-402-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11017-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-387-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-10982-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-20-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -11997,19 +12180,19 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6047 |
-| Files | 1748 |
-| Calls traced | 6492 |
-| Call stacks | 1673 |
+| Callables | 6156 |
+| Files | 1766 |
+| Calls traced | 6608 |
+| Call stacks | 1697 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 309 |
+| Unfollowable calls | 328 |
 
 ### Projects
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
-| `projects/database` | 4 | 4 | 0 | 4 |
+| `projects/database` | 7 | 7 | 0 | 7 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
 | `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |

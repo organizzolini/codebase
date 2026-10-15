@@ -369,8 +369,10 @@ graph LR
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
+  logging["logging"]
   meanderaw_cli["meanderaw-cli"]
   caelundas_cli --> database
+  database --> logging
   lexico_api --> database
   lexico_cli --> database
   lexico_entities --> database
@@ -386,7 +388,20 @@ graph LR
 ```mermaid
 flowchart LR
   DatabaseModule
+  DiscoveryModule
+  ExportModule
+  ImportModule
+  LoggerModule([LoggerModule])
+  MainModule
+  PostgresClientModule
+  ExportModule --> PostgresClientModule
+  ImportModule --> PostgresClientModule
+  MainModule --> DiscoveryModule
+  MainModule --> ExportModule
+  MainModule --> ImportModule
 ```
+
+_Rounded modules are global: every module can inject them, so their edges are left out._
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
 ### File Imports
@@ -399,6 +414,13 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_scripts_extract_migration_sql_ts["scripts/extract-migration-sql.ts"]
+  file_src_database_main_end_to_end_test_ts["src/database.main.end-to-end.test.ts"]
+  file_src_database_main_ts["src/database.main.ts"]
+  file_src_database_main_unit_test_ts["src/database.main.unit.test.ts"]
+  file_src_database_module_ts["src/database.module.ts"]
+  file_src_database_module_unit_test_ts["src/database.module.unit.test.ts"]
+  file_src_database_repl_ts["src/database.repl.ts"]
+  file_src_database_repl_unit_test_ts["src/database.repl.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_modules_database_database_testing_utilities_integration_test_ts["src/modules/database/database-testing.utilities.integration.test.ts"]
   file_src_modules_database_database_constants_ts["src/modules/database/database.constants.ts"]
@@ -417,11 +439,53 @@ graph LR
   file_src_modules_database_postgres_container_types_ts["src/modules/database/postgres-container.types.ts"]
   file_src_modules_database_postgres_container_utilities_integration_test_ts["src/modules/database/postgres-container.utilities.integration.test.ts"]
   file_src_modules_database_postgres_container_utilities_ts["src/modules/database/postgres-container.utilities.ts"]
+  file_src_modules_export_export_arguments_command_integration_test_ts["src/modules/export/export-arguments.command.integration.test.ts"]
+  file_src_modules_export_export_dry_run_command_integration_test_ts["src/modules/export/export-dry-run.command.integration.test.ts"]
+  file_src_modules_export_export_dry_run_command_unit_test_ts["src/modules/export/export-dry-run.command.unit.test.ts"]
+  file_src_modules_export_export_missing_table_command_integration_test_ts["src/modules/export/export-missing-table.command.integration.test.ts"]
+  file_src_modules_export_export_missing_table_command_unit_test_ts["src/modules/export/export-missing-table.command.unit.test.ts"]
+  file_src_modules_export_export_preflight_command_integration_test_ts["src/modules/export/export-preflight.command.integration.test.ts"]
+  file_src_modules_export_export_schema_command_unit_test_ts["src/modules/export/export-schema.command.unit.test.ts"]
+  file_src_modules_export_export_command_integration_test_ts["src/modules/export/export.command.integration.test.ts"]
+  file_src_modules_export_export_command_ts["src/modules/export/export.command.ts"]
+  file_src_modules_export_export_command_unit_test_ts["src/modules/export/export.command.unit.test.ts"]
+  file_src_modules_export_export_constants_ts["src/modules/export/export.constants.ts"]
+  file_src_modules_export_export_module_ts["src/modules/export/export.module.ts"]
+  file_src_modules_export_export_types_ts["src/modules/export/export.types.ts"]
+  file_src_modules_import_import_clean_data_command_integration_test_ts["src/modules/import/import-clean-data.command.integration.test.ts"]
+  file_src_modules_import_import_clean_data_command_unit_test_ts["src/modules/import/import-clean-data.command.unit.test.ts"]
+  file_src_modules_import_import_clean_command_integration_test_ts["src/modules/import/import-clean.command.integration.test.ts"]
+  file_src_modules_import_import_clean_command_unit_test_ts["src/modules/import/import-clean.command.unit.test.ts"]
+  file_src_modules_import_import_dry_run_command_integration_test_ts["src/modules/import/import-dry-run.command.integration.test.ts"]
+  file_src_modules_import_import_dry_run_command_unit_test_ts["src/modules/import/import-dry-run.command.unit.test.ts"]
+  file_src_modules_import_import_preflight_command_integration_test_ts["src/modules/import/import-preflight.command.integration.test.ts"]
+  file_src_modules_import_import_schema_command_integration_test_ts["src/modules/import/import-schema.command.integration.test.ts"]
+  file_src_modules_import_import_schema_command_unit_test_ts["src/modules/import/import-schema.command.unit.test.ts"]
+  file_src_modules_import_import_command_integration_test_ts["src/modules/import/import.command.integration.test.ts"]
+  file_src_modules_import_import_command_ts["src/modules/import/import.command.ts"]
+  file_src_modules_import_import_command_unit_test_ts["src/modules/import/import.command.unit.test.ts"]
+  file_src_modules_import_import_constants_ts["src/modules/import/import.constants.ts"]
+  file_src_modules_import_import_module_ts["src/modules/import/import.module.ts"]
+  file_src_modules_import_import_types_ts["src/modules/import/import.types.ts"]
+  file_src_modules_postgres_client_postgres_client_constants_ts["src/modules/postgres-client/postgres-client.constants.ts"]
+  file_src_modules_postgres_client_postgres_client_module_ts["src/modules/postgres-client/postgres-client.module.ts"]
+  file_src_modules_postgres_client_postgres_client_service_ts["src/modules/postgres-client/postgres-client.service.ts"]
+  file_src_modules_postgres_client_postgres_client_service_unit_test_ts["src/modules/postgres-client/postgres-client.service.unit.test.ts"]
+  file_src_modules_postgres_client_postgres_client_types_ts["src/modules/postgres-client/postgres-client.types.ts"]
+  file_src_modules_postgres_client_postgres_client_utilities_ts["src/modules/postgres-client/postgres-client.utilities.ts"]
+  file_src_modules_postgres_client_postgres_client_utilities_unit_test_ts["src/modules/postgres-client/postgres-client.utilities.unit.test.ts"]
+  file_src_modules_postgres_client_postgres_dump_utilities_ts["src/modules/postgres-client/postgres-dump.utilities.ts"]
+  file_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts["src/modules/postgres-client/postgres-dump.utilities.unit.test.ts"]
+  file_src_modules_postgres_client_postgres_truncate_utilities_ts["src/modules/postgres-client/postgres-truncate.utilities.ts"]
+  file_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts["src/modules/postgres-client/postgres-truncate.utilities.unit.test.ts"]
+  file_testing_command_line_runner_ts["testing/command-line-runner.ts"]
   file_testing_database_testing_types_ts["testing/database-testing.types.ts"]
   file_testing_database_testing_utilities_ts["testing/database-testing.utilities.ts"]
+  file_testing_fixture_database_ts["testing/fixture-database.ts"]
   file_testing_fixtures_fixture_database_module_ts["testing/fixtures/fixture-database.module.ts"]
   file_testing_fixtures_gadget_entity_ts["testing/fixtures/gadget.entity.ts"]
   file_testing_fixtures_migrations_1767225600000_create_widgets_ts["testing/fixtures/migrations/1767225600000-create-widgets.ts"]
+  file_testing_fixtures_migrations_1767225600001_create_parts_ts["testing/fixtures/migrations/1767225600001-create-parts.ts"]
   file_testing_fixtures_sample_greeting_constants_ts["testing/fixtures/sample-greeting.constants.ts"]
   file_testing_fixtures_sample_greeting_module_ts["testing/fixtures/sample-greeting.module.ts"]
   file_testing_fixtures_sample_widgets_module_ts["testing/fixtures/sample-widgets.module.ts"]
@@ -431,6 +495,12 @@ graph LR
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_database_main_ts --> file_src_database_module_ts
+  file_src_database_module_ts --> file_src_modules_export_export_module_ts
+  file_src_database_module_ts --> file_src_modules_import_import_module_ts
+  file_src_database_module_unit_test_ts --> file_src_database_module_ts
+  file_src_database_module_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_database_repl_ts --> file_src_database_module_ts
   file_src_modules_database_database_testing_utilities_integration_test_ts --> file_src_modules_database_database_utilities_ts
   file_src_modules_database_database_testing_utilities_integration_test_ts --> file_testing_database_testing_types_ts
   file_src_modules_database_database_testing_utilities_integration_test_ts --> file_testing_database_testing_utilities_ts
@@ -472,11 +542,127 @@ graph LR
   file_src_modules_database_postgres_container_utilities_ts --> file_src_modules_database_database_utilities_ts
   file_src_modules_database_postgres_container_utilities_ts --> file_src_modules_database_postgres_container_constants_ts
   file_src_modules_database_postgres_container_utilities_ts --> file_src_modules_database_postgres_container_types_ts
+  file_src_modules_export_export_arguments_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_arguments_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_export_export_dry_run_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_dry_run_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_export_export_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_dry_run_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_export_export_missing_table_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_missing_table_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_export_export_missing_table_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_missing_table_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_export_export_preflight_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_preflight_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_export_export_schema_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_schema_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_database_postgres_container_types_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_database_postgres_container_utilities_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_export_export_constants_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_export_export_types_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_export_export_command_ts --> file_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_src_modules_export_export_command_unit_test_ts --> file_src_modules_export_export_command_ts
+  file_src_modules_export_export_command_unit_test_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_export_export_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_export_export_constants_ts --> file_src_modules_export_export_types_ts
+  file_src_modules_export_export_constants_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_export_export_module_ts --> file_src_modules_export_export_command_ts
+  file_src_modules_export_export_module_ts --> file_src_modules_postgres_client_postgres_client_module_ts
+  file_src_modules_export_export_types_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_src_modules_database_postgres_container_types_ts
+  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_src_modules_database_postgres_container_utilities_ts
+  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_clean_data_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_clean_data_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_import_clean_command_integration_test_ts --> file_src_modules_database_postgres_container_types_ts
+  file_src_modules_import_import_clean_command_integration_test_ts --> file_src_modules_database_postgres_container_utilities_ts
+  file_src_modules_import_import_clean_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_clean_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_import_import_clean_command_integration_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_import_clean_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_clean_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_src_modules_database_postgres_container_types_ts
+  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_src_modules_database_postgres_container_utilities_ts
+  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_dry_run_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_import_import_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_dry_run_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_import_preflight_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_preflight_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_import_import_schema_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_schema_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_import_import_schema_command_unit_test_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_import_import_schema_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_schema_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_import_command_integration_test_ts --> file_src_modules_database_postgres_container_types_ts
+  file_src_modules_import_import_command_integration_test_ts --> file_src_modules_database_postgres_container_utilities_ts
+  file_src_modules_import_import_command_integration_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_command_integration_test_ts --> file_testing_fixture_database_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_import_import_constants_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_import_import_types_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_import_import_command_ts --> file_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_src_modules_import_import_command_unit_test_ts --> file_src_modules_import_import_command_ts
+  file_src_modules_import_import_command_unit_test_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_import_import_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_import_import_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_import_constants_ts --> file_src_modules_import_import_types_ts
+  file_src_modules_import_import_constants_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_import_import_constants_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_import_import_module_ts --> file_src_modules_import_import_command_ts
+  file_src_modules_import_import_module_ts --> file_src_modules_postgres_client_postgres_client_module_ts
+  file_src_modules_import_import_types_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_client_constants_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_client_module_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_postgres_client_postgres_client_service_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_client_service_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_client_service_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_postgres_client_postgres_client_service_ts --> file_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_src_modules_postgres_client_postgres_client_service_ts --> file_src_modules_postgres_client_postgres_truncate_utilities_ts
+  file_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_src_modules_postgres_client_postgres_client_service_ts
+  file_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_postgres_client_postgres_client_utilities_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_postgres_client_postgres_client_utilities_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_client_utilities_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_client_utilities_ts
+  file_src_modules_postgres_client_postgres_dump_utilities_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_dump_utilities_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_dump_utilities_ts
+  file_src_modules_postgres_client_postgres_truncate_utilities_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_truncate_utilities_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_client_constants_ts
+  file_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_client_types_ts
+  file_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_src_modules_postgres_client_postgres_truncate_utilities_ts
+  file_testing_command_line_runner_ts --> file_src_database_module_ts
   file_testing_database_testing_types_ts --> file_src_modules_database_database_types_ts
   file_testing_database_testing_types_ts --> file_src_modules_database_postgres_container_types_ts
   file_testing_database_testing_utilities_ts --> file_src_modules_database_database_module_ts
   file_testing_database_testing_utilities_ts --> file_src_modules_database_postgres_container_utilities_ts
   file_testing_database_testing_utilities_ts --> file_testing_database_testing_types_ts
+  file_testing_fixture_database_ts --> file_src_modules_database_database_types_ts
+  file_testing_fixture_database_ts --> file_src_modules_database_postgres_container_utilities_ts
+  file_testing_fixture_database_ts --> file_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_testing_fixture_database_ts --> file_testing_fixtures_migrations_1767225600001_create_parts_ts
   file_testing_fixtures_fixture_database_module_ts --> file_src_modules_database_database_module_ts
   file_testing_fixtures_fixture_database_module_ts --> file_testing_fixtures_widget_entity_ts
   file_testing_fixtures_gadget_entity_ts --> file_src_modules_database_entities_identifiable_entity_ts
@@ -497,13 +683,13 @@ Call stacks traced through `projects/database`, deepest first. Each frame shows 
 
 | Measure | Value |
 | --- | --- |
-| Callables | 35 |
-| Files | 19 |
-| Calls traced | 34 |
-| Call stacks | 7 |
-| Deepest stack | 4 |
+| Callables | 144 |
+| Files | 37 |
+| Calls traced | 150 |
+| Call stacks | 9 |
+| Deepest stack | 7 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 0 |
+| Unfollowable calls | 19 |
 
 ### Limits
 
@@ -511,12 +697,42 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Limit | Value |
 | --- | --- |
-| `maximumDepth` | 4 |
-| `maximumBreadth` | 4 |
+| `maximumDepth` | 7 |
+| `maximumBreadth` | 7 |
 
 ### Call stacks (depth)
 
-**1. `postgresEnvironmentSchema`** — depth 4 · orphan-root
+**1. `ImportCommand.run`** — depth ≥ 7 · decorated-method
+
+```text
+🚀 ImportCommand.run(_passedParameters: string[], options: ImportCommandOptions): Promise<void> [projects/database/src/modules/import/import.command.ts:343]
+   ↳ Validates the options, checks pg_restore and the dump's contents, applies any `--clean`, then restores the selected…
+  └─> ImportCommand.check(…): Promise<{ readonly contents: readonly PostgresDumpEntry[]; readonly plan: ImportPlan; }> [projects/database/src/modules/import/import.command.ts:79]
+     ↳ Every check a real import and a `--dry-run` share, none of which connects to the target: the options, the pg_restore…
+    └─> PostgresClientService.list(file: string): Promise<PostgresDumpEntry[]> [projects/database/src/modules/postgres-client/postgres-client.service.ts:181]
+       ↳ Reads the table of contents of the dump at `file` with `pg_restore --list`, which connects to no database, so an…
+      └─> PostgresClientService.run(…): Promise<PostgresClientOutput> [projects/database/src/modules/postgres-client/postgres-client.service.ts:64]
+         ↳ Runs `tool` with `args`, connected to `connection` through its environment, or to nothing when there is none, and…
+        └─> PostgresClientService.anonymous(…): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:69]
+          └─> PostgresClientService.execFile(…)(error: ExecException | null, stdout: string, stderr: string): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:77]
+            └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/database/src/modules/postgres-client/postgres-client.constants.ts:47]
+```
+
+**2. `ExportCommand.run`** — depth ≥ 6 · decorated-method
+
+```text
+🚀 ExportCommand.run(_passedParameters: string[], options: ExportCommandOptions): Promise<void> [projects/database/src/modules/export/export.command.ts:230]
+   ↳ Validates the options, then dumps the selected tables to the file.
+  └─> PostgresClientService.dump({ connection, content, file, tables, }: PostgresDumpOptions): Promise<void> [projects/database/src/modules/postgres-client/postgres-client.service.ts:105]
+     ↳ Dumps exactly `tables` from `connection` to a custom-format `file`. `--strict-names` makes a table that does not exist…
+    └─> PostgresClientService.run(…): Promise<PostgresClientOutput> [projects/database/src/modules/postgres-client/postgres-client.service.ts:64]
+       ↳ Runs `tool` with `args`, connected to `connection` through its environment, or to nothing when there is none, and…
+      └─> PostgresClientService.anonymous(…): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:69]
+        └─> PostgresClientService.execFile(…)(error: ExecException | null, stdout: string, stderr: string): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:77]
+          └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/database/src/modules/postgres-client/postgres-client.constants.ts:47]
+```
+
+**3. `postgresEnvironmentSchema`** — depth 4 · orphan-root
 
 ```text
 🚀 postgresEnvironmentSchema(…): PostgresEnvironmentShape<Project> [projects/database/src/modules/database/database.utilities.ts:200]
@@ -529,7 +745,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
-**2. `DatabaseService.createTypeOrmOptions`** — depth 4 · orphan-root
+<details>
+<summary>6 more call stacks</summary>
+
+**4. `DatabaseService.createTypeOrmOptions`** — depth 4 · orphan-root
 
 ```text
 🚀 DatabaseService.createTypeOrmOptions(): PostgresDataSourceOptions [projects/database/src/modules/database/database.service.ts:76]
@@ -542,7 +761,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
-**3. `main`** — depth 3 · orphan-root
+**5. `main`** — depth 3 · orphan-root
 
 ```text
 🚀 main(): Promise<void> [projects/database/scripts/extract-migration-sql.ts:172]
@@ -552,10 +771,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> find(…)(argument: string): boolean [projects/database/scripts/extract-migration-sql.ts:212]
 ```
 
-<details>
-<summary>4 more call stacks</summary>
-
-**4. `createDataSource`** — depth 3 · orphan-root
+**6. `createDataSource`** — depth 3 · orphan-root
 
 ```text
 🚀 createDataSource(…): DataSource [projects/database/src/modules/database/database.utilities.ts:69]
@@ -566,7 +782,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The startup parameter pg sends as `options` on each pooled connection, setting the session's `search_path` to `schema`…
 ```
 
-**5. `startPostgresContainer`** — depth 3 · orphan-root
+**7. `startPostgresContainer`** — depth 3 · orphan-root
 
 ```text
 🚀 startPostgresContainer(…): Promise<StartedPostgresContainer> [projects/database/src/modules/database/postgres-container.utilities.ts:33]
@@ -577,7 +793,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
-**6. `visit`** — depth 2 · orphan-root
+**8. `visit`** — depth 2 · orphan-root
 
 ```text
 🚀 visit(node: ts.Node): void [projects/database/scripts/extract-migration-sql.ts:71]
@@ -586,7 +802,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Extract sql from literal.
 ```
 
-**7. `visit`** — depth 2 · orphan-root
+**9. `visit`** — depth 2 · orphan-root
 
 ```text
 🚀 visit(node: ts.Node): void [projects/database/scripts/extract-migration-sql.ts:118]
@@ -601,18 +817,43 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `main` | 4 | `parseMode`, `parseDirectory`, `findMigrationFiles`, `processMigrationFile` | `projects/database/scripts/extract-migration-sql.ts:172` |
-| `DatabaseService.connection` | 4 | `DatabaseService.databaseOptions`, `postgresConnection`, `DatabaseService.map(…)`, `postgresEnvironmentKeys` | `projects/database/src/modules/database/database.service.ts:61` |
-| `startPostgresContainer` | 4 | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment` | `projects/database/src/modules/database/postgres-container.utilities.ts:33` |
+| `ExportCommand.plan` | 7 | `ExportCommand.requireOption`, `ExportCommand.selectContent`, `parsePostgresUri`, `ExportOptionsError.constructor`, `existingFileMessage`, `maskPostgresCredentials`, `qualifyTableNames` | `projects/database/src/modules/export/export.command.ts:91` |
+| `ImportCommand.plan` | 7 | `ImportCommand.requireOption`, `ImportCommand.selectContent`, `parsePostgresUri`, `ImportOptionsError.constructor`, `missingFileMessage`, `qualifyTableNames`, `maskPostgresCredentials` | `projects/database/src/modules/import/import.command.ts:142` |
+| `ExportCommand.run` | 6 | `ExportCommand.plan`, `PostgresClientService.ensureTool`, `ExportCommand.logDryRun`, `describePostgresContent`, `PostgresClientService.dump`, `ExportCommand.explain` | `projects/database/src/modules/export/export.command.ts:230` |
 
 <details>
-<summary>15 more callables</summary>
+<summary>57 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
+| `ImportCommand.run` | 5 | `ImportCommand.check`, `ImportCommand.logDryRun`, `describePostgresContent`, `ImportCommand.truncate`, `ImportCommand.restore` | `projects/database/src/modules/import/import.command.ts:343` |
+| `main` | 4 | `parseMode`, `parseDirectory`, `findMigrationFiles`, `processMigrationFile` | `projects/database/scripts/extract-migration-sql.ts:172` |
+| `selectPostgresDumpEntries` | 4 | `map(…)`, `every(…)`, `filter(…)`, `every(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:85` |
+| `truncatePostgresTables` | 4 | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:31` |
+| `PostgresClientService.restore` | 4 | `PostgresClientService.map(…)`, `selectPostgresDumpEntries`, `PostgresClientService.run`, `postgresContentFlags` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:200` |
+| `PostgresClientService.truncate` | 4 | `PostgresClientService.truncatePostgresTables(…)`, `truncatePostgresTables`, `PostgresTruncateError.constructor`, `maskPostgresCredentials` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:251` |
+| `ImportCommand.check` | 4 | `ImportCommand.plan`, `PostgresClientService.ensureTool`, `PostgresClientService.list`, `ImportCommand.ensureContents` | `projects/database/src/modules/import/import.command.ts:79` |
+| `ImportCommand.restore` | 4 | `PostgresClientService.restore`, `ImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage` | `projects/database/src/modules/import/import.command.ts:194` |
+| `ImportCommand.truncate` | 4 | `PostgresClientService.truncate`, `ImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage` | `projects/database/src/modules/import/import.command.ts:232` |
+| `DatabaseService.connection` | 4 | `DatabaseService.databaseOptions`, `postgresConnection`, `DatabaseService.map(…)`, `postgresEnvironmentKeys` | `projects/database/src/modules/database/database.service.ts:61` |
+| `startPostgresContainer` | 4 | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment` | `projects/database/src/modules/database/postgres-container.utilities.ts:33` |
+| `qualifyTableNames` | 3 | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)` | `projects/database/src/modules/postgres-client/postgres-client.utilities.ts:136` |
+| `PostgresClientService.dump` | 3 | `PostgresClientService.run`, `postgresContentFlags`, `PostgresClientService.map(…)` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:105` |
+| `PostgresClientService.ensureTool` | 3 | `PostgresClientService.anonymous`, `PostgresClientToolError.constructor`, `parsePostgresMajorVersion` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:134` |
+| `ExportCommand.explain` | 3 | `missingDumpTables`, `ExportTableError.constructor`, `missingTablesMessage` | `projects/database/src/modules/export/export.command.ts:64` |
+| `ImportCommand.ensureContents` | 3 | `ImportCommand.missing`, `ImportContentsError.constructor`, `missingContentsMessage` | `projects/database/src/modules/import/import.command.ts:96` |
+| `ImportCommand.logDryRun` | 3 | `dumpedTables`, `ImportCommand.map(…)`, `dryRunMessages` | `projects/database/src/modules/import/import.command.ts:118` |
 | `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/database/src/modules/database/database.utilities.ts:200` |
 | `DatabaseService.createTypeOrmOptions` | 3 | `postgresDataSourceOptions`, `DatabaseService.connection`, `DatabaseService.databaseOptions` | `projects/database/src/modules/database/database.service.ts:76` |
 | `findMigrationFiles` | 2 | `filter(…)`, `map(…)` | `projects/database/scripts/extract-migration-sql.ts:147` |
+| `parsePostgresUri` | 2 | `PostgresUriError.constructor`, `postgresUriProblem` | `projects/database/src/modules/postgres-client/postgres-client.utilities.ts:63` |
+| `parsePostgresDumpContents` | 2 | `describeEntry`, `dependencyIds` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:46` |
+| `PostgresClientService.anonymous` | 2 | `PostgresClientService.execFile(…)`, `postgresProcessEnvironment` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:69` |
+| `PostgresClientService.execFile(…)` | 2 | `PostgresClientError.constructor`, `maskPostgresCredentials` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:77` |
+| `PostgresClientService.list` | 2 | `PostgresClientService.run`, `parsePostgresDumpContents` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:181` |
+| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/export/export.constants.ts:65` |
+| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/import/import.constants.ts:121` |
+| `ImportCommand.missing` | 2 | `dumpedTables`, `ImportCommand.filter(…)` | `projects/database/src/modules/import/import.command.ts:100` |
 | `createDataSource` | 2 | `postgresDataSourceOptions`, `postgresConnection` | `projects/database/src/modules/database/database.utilities.ts:69` |
 | `postgresConnection` | 2 | `postgresEnvironmentKey`, `postgresSettingsSchema` | `projects/database/src/modules/database/database.utilities.ts:86` |
 | `visit` | 1 | `extractSqlFromLiteral` | `projects/database/scripts/extract-migration-sql.ts:71` |
@@ -620,6 +861,23 @@ What this project is judged against, as declared in its own `callidescope.config
 | `parseDirectory` | 1 | `find(…)` | `projects/database/scripts/extract-migration-sql.ts:197` |
 | `parseMode` | 1 | `find(…)` | `projects/database/scripts/extract-migration-sql.ts:211` |
 | `processMigrationFile` | 1 | `extractSqlFromMigration` | `projects/database/scripts/extract-migration-sql.ts:221` |
+| `postgresProcessEnvironment` | 1 | `filter(…)` | `projects/database/src/modules/postgres-client/postgres-client.utilities.ts:106` |
+| `dumpedTables` | 1 | `flatMap(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:21` |
+| `missingDumpTables` | 1 | `map(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:36` |
+| `dependencyIds` | 1 | `filter(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:112` |
+| `describeEntry` | 1 | `tableEntry` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:120` |
+| `quotePostgresTable` | 1 | `map(…)` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:16` |
+| `map(…)` | 1 | `quotePostgresTable` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:35` |
+| `PostgresClientService.run` | 1 | `PostgresClientService.anonymous` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:64` |
+| `PostgresClientService.anonymous` | 1 | `PostgresClientService.execFile(…)` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:139` |
+| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/export/export.constants.ts:76` |
+| `ExportCommand.logDryRun` | 1 | `dryRunMessages` | `projects/database/src/modules/export/export.command.ts:76` |
+| `ExportCommand.requireOption` | 1 | `ExportOptionsError.constructor` | `projects/database/src/modules/export/export.command.ts:125` |
+| `ExportCommand.selectContent` | 1 | `ExportOptionsError.constructor` | `projects/database/src/modules/export/export.command.ts:138` |
+| `referencedTablesMessage` | 1 | `map(…)` | `projects/database/src/modules/import/import.constants.ts:93` |
+| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/import/import.constants.ts:133` |
+| `ImportCommand.requireOption` | 1 | `ImportOptionsError.constructor` | `projects/database/src/modules/import/import.command.ts:178` |
+| `ImportCommand.selectContent` | 1 | `ImportOptionsError.constructor` | `projects/database/src/modules/import/import.command.ts:216` |
 | `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/database/src/modules/database/database.utilities.ts:35` |
 | `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/database/src/modules/database/database.utilities.ts:116` |
 | `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/database/src/modules/database/database.utilities.ts:142` |
@@ -635,36 +893,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-2469-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-86.35_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-37-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10276-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-331.31_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-86-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-37-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-11-0ea5e9?style=flat-square)
-![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-6-0369a1?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-86-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-29-0ea5e9?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-7-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-21-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-89-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-46-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-280-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-1-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-5-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-13-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-14-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-125-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-11-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-97-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-39-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-103-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-128-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-55-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-126-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-332-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-33-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-20-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-622-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-60-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-412-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-270-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-597-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-404-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-144-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-362-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-847-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -685,16 +943,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-164-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-187-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-42-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-104-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-87-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-121-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-99-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-9-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-39-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-147-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-40-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-165-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
 ### YAML
@@ -775,16 +1033,16 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-4-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-2-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-3-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-3-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-3-0ea5e9?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-8-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-3-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-2-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-6-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-6-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-6-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-2-ca8a04?style=flat-square)
-![Integration Tests](https://img.shields.io/badge/Integration_Tests-3-7c3aed?style=flat-square)
-![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-18-ca8a04?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-14-7c3aed?style=flat-square)
+![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
 ![Python Comment Budget](https://img.shields.io/badge/Python_Comment_Budget-0-db2777?style=flat-square)
@@ -820,23 +1078,23 @@ What this project is judged against, as declared in its own `callidescope.config
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-77-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-108-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-3-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-4-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-14-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-18-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-2-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-10-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-12-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-0-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-0-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-3-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-4-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-2-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-18-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-37-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

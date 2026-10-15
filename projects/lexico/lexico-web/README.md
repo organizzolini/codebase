@@ -479,7 +479,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4441-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-138.15_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-138.14_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
@@ -537,14 +537,14 @@ graph LR
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
 ![JSON Lines](https://img.shields.io/badge/JSON_Lines-160-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-36-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-106-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-89-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-88-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-9-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-37-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-146-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-40-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-149-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
