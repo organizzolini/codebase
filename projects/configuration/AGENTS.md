@@ -32,6 +32,31 @@ nx run configuration:knip:check
   `nx.json`: `@nx/vite`, `@nx/eslint`, and `@nx/vitest` would otherwise infer a
   `vitest` run and an `eslint` target from the config files held here.
 
+## Pass every config and ignore file explicitly
+
+No target relies on a tool finding a file by walking up the directory tree.
+Each command names its config (`--config`, `-c`, `--rcfile`, `--ignore-path`,
+`--ignorefile`, `--gitleaks-ignore-path`), and the editor settings in
+`.vscode/settings.json` name the same files. Two files whose tools would
+otherwise discover them by name have non-dot names for that reason:
+`markdownlint-cli2.config.jsonc` and `.shellcheck.rc`. Give a new tool's file a
+name its tool does not auto-discover, and pass the path.
+
+The tools' own packages assume no folder either: `@conformetry/cli` reads
+`conformetry.config.ts` from the working directory unless given `--config`, and
+the three Nx plugins read their `configurationPath` option or a root file named
+for the tool. This repository names `projects/configuration/…` in `nx.json` and
+in the `conformetry-generate` target.
+
+## What stays at the repository root
+
+Only files a tool insists on finding there: `nx.json`, `package.json`,
+`pnpm-workspace.yaml`, `pnpm-lock.yaml`, `pyproject.toml` and `uv.lock` (the uv
+workspace root), `tsconfig.json` (the root project's typecheck scope),
+`.gitignore`, `.gitattributes`, `.gitmodules`, `.editorconfig`, `.nxignore`,
+`.openwikiignore`, `.node-version`, `.nvmrc`, `skills-lock.json`, and
+`validate-branch-name.config.cjs`, whose tool takes no config path.
+
 ## Why no project depends on it
 
 `nx-plugin.cjs` adds `implicitDependencies: ["!configuration"]` to every other
@@ -42,9 +67,9 @@ the plugin; no project may list `configuration` as a dependency.
 
 ## Where each caller names these targets
 
-| Caller                                  | Targets                                                                                                           |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `continuous-integration.yml`            | `lint-code`, `format-code`, `deprecate-code`, `guard-code`, `secure-code`, `build-projects` through `nx affected` |
-| `continuous-deployment.yml`             | `callidescope:write`, `codependix:write`, `codometer:write`                                                       |
-| `lint-staged.config.ts`                 | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                        |
-| `.husky/*`                              | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                             |
+| Caller                       | Targets                                                                                                           |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `continuous-integration.yml` | `lint-code`, `format-code`, `deprecate-code`, `guard-code`, `secure-code`, `build-projects` through `nx affected` |
+| `continuous-deployment.yml`  | `callidescope:write`, `codependix:write`, `codometer:write`                                                       |
+| `lint-staged.config.ts`      | `sherif`, `syncpack` through `nx run-many`, the rest through `nx affected`                                        |
+| `.husky/*`                   | `commitlint`, `validate-branch-name`, `lint-staged`, invoked directly                                             |

@@ -12,7 +12,7 @@ export interface SkillExclusionFile {
   /**
    * How this file opens a comment, so the markers delimiting the generated
    * block are a comment in its own syntax rather than a syntax error. Four of
-   * the five files take `#`; `.markdownlint-cli2.jsonc` is JSONC and takes `//`.
+   * the five files take `#`; `markdownlint-cli2.config.jsonc` is JSONC and takes `//`.
    */
   readonly commentPrefix: string;
   /** Path relative to the workspace root. */

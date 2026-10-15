@@ -76,7 +76,7 @@ with a suggested fix:
 ```text
   1. file: orders.service.ts
      Instance: packages/widgets/src/modules/orders/orders.service.ts
-     Template: configuration/conformetry-templates/nestjs-service-module/…
+     Template: projects/configuration/conformetry-templates/nestjs-service-module/…
 
      1. Missing Decorator "Injectable"
         Instance: Line 12, Column 1
@@ -134,12 +134,12 @@ conformetry templates --instances packages/widgets/src/modules/orders
 ```text
   nestjs-service-module (nsm)
     Generate a NestJS service module
-    Template: configuration/conformetry-templates/nestjs-service-module
+    Template: projects/configuration/conformetry-templates/nestjs-service-module
     Instances:
       packages/widgets/src/modules/orders 5/5 files 100%
   nestjs-command-module (ncm)
     Generate a NestJS command module
-    Template: configuration/conformetry-templates/nestjs-command-module
+    Template: projects/configuration/conformetry-templates/nestjs-command-module
     Instances:
       packages/widgets/src/modules/orders 3/5 files 60%
 ```

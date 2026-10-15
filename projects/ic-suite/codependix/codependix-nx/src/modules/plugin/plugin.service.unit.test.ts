@@ -124,8 +124,7 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       vi.mocked(existsSync).mockImplementation(
-        (candidatePath) =>
-          candidatePath === "/workspace/configuration/codependix.config.ts",
+        (candidatePath) => candidatePath === "/workspace/codependix.config.ts",
       );
 
       const targets = service.inferTargets({
@@ -137,7 +136,7 @@ describe(PluginService, () => {
 
       expect(
         targets.get("packages/alpha")?.["codependix-gate"]?.inputs,
-      ).toContain("{workspaceRoot}/configuration/codependix.config.ts");
+      ).toContain("{workspaceRoot}/codependix.config.ts");
     });
   });
 
@@ -183,21 +182,7 @@ describe(PluginService, () => {
 
       expect(
         service.resolvePluginOptions({
-          exists: existsOnly("configuration/codependix.config.ts"),
-          options: {},
-        }).configurationPath,
-      ).toBe("configuration/codependix.config.ts");
-    });
-
-    it("prefers the workspace root's configuration when both exist", () => {
-      expect.hasAssertions();
-
-      expect(
-        service.resolvePluginOptions({
-          exists: existsOnly(
-            "codependix.config.ts",
-            "configuration/codependix.config.ts",
-          ),
+          exists: existsOnly("codependix.config.ts"),
           options: {},
         }).configurationPath,
       ).toBe("codependix.config.ts");

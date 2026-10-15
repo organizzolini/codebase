@@ -1,12 +1,17 @@
 import { z } from "zod";
 
 /**
- * Config path used when `--config` is absent.
+ * Config path used when `--config` is absent: a `conformetry.config.ts` in the
+ * working directory.
+ *
+ * A workspace that keeps its configuration elsewhere passes `--config`. No
+ * folder name is assumed, the same as `@conformetry/nx`, which looks only for
+ * conformetry's own filenames at the workspace root.
  *
  * Shared by every command that loads the configuration, so the default is
  * true in one place rather than once per command.
  */
-export const DEFAULT_CONFIGURATION_PATH = "configuration/conformetry.config.ts";
+export const DEFAULT_CONFIGURATION_PATH = "conformetry.config.ts";
 
 /**
  * Indent width for machine-readable output.

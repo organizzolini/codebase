@@ -67,7 +67,7 @@ Renders one template folder into a target directory.
 | Flag | Purpose |
 | ---- | ------- |
 | `--template [name]` | Which template from the registry to render. Asked for when omitted |
-| `--config [path]` | Configuration file to read. Defaults to `configuration/conformetry.config.ts` |
+| `--config [path]` | Configuration file to read. Defaults to `conformetry.config.ts` in the working directory |
 | `--directory [path]` | Where to write the rendered files. Required: the run is refused without it |
 
 A template's own inputs are passed as flags alongside these:
@@ -141,12 +141,12 @@ conformetry templates --instances packages/billing/src/modules/billing
 ```text
   nestjs-service-module (nsm)
     Generate a NestJS service module
-    Template: configuration/conformetry-templates/nestjs-service-module
+    Template: projects/configuration/conformetry-templates/nestjs-service-module
     Instances:
       packages/billing/src/modules/billing 5/5 files 100%
   nestjs-command-module (ncm)
     Generate a NestJS command module
-    Template: configuration/conformetry-templates/nestjs-command-module
+    Template: projects/configuration/conformetry-templates/nestjs-command-module
     Instances:
       packages/billing/src/modules/billing 3/5 files 60%
 ```
@@ -257,7 +257,7 @@ Conformance scores:
 
   1. file: logger.types.ts — 1/2 requirements met (50.0%)
      Instance: projects/logging/src/modules/logger/logger.types.ts
-     Template: configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
+     Template: projects/configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
 
      1. Missing comment // 🏷️ Types
         Template: Line 1, Column 1
@@ -311,7 +311,7 @@ expected value and a concrete fix:
 ```text
 1. file: billing.service.ts
    Instance: packages/billing/src/modules/billing/billing.service.ts
-   Template: configuration/conformetry-templates/nestjs-service-module/…
+   Template: projects/configuration/conformetry-templates/nestjs-service-module/…
 
    1. Missing required comment
       Instance: line 24

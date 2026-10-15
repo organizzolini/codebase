@@ -47,6 +47,14 @@ affected set.
 `implicitDependencies: ["!configuration"]`, so a new project needs nothing added.
 The edges this project has to the packages it imports stay.
 
+## What this repository keeps outside it
+
+The tools that locate their own file at the root stay there: `nx.json`,
+`package.json`, the pnpm and uv workspace files, `tsconfig.json`, the git and
+editor dotfiles, and `validate-branch-name.config.cjs`, whose tool takes no
+path. Everything a tool can be told to read lives here, and every command
+passes the path explicitly; see [AGENTS.md](AGENTS.md).
+
 ## Reading root paths
 
 A project's `{projectRoot}` is `projects/configuration`, but the targets here

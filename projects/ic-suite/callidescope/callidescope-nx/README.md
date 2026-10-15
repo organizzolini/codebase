@@ -32,7 +32,7 @@ Register it in `nx.json`:
     {
       "plugin": "@callidescope/nx",
       "options": {
-        "configurationPath": "configuration/callidescope.config.ts"
+        "configurationPath": "projects/configuration/callidescope.config.ts"
       }
     }
   ]

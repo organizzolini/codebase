@@ -18,7 +18,7 @@ npm install --save-dev @callidescope/cli
 ```
 
 ```bash
-callidescope --config configuration/callidescope.config.ts
+callidescope --config projects/configuration/callidescope.config.ts
 ```
 
 ```text

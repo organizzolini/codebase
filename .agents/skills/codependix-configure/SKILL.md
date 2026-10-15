@@ -52,7 +52,7 @@ Two paths behave differently on purpose:
 - **A path given with `--config` must exist.** A typo fails the run rather than
   quietly resolving every graph to `"none"`. It is resolved against the working
   directory first, then against the workspace root, so a configuration kept in
-  a `configuration/` folder can be named relative to either.
+  a `projects/configuration/` folder can be named relative to either.
 - **An absent configuration is legal.** A workspace that never wrote one is not
   told to; it simply exports nothing.
 
@@ -326,7 +326,7 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
     {
       "plugin": "@codependix/nx",
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
+        "configurationPath": "projects/configuration/codependix.config.ts",
         "gateTargetName": "codependix-gate"
       }
     }
@@ -335,8 +335,7 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
 ```
 
 `configurationPath` names the one configuration every gate reads; omit it and
-`codependix.config.ts`, then `configuration/codependix.config.ts`, are
-searched. Nothing else is configured per project: the rules in `boundaries`
+`codependix.config.ts` at the workspace root is used. Nothing else is configured per project: the rules in `boundaries`
 judge every project the same way. See `codependix-export` for running a gate.
 
 The gate runs the command line under the `@swc-node/register` hooks the plugin

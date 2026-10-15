@@ -23,7 +23,7 @@ Register the plugin in `nx.json` and wire the bootstrap into `postinstall`:
     {
       "plugin": "@conformetry/nx",
       "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "projects/configuration/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       }
     }

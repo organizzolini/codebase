@@ -97,8 +97,7 @@ describe(OptionsService, () => {
 
       expect(
         service.resolveConfigurationPath({
-          exists: (candidatePath) =>
-            candidatePath === "configuration/callidescope.config.ts",
+          exists: (candidatePath) => candidatePath === "callidescope.config.ts",
           nxConfiguration: {
             plugins: [
               {
@@ -108,7 +107,7 @@ describe(OptionsService, () => {
             ],
           },
         }),
-      ).toBe("configuration/callidescope.config.ts");
+      ).toBe("callidescope.config.ts");
     });
 
     it.each([
@@ -128,11 +127,10 @@ describe(OptionsService, () => {
 
       expect(
         service.resolveConfigurationPath({
-          exists: (candidatePath) =>
-            candidatePath === "configuration/callidescope.config.ts",
+          exists: (candidatePath) => candidatePath === "callidescope.config.ts",
           nxConfiguration,
         }),
-      ).toBe("configuration/callidescope.config.ts");
+      ).toBe("callidescope.config.ts");
     });
 
     it("falls back to the first conventional path when none exists", () => {

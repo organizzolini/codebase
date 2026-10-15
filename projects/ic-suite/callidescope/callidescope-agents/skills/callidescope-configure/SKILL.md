@@ -195,7 +195,7 @@ told to write one.
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["configuration/.callidescopeignore"],
+  excludeFrom: ["projects/configuration/.callidescopeignore"],
   limits: { maximumDepth: 6 },
 };
 
@@ -424,7 +424,7 @@ export. A project spreads it and overrides what it means to, which is what
 makes a complete file cost one line:
 
 ```ts
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
 
 export default {
   ...projectDefaults,
