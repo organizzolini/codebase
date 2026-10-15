@@ -11852,10 +11852,10 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### TOML
 
 ![TOML Files](https://img.shields.io/badge/TOML_Files-3-9c4221?style=flat-square)
-![TOML Lines](https://img.shields.io/badge/TOML_Lines-150-b45309?style=flat-square)
-![TOML Tables](https://img.shields.io/badge/TOML_Tables-13-7c3aed?style=flat-square)
+![TOML Lines](https://img.shields.io/badge/TOML_Lines-140-b45309?style=flat-square)
+![TOML Tables](https://img.shields.io/badge/TOML_Tables-12-7c3aed?style=flat-square)
 ![TOML Array Tables](https://img.shields.io/badge/TOML_Array_Tables-6-8b5cf6?style=flat-square)
-![TOML Keys](https://img.shields.io/badge/TOML_Keys-63-0284c7?style=flat-square)
+![TOML Keys](https://img.shields.io/badge/TOML_Keys-49-0284c7?style=flat-square)
 ![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-15-16a34a?style=flat-square)
 ![TOML Comments](https://img.shields.io/badge/TOML_Comments-33-64748b?style=flat-square)
 

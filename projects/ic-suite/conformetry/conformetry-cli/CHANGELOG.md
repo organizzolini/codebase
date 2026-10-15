@@ -1,3 +1,13 @@
+## 0.0.23 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.23
+- Updated conformetry-generation to 0.0.23
+- Updated conformetry-validation to 0.0.22
+- Updated conformetry-output to 0.0.22
+- Updated conformetry-core to 0.0.22
+
 ## 0.0.22 (2026-10-15)
 
 ### 🧱 Updated Dependencies

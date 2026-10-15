@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/organizzolini/codebase/compare/v3.3.1...v3.3.2) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 make squawk.toml settings actually apply ([#1559](https://github.com/organizzolini/codebase/issues/1559)) ([7bcdccb](https://github.com/organizzolini/codebase/commit/7bcdccb9a428823a747eb77c3cabfcf5d36ded24))
+
 ## [3.3.1](https://github.com/organizzolini/codebase/compare/v3.3.0...v3.3.1) (2026-10-15)
 
 ### 🐛 Bug Fixes
