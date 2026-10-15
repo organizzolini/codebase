@@ -441,13 +441,13 @@ Call stacks traced through `projects/components-web`, deepest first. Each frame 
 
 | Measure | Value |
 | --- | --- |
-| Callables | 278 |
-| Files | 62 |
-| Calls traced | 304 |
-| Call stacks | 219 |
-| Deepest stack | 3 |
+| Callables | 1 |
+| Files | 6 |
+| Calls traced | 0 |
+| Call stacks | 0 |
+| Deepest stack | 0 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 16 |
+| Unfollowable calls | 0 |
 
 ### Limits
 
@@ -460,1791 +460,11 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `ChartStyle`** — depth 3 · orphan-root
-
-```text
-🚀 ChartStyle(…): Element | null [projects/components-web/src/components/ui/chart.tsx:69]
-  └─> map(…)([theme, prefix]: [string, "" | ".dark"]): string [projects/components-web/src/components/ui/chart.tsx:89]
-    └─> map(…)(…): string | null [projects/components-web/src/components/ui/chart.tsx:92]
-```
-
-**2. `forwardRef(…)`** — depth ≥ 3 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element | null [projects/components-web/src/components/ui/chart.tsx:138]
-  └─> useMemo(…)(): React.JSX.Element | null [projects/components-web/src/components/ui/chart.tsx:158]
-    └─> getPayloadConfigurationFromPayload(…): { label?: ReactNode; icon?: ComponentType<{}>; } | undefined [projects/components-web/src/components/ui/chart.tsx:359]
-```
-
-**3. `forwardRef(…)`** — depth 3 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element | null [projects/components-web/src/components/ui/chart.tsx:302]
-  └─> map(…)(item: PayloadItem, index: number): React.JSX.Element [projects/components-web/src/components/ui/chart.tsx:323]
-    └─> getPayloadConfigurationFromPayload(…): { label?: ReactNode; icon?: ComponentType<{}>; } | undefined [projects/components-web/src/components/ui/chart.tsx:359]
-```
-
-<details>
-<summary>216 more call stacks</summary>
-
-**4. `FieldError`** — depth 3 · orphan-root
-
-```text
-🚀 FieldError(…): Element | null [projects/components-web/src/components/ui/field.tsx:187]
-  └─> useMemo(…)(…): string | number | bigint | true | Iterable<ReactNode> | Promise<AwaitedReactNode> | Element | null [projects/components-web/src/components/ui/field.tsx:195]
-    └─> map(…)(…): "" | Element | undefined [projects/components-web/src/components/ui/field.tsx:211]
-```
-
-**5. `forwardRef(…)`** — depth ≥ 3 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:63]
-  └─> useIsMobile(): boolean [projects/components-web/src/hooks/use-mobile.tsx:5]
-    └─> useEffect(…)(): () => void [projects/components-web/src/hooks/use-mobile.tsx:8]
-```
-
-**6. `useBreakpoint`** — depth ≥ 3 · orphan-root
-
-```text
-🚀 useBreakpoint(…): { isSm: boolean; isMd: boolean; isLg: boolean; isXl: boolean; is2xl: boolean; } [projects/components-web/src/hooks/use-media-query.ts:62]
-   ↳ Hook to check if viewport is at or above a Tailwind breakpoint
-  └─> useMediaQuery(query: string): boolean [projects/components-web/src/hooks/use-media-query.ts:16]
-     ↳ A hook that returns whether a media query matches the current viewport.
-    └─> useEffect(…)(): () => void [projects/components-web/src/hooks/use-media-query.ts:19]
-```
-
-**7. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/accordion.tsx:13]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**8. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/accordion.tsx:25]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**9. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/accordion.tsx:45]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**10. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert.tsx:26]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**11. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert.tsx:39]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**12. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert.tsx:51]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**13. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/button.tsx:45]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**14. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:17]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**15. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:32]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**16. `AlertDialogHeader`** — depth 2 · orphan-root
-
-```text
-🚀 AlertDialogHeader(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:47]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**17. `AlertDialogFooter`** — depth 2 · orphan-root
-
-```text
-🚀 AlertDialogFooter(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:61]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**18. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:78]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**19. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:90]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**20. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:103]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**21. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/alert-dialog.tsx:115]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**22. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/avatar.tsx:12]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**23. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/avatar.tsx:27]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**24. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/avatar.tsx:39]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**25. `Badge`** — depth 2 · orphan-root
-
-```text
-🚀 Badge({ className, variant, ...props }: BadgeProps): React.JSX.Element [projects/components-web/src/components/ui/badge.tsx:31]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**26. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/breadcrumb.tsx:19]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**27. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/breadcrumb.tsx:34]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**28. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/breadcrumb.tsx:48]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**29. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/breadcrumb.tsx:64]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**30. `BreadcrumbSeparator`** — depth 2 · orphan-root
-
-```text
-🚀 BreadcrumbSeparator(…): Element [projects/components-web/src/components/ui/breadcrumb.tsx:76]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**31. `BreadcrumbEllipsis`** — depth 2 · orphan-root
-
-```text
-🚀 BreadcrumbEllipsis({ className, ...props }: React.ComponentProps<"span">): React.JSX.Element [projects/components-web/src/components/ui/breadcrumb.tsx:92]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**32. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/separator.tsx:11]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**33. `ButtonGroup`** — depth 2 · orphan-root
-
-```text
-🚀 ButtonGroup(…): Element [projects/components-web/src/components/ui/button-group.tsx:25]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**34. `ButtonGroupText`** — depth 2 · orphan-root
-
-```text
-🚀 ButtonGroupText(…): Element [projects/components-web/src/components/ui/button-group.tsx:41]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**35. `ButtonGroupSeparator`** — depth 2 · orphan-root
-
-```text
-🚀 ButtonGroupSeparator(…): Element [projects/components-web/src/components/ui/button-group.tsx:61]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**36. `Calendar`** — depth 2 · orphan-root
-
-```text
-🚀 Calendar(…): Element [projects/components-web/src/components/ui/calendar.tsx:15]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**37. `Root`** — depth 2 · orphan-root
-
-```text
-🚀 Root(…): Element [projects/components-web/src/components/ui/calendar.tsx:129]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**38. `Chevron`** — depth 2 · orphan-root
-
-```text
-🚀 Chevron(…): Element [projects/components-web/src/components/ui/calendar.tsx:139]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**39. `CalendarDayButton`** — depth 2 · orphan-root
-
-```text
-🚀 CalendarDayButton(…): Element [projects/components-web/src/components/ui/calendar.tsx:176]
-  └─> useEffect(…)(): void [projects/components-web/src/components/ui/calendar.tsx:185]
-```
-
-**40. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/card.tsx:9]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**41. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/card.tsx:24]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**42. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/card.tsx:36]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**43. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/card.tsx:48]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**44. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/card.tsx:60]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**45. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/card.tsx:68]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**46. `forwardRef(…)`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/carousel.tsx:48]
-  └─> useCallback(…)(api: CarouselApi): void [projects/components-web/src/components/ui/carousel.tsx:70]
-```
-
-**47. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/carousel.tsx:155]
-  └─> useCarousel(): CarouselContextProps [projects/components-web/src/components/ui/carousel.tsx:34]
-```
-
-**48. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/carousel.tsx:177]
-  └─> useCarousel(): CarouselContextProps [projects/components-web/src/components/ui/carousel.tsx:34]
-```
-
-**49. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/carousel.tsx:199]
-  └─> useCarousel(): CarouselContextProps [projects/components-web/src/components/ui/carousel.tsx:34]
-```
-
-**50. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/carousel.tsx:228]
-  └─> useCarousel(): CarouselContextProps [projects/components-web/src/components/ui/carousel.tsx:34]
-```
-
-**51. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/chart.tsx:44]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**52. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/checkbox.tsx:11]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**53. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dialog.tsx:21]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**54. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dialog.tsx:36]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**55. `DialogHeader`** — depth 2 · orphan-root
-
-```text
-🚀 DialogHeader(…): Element [projects/components-web/src/components/ui/dialog.tsx:57]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**56. `DialogFooter`** — depth 2 · orphan-root
-
-```text
-🚀 DialogFooter(…): Element [projects/components-web/src/components/ui/dialog.tsx:71]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**57. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dialog.tsx:88]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**58. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dialog.tsx:103]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**59. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/command.tsx:15]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**60. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/command.tsx:42]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**61. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/command.tsx:61]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**62. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/command.tsx:87]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**63. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/command.tsx:103]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**64. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/command.tsx:115]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**65. `CommandShortcut`** — depth 2 · orphan-root
-
-```text
-🚀 CommandShortcut(…): Element [projects/components-web/src/components/ui/command.tsx:128]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**66. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:25]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**67. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:44]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**68. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:59]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**69. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:78]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**70. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:94]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**71. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:118]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**72. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:142]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**73. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/context-menu.tsx:158]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**74. `ContextMenuShortcut`** — depth 2 · orphan-root
-
-```text
-🚀 ContextMenuShortcut(…): Element [projects/components-web/src/components/ui/context-menu.tsx:167]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**75. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/drawer.tsx:27]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**76. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/drawer.tsx:39]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**77. `DrawerHeader`** — depth 2 · orphan-root
-
-```text
-🚀 DrawerHeader(…): Element [projects/components-web/src/components/ui/drawer.tsx:57]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**78. `DrawerFooter`** — depth 2 · orphan-root
-
-```text
-🚀 DrawerFooter(…): Element [projects/components-web/src/components/ui/drawer.tsx:68]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**79. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/drawer.tsx:82]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**80. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/drawer.tsx:97]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**81. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:27]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**82. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:47]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**83. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:63]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**84. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:84]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**85. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:100]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**86. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:124]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**87. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:148]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**88. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:164]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**89. `DropdownMenuShortcut`** — depth 2 · orphan-root
-
-```text
-🚀 DropdownMenuShortcut(…): Element [projects/components-web/src/components/ui/dropdown-menu.tsx:173]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**90. `Empty`** — depth 2 · orphan-root
-
-```text
-🚀 Empty({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/empty.tsx:6]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**91. `EmptyHeader`** — depth 2 · orphan-root
-
-```text
-🚀 EmptyHeader({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/empty.tsx:19]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**92. `EmptyMedia`** — depth 2 · orphan-root
-
-```text
-🚀 EmptyMedia(…): Element [projects/components-web/src/components/ui/empty.tsx:47]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**93. `EmptyTitle`** — depth 2 · orphan-root
-
-```text
-🚀 EmptyTitle({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/empty.tsx:62]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**94. `EmptyDescription`** — depth 2 · orphan-root
-
-```text
-🚀 EmptyDescription({ className, ...props }: React.ComponentProps<"p">): React.JSX.Element [projects/components-web/src/components/ui/empty.tsx:72]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**95. `EmptyContent`** — depth 2 · orphan-root
-
-```text
-🚀 EmptyContent({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/empty.tsx:85]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**96. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/label.tsx:18]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**97. `FieldSet`** — depth 2 · orphan-root
-
-```text
-🚀 FieldSet({ className, ...props }: React.ComponentProps<"fieldset">): React.JSX.Element [projects/components-web/src/components/ui/field.tsx:11]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**98. `FieldLegend`** — depth 2 · orphan-root
-
-```text
-🚀 FieldLegend(…): Element [projects/components-web/src/components/ui/field.tsx:25]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**99. `FieldGroup`** — depth 2 · orphan-root
-
-```text
-🚀 FieldGroup({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/field.tsx:45]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**100. `Field`** — depth 2 · orphan-root
-
-```text
-🚀 Field(…): Element [projects/components-web/src/components/ui/field.tsx:82]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**101. `FieldContent`** — depth 2 · orphan-root
-
-```text
-🚀 FieldContent({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/field.tsx:98]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**102. `FieldLabel`** — depth 2 · orphan-root
-
-```text
-🚀 FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>): React.JSX.Element [projects/components-web/src/components/ui/field.tsx:111]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**103. `FieldTitle`** — depth 2 · orphan-root
-
-```text
-🚀 FieldTitle({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/field.tsx:129]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**104. `FieldDescription`** — depth 2 · orphan-root
-
-```text
-🚀 FieldDescription({ className, ...props }: React.ComponentProps<"p">): React.JSX.Element [projects/components-web/src/components/ui/field.tsx:142]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**105. `FieldSeparator`** — depth 2 · orphan-root
-
-```text
-🚀 FieldSeparator(…): Element [projects/components-web/src/components/ui/field.tsx:157]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**106. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/form.tsx:77]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**107. `forwardRef(…)`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/form.tsx:91]
-  └─> useFormField(…): { invalid: boolean; isDirty: boolean; isTouched: boolean; isValidating: boolean; error?: FieldError; id: string; name: string; formItemId: string; formDescriptionId: string; formMessageId: string; } [projects/components-web/src/components/ui/form.tsx:41]
-```
-
-**108. `forwardRef(…)`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/form.tsx:108]
-  └─> useFormField(…): { invalid: boolean; isDirty: boolean; isTouched: boolean; isValidating: boolean; error?: FieldError; id: string; name: string; formItemId: string; formDescriptionId: string; formMessageId: string; } [projects/components-web/src/components/ui/form.tsx:41]
-```
-
-**109. `forwardRef(…)`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/form.tsx:130]
-  └─> useFormField(…): { invalid: boolean; isDirty: boolean; isTouched: boolean; isValidating: boolean; error?: FieldError; id: string; name: string; formItemId: string; formDescriptionId: string; formMessageId: string; } [projects/components-web/src/components/ui/form.tsx:41]
-```
-
-**110. `forwardRef(…)`** — depth ≥ 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element | null [projects/components-web/src/components/ui/form.tsx:147]
-  └─> useFormField(…): { invalid: boolean; isDirty: boolean; isTouched: boolean; isValidating: boolean; error?: FieldError; id: string; name: string; formItemId: string; formDescriptionId: string; formMessageId: string; } [projects/components-web/src/components/ui/form.tsx:41]
-```
-
-**111. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/hover-card.tsx:14]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**112. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/input.tsx:7]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**113. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/textarea.tsx:9]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**114. `InputGroup`** — depth 2 · orphan-root
-
-```text
-🚀 InputGroup({ className, ...properties }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/input-group.tsx:10]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**115. `InputGroupAddon`** — depth 2 · orphan-root
-
-```text
-🚀 InputGroupAddon(…): Element [projects/components-web/src/components/ui/input-group.tsx:57]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**116. `InputGroupButton`** — depth 2 · orphan-root
-
-```text
-🚀 InputGroupButton(…): Element [projects/components-web/src/components/ui/input-group.tsx:94]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**117. `InputGroupText`** — depth 2 · orphan-root
-
-```text
-🚀 InputGroupText({ className, ...properties }: React.ComponentProps<"span">): React.JSX.Element [projects/components-web/src/components/ui/input-group.tsx:113]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**118. `InputGroupInput`** — depth 2 · orphan-root
-
-```text
-🚀 InputGroupInput({ className, ...properties }: React.ComponentProps<"input">): React.JSX.Element [projects/components-web/src/components/ui/input-group.tsx:125]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**119. `InputGroupTextarea`** — depth 2 · orphan-root
-
-```text
-🚀 InputGroupTextarea(…): Element [projects/components-web/src/components/ui/input-group.tsx:138]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**120. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/input-otp.tsx:11]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**121. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/input-otp.tsx:27]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**122. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/input-otp.tsx:35]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**123. `ItemGroup`** — depth 2 · orphan-root
-
-```text
-🚀 ItemGroup({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:9]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**124. `ItemSeparator`** — depth 2 · orphan-root
-
-```text
-🚀 ItemSeparator(…): Element [projects/components-web/src/components/ui/item.tsx:20]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**125. `Item`** — depth 2 · orphan-root
-
-```text
-🚀 Item(…): Element [projects/components-web/src/components/ui/item.tsx:55]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**126. `ItemMedia`** — depth 2 · orphan-root
-
-```text
-🚀 ItemMedia(…): Element [projects/components-web/src/components/ui/item.tsx:92]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**127. `ItemContent`** — depth 2 · orphan-root
-
-```text
-🚀 ItemContent({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:107]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**128. `ItemTitle`** — depth 2 · orphan-root
-
-```text
-🚀 ItemTitle({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:120]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**129. `ItemDescription`** — depth 2 · orphan-root
-
-```text
-🚀 ItemDescription({ className, ...props }: React.ComponentProps<"p">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:133]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**130. `ItemActions`** — depth 2 · orphan-root
-
-```text
-🚀 ItemActions({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:147]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**131. `ItemHeader`** — depth 2 · orphan-root
-
-```text
-🚀 ItemHeader({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:157]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**132. `ItemFooter`** — depth 2 · orphan-root
-
-```text
-🚀 ItemFooter({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/item.tsx:170]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**133. `Kbd`** — depth 2 · orphan-root
-
-```text
-🚀 Kbd({ className, ...props }: React.ComponentProps<"kbd">): React.JSX.Element [projects/components-web/src/components/ui/kbd.tsx:4]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**134. `KbdGroup`** — depth 2 · orphan-root
-
-```text
-🚀 KbdGroup({ className, ...props }: React.ComponentProps<"div">): React.JSX.Element [projects/components-web/src/components/ui/kbd.tsx:19]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**135. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:41]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**136. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:56]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**137. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:73]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**138. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:92]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**139. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:108]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**140. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:134]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**141. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:150]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**142. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:173]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**143. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:197]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**144. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/menubar.tsx:213]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**145. `MenubarShortcut`** — depth 2 · orphan-root
-
-```text
-🚀 MenubarShortcut(…): Element [projects/components-web/src/components/ui/menubar.tsx:222]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**146. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/navigation-menu.tsx:12]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**147. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/navigation-menu.tsx:30]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**148. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/navigation-menu.tsx:51]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**149. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/navigation-menu.tsx:69]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**150. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/navigation-menu.tsx:86]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**151. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/navigation-menu.tsx:104]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**152. `Pagination`** — depth 2 · orphan-root
-
-```text
-🚀 Pagination({ className, ...props }: React.ComponentProps<"nav">): React.JSX.Element [projects/components-web/src/components/ui/pagination.tsx:8]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**153. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/pagination.tsx:21]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**154. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/pagination.tsx:33]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**155. `PaginationLink`** — depth 2 · orphan-root
-
-```text
-🚀 PaginationLink(…): Element [projects/components-web/src/components/ui/pagination.tsx:43]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**156. `PaginationPrevious`** — depth 2 · orphan-root
-
-```text
-🚀 PaginationPrevious(…): Element [projects/components-web/src/components/ui/pagination.tsx:63]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**157. `PaginationNext`** — depth 2 · orphan-root
-
-```text
-🚀 PaginationNext(…): Element [projects/components-web/src/components/ui/pagination.tsx:79]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**158. `PaginationEllipsis`** — depth 2 · orphan-root
-
-```text
-🚀 PaginationEllipsis({ className, ...props }: React.ComponentProps<"span">): React.JSX.Element [projects/components-web/src/components/ui/pagination.tsx:95]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**159. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/popover.tsx:16]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**160. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/progress.tsx:12]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**161. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/radio-group.tsx:11]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**162. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/radio-group.tsx:25]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**163. `ResizablePanelGroup`** — depth 2 · orphan-root
-
-```text
-🚀 ResizablePanelGroup({ className, ...props }: React.ComponentProps<typeof Group>): React.JSX.Element [projects/components-web/src/components/ui/resizable.tsx:9]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**164. `ResizableHandle`** — depth 2 · orphan-root
-
-```text
-🚀 ResizableHandle(…): Element [projects/components-web/src/components/ui/resizable.tsx:24]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**165. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/scroll-area.tsx:10]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**166. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/scroll-area.tsx:28]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**167. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:19]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**168. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:39]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**169. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:56]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**170. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:74]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**171. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:106]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**172. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:118]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**173. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/select.tsx:140]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**174. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sheet.tsx:22]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**175. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sheet.tsx:60]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**176. `SheetHeader`** — depth 2 · orphan-root
-
-```text
-🚀 SheetHeader(…): Element [projects/components-web/src/components/ui/sheet.tsx:78]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**177. `SheetFooter`** — depth 2 · orphan-root
-
-```text
-🚀 SheetFooter(…): Element [projects/components-web/src/components/ui/sheet.tsx:92]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**178. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sheet.tsx:109]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**179. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sheet.tsx:121]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**180. `Skeleton`** — depth 2 · orphan-root
-
-```text
-🚀 Skeleton(…): Element [projects/components-web/src/components/ui/skeleton.tsx:4]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**181. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/tooltip.tsx:18]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**182. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:170]
-  └─> useSidebar(): SidebarContextProperties [projects/components-web/src/components/ui/sidebar.tsx:46]
-```
-
-**183. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:272]
-  └─> useSidebar(): SidebarContextProperties [projects/components-web/src/components/ui/sidebar.tsx:46]
-```
-
-**184. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:298]
-  └─> useSidebar(): SidebarContextProperties [projects/components-web/src/components/ui/sidebar.tsx:46]
-```
-
-**185. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:327]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**186. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:345]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**187. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:363]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**188. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:378]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**189. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:393]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**190. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:408]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**191. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:426]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**192. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:441]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**193. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:462]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**194. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:485]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**195. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:498]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**196. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:511]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**197. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:551]
-  └─> useSidebar(): SidebarContextProperties [projects/components-web/src/components/ui/sidebar.tsx:46]
-```
-
-**198. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:608]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**199. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:636]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**200. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:659]
-  └─> useMemo(…)(): string [projects/components-web/src/components/ui/sidebar.tsx:661]
-```
-
-**201. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:695]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**202. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/sidebar.tsx:722]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**203. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/slider.tsx:10]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**204. `Spinner`** — depth 2 · orphan-root
-
-```text
-🚀 Spinner({ className, ...props }: React.ComponentProps<"svg">): React.JSX.Element [projects/components-web/src/components/ui/spinner.tsx:6]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**205. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/switch.tsx:10]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**206. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:9]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**207. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:23]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**208. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:31]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**209. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:43]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**210. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:58]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**211. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:73]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**212. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:88]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**213. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/table.tsx:103]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**214. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/tabs.tsx:12]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**215. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/tabs.tsx:27]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**216. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/tabs.tsx:42]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**217. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/toggle.tsx:34]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**218. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/toggle-group.tsx:22]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**219. `forwardRef(…)`** — depth 2 · orphan-root
-
-```text
-🚀 forwardRef(…)(…): Element [projects/components-web/src/components/ui/toggle-group.tsx:40]
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-</details>
+None.
 
 ### Breadth
 
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `forwardRef(…)` | 7 | `useCallback(…)`, `useCallback(…)`, `useCallback(…)`, `useCallback(…)`, `useEffect(…)`, `useEffect(…)`, `cn` | `projects/components-web/src/components/ui/carousel.tsx:48` |
-| `forwardRef(…)` | 6 | `useIsMobile`, `useCallback(…)`, `useCallback(…)`, `useEffect(…)`, `useMemo(…)`, `cn` | `projects/components-web/src/components/ui/sidebar.tsx:63` |
-| `forwardRef(…)` | 5 | `useChart`, `useMemo(…)`, `cn`, `map(…)`, `filter(…)` | `projects/components-web/src/components/ui/chart.tsx:138` |
-
-<details>
-<summary>224 more callables</summary>
-
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `forwardRef(…)` | 4 | `useChart`, `cn`, `map(…)`, `filter(…)` | `projects/components-web/src/components/ui/chart.tsx:302` |
-| `CalendarDayButton` | 2 | `useEffect(…)`, `cn` | `projects/components-web/src/components/ui/calendar.tsx:176` |
-| `forwardRef(…)` | 2 | `useCarousel`, `cn` | `projects/components-web/src/components/ui/carousel.tsx:155` |
-| `forwardRef(…)` | 2 | `useCarousel`, `cn` | `projects/components-web/src/components/ui/carousel.tsx:177` |
-| `forwardRef(…)` | 2 | `useCarousel`, `cn` | `projects/components-web/src/components/ui/carousel.tsx:199` |
-| `forwardRef(…)` | 2 | `useCarousel`, `cn` | `projects/components-web/src/components/ui/carousel.tsx:228` |
-| `ChartStyle` | 2 | `filter(…)`, `map(…)` | `projects/components-web/src/components/ui/chart.tsx:69` |
-| `useMemo(…)` | 2 | `getPayloadConfigurationFromPayload`, `cn` | `projects/components-web/src/components/ui/chart.tsx:158` |
-| `map(…)` | 2 | `getPayloadConfigurationFromPayload`, `cn` | `projects/components-web/src/components/ui/chart.tsx:212` |
-| `map(…)` | 2 | `getPayloadConfigurationFromPayload`, `cn` | `projects/components-web/src/components/ui/chart.tsx:323` |
-| `FieldError` | 2 | `useMemo(…)`, `cn` | `projects/components-web/src/components/ui/field.tsx:187` |
-| `forwardRef(…)` | 2 | `useFormField`, `cn` | `projects/components-web/src/components/ui/form.tsx:91` |
-| `forwardRef(…)` | 2 | `useFormField`, `cn` | `projects/components-web/src/components/ui/form.tsx:130` |
-| `forwardRef(…)` | 2 | `useFormField`, `cn` | `projects/components-web/src/components/ui/form.tsx:147` |
-| `useCallback(…)` | 2 | `setOpenMobile(…)`, `setOpen(…)` | `projects/components-web/src/components/ui/sidebar.tsx:98` |
-| `forwardRef(…)` | 2 | `useSidebar`, `cn` | `projects/components-web/src/components/ui/sidebar.tsx:170` |
-| `forwardRef(…)` | 2 | `useSidebar`, `cn` | `projects/components-web/src/components/ui/sidebar.tsx:272` |
-| `forwardRef(…)` | 2 | `useSidebar`, `cn` | `projects/components-web/src/components/ui/sidebar.tsx:298` |
-| `forwardRef(…)` | 2 | `useSidebar`, `cn` | `projects/components-web/src/components/ui/sidebar.tsx:551` |
-| `forwardRef(…)` | 2 | `useMemo(…)`, `cn` | `projects/components-web/src/components/ui/sidebar.tsx:659` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/accordion.tsx:13` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/accordion.tsx:25` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/accordion.tsx:45` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert.tsx:26` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert.tsx:39` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert.tsx:51` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/button.tsx:45` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:17` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:32` |
-| `AlertDialogHeader` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:47` |
-| `AlertDialogFooter` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:61` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:78` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:90` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:103` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/alert-dialog.tsx:115` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/avatar.tsx:12` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/avatar.tsx:27` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/avatar.tsx:39` |
-| `Badge` | 1 | `cn` | `projects/components-web/src/components/ui/badge.tsx:31` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/breadcrumb.tsx:19` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/breadcrumb.tsx:34` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/breadcrumb.tsx:48` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/breadcrumb.tsx:64` |
-| `BreadcrumbSeparator` | 1 | `cn` | `projects/components-web/src/components/ui/breadcrumb.tsx:76` |
-| `BreadcrumbEllipsis` | 1 | `cn` | `projects/components-web/src/components/ui/breadcrumb.tsx:92` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/separator.tsx:11` |
-| `ButtonGroup` | 1 | `cn` | `projects/components-web/src/components/ui/button-group.tsx:25` |
-| `ButtonGroupText` | 1 | `cn` | `projects/components-web/src/components/ui/button-group.tsx:41` |
-| `ButtonGroupSeparator` | 1 | `cn` | `projects/components-web/src/components/ui/button-group.tsx:61` |
-| `Calendar` | 1 | `cn` | `projects/components-web/src/components/ui/calendar.tsx:15` |
-| `Root` | 1 | `cn` | `projects/components-web/src/components/ui/calendar.tsx:129` |
-| `Chevron` | 1 | `cn` | `projects/components-web/src/components/ui/calendar.tsx:139` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/card.tsx:9` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/card.tsx:24` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/card.tsx:36` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/card.tsx:48` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/card.tsx:60` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/card.tsx:68` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/chart.tsx:44` |
-| `map(…)` | 1 | `map(…)` | `projects/components-web/src/components/ui/chart.tsx:89` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/checkbox.tsx:11` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dialog.tsx:21` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dialog.tsx:36` |
-| `DialogHeader` | 1 | `cn` | `projects/components-web/src/components/ui/dialog.tsx:57` |
-| `DialogFooter` | 1 | `cn` | `projects/components-web/src/components/ui/dialog.tsx:71` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dialog.tsx:88` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dialog.tsx:103` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:15` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:42` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:61` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:87` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:103` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:115` |
-| `CommandShortcut` | 1 | `cn` | `projects/components-web/src/components/ui/command.tsx:128` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:25` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:44` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:59` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:78` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:94` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:118` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:142` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:158` |
-| `ContextMenuShortcut` | 1 | `cn` | `projects/components-web/src/components/ui/context-menu.tsx:167` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/drawer.tsx:27` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/drawer.tsx:39` |
-| `DrawerHeader` | 1 | `cn` | `projects/components-web/src/components/ui/drawer.tsx:57` |
-| `DrawerFooter` | 1 | `cn` | `projects/components-web/src/components/ui/drawer.tsx:68` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/drawer.tsx:82` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/drawer.tsx:97` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:27` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:47` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:63` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:84` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:100` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:124` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:148` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:164` |
-| `DropdownMenuShortcut` | 1 | `cn` | `projects/components-web/src/components/ui/dropdown-menu.tsx:173` |
-| `Empty` | 1 | `cn` | `projects/components-web/src/components/ui/empty.tsx:6` |
-| `EmptyHeader` | 1 | `cn` | `projects/components-web/src/components/ui/empty.tsx:19` |
-| `EmptyMedia` | 1 | `cn` | `projects/components-web/src/components/ui/empty.tsx:47` |
-| `EmptyTitle` | 1 | `cn` | `projects/components-web/src/components/ui/empty.tsx:62` |
-| `EmptyDescription` | 1 | `cn` | `projects/components-web/src/components/ui/empty.tsx:72` |
-| `EmptyContent` | 1 | `cn` | `projects/components-web/src/components/ui/empty.tsx:85` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/label.tsx:18` |
-| `FieldSet` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:11` |
-| `FieldLegend` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:25` |
-| `FieldGroup` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:45` |
-| `Field` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:82` |
-| `FieldContent` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:98` |
-| `FieldLabel` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:111` |
-| `FieldTitle` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:129` |
-| `FieldDescription` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:142` |
-| `FieldSeparator` | 1 | `cn` | `projects/components-web/src/components/ui/field.tsx:157` |
-| `useMemo(…)` | 1 | `map(…)` | `projects/components-web/src/components/ui/field.tsx:195` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/form.tsx:77` |
-| `forwardRef(…)` | 1 | `useFormField` | `projects/components-web/src/components/ui/form.tsx:108` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/hover-card.tsx:14` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/input.tsx:7` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/textarea.tsx:9` |
-| `InputGroup` | 1 | `cn` | `projects/components-web/src/components/ui/input-group.tsx:10` |
-| `InputGroupAddon` | 1 | `cn` | `projects/components-web/src/components/ui/input-group.tsx:57` |
-| `InputGroupButton` | 1 | `cn` | `projects/components-web/src/components/ui/input-group.tsx:94` |
-| `InputGroupText` | 1 | `cn` | `projects/components-web/src/components/ui/input-group.tsx:113` |
-| `InputGroupInput` | 1 | `cn` | `projects/components-web/src/components/ui/input-group.tsx:125` |
-| `InputGroupTextarea` | 1 | `cn` | `projects/components-web/src/components/ui/input-group.tsx:138` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/input-otp.tsx:11` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/input-otp.tsx:27` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/input-otp.tsx:35` |
-| `ItemGroup` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:9` |
-| `ItemSeparator` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:20` |
-| `Item` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:55` |
-| `ItemMedia` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:92` |
-| `ItemContent` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:107` |
-| `ItemTitle` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:120` |
-| `ItemDescription` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:133` |
-| `ItemActions` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:147` |
-| `ItemHeader` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:157` |
-| `ItemFooter` | 1 | `cn` | `projects/components-web/src/components/ui/item.tsx:170` |
-| `Kbd` | 1 | `cn` | `projects/components-web/src/components/ui/kbd.tsx:4` |
-| `KbdGroup` | 1 | `cn` | `projects/components-web/src/components/ui/kbd.tsx:19` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:41` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:56` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:73` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:92` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:108` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:134` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:150` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:173` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:197` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:213` |
-| `MenubarShortcut` | 1 | `cn` | `projects/components-web/src/components/ui/menubar.tsx:222` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/navigation-menu.tsx:12` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/navigation-menu.tsx:30` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/navigation-menu.tsx:51` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/navigation-menu.tsx:69` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/navigation-menu.tsx:86` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/navigation-menu.tsx:104` |
-| `Pagination` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:8` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:21` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:33` |
-| `PaginationLink` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:43` |
-| `PaginationPrevious` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:63` |
-| `PaginationNext` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:79` |
-| `PaginationEllipsis` | 1 | `cn` | `projects/components-web/src/components/ui/pagination.tsx:95` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/popover.tsx:16` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/progress.tsx:12` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/radio-group.tsx:11` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/radio-group.tsx:25` |
-| `ResizablePanelGroup` | 1 | `cn` | `projects/components-web/src/components/ui/resizable.tsx:9` |
-| `ResizableHandle` | 1 | `cn` | `projects/components-web/src/components/ui/resizable.tsx:24` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/scroll-area.tsx:10` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/scroll-area.tsx:28` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:19` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:39` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:56` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:74` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:106` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:118` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/select.tsx:140` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sheet.tsx:22` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sheet.tsx:60` |
-| `SheetHeader` | 1 | `cn` | `projects/components-web/src/components/ui/sheet.tsx:78` |
-| `SheetFooter` | 1 | `cn` | `projects/components-web/src/components/ui/sheet.tsx:92` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sheet.tsx:109` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sheet.tsx:121` |
-| `useIsMobile` | 1 | `useEffect(…)` | `projects/components-web/src/hooks/use-mobile.tsx:5` |
-| `Skeleton` | 1 | `cn` | `projects/components-web/src/components/ui/skeleton.tsx:4` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/tooltip.tsx:18` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:327` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:345` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:363` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:378` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:393` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:408` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:426` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:441` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:462` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:485` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:498` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:511` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:608` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:636` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:695` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/sidebar.tsx:722` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/slider.tsx:10` |
-| `Spinner` | 1 | `cn` | `projects/components-web/src/components/ui/spinner.tsx:6` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/switch.tsx:10` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:9` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:23` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:31` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:43` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:58` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:73` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:88` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/table.tsx:103` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/tabs.tsx:12` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/tabs.tsx:27` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/tabs.tsx:42` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/toggle.tsx:34` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/toggle-group.tsx:22` |
-| `forwardRef(…)` | 1 | `cn` | `projects/components-web/src/components/ui/toggle-group.tsx:40` |
-| `useMediaQuery` | 1 | `useEffect(…)` | `projects/components-web/src/hooks/use-media-query.ts:16` |
-| `useBreakpoint` | 1 | `useMediaQuery` | `projects/components-web/src/hooks/use-media-query.ts:62` |
-
-</details>
+None.
 <!-- callidescope:end -->
 
 ## 🕸️ Codependix
@@ -2273,6 +493,89 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
+  file_src_components_examples_c_sidebar_1_tsx["src/components/examples/c-sidebar-1.tsx"]
+  file_src_components_reui_alert_tsx["src/components/reui/alert.tsx"]
+  file_src_components_reui_autocomplete_tsx["src/components/reui/autocomplete.tsx"]
+  file_src_components_reui_badge_tsx["src/components/reui/badge.tsx"]
+  file_src_components_reui_cascader_cascader_async_tsx["src/components/reui/cascader/cascader-async.tsx"]
+  file_src_components_reui_cascader_cascader_columns_tsx["src/components/reui/cascader/cascader-columns.tsx"]
+  file_src_components_reui_cascader_cascader_context_tsx["src/components/reui/cascader/cascader-context.tsx"]
+  file_src_components_reui_cascader_cascader_footer_tsx["src/components/reui/cascader/cascader-footer.tsx"]
+  file_src_components_reui_cascader_cascader_i18n_tsx["src/components/reui/cascader/cascader-i18n.tsx"]
+  file_src_components_reui_cascader_cascader_item_tsx["src/components/reui/cascader/cascader-item.tsx"]
+  file_src_components_reui_cascader_cascader_lib_tsx["src/components/reui/cascader/cascader-lib.tsx"]
+  file_src_components_reui_cascader_cascader_nav_tsx["src/components/reui/cascader/cascader-nav.tsx"]
+  file_src_components_reui_cascader_cascader_types_tsx["src/components/reui/cascader/cascader-types.tsx"]
+  file_src_components_reui_cascader_cascader_virtual_tsx["src/components/reui/cascader/cascader-virtual.tsx"]
+  file_src_components_reui_cascader_cascader_tsx["src/components/reui/cascader/cascader.tsx"]
+  file_src_components_reui_code_block_code_block_highlight_tsx["src/components/reui/code-block/code-block-highlight.tsx"]
+  file_src_components_reui_code_block_code_block_tsx["src/components/reui/code-block/code-block.tsx"]
+  file_src_components_reui_color_picker_tsx["src/components/reui/color-picker.tsx"]
+  file_src_components_reui_data_grid_data_grid_cell_selection_tsx["src/components/reui/data-grid/data-grid-cell-selection.tsx"]
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx["src/components/reui/data-grid/data-grid-column-filter.tsx"]
+  file_src_components_reui_data_grid_data_grid_column_header_tsx["src/components/reui/data-grid/data-grid-column-header.tsx"]
+  file_src_components_reui_data_grid_data_grid_column_visibility_tsx["src/components/reui/data-grid/data-grid-column-visibility.tsx"]
+  file_src_components_reui_data_grid_data_grid_i18n_tsx["src/components/reui/data-grid/data-grid-i18n.tsx"]
+  file_src_components_reui_data_grid_data_grid_pagination_tsx["src/components/reui/data-grid/data-grid-pagination.tsx"]
+  file_src_components_reui_data_grid_data_grid_scroll_area_tsx["src/components/reui/data-grid/data-grid-scroll-area.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx["src/components/reui/data-grid/data-grid-table-dnd-rows.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_dnd_tsx["src/components/reui/data-grid/data-grid-table-dnd.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_virtual_tsx["src/components/reui/data-grid/data-grid-table-virtual.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_tsx["src/components/reui/data-grid/data-grid-table.tsx"]
+  file_src_components_reui_data_grid_data_grid_tsx["src/components/reui/data-grid/data-grid.tsx"]
+  file_src_components_reui_date_selector_tsx["src/components/reui/date-selector.tsx"]
+  file_src_components_reui_emoji_picker_tsx["src/components/reui/emoji-picker.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx["src/components/reui/event-calendar/event-calendar-agenda-view.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_content_tsx["src/components/reui/event-calendar/event-calendar-content.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_dnd_tsx["src/components/reui/event-calendar/event-calendar-dnd.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_event_tsx["src/components/reui/event-calendar/event-calendar-event.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_i18n_tsx["src/components/reui/event-calendar/event-calendar-i18n.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_lib_tsx["src/components/reui/event-calendar/event-calendar-lib.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx["src/components/reui/event-calendar/event-calendar-month-view.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx["src/components/reui/event-calendar/event-calendar-nav.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_recurrence_tsx["src/components/reui/event-calendar/event-calendar-recurrence.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx["src/components/reui/event-calendar/event-calendar-resource-view.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx["src/components/reui/event-calendar/event-calendar-time-grid.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_types_tsx["src/components/reui/event-calendar/event-calendar-types.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_tsx["src/components/reui/event-calendar/event-calendar.tsx"]
+  file_src_components_reui_file_type_tsx["src/components/reui/file-type.tsx"]
+  file_src_components_reui_filters_filters_advanced_tsx["src/components/reui/filters/filters-advanced.tsx"]
+  file_src_components_reui_filters_filters_builder_tsx["src/components/reui/filters/filters-builder.tsx"]
+  file_src_components_reui_filters_filters_chip_tsx["src/components/reui/filters/filters-chip.tsx"]
+  file_src_components_reui_filters_filters_context_tsx["src/components/reui/filters/filters-context.tsx"]
+  file_src_components_reui_filters_filters_date_tsx["src/components/reui/filters/filters-date.tsx"]
+  file_src_components_reui_filters_filters_dnd_tsx["src/components/reui/filters/filters-dnd.tsx"]
+  file_src_components_reui_filters_filters_draft_tsx["src/components/reui/filters/filters-draft.tsx"]
+  file_src_components_reui_filters_filters_editors_tsx["src/components/reui/filters/filters-editors.tsx"]
+  file_src_components_reui_filters_filters_i18n_tsx["src/components/reui/filters/filters-i18n.tsx"]
+  file_src_components_reui_filters_filters_lib_tsx["src/components/reui/filters/filters-lib.tsx"]
+  file_src_components_reui_filters_filters_operators_tsx["src/components/reui/filters/filters-operators.tsx"]
+  file_src_components_reui_filters_filters_query_tsx["src/components/reui/filters/filters-query.tsx"]
+  file_src_components_reui_filters_filters_types_tsx["src/components/reui/filters/filters-types.tsx"]
+  file_src_components_reui_filters_filters_tsx["src/components/reui/filters/filters.tsx"]
+  file_src_components_reui_frame_tsx["src/components/reui/frame.tsx"]
+  file_src_components_reui_gantt_gantt_bar_tsx["src/components/reui/gantt/gantt-bar.tsx"]
+  file_src_components_reui_gantt_gantt_dnd_tsx["src/components/reui/gantt/gantt-dnd.tsx"]
+  file_src_components_reui_gantt_gantt_i18n_tsx["src/components/reui/gantt/gantt-i18n.tsx"]
+  file_src_components_reui_gantt_gantt_lib_tsx["src/components/reui/gantt/gantt-lib.tsx"]
+  file_src_components_reui_gantt_gantt_nav_tsx["src/components/reui/gantt/gantt-nav.tsx"]
+  file_src_components_reui_gantt_gantt_recurrence_tsx["src/components/reui/gantt/gantt-recurrence.tsx"]
+  file_src_components_reui_gantt_gantt_types_tsx["src/components/reui/gantt/gantt-types.tsx"]
+  file_src_components_reui_gantt_gantt_view_tsx["src/components/reui/gantt/gantt-view.tsx"]
+  file_src_components_reui_gantt_gantt_tsx["src/components/reui/gantt/gantt.tsx"]
+  file_src_components_reui_icon_stack_tsx["src/components/reui/icon-stack.tsx"]
+  file_src_components_reui_icon_tile_tsx["src/components/reui/icon-tile.tsx"]
+  file_src_components_reui_kanban_tsx["src/components/reui/kanban.tsx"]
+  file_src_components_reui_number_field_tsx["src/components/reui/number-field.tsx"]
+  file_src_components_reui_phone_input_tsx["src/components/reui/phone-input.tsx"]
+  file_src_components_reui_rating_tsx["src/components/reui/rating.tsx"]
+  file_src_components_reui_scrollspy_tsx["src/components/reui/scrollspy.tsx"]
+  file_src_components_reui_signature_pad_tsx["src/components/reui/signature-pad.tsx"]
+  file_src_components_reui_sortable_tsx["src/components/reui/sortable.tsx"]
+  file_src_components_reui_stepper_tsx["src/components/reui/stepper.tsx"]
+  file_src_components_reui_time_picker_tsx["src/components/reui/time-picker.tsx"]
+  file_src_components_reui_timeline_tsx["src/components/reui/timeline.tsx"]
+  file_src_components_reui_tree_tsx["src/components/reui/tree.tsx"]
   file_src_components_ui_accordion_tsx["src/components/ui/accordion.tsx"]
   file_src_components_ui_alert_dialog_tsx["src/components/ui/alert-dialog.tsx"]
   file_src_components_ui_alert_tsx["src/components/ui/alert.tsx"]
@@ -2288,6 +591,7 @@ graph LR
   file_src_components_ui_chart_tsx["src/components/ui/chart.tsx"]
   file_src_components_ui_checkbox_tsx["src/components/ui/checkbox.tsx"]
   file_src_components_ui_collapsible_tsx["src/components/ui/collapsible.tsx"]
+  file_src_components_ui_combobox_tsx["src/components/ui/combobox.tsx"]
   file_src_components_ui_command_tsx["src/components/ui/command.tsx"]
   file_src_components_ui_context_menu_tsx["src/components/ui/context-menu.tsx"]
   file_src_components_ui_dialog_tsx["src/components/ui/dialog.tsx"]
@@ -2295,7 +599,6 @@ graph LR
   file_src_components_ui_dropdown_menu_tsx["src/components/ui/dropdown-menu.tsx"]
   file_src_components_ui_empty_tsx["src/components/ui/empty.tsx"]
   file_src_components_ui_field_tsx["src/components/ui/field.tsx"]
-  file_src_components_ui_form_tsx["src/components/ui/form.tsx"]
   file_src_components_ui_hover_card_tsx["src/components/ui/hover-card.tsx"]
   file_src_components_ui_input_group_tsx["src/components/ui/input-group.tsx"]
   file_src_components_ui_input_otp_tsx["src/components/ui/input-otp.tsx"]
@@ -2326,82 +629,299 @@ graph LR
   file_src_components_ui_toggle_group_tsx["src/components/ui/toggle-group.tsx"]
   file_src_components_ui_toggle_tsx["src/components/ui/toggle.tsx"]
   file_src_components_ui_tooltip_tsx["src/components/ui/tooltip.tsx"]
+  file_src_hooks_use_copy_to_clipboard_ts["src/hooks/use-copy-to-clipboard.ts"]
+  file_src_hooks_use_file_upload_ts["src/hooks/use-file-upload.ts"]
   file_src_hooks_use_media_query_ts["src/hooks/use-media-query.ts"]
-  file_src_hooks_use_mobile_tsx["src/hooks/use-mobile.tsx"]
+  file_src_hooks_use_mobile_ts["src/hooks/use-mobile.ts"]
+  file_src_hooks_use_scroll_position_ts["src/hooks/use-scroll-position.ts"]
+  file_src_hooks_use_slider_input_ts["src/hooks/use-slider-input.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_lib_utils_ts["src/lib/utils.ts"]
   file_vite_config_mts["vite.config.mts"]
-  file_src_components_ui_accordion_tsx --> file_src_lib_utils_ts
+  file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_avatar_tsx
+  file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_breadcrumb_tsx
+  file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_button_tsx
+  file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_card_tsx
+  file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_examples_c_sidebar_1_tsx --> file_src_components_ui_sidebar_tsx
+  file_src_components_reui_autocomplete_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_cascader_cascader_async_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_async_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_cascader_cascader_async_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_columns_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_columns_tsx --> file_src_components_reui_cascader_cascader_item_tsx
+  file_src_components_reui_cascader_cascader_columns_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_cascader_cascader_columns_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_cascader_cascader_context_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_footer_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_footer_tsx --> file_src_components_reui_cascader_cascader_item_tsx
+  file_src_components_reui_cascader_cascader_footer_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_cascader_cascader_footer_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_i18n_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_item_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_item_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_cascader_cascader_item_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_item_tsx --> file_src_components_ui_spinner_tsx
+  file_src_components_reui_cascader_cascader_lib_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_nav_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_nav_tsx --> file_src_components_reui_cascader_cascader_i18n_tsx
+  file_src_components_reui_cascader_cascader_nav_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_cascader_cascader_nav_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_virtual_tsx --> file_src_components_reui_cascader_cascader_columns_tsx
+  file_src_components_reui_cascader_cascader_virtual_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_virtual_tsx --> file_src_components_reui_cascader_cascader_item_tsx
+  file_src_components_reui_cascader_cascader_tsx --> file_src_components_reui_cascader_cascader_async_tsx
+  file_src_components_reui_cascader_cascader_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_cascader_cascader_tsx --> file_src_components_reui_cascader_cascader_i18n_tsx
+  file_src_components_reui_cascader_cascader_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_cascader_cascader_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_cascader_cascader_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_code_block_code_block_tsx --> file_src_components_reui_code_block_code_block_highlight_tsx
+  file_src_components_reui_code_block_code_block_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_color_picker_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_color_picker_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_color_picker_tsx --> file_src_components_ui_input_group_tsx
+  file_src_components_reui_color_picker_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_color_picker_tsx --> file_src_components_ui_separator_tsx
+  file_src_components_reui_data_grid_data_grid_cell_selection_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_cell_selection_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_src_components_reui_badge_tsx
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_src_components_ui_input_tsx
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_src_components_ui_separator_tsx
+  file_src_components_reui_data_grid_data_grid_column_header_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_column_header_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_column_header_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_data_grid_data_grid_column_visibility_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_column_visibility_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_data_grid_data_grid_pagination_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_pagination_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_pagination_tsx --> file_src_components_ui_select_tsx
+  file_src_components_reui_data_grid_data_grid_pagination_tsx --> file_src_components_ui_skeleton_tsx
+  file_src_components_reui_data_grid_data_grid_scroll_area_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_src_components_reui_data_grid_data_grid_table_tsx
+  file_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_src_components_reui_data_grid_data_grid_table_tsx
+  file_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_src_components_reui_data_grid_data_grid_table_tsx
+  file_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_src_components_ui_spinner_tsx
+  file_src_components_reui_data_grid_data_grid_table_tsx --> file_src_components_reui_data_grid_data_grid_tsx
+  file_src_components_reui_data_grid_data_grid_table_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_data_grid_data_grid_table_tsx --> file_src_components_ui_checkbox_tsx
+  file_src_components_reui_data_grid_data_grid_table_tsx --> file_src_components_ui_spinner_tsx
+  file_src_components_reui_data_grid_data_grid_tsx --> file_src_components_reui_data_grid_data_grid_i18n_tsx
+  file_src_components_reui_date_selector_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_date_selector_tsx --> file_src_components_ui_calendar_tsx
+  file_src_components_reui_date_selector_tsx --> file_src_components_ui_input_tsx
+  file_src_components_reui_date_selector_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_date_selector_tsx --> file_src_components_ui_tabs_tsx
+  file_src_components_reui_date_selector_tsx --> file_src_hooks_use_mobile_ts
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_empty_tsx
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_input_group_tsx
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_skeleton_tsx
+  file_src_components_reui_emoji_picker_tsx --> file_src_components_ui_tabs_tsx
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_src_components_reui_icon_stack_tsx
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_event_calendar_event_calendar_content_tsx --> file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx
+  file_src_components_reui_event_calendar_event_calendar_content_tsx --> file_src_components_reui_event_calendar_event_calendar_month_view_tsx
+  file_src_components_reui_event_calendar_event_calendar_content_tsx --> file_src_components_reui_event_calendar_event_calendar_resource_view_tsx
+  file_src_components_reui_event_calendar_event_calendar_content_tsx --> file_src_components_reui_event_calendar_event_calendar_time_grid_tsx
+  file_src_components_reui_event_calendar_event_calendar_content_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_content_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_event_tsx --> file_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_src_components_reui_event_calendar_event_calendar_event_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_event_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_event_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_event_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_event_calendar_event_calendar_i18n_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_lib_tsx --> file_src_components_reui_event_calendar_event_calendar_recurrence_tsx
+  file_src_components_reui_event_calendar_event_calendar_lib_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_ui_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_event_calendar_event_calendar_recurrence_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_reui_event_calendar_event_calendar_time_grid_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_src_components_reui_event_calendar_event_calendar_tsx
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_event_calendar_event_calendar_tsx --> file_src_components_reui_event_calendar_event_calendar_i18n_tsx
+  file_src_components_reui_event_calendar_event_calendar_tsx --> file_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_src_components_reui_event_calendar_event_calendar_tsx --> file_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_builder_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_chip_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_context_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_dnd_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_i18n_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_lib_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_operators_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_query_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_ui_input_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_filters_filters_advanced_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_cascader_cascader_footer_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_cascader_cascader_nav_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_cascader_cascader_virtual_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_cascader_cascader_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_filters_filters_context_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_filters_filters_lib_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_filters_filters_operators_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_filters_filters_builder_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_reui_filters_filters_context_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_reui_filters_filters_editors_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_reui_filters_filters_lib_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_reui_filters_filters_operators_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_reui_filters_filters_query_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_ui_button_group_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_filters_filters_chip_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_filters_filters_context_tsx --> file_src_components_reui_filters_filters_draft_tsx
+  file_src_components_reui_filters_filters_context_tsx --> file_src_components_reui_filters_filters_lib_tsx
+  file_src_components_reui_filters_filters_context_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_draft_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_cascader_cascader_context_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_cascader_cascader_footer_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_cascader_cascader_item_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_cascader_cascader_nav_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_cascader_cascader_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_filters_filters_context_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_filters_filters_lib_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_ui_button_group_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_filters_filters_editors_tsx --> file_src_components_ui_input_tsx
+  file_src_components_reui_filters_filters_i18n_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_lib_tsx --> file_src_components_reui_cascader_cascader_lib_tsx
+  file_src_components_reui_filters_filters_lib_tsx --> file_src_components_reui_cascader_cascader_types_tsx
+  file_src_components_reui_filters_filters_lib_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_operators_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_query_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_advanced_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_builder_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_chip_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_context_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_draft_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_editors_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_i18n_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_lib_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_operators_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_query_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_reui_filters_filters_types_tsx
+  file_src_components_reui_filters_filters_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_gantt_gantt_bar_tsx --> file_src_components_reui_gantt_gantt_dnd_tsx
+  file_src_components_reui_gantt_gantt_bar_tsx --> file_src_components_reui_gantt_gantt_lib_tsx
+  file_src_components_reui_gantt_gantt_bar_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_bar_tsx --> file_src_components_reui_gantt_gantt_tsx
+  file_src_components_reui_gantt_gantt_bar_tsx --> file_src_components_ui_context_menu_tsx
+  file_src_components_reui_gantt_gantt_bar_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_gantt_gantt_dnd_tsx --> file_src_components_reui_gantt_gantt_lib_tsx
+  file_src_components_reui_gantt_gantt_dnd_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_dnd_tsx --> file_src_components_reui_gantt_gantt_tsx
+  file_src_components_reui_gantt_gantt_i18n_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_lib_tsx --> file_src_components_reui_gantt_gantt_recurrence_tsx
+  file_src_components_reui_gantt_gantt_lib_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_reui_gantt_gantt_lib_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_reui_gantt_gantt_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_ui_calendar_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_ui_dropdown_menu_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_ui_popover_tsx
+  file_src_components_reui_gantt_gantt_nav_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_gantt_gantt_recurrence_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_reui_gantt_gantt_bar_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_reui_gantt_gantt_dnd_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_reui_gantt_gantt_lib_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_reui_gantt_gantt_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_ui_checkbox_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_ui_context_menu_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_gantt_gantt_view_tsx --> file_src_components_ui_tooltip_tsx
+  file_src_components_reui_gantt_gantt_tsx --> file_src_components_reui_gantt_gantt_i18n_tsx
+  file_src_components_reui_gantt_gantt_tsx --> file_src_components_reui_gantt_gantt_lib_tsx
+  file_src_components_reui_gantt_gantt_tsx --> file_src_components_reui_gantt_gantt_types_tsx
+  file_src_components_reui_number_field_tsx --> file_src_components_ui_label_tsx
+  file_src_components_reui_phone_input_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_phone_input_tsx --> file_src_components_ui_combobox_tsx
+  file_src_components_reui_phone_input_tsx --> file_src_components_ui_input_tsx
+  file_src_components_reui_phone_input_tsx --> file_src_components_ui_scroll_area_tsx
+  file_src_components_reui_signature_pad_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_time_picker_tsx --> file_src_components_ui_button_tsx
+  file_src_components_reui_time_picker_tsx --> file_src_components_ui_input_group_tsx
+  file_src_components_reui_time_picker_tsx --> file_src_components_ui_popover_tsx
   file_src_components_ui_alert_dialog_tsx --> file_src_components_ui_button_tsx
-  file_src_components_ui_alert_dialog_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_alert_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_avatar_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_badge_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_breadcrumb_tsx --> file_src_lib_utils_ts
   file_src_components_ui_button_group_tsx --> file_src_components_ui_separator_tsx
-  file_src_components_ui_button_group_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_button_tsx --> file_src_lib_utils_ts
   file_src_components_ui_calendar_tsx --> file_src_components_ui_button_tsx
-  file_src_components_ui_calendar_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_card_tsx --> file_src_lib_utils_ts
   file_src_components_ui_carousel_tsx --> file_src_components_ui_button_tsx
-  file_src_components_ui_carousel_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_chart_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_checkbox_tsx --> file_src_lib_utils_ts
+  file_src_components_ui_combobox_tsx --> file_src_components_ui_button_tsx
+  file_src_components_ui_combobox_tsx --> file_src_components_ui_input_group_tsx
   file_src_components_ui_command_tsx --> file_src_components_ui_dialog_tsx
-  file_src_components_ui_command_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_context_menu_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_dialog_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_drawer_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_dropdown_menu_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_empty_tsx --> file_src_lib_utils_ts
+  file_src_components_ui_command_tsx --> file_src_components_ui_input_group_tsx
+  file_src_components_ui_dialog_tsx --> file_src_components_ui_button_tsx
   file_src_components_ui_field_tsx --> file_src_components_ui_label_tsx
   file_src_components_ui_field_tsx --> file_src_components_ui_separator_tsx
-  file_src_components_ui_field_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_form_tsx --> file_src_components_ui_label_tsx
-  file_src_components_ui_form_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_hover_card_tsx --> file_src_lib_utils_ts
   file_src_components_ui_input_group_tsx --> file_src_components_ui_button_tsx
   file_src_components_ui_input_group_tsx --> file_src_components_ui_input_tsx
   file_src_components_ui_input_group_tsx --> file_src_components_ui_textarea_tsx
-  file_src_components_ui_input_group_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_input_otp_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_input_tsx --> file_src_lib_utils_ts
   file_src_components_ui_item_tsx --> file_src_components_ui_separator_tsx
-  file_src_components_ui_item_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_kbd_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_label_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_menubar_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_navigation_menu_tsx --> file_src_lib_utils_ts
+  file_src_components_ui_menubar_tsx --> file_src_components_ui_dropdown_menu_tsx
   file_src_components_ui_pagination_tsx --> file_src_components_ui_button_tsx
-  file_src_components_ui_pagination_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_popover_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_progress_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_radio_group_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_resizable_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_scroll_area_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_select_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_separator_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_sheet_tsx --> file_src_lib_utils_ts
+  file_src_components_ui_sheet_tsx --> file_src_components_ui_button_tsx
   file_src_components_ui_sidebar_tsx --> file_src_components_ui_button_tsx
   file_src_components_ui_sidebar_tsx --> file_src_components_ui_input_tsx
   file_src_components_ui_sidebar_tsx --> file_src_components_ui_separator_tsx
   file_src_components_ui_sidebar_tsx --> file_src_components_ui_sheet_tsx
   file_src_components_ui_sidebar_tsx --> file_src_components_ui_skeleton_tsx
   file_src_components_ui_sidebar_tsx --> file_src_components_ui_tooltip_tsx
-  file_src_components_ui_sidebar_tsx --> file_src_hooks_use_mobile_tsx
-  file_src_components_ui_sidebar_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_skeleton_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_slider_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_spinner_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_switch_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_table_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_tabs_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_textarea_tsx --> file_src_lib_utils_ts
+  file_src_components_ui_sidebar_tsx --> file_src_hooks_use_mobile_ts
   file_src_components_ui_toggle_group_tsx --> file_src_components_ui_toggle_tsx
-  file_src_components_ui_toggle_group_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_toggle_tsx --> file_src_lib_utils_ts
-  file_src_components_ui_tooltip_tsx --> file_src_lib_utils_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -2411,14 +931,14 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-373-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-22.91_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-375-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-26.97_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-2-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-8-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Library bundle Size](https://img.shields.io/badge/Library_bundle_Size-201.04_kB_gzip-6b7280?style=flat-square)
+![Library bundle Size](https://img.shields.io/badge/Library_bundle_Size-343.59_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -2443,8 +963,8 @@ graph LR
 ![Constants](https://img.shields.io/badge/Constants-2-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-10-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-0-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-26-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-62-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-28-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-64-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -2465,16 +985,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-4-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-180-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-173-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-10-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-137-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-108-16a34a?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-11-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-125-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-98-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-23-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-164-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-26-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-155-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
@@ -2544,14 +1064,14 @@ graph LR
 ### CSS
 
 ![CSS Files](https://img.shields.io/badge/CSS_Files-1-264de4?style=flat-square)
-![CSS Lines](https://img.shields.io/badge/CSS_Lines-136-2965f1?style=flat-square)
-![CSS Rules](https://img.shields.io/badge/CSS_Rules-7-7c3aed?style=flat-square)
-![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-8-8b5cf6?style=flat-square)
-![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-72-0284c7?style=flat-square)
-![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-10-f97316?style=flat-square)
+![CSS Lines](https://img.shields.io/badge/CSS_Lines-210-2965f1?style=flat-square)
+![CSS Rules](https://img.shields.io/badge/CSS_Rules-9-7c3aed?style=flat-square)
+![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-10-8b5cf6?style=flat-square)
+![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-123-0284c7?style=flat-square)
+![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-12-f97316?style=flat-square)
 ![CSS Media Queries](https://img.shields.io/badge/CSS_Media_Queries-0-ea580c?style=flat-square)
-![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-65-16a34a?style=flat-square)
-![CSS Comments](https://img.shields.io/badge/CSS_Comments-12-64748b?style=flat-square)
+![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-116-16a34a?style=flat-square)
+![CSS Comments](https://img.shields.io/badge/CSS_Comments-16-64748b?style=flat-square)
 
 ### Conventions
 
@@ -2600,23 +1120,23 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-74-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-110-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-5-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-21-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-25-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-4-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-15-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-0-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-0-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-10-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-11-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-4-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-17-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-6-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-45-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

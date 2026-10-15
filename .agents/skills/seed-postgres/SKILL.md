@@ -16,7 +16,7 @@ Use this skill when you need to:
 
 ## Prerequisites
 
-- The PostgreSQL container must be running. Use `nx run codebase:postgres-container:up` to start it.
+- The PostgreSQL container must be running. Use `nx run infrastructure:postgres:up` to start it.
 - `pg_dump` and `pg_restore` (version 18) must be installed locally. If you see version mismatch errors, ensure the client tools are installed via Homebrew (`brew install postgresql@18`) or apt.
 
 ## Procedure
@@ -141,12 +141,12 @@ list, recreate the container while keeping its volume, and run the same init
 script for that project alone:
 
 ```bash
-nx run codebase:postgres-container:up
+nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
 The script stops at the first object that already exists, so name only the
-projects the volume lacks. Never use `postgres-container:recreate` for this:
+projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
 it deletes the volume and every row in it. See
 [ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
 for meanderaw's one exception.

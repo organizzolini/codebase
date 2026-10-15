@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/organizzolini/codebase/compare/v3.4.0...v3.4.1) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 exit non-zero when a template-generated cli command throws ([#1591](https://github.com/organizzolini/codebase/issues/1591)) ([5b02e7a](https://github.com/organizzolini/codebase/commit/5b02e7abe3daece5eeb20e384d63004580a8a69e))
+
+## [3.4.0](https://github.com/organizzolini/codebase/compare/v3.3.2...v3.4.0) (2026-10-15)
+
+### ✨ Features
+
+* **infrastructure,affirmancy,validation,documentation:** ✨ make infrastructure an Nx project and check searxng ([#1512](https://github.com/organizzolini/codebase/issues/1512)) ([d229cf9](https://github.com/organizzolini/codebase/commit/d229cf99c869c003145635b844d3a5a40f6e3b50)), closes [.github/CONTRIBUTING.md#release-significance](https://github.com/.github/CONTRIBUTING.md/issues/release-significance)
+
+## [3.3.2](https://github.com/organizzolini/codebase/compare/v3.3.1...v3.3.2) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 make squawk.toml settings actually apply ([#1559](https://github.com/organizzolini/codebase/issues/1559)) ([7bcdccb](https://github.com/organizzolini/codebase/commit/7bcdccb9a428823a747eb77c3cabfcf5d36ded24))
+
+## [3.3.1](https://github.com/organizzolini/codebase/compare/v3.3.0...v3.3.1) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 ignore vendored component paths in spell-check ([#1585](https://github.com/organizzolini/codebase/issues/1585)) ([7d46cd4](https://github.com/organizzolini/codebase/commit/7d46cd4709c66c00989e34c649bd261edff5354e)), closes [#1510](https://github.com/organizzolini/codebase/issues/1510)
+
+## [3.3.0](https://github.com/organizzolini/codebase/compare/v3.2.9...v3.3.0) (2026-10-15)
+
+### ✨ Features
+
+* **components-web,lexico,configuration:** ✨ switch to Base UI and vendor ReUI components ([#1510](https://github.com/organizzolini/codebase/issues/1510)) ([62dde69](https://github.com/organizzolini/codebase/commit/62dde69df4f705a268820586aeb3604ebad90890))
+
 ## [3.2.9](https://github.com/organizzolini/codebase/compare/v3.2.8...v3.2.9) (2026-10-15)
 
 ### 🐛 Bug Fixes

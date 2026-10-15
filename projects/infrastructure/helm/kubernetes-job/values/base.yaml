@@ -27,6 +27,12 @@ securityContext: {}
 # runAsNonRoot: true
 # runAsUser: 1000
 
+# Labels the templates stamp on the Job and PVC when set. Declared here so the
+# templates can read them when a deploy passes neither.
+metadata:
+  gitCommit: ""
+  timestamp: ""
+
 # Job-specific configuration
 job:
   # Number of retries before considering a Job as failed

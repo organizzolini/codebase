@@ -32,6 +32,23 @@ describe(WordsService, () => {
     expect(service).toBeDefined();
   });
 
+  it("does not query for the word forms of no lexemes", async () => {
+    expect.hasAssertions();
+
+    const wordFormRepo = createRepositoryMock<WordForm>();
+    const createQueryBuilder = vi.spyOn(wordFormRepo, "createQueryBuilder");
+    const service = new WordsService(
+      createRepositoryMock<Word>(),
+      wordFormRepo,
+      createRepositoryMock<WordLexeme>(),
+    );
+
+    await expect(service.findWordFormsByLexemeIds([])).resolves.toStrictEqual(
+      [],
+    );
+    expect(createQueryBuilder).not.toHaveBeenCalled();
+  });
+
   it("finds a single word by surface data with all relations", async () => {
     expect.hasAssertions();
 

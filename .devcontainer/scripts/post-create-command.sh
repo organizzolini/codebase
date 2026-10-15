@@ -19,7 +19,7 @@ curl -sSfL \
   | tar -xzC /usr/local/bin gitleaks
 echo "✅ Gitleaks installed: $(gitleaks version)"
 
-# Trivy backs `nx run codebase:trivy-config`, which the security gate runs in
+# Trivy backs `nx run infrastructure:trivy-config`, which the security gate runs in
 # CI and which should behave identically here.
 : "${TRIVY_VERSION:?set by remoteEnv in devcontainer.json}"
 echo "🏗 Installing Trivy v${TRIVY_VERSION}..."
