@@ -101,11 +101,11 @@ Call stacks traced through `projects/lexico/lexico-web`, deepest first. Each fra
 | --- | --- |
 | Callables | 212 |
 | Files | 37 |
-| Calls traced | 129 |
-| Call stacks | 24 |
+| Calls traced | 118 |
+| Call stacks | 21 |
 | Deepest stack | 9 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 68 |
+| Unfollowable calls | 66 |
 
 ### Limits
 
@@ -181,7 +181,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>21 more call stacks</summary>
+<summary>18 more call stacks</summary>
 
 **4. `VerbFormsTable`** — depth 7 · orphan-root
 
@@ -203,7 +203,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **5. `LibraryPage`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 LibraryPage(): ReactNode [projects/lexico/lexico-web/src/routes/library.tsx:277]
+🚀 LibraryPage(): ReactNode [projects/lexico/lexico-web/src/routes/library.tsx:275]
    ↳ Library page component that displays and manages user's saved texts.
   └─> useLibraryPage(): LibraryPageState [projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:67]
      ↳ Hook managing the library page state and operations. Handles text CRUD operations, form state, and UI dialogs.
@@ -248,17 +248,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> setTimeout(…)(): void [projects/lexico/lexico-web/src/routes/search.tsx:224]
 ```
 
-**9. `FormCell`** — depth 3 · orphan-root
-
-```text
-🚀 FormCell(properties: FormCellProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/form-cell.tsx:57]
-   ↳ Render a single grid cell with optional corner identifiers.
-  └─> computeBorderClasses(position: FormCellPosition | undefined): string [projects/lexico/lexico-web/src/components/entry/form-cell.tsx:43]
-     ↳ Compute border classes for a form cell based on its grid position.
-    └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**10. `PrincipalParts`** — depth 3 · orphan-root
+**9. `PrincipalParts`** — depth 3 · orphan-root
 
 ```text
 🚀 PrincipalParts(properties: PrincipalPartsProperties): ReactElement [projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:125]
@@ -268,7 +258,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> map(…)(principalPart: PrincipalPart): string [projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:199]
 ```
 
-**11. `Translations`** — depth 3 · orphan-root
+**10. `Translations`** — depth 3 · orphan-root
 
 ```text
 🚀 Translations(properties: TranslationsProperties): ReactElement [projects/lexico/lexico-web/src/components/entry/translations.tsx:26]
@@ -277,7 +267,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> renderTranslation(translation: string): ReactElement [projects/lexico/lexico-web/src/components/entry/translations.tsx:38]
 ```
 
-**12. `PronunciationButton`** — depth ≥ 3 · orphan-root
+**11. `PronunciationButton`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 PronunciationButton(properties: Readonly<PronunciationButtonProperties>): ReactNode [projects/lexico/lexico-web/src/components/pronunciation-button.tsx:26]
@@ -286,55 +276,40 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> addEventListener(…)(): void [projects/lexico/lexico-web/src/components/pronunciation-button.tsx:56]
 ```
 
-**13. `Logo`** — depth 2 · orphan-root
-
-```text
-🚀 Logo(properties: LogoProperties): React.ReactElement [projects/lexico/lexico-web/src/components/layout/logo.tsx:18]
-   ↳ Render the Lexico brand logo at a configurable width.
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**14. `Identifier`** — depth 2 · orphan-root
-
-```text
-🚀 Identifier(properties: IdentifierProperties): ReactElement [projects/lexico/lexico-web/src/components/entry/identifier.tsx:171]
-   ↳ Badge component that displays abbreviated identifiers with tooltips.
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**15. `FormTabs`** — depth 2 · orphan-root
+**12. `FormTabs`** — depth 2 · orphan-root
 
 ```text
 🚀 FormTabs(properties: FormTabsProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:32]
    ↳ Render shared tab UI for selecting form groupings.
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
+  └─> map(…)(tab: string): React.JSX.Element [projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:54]
 ```
 
-**16. `FormsTable`** — depth 2 · orphan-root
+**13. `FormCell`** — depth 2 · orphan-root
+
+```text
+🚀 FormCell(properties: FormCellProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/form-cell.tsx:57]
+   ↳ Render a single grid cell with optional corner identifiers.
+  └─> computeBorderClasses(position: FormCellPosition | undefined): string [projects/lexico/lexico-web/src/components/entry/form-cell.tsx:43]
+     ↳ Compute border classes for a form cell based on its grid position.
+```
+
+**14. `FormsTable`** — depth 2 · orphan-root
 
 ```text
 🚀 FormsTable(properties: FormsTableProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/forms-table.tsx:27]
    ↳ Render two-column form cells with border-position metadata.
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
+  └─> map(…)(…): Element [projects/lexico/lexico-web/src/components/entry/forms-table.tsx:31]
 ```
 
-**17. `ApplicationSidebar`** — depth 2 · orphan-root
+**15. `ApplicationSidebar`** — depth 2 · orphan-root
 
 ```text
-🚀 ApplicationSidebar(properties: Readonly<ApplicationSidebarProperties>): ReactNode [projects/lexico/lexico-web/src/routes/__root.tsx:112]
-   ↳ Application sidebar component with navigation items.
-  └─> useSidebar(): SidebarContextProperties [projects/components-web/src/components/ui/sidebar.tsx:46]
+🚀 ApplicationSidebar(): ReactNode [projects/lexico/lexico-web/src/routes/__root.tsx:109]
+   ↳ Application sidebar: a rail that collapses to icons, with the brand in the header, navigation in a labelled group, and…
+  └─> map(…)(item: NavigationItem): JSX.Element [projects/lexico/lexico-web/src/routes/__root.tsx:147]
 ```
 
-**18. `EntryCard`** — depth 2 · orphan-root
-
-```text
-🚀 EntryCard(properties: EntryCardProperties): ReactElement [projects/lexico/lexico-web/src/components/entry/entry-card.tsx:104]
-   ↳ Renders a lexical entry card and wires accordion state for detail sections.
-  └─> cn(...inputs: ClassValue[]): string [projects/components-web/src/lib/utils.ts:4]
-```
-
-**19. `BookmarksList`** — depth 2 · orphan-root
+**16. `BookmarksList`** — depth 2 · orphan-root
 
 ```text
 🚀 BookmarksList(properties: BookmarksListProperties): ReactNode [projects/lexico/lexico-web/src/routes/bookmarks.tsx:88]
@@ -342,15 +317,15 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> map(…)(entry: BookmarkedEntry): JSX.Element [projects/lexico/lexico-web/src/routes/bookmarks.tsx:92]
 ```
 
-**20. `LibraryTextGrid`** — depth 2 · orphan-root
+**17. `LibraryTextGrid`** — depth 2 · orphan-root
 
 ```text
-🚀 LibraryTextGrid(…): ReactNode [projects/lexico/lexico-web/src/routes/library.tsx:455]
+🚀 LibraryTextGrid(…): ReactNode [projects/lexico/lexico-web/src/routes/library.tsx:453]
    ↳ Library text grid.
-  └─> map(…)(text: UserText): JSX.Element [projects/lexico/lexico-web/src/routes/library.tsx:470]
+  └─> map(…)(text: UserText): JSX.Element [projects/lexico/lexico-web/src/routes/library.tsx:468]
 ```
 
-**21. `anonymous`** — depth 2 · orphan-root
+**18. `anonymous`** — depth 2 · orphan-root
 
 ```text
 🚀 anonymous(): undefined [projects/lexico/lexico-web/src/routes/settings.tsx:81]
@@ -358,21 +333,21 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Handle sign in.
 ```
 
-**22. `anonymous`** — depth 2 · orphan-root
+**19. `anonymous`** — depth 2 · orphan-root
 
 ```text
 🚀 anonymous(): undefined [projects/lexico/lexico-web/src/routes/settings.tsx:107]
   └─> handleSignOut(): Promise<void> [projects/lexico/lexico-web/src/routes/settings.tsx:52]
 ```
 
-**23. `anonymous`** — depth 2 · orphan-root
+**20. `anonymous`** — depth 2 · orphan-root
 
 ```text
 🚀 anonymous(): undefined [projects/lexico/lexico-web/src/routes/settings.tsx:144]
   └─> handleDeleteAccount(): Promise<void> [projects/lexico/lexico-web/src/routes/settings.tsx:57]
 ```
 
-**24. `WordIdPage`** — depth ≥ 2 · orphan-root
+**21. `WordIdPage`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 WordIdPage(): ReactNode [projects/lexico/lexico-web/src/routes/word.$id.tsx:85]
@@ -391,31 +366,27 @@ What this project is judged against, as declared in its own `callidescope.config
 | `autoDetectFormTransform` | 6 | `isVerbForms`, `transformVerbForms`, `isAdjectiveForms`, `transformAdjectiveForms`, `isNounForms`, `transformNounForms` | `projects/lexico/lexico-web/src/lib/forms.ts:153` |
 
 <details>
-<summary>68 more callables</summary>
+<summary>64 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `VerbFormsTable` | 5 | `useMemo(…)`, `map(…)`, `map(…)`, `map(…)`, `renderVerbFormContent` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:261` |
 | `transformVerbForms` | 5 | `transformIndicativeForms`, `transformSubjunctiveForms`, `transformImperativeForms`, `transformNonFiniteForms`, `transformVerbalNounForms` | `projects/lexico/lexico-web/src/lib/forms.ts:140` |
 | `SearchPage` | 5 | `useDebounce`, `useEffect(…)`, `useEffect(…)`, `useCallback(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:75` |
-| `Translations` | 4 | `cn`, `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:26` |
-| `FormTabs` | 3 | `cn`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:32` |
 | `AdjectiveFormsTable` | 3 | `useMemo(…)`, `map(…)`, `renderAdjectiveGenderContent` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:73` |
 | `groupAdjectiveForms` | 3 | `some(…)`, `groupByGender`, `buildDegreeGroupsFromForms` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:165` |
 | `restructureVerbForms` | 3 | `some(…)`, `map(…)`, `flatMap(…)` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:239` |
+| `Translations` | 3 | `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:26` |
 | `BookmarksPage` | 3 | `useCallback(…)`, `useEffect(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:110` |
 | `WordIdPage` | 3 | `useEffect(…)`, `useCallback(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/word.$id.tsx:85` |
-| `FormCell` | 2 | `computeBorderClasses`, `cn` | `projects/lexico/lexico-web/src/components/entry/form-cell.tsx:57` |
-| `FormsTable` | 2 | `cn`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/forms-table.tsx:27` |
+| `FormTabs` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:32` |
 | `restructureAdjectiveForms` | 2 | `flatMap(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:236` |
 | `restructureNounForms` | 2 | `flatMap(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:94` |
 | `groupVerbForms` | 2 | `buildVerbGroupRecord`, `buildVerbFormTenses` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:165` |
 | `transformNonFiniteForms` | 2 | `collectInfinitiveForms`, `collectParticipleForms` | `projects/lexico/lexico-web/src/lib/forms.ts:441` |
-| `ApplicationSidebar` | 2 | `useSidebar`, `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:112` |
-| `PrincipalParts` | 2 | `getPrincipalPartsLabel`, `cn` | `projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:125` |
-| `Logo` | 1 | `cn` | `projects/lexico/lexico-web/src/components/layout/logo.tsx:18` |
-| `Identifier` | 1 | `cn` | `projects/lexico/lexico-web/src/components/entry/identifier.tsx:171` |
-| `computeBorderClasses` | 1 | `cn` | `projects/lexico/lexico-web/src/components/entry/form-cell.tsx:43` |
+| `ApplicationSidebar` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:109` |
+| `FormCell` | 1 | `computeBorderClasses` | `projects/lexico/lexico-web/src/components/entry/form-cell.tsx:57` |
+| `FormsTable` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/entry/forms-table.tsx:27` |
 | `useMemo(…)` | 1 | `groupAdjectiveForms` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:77` |
 | `buildDegreeGroupsFromForms` | 1 | `groupByGender` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:140` |
 | `groupByGender` | 1 | `restructureAdjectiveForms` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:175` |
@@ -434,11 +405,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `transformIndicativeForms` | 1 | `collectPersonNumberForms` | `projects/lexico/lexico-web/src/lib/forms.ts:413` |
 | `transformSubjunctiveForms` | 1 | `collectPersonNumberForms` | `projects/lexico/lexico-web/src/lib/forms.ts:459` |
 | `transformVerbalNounForms` | 1 | `collectVerbalNounCaseForms` | `projects/lexico/lexico-web/src/lib/forms.ts:487` |
+| `PrincipalParts` | 1 | `getPrincipalPartsLabel` | `projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:125` |
 | `getPrincipalPartsLabel` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:194` |
 | `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:57` |
-| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:66` |
-| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:71` |
-| `EntryCard` | 1 | `cn` | `projects/lexico/lexico-web/src/components/entry/entry-card.tsx:104` |
+| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:68` |
+| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:72` |
 | `BookmarksList` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:88` |
 | `useCallback(…)` | 1 | `setBookmarks(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:137` |
 | `setBookmarks(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:141` |
@@ -451,8 +422,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `setTexts(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:228` |
 | `updateTextAsync` | 1 | `setTexts(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:265` |
 | `setTexts(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:292` |
-| `LibraryPage` | 1 | `useLibraryPage` | `projects/lexico/lexico-web/src/routes/library.tsx:277` |
-| `LibraryTextGrid` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/library.tsx:455` |
+| `LibraryPage` | 1 | `useLibraryPage` | `projects/lexico/lexico-web/src/routes/library.tsx:275` |
+| `LibraryTextGrid` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/library.tsx:453` |
 | `SearchResultsList` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:182` |
 | `map(…)` | 1 | `transformForms` | `projects/lexico/lexico-web/src/routes/search.tsx:187` |
 | `useDebounce` | 1 | `useEffect(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:220` |
@@ -619,26 +590,26 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5781-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-172.51_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5808-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-173.08_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-143.16_kB_gzip-6b7280?style=flat-square)
-![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-83.75_kB_gzip-6b7280?style=flat-square)
-![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-15.39_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-166.35_kB_gzip-6b7280?style=flat-square)
+![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-148.66_kB_gzip-6b7280?style=flat-square)
+![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-110.75_kB_gzip-6b7280?style=flat-square)
+![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-47.58_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-228.21_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
 ![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-48-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-79-0ea5e9?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-78-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-3-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-289-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-288-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -651,11 +622,11 @@ graph LR
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-196-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-44-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-287-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-189-0284c7?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-286-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-188-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-83-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-479-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-729-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-478-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-728-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python

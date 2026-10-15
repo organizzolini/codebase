@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.0](https://github.com/organizzolini/codebase/compare/v3.2.9...v3.3.0) (2026-10-15)
+
+### ✨ Features
+
+* **components-web,lexico,configuration:** ✨ switch to Base UI and vendor ReUI components ([#1510](https://github.com/organizzolini/codebase/issues/1510)) ([62dde69](https://github.com/organizzolini/codebase/commit/62dde69df4f705a268820586aeb3604ebad90890))
+
 ## [3.2.9](https://github.com/organizzolini/codebase/compare/v3.2.8...v3.2.9) (2026-10-15)
 
 ### 🐛 Bug Fixes
