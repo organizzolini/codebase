@@ -17,6 +17,7 @@ The surviving floor is:
 | `scripts/git/check-commit-signing-configuration.sh`, `scripts/git/check-push-commit-signatures.sh` | They run from the pre-commit and pre-push hooks. |
 | `scripts/git/check-gh-authentication.sh`, `scripts/git/validate-session-commit-signing.sh`, `scripts/git/validate-session-gh-authentication.sh` | They use only `git`, `gpg`, and `gh`, and run from a terminal or a session start. |
 | `scripts/git/emit-session-hook-context.sh` | It is the one place the Claude and Copilot hook output formats are defined. The commands that replace the other session hooks only print text and set an exit code. |
+| `scripts/nx/bound-base-to-push.sh` | It runs before `pnpm install` in `setup-codebase`, so it cannot depend on a working install. |
 | `scripts/utilities.sh`, sourced by setup | The setup stub needs it before any dependency exists. |
 | The Node and pnpm step, `scripts/local/software/node.sh` | It installs the runtime every command needs, so it cannot be a command. A thin stub keeps that step, then calls the `installation` command. |
 | `scripts/shell/*.sh` | They are command references and helper functions sourced into a terminal. |
