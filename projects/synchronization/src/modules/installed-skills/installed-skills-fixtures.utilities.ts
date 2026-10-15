@@ -50,6 +50,10 @@ export function createFakeProcessRunner(
     if (args.includes("skills-lock.json")) {
       return isLockfileDirty();
     }
+    const folder = args.at(-1) ?? "";
+    if (behavior.dirtySkillFolderBefore === folder) {
+      return true;
+    }
     return restored && behavior.dirtiesSkillFolders === true;
   };
 

@@ -431,7 +431,42 @@ describe(InstalledSkillsCommand, () => {
 
       await command.run(["write"]);
 
-      expect(runner.commands).toContain("git checkout -- .agents/skills");
+      expect(runner.commands).toContain("git checkout -- .agents/skills/alpha");
+      expect(runner.commands).not.toContain("git checkout -- .agents/skills");
+    });
+
+    it("reverts only the locked skill folders", async () => {
+      lockSkills(workspace, ["alpha", "beta"]);
+      const { command, runner } = await createCommand(
+        {},
+        { dirtiesSkillFolders: true },
+      );
+
+      await command.run(["write"]);
+
+      expect(
+        runner.commands.filter((line) => line.startsWith("git checkout")),
+      ).toStrictEqual([
+        "git checkout -- .agents/skills/alpha",
+        "git checkout -- .agents/skills/beta",
+      ]);
+    });
+
+    it("keeps a locked skill folder that already had uncommitted edits", async () => {
+      lockSkills(workspace, ["alpha", "beta"]);
+      const { command, runner } = await createCommand(
+        {},
+        {
+          dirtiesSkillFolders: true,
+          dirtySkillFolderBefore: ".agents/skills/alpha",
+        },
+      );
+
+      await command.run(["write"]);
+
+      expect(
+        runner.commands.filter((line) => line.startsWith("git checkout")),
+      ).toStrictEqual(["git checkout -- .agents/skills/beta"]);
     });
 
     it("touches no tracked file when nothing was rewritten", async () => {

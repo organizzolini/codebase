@@ -50,6 +50,17 @@ export class InstalledSkillsService {
 
   // 🔏 Private Methods
 
+  /** The locked skill folders with no uncommitted changes right now. */
+  private findCleanSkillFolders(lockfilePath: string): string[] {
+    try {
+      return this.readLockedSkillNames(lockfilePath)
+        .map((name) => `${SKILLS_DIRECTORY}/${name}`)
+        .filter((folder) => !this.hasChanges(folder));
+    } catch {
+      return [];
+    }
+  }
+
   /** Runs one `git` query or command, without printing anything. */
   private git(...args: string[]): ProcessResult {
     return this.processService.run({ args, executable: "git" });
@@ -77,11 +88,16 @@ export class InstalledSkillsService {
    * Returns what a restore rewrote to the content this repository pins.
    *
    * The lockfile is reverted only when it started clean, so a pin somebody
-   * is moving by hand survives. The skill folders are checked out whole: a
-   * folder the repository has not committed yet is untracked, so it survives,
-   * and a committed one reappears even when the fetch failed outright.
+   * is moving by hand survives. Only the locked skill folders that started
+   * clean are checked out, one by one: a skill the lockfile does not name, a
+   * folder with edits in progress, and a folder the repository has not
+   * committed yet all survive, while a committed one reappears even when the
+   * fetch failed outright.
    */
-  private revertTrackedChanges(lockfileWasClean: boolean): void {
+  private revertTrackedChanges(
+    lockfileWasClean: boolean,
+    cleanSkillFolders: readonly string[],
+  ): void {
     if (lockfileWasClean && this.hasChanges(SKILLS_LOCKFILE)) {
       this.git("checkout", "--", SKILLS_LOCKFILE);
       this.logger.log(
@@ -91,9 +107,11 @@ export class InstalledSkillsService {
       );
     }
 
-    if (this.hasChanges(SKILLS_DIRECTORY)) {
-      this.git("checkout", "--", SKILLS_DIRECTORY);
-      this.logger.log("🤹 Returned the skill folders to the committed content");
+    for (const folder of cleanSkillFolders) {
+      if (this.hasChanges(folder)) {
+        this.git("checkout", "--", folder);
+        this.logger.log(`🤹 Returned ${folder} to the committed content`);
+      }
     }
   }
 
@@ -188,6 +206,9 @@ export class InstalledSkillsService {
     const inWorkTree =
       this.git("rev-parse", "--is-inside-work-tree").status === 0;
     const lockfileWasClean = inWorkTree && !this.hasChanges(SKILLS_LOCKFILE);
+    const cleanSkillFolders = inWorkTree
+      ? this.findCleanSkillFolders(path.join(process.cwd(), SKILLS_LOCKFILE))
+      : [];
     const restore = this.runRestore();
 
     if (!restore.available) {
@@ -204,7 +225,7 @@ export class InstalledSkillsService {
     }
 
     if (inWorkTree) {
-      this.revertTrackedChanges(lockfileWasClean);
+      this.revertTrackedChanges(lockfileWasClean, cleanSkillFolders);
     }
 
     this.verifyRestoration();

@@ -6,8 +6,10 @@ export interface FakeProcessBehavior {
   readonly corruptsLockfile?: boolean;
   /** Whether `git` reports changes to the lockfile after a restore. */
   readonly dirtiesLockfile?: boolean;
-  /** Whether `git` reports changes under `.agents/skills` after a restore. */
+  /** Whether `git` reports changes under each locked skill after a restore. */
   readonly dirtiesSkillFolders?: boolean;
+  /** One skill folder that already had uncommitted changes. */
+  readonly dirtySkillFolderBefore?: string;
   /** Whether the lockfile already had uncommitted changes. */
   readonly lockfileDirtyBefore?: boolean;
   /** Whether the workspace is a git work tree at all. */
