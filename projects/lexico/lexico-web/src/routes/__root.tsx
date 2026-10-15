@@ -8,21 +8,23 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Bookmark, BookOpen, Info, Search, User, Wrench } from "lucide-react";
-import { useState } from "react";
 
 import {
   Button,
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
-  useSidebar,
 } from "@codebase/components-web";
 import applicationCss from "@codebase/components-web/styles/globals.css?url";
 
@@ -53,6 +55,9 @@ const navigationItems: NavigationItem[] = [
     label: "Literature",
   },
   { href: "/tools", icon: <Wrench className="h-5 w-5" />, label: "Grammar" },
+];
+
+const accountItems: NavigationItem[] = [
   { href: "/settings", icon: <User className="h-5 w-5" />, label: "User" },
   { href: "/about", icon: <Info className="h-5 w-5" />, label: "About" },
 ];
@@ -90,14 +95,6 @@ export const Route = createRootRoute({
 });
 
 /**
- * Properties for the ApplicationSidebar component.
- */
-interface ApplicationSidebarProperties {
-  /** Callback when hover state changes */
-  onHoverChange: (hovered: boolean) => void;
-}
-
-/**
  * Properties for the RootDocument component.
  */
 interface RootDocumentProperties {
@@ -106,62 +103,96 @@ interface RootDocumentProperties {
 }
 
 /**
- * Application sidebar component with navigation items.
- *
+ * Application sidebar: a rail that collapses to icons, with the brand in the
+ * header, navigation in a labelled group, and account links in the footer.
  */
-function ApplicationSidebar(
-  properties: Readonly<ApplicationSidebarProperties>,
-): ReactNode {
-  const { onHoverChange } = properties;
+function ApplicationSidebar(): ReactNode {
   const matches = useMatches();
   const currentPath = matches.at(-1)?.pathname ?? "/";
-  const { isMobile } = useSidebar();
 
   return (
     <Sidebar
       collapsible="icon"
-      onMouseEnter={() => !isMobile && onHoverChange(true)}
-      onMouseLeave={() => !isMobile && onHoverChange(false)}
+      variant="floating"
     >
-      <SidebarHeader className="border-b border-sidebar-border">
-        <Link
-          className="flex h-8 items-center gap-2 text-lg font-semibold text-sidebar-foreground transition-colors hover:text-sidebar-accent-foreground cursor-pointer"
-          to="/"
-        >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#66023C]">
-            <Logo width={18} />
-          </span>
-          <span className="truncate group-data-[collapsible=icon]:hidden">
-            Lexico
-          </span>
-        </Link>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              render={<Link to="/" />}
+              size="lg"
+              tooltip="Lexico"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#66023C]">
+                <Logo width={18} />
+              </span>
+              <span className="grid min-w-0 flex-1 text-left leading-tight group-data-[collapsible=icon]:sr-only">
+                <span className="truncate text-sm font-medium">Lexico</span>
+                <span className="truncate text-xs text-sidebar-foreground/70">
+                  Latin Dictionary
+                </span>
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent
+        aria-label="Primary"
+        role="navigation"
+      >
         <SidebarGroup>
-          <SidebarMenu>
-            {navigationItems.map((item) => {
-              const isActive =
-                currentPath === item.href ||
-                (item.href === "/search" && currentPath === "/");
-              return (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    isActive={isActive}
-                    tooltip={item.label}
-                    asChild
-                  >
-                    <Link to={item.href}>
-                      {item.icon}
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
+          <SidebarGroupLabel>Study</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigationItems.map((item) => (
+                <NavigationLink
+                  key={item.href}
+                  currentPath={currentPath}
+                  item={item}
+                />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          {accountItems.map((item) => (
+            <NavigationLink
+              key={item.href}
+              currentPath={currentPath}
+              item={item}
+            />
+          ))}
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
+  );
+}
+
+/**
+ * Render one navigation row as a router link.
+ */
+function NavigationLink(
+  properties: Readonly<{ currentPath: string; item: NavigationItem }>,
+): ReactNode {
+  const { currentPath, item } = properties;
+  const isActive =
+    currentPath === item.href ||
+    (item.href === "/search" && currentPath === "/");
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        isActive={isActive}
+        render={<Link to={item.href} />}
+        tooltip={item.label}
+      >
+        {item.icon}
+        <span>{item.label}</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }
 
@@ -176,9 +207,10 @@ function NotFound(): ReactNode {
       <p className="mt-2 text-muted-foreground">Page not found</p>
       <Button
         className="mt-4"
-        asChild
+        nativeButton={false}
+        render={<Link to="/" />}
       >
-        <Link to="/">Go Home</Link>
+        Go Home
       </Button>
     </div>
   );
@@ -202,7 +234,6 @@ function RootComponent(): ReactNode {
  */
 function RootDocument(properties: Readonly<RootDocumentProperties>): ReactNode {
   const { children } = properties;
-  const [open, setOpen] = useState(false);
 
   return (
     <html
@@ -213,16 +244,13 @@ function RootDocument(properties: Readonly<RootDocumentProperties>): ReactNode {
         <HeadContent />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <SidebarProvider
-          onOpenChange={setOpen}
-          open={open}
-        >
-          <ApplicationSidebar onHoverChange={setOpen} />
+        <SidebarProvider>
+          <ApplicationSidebar />
           <SidebarInset>
-            {/* Mobile header with hamburger */}
-            <header className="flex h-14 items-center border-b border-border bg-card px-4 md:hidden">
+            {/* Trigger stays in the inset: it is the only control that opens the sheet on mobile */}
+            <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3">
               <SidebarTrigger />
-              <span className="ml-3 text-lg font-semibold">Lexico</span>
+              <span className="text-sm font-medium md:hidden">Lexico</span>
             </header>
             {/* Page content */}
             <div className="flex-1 px-4 py-8 md:px-8">{children}</div>

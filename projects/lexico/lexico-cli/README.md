@@ -117,9 +117,9 @@ Call stacks traced through `projects/lexico/lexico-cli`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 577 |
+| Callables | 578 |
 | Files | 111 |
-| Calls traced | 642 |
+| Calls traced | 645 |
 | Call stacks | 26 |
 | Deepest stack | 17 |
 | Stacks through recursion | 3 |
@@ -269,24 +269,26 @@ What this project is judged against, as declared in its own `callidescope.config
                   └─> LatinLibraryCommand.some(…)(f: string): boolean [projects/lexico/lexico-cli/src/modules/latin-library/latin-library.command.ts:200]
 ```
 
-**5. `WiktionaryCommand.run`** — depth ≥ 8 · decorated-method
+**5. `WiktionaryCommand.run`** — depth ≥ 9 · decorated-method
 
 ```text
-🚀 WiktionaryCommand.run(): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:302]
+🚀 WiktionaryCommand.run(): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:317]
    ↳ Runs the Wiktionary ingestion pipeline.
-  └─> WiktionaryCommand.ingestWiktionary(): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:287]
+  └─> WiktionaryCommand.ingestWiktionary(): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:302]
      ↳ Scrapes every configured Latin category from Wiktionary, stores each article's HTML as a JSON file under…
-    └─> WiktionaryCommand.ingestCategory(category?: Category, startPath?: string): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:139]
+    └─> WiktionaryCommand.ingestCategory(category?: Category, startPath?: string): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:150]
        ↳ Ingests category in the Wiktionary ingestion pipeline.
-      └─> WiktionaryCommand.processWiktionaryCategoryLink(a: Element, $: cheerio.CheerioAPI, category: string): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:233]
+      └─> WiktionaryCommand.processWiktionaryCategoryLink(a: Element, $: cheerio.CheerioAPI, category: string): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:246]
          ↳ Processes wiktionary category link during Wiktionary ingestion.
-        └─> WiktionaryCommand.ingestWord(word: string, urlPath: string, category: string): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:176]
+        └─> WiktionaryCommand.ingestWord(word: string, urlPath: string, category: string): Promise<void> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:187]
            ↳ Ingests word in the Wiktionary ingestion pipeline.
-          └─> WiktionaryCommand.parseLatinSection(…): Promise<{ $: CheerioAPI; section: Cheerio<AnyNode>; } | null> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:212]
-             ↳ Parses latin section during Wiktionary ingestion.
-            └─> WiktionaryCommand.fetchWithRetry(url: string, retries?: number): Promise<Response> [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:82]
-               ↳ Fetch with retry for Wiktionary ingestion.
-              └─> WiktionaryCommand.anonymous(resolve: (value: unknown) => void): void [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:102]
+          └─> WiktionaryCommand.saveWiktionaryEntry(…): void [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:281]
+             ↳ Save wiktionary entry for Wiktionary ingestion.
+            └─> WiktionaryCommand.getEntryFilePath(word: string): string [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:123]
+               ↳ Resolves the cached JSON path for a word so a resumed crawl can skip it.
+              └─> WiktionaryCommand.escapeCapitals(word: string): string [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:62]
+                 ↳ Escape capitals for Wiktionary ingestion.
+                └─> WiktionaryCommand.replaceAll(…)(character: string): string [projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:65]
 ```
 
 **6. `LiteratureService.ingestText`** — depth 8 · orphan-root
@@ -539,7 +541,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LexemesService.enrichLexeme` | 7 | `PrincipalPartsService.parsePrincipalParts`, `PartOfSpeechService.ingestInflection`, `TranslationsService.parseTranslations`, `EtymologyService.parse`, `PronunciationService.parse`, `PartOfSpeechService.parseForms`, `FormsBuilderService.buildFormsForPartOfSpeech` | `projects/lexico/lexico-cli/src/modules/lexemes/lexemes.service.ts:73` |
 
 <details>
-<summary>277 more callables</summary>
+<summary>278 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -623,7 +625,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PerseusLibraryProvider.writeSourceMarkdownFiles` | 3 | `PerseusLibraryTextExtractionProvider.extractTextNodes`, `PerseusLibraryProvider.writeTextFiles`, `PerseusLibraryProvider.anonymous` | `projects/lexico/lexico-cli/src/modules/library/providers/perseus-library.provider.ts:263` |
 | `LiteratureCommand.getProviderChoices` | 3 | `LiteratureService.scanLibrary`, `LiteratureCommand.map(…)`, `LiteratureCommand.map(…)` | `projects/lexico/lexico-cli/src/modules/literature/literature.command.ts:98` |
 | `LiteratureCommand.resolveFilter` | 3 | `getOptionText`, `requireChoice`, `selectChoice` | `projects/lexico/lexico-cli/src/modules/literature/literature.command.ts:134` |
-| `WiktionaryCommand.ingestCategory` | 3 | `WiktionaryCommand.fetchCategoryPage`, `WiktionaryCommand.processWiktionaryCategoryLink`, `WiktionaryCommand.handleCategoryError` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:139` |
+| `WiktionaryCommand.ingestCategory` | 3 | `WiktionaryCommand.fetchCategoryPage`, `WiktionaryCommand.processWiktionaryCategoryLink`, `WiktionaryCommand.handleCategoryError` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:150` |
+| `WiktionaryCommand.ingestWord` | 3 | `WiktionaryCommand.getEntryFilePath`, `WiktionaryCommand.parseLatinSection`, `WiktionaryCommand.saveWiktionaryEntry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:187` |
+| `WiktionaryCommand.processWiktionaryCategoryLink` | 3 | `WiktionaryCommand.getEntryFilePath`, `WiktionaryCommand.ingestWord`, `WiktionaryCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:246` |
 | `WordsService.map(…)` | 2 | `WordsService.escapeCapitals`, `WordsService.normalize` | `projects/lexico/lexico-cli/src/modules/words/words.service.ts:136` |
 | `normalizeStringArray` | 2 | `isNormalizableStringArray`, `filter(…)` | `projects/lexico/lexico-cli/src/modules/forms/forms.constants.ts:21` |
 | `FormsService.findIndex(…)` | 2 | `FormsService.filter(…)`, `FormsService.every(…)` | `projects/lexico/lexico-cli/src/modules/forms/forms.service.ts:80` |
@@ -675,9 +679,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PerseusCommand.downloadSourceXmlFileIfMissing` | 2 | `PerseusCommand.fetchAndWriteXmlFile`, `PerseusCommand.appendSourceDownloadErrorLog` | `projects/lexico/lexico-cli/src/modules/perseus/perseus.command.ts:58` |
 | `PerseusCommand.fetchSourceXmlPaths` | 2 | `PerseusCommand.map(…)`, `PerseusCommand.filter(…)` | `projects/lexico/lexico-cli/src/modules/perseus/perseus.command.ts:100` |
 | `PerseusCommand.run` | 2 | `PerseusCommand.fetchSourceXmlPaths`, `PerseusCommand.downloadSourceXmlFileIfMissing` | `projects/lexico/lexico-cli/src/modules/perseus/perseus.command.ts:133` |
-| `WiktionaryCommand.ingestWord` | 2 | `WiktionaryCommand.parseLatinSection`, `WiktionaryCommand.saveWiktionaryEntry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:176` |
-| `WiktionaryCommand.processWiktionaryCategoryLink` | 2 | `WiktionaryCommand.ingestWord`, `WiktionaryCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:233` |
-| `WiktionaryCommand.ingestWiktionary` | 2 | `WiktionaryCommand.filter(…)`, `WiktionaryCommand.ingestCategory` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:287` |
+| `WiktionaryCommand.ingestWiktionary` | 2 | `WiktionaryCommand.filter(…)`, `WiktionaryCommand.ingestCategory` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:302` |
 | `LexicoIngestionCommand.run` | 2 | `LexicoIngestionCommand.promptForMissingOptions`, `LexicoIngestionCommand.executeStages` | `projects/lexico/lexico-cli/src/modules/lexico-ingestion/lexico-ingestion.command.ts:219` |
 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.downloadSourceXmlFileIfMissing` | 1 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.fetchAndWriteXmlFile` | `projects/lexico/lexico-cli/src/modules/corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command.ts:47` |
 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.fetchAndWriteXmlFile` | 1 | `CorpusScriptorumEcclesiasticorumLatinorumCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/corpus-scriptorum-ecclesiasticorum-latinorum/corpus-scriptorum-ecclesiasticorum-latinorum.command.ts:76` |
@@ -813,12 +815,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LiteratureService.ingestAllAuthors` | 1 | `LiteratureService.ingestAuthorGroup` | `projects/lexico/lexico-cli/src/modules/literature/literature.service.ts:489` |
 | `LiteratureService.scanLibrary` | 1 | `LiteratureLibraryScanService.scanLibrary` | `projects/lexico/lexico-cli/src/modules/literature/literature.service.ts:507` |
 | `PerseusCommand.fetchAndWriteXmlFile` | 1 | `PerseusCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/perseus/perseus.command.ts:81` |
-| `WiktionaryCommand.escapeCapitals` | 1 | `WiktionaryCommand.replaceAll(…)` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:58` |
-| `WiktionaryCommand.fetchCategoryPage` | 1 | `WiktionaryCommand.fetchWithRetry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:67` |
-| `WiktionaryCommand.fetchWithRetry` | 1 | `WiktionaryCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:82` |
-| `WiktionaryCommand.parseLatinSection` | 1 | `WiktionaryCommand.fetchWithRetry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:212` |
-| `WiktionaryCommand.saveWiktionaryEntry` | 1 | `WiktionaryCommand.escapeCapitals` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:265` |
-| `WiktionaryCommand.run` | 1 | `WiktionaryCommand.ingestWiktionary` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:302` |
+| `WiktionaryCommand.escapeCapitals` | 1 | `WiktionaryCommand.replaceAll(…)` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:62` |
+| `WiktionaryCommand.fetchCategoryPage` | 1 | `WiktionaryCommand.fetchWithRetry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:71` |
+| `WiktionaryCommand.fetchWithRetry` | 1 | `WiktionaryCommand.anonymous` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:86` |
+| `WiktionaryCommand.getEntryFilePath` | 1 | `WiktionaryCommand.escapeCapitals` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:123` |
+| `WiktionaryCommand.parseLatinSection` | 1 | `WiktionaryCommand.fetchWithRetry` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:225` |
+| `WiktionaryCommand.saveWiktionaryEntry` | 1 | `WiktionaryCommand.getEntryFilePath` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:281` |
+| `WiktionaryCommand.run` | 1 | `WiktionaryCommand.ingestWiktionary` | `projects/lexico/lexico-cli/src/modules/wiktionary/wiktionary.command.ts:317` |
 | `LexicoIngestionCommand.promptForMissingOptions` | 1 | `LexicoIngestionCommand.promptOption` | `projects/lexico/lexico-cli/src/modules/lexico-ingestion/lexico-ingestion.command.ts:96` |
 
 </details>
@@ -1404,14 +1407,14 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-33585-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-138.17_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-219-4a4a4a?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-33641-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.92_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-31-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-159-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.64_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.81_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -1429,11 +1432,11 @@ graph LR
 ![Test Files](https://img.shields.io/badge/Test_Files-45-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-29-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-62-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-1262-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-510-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-1244-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-528-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2428-dc2626?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1264-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-511-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-1245-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-530-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2430-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-809-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-177-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-614-64748b?style=flat-square)
@@ -1592,24 +1595,24 @@ graph LR
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-1226-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-1865404-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-1226-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-8-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-8-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-4104-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-8-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-15-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-925006-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-130-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-189-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-1909-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-7-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-36-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-3-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-17-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-501-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-10-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-17-dc2626?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-15-dc2626?style=flat-square)
 ![Inline Code](https://img.shields.io/badge/Inline_Code-109-ef4444?style=flat-square)
-![Block Quotes](https://img.shields.io/badge/Block_Quotes-3-ca8a04?style=flat-square)
-![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-4-a16207?style=flat-square)
+![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
+![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
