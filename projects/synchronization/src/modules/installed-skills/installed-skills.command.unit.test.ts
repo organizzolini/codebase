@@ -109,12 +109,16 @@ describe(InstalledSkillsCommand, () => {
     mkdirSync(FIXTURE_PARENT, { recursive: true });
     workspace = mkdtempSync(path.join(FIXTURE_PARENT, "installed-skills-"));
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
+    // A CI runner sets these, and the local-agent wording must not depend on it.
+    vi.stubEnv("CI", undefined);
+    vi.stubEnv("GITHUB_ACTIONS", undefined);
     stdout = vi.spyOn(process.stdout, "write").mockReturnValue(true);
   });
 
   afterEach(() => {
     rmSync(workspace, { force: true, recursive: true });
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it("is defined", () => {
