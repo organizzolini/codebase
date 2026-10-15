@@ -27,7 +27,7 @@
     "deprecate-code": {},
     "develop": {
       "continuous": true,
-      "dependsOn": ["lexico-api:develop", "lexico-api:wait-ready"],
+      "dependsOn": ["lexico-api:await-health", "lexico-api:develop"],
       "description": "Start development server with hot reload, once the API is ready",
       "executor": "nx:run-commands",
       "options": {

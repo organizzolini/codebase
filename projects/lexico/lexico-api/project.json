@@ -12,6 +12,11 @@
     "type:application"
   ],
   "targets": {
+    "await-health": {
+      "options": {
+        "url": "http://localhost:${LEXICO_API_PORT:-8398}/graphql"
+      }
+    },
     "build": {
       "executor": "@nx/js:tsc",
       "options": {
@@ -62,15 +67,6 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
-    "wait-ready": {
-      "cache": false,
-      "dependsOn": ["develop"],
-      "description": "Block until the running LexicoApi answers its GraphQL health query with true",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "end=$(( $(date +%s) + 60 )); while [ \"$(date +%s)\" -lt \"$end\" ]; do curl -fsS -m 2 -H \"content-type: application/json\" -d '{\"query\":\"{ health }\"}' \"http://localhost:${LEXICO_API_PORT:-8398}/graphql\" 2>/dev/null | grep -q '\"health\":true' && exit 0; sleep 0.5; done; echo \"LexicoApi was not healthy after 60s\" >&2; exit 1"
-      }
-    },
     "yaml-lint": {}
   }
 }
