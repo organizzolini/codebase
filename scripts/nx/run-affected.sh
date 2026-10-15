@@ -15,7 +15,17 @@
 # instead of 3. Only `--base`/`--head` let Nx diff those files field by field,
 # so any change set with nothing to drop goes through them unchanged.
 #
-# The dropped-files list is built the way Nx builds its own: the merge base of
+# Conformetry templates need the opposite treatment. `.nxignore` hides
+# `configuration/conformetry-templates` from Nx, because a template holds a
+# `project.json` that Nx would register as a project, so a template edit marks
+# no project affected and every cached `conformetry-validate` looks current.
+# With `INCLUDE_TEMPLATES` set, a changed template adds
+# `configuration/conformetry.config.ts` to the change set, which every
+# instance project already lists as an input, so they are all selected. Only
+# the target that runs `conformetry-validate` should set it: Nx decides affected
+# per project, so every other target would run the whole workspace too.
+#
+# The changed-files list is built the way Nx builds its own: the merge base of
 # the two revisions, falling back to `NX_BASE` itself, then
 # `git diff --name-only --no-renames --relative`. An empty list affects nothing
 # and exits cleanly; it never falls back to everything.
@@ -24,8 +34,11 @@
 #   TARGET            the Nx target to run (required)
 #   ARGUMENTS         extra `nx affected` flags, space separated
 #   INCLUDE_SPELLING  "true" to keep spelling files
+#   INCLUDE_TEMPLATES "true" to select every conformetry instance project when
+#                     a template changes
 #   NX_BASE, NX_HEAD  the revisions, as `nrwl/nx-set-shas` exports them
 #   SPELLING_PATHS    an extended regex overriding which files are spelling
+#   TEMPLATE_PATHS    an extended regex overriding which files are templates
 
 set -euo pipefail
 
@@ -45,25 +58,52 @@ spelling_paths="${SPELLING_PATHS:-${default_spelling_paths}}"
 arguments=()
 read -ra arguments <<<"${ARGUMENTS:-}"
 
+template_paths="${TEMPLATE_PATHS:-^configuration/conformetry-templates/}"
+template_selector="configuration/conformetry.config.ts"
+
+changed=""
 spelling=""
-if [[ "${INCLUDE_SPELLING:-false}" != "true" ]]; then
+templates=""
+if [[ "${INCLUDE_SPELLING:-false}" != "true" ||
+  "${INCLUDE_TEMPLATES:-false}" == "true" ]]; then
   base="$(git merge-base "${NX_BASE}" "${NX_HEAD}" || echo "${NX_BASE}")"
   changed="$(git diff --name-only --no-renames --relative \
     "${base}" "${NX_HEAD}")"
+fi
+
+if [[ "${INCLUDE_SPELLING:-false}" != "true" ]]; then
   spelling="$(grep -E "${spelling_paths}" <<<"${changed}" || true)"
 fi
 
-if [[ -z "${spelling}" ]]; then
+if [[ "${INCLUDE_TEMPLATES:-false}" == "true" ]]; then
+  templates="$(grep -E "${template_paths}" <<<"${changed}" || true)"
+fi
+
+if [[ -z "${spelling}" && -z "${templates}" ]]; then
   exec pnpm exec nx affected --base="${NX_BASE}" --head="${NX_HEAD}" \
     --target="${TARGET}" ${arguments[@]+"${arguments[@]}"}
 fi
 
-echo "✂️ Not affecting ${TARGET} with spelling files:"
-while IFS= read -r spelling_path; do
-  printf '  %s\n' "${spelling_path}"
-done <<<"${spelling}"
+if [[ -n "${spelling}" ]]; then
+  echo "✂️ Not affecting ${TARGET} with spelling files:"
+  while IFS= read -r spelling_path; do
+    printf '  %s\n' "${spelling_path}"
+  done <<<"${spelling}"
+fi
 
-kept="$(grep -Ev "${spelling_paths}" <<<"${changed}" || true)"
+kept="${changed}"
+if [[ -n "${spelling}" ]]; then
+  kept="$(grep -Ev "${spelling_paths}" <<<"${changed}" || true)"
+fi
+
+if [[ -n "${templates}" ]]; then
+  echo "🧬 Selecting every conformetry instance for ${TARGET}, templates changed:"
+  while IFS= read -r template_path; do
+    printf '  %s\n' "${template_path}"
+  done <<<"${templates}"
+  kept="$(printf '%s\n%s' "${kept}" "${template_selector}")"
+fi
+
 printf '%s\n' "${kept}" \
   | pnpm exec nx affected --stdin --target="${TARGET}" \
     ${arguments[@]+"${arguments[@]}"}

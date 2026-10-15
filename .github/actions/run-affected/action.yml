@@ -2,7 +2,8 @@ name: 🎯 Run Affected
 description: |
   Run `nx affected` for one target between `NX_BASE` and `NX_HEAD` (requires
   `setup-codebase` with `nx-shas`), dropping spelling files from the change
-  set unless `include-spelling` is set.
+  set unless `include-spelling` is set, and selecting every conformetry
+  instance when a template changes if `include-templates` is set.
 
   The logic, and why `--stdin` is only its fallback, lives in
   `scripts/nx/run-affected.sh`.
@@ -19,6 +20,12 @@ inputs:
       Keep spelling files in the changed file list. Set it only for the
       target whose `dependsOn` runs `spell-check`.
     default: "false"
+  include-templates:
+    description: |
+      Select every conformetry instance project when a conformetry template
+      changes. Set it only for the target whose `dependsOn` runs
+      `conformetry-validate`.
+    default: "false"
 
 runs:
   using: composite
@@ -28,6 +35,7 @@ runs:
         TARGET: ${{ inputs.target }}
         ARGUMENTS: ${{ inputs.arguments }}
         INCLUDE_SPELLING: ${{ inputs.include-spelling }}
+        INCLUDE_TEMPLATES: ${{ inputs.include-templates }}
         SPELLING_PATHS: ^configuration/\.cspell/|(^|/)cspell\.config\.yaml$
       run: bash scripts/nx/run-affected.sh
       shell: bash

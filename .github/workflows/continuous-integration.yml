@@ -176,6 +176,7 @@ jobs:
         with:
           target: ${{ matrix.check.target }}
           include-spelling: ${{ matrix.check.target == 'format-code' }}
+          include-templates: ${{ matrix.check.target == 'guard-code' }}
           arguments: >-
             ${{ matrix.check.target == 'test-code' && '--configuration=coverage'
             || matrix.check.target != 'build-projects' && '--configuration=check'
