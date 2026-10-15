@@ -417,6 +417,9 @@
         "name": ".gitmodules"
       },
       {
+        "name": ".mcp.json"
+      },
+      {
         "name": ".node-version"
       },
       {
