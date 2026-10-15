@@ -1,0 +1,8 @@
+# Paths OpenWiki must not treat as source.
+#
+# The wiki is generated into `openwiki/`, a symlink to `documentation/openwiki/`.
+# OpenWiki excludes `openwiki/` from its source fingerprint and changed-path
+# list by that logical name, but git reports the real path. Without this entry
+# every refresh would see its own output as a change to the repository and
+# never settle on "nothing to update".
+documentation/openwiki/

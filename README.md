@@ -923,6 +923,8 @@ graph LR
   module_synchronization_SkillExclusionsModule["synchronization/SkillExclusionsModule"]
   module_synchronization_SynchronizationModule["synchronization/SynchronizationModule"]
   module_synchronization_TemplateDiscoveryModule["synchronization/TemplateDiscoveryModule"]
+  module_synchronization_VscodeExtensionsModule["synchronization/VscodeExtensionsModule"]
+  module_synchronization_VscodeSettingsModule["synchronization/VscodeSettingsModule"]
   module_validation_AuditGovernanceModule["validation/AuditGovernanceModule"]
   module_validation_CatalogManifestsModule["validation/CatalogManifestsModule"]
   module_validation_ConfigModule["validation/ConfigModule"]
@@ -1715,6 +1717,8 @@ graph LR
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestLabelsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestTemplateModule
   module_synchronization_SynchronizationModule --> module_synchronization_SkillExclusionsModule
+  module_synchronization_SynchronizationModule --> module_synchronization_VscodeExtensionsModule
+  module_synchronization_SynchronizationModule --> module_synchronization_VscodeSettingsModule
   module_synchronization_TemplateDiscoveryModule --> module_synchronization_RenderingModule
   module_validation_MainModule --> module_validation_AuditGovernanceModule
   module_validation_MainModule --> module_validation_CatalogManifestsModule
@@ -4524,6 +4528,16 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_service_ts["synchronization/src/modules/synchronization/synchronization.service.ts"]
   file_synchronization_src_modules_synchronization_synchronization_service_unit_test_ts["synchronization/src/modules/synchronization/synchronization.service.unit.test.ts"]
   file_synchronization_src_modules_synchronization_synchronization_types_ts["synchronization/src/modules/synchronization/synchronization.types.ts"]
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts"]
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.command.unit.test.ts"]
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_constants_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.constants.ts"]
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.module.ts"]
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_types_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.types.ts"]
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts["synchronization/src/modules/vscode-settings/vscode-settings.command.ts"]
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_unit_test_ts["synchronization/src/modules/vscode-settings/vscode-settings.command.unit.test.ts"]
+  file_synchronization_src_modules_vscode_settings_vscode_settings_constants_ts["synchronization/src/modules/vscode-settings/vscode-settings.constants.ts"]
+  file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts["synchronization/src/modules/vscode-settings/vscode-settings.module.ts"]
+  file_synchronization_src_modules_vscode_settings_vscode_settings_types_ts["synchronization/src/modules/vscode-settings/vscode-settings.types.ts"]
   file_synchronization_src_repl_ts["synchronization/src/repl.ts"]
   file_synchronization_src_repl_unit_test_ts["synchronization/src/repl.unit.test.ts"]
   file_synchronization_testing_mocks_ts["synchronization/testing/mocks.ts"]
@@ -11182,6 +11196,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
@@ -11192,6 +11207,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_testing_mocks_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
@@ -11202,6 +11218,8 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
@@ -11211,8 +11229,30 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts
   file_synchronization_src_modules_synchronization_synchronization_service_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
   file_synchronization_src_modules_synchronization_synchronization_service_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_constants_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_types_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_constants_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_synchronization_testing_mocks_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_constants_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_types_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_constants_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_synchronization_testing_mocks_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts
   file_synchronization_src_repl_ts --> file_synchronization_src_main_module_ts
   file_synchronization_src_repl_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
   file_validation_src_main_end_to_end_test_ts --> file_validation_src_constants_ts
@@ -11433,36 +11473,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6325-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-2.25_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-78-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-24-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6021-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-2.24_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-77-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-22-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-17-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-5-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-15-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-3-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-46-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-44-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-0-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-39-8b5cf6?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-36-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-50-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-37-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-50-4ade80?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-37-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-0-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-92-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-51-0284c7?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-60-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-41-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-12-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-700-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1437-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-703-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1411-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -11483,30 +11523,30 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-23-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-6013-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-790-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-315-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1966-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1954-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-5789-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-747-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-294-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1852-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1848-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-38-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-145-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-134-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1260-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3242-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1193-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3061-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-23-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3191-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3207-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-23-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-447-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-91-8b5cf6?style=flat-square)
 ![YAML Keys](https://img.shields.io/badge/YAML_Keys-1534-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3063-16a34a?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3064-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-533-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-543-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -11618,23 +11658,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-118-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19376-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19393-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-117-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-682-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-528-a78bfa?style=flat-square)
+![H3](https://img.shields.io/badge/H3-529-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5515-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-868-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4201-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5513-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-866-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4198-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-232-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1976-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-721-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-233-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-1978-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-723-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-407-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-10991-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11020-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -11647,13 +11687,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6379 |
-| Files | 1801 |
-| Calls traced | 6832 |
-| Call stacks | 1955 |
+| Callables | 6398 |
+| Files | 1809 |
+| Calls traced | 6849 |
+| Call stacks | 1959 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 377 |
+| Unfollowable calls | 380 |
 
 ### Projects
 
@@ -11674,12 +11714,12 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/lexico/lexico-web` | 9 | 9 | 0 | 9 |
 | `projects/logging` | 4 | 4 | 0 | 2 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
-| `projects/synchronization` | 10 | 10 | 0 | 10 |
 | `projects/validation` | 8 | 8 | 0 | 9 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
+| `projects/synchronization` | 9 | 10 | 1 | 9 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
@@ -11708,8 +11748,8 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 17 |
-| 1 | 1 |
+| 0 — at limit | 16 |
+| 1 | 2 |
 | 2–3 | 2 |
 | 4+ | 10 |
 | no stacks | 13 |

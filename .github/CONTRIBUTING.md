@@ -174,9 +174,12 @@ codebase/
 │   ├── <domain>/       # caelundas/, lexico/, meanderaw/ — group one domain's projects
 │   └── ic-suite/       # The four IC-suite toolchains, nested one level deeper
 ├── configuration/      # Every shared tool config, plus the Husky hooks
-├── docs/               # Architecture decision records and agent configuration
-├── documentation/      # Development guides and planning notes
-├── openwiki/           # Generated code documentation — do not hand-edit
+├── documentation/      # Architecture decision records, agent configuration, guides, planning notes, and generated code documentation
+│   ├── adr/            # Architecture decision records
+│   ├── agents/         # Per-repository configuration the vendored skills read
+│   └── openwiki/       # Generated code documentation — do not hand-edit
+├── docs -> documentation          # Symlink: vendored skills hard-code docs/adr and docs/agents
+├── openwiki -> documentation/openwiki   # Symlink: the OpenWiki CLI hard-codes its output directory
 ├── infrastructure/     # Docker, Helm charts, Terraform
 ├── scripts/            # Setup, git, and utility scripts
 └── .agents/skills/     # Agent skills; every other agent entrypoint symlinks here
@@ -498,7 +501,7 @@ spec issue          the specification the work came from
     └── sub-issue   one per planned commit
 ```
 
-See [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md) and [docs/agents/triage-labels.md](docs/agents/triage-labels.md) for the full conventions.
+See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracker.md) and [documentation/agents/triage-labels.md](../documentation/agents/triage-labels.md) for the full conventions.
 
 ## Pull Request Process
 
@@ -617,8 +620,8 @@ pnpm add -w <package>
 
 - [AGENTS.md](../AGENTS.md) — the full conventions reference, mirrored to `.claude/CLAUDE.md` and `.github/copilot-instructions.md`
 - [CONTEXT.md](../CONTEXT.md) — domain model and shared vocabulary
-- [docs/adr](../docs/adr) — architecture decision records
-- [openwiki/quickstart.md](../openwiki/quickstart.md) — generated code documentation
+- [documentation/adr](../documentation/adr) — architecture decision records
+- [documentation/openwiki/quickstart.md](../documentation/openwiki/quickstart.md) — generated code documentation
 - [.agents/skills](../.agents/skills) — agent skills, the canonical source for every agent entrypoint
 - [Commit Messages Guide](../.agents/skills/commit-code/SKILL.md)
 - [Code Validation Guide](../.agents/skills/validate-code/SKILL.md)

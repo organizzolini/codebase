@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.9](https://github.com/organizzolini/codebase/compare/v3.2.8...v3.2.9) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **lexico-cli:** 🐛 send user agent and skip cached wiktionary pages ([#1570](https://github.com/organizzolini/codebase/issues/1570)) ([9ba0ce9](https://github.com/organizzolini/codebase/commit/9ba0ce9a6964caaef714d6f20e91dddb03d8350e))
+
+## [3.2.8](https://github.com/organizzolini/codebase/compare/v3.2.7...v3.2.8) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **conformetry:** 🐛 let the sync generator run under nx g ([#1560](https://github.com/organizzolini/codebase/issues/1560)) ([570279e](https://github.com/organizzolini/codebase/commit/570279e7d74b1bce517a78611e4754e2c01e211f))
+
+## [3.2.7](https://github.com/organizzolini/codebase/compare/v3.2.6...v3.2.7) (2026-10-14)
+
+### 📝 Documentation
+
+* **documentation,configuration,deployments:** 📝 consolidate docs and openwiki into documentation behind symlinks ([#1507](https://github.com/organizzolini/codebase/issues/1507)) ([af71371](https://github.com/organizzolini/codebase/commit/af713719da5c29a3103eb58c5fd53998a6fbcfc1))
+
+## [3.2.6](https://github.com/organizzolini/codebase/compare/v3.2.5...v3.2.6) (2026-10-13)
+
+### ♻️ Code Refactoring
+
+* **configuration,synchronization,validation:** ♻️ move root validation and sync targets into their projects ([#1508](https://github.com/organizzolini/codebase/issues/1508)) ([95be3b6](https://github.com/organizzolini/codebase/commit/95be3b642d3656eaca8ef4ee8730ae6a0827a3d3))
+
 ## [3.2.5](https://github.com/organizzolini/codebase/compare/v3.2.4...v3.2.5) (2026-10-13)
 
 ### 🐛 Bug Fixes

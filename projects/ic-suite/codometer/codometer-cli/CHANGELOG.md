@@ -1,3 +1,12 @@
+## 0.0.20 (2026-10-13)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.19
+- Updated codometer-measurement to 0.0.19
+- Updated codometer-output to 0.0.19
+- Updated codometer-core to 0.0.19
+
 ## 0.0.19 (2026-10-13)
 
 ### 💅 Refactors

@@ -63,6 +63,15 @@ describe(syncGenerator, () => {
     expect(outOfSyncMessage.length).toBeGreaterThan(0);
   });
 
+  it("returns a callable so `nx g` can run it as a task", async () => {
+    const result = await syncGenerator(tree);
+
+    expect(typeof result).toBe("function");
+    expect(() => {
+      result();
+    }).not.toThrow();
+  });
+
   it("falls back to the conventional paths when given no options", async () => {
     await syncGenerator(tree);
 

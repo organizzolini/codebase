@@ -10,7 +10,7 @@ Meanderaw follows the workspace's shared Postgres convention, from
 [`@codebase/database`](../../database/README.md): the `meanderaw_development`
 database holds a `meanderaw` schema, both owned by the `meanderaw_username` role. The local
 Postgres container creates all three the first time its volume starts empty; on a volume that
-predates that, [ADR 0022](../../../docs/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
+predates that, [ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
 describes how to add them without discarding what the volume holds.
 
 The `meanders` table is built by a migration, never by synchronizing. Run the migrations
@@ -65,11 +65,11 @@ output/
 ```
 
 A draw run commits nothing. The rows live in Postgres rather than in the repository — see
-[ADR 0020](../../../docs/adr/0020-store-meanders-in-postgres.md) — and the pages are written on
+[ADR 0020](../../../documentation/adr/0020-store-meanders-in-postgres.md) — and the pages are written on
 every draw run but gitignored: at the default edge budget's millions of rows they are gigabytes
 of HTML, each page streamed to disk a batch of rows at a time because one pattern's page
 outgrows a JavaScript string — see
-[ADR 0021](../../../docs/adr/0021-stop-committing-the-meander-pages.md).
+[ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md).
 
 That is the whole of it, and the shrinking is the point of this design rather than a side
 effect of it. `output/` used to hold 9,877 committed SVG files under ten family
@@ -125,11 +125,11 @@ WHERE COALESCE((characteristics ->> 'crossCount')::numeric, 0) = 0
 
 A Characteristic added, renamed, or removed needs no schema change, which is why every one
 of them shares the map rather than taking a column: see
-[ADR 0018](../../../docs/adr/0018-store-every-characteristic-in-one-sparse-json-map.md).
+[ADR 0018](../../../documentation/adr/0018-store-every-characteristic-in-one-sparse-json-map.md).
 
 **Nothing checks the database against a fresh draw run.** A drift check used to
 run on every commit, and a `drawingHash` column fed it; both are gone, for now — see
-[ADR 0019](../../../docs/adr/0019-drop-the-drift-check-and-the-drawing-hash.md). The one
+[ADR 0019](../../../documentation/adr/0019-drop-the-drift-check-and-the-drawing-hash.md). The one
 property the schema enforces is that a Code is unique, so after changing the renderer, the
 enumerator, or a Characteristic, regenerate the database with `nx run meanderaw-cli:start`.
 
@@ -160,7 +160,7 @@ the directory alone.
 
 Every meander shares a set of properties that describe how it looks. The charter was
 measured over the ten generator families this project once drew, which are retired — see
-[ADR 0023](../../../docs/adr/0023-filter-meanders-by-characteristics-alone.md) — so the
+[ADR 0023](../../../documentation/adr/0023-filter-meanders-by-characteristics-alone.md) — so the
 family names below record where each measurement came from. Three of those properties — orthogonality, space-filling channels, and the band
 model — are **guaranteed by construction**: no assignment of direction bits to a lattice
 can violate them, so no family gates them and none ever could. The other two — branching
@@ -185,7 +185,7 @@ east, and south ink at one lattice point, so 642 of its 786 drawings fork. Not e
 drawing forks: the other 144 are the `serpentine` drawings whose first and last strips are
 each one lattice row deep, where the flat ribbon on such a strip _is_ the rule and nothing
 rises to meet it — a **structural condition** rather than a blanket count. See
-`docs/adr/0006-close-both-band-borders-in-branch-and-parallel.md` for why both borders were
+`documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md` for why both borders were
 closed and what it cost.
 
 `mosaic` branches and crosses too, and only in its **enumerated half alone** — which is now
@@ -5514,7 +5514,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-242.92_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-242.99_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
