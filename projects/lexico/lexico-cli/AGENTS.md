@@ -161,7 +161,7 @@ See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.
 Lexico tables move between databases through the database package's command
 line, not this one: `nx run database:start:export|import`, with
 `--namespace lexico --table words` (or `--table lexico.words`). See the
-[database README](../../database/README.md).
+[database README](../../database/README.md#moving-data-between-databases).
 
 ## Writing Modules
 

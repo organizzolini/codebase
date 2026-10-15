@@ -72,7 +72,7 @@ in this project's `data/` directory, where `*.dump` is gitignored:
 nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --namespace lexico --table words --data --schema --file ../lexico/lexico-cli/data/lexico.dump"
 ```
 
-See the [database README](../../database/README.md) for every option.
+See the [database README](../../database/README.md#moving-data-between-databases) for every option.
 
 ## How it works
 
