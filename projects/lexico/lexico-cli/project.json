@@ -59,6 +59,12 @@
         "epigraphik-datenbank-clauss-slaby": {
           "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts epigraphik-datenbank-clauss-slaby {args}"
         },
+        "export": {
+          "command": "node --import @swc-node/register/esm-register src/main.ts export {args}"
+        },
+        "import": {
+          "command": "node --import @swc-node/register/esm-register src/main.ts import {args}"
+        },
         "latin-library": {
           "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts latin-library {args}"
         },
