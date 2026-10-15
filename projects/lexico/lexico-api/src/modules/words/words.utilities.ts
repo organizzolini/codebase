@@ -6,6 +6,7 @@ import {
 import { toFormType } from "../lexemes/forms/forms.utilities";
 import { toLexemeType } from "../lexemes/lexemes.utilities";
 
+import { LexemeWordFormType } from "./lexeme-word-form.entities";
 import { WordFormType } from "./word-form.entities";
 import { WordLexemeType } from "./word-lexeme.entities";
 import { WordType } from "./word.entities";
@@ -17,6 +18,18 @@ import type {
   WordRelationField,
 } from "./words.types";
 import type { Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
+
+/**
+ * Maps a word-form link, with its form and word joined, to the type a lexeme
+ * exposes it as.
+ */
+export function toLexemeWordFormType(wordForm: WordForm): LexemeWordFormType {
+  return Object.assign(new LexemeWordFormType(), {
+    form: toFormType(wordForm.form),
+    id: wordForm.id,
+    word: wordForm.word.data,
+  });
+}
 
 /** Maps a word-form link, and the form it loaded, to its GraphQL type. */
 export function toWordFormType(wordForm: WordForm): WordFormType {
