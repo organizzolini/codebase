@@ -11,7 +11,7 @@ import type {
   Tree,
 } from "@nx/devkit";
 
-export { MainModule } from "./main.module";
+export { MainModule } from "./conformetry-nx.module";
 export { AdapterModule } from "./modules/adapter/adapter.module";
 export { AdapterService } from "./modules/adapter/adapter.service";
 export {

@@ -153,7 +153,10 @@ describe("codependix example graphs", () => {
       expect(graph.nodes).toStrictEqual([
         { declaringFile: "src/catalog.module.ts", name: "CatalogModule" },
         { declaringFile: "src/inventory.module.ts", name: "InventoryModule" },
-        { declaringFile: "src/main.module.ts", name: "MainModule" },
+        {
+          declaringFile: "src/rooted-application.module.ts",
+          name: "MainModule",
+        },
       ]);
     });
 

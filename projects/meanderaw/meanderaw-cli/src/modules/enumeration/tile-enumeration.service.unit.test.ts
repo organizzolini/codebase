@@ -2,7 +2,7 @@ import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { environmentSchema } from "../../constants";
+import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CodeService } from "../code/code.service";
 import { SymmetryService } from "../symmetry/symmetry.service";
 import { TileService } from "../tile/tile.service";

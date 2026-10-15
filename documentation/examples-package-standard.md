@@ -27,8 +27,7 @@ authority.
 So they do not read as drift:
 
 - **`callidescope-examples` has a `src/`.** The `module-bootstrap` and
-  `exported-function` entry-point rules key on the literal paths `src/main.ts`
-  and `src/index.ts`, so those two fixtures cannot live under `examples/`.
+  `exported-function` entry-point rules key on the X  and `src/index.ts`, so those two fixtures cannot live under `examples/`.
 - **`codependix-examples` renders its per-example guides** from the real graph
   builders rather than having them hand-written. That is a stronger guarantee
   than the other three have, and the one thing here worth spreading rather than

@@ -29,7 +29,7 @@ nx run lexico-cli:start
 ### Execution Flow
 
 ```text
-src/main.ts
+src/lexico-cli.main.ts
   └─ CommandFactory.run(MainModule)
        └─ domain command modules            ← add under src/modules/
 ```
@@ -37,7 +37,7 @@ src/main.ts
 **Project Implementation**:
 
 ```text
-src/main.ts
+src/lexico-cli.main.ts
   └─ CommandFactory.run(LexicoIngestionModule)
        └─ LexicoIngestionCommand.run()
             ├─ Step 1: ClearService.clearDictionary()
@@ -52,9 +52,9 @@ Sub-commands: `wiktionary`, `dictionary`, `words`, `clear`
 
 ```text
 src/
-  main.ts                           # Bootstrap — do not modify
-  main.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
-  constants.ts                      # Zod environmentSchema for env validation
+  lexico-cli.main.ts  # Bootstrap — do not modify
+  lexico-cli.module.ts  # Root NestJS module (imports ConfigModule, LoggerModule)
+  lexico-cli.constants.ts  # Zod environmentSchema for env validation
   modules/
     <domain>/                       # Add feature modules here
       <domain>.module.ts
@@ -86,7 +86,7 @@ src/modules/
 
 ### Environment Variables
 
-All validated via `environmentSchema` in `constants.ts`, which spreads
+All validated via `environmentSchema` in `lexico-cli.constants.ts`, which spreads
 `postgresEnvironmentSchema({ project: "lexico" })` from `@codebase/database`.
 The root's unprefixed `POSTGRES_*` are the shared container's admin login and
 are never read:
@@ -107,8 +107,8 @@ are never read:
 1. **Implement the root command** — add logic to `lexico-ingestion.command.ts` `run()`, or delegate to injected services.
 2. **Extend the pipeline** — add new steps to `LexicoIngestionCommand.run()`, or add sub-commands.
 3. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
-4. **Register in root module** — import the new module in `main.module.ts`.
-5. **Validate env vars** — extend `environmentSchema` in `constants.ts` with all required environment variables.
+4. **Register in root module** — import the new module in `lexico-cli.module.ts`.
+5. **Validate env vars** — extend `environmentSchema` in `lexico-cli.constants.ts` with all required environment variables.
 
 ### Logging
 
@@ -251,7 +251,7 @@ Do not re-export types from `index.ts` unless they are part of the public API co
 
 ### Registering in the root module
 
-After generating a module, import it in main.module.ts:
+After generating a module, import it in `lexico-cli.module.ts`:
 
 ```ts
 @Module({
@@ -275,7 +275,7 @@ pnpm nx run-many --targets=conformetry-validate
 
 ## Best Practices
 
-- **Never** put business logic in `main.ts` — it bootstraps `CommandFactory` only.
+- **Never** put business logic in `lexico-cli.main.ts` — it bootstraps `CommandFactory` only.
 - **One command per class** — split sub-commands into separate `CommandRunner` subclasses.
 - **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
 - **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
@@ -288,17 +288,17 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to environmentSchema in src/constants.ts and to .env.default.
+- **Env var validation error on startup** — add the missing variable to environmentSchema in src/lexico-cli.constants.ts and to .env.default.
 - **TypeORM entity not found** — register the entity via `TypeOrmModule.forFeature([MyEntity])` in the module that uses it.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
+- [src/lexico-cli.main.ts](src/lexico-cli.main.ts): Application bootstrap
 - [src/modules/lexico-ingestion/lexico-ingestion.command.ts](src/modules/lexico-ingestion/lexico-ingestion.command.ts): Root CLI command
-- [src/main.module.ts](src/main.module.ts): Root NestJS module
-- [src/constants.ts](src/constants.ts): environmentSchema (Zod)
+- [src/lexico-cli.module.ts](src/lexico-cli.module.ts): Root NestJS module
+- [src/lexico-cli.constants.ts](src/lexico-cli.constants.ts): environmentSchema (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template

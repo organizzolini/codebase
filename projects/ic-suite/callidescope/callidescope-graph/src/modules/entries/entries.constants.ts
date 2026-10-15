@@ -21,8 +21,8 @@ export const COMMAND_RUNNER_METHOD_NAME = "run";
 /** Functions a module bootstraps itself through. */
 export const BOOTSTRAP_FUNCTION_NAMES = new Set(["bootstrap", "main"]);
 
-/** File a project's runtime entry point lives in. */
-export const BOOTSTRAP_FILE_SUFFIX = "/src/main.ts";
+/** Ending of the file a project's runtime entry point lives in. */
+export const BOOTSTRAP_FILE_SUFFIX = ".main.ts";
 
 /** File a package's public surface is declared in. */
 export const BARREL_FILE_SUFFIX = "/src/index.ts";

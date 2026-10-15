@@ -9,8 +9,6 @@ import {
   ModuleGraphService,
   NESTJS_PROJECT_IGNORED_MODULES,
   NESTJS_PROJECT_MODULE_FILE_SUFFIX,
-  NESTJS_PROJECT_ROOT_MODULE_EXPORT,
-  NESTJS_PROJECT_ROOT_MODULE_FILE,
   NESTJS_PROJECT_SYNTHETIC_IGNORED_MODULES,
   NESTJS_PROJECT_TAG,
   NestjsProjectModule,
@@ -32,8 +30,6 @@ describe("codependix-nestjs-modules index", () => {
     expect(NestjsProjectService).toBeDefined();
     expect(NESTJS_PROJECT_TAG).toBeDefined();
     expect(NESTJS_PROJECT_MODULE_FILE_SUFFIX).toBeDefined();
-    expect(NESTJS_PROJECT_ROOT_MODULE_FILE).toBeDefined();
-    expect(NESTJS_PROJECT_ROOT_MODULE_EXPORT).toBeDefined();
     expect(NESTJS_PROJECT_IGNORED_MODULES).toBeDefined();
     expect(NESTJS_PROJECT_SYNTHETIC_IGNORED_MODULES).toBeDefined();
   });

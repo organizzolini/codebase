@@ -153,7 +153,7 @@ describe(FileFilterService, () => {
     ).toBe(true);
     expect(
       filter.isExcluded(
-        "projects/ic-suite/callidescope/callidescope-cli/src/main.ts",
+        "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
       ),
     ).toBe(false);
   });

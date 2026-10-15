@@ -10,7 +10,7 @@ import type {
   CreateNodesResultArray,
 } from "@nx/devkit";
 
-export { MainModule } from "./main.module";
+export { MainModule } from "./callidescope-nx.module";
 export { AddressModule } from "./modules/address/address.module";
 export { AddressService } from "./modules/address/address.service";
 export type {

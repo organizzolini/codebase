@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.0](https://github.com/organizzolini/codebase/compare/v3.6.0...v3.7.0) (2026-10-15)
+
+### ✨ Features
+
+* **lexico,scripts:** ✨ derive default ports from project names ([#1597](https://github.com/organizzolini/codebase/issues/1597)) ([b07b779](https://github.com/organizzolini/codebase/commit/b07b7795d4aa60da410e28c95743c5d0f87b3617))
+
+## [3.6.0](https://github.com/organizzolini/codebase/compare/v3.5.0...v3.6.0) (2026-10-15)
+
+### ✨ Features
+
+* **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/issues/1588)) ([e503714](https://github.com/organizzolini/codebase/commit/e503714d3bbca9ff3a7f2121bb3575f7a9d97dc7)), closes [#1480](https://github.com/organizzolini/codebase/issues/1480) [#1480](https://github.com/organizzolini/codebase/issues/1480)
+
 ## [3.5.0](https://github.com/organizzolini/codebase/compare/v3.4.1...v3.5.0) (2026-10-15)
 
 ### ✨ Features

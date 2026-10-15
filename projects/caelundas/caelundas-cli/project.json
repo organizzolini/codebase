@@ -24,7 +24,7 @@
           }
         ],
         "generatePackageJson": false,
-        "main": "projects/caelundas/caelundas-cli/src/main.ts",
+        "main": "projects/caelundas/caelundas-cli/src/caelundas-cli.main.ts",
         "outputPath": "projects/caelundas/caelundas-cli/dist",
         "tsConfig": "projects/caelundas/caelundas-cli/tsconfig.build.json"
       },
@@ -61,7 +61,7 @@
       "description": "Start an interactive NestJS REPL for Caelundas services",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/repl.ts",
+        "command": "node --import @swc-node/register/esm-register src/caelundas-cli.repl.ts",
         "cwd": "{projectRoot}"
       }
     },
@@ -73,14 +73,14 @@
       "cache": false,
       "configurations": {
         "caelundas": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts caelundas {args}"
+          "command": "node --import @swc-node/register/esm-register src/caelundas-cli.main.ts caelundas {args}"
         }
       },
       "defaultConfiguration": "caelundas",
       "description": "Start the Caelundas application",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/main.ts caelundas {args}",
+        "command": "node --import @swc-node/register/esm-register src/caelundas-cli.main.ts caelundas {args}",
         "cwd": "{projectRoot}"
       }
     },

@@ -7,7 +7,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/logging";
 
-import { MainModule } from "../../../testing/main.module";
+import { MainModule } from "../../../testing/codependix-nestjs-modules.module";
 
 import { NestjsProjectService } from "./nestjs-project.service";
 
@@ -137,39 +137,50 @@ describe(NestjsProjectService, () => {
   });
 
   describe("describeProject", () => {
-    it("records the root module file of a project that bootstraps one", () => {
+    it("records the root module the configuration names for a project", () => {
       const absoluteRoot = "/workspace/applications/caelundas";
-      existingPaths.add(path.join(absoluteRoot, "src/main.module.ts"));
 
-      expect(service.describeProject(absoluteRoot, "caelundas")).toStrictEqual({
+      expect(
+        service.describeProject(absoluteRoot, "caelundas", {
+          export: "CaelundasModule",
+          file: "src/caelundas.module.ts",
+        }),
+      ).toStrictEqual({
         absoluteRoot,
         name: "caelundas",
-        rootModuleFile: path.join(absoluteRoot, "src/main.module.ts"),
+        rootModuleExport: "CaelundasModule",
+        rootModuleFile: path.join(absoluteRoot, "src/caelundas.module.ts"),
       });
     });
 
-    it("leaves the root module file undefined for a library package", () => {
-      expect(
-        service.describeProject("/workspace/packages/logging", "logger")
-          .rootModuleFile,
-      ).toBeUndefined();
+    it("leaves the root module undefined for a project the configuration does not name", () => {
+      const project = service.describeProject(
+        "/workspace/packages/logging",
+        "logger",
+      );
+
+      expect(project.rootModuleFile).toBeUndefined();
+      expect(project.rootModuleExport).toBeUndefined();
     });
   });
 
   describe("discoverProjects", () => {
     it("keeps only the projects tagged framework:nestjs", () => {
-      const discovered = service.discoverProjects([
-        {
-          absoluteRoot: "/workspace/applications/caelundas",
-          name: "caelundas",
-          tags: ["framework:nestjs"],
-        },
-        {
-          absoluteRoot: "/workspace/applications/lexico",
-          name: "lexico",
-          tags: ["framework:react"],
-        },
-      ]);
+      const discovered = service.discoverProjects(
+        [
+          {
+            absoluteRoot: "/workspace/applications/caelundas",
+            name: "caelundas",
+            tags: ["framework:nestjs"],
+          },
+          {
+            absoluteRoot: "/workspace/applications/lexico",
+            name: "lexico",
+            tags: ["framework:react"],
+          },
+        ],
+        {},
+      );
 
       expect(discovered.map((project) => project.name)).toStrictEqual([
         "caelundas",
@@ -177,19 +188,39 @@ describe(NestjsProjectService, () => {
     });
 
     it("describes each discovered project", () => {
-      const discovered = service.discoverProjects([
+      const discovered = service.discoverProjects(
+        [
+          {
+            absoluteRoot: "/workspace/packages/logging",
+            name: "logger",
+            tags: ["framework:nestjs"],
+          },
+          {
+            absoluteRoot: "/workspace/applications/caelundas",
+            name: "caelundas",
+            tags: ["framework:nestjs"],
+          },
+        ],
         {
-          absoluteRoot: "/workspace/packages/logging",
-          name: "logger",
-          tags: ["framework:nestjs"],
+          caelundas: { export: "MainModule", file: "src/caelundas.module.ts" },
         },
-      ]);
+      );
 
       expect(discovered).toStrictEqual([
         {
           absoluteRoot: "/workspace/packages/logging",
           name: "logger",
+          rootModuleExport: undefined,
           rootModuleFile: undefined,
+        },
+        {
+          absoluteRoot: "/workspace/applications/caelundas",
+          name: "caelundas",
+          rootModuleExport: "MainModule",
+          rootModuleFile: path.join(
+            "/workspace/applications/caelundas",
+            "src/caelundas.module.ts",
+          ),
         },
       ]);
     });
@@ -197,10 +228,15 @@ describe(NestjsProjectService, () => {
 
   describe("exploreProject", () => {
     /** Points at this project so the dynamic import resolves. */
-    function buildProject(rootModuleFile: string | undefined): NestjsProject {
+    function buildProject(
+      rootModuleFile: string | undefined,
+      rootModuleExport = "MainModule",
+    ): NestjsProject {
       return {
         absoluteRoot: process.cwd(),
         name: "codependix-nestjs-modules",
+        rootModuleExport:
+          rootModuleFile === undefined ? undefined : rootModuleExport,
         rootModuleFile:
           rootModuleFile === undefined
             ? undefined
@@ -255,12 +291,12 @@ describe(NestjsProjectService, () => {
       containerModules = [["MainModule", []]];
 
       const tree = await service.exploreProject(
-        buildProject("testing/main.module.ts"),
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
       );
 
       expect(tree).toStrictEqual([
         {
-          declaringFile: "testing/main.module.ts",
+          declaringFile: "testing/codependix-nestjs-modules.module.ts",
           imports: [],
           name: "MainModule",
         },
@@ -272,7 +308,9 @@ describe(NestjsProjectService, () => {
     it("logs before closing the project's container", async () => {
       mockApplicationContext();
 
-      await service.exploreProject(buildProject("testing/main.module.ts"));
+      await service.exploreProject(
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
+      );
 
       expect(logger.debug).toHaveBeenCalledWith(
         "🚀 Booted a project's container",
@@ -284,12 +322,27 @@ describe(NestjsProjectService, () => {
     it("builds the container in preview mode so nothing is instantiated", async () => {
       mockApplicationContext();
 
-      await service.exploreProject(buildProject("testing/main.module.ts"));
+      await service.exploreProject(
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
+      );
 
       expect(NestFactory.createApplicationContext).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ preview: true }),
       );
+    });
+
+    it("rejects a root module file that does not export the configured class", async () => {
+      mockApplicationContext();
+
+      await expect(
+        service.exploreProject(
+          buildProject(
+            "testing/codependix-nestjs-modules.module.ts",
+            "ConfiguredModule",
+          ),
+        ),
+      ).rejects.toThrow("ConfiguredModule");
     });
 
     it("rejects a root module file that exports no MainModule", async () => {
@@ -396,7 +449,7 @@ describe(NestjsProjectService, () => {
       ];
 
       const tree = await service.exploreProject(
-        buildProject("testing/main.module.ts"),
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
       );
 
       expect(tree.map((node) => node.name)).toStrictEqual([
@@ -414,7 +467,7 @@ describe(NestjsProjectService, () => {
       ];
 
       const tree = await service.exploreProject(
-        buildProject("testing/main.module.ts"),
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
       );
 
       expect(
@@ -434,12 +487,12 @@ describe(NestjsProjectService, () => {
       ];
 
       const tree = await service.exploreProject(
-        buildProject("testing/main.module.ts"),
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
       );
 
       expect(tree).toStrictEqual([
         {
-          declaringFile: "testing/main.module.ts",
+          declaringFile: "testing/codependix-nestjs-modules.module.ts",
           imports: [],
           name: "MainModule",
         },
@@ -455,7 +508,7 @@ describe(NestjsProjectService, () => {
       ];
 
       const tree = await service.exploreProject(
-        buildProject("testing/main.module.ts"),
+        buildProject("testing/codependix-nestjs-modules.module.ts"),
       );
 
       expect(tree.map((node) => node.name)).toStrictEqual([

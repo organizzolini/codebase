@@ -1760,11 +1760,12 @@ graph LR
   file_caelundas_cli_codometer_config_ts["caelundas-cli/codometer.config.ts"]
   file_caelundas_cli_eslint_config_ts["caelundas-cli/eslint.config.ts"]
   file_caelundas_cli_scripts_download_ephemeris_ts["caelundas-cli/scripts/download-ephemeris.ts"]
-  file_caelundas_cli_src_constants_ts["caelundas-cli/src/constants.ts"]
-  file_caelundas_cli_src_main_end_to_end_test_ts["caelundas-cli/src/main.end-to-end.test.ts"]
-  file_caelundas_cli_src_main_module_ts["caelundas-cli/src/main.module.ts"]
-  file_caelundas_cli_src_main_ts["caelundas-cli/src/main.ts"]
-  file_caelundas_cli_src_main_unit_test_ts["caelundas-cli/src/main.unit.test.ts"]
+  file_caelundas_cli_src_caelundas_cli_constants_ts["caelundas-cli/src/caelundas-cli.constants.ts"]
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts["caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts"]
+  file_caelundas_cli_src_caelundas_cli_main_ts["caelundas-cli/src/caelundas-cli.main.ts"]
+  file_caelundas_cli_src_caelundas_cli_main_unit_test_ts["caelundas-cli/src/caelundas-cli.main.unit.test.ts"]
+  file_caelundas_cli_src_caelundas_cli_module_ts["caelundas-cli/src/caelundas-cli.module.ts"]
+  file_caelundas_cli_src_caelundas_cli_repl_ts["caelundas-cli/src/caelundas-cli.repl.ts"]
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts["caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts"]
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_unit_test_ts["caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.unit.test.ts"]
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts["caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.constants.ts"]
@@ -2022,7 +2023,6 @@ graph LR
   file_caelundas_cli_src_modules_twilights_twilights_service_ts["caelundas-cli/src/modules/twilights/twilights.service.ts"]
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts["caelundas-cli/src/modules/twilights/twilights.service.unit.test.ts"]
   file_caelundas_cli_src_modules_twilights_twilights_types_ts["caelundas-cli/src/modules/twilights/twilights.types.ts"]
-  file_caelundas_cli_src_repl_ts["caelundas-cli/src/repl.ts"]
   file_caelundas_cli_testing_aspect_test_utilities_ts["caelundas-cli/testing/aspect-test.utilities.ts"]
   file_caelundas_cli_testing_calendar_command_types_ts["caelundas-cli/testing/calendar-command.types.ts"]
   file_caelundas_cli_testing_calendar_command_utilities_ts["caelundas-cli/testing/calendar-command.utilities.ts"]
@@ -2079,12 +2079,14 @@ graph LR
   file_callidescope_cli_codependix_config_ts["callidescope-cli/codependix.config.ts"]
   file_callidescope_cli_codometer_config_ts["callidescope-cli/codometer.config.ts"]
   file_callidescope_cli_eslint_config_ts["callidescope-cli/eslint.config.ts"]
-  file_callidescope_cli_src_constants_ts["callidescope-cli/src/constants.ts"]
+  file_callidescope_cli_src_callidescope_cli_constants_ts["callidescope-cli/src/callidescope-cli.constants.ts"]
+  file_callidescope_cli_src_callidescope_cli_main_end_to_end_test_ts["callidescope-cli/src/callidescope-cli.main.end-to-end.test.ts"]
+  file_callidescope_cli_src_callidescope_cli_main_ts["callidescope-cli/src/callidescope-cli.main.ts"]
+  file_callidescope_cli_src_callidescope_cli_main_unit_test_ts["callidescope-cli/src/callidescope-cli.main.unit.test.ts"]
+  file_callidescope_cli_src_callidescope_cli_module_ts["callidescope-cli/src/callidescope-cli.module.ts"]
+  file_callidescope_cli_src_callidescope_cli_repl_ts["callidescope-cli/src/callidescope-cli.repl.ts"]
+  file_callidescope_cli_src_callidescope_cli_repl_unit_test_ts["callidescope-cli/src/callidescope-cli.repl.unit.test.ts"]
   file_callidescope_cli_src_index_ts["callidescope-cli/src/index.ts"]
-  file_callidescope_cli_src_main_end_to_end_test_ts["callidescope-cli/src/main.end-to-end.test.ts"]
-  file_callidescope_cli_src_main_module_ts["callidescope-cli/src/main.module.ts"]
-  file_callidescope_cli_src_main_ts["callidescope-cli/src/main.ts"]
-  file_callidescope_cli_src_main_unit_test_ts["callidescope-cli/src/main.unit.test.ts"]
   file_callidescope_cli_src_modules_address_lookup_address_lookup_constants_ts["callidescope-cli/src/modules/address-lookup/address-lookup.constants.ts"]
   file_callidescope_cli_src_modules_address_lookup_address_lookup_constants_unit_test_ts["callidescope-cli/src/modules/address-lookup/address-lookup.constants.unit.test.ts"]
   file_callidescope_cli_src_modules_address_lookup_address_lookup_module_ts["callidescope-cli/src/modules/address-lookup/address-lookup.module.ts"]
@@ -2118,8 +2120,6 @@ graph LR
   file_callidescope_cli_src_modules_limits_limits_types_ts["callidescope-cli/src/modules/limits/limits.types.ts"]
   file_callidescope_cli_src_modules_limits_render_limits_service_ts["callidescope-cli/src/modules/limits/render-limits.service.ts"]
   file_callidescope_cli_src_modules_limits_render_limits_service_unit_test_ts["callidescope-cli/src/modules/limits/render-limits.service.unit.test.ts"]
-  file_callidescope_cli_src_repl_ts["callidescope-cli/src/repl.ts"]
-  file_callidescope_cli_src_repl_unit_test_ts["callidescope-cli/src/repl.unit.test.ts"]
   file_callidescope_cli_testing_mocks_ts["callidescope-cli/testing/mocks.ts"]
   file_callidescope_cli_testing_modules_ts["callidescope-cli/testing/modules.ts"]
   file_callidescope_cli_testing_programs_ts["callidescope-cli/testing/programs.ts"]
@@ -2218,8 +2218,8 @@ graph LR
   file_callidescope_examples_examples_shared_tail_round_to_cents_ts["callidescope-examples/examples/shared-tail/round-to-cents.ts"]
   file_callidescope_examples_examples_structural_interface_structural_interface_ts["callidescope-examples/examples/structural-interface/structural-interface.ts"]
   file_callidescope_examples_examples_structural_interface_structural_provider_ts["callidescope-examples/examples/structural-interface/structural-provider.ts"]
+  file_callidescope_examples_src_callidescope_examples_main_ts["callidescope-examples/src/callidescope-examples.main.ts"]
   file_callidescope_examples_src_index_ts["callidescope-examples/src/index.ts"]
-  file_callidescope_examples_src_main_ts["callidescope-examples/src/main.ts"]
   file_callidescope_examples_testing_examples_integration_test_ts["callidescope-examples/testing/examples.integration.test.ts"]
   file_callidescope_examples_testing_setup_ts["callidescope-examples/testing/setup.ts"]
   file_callidescope_examples_vitest_config_ts["callidescope-examples/vitest.config.ts"]
@@ -2316,6 +2316,7 @@ graph LR
   file_callidescope_nx_codependix_config_ts["callidescope-nx/codependix.config.ts"]
   file_callidescope_nx_codometer_config_ts["callidescope-nx/codometer.config.ts"]
   file_callidescope_nx_eslint_config_ts["callidescope-nx/eslint.config.ts"]
+  file_callidescope_nx_src_callidescope_nx_module_ts["callidescope-nx/src/callidescope-nx.module.ts"]
   file_callidescope_nx_src_executors_address_types_ts["callidescope-nx/src/executors/address.types.ts"]
   file_callidescope_nx_src_executors_breadth_executor_ts["callidescope-nx/src/executors/breadth/executor.ts"]
   file_callidescope_nx_src_executors_breadth_executor_unit_test_ts["callidescope-nx/src/executors/breadth/executor.unit.test.ts"]
@@ -2331,7 +2332,6 @@ graph LR
   file_callidescope_nx_src_executors_trace_executor_unit_test_ts["callidescope-nx/src/executors/trace/executor.unit.test.ts"]
   file_callidescope_nx_src_index_ts["callidescope-nx/src/index.ts"]
   file_callidescope_nx_src_index_unit_test_ts["callidescope-nx/src/index.unit.test.ts"]
-  file_callidescope_nx_src_main_module_ts["callidescope-nx/src/main.module.ts"]
   file_callidescope_nx_src_modules_address_address_constants_ts["callidescope-nx/src/modules/address/address.constants.ts"]
   file_callidescope_nx_src_modules_address_address_module_ts["callidescope-nx/src/modules/address/address.module.ts"]
   file_callidescope_nx_src_modules_address_address_service_ts["callidescope-nx/src/modules/address/address.service.ts"]
@@ -2466,13 +2466,15 @@ graph LR
   file_codependix_cli_codependix_config_ts["codependix-cli/codependix.config.ts"]
   file_codependix_cli_codometer_config_ts["codependix-cli/codometer.config.ts"]
   file_codependix_cli_eslint_config_ts["codependix-cli/eslint.config.ts"]
-  file_codependix_cli_src_constants_ts["codependix-cli/src/constants.ts"]
+  file_codependix_cli_src_codependix_cli_constants_ts["codependix-cli/src/codependix-cli.constants.ts"]
+  file_codependix_cli_src_codependix_cli_main_end_to_end_test_ts["codependix-cli/src/codependix-cli.main.end-to-end.test.ts"]
+  file_codependix_cli_src_codependix_cli_main_ts["codependix-cli/src/codependix-cli.main.ts"]
+  file_codependix_cli_src_codependix_cli_main_unit_test_ts["codependix-cli/src/codependix-cli.main.unit.test.ts"]
+  file_codependix_cli_src_codependix_cli_module_ts["codependix-cli/src/codependix-cli.module.ts"]
+  file_codependix_cli_src_codependix_cli_repl_ts["codependix-cli/src/codependix-cli.repl.ts"]
+  file_codependix_cli_src_codependix_cli_repl_unit_test_ts["codependix-cli/src/codependix-cli.repl.unit.test.ts"]
   file_codependix_cli_src_index_ts["codependix-cli/src/index.ts"]
   file_codependix_cli_src_index_unit_test_ts["codependix-cli/src/index.unit.test.ts"]
-  file_codependix_cli_src_main_end_to_end_test_ts["codependix-cli/src/main.end-to-end.test.ts"]
-  file_codependix_cli_src_main_module_ts["codependix-cli/src/main.module.ts"]
-  file_codependix_cli_src_main_ts["codependix-cli/src/main.ts"]
-  file_codependix_cli_src_main_unit_test_ts["codependix-cli/src/main.unit.test.ts"]
   file_codependix_cli_src_modules_map_map_command_integration_test_ts["codependix-cli/src/modules/map/map.command.integration.test.ts"]
   file_codependix_cli_src_modules_map_map_command_ts["codependix-cli/src/modules/map/map.command.ts"]
   file_codependix_cli_src_modules_map_map_command_unit_test_ts["codependix-cli/src/modules/map/map.command.unit.test.ts"]
@@ -2487,8 +2489,6 @@ graph LR
   file_codependix_cli_src_modules_path_path_module_ts["codependix-cli/src/modules/path/path.module.ts"]
   file_codependix_cli_src_modules_path_path_module_unit_test_ts["codependix-cli/src/modules/path/path.module.unit.test.ts"]
   file_codependix_cli_src_modules_path_path_types_ts["codependix-cli/src/modules/path/path.types.ts"]
-  file_codependix_cli_src_repl_ts["codependix-cli/src/repl.ts"]
-  file_codependix_cli_src_repl_unit_test_ts["codependix-cli/src/repl.unit.test.ts"]
   file_codependix_cli_testing_mocks_ts["codependix-cli/testing/mocks.ts"]
   file_codependix_cli_testing_setup_ts["codependix-cli/testing/setup.ts"]
   file_codependix_cli_vite_config_ts["codependix-cli/vite.config.ts"]
@@ -2499,6 +2499,7 @@ graph LR
   file_codependix_configuration_eslint_config_ts["codependix-configuration/eslint.config.ts"]
   file_codependix_configuration_src_index_ts["codependix-configuration/src/index.ts"]
   file_codependix_configuration_src_index_unit_test_ts["codependix-configuration/src/index.unit.test.ts"]
+  file_codependix_configuration_src_modules_configuration_configuration_boundaries_types_ts["codependix-configuration/src/modules/configuration/configuration-boundaries.types.ts"]
   file_codependix_configuration_src_modules_configuration_configuration_loader_service_ts["codependix-configuration/src/modules/configuration/configuration-loader.service.ts"]
   file_codependix_configuration_src_modules_configuration_configuration_loader_service_unit_test_ts["codependix-configuration/src/modules/configuration/configuration-loader.service.unit.test.ts"]
   file_codependix_configuration_src_modules_configuration_configuration_constants_ts["codependix-configuration/src/modules/configuration/configuration.constants.ts"]
@@ -2633,7 +2634,7 @@ graph LR
   file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_ts["codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.ts"]
   file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_unit_test_ts["codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.service.unit.test.ts"]
   file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_types_ts["codependix-nestjs-modules/src/modules/nestjs-project/nestjs-project.types.ts"]
-  file_codependix_nestjs_modules_testing_main_module_ts["codependix-nestjs-modules/testing/main.module.ts"]
+  file_codependix_nestjs_modules_testing_codependix_nestjs_modules_module_ts["codependix-nestjs-modules/testing/codependix-nestjs-modules.module.ts"]
   file_codependix_nestjs_modules_testing_mocks_ts["codependix-nestjs-modules/testing/mocks.ts"]
   file_codependix_nestjs_modules_testing_setup_ts["codependix-nestjs-modules/testing/setup.ts"]
   file_codependix_nestjs_modules_vite_config_ts["codependix-nestjs-modules/vite.config.ts"]
@@ -2664,6 +2665,7 @@ graph LR
   file_codependix_nx_codependix_config_ts["codependix-nx/codependix.config.ts"]
   file_codependix_nx_codometer_config_ts["codependix-nx/codometer.config.ts"]
   file_codependix_nx_eslint_config_ts["codependix-nx/eslint.config.ts"]
+  file_codependix_nx_src_codependix_nx_module_ts["codependix-nx/src/codependix-nx.module.ts"]
   file_codependix_nx_src_executors_gate_executor_integration_test_ts["codependix-nx/src/executors/gate/executor.integration.test.ts"]
   file_codependix_nx_src_executors_gate_executor_ts["codependix-nx/src/executors/gate/executor.ts"]
   file_codependix_nx_src_executors_gate_executor_types_ts["codependix-nx/src/executors/gate/executor.types.ts"]
@@ -2673,7 +2675,6 @@ graph LR
   file_codependix_nx_src_executors_gate_loader_unit_test_ts["codependix-nx/src/executors/gate/loader.unit.test.ts"]
   file_codependix_nx_src_index_ts["codependix-nx/src/index.ts"]
   file_codependix_nx_src_index_unit_test_ts["codependix-nx/src/index.unit.test.ts"]
-  file_codependix_nx_src_main_module_ts["codependix-nx/src/main.module.ts"]
   file_codependix_nx_src_modules_gate_gate_constants_ts["codependix-nx/src/modules/gate/gate.constants.ts"]
   file_codependix_nx_src_modules_gate_gate_module_ts["codependix-nx/src/modules/gate/gate.module.ts"]
   file_codependix_nx_src_modules_gate_gate_service_ts["codependix-nx/src/modules/gate/gate.service.ts"]
@@ -2767,14 +2768,16 @@ graph LR
   file_codometer_cli_codependix_config_ts["codometer-cli/codependix.config.ts"]
   file_codometer_cli_codometer_config_ts["codometer-cli/codometer.config.ts"]
   file_codometer_cli_eslint_config_ts["codometer-cli/eslint.config.ts"]
-  file_codometer_cli_src_constants_ts["codometer-cli/src/constants.ts"]
+  file_codometer_cli_src_codometer_cli_constants_ts["codometer-cli/src/codometer-cli.constants.ts"]
+  file_codometer_cli_src_codometer_cli_main_end_to_end_test_ts["codometer-cli/src/codometer-cli.main.end-to-end.test.ts"]
+  file_codometer_cli_src_codometer_cli_main_ts["codometer-cli/src/codometer-cli.main.ts"]
+  file_codometer_cli_src_codometer_cli_main_unit_test_ts["codometer-cli/src/codometer-cli.main.unit.test.ts"]
+  file_codometer_cli_src_codometer_cli_module_ts["codometer-cli/src/codometer-cli.module.ts"]
+  file_codometer_cli_src_codometer_cli_repl_ts["codometer-cli/src/codometer-cli.repl.ts"]
+  file_codometer_cli_src_codometer_cli_repl_unit_test_ts["codometer-cli/src/codometer-cli.repl.unit.test.ts"]
+  file_codometer_cli_src_codometer_cli_utilities_ts["codometer-cli/src/codometer-cli.utilities.ts"]
+  file_codometer_cli_src_codometer_cli_utilities_unit_test_ts["codometer-cli/src/codometer-cli.utilities.unit.test.ts"]
   file_codometer_cli_src_index_ts["codometer-cli/src/index.ts"]
-  file_codometer_cli_src_main_end_to_end_test_ts["codometer-cli/src/main.end-to-end.test.ts"]
-  file_codometer_cli_src_main_module_ts["codometer-cli/src/main.module.ts"]
-  file_codometer_cli_src_main_ts["codometer-cli/src/main.ts"]
-  file_codometer_cli_src_main_unit_test_ts["codometer-cli/src/main.unit.test.ts"]
-  file_codometer_cli_src_main_utilities_ts["codometer-cli/src/main.utilities.ts"]
-  file_codometer_cli_src_main_utilities_unit_test_ts["codometer-cli/src/main.utilities.unit.test.ts"]
   file_codometer_cli_src_modules_changes_changes_command_ts["codometer-cli/src/modules/changes/changes.command.ts"]
   file_codometer_cli_src_modules_changes_changes_command_unit_test_ts["codometer-cli/src/modules/changes/changes.command.unit.test.ts"]
   file_codometer_cli_src_modules_changes_changes_constants_ts["codometer-cli/src/modules/changes/changes.constants.ts"]
@@ -2791,8 +2794,6 @@ graph LR
   file_codometer_cli_src_modules_measure_measure_constants_ts["codometer-cli/src/modules/measure/measure.constants.ts"]
   file_codometer_cli_src_modules_measure_measure_module_ts["codometer-cli/src/modules/measure/measure.module.ts"]
   file_codometer_cli_src_modules_measure_measure_types_ts["codometer-cli/src/modules/measure/measure.types.ts"]
-  file_codometer_cli_src_repl_ts["codometer-cli/src/repl.ts"]
-  file_codometer_cli_src_repl_unit_test_ts["codometer-cli/src/repl.unit.test.ts"]
   file_codometer_cli_testing_fixture_tree_ts["codometer-cli/testing/fixture-tree.ts"]
   file_codometer_cli_testing_mocks_ts["codometer-cli/testing/mocks.ts"]
   file_codometer_cli_testing_setup_ts["codometer-cli/testing/setup.ts"]
@@ -3269,13 +3270,15 @@ graph LR
   file_conformetry_cli_codependix_config_ts["conformetry-cli/codependix.config.ts"]
   file_conformetry_cli_codometer_config_ts["conformetry-cli/codometer.config.ts"]
   file_conformetry_cli_eslint_config_ts["conformetry-cli/eslint.config.ts"]
-  file_conformetry_cli_src_constants_ts["conformetry-cli/src/constants.ts"]
+  file_conformetry_cli_src_conformetry_cli_constants_ts["conformetry-cli/src/conformetry-cli.constants.ts"]
+  file_conformetry_cli_src_conformetry_cli_main_end_to_end_test_ts["conformetry-cli/src/conformetry-cli.main.end-to-end.test.ts"]
+  file_conformetry_cli_src_conformetry_cli_main_integration_test_ts["conformetry-cli/src/conformetry-cli.main.integration.test.ts"]
+  file_conformetry_cli_src_conformetry_cli_main_ts["conformetry-cli/src/conformetry-cli.main.ts"]
+  file_conformetry_cli_src_conformetry_cli_main_unit_test_ts["conformetry-cli/src/conformetry-cli.main.unit.test.ts"]
+  file_conformetry_cli_src_conformetry_cli_module_ts["conformetry-cli/src/conformetry-cli.module.ts"]
+  file_conformetry_cli_src_conformetry_cli_repl_ts["conformetry-cli/src/conformetry-cli.repl.ts"]
+  file_conformetry_cli_src_conformetry_cli_repl_unit_test_ts["conformetry-cli/src/conformetry-cli.repl.unit.test.ts"]
   file_conformetry_cli_src_index_ts["conformetry-cli/src/index.ts"]
-  file_conformetry_cli_src_main_end_to_end_test_ts["conformetry-cli/src/main.end-to-end.test.ts"]
-  file_conformetry_cli_src_main_integration_test_ts["conformetry-cli/src/main.integration.test.ts"]
-  file_conformetry_cli_src_main_module_ts["conformetry-cli/src/main.module.ts"]
-  file_conformetry_cli_src_main_ts["conformetry-cli/src/main.ts"]
-  file_conformetry_cli_src_main_unit_test_ts["conformetry-cli/src/main.unit.test.ts"]
   file_conformetry_cli_src_modules_generate_generate_command_ts["conformetry-cli/src/modules/generate/generate.command.ts"]
   file_conformetry_cli_src_modules_generate_generate_command_unit_test_ts["conformetry-cli/src/modules/generate/generate.command.unit.test.ts"]
   file_conformetry_cli_src_modules_generate_generate_constants_ts["conformetry-cli/src/modules/generate/generate.constants.ts"]
@@ -3296,8 +3299,6 @@ graph LR
   file_conformetry_cli_src_modules_validate_validate_constants_ts["conformetry-cli/src/modules/validate/validate.constants.ts"]
   file_conformetry_cli_src_modules_validate_validate_module_ts["conformetry-cli/src/modules/validate/validate.module.ts"]
   file_conformetry_cli_src_modules_validate_validate_types_ts["conformetry-cli/src/modules/validate/validate.types.ts"]
-  file_conformetry_cli_src_repl_ts["conformetry-cli/src/repl.ts"]
-  file_conformetry_cli_src_repl_unit_test_ts["conformetry-cli/src/repl.unit.test.ts"]
   file_conformetry_cli_testing_mocks_ts["conformetry-cli/testing/mocks.ts"]
   file_conformetry_cli_testing_setup_ts["conformetry-cli/testing/setup.ts"]
   file_conformetry_cli_vite_config_ts["conformetry-cli/vite.config.ts"]
@@ -3494,6 +3495,9 @@ graph LR
   file_conformetry_nx_codependix_config_ts["conformetry-nx/codependix.config.ts"]
   file_conformetry_nx_codometer_config_ts["conformetry-nx/codometer.config.ts"]
   file_conformetry_nx_eslint_config_ts["conformetry-nx/eslint.config.ts"]
+  file_conformetry_nx_src_conformetry_nx_main_ts["conformetry-nx/src/conformetry-nx.main.ts"]
+  file_conformetry_nx_src_conformetry_nx_main_unit_test_ts["conformetry-nx/src/conformetry-nx.main.unit.test.ts"]
+  file_conformetry_nx_src_conformetry_nx_module_ts["conformetry-nx/src/conformetry-nx.module.ts"]
   file_conformetry_nx_src_executors_validate_executor_ts["conformetry-nx/src/executors/validate/executor.ts"]
   file_conformetry_nx_src_executors_validate_executor_types_ts["conformetry-nx/src/executors/validate/executor.types.ts"]
   file_conformetry_nx_src_executors_validate_executor_unit_test_ts["conformetry-nx/src/executors/validate/executor.unit.test.ts"]
@@ -3502,9 +3506,6 @@ graph LR
   file_conformetry_nx_src_generators_sync_generator_unit_test_ts["conformetry-nx/src/generators/sync/generator.unit.test.ts"]
   file_conformetry_nx_src_index_ts["conformetry-nx/src/index.ts"]
   file_conformetry_nx_src_index_unit_test_ts["conformetry-nx/src/index.unit.test.ts"]
-  file_conformetry_nx_src_main_module_ts["conformetry-nx/src/main.module.ts"]
-  file_conformetry_nx_src_main_ts["conformetry-nx/src/main.ts"]
-  file_conformetry_nx_src_main_unit_test_ts["conformetry-nx/src/main.unit.test.ts"]
   file_conformetry_nx_src_modules_adapter_adapter_constants_ts["conformetry-nx/src/modules/adapter/adapter.constants.ts"]
   file_conformetry_nx_src_modules_adapter_adapter_module_ts["conformetry-nx/src/modules/adapter/adapter.module.ts"]
   file_conformetry_nx_src_modules_adapter_adapter_service_ts["conformetry-nx/src/modules/adapter/adapter.service.ts"]
@@ -3824,11 +3825,13 @@ graph LR
   file_lexico_cli_codependix_config_ts["lexico-cli/codependix.config.ts"]
   file_lexico_cli_codometer_config_ts["lexico-cli/codometer.config.ts"]
   file_lexico_cli_eslint_config_ts["lexico-cli/eslint.config.ts"]
-  file_lexico_cli_src_constants_ts["lexico-cli/src/constants.ts"]
-  file_lexico_cli_src_main_end_to_end_test_ts["lexico-cli/src/main.end-to-end.test.ts"]
-  file_lexico_cli_src_main_module_ts["lexico-cli/src/main.module.ts"]
-  file_lexico_cli_src_main_ts["lexico-cli/src/main.ts"]
-  file_lexico_cli_src_main_unit_test_ts["lexico-cli/src/main.unit.test.ts"]
+  file_lexico_cli_src_lexico_cli_constants_ts["lexico-cli/src/lexico-cli.constants.ts"]
+  file_lexico_cli_src_lexico_cli_main_end_to_end_test_ts["lexico-cli/src/lexico-cli.main.end-to-end.test.ts"]
+  file_lexico_cli_src_lexico_cli_main_ts["lexico-cli/src/lexico-cli.main.ts"]
+  file_lexico_cli_src_lexico_cli_main_unit_test_ts["lexico-cli/src/lexico-cli.main.unit.test.ts"]
+  file_lexico_cli_src_lexico_cli_module_ts["lexico-cli/src/lexico-cli.module.ts"]
+  file_lexico_cli_src_lexico_cli_repl_ts["lexico-cli/src/lexico-cli.repl.ts"]
+  file_lexico_cli_src_lexico_cli_repl_unit_test_ts["lexico-cli/src/lexico-cli.repl.unit.test.ts"]
   file_lexico_cli_src_modules_clear_clear_command_ts["lexico-cli/src/modules/clear/clear.command.ts"]
   file_lexico_cli_src_modules_clear_clear_command_unit_test_ts["lexico-cli/src/modules/clear/clear.command.unit.test.ts"]
   file_lexico_cli_src_modules_clear_clear_constants_ts["lexico-cli/src/modules/clear/clear.constants.ts"]
@@ -3973,8 +3976,6 @@ graph LR
   file_lexico_cli_src_modules_words_words_service_ts["lexico-cli/src/modules/words/words.service.ts"]
   file_lexico_cli_src_modules_words_words_service_unit_test_ts["lexico-cli/src/modules/words/words.service.unit.test.ts"]
   file_lexico_cli_src_modules_words_words_types_ts["lexico-cli/src/modules/words/words.types.ts"]
-  file_lexico_cli_src_repl_ts["lexico-cli/src/repl.ts"]
-  file_lexico_cli_src_repl_unit_test_ts["lexico-cli/src/repl.unit.test.ts"]
   file_lexico_cli_testing_command_harness_ts["lexico-cli/testing/command-harness.ts"]
   file_lexico_cli_testing_mocks_ts["lexico-cli/testing/mocks.ts"]
   file_lexico_cli_testing_setup_ts["lexico-cli/testing/setup.ts"]
@@ -4099,11 +4100,12 @@ graph LR
   file_meanderaw_cli_codependix_config_ts["meanderaw-cli/codependix.config.ts"]
   file_meanderaw_cli_codometer_config_ts["meanderaw-cli/codometer.config.ts"]
   file_meanderaw_cli_eslint_config_ts["meanderaw-cli/eslint.config.ts"]
-  file_meanderaw_cli_src_constants_ts["meanderaw-cli/src/constants.ts"]
-  file_meanderaw_cli_src_main_end_to_end_test_ts["meanderaw-cli/src/main.end-to-end.test.ts"]
-  file_meanderaw_cli_src_main_module_ts["meanderaw-cli/src/main.module.ts"]
-  file_meanderaw_cli_src_main_ts["meanderaw-cli/src/main.ts"]
-  file_meanderaw_cli_src_main_unit_test_ts["meanderaw-cli/src/main.unit.test.ts"]
+  file_meanderaw_cli_src_meanderaw_cli_constants_ts["meanderaw-cli/src/meanderaw-cli.constants.ts"]
+  file_meanderaw_cli_src_meanderaw_cli_main_end_to_end_test_ts["meanderaw-cli/src/meanderaw-cli.main.end-to-end.test.ts"]
+  file_meanderaw_cli_src_meanderaw_cli_main_ts["meanderaw-cli/src/meanderaw-cli.main.ts"]
+  file_meanderaw_cli_src_meanderaw_cli_main_unit_test_ts["meanderaw-cli/src/meanderaw-cli.main.unit.test.ts"]
+  file_meanderaw_cli_src_meanderaw_cli_module_ts["meanderaw-cli/src/meanderaw-cli.module.ts"]
+  file_meanderaw_cli_src_meanderaw_cli_repl_ts["meanderaw-cli/src/meanderaw-cli.repl.ts"]
   file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts["meanderaw-cli/src/modules/characteristics/characteristic-context.service.ts"]
   file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_unit_test_ts["meanderaw-cli/src/modules/characteristics/characteristic-context.service.unit.test.ts"]
   file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts["meanderaw-cli/src/modules/characteristics/characteristics.constants.ts"]
@@ -4521,7 +4523,6 @@ graph LR
   file_meanderaw_cli_src_modules_tile_tile_service_ts["meanderaw-cli/src/modules/tile/tile.service.ts"]
   file_meanderaw_cli_src_modules_tile_tile_service_unit_test_ts["meanderaw-cli/src/modules/tile/tile.service.unit.test.ts"]
   file_meanderaw_cli_src_modules_tile_tile_types_ts["meanderaw-cli/src/modules/tile/tile.types.ts"]
-  file_meanderaw_cli_src_repl_ts["meanderaw-cli/src/repl.ts"]
   file_meanderaw_cli_src_worker_ts["meanderaw-cli/src/worker.ts"]
   file_meanderaw_cli_src_worker_unit_test_ts["meanderaw-cli/src/worker.unit.test.ts"]
   file_meanderaw_cli_testing_draw_run_budget_ts["meanderaw-cli/testing/draw-run-budget.ts"]
@@ -4551,11 +4552,6 @@ graph LR
   file_synchronization_codependix_config_ts["synchronization/codependix.config.ts"]
   file_synchronization_codometer_config_ts["synchronization/codometer.config.ts"]
   file_synchronization_eslint_config_ts["synchronization/eslint.config.ts"]
-  file_synchronization_src_constants_ts["synchronization/src/constants.ts"]
-  file_synchronization_src_main_end_to_end_test_ts["synchronization/src/main.end-to-end.test.ts"]
-  file_synchronization_src_main_module_ts["synchronization/src/main.module.ts"]
-  file_synchronization_src_main_ts["synchronization/src/main.ts"]
-  file_synchronization_src_main_unit_test_ts["synchronization/src/main.unit.test.ts"]
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts["synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts"]
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_unit_test_ts["synchronization/src/modules/conformetry-generators/conformetry-generators.command.unit.test.ts"]
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_constants_ts["synchronization/src/modules/conformetry-generators/conformetry-generators.constants.ts"]
@@ -4634,8 +4630,13 @@ graph LR
   file_synchronization_src_modules_vscode_settings_vscode_settings_constants_ts["synchronization/src/modules/vscode-settings/vscode-settings.constants.ts"]
   file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts["synchronization/src/modules/vscode-settings/vscode-settings.module.ts"]
   file_synchronization_src_modules_vscode_settings_vscode_settings_types_ts["synchronization/src/modules/vscode-settings/vscode-settings.types.ts"]
-  file_synchronization_src_repl_ts["synchronization/src/repl.ts"]
-  file_synchronization_src_repl_unit_test_ts["synchronization/src/repl.unit.test.ts"]
+  file_synchronization_src_synchronization_constants_ts["synchronization/src/synchronization.constants.ts"]
+  file_synchronization_src_synchronization_main_end_to_end_test_ts["synchronization/src/synchronization.main.end-to-end.test.ts"]
+  file_synchronization_src_synchronization_main_ts["synchronization/src/synchronization.main.ts"]
+  file_synchronization_src_synchronization_main_unit_test_ts["synchronization/src/synchronization.main.unit.test.ts"]
+  file_synchronization_src_synchronization_module_ts["synchronization/src/synchronization.module.ts"]
+  file_synchronization_src_synchronization_repl_ts["synchronization/src/synchronization.repl.ts"]
+  file_synchronization_src_synchronization_repl_unit_test_ts["synchronization/src/synchronization.repl.unit.test.ts"]
   file_synchronization_testing_mocks_ts["synchronization/testing/mocks.ts"]
   file_synchronization_testing_setup_ts["synchronization/testing/setup.ts"]
   file_synchronization_vitest_config_ts["synchronization/vitest.config.ts"]
@@ -4643,11 +4644,6 @@ graph LR
   file_validation_codependix_config_ts["validation/codependix.config.ts"]
   file_validation_codometer_config_ts["validation/codometer.config.ts"]
   file_validation_eslint_config_ts["validation/eslint.config.ts"]
-  file_validation_src_constants_ts["validation/src/constants.ts"]
-  file_validation_src_main_end_to_end_test_ts["validation/src/main.end-to-end.test.ts"]
-  file_validation_src_main_module_ts["validation/src/main.module.ts"]
-  file_validation_src_main_ts["validation/src/main.ts"]
-  file_validation_src_main_unit_test_ts["validation/src/main.unit.test.ts"]
   file_validation_src_modules_audit_governance_audit_governance_command_ts["validation/src/modules/audit-governance/audit-governance.command.ts"]
   file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts["validation/src/modules/audit-governance/audit-governance.command.unit.test.ts"]
   file_validation_src_modules_audit_governance_audit_governance_constants_ts["validation/src/modules/audit-governance/audit-governance.constants.ts"]
@@ -4734,8 +4730,13 @@ graph LR
   file_validation_src_modules_readme_projects_readme_projects_service_ts["validation/src/modules/readme-projects/readme-projects.service.ts"]
   file_validation_src_modules_readme_projects_readme_projects_service_unit_test_ts["validation/src/modules/readme-projects/readme-projects.service.unit.test.ts"]
   file_validation_src_modules_readme_projects_readme_projects_types_ts["validation/src/modules/readme-projects/readme-projects.types.ts"]
-  file_validation_src_repl_ts["validation/src/repl.ts"]
-  file_validation_src_repl_unit_test_ts["validation/src/repl.unit.test.ts"]
+  file_validation_src_validation_constants_ts["validation/src/validation.constants.ts"]
+  file_validation_src_validation_main_end_to_end_test_ts["validation/src/validation.main.end-to-end.test.ts"]
+  file_validation_src_validation_main_ts["validation/src/validation.main.ts"]
+  file_validation_src_validation_main_unit_test_ts["validation/src/validation.main.unit.test.ts"]
+  file_validation_src_validation_module_ts["validation/src/validation.module.ts"]
+  file_validation_src_validation_repl_ts["validation/src/validation.repl.ts"]
+  file_validation_src_validation_repl_unit_test_ts["validation/src/validation.repl.unit.test.ts"]
   file_validation_testing_mocks_ts["validation/testing/mocks.ts"]
   file_validation_testing_setup_ts["validation/testing/setup.ts"]
   file_validation_vitest_config_ts["validation/vitest.config.ts"]
@@ -4752,24 +4753,25 @@ graph LR
   file_affirmancy_testing_test_prompts_py --> file_affirmancy_src_prompts_py
   file_affirmancy_testing_test_services_py --> file_affirmancy_src_services_py
   file_affirmancy_testing_test_subjects_py --> file_affirmancy_src_subjects_py
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_constants_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_migrations_1791255787877_migration_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_types_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_types_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_utilities_ts
-  file_caelundas_cli_src_main_end_to_end_test_ts --> file_caelundas_cli_testing_major_aspects_utilities_ts
-  file_caelundas_cli_src_main_module_ts --> file_caelundas_cli_src_constants_ts
-  file_caelundas_cli_src_main_module_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_module_ts
-  file_caelundas_cli_src_main_ts --> file_caelundas_cli_src_main_module_ts
-  file_caelundas_cli_src_main_unit_test_ts --> file_caelundas_cli_src_main_module_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_migrations_1791255787877_migration_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_types_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_types_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_utilities_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_major_aspects_utilities_ts
+  file_caelundas_cli_src_caelundas_cli_main_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
+  file_caelundas_cli_src_caelundas_cli_main_unit_test_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
+  file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
+  file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_module_ts
+  file_caelundas_cli_src_caelundas_cli_repl_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
@@ -4963,7 +4965,7 @@ graph LR
   file_caelundas_cli_src_modules_caelundas_caelundas_types_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_constants_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
@@ -5224,12 +5226,12 @@ graph LR
   file_caelundas_cli_src_modules_input_input_module_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_input_input_service_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
   file_caelundas_cli_src_modules_input_input_service_ts --> file_caelundas_cli_src_modules_input_input_types_ts
-  file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_constants_ts
+  file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_src_modules_input_input_service_unit_test_ts --> file_caelundas_cli_testing_mocks_ts
-  file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_constants_ts
+  file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
@@ -5953,12 +5955,11 @@ graph LR
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
-  file_caelundas_cli_src_repl_ts --> file_caelundas_cli_src_main_module_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
-  file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_constants_ts
+  file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_command_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
@@ -6056,13 +6057,14 @@ graph LR
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_routes_index_tsx
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
   file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_src_router_tsx
-  file_callidescope_cli_src_main_end_to_end_test_ts --> file_callidescope_cli_src_constants_ts
-  file_callidescope_cli_src_main_module_ts --> file_callidescope_cli_src_constants_ts
-  file_callidescope_cli_src_main_module_ts --> file_callidescope_cli_src_modules_breadth_breadth_module_ts
-  file_callidescope_cli_src_main_module_ts --> file_callidescope_cli_src_modules_callidescope_callidescope_module_ts
-  file_callidescope_cli_src_main_module_ts --> file_callidescope_cli_src_modules_depth_depth_module_ts
-  file_callidescope_cli_src_main_module_ts --> file_callidescope_cli_src_modules_limits_limits_module_ts
-  file_callidescope_cli_src_main_ts --> file_callidescope_cli_src_main_module_ts
+  file_callidescope_cli_src_callidescope_cli_main_end_to_end_test_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
+  file_callidescope_cli_src_callidescope_cli_main_ts --> file_callidescope_cli_src_callidescope_cli_module_ts
+  file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
+  file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_modules_breadth_breadth_module_ts
+  file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_modules_callidescope_callidescope_module_ts
+  file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_modules_depth_depth_module_ts
+  file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_modules_limits_limits_module_ts
+  file_callidescope_cli_src_callidescope_cli_repl_ts --> file_callidescope_cli_src_callidescope_cli_module_ts
   file_callidescope_cli_src_modules_address_lookup_address_lookup_constants_unit_test_ts --> file_callidescope_cli_src_modules_address_lookup_address_lookup_constants_ts
   file_callidescope_cli_src_modules_address_lookup_address_lookup_module_ts --> file_callidescope_cli_src_modules_address_lookup_address_lookup_service_ts
   file_callidescope_cli_src_modules_address_lookup_address_lookup_module_ts --> file_callidescope_cli_src_modules_callidescope_callidescope_module_ts
@@ -6126,7 +6128,6 @@ graph LR
   file_callidescope_cli_src_modules_limits_render_limits_service_ts --> file_callidescope_cli_src_modules_limits_limits_types_ts
   file_callidescope_cli_src_modules_limits_render_limits_service_unit_test_ts --> file_callidescope_cli_src_modules_limits_limits_types_ts
   file_callidescope_cli_src_modules_limits_render_limits_service_unit_test_ts --> file_callidescope_cli_src_modules_limits_render_limits_service_ts
-  file_callidescope_cli_src_repl_ts --> file_callidescope_cli_src_main_module_ts
   file_callidescope_configuration_src_index_unit_test_ts --> file_callidescope_configuration_src_index_ts
   file_callidescope_configuration_src_modules_configuration_configuration_file_module_ts --> file_callidescope_configuration_src_modules_configuration_configuration_file_service_ts
   file_callidescope_configuration_src_modules_configuration_configuration_file_service_ts --> file_callidescope_configuration_src_modules_configuration_configuration_constants_ts
@@ -6207,9 +6208,9 @@ graph LR
   file_callidescope_examples_examples_injected_dependency_orders_ts --> file_callidescope_examples_examples_injected_dependency_inventory_ts
   file_callidescope_examples_examples_plain_call_plain_call_ts --> file_callidescope_examples_examples_plain_call_normalize_label_ts
   file_callidescope_examples_examples_structural_interface_structural_interface_ts --> file_callidescope_examples_examples_structural_interface_structural_provider_ts
+  file_callidescope_examples_src_callidescope_examples_main_ts --> file_callidescope_examples_examples_injected_dependency_inventory_ts
+  file_callidescope_examples_src_callidescope_examples_main_ts --> file_callidescope_examples_examples_injected_dependency_orders_ts
   file_callidescope_examples_src_index_ts --> file_callidescope_examples_examples_plain_call_normalize_label_ts
-  file_callidescope_examples_src_main_ts --> file_callidescope_examples_examples_injected_dependency_inventory_ts
-  file_callidescope_examples_src_main_ts --> file_callidescope_examples_examples_injected_dependency_orders_ts
   file_callidescope_examples_testing_examples_integration_test_ts --> file_callidescope_examples_callidescope_workspace_config_ts
   file_callidescope_graph_src_modules_callables_address_service_ts --> file_callidescope_graph_src_modules_callables_address_constants_ts
   file_callidescope_graph_src_modules_callables_address_service_ts --> file_callidescope_graph_src_modules_callables_address_types_ts
@@ -6458,6 +6459,8 @@ graph LR
   file_callidescope_graph_testing_programs_ts --> file_callidescope_graph_src_modules_program_program_service_ts
   file_callidescope_graph_testing_programs_ts --> file_callidescope_graph_src_modules_program_program_types_ts
   file_callidescope_graph_testing_programs_ts --> file_callidescope_graph_src_modules_workspace_workspace_service_ts
+  file_callidescope_nx_src_callidescope_nx_module_ts --> file_callidescope_nx_src_modules_address_address_module_ts
+  file_callidescope_nx_src_callidescope_nx_module_ts --> file_callidescope_nx_src_modules_plugin_plugin_module_ts
   file_callidescope_nx_src_executors_breadth_executor_ts --> file_callidescope_nx_src_executors_address_types_ts
   file_callidescope_nx_src_executors_breadth_executor_ts --> file_callidescope_nx_src_modules_address_address_utilities_ts
   file_callidescope_nx_src_executors_breadth_executor_unit_test_ts --> file_callidescope_nx_src_executors_breadth_executor_ts
@@ -6491,8 +6494,6 @@ graph LR
   file_callidescope_nx_src_index_unit_test_ts --> file_callidescope_nx_src_index_ts
   file_callidescope_nx_src_index_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_service_ts
   file_callidescope_nx_src_index_unit_test_ts --> file_callidescope_nx_src_modules_plugin_plugin_types_ts
-  file_callidescope_nx_src_main_module_ts --> file_callidescope_nx_src_modules_address_address_module_ts
-  file_callidescope_nx_src_main_module_ts --> file_callidescope_nx_src_modules_plugin_plugin_module_ts
   file_callidescope_nx_src_modules_address_address_module_ts --> file_callidescope_nx_src_modules_address_address_service_ts
   file_callidescope_nx_src_modules_address_address_service_ts --> file_callidescope_nx_src_modules_address_address_types_ts
   file_callidescope_nx_src_modules_address_address_service_unit_test_ts --> file_callidescope_nx_src_modules_address_address_service_ts
@@ -6508,7 +6509,7 @@ graph LR
   file_callidescope_nx_src_modules_options_options_service_ts --> file_callidescope_nx_src_modules_options_options_constants_ts
   file_callidescope_nx_src_modules_options_options_service_ts --> file_callidescope_nx_src_modules_options_options_types_ts
   file_callidescope_nx_src_modules_options_options_service_unit_test_ts --> file_callidescope_nx_src_modules_options_options_service_ts
-  file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_main_module_ts
+  file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_callidescope_nx_module_ts
   file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_modules_address_address_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_modules_options_options_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_modules_plugin_plugin_constants_ts
@@ -6705,19 +6706,20 @@ graph LR
   file_codependix_boundaries_src_modules_run_context_run_context_service_ts --> file_codependix_boundaries_src_modules_run_context_run_context_constants_ts
   file_codependix_boundaries_src_modules_run_context_run_context_service_ts --> file_codependix_boundaries_src_modules_run_context_run_context_types_ts
   file_codependix_boundaries_src_modules_run_context_run_context_service_unit_test_ts --> file_codependix_boundaries_src_modules_run_context_run_context_service_ts
+  file_codependix_cli_src_codependix_cli_main_end_to_end_test_ts --> file_codependix_cli_src_codependix_cli_constants_ts
+  file_codependix_cli_src_codependix_cli_main_ts --> file_codependix_cli_src_codependix_cli_module_ts
+  file_codependix_cli_src_codependix_cli_module_ts --> file_codependix_cli_src_codependix_cli_constants_ts
+  file_codependix_cli_src_codependix_cli_module_ts --> file_codependix_cli_src_modules_map_map_module_ts
+  file_codependix_cli_src_codependix_cli_module_ts --> file_codependix_cli_src_modules_path_path_module_ts
+  file_codependix_cli_src_codependix_cli_repl_ts --> file_codependix_cli_src_codependix_cli_module_ts
   file_codependix_cli_src_index_unit_test_ts --> file_codependix_cli_src_index_ts
-  file_codependix_cli_src_main_end_to_end_test_ts --> file_codependix_cli_src_constants_ts
-  file_codependix_cli_src_main_module_ts --> file_codependix_cli_src_constants_ts
-  file_codependix_cli_src_main_module_ts --> file_codependix_cli_src_modules_map_map_module_ts
-  file_codependix_cli_src_main_module_ts --> file_codependix_cli_src_modules_path_path_module_ts
-  file_codependix_cli_src_main_ts --> file_codependix_cli_src_main_module_ts
-  file_codependix_cli_src_modules_map_map_command_integration_test_ts --> file_codependix_cli_src_main_module_ts
+  file_codependix_cli_src_modules_map_map_command_integration_test_ts --> file_codependix_cli_src_codependix_cli_module_ts
   file_codependix_cli_src_modules_map_map_command_integration_test_ts --> file_codependix_cli_src_modules_map_map_command_ts
   file_codependix_cli_src_modules_map_map_command_unit_test_ts --> file_codependix_cli_src_modules_map_map_command_ts
   file_codependix_cli_src_modules_map_map_module_ts --> file_codependix_cli_src_modules_map_map_command_ts
   file_codependix_cli_src_modules_map_map_module_unit_test_ts --> file_codependix_cli_src_modules_map_map_command_ts
   file_codependix_cli_src_modules_map_map_module_unit_test_ts --> file_codependix_cli_src_modules_map_map_module_ts
-  file_codependix_cli_src_modules_path_path_command_integration_test_ts --> file_codependix_cli_src_main_module_ts
+  file_codependix_cli_src_modules_path_path_command_integration_test_ts --> file_codependix_cli_src_codependix_cli_module_ts
   file_codependix_cli_src_modules_path_path_command_integration_test_ts --> file_codependix_cli_src_modules_path_path_command_ts
   file_codependix_cli_src_modules_path_path_command_integration_test_ts --> file_codependix_cli_src_modules_path_path_types_ts
   file_codependix_cli_src_modules_path_path_command_ts --> file_codependix_cli_src_modules_path_path_constants_ts
@@ -6727,7 +6729,6 @@ graph LR
   file_codependix_cli_src_modules_path_path_module_ts --> file_codependix_cli_src_modules_path_path_command_ts
   file_codependix_cli_src_modules_path_path_module_unit_test_ts --> file_codependix_cli_src_modules_path_path_command_ts
   file_codependix_cli_src_modules_path_path_module_unit_test_ts --> file_codependix_cli_src_modules_path_path_module_ts
-  file_codependix_cli_src_repl_ts --> file_codependix_cli_src_main_module_ts
   file_codependix_configuration_src_index_unit_test_ts --> file_codependix_configuration_src_index_ts
   file_codependix_configuration_src_modules_configuration_configuration_loader_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_constants_ts
   file_codependix_configuration_src_modules_configuration_configuration_loader_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_types_ts
@@ -6740,12 +6741,14 @@ graph LR
   file_codependix_configuration_src_modules_configuration_configuration_module_ts --> file_codependix_configuration_src_modules_override_resolution_override_resolution_module_ts
   file_codependix_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_codependix_configuration_src_modules_configuration_configuration_module_ts
   file_codependix_configuration_src_modules_configuration_configuration_module_unit_test_ts --> file_codependix_configuration_src_modules_configuration_configuration_service_ts
+  file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_boundaries_types_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_loader_service_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_constants_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_types_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_configuration_flag_resolution_service_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_input_input_service_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_ts --> file_codependix_configuration_src_modules_override_resolution_override_resolution_service_ts
+  file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_configuration_configuration_boundaries_types_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_configuration_configuration_loader_service_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_configuration_configuration_constants_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_configuration_configuration_service_ts
@@ -6753,6 +6756,7 @@ graph LR
   file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_configuration_flag_resolution_service_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_input_input_service_ts
   file_codependix_configuration_src_modules_configuration_configuration_service_unit_test_ts --> file_codependix_configuration_src_modules_override_resolution_override_resolution_service_ts
+  file_codependix_configuration_src_modules_configuration_configuration_types_ts --> file_codependix_configuration_src_modules_configuration_configuration_boundaries_types_ts
   file_codependix_configuration_src_modules_configuration_flag_resolution_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_constants_ts
   file_codependix_configuration_src_modules_configuration_flag_resolution_service_ts --> file_codependix_configuration_src_modules_configuration_configuration_types_ts
   file_codependix_configuration_src_modules_configuration_flag_resolution_service_ts --> file_codependix_configuration_src_modules_input_input_service_ts
@@ -6810,6 +6814,7 @@ graph LR
   file_codependix_examples_testing_render_boundary_attribution_ts --> file_codependix_examples_testing_render_types_ts
   file_codependix_examples_testing_render_boundary_boot_failures_ts --> file_codependix_examples_testing_render_boundary_run_ts
   file_codependix_examples_testing_render_boundary_boot_failures_ts --> file_codependix_examples_testing_render_document_ts
+  file_codependix_examples_testing_render_boundary_boot_failures_ts --> file_codependix_examples_testing_render_nestjs_graphs_ts
   file_codependix_examples_testing_render_boundary_boot_failures_ts --> file_codependix_examples_testing_render_nx_graphs_ts
   file_codependix_examples_testing_render_boundary_boot_failures_ts --> file_codependix_examples_testing_render_paths_ts
   file_codependix_examples_testing_render_boundary_boot_failures_ts --> file_codependix_examples_testing_render_types_ts
@@ -6964,7 +6969,7 @@ graph LR
   file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_ts --> file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_types_ts
   file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_ts
   file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_types_ts
-  file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_codependix_nestjs_modules_testing_main_module_ts
+  file_codependix_nestjs_modules_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_codependix_nestjs_modules_testing_codependix_nestjs_modules_module_ts
   file_codependix_nx_projects_src_index_unit_test_ts --> file_codependix_nx_projects_src_index_ts
   file_codependix_nx_projects_src_modules_neighborhood_neighborhood_module_ts --> file_codependix_nx_projects_src_modules_neighborhood_neighborhood_service_ts
   file_codependix_nx_projects_src_modules_neighborhood_neighborhood_module_unit_test_ts --> file_codependix_nx_projects_src_modules_neighborhood_neighborhood_module_ts
@@ -6987,6 +6992,8 @@ graph LR
   file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_service_unit_test_ts --> file_codependix_nx_projects_src_modules_neighborhood_neighborhood_types_ts
   file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_service_unit_test_ts --> file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_service_ts
   file_codependix_nx_projects_src_modules_workspace_graph_workspace_graph_types_ts --> file_codependix_nx_projects_src_modules_neighborhood_neighborhood_types_ts
+  file_codependix_nx_src_codependix_nx_module_ts --> file_codependix_nx_src_modules_gate_gate_module_ts
+  file_codependix_nx_src_codependix_nx_module_ts --> file_codependix_nx_src_modules_plugin_plugin_module_ts
   file_codependix_nx_src_executors_gate_executor_integration_test_ts --> file_codependix_nx_src_executors_gate_executor_ts
   file_codependix_nx_src_executors_gate_executor_integration_test_ts --> file_codependix_nx_src_executors_gate_executor_types_ts
   file_codependix_nx_src_executors_gate_executor_ts --> file_codependix_nx_src_executors_gate_executor_types_ts
@@ -7006,8 +7013,6 @@ graph LR
   file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_index_ts
   file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
   file_codependix_nx_src_index_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_types_ts
-  file_codependix_nx_src_main_module_ts --> file_codependix_nx_src_modules_gate_gate_module_ts
-  file_codependix_nx_src_main_module_ts --> file_codependix_nx_src_modules_plugin_plugin_module_ts
   file_codependix_nx_src_modules_gate_gate_module_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
   file_codependix_nx_src_modules_gate_gate_module_ts --> file_codependix_nx_src_modules_plugin_plugin_module_ts
   file_codependix_nx_src_modules_gate_gate_service_ts --> file_codependix_nx_src_modules_gate_gate_constants_ts
@@ -7016,7 +7021,7 @@ graph LR
   file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
   file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_gate_gate_types_ts
   file_codependix_nx_src_modules_gate_gate_service_unit_test_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
-  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_main_module_ts
+  file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_codependix_nx_module_ts
   file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_gate_gate_service_ts
   file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_constants_ts
   file_codependix_nx_src_modules_plugin_plugin_context_utilities_ts --> file_codependix_nx_src_modules_plugin_plugin_service_ts
@@ -7137,15 +7142,16 @@ graph LR
   file_codependix_output_src_modules_workspace_graphs_workspace_graphs_service_unit_test_ts --> file_codependix_output_src_modules_graph_run_graph_run_constants_ts
   file_codependix_output_src_modules_workspace_graphs_workspace_graphs_service_unit_test_ts --> file_codependix_output_src_modules_workspace_graphs_workspace_graphs_service_ts
   file_codependix_output_src_modules_workspace_graphs_workspace_graphs_types_ts --> file_codependix_output_src_modules_graph_run_graph_run_types_ts
-  file_codometer_cli_src_main_end_to_end_test_ts --> file_codometer_cli_src_constants_ts
-  file_codometer_cli_src_main_end_to_end_test_ts --> file_codometer_cli_testing_fixture_tree_ts
-  file_codometer_cli_src_main_module_ts --> file_codometer_cli_src_constants_ts
-  file_codometer_cli_src_main_module_ts --> file_codometer_cli_src_modules_changes_changes_module_ts
-  file_codometer_cli_src_main_module_ts --> file_codometer_cli_src_modules_configuration_configuration_module_ts
-  file_codometer_cli_src_main_module_ts --> file_codometer_cli_src_modules_measure_measure_module_ts
-  file_codometer_cli_src_main_ts --> file_codometer_cli_src_main_module_ts
-  file_codometer_cli_src_main_ts --> file_codometer_cli_src_main_utilities_ts
-  file_codometer_cli_src_main_utilities_unit_test_ts --> file_codometer_cli_src_main_utilities_ts
+  file_codometer_cli_src_codometer_cli_main_end_to_end_test_ts --> file_codometer_cli_src_codometer_cli_constants_ts
+  file_codometer_cli_src_codometer_cli_main_end_to_end_test_ts --> file_codometer_cli_testing_fixture_tree_ts
+  file_codometer_cli_src_codometer_cli_main_ts --> file_codometer_cli_src_codometer_cli_module_ts
+  file_codometer_cli_src_codometer_cli_main_ts --> file_codometer_cli_src_codometer_cli_utilities_ts
+  file_codometer_cli_src_codometer_cli_module_ts --> file_codometer_cli_src_codometer_cli_constants_ts
+  file_codometer_cli_src_codometer_cli_module_ts --> file_codometer_cli_src_modules_changes_changes_module_ts
+  file_codometer_cli_src_codometer_cli_module_ts --> file_codometer_cli_src_modules_configuration_configuration_module_ts
+  file_codometer_cli_src_codometer_cli_module_ts --> file_codometer_cli_src_modules_measure_measure_module_ts
+  file_codometer_cli_src_codometer_cli_repl_ts --> file_codometer_cli_src_codometer_cli_module_ts
+  file_codometer_cli_src_codometer_cli_utilities_unit_test_ts --> file_codometer_cli_src_codometer_cli_utilities_ts
   file_codometer_cli_src_modules_changes_changes_command_ts --> file_codometer_cli_src_modules_changes_changes_types_ts
   file_codometer_cli_src_modules_changes_changes_command_unit_test_ts --> file_codometer_cli_src_modules_changes_changes_command_ts
   file_codometer_cli_src_modules_changes_changes_module_ts --> file_codometer_cli_src_modules_changes_changes_command_ts
@@ -7153,14 +7159,13 @@ graph LR
   file_codometer_cli_src_modules_configuration_configuration_command_ts --> file_codometer_cli_src_modules_configuration_configuration_types_ts
   file_codometer_cli_src_modules_configuration_configuration_command_unit_test_ts --> file_codometer_cli_src_modules_configuration_configuration_command_ts
   file_codometer_cli_src_modules_configuration_configuration_module_ts --> file_codometer_cli_src_modules_configuration_configuration_command_ts
-  file_codometer_cli_src_modules_measure_measure_command_integration_test_ts --> file_codometer_cli_src_main_module_ts
+  file_codometer_cli_src_modules_measure_measure_command_integration_test_ts --> file_codometer_cli_src_codometer_cli_module_ts
   file_codometer_cli_src_modules_measure_measure_command_integration_test_ts --> file_codometer_cli_src_modules_measure_measure_command_ts
   file_codometer_cli_src_modules_measure_measure_command_integration_test_ts --> file_codometer_cli_testing_fixture_tree_ts
   file_codometer_cli_src_modules_measure_measure_command_ts --> file_codometer_cli_src_modules_measure_measure_types_ts
   file_codometer_cli_src_modules_measure_measure_command_unit_test_ts --> file_codometer_cli_src_modules_measure_measure_command_ts
   file_codometer_cli_src_modules_measure_measure_command_unit_test_ts --> file_codometer_cli_testing_mocks_ts
   file_codometer_cli_src_modules_measure_measure_module_ts --> file_codometer_cli_src_modules_measure_measure_command_ts
-  file_codometer_cli_src_repl_ts --> file_codometer_cli_src_main_module_ts
   file_codometer_cli_testing_vite_library_config_integration_test_ts --> file_codometer_cli_vite_config_ts
   file_codometer_configuration_src_index_unit_test_ts --> file_codometer_configuration_src_index_ts
   file_codometer_configuration_src_modules_configuration_configuration_flags_service_ts --> file_codometer_configuration_src_modules_configuration_configuration_flags_constants_ts
@@ -7888,38 +7893,38 @@ graph LR
   file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_tooltip_tsx
   file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_hooks_use_mobile_ts
   file_components_web_src_components_ui_toggle_group_tsx --> file_components_web_src_components_ui_toggle_tsx
-  file_conformetry_cli_src_main_end_to_end_test_ts --> file_conformetry_cli_src_constants_ts
-  file_conformetry_cli_src_main_integration_test_ts --> file_conformetry_cli_src_main_module_ts
-  file_conformetry_cli_src_main_integration_test_ts --> file_conformetry_cli_src_modules_generate_generate_command_ts
-  file_conformetry_cli_src_main_integration_test_ts --> file_conformetry_cli_src_modules_instances_instances_command_ts
-  file_conformetry_cli_src_main_integration_test_ts --> file_conformetry_cli_src_modules_templates_templates_command_ts
-  file_conformetry_cli_src_main_integration_test_ts --> file_conformetry_cli_src_modules_validate_validate_command_ts
-  file_conformetry_cli_src_main_module_ts --> file_conformetry_cli_src_constants_ts
-  file_conformetry_cli_src_main_module_ts --> file_conformetry_cli_src_modules_generate_generate_module_ts
-  file_conformetry_cli_src_main_module_ts --> file_conformetry_cli_src_modules_instances_instances_module_ts
-  file_conformetry_cli_src_main_module_ts --> file_conformetry_cli_src_modules_templates_templates_module_ts
-  file_conformetry_cli_src_main_module_ts --> file_conformetry_cli_src_modules_validate_validate_module_ts
-  file_conformetry_cli_src_main_ts --> file_conformetry_cli_src_main_module_ts
-  file_conformetry_cli_src_modules_generate_generate_command_ts --> file_conformetry_cli_src_constants_ts
+  file_conformetry_cli_src_conformetry_cli_main_end_to_end_test_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
+  file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_conformetry_cli_module_ts
+  file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_modules_generate_generate_command_ts
+  file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_modules_instances_instances_command_ts
+  file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_modules_templates_templates_command_ts
+  file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_modules_validate_validate_command_ts
+  file_conformetry_cli_src_conformetry_cli_main_ts --> file_conformetry_cli_src_conformetry_cli_module_ts
+  file_conformetry_cli_src_conformetry_cli_module_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
+  file_conformetry_cli_src_conformetry_cli_module_ts --> file_conformetry_cli_src_modules_generate_generate_module_ts
+  file_conformetry_cli_src_conformetry_cli_module_ts --> file_conformetry_cli_src_modules_instances_instances_module_ts
+  file_conformetry_cli_src_conformetry_cli_module_ts --> file_conformetry_cli_src_modules_templates_templates_module_ts
+  file_conformetry_cli_src_conformetry_cli_module_ts --> file_conformetry_cli_src_modules_validate_validate_module_ts
+  file_conformetry_cli_src_conformetry_cli_repl_ts --> file_conformetry_cli_src_conformetry_cli_module_ts
+  file_conformetry_cli_src_modules_generate_generate_command_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
   file_conformetry_cli_src_modules_generate_generate_command_ts --> file_conformetry_cli_src_modules_generate_generate_constants_ts
   file_conformetry_cli_src_modules_generate_generate_command_ts --> file_conformetry_cli_src_modules_generate_generate_types_ts
   file_conformetry_cli_src_modules_generate_generate_command_unit_test_ts --> file_conformetry_cli_src_modules_generate_generate_command_ts
   file_conformetry_cli_src_modules_generate_generate_module_ts --> file_conformetry_cli_src_modules_generate_generate_command_ts
-  file_conformetry_cli_src_modules_instances_instances_command_ts --> file_conformetry_cli_src_constants_ts
+  file_conformetry_cli_src_modules_instances_instances_command_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
   file_conformetry_cli_src_modules_instances_instances_command_ts --> file_conformetry_cli_src_modules_instances_instances_constants_ts
   file_conformetry_cli_src_modules_instances_instances_command_ts --> file_conformetry_cli_src_modules_instances_instances_types_ts
   file_conformetry_cli_src_modules_instances_instances_command_unit_test_ts --> file_conformetry_cli_src_modules_instances_instances_command_ts
   file_conformetry_cli_src_modules_instances_instances_module_ts --> file_conformetry_cli_src_modules_instances_instances_command_ts
-  file_conformetry_cli_src_modules_templates_templates_command_ts --> file_conformetry_cli_src_constants_ts
+  file_conformetry_cli_src_modules_templates_templates_command_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
   file_conformetry_cli_src_modules_templates_templates_command_ts --> file_conformetry_cli_src_modules_templates_templates_constants_ts
   file_conformetry_cli_src_modules_templates_templates_command_ts --> file_conformetry_cli_src_modules_templates_templates_types_ts
   file_conformetry_cli_src_modules_templates_templates_command_unit_test_ts --> file_conformetry_cli_src_modules_templates_templates_command_ts
   file_conformetry_cli_src_modules_templates_templates_module_ts --> file_conformetry_cli_src_modules_templates_templates_command_ts
-  file_conformetry_cli_src_modules_validate_validate_command_ts --> file_conformetry_cli_src_constants_ts
+  file_conformetry_cli_src_modules_validate_validate_command_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
   file_conformetry_cli_src_modules_validate_validate_command_ts --> file_conformetry_cli_src_modules_validate_validate_types_ts
   file_conformetry_cli_src_modules_validate_validate_command_unit_test_ts --> file_conformetry_cli_src_modules_validate_validate_command_ts
   file_conformetry_cli_src_modules_validate_validate_module_ts --> file_conformetry_cli_src_modules_validate_validate_command_ts
-  file_conformetry_cli_src_repl_ts --> file_conformetry_cli_src_main_module_ts
   file_conformetry_configuration_src_index_unit_test_ts --> file_conformetry_configuration_src_index_ts
   file_conformetry_configuration_src_modules_configuration_configuration_constants_ts --> file_conformetry_configuration_src_modules_configuration_configuration_utilities_ts
   file_conformetry_configuration_src_modules_configuration_configuration_module_ts --> file_conformetry_configuration_src_modules_configuration_configuration_service_ts
@@ -8201,6 +8206,10 @@ graph LR
   file_conformetry_languages_src_modules_typescript_typescript_service_unit_test_ts --> file_conformetry_languages_src_modules_typescript_typescript_nodes_service_ts
   file_conformetry_languages_src_modules_typescript_typescript_service_unit_test_ts --> file_conformetry_languages_src_modules_typescript_typescript_tree_service_ts
   file_conformetry_languages_src_modules_typescript_typescript_service_unit_test_ts --> file_conformetry_languages_src_modules_typescript_typescript_service_ts
+  file_conformetry_nx_src_conformetry_nx_main_ts --> file_conformetry_nx_src_modules_generator_bootstrap_utilities_ts
+  file_conformetry_nx_src_conformetry_nx_main_unit_test_ts --> file_conformetry_nx_src_modules_generator_bootstrap_utilities_ts
+  file_conformetry_nx_src_conformetry_nx_module_ts --> file_conformetry_nx_src_modules_generator_generator_module_ts
+  file_conformetry_nx_src_conformetry_nx_module_ts --> file_conformetry_nx_src_modules_plugin_plugin_module_ts
   file_conformetry_nx_src_executors_validate_executor_ts --> file_conformetry_nx_src_executors_validate_executor_types_ts
   file_conformetry_nx_src_executors_validate_executor_ts --> file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts
   file_conformetry_nx_src_executors_validate_executor_unit_test_ts --> file_conformetry_nx_src_executors_validate_executor_ts
@@ -8215,10 +8224,6 @@ graph LR
   file_conformetry_nx_src_index_ts --> file_conformetry_nx_src_modules_plugin_plugin_constants_ts
   file_conformetry_nx_src_index_unit_test_ts --> file_conformetry_nx_src_index_ts
   file_conformetry_nx_src_index_unit_test_ts --> file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts
-  file_conformetry_nx_src_main_module_ts --> file_conformetry_nx_src_modules_generator_generator_module_ts
-  file_conformetry_nx_src_main_module_ts --> file_conformetry_nx_src_modules_plugin_plugin_module_ts
-  file_conformetry_nx_src_main_ts --> file_conformetry_nx_src_modules_generator_bootstrap_utilities_ts
-  file_conformetry_nx_src_main_unit_test_ts --> file_conformetry_nx_src_modules_generator_bootstrap_utilities_ts
   file_conformetry_nx_src_modules_adapter_adapter_module_ts --> file_conformetry_nx_src_modules_adapter_adapter_service_ts
   file_conformetry_nx_src_modules_adapter_adapter_service_ts --> file_conformetry_nx_src_modules_adapter_adapter_constants_ts
   file_conformetry_nx_src_modules_adapter_adapter_service_ts --> file_conformetry_nx_src_modules_adapter_adapter_types_ts
@@ -8264,7 +8269,7 @@ graph LR
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_paths_paths_module_ts
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_paths_paths_service_ts
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_scope_scope_service_ts
-  file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_main_module_ts
+  file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_conformetry_nx_module_ts
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_modules_generator_generator_service_ts
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_modules_options_options_service_ts
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_modules_plugin_plugin_constants_ts
@@ -8994,10 +8999,11 @@ graph LR
   file_lexico_api_testing_reading_application_ts --> file_lexico_api_src_modules_literature_literature_module_ts
   file_lexico_api_testing_reading_application_ts --> file_lexico_api_testing_database_ts
   file_lexico_api_testing_reading_application_ts --> file_lexico_api_testing_reading_passage_ts
-  file_lexico_cli_src_main_end_to_end_test_ts --> file_lexico_cli_src_constants_ts
-  file_lexico_cli_src_main_module_ts --> file_lexico_cli_src_constants_ts
-  file_lexico_cli_src_main_module_ts --> file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_module_ts
-  file_lexico_cli_src_main_ts --> file_lexico_cli_src_main_module_ts
+  file_lexico_cli_src_lexico_cli_main_end_to_end_test_ts --> file_lexico_cli_src_lexico_cli_constants_ts
+  file_lexico_cli_src_lexico_cli_main_ts --> file_lexico_cli_src_lexico_cli_module_ts
+  file_lexico_cli_src_lexico_cli_module_ts --> file_lexico_cli_src_lexico_cli_constants_ts
+  file_lexico_cli_src_lexico_cli_module_ts --> file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_module_ts
+  file_lexico_cli_src_lexico_cli_repl_ts --> file_lexico_cli_src_lexico_cli_module_ts
   file_lexico_cli_src_modules_clear_clear_command_ts --> file_lexico_cli_src_modules_clear_clear_types_ts
   file_lexico_cli_src_modules_clear_clear_command_unit_test_ts --> file_lexico_cli_src_modules_clear_clear_command_ts
   file_lexico_cli_src_modules_clear_clear_command_unit_test_ts --> file_lexico_cli_testing_command_harness_ts
@@ -9296,7 +9302,6 @@ graph LR
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_constants_ts
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_src_modules_words_words_service_ts
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_testing_mocks_ts
-  file_lexico_cli_src_repl_ts --> file_lexico_cli_src_main_module_ts
   file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
   file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
@@ -9466,14 +9471,15 @@ graph LR
   file_logging_src_modules_logger_logger_service_ts --> file_logging_src_modules_logger_logger_constants_ts
   file_logging_src_modules_logger_logger_service_ts --> file_logging_src_modules_logger_logger_types_ts
   file_logging_src_modules_logger_logger_service_unit_test_ts --> file_logging_src_modules_logger_logger_service_ts
-  file_meanderaw_cli_src_constants_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
-  file_meanderaw_cli_src_main_end_to_end_test_ts --> file_meanderaw_cli_src_constants_ts
-  file_meanderaw_cli_src_main_module_ts --> file_meanderaw_cli_src_constants_ts
-  file_meanderaw_cli_src_main_module_ts --> file_meanderaw_cli_src_modules_draw_draw_module_ts
-  file_meanderaw_cli_src_main_module_ts --> file_meanderaw_cli_src_modules_drawing_drawing_module_ts
-  file_meanderaw_cli_src_main_module_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
-  file_meanderaw_cli_src_main_ts --> file_meanderaw_cli_src_main_module_ts
-  file_meanderaw_cli_src_main_unit_test_ts --> file_meanderaw_cli_src_main_module_ts
+  file_meanderaw_cli_src_meanderaw_cli_constants_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
+  file_meanderaw_cli_src_meanderaw_cli_main_end_to_end_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
+  file_meanderaw_cli_src_meanderaw_cli_main_ts --> file_meanderaw_cli_src_meanderaw_cli_module_ts
+  file_meanderaw_cli_src_meanderaw_cli_main_unit_test_ts --> file_meanderaw_cli_src_meanderaw_cli_module_ts
+  file_meanderaw_cli_src_meanderaw_cli_module_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
+  file_meanderaw_cli_src_meanderaw_cli_module_ts --> file_meanderaw_cli_src_modules_draw_draw_module_ts
+  file_meanderaw_cli_src_meanderaw_cli_module_ts --> file_meanderaw_cli_src_modules_drawing_drawing_module_ts
+  file_meanderaw_cli_src_meanderaw_cli_module_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
+  file_meanderaw_cli_src_meanderaw_cli_repl_ts --> file_meanderaw_cli_src_meanderaw_cli_module_ts
   file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
   file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts --> file_meanderaw_cli_src_modules_code_code_types_ts
@@ -10999,7 +11005,7 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
   file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
@@ -11065,7 +11071,7 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
   file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
@@ -11108,7 +11114,7 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_run_command_integration_test_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_run_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_run_command_integration_test_ts --> file_meanderaw_cli_testing_draw_run_ts
-  file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
@@ -11207,20 +11213,20 @@ graph LR
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
-  file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts --> file_meanderaw_cli_src_modules_tile_tile_types_ts
-  file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
   file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts
@@ -11257,7 +11263,7 @@ graph LR
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
@@ -11304,13 +11310,12 @@ graph LR
   file_meanderaw_cli_src_modules_tile_tile_service_unit_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_src_modules_tile_tile_service_unit_test_ts --> file_meanderaw_cli_src_modules_tile_tile_types_ts
   file_meanderaw_cli_src_modules_tile_tile_service_unit_test_ts --> file_meanderaw_cli_testing_tiles_ts
-  file_meanderaw_cli_src_repl_ts --> file_meanderaw_cli_src_main_module_ts
   file_meanderaw_cli_src_worker_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_module_ts
   file_meanderaw_cli_src_worker_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_service_ts
   file_meanderaw_cli_src_worker_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
   file_meanderaw_cli_src_worker_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
   file_meanderaw_cli_src_worker_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_constants_ts
+  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
@@ -11351,13 +11356,6 @@ graph LR
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_src_routes_index_tsx
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_testing_render_route_tsx
   file_meanderaw_web_testing_render_route_tsx --> file_meanderaw_web_src_router_tsx
-  file_synchronization_src_main_end_to_end_test_ts --> file_synchronization_src_constants_ts
-  file_synchronization_src_main_module_ts --> file_synchronization_src_constants_ts
-  file_synchronization_src_main_module_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
-  file_synchronization_src_main_module_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
-  file_synchronization_src_main_ts --> file_synchronization_src_main_module_ts
-  file_synchronization_src_main_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
-  file_synchronization_src_main_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
@@ -11558,29 +11556,15 @@ graph LR
   file_synchronization_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_synchronization_testing_mocks_ts
   file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_command_ts
-  file_synchronization_src_repl_ts --> file_synchronization_src_main_module_ts
-  file_synchronization_src_repl_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
-  file_validation_src_main_end_to_end_test_ts --> file_validation_src_constants_ts
-  file_validation_src_main_module_ts --> file_validation_src_constants_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
-  file_validation_src_main_module_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
-  file_validation_src_main_ts --> file_validation_src_main_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
-  file_validation_src_main_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
+  file_synchronization_src_synchronization_main_end_to_end_test_ts --> file_synchronization_src_synchronization_constants_ts
+  file_synchronization_src_synchronization_main_ts --> file_synchronization_src_synchronization_module_ts
+  file_synchronization_src_synchronization_main_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
+  file_synchronization_src_synchronization_main_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
+  file_synchronization_src_synchronization_module_ts --> file_synchronization_src_modules_issue_labels_issue_labels_module_ts
+  file_synchronization_src_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
+  file_synchronization_src_synchronization_module_ts --> file_synchronization_src_synchronization_constants_ts
+  file_synchronization_src_synchronization_repl_ts --> file_synchronization_src_synchronization_module_ts
+  file_synchronization_src_synchronization_repl_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
   file_validation_src_modules_audit_governance_audit_governance_command_ts --> file_validation_src_modules_audit_governance_audit_governance_service_ts
   file_validation_src_modules_audit_governance_audit_governance_command_ts --> file_validation_src_modules_audit_governance_audit_governance_types_ts
   file_validation_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_command_ts
@@ -11767,7 +11751,28 @@ graph LR
   file_validation_src_modules_readme_projects_readme_projects_module_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
   file_validation_src_modules_readme_projects_readme_projects_service_ts --> file_validation_src_modules_readme_projects_readme_projects_constants_ts
   file_validation_src_modules_readme_projects_readme_projects_service_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
-  file_validation_src_repl_ts --> file_validation_src_main_module_ts
+  file_validation_src_validation_main_end_to_end_test_ts --> file_validation_src_validation_constants_ts
+  file_validation_src_validation_main_ts --> file_validation_src_validation_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_lockfile_lockfile_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_publishable_packages_publishable_packages_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_body_pull_request_body_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_validation_constants_ts
+  file_validation_src_validation_repl_ts --> file_validation_src_validation_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 <!-- codometer:start -->
@@ -11778,7 +11783,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6032-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6086-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-2.23_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-71-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-22-3178c6?style=flat-square)
@@ -11790,7 +11795,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-44-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-45-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -11806,8 +11811,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-60-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-41-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-12-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-707-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1415-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-708-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1422-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -11828,7 +11833,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-23-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-5783-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-5784-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-744-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-296-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-1833-0284c7?style=flat-square)
@@ -11866,17 +11871,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-49-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-3468-4eaa25?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-50-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-3502-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-48-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-308-0284c7?style=flat-square)
-![Shell Exports](https://img.shields.io/badge/Shell_Exports-11-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-217-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-36-8b5cf6?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-311-0284c7?style=flat-square)
+![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-218-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-37-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-120-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-49-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-895-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-895-475569?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-50-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-910-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-910-475569?style=flat-square)
 
 ### SQL
 
@@ -11963,14 +11968,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-116-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19266-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19280-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-115-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-672-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-523-a78bfa?style=flat-square)
+![H3](https://img.shields.io/badge/H3-524-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5485-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5488-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-860-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4176-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
@@ -11978,7 +11983,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Table Rows](https://img.shields.io/badge/Table_Rows-1975-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-709-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-401-dc2626?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-402-dc2626?style=flat-square)
 ![Inline Code](https://img.shields.io/badge/Inline_Code-11017-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-20-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
@@ -11993,7 +11998,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Measure | Value |
 | --- | --- |
 | Callables | 6047 |
-| Files | 1747 |
+| Files | 1748 |
 | Calls traced | 6492 |
 | Call stacks | 1673 |
 | Deepest stack | 17 |

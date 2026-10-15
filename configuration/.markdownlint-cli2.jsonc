@@ -91,6 +91,7 @@
     ".agents/skills/receiving-code-review/**",
     ".agents/skills/requesting-code-review/**",
     ".agents/skills/research/**",
+    ".agents/skills/reui/**",
     ".agents/skills/setup-matt-pocock-skills/**",
     ".agents/skills/subagent-driven-development/**",
     ".agents/skills/systematic-debugging/**",

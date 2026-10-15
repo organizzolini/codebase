@@ -55,7 +55,7 @@
     },
     "stop": {
       "options": {
-        "port": 3000
+        "port": 7797
       }
     },
     "stylelint": {},

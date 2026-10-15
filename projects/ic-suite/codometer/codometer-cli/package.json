@@ -1,7 +1,7 @@
 {
   "author": "Jimmy Paolini",
   "bin": {
-    "codometer": "./dist/src/main.js"
+    "codometer": "./dist/src/codometer-cli.main.js"
   },
   "bugs": {
     "url": "https://github.com/organizzolini/codebase/issues"
@@ -60,7 +60,7 @@
   "publishConfig": {
     "access": "public",
     "bin": {
-      "codometer": "./dist/src/main.js"
+      "codometer": "./dist/src/codometer-cli.main.js"
     },
     "exports": {
       ".": {
@@ -84,5 +84,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.26"
+  "version": "0.0.27"
 }

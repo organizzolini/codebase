@@ -46,7 +46,7 @@ export default defineConfig({
   ],
   preview: {
     host: "localhost",
-    port: 3000,
+    port: 7797,
   },
   resolve: {
     alias: {
@@ -57,6 +57,6 @@ export default defineConfig({
   root: import.meta.dirname,
   server: {
     host: "localhost",
-    port: 3000,
+    port: 7797,
   },
 });

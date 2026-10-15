@@ -374,6 +374,21 @@ See script for specific netstat usage patterns.
 
 See script for specific sed usage patterns and examples.
 
+### shell/text-to-port.sh
+
+**Purpose:** Derive a project's default port (1000-9999) from its name
+
+**Usage:**
+
+```bash
+./scripts/shell/text-to-port.sh lexico-web   # 7797
+```
+
+The convention is a rolling hash, `h = (h * 31 + code) mod 9000` over each
+character, plus 1000. Order matters, every port is equally weighted, and the
+same name always gives the same port. The script header is the specification;
+check the other projects' ports for a collision before adopting a new one.
+
 ## Nx Scripts
 
 These scripts live in `scripts/nx/`, and the composite actions in

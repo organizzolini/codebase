@@ -44,6 +44,7 @@
       "!{projectRoot}/.agents/skills/receiving-code-review/**",
       "!{projectRoot}/.agents/skills/requesting-code-review/**",
       "!{projectRoot}/.agents/skills/research/**",
+      "!{projectRoot}/.agents/skills/reui/**",
       "!{projectRoot}/.agents/skills/setup-matt-pocock-skills/**",
       "!{projectRoot}/.agents/skills/subagent-driven-development/**",
       "!{projectRoot}/.agents/skills/systematic-debugging/**",
@@ -75,7 +76,7 @@
       "cache": true,
       "configurations": {
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/main.ts callidescope --config configuration/callidescope.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --config configuration/callidescope.config.ts --write"
         }
       },
       "defaultConfiguration": "write",
@@ -97,7 +98,7 @@
       "cache": true,
       "configurations": {
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/main.ts map --directory . --config configuration/codependix.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/codependix-cli.main.ts map --directory . --config configuration/codependix.config.ts --write"
         }
       },
       "defaultConfiguration": "write",
@@ -118,10 +119,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/main.ts measure --config configuration/codometer.config.ts --output-json --check limits"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/codometer.config.ts --output-json --check limits"
         },
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/main.ts measure --config configuration/codometer.config.ts --output-json --output-markdown"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/codometer.config.ts --output-json --output-markdown"
         }
       },
       "defaultConfiguration": "check",
@@ -861,6 +862,15 @@
       "outputs": []
     },
     "typecheck-code": {},
+    "update-reui-skill": {
+      "cache": false,
+      "description": "Refresh the vendored ReUI skill in .agents/skills/reui from the bundle reui.io serves and re-pin its hash in skills-lock.json. `skills update` skips it because the entry is local, so the weekly upgrade-dependencies workflow runs this right after it.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bash scripts/update-reui-skill.sh",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "validate-branch-name": {
       "cache": false,
       "description": "Validate the current branch name against the configured naming convention. The pre-push hook calls the binary directly to avoid a project graph build; this target is for manual use.",

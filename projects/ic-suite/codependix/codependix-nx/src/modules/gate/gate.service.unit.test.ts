@@ -284,7 +284,7 @@ describe(GateService, () => {
 
       const entry = spawnedArguments()[2];
 
-      expect(entry).toMatch(/codependix-cli\/src\/main\.ts$/u);
+      expect(entry).toMatch(/codependix-cli\/src\/codependix-cli\.main\.ts$/u);
     });
 
     it("registers the swc loader through this plugin's own shim, by file URL", async () => {

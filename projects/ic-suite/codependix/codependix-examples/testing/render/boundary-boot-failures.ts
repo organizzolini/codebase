@@ -4,6 +4,7 @@ import {
   runBoundaryCheck,
 } from "./boundary-run";
 import { fenceJson } from "./document";
+import { EXAMPLE_ROOT_MODULES } from "./nestjs-graphs";
 import { renderWorkspaceGraph } from "./nx-graphs";
 import { EXAMPLES_DIRECTORY } from "./paths";
 
@@ -99,6 +100,7 @@ export async function runBootCheck(args: {
 }): Promise<BoundaryRun> {
   return runBoundaryCheck({
     judged: args.judged,
+    rootModules: EXAMPLE_ROOT_MODULES,
     rules: { nestjsModules: NO_MODULE_CYCLES },
     workingDirectory: EXAMPLES_DIRECTORY,
     workspace: STOREFRONT,

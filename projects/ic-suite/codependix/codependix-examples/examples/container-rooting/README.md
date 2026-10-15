@@ -15,7 +15,7 @@ drifted; `:write` regenerates it.
 
 ## A project that bootstraps a root module
 
-`src/main.module.ts` exists, so its `MainModule` export is the root and the container is explored outward from it. `OrphanModule` is defined in the same directory and never imported, so it is absent.
+The configuration names `src/rooted-application.module.ts` and its `MainModule` export as the root, so the container is explored outward from it. `OrphanModule` is defined in the same directory and never imported, so it is absent.
 
 ```mermaid
 flowchart LR
@@ -28,7 +28,7 @@ flowchart LR
 
 ## A package that bootstraps nothing
 
-No `src/main.module.ts`, so every `*.module.ts` under `src/` is loaded and rooted under a synthetic module. That synthetic root, and the global `ConfigModule` it supplies so a module reading configuration in a `useFactory` can be scanned at all, are both kept out of the graph.
+The configuration names no root module, so every `*.module.ts` under `src/` is loaded and rooted under a synthetic module. That synthetic root, and the global `ConfigModule` it supplies so a module reading configuration in a `useFactory` can be scanned at all, are both kept out of the graph.
 
 ```mermaid
 flowchart LR

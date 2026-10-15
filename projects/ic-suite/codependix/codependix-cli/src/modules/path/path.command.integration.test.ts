@@ -20,7 +20,7 @@ import {
   vi,
 } from "vitest";
 
-import { MainModule } from "../../main.module";
+import { MainModule } from "../../codependix-cli.module";
 
 import { PathCommand } from "./path.command";
 

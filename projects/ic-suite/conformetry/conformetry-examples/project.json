@@ -17,9 +17,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts templates --config projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/instances/guide",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts templates --config projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/instances/atlas",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts"
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts templates --config projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/instances/guide",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts templates --config projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/instances/atlas",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/ambiguous-attribution/conformetry.config.ts"
         ],
         "cwd": "{workspaceRoot}",
         "env": {
@@ -34,7 +34,7 @@
       "description": "Validate an instance whose paths and contents use all four derived case variants, one of them overridden",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/case-variants/conformetry.config.ts",
+        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/case-variants/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
           "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
@@ -48,7 +48,7 @@
       "description": "Report one instance per kind of drift conformetry catches. Exits non-zero: five of the six instances are drifted on purpose",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/drift-catalogue/conformetry.config.ts",
+        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/drift-catalogue/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
           "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
@@ -85,8 +85,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/instances/documented",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/instances/unowned"
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/instances/documented",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/failure-modes/instances/unowned"
         ],
         "cwd": "{workspaceRoot}",
         "env": {
@@ -102,7 +102,7 @@
       "description": "Validate the smallest possible template against its one instance",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/hello-template/conformetry.config.ts",
+        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/hello-template/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
           "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
@@ -115,7 +115,7 @@
       "description": "Validate one instance holding a file for every language validator, plus two extensions only the fallback claims",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/language-validators/conformetry.config.ts",
+        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/language-validators/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
           "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
@@ -130,9 +130,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts instances --config projects/ic-suite/conformetry/conformetry-examples/examples/nx-host/conformetry.config.ts",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/nx-host/conformetry.config.ts",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --templates nx-module --config projects/ic-suite/conformetry/conformetry-examples/examples/nx-host/conformetry.config.ts"
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts instances --config projects/ic-suite/conformetry/conformetry-examples/examples/nx-host/conformetry.config.ts",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/nx-host/conformetry.config.ts",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --templates nx-module --config projects/ic-suite/conformetry/conformetry-examples/examples/nx-host/conformetry.config.ts"
         ],
         "cwd": "{workspaceRoot}",
         "env": {
@@ -150,8 +150,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/scoring-thresholds/conformetry.config.ts",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/scoring-thresholds/conformetry.config.ts --threshold 0.5"
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/scoring-thresholds/conformetry.config.ts",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/scoring-thresholds/conformetry.config.ts --threshold 0.5"
         ],
         "cwd": "{workspaceRoot}",
         "env": {
@@ -166,7 +166,7 @@
       "description": "Validate a reformatted instance beside one missing a single export. Exits non-zero: only the second is a finding",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/structural-not-textual/conformetry.config.ts",
+        "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts validate --config projects/ic-suite/conformetry/conformetry-examples/examples/structural-not-textual/conformetry.config.ts",
         "cwd": "{workspaceRoot}",
         "env": {
           "SWC_NODE_PROJECT": "projects/ic-suite/conformetry/conformetry-cli/tsconfig.json"
@@ -180,8 +180,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts instances --config projects/ic-suite/conformetry/conformetry-examples/examples/two-directions/conformetry.config.ts",
-          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/main.ts templates --config projects/ic-suite/conformetry/conformetry-examples/examples/two-directions/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/two-directions/instances/alpha"
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts instances --config projects/ic-suite/conformetry/conformetry-examples/examples/two-directions/conformetry.config.ts",
+          "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts templates --config projects/ic-suite/conformetry/conformetry-examples/examples/two-directions/conformetry.config.ts --instances projects/ic-suite/conformetry/conformetry-examples/examples/two-directions/instances/alpha"
         ],
         "cwd": "{workspaceRoot}",
         "env": {

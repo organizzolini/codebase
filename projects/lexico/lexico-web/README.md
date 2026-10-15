@@ -27,13 +27,13 @@ from [components-web](../../components-web/README.md).
 
 ```bash
 pnpm install
-nx run lexico-web:start     # http://localhost:3000
+nx run lexico-web:start     # http://localhost:7797
 ```
 
 | Target | Does |
 | ------ | ---- |
 | `start` | Vite dev server with hot reload, once the API is ready |
-| `stop` | Free port 3000; `nx stop lexico-api` stops this and then the API |
+| `stop` | Free port 7797; `nx stop lexico-api` stops this and then the API |
 | `build` | Production SSR bundle |
 | `preview` | Build, then serve the production build locally |
 | `codometer` | Measure the entry, route, CSS, and server bundles and gate the limit each declares |
@@ -61,7 +61,7 @@ Data access goes through a TanStack Start **server function** — type-safe RPC
 from client to server — defined beside the route that uses it and called from
 its loader, so the first render is already populated. `/search` asks the API
 for Latin and English matches at once and merges them, best first; set
-`LEXICO_API_URL` to point it somewhere other than `http://localhost:8398/graphql`.
+`LEXICO_API_URL` to point it somewhere other than `http://localhost:5003/graphql`.
 
 ## Technology
 

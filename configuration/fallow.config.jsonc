@@ -32,7 +32,8 @@
   "entry": [
     "**/scripts/**/*.{js,mjs,ts,sh}",
     "projects/**/src/index.ts",
-    "projects/**/src/main.ts",
+    // The one file each application bootstraps from, named for its project.
+    "projects/**/src/*.main.ts",
     // Vendored shadcn and ReUI source in components-web, written by `shadcn add`
     // and mostly not imported by anything yet. Each file is an entry point so
     // none reads as unused, and the packages it imports still count as used —
@@ -46,7 +47,7 @@
     "projects/**/src/executors/**/executor.ts",
     "projects/**/src/generators/**/generator.ts",
     "projects/**/src/generators.ts",
-    "projects/**/src/repl.ts",
+    "projects/**/src/*.repl.ts",
     // A worker thread's entry point is spawned by URL, never imported.
     "projects/**/src/worker.ts",
     "projects/**/testing/**/*.ts",

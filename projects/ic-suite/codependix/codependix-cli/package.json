@@ -1,7 +1,7 @@
 {
   "author": "Jimmy Paolini",
   "bin": {
-    "codependix": "./dist/src/main.js"
+    "codependix": "./dist/src/codependix-cli.main.js"
   },
   "bugs": {
     "url": "https://github.com/organizzolini/codebase/issues"
@@ -36,7 +36,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./main": "./src/main.ts",
+    "./main": "./src/codependix-cli.main.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -64,7 +64,7 @@
         "types": "./dist/src/index.d.ts",
         "default": "./dist/src/index.js"
       },
-      "./main": "./dist/src/main.js",
+      "./main": "./dist/src/codependix-cli.main.js",
       "./package.json": "./package.json"
     },
     "main": "./dist/src/index.js",
@@ -82,5 +82,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.26"
+  "version": "0.0.27"
 }

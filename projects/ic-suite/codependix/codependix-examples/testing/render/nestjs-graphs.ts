@@ -8,6 +8,7 @@ import type { ExampleDocument, ExampleSection } from "./types";
 import type {
   NestjsModuleGraph,
   NestjsProject,
+  NestjsRootModule,
 } from "@codependix/nestjs-modules";
 
 // 🏷️ Types
@@ -49,7 +50,26 @@ const EMPTY_CONTAINER = ["ambient-modules", "empty-container"];
 /** Container whose options factory refuses to run if it is ever called. */
 const PREVIEW_CONTAINER = ["preview-mode", "container"];
 
-/** Project that bootstraps a real `src/main.module.ts`. */
+/**
+ * The root module each example application boots from, keyed by project name.
+ *
+ * What a real workspace declares in `nestjsModules.rootModules`: nothing about
+ * where a root module lives is assumed, so a project absent from this table
+ * is a library and is rooted in a synthetic module.
+ */
+export const EXAMPLE_ROOT_MODULES: Readonly<Record<string, NestjsRootModule>> =
+  {
+    "rooted-application": {
+      export: "MainModule",
+      file: "src/rooted-application.module.ts",
+    },
+    "storefront-api": {
+      export: "MainModule",
+      file: "src/storefront-api.module.ts",
+    },
+  };
+
+/** Project that bootstraps a real `src/rooted-application.module.ts`. */
 const ROOTED_APPLICATION = ["container-rooting", "rooted-application"];
 
 /** Package that bootstraps nothing, rooted in a synthetic module. */
@@ -127,9 +147,12 @@ export function describeError(error: unknown): string {
  * descriptor discovery would have produced is built directly instead.
  */
 export function describeProjectAt(absoluteRoot: string): NestjsProject {
+  const name = path.basename(absoluteRoot);
+
   return nestjsProjectService.describeProject(
     absoluteRoot,
-    path.basename(absoluteRoot),
+    name,
+    EXAMPLE_ROOT_MODULES[name],
   );
 }
 
@@ -251,12 +274,12 @@ async function buildRootingDocument(): Promise<ExampleDocument> {
       {
         body: await renderContainer(ROOTED_APPLICATION),
         heading: "A project that bootstraps a root module",
-        note: "`src/main.module.ts` exists, so its `MainModule` export is the root and the container is explored outward from it. `OrphanModule` is defined in the same directory and never imported, so it is absent.",
+        note: "The configuration names `src/rooted-application.module.ts` and its `MainModule` export as the root, so the container is explored outward from it. `OrphanModule` is defined in the same directory and never imported, so it is absent.",
       },
       {
         body: await renderContainer(LIBRARY_PACKAGE),
         heading: "A package that bootstraps nothing",
-        note: "No `src/main.module.ts`, so every `*.module.ts` under `src/` is loaded and rooted under a synthetic module. That synthetic root, and the global `ConfigModule` it supplies so a module reading configuration in a `useFactory` can be scanned at all, are both kept out of the graph.",
+        note: "The configuration names no root module, so every `*.module.ts` under `src/` is loaded and rooted under a synthetic module. That synthetic root, and the global `ConfigModule` it supplies so a module reading configuration in a `useFactory` can be scanned at all, are both kept out of the graph.",
       },
       {
         body: renderExplorations(explorations),

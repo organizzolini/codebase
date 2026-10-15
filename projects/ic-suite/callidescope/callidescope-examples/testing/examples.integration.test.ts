@@ -452,7 +452,7 @@ function traceFixtures(
     [
       "--import",
       "@swc-node/register/esm-register",
-      "projects/ic-suite/callidescope/callidescope-cli/src/main.ts",
+      "projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts",
       "callidescope",
       "--directories",
       STARTING_DIRECTORIES,

@@ -1,3 +1,14 @@
+export type {
+  CodependixBoundariesConfiguration,
+  CodependixBoundaryAccessRule,
+  CodependixBoundaryAcyclicRule,
+  CodependixBoundaryEdgeSelector,
+  CodependixBoundaryRule,
+  CodependixBoundarySelector,
+  CodependixFileImportsBoundariesConfiguration,
+  ResolvedCodependixBoundariesConfiguration,
+  ResolvedCodependixFileImportsBoundariesConfiguration,
+} from "./modules/configuration/configuration-boundaries.types";
 // 📤 Exports
 export {
   CHECK_BOUNDARIES,
@@ -21,20 +32,15 @@ export {
 export { ConfigurationModule } from "./modules/configuration/configuration.module";
 export { ConfigurationService } from "./modules/configuration/configuration.service";
 export type {
-  CodependixBoundariesConfiguration,
-  CodependixBoundaryAccessRule,
-  CodependixBoundaryAcyclicRule,
-  CodependixBoundaryEdgeSelector,
-  CodependixBoundaryRule,
-  CodependixBoundarySelector,
   CodependixConfiguration,
   CodependixConfigurationOverrides,
   CodependixExportTarget,
-  CodependixFileImportsBoundariesConfiguration,
   CodependixGraphOutput,
   CodependixGraphType,
   CodependixJsonOutput,
   CodependixMarkdownOutput,
+  CodependixNestjsModulesConfiguration,
+  CodependixNestjsRootModule,
   CodependixProjectConfiguration,
   CodependixSelectionArguments,
   CodependixWorkspaceConfiguration,
@@ -42,9 +48,7 @@ export type {
   LoadProjectConfigurationArguments,
   MapCommandOptions,
   ProjectSelectionArguments,
-  ResolvedCodependixBoundariesConfiguration,
   ResolvedCodependixConfiguration,
-  ResolvedCodependixFileImportsBoundariesConfiguration,
   ResolvedCodependixGraphOutput,
   ResolvedCodependixJsonOutput,
   ResolvedCodependixMarkdownOutput,

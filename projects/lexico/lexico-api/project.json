@@ -14,7 +14,7 @@
   "targets": {
     "await-health": {
       "options": {
-        "url": "http://localhost:${LEXICO_API_PORT:-8398}/graphql"
+        "url": "http://localhost:${LEXICO_API_PORT:-5003}/graphql"
       }
     },
     "build": {
@@ -58,7 +58,7 @@
     "stop": {
       "dependsOn": ["lexico-web:stop"],
       "options": {
-        "port": "${LEXICO_API_PORT:-8398}"
+        "port": "${LEXICO_API_PORT:-5003}"
       }
     },
     "test-code": {},

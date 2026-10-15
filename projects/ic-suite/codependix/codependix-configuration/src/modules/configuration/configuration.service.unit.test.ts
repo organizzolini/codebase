@@ -18,8 +18,8 @@ import {
 import { ConfigurationService } from "./configuration.service";
 import { FlagResolutionService } from "./flag-resolution.service";
 
+import type { CodependixBoundaryRule } from "./configuration-boundaries.types";
 import type {
-  CodependixBoundaryRule,
   CodependixProjectConfiguration,
   ResolvedCodependixConfiguration,
 } from "./configuration.types";
@@ -803,6 +803,44 @@ describe(ConfigurationService, () => {
     it("refuses a projectGraph that is not a path", () => {
       const parsed = codependixConfigurationSchema.safeParse({
         projectGraph: 42,
+      });
+
+      expect(parsed.success).toBe(false);
+    });
+  });
+
+  describe("nestjsModules", () => {
+    const rootModules = {
+      "caelundas-cli": {
+        export: "MainModule",
+        file: "src/caelundas-cli.module.ts",
+      },
+    };
+
+    it("carries the root modules a configuration named", () => {
+      expect(
+        service.resolveConfiguration({ nestjsModules: { rootModules } })
+          .nestjsRootModules,
+      ).toStrictEqual(rootModules);
+    });
+
+    it("assumes none when a configuration names none", () => {
+      expect(service.resolveConfiguration({}).nestjsRootModules).toStrictEqual(
+        {},
+      );
+    });
+
+    it("keeps the field when a configuration file is parsed rather than stripping it", () => {
+      const parsed = codependixConfigurationSchema.parse({
+        nestjsModules: { rootModules },
+      });
+
+      expect(parsed.nestjsModules?.rootModules).toStrictEqual(rootModules);
+    });
+
+    it("refuses a root module naming no export", () => {
+      const parsed = codependixConfigurationSchema.safeParse({
+        nestjsModules: { rootModules: { app: { file: "src/app.module.ts" } } },
       });
 
       expect(parsed.success).toBe(false);

@@ -10,7 +10,7 @@ import {
   DRAW_TEST_EDGE_BUDGET,
   DRAW_TEST_WORKERS,
 } from "../../../testing/draw-run-budget";
-import { environmentSchema } from "../../constants";
+import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeService } from "../code/code.service";
 import { DrawingService } from "../drawing/drawing.service";

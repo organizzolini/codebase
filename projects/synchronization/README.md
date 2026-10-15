@@ -623,11 +623,6 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_command_ts["src/modules/conformetry-generators/conformetry-generators.command.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_command_unit_test_ts["src/modules/conformetry-generators/conformetry-generators.command.unit.test.ts"]
   file_src_modules_conformetry_generators_conformetry_generators_constants_ts["src/modules/conformetry-generators/conformetry-generators.constants.ts"]
@@ -706,18 +701,16 @@ graph LR
   file_src_modules_vscode_settings_vscode_settings_constants_ts["src/modules/vscode-settings/vscode-settings.constants.ts"]
   file_src_modules_vscode_settings_vscode_settings_module_ts["src/modules/vscode-settings/vscode-settings.module.ts"]
   file_src_modules_vscode_settings_vscode_settings_types_ts["src/modules/vscode-settings/vscode-settings.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
+  file_src_synchronization_constants_ts["src/synchronization.constants.ts"]
+  file_src_synchronization_main_end_to_end_test_ts["src/synchronization.main.end-to-end.test.ts"]
+  file_src_synchronization_main_ts["src/synchronization.main.ts"]
+  file_src_synchronization_main_unit_test_ts["src/synchronization.main.unit.test.ts"]
+  file_src_synchronization_module_ts["src/synchronization.module.ts"]
+  file_src_synchronization_repl_ts["src/synchronization.repl.ts"]
+  file_src_synchronization_repl_unit_test_ts["src/synchronization.repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_issue_labels_issue_labels_module_ts
-  file_src_main_module_ts --> file_src_modules_synchronization_synchronization_module_ts
-  file_src_main_ts --> file_src_main_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_issue_labels_issue_labels_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
   file_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_src_modules_conformetry_generators_conformetry_generators_types_ts
   file_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_src_modules_synchronization_synchronization_types_ts
@@ -918,8 +911,15 @@ graph LR
   file_src_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_vscode_settings_vscode_settings_module_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_vscode_settings_vscode_settings_module_ts --> file_src_modules_vscode_settings_vscode_settings_command_ts
-  file_src_repl_ts --> file_src_main_module_ts
-  file_src_repl_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
+  file_src_synchronization_main_end_to_end_test_ts --> file_src_synchronization_constants_ts
+  file_src_synchronization_main_ts --> file_src_synchronization_module_ts
+  file_src_synchronization_main_unit_test_ts --> file_src_modules_issue_labels_issue_labels_module_ts
+  file_src_synchronization_main_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
+  file_src_synchronization_module_ts --> file_src_modules_issue_labels_issue_labels_module_ts
+  file_src_synchronization_module_ts --> file_src_modules_synchronization_synchronization_module_ts
+  file_src_synchronization_module_ts --> file_src_synchronization_constants_ts
+  file_src_synchronization_repl_ts --> file_src_synchronization_module_ts
+  file_src_synchronization_repl_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -930,7 +930,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10994-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-362.53_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-363.13_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-92-3178c6?style=flat-square)
 
@@ -1072,7 +1072,7 @@ graph LR
 ![Module Files](https://img.shields.io/badge/Module_Files-12-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-10-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-11-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-11-ea580c?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-12-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-11-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
