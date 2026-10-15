@@ -185,10 +185,10 @@ _This project has no immediate Nx dependencies or dependents._
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4271-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-218.41_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4373-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-220.37_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-3-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-15-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-17-3178c6?style=flat-square)
 
 ### TypeScript
 
@@ -219,32 +219,32 @@ _This project has no immediate Nx dependencies or dependents._
 
 ### Python
 
-![Python Files](https://img.shields.io/badge/Python_Files-13-3776ab?style=flat-square)
-![Python Lines](https://img.shields.io/badge/Python_Lines-3387-4b8bbe?style=flat-square)
-![Python Classes](https://img.shields.io/badge/Python_Classes-18-7c3aed?style=flat-square)
-![Python Functions](https://img.shields.io/badge/Python_Functions-73-16a34a?style=flat-square)
+![Python Files](https://img.shields.io/badge/Python_Files-15-3776ab?style=flat-square)
+![Python Lines](https://img.shields.io/badge/Python_Lines-3485-4b8bbe?style=flat-square)
+![Python Classes](https://img.shields.io/badge/Python_Classes-19-7c3aed?style=flat-square)
+![Python Functions](https://img.shields.io/badge/Python_Functions-83-16a34a?style=flat-square)
 ![Python Protocols](https://img.shields.io/badge/Python_Protocols-0-0ea5e9?style=flat-square)
-![Python Constants](https://img.shields.io/badge/Python_Constants-118-dc2626?style=flat-square)
-![Python Imports](https://img.shields.io/badge/Python_Imports-41-0284c7?style=flat-square)
-![Python Decorators](https://img.shields.io/badge/Python_Decorators-71-db2777?style=flat-square)
-![Docstrings](https://img.shields.io/badge/Docstrings-22-6366f1?style=flat-square)
-![Docstring Lines](https://img.shields.io/badge/Docstring_Lines-70-818cf8?style=flat-square)
+![Python Constants](https://img.shields.io/badge/Python_Constants-121-dc2626?style=flat-square)
+![Python Imports](https://img.shields.io/badge/Python_Imports-52-0284c7?style=flat-square)
+![Python Decorators](https://img.shields.io/badge/Python_Decorators-74-db2777?style=flat-square)
+![Docstrings](https://img.shields.io/badge/Docstrings-23-6366f1?style=flat-square)
+![Docstring Lines](https://img.shields.io/badge/Docstring_Lines-74-818cf8?style=flat-square)
 ![Python Comments](https://img.shields.io/badge/Python_Comments-23-64748b?style=flat-square)
 ![Python Comment Lines](https://img.shields.io/badge/Python_Comment_Lines-23-475569?style=flat-square)
 
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-108-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-46-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-69-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-34-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-1-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-75-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-34-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-49-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-20-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-0-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-1-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-4-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-82-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-56-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -353,10 +353,10 @@ _This project has no immediate Nx dependencies or dependents._
 ![Raw Cells](https://img.shields.io/badge/Raw_Cells-0-9ca3af?style=flat-square)
 ![Executed Cells](https://img.shields.io/badge/Executed_Cells-0-16a34a?style=flat-square)
 ![Cell Outputs](https://img.shields.io/badge/Cell_Outputs-0-059669?style=flat-square)
-![Notebook Code Lines](https://img.shields.io/badge/Notebook_Code_Lines-872-4b8bbe?style=flat-square)
+![Notebook Code Lines](https://img.shields.io/badge/Notebook_Code_Lines-876-4b8bbe?style=flat-square)
 ![Notebook Classes](https://img.shields.io/badge/Notebook_Classes-9-7c3aed?style=flat-square)
 ![Notebook Functions](https://img.shields.io/badge/Notebook_Functions-21-22c55e?style=flat-square)
-![Notebook Imports](https://img.shields.io/badge/Notebook_Imports-61-0284c7?style=flat-square)
+![Notebook Imports](https://img.shields.io/badge/Notebook_Imports-63-0284c7?style=flat-square)
 ![Notebook Decorators](https://img.shields.io/badge/Notebook_Decorators-1-db2777?style=flat-square)
 ![Notebook Prose Lines](https://img.shields.io/badge/Notebook_Prose_Lines-7-1f6feb?style=flat-square)
 ![Notebook Headings](https://img.shields.io/badge/Notebook_Headings-2-a78bfa?style=flat-square)
@@ -364,13 +364,13 @@ _This project has no immediate Nx dependencies or dependents._
 ![Notebook Images](https://img.shields.io/badge/Notebook_Images-0-34d399?style=flat-square)
 ![Notebook Code Blocks](https://img.shields.io/badge/Notebook_Code_Blocks-0-dc2626?style=flat-square)
 ![Notebook Properties](https://img.shields.io/badge/Notebook_Properties-126-ca8a04?style=flat-square)
-![Notebook Nodes](https://img.shields.io/badge/Notebook_Nodes-1024-a16207?style=flat-square)
+![Notebook Nodes](https://img.shields.io/badge/Notebook_Nodes-1028-a16207?style=flat-square)
 ![Notebook Max Depth](https://img.shields.io/badge/Notebook_Max_Depth-5-ea580c?style=flat-square)
 
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-102-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-104-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-0-a78bfa?style=flat-square)
