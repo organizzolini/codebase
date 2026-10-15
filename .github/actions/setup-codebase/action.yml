@@ -48,6 +48,12 @@ inputs:
       and those run on every TypeScript project — not only the Python ones.
       Turn it off for a job that runs no Python-backed tool at all.
     default: "true"
+  postgres-client:
+    description: |
+      Install the PostgreSQL 18 client tools (pg_dump, pg_restore) from the
+      PGDG apt repository, which the lexico-cli export and import integration
+      tests run for real. Ubuntu's own package is older than the server.
+    default: "false"
   trivy:
     description: Install trivy via Homebrew (infrastructure scanning)
     default: "false"
@@ -158,6 +164,29 @@ runs:
         (inputs.gitleaks == 'true' || inputs.trivy == 'true')
         && steps.homebrew-tools-cache.outputs.cache-hit == 'true'
       run: echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+      shell: bash
+
+    # Only the Test leg asks for this: the lexico-cli integration tests run
+    # the real `pg_dump` and `pg_restore` against Postgres 18 containers, and
+    # a dump from an older client cannot be restored by, or read as, 18. The
+    # runner already ships PostgreSQL 16, and `/usr/bin/pg_dump` is a wrapper
+    # that prefers that install, so the version 18 directory goes first on PATH.
+    - name: 🐘 Install PostgreSQL 18 Client Tools
+      if: inputs.postgres-client == 'true'
+      run: |
+        . /etc/os-release
+        sudo install -d /usr/share/postgresql-common/pgdg
+        sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+          https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
+          | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq postgresql-client-18
+        echo "/usr/lib/postgresql/18/bin" >> "$GITHUB_PATH"
+        export PATH="/usr/lib/postgresql/18/bin:$PATH"
+        pg_dump --version | grep -q " 18\." \
+          || { echo "::error::pg_dump is not PostgreSQL 18"; exit 1; }
+        pg_restore --version
       shell: bash
 
     # Exact match only, and no restore-keys: a partially stale project graph
