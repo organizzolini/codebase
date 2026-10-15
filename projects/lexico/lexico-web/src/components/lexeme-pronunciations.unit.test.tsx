@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { LexemePronunciations } from "./lexeme-pronunciations";
@@ -22,8 +22,12 @@ describe(LexemePronunciations, () => {
     );
   });
 
-  it("shows each variant with its transcription", () => {
+  it("keeps the transcriptions folded until the heading is clicked", () => {
     render(<LexemePronunciations pronunciations={pronunciations} />);
+
+    expect(screen.queryByText("[ˈa.moː]")).toBeNull();
+
+    fireEvent.click(screen.getByText("Pronunciation"));
 
     expect(screen.getByText("classical")).toBeDefined();
     expect(screen.getByText("[ˈa.moː]")).toBeDefined();

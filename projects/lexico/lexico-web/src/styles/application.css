@@ -12,3 +12,18 @@
   --sidebar-primary-foreground: 0 0% 98%;
   --sidebar-ring: 325 96% 32%;
 }
+
+/*
+ * The shadcn stylesheet gives the card and the page the same color, so only a
+ * thin ring set a card apart. Cards take the sidebar's color, which sits clear
+ * of the page behind them in both themes.
+ */
+:root {
+  --background: 220 14% 92%;
+  --card: var(--sidebar-background);
+}
+
+.dark {
+  --background: 224 71.4% 4.1%;
+  --card: var(--sidebar-background);
+}

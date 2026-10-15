@@ -4,11 +4,13 @@ import { LexemeEtymology } from "./lexeme-etymology";
 import { LexemeForms } from "./lexeme-forms";
 import { LexemeHeader } from "./lexeme-header";
 import { LexemeIdentifiers } from "./lexeme-identifiers";
+import { LexemeMatch } from "./lexeme-match";
 import { LexemePronunciations } from "./lexeme-pronunciations";
 import { LexemeTranslations } from "./lexeme-translations";
 
 import type { LoadLexemeForms } from "./lexeme-forms";
 import type { LexemeInflection } from "./lexeme-header";
+import type { LexemeMatchInfo } from "./lexeme-match";
 import type { LexemePronunciation } from "./lexeme-pronunciations";
 import type { ReactNode } from "react";
 
@@ -44,6 +46,8 @@ export interface LexemeResult {
   identifiers: string[];
   inflection?: LexemeInflection | null;
   lemma: string;
+  /** How the search matched this lexeme. */
+  match: LexemeMatchInfo;
   partOfSpeech: string;
   principalParts: string[];
   pronunciations: LexemePronunciation[];
@@ -82,8 +86,13 @@ export function LexemeCard(
       className={className}
       data-testid="lexeme-card"
     >
-      <Card className="w-full">
+      <Card className="relative w-full shadow-md">
+        <LexemeMatch
+          className="absolute top-3 right-3"
+          match={result.match}
+        />
         <LexemeHeader
+          className="pr-16"
           inflection={result.inflection}
           lemma={result.lemma}
           partOfSpeech={result.partOfSpeech}
@@ -96,17 +105,20 @@ export function LexemeCard(
               identifiers={result.identifiers}
             />
           )}
-          <LexemePronunciations pronunciations={result.pronunciations} />
           <LexemeTranslations translations={result.translations} />
-          <LexemeEtymology
-            className="border-t pt-3"
-            etymology={result.etymology}
-          />
           <LexemeForms
             className="border-t pt-3"
             lexemeId={result.id}
             loadForms={loadForms}
             partOfSpeech={result.partOfSpeech}
+          />
+          <LexemePronunciations
+            className="border-t pt-3"
+            pronunciations={result.pronunciations}
+          />
+          <LexemeEtymology
+            className="border-t pt-3"
+            etymology={result.etymology}
           />
         </CardContent>
       </Card>

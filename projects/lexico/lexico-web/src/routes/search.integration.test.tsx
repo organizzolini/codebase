@@ -115,6 +115,9 @@ describe("search", () => {
     await expect(
       screen.findByText("noun, first declension, feminine"),
     ).resolves.toBeDefined();
+
+    fireEvent.click(screen.getByText("Pronunciation"));
+
     expect(screen.getByText("[rosa]")).toBeDefined();
     expect(screen.getByText("rosa means")).toBeDefined();
     expect(screen.getByText("Etymology")).toBeDefined();

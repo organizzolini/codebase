@@ -204,11 +204,11 @@ function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
       }}
       value={value}
     >
-      <TabsList className="flex-wrap">
+      <TabsList className="h-auto max-w-full flex-wrap justify-start gap-0.5 group-data-horizontal/tabs:h-auto">
         {options.map((option) => (
           <TabsTrigger
             key={option}
-            className="capitalize"
+            className="flex-none px-1.5 text-xs capitalize"
             value={option}
           >
             {option.replaceAll(/([A-Z])/gu, " $1").toLowerCase()}

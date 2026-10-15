@@ -14,6 +14,7 @@ function result(id: string): LexemeResult {
     id,
     identifiers: [],
     lemma: id,
+    match: { kind: "exact-headword" },
     partOfSpeech: "noun",
     principalParts: [],
     pronunciations: [],
@@ -81,7 +82,7 @@ describe(SearchResults, () => {
     );
 
     const grid = screen.getByTestId("search-results");
-    const firstRow = [...(grid.firstElementChild?.children ?? [])].map(
+    const firstRow = [...(grid.lastElementChild?.children ?? [])].map(
       (column) =>
         column.querySelector("[data-testid=lexeme-card]")?.textContent,
     );

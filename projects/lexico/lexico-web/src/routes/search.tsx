@@ -1,3 +1,5 @@
+/* cspell:words FULLTEXT */
+
 import {
   createFileRoute,
   useRouter,
@@ -17,6 +19,7 @@ import { SearchResults } from "../components/search-results";
 import type { LexemeResult } from "../components/lexeme-card";
 import type { LexemeFormRow } from "../components/lexeme-forms";
 import type { LexemeInflection } from "../components/lexeme-header";
+import type { LexemeMatchInfo } from "../components/lexeme-match";
 import type { ReactNode } from "react";
 
 // ♟️ Constants
@@ -134,6 +137,50 @@ type SearchParameters = z.infer<typeof searchSchema>;
 // 🛰️ Server Functions
 
 /**
+ * Says how a search matched a lexeme from the tier the API ranked it in. The
+ * API scores every Latin tier differently and calls a match on part of a
+ * headword "fuzzy", though it is a substring match, so how far off one is means
+ * how many letters the headword has beyond the query. English matches all come
+ * back as full-text matches, and only their score says whether a translation
+ * was exactly the query, started with it, or merely mentioned it.
+ */
+function describeMatch(match: {
+  lemma: string;
+  query: string;
+  score: number;
+  source: string;
+}): LexemeMatchInfo {
+  const { lemma, query, score, source } = match;
+  const letters = lemma.normalize("NFD").replaceAll(/\p{Diacritic}/gu, "");
+  const extraLetters = Math.max(0, letters.length - query.length);
+
+  switch (source) {
+    case "ENCLITIC": {
+      return { kind: "enclitic" };
+    }
+    case "LEMMA_EXACT": {
+      return { kind: "exact-headword" };
+    }
+    case "PREFIX": {
+      return { extraLetters, kind: "prefix" };
+    }
+    case "TRANSLATION_FULLTEXT": {
+      if (score >= 1) {
+        return { kind: "translation-exact" };
+      }
+
+      return { kind: score >= 0.8 ? "translation-prefix" : "translation-text" };
+    }
+    case "WORD_EXACT": {
+      return { kind: "exact-form" };
+    }
+    default: {
+      return { extraLetters, kind: "contains" };
+    }
+  }
+}
+
+/**
  * Runs one GraphQL query against the lexico API and returns its data.
  */
 async function queryApi(
@@ -199,13 +246,19 @@ const getSearch = createServerFunction({ method: "GET" })
       "lexeme.id",
     );
 
-    return best.map(({ enclitic, identifiers, lexeme, source }) => ({
+    return best.map(({ enclitic, identifiers, lexeme, score, source }) => ({
       enclitic,
       etymology: lexeme.etymology,
       id: lexeme.id,
       identifiers,
       inflection: lexeme.inflection,
       lemma: lexeme.lemma,
+      match: describeMatch({
+        lemma: lexeme.lemma,
+        query: query.toLowerCase(),
+        score,
+        source,
+      }),
       partOfSpeech: lexeme.partOfSpeech,
       principalParts: lexeme.principalParts.flatMap((part) =>
         part.text.slice(0, 1),

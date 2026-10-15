@@ -13,7 +13,7 @@ import type { ReactNode } from "react";
 // ♟️ Constants
 
 /**
- * How many translations show before the rest fold away, so one entry with
+ * How many translations show while the section is folded, so one entry with
  * dozens of senses cannot dominate the masonry.
  */
 const VISIBLE_TRANSLATION_COUNT = 2;
@@ -31,8 +31,8 @@ export interface LexemeTranslationsProperties {
 // 🧩 Component
 
 /**
- * A lexeme's English translations as a bulleted list: the first two, with the
- * rest behind a toggle.
+ * A lexeme's English translations as a bulleted list under a heading. Folded,
+ * it shows the first two; opened, all of them.
  */
 export function LexemeTranslations(
   properties: Readonly<LexemeTranslationsProperties>,
@@ -62,7 +62,24 @@ export function LexemeTranslations(
         onOpenChange={setIsOpen}
         open={isOpen}
       >
-        <ul className="list-disc space-y-1 pl-5 text-sm">
+        <CollapsibleTrigger
+          className="flex w-full items-center justify-between text-sm font-medium"
+          disabled={folded.length === 0}
+        >
+          Translations
+          {folded.length > 0 && (
+            <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
+              {!isOpen && `+${String(folded.length)} more`}
+              <ChevronDown
+                className={cn(
+                  "size-4 transition-transform",
+                  isOpen && "rotate-180",
+                )}
+              />
+            </span>
+          )}
+        </CollapsibleTrigger>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
           {shown.map((translation) => (
             <li key={translation}>{translation}</li>
           ))}
@@ -74,17 +91,6 @@ export function LexemeTranslations(
             ))}
           </ul>
         </CollapsibleContent>
-        {folded.length > 0 && (
-          <CollapsibleTrigger className="mt-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-            {isOpen ? "Show fewer" : `Show ${folded.length} more`}
-            <ChevronDown
-              className={cn(
-                "size-3 transition-transform",
-                isOpen && "rotate-180",
-              )}
-            />
-          </CollapsibleTrigger>
-        )}
       </Collapsible>
     </div>
   );

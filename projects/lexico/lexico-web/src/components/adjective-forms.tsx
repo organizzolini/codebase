@@ -85,11 +85,11 @@ export function AdjectiveForms(
         }}
         value={gender}
       >
-        <TabsList>
+        <TabsList className="h-auto max-w-full flex-wrap justify-start gap-0.5 group-data-horizontal/tabs:h-auto">
           {genders.map((tab) => (
             <TabsTrigger
               key={tab}
-              className="capitalize"
+              className="flex-none px-1.5 text-xs capitalize"
               value={tab}
             >
               {tab}

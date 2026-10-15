@@ -17,25 +17,28 @@ describe(LexemeTranslations, () => {
     );
   });
 
-  it("shows two translations and no toggle when there are no more", () => {
+  it("shows two translations under a heading, with nothing to open when there are no more", () => {
     render(<LexemeTranslations translations={["one", "two"]} />);
 
+    expect(screen.getByText("Translations")).toBeDefined();
     expect(screen.getByText("two")).toBeDefined();
-    expect(screen.queryByText(/Show/u)).toBeNull();
+    expect(screen.queryByText(/more/u)).toBeNull();
   });
 
-  it("folds the rest away until asked", () => {
+  it("shows two translations while folded and the rest once opened", () => {
     render(
       <LexemeTranslations
         translations={["one", "two", "three", "four", "five"]}
       />,
     );
 
+    expect(screen.getByText("two")).toBeDefined();
     expect(screen.queryByText("three")).toBeNull();
+    expect(screen.getByText("+3 more")).toBeDefined();
 
-    fireEvent.click(screen.getByText("Show 3 more"));
+    fireEvent.click(screen.getByText("Translations"));
 
     expect(screen.getByText("five")).toBeDefined();
-    expect(screen.getByText("Show fewer")).toBeDefined();
+    expect(screen.queryByText("+3 more")).toBeNull();
   });
 });

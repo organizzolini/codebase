@@ -1,3 +1,13 @@
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+
+import {
+  cn,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@codebase/components-web";
+
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -22,7 +32,8 @@ export interface LexemePronunciationsProperties {
 
 /**
  * How a lexeme is pronounced in each variant of Latin that has a
- * transcription, such as classical and ecclesiastical.
+ * transcription, such as classical and ecclesiastical, folded away behind a
+ * toggle.
  */
 export function LexemePronunciations(
   properties: Readonly<LexemePronunciationsProperties>,
@@ -30,6 +41,7 @@ export function LexemePronunciations(
   const { className, pronunciations } = properties;
 
   // 🪝 Hooks
+  const [isOpen, setIsOpen] = useState(false);
 
   // 🏗 Setup
 
@@ -48,19 +60,35 @@ export function LexemePronunciations(
       className={className}
       data-testid="lexeme-pronunciations"
     >
-      <dl className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        {pronunciations.map(({ phonetic, variant }) => (
-          <div
-            key={variant}
-            className="flex items-baseline gap-1.5"
-          >
-            <dt className="text-xs text-muted-foreground capitalize">
-              {variant}
-            </dt>
-            <dd>{phonetic}</dd>
-          </div>
-        ))}
-      </dl>
+      <Collapsible
+        onOpenChange={setIsOpen}
+        open={isOpen}
+      >
+        <CollapsibleTrigger className="flex w-full items-center justify-between text-sm font-medium">
+          Pronunciation
+          <ChevronDown
+            className={cn(
+              "size-4 transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <dl className="mt-2 space-y-1 text-sm">
+            {pronunciations.map(({ phonetic, variant }) => (
+              <div
+                key={variant}
+                className="flex items-baseline justify-between gap-4"
+              >
+                <dt className="text-xs text-muted-foreground capitalize">
+                  {variant}
+                </dt>
+                <dd>{phonetic}</dd>
+              </div>
+            ))}
+          </dl>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }
