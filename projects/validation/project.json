@@ -87,7 +87,6 @@
       "inputs": [
         "^production",
         "{workspaceRoot}/**/package.json",
-        "{workspaceRoot}/**/project.json",
         "{workspaceRoot}/README.md",
         "production",
         {

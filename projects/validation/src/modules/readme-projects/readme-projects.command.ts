@@ -8,8 +8,8 @@ import { ReadmeProjectsService } from "./readme-projects.service";
 /**
  * CLI command that checks the root README links to every workspace project.
  *
- * A project is any directory with its own `package.json` or `project.json`
- * under `projects/`, at any depth below its grouping folders. A project it does not list stays
+ * A project is any directory with its own `package.json` under `projects/`,
+ * at any depth below its grouping folders. A project it does not list stays
  * invisible to anyone reading the README instead of the workspace, so this
  * fails the moment a new project ships without a matching entry.
  *
