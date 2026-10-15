@@ -75,7 +75,7 @@ function getStagedFilesFlags(files: string[]): string {
  * Hands `nx affected` the staged changes as two revisions, so it selects
  * projects the way CI's `scripts/nx/run-affected.sh` does when it has no
  * change set to correct. The hook does not call that script: its spelling files
- * stay in, and its template entry below does the work of `INCLUDE_TEMPLATES`.
+ * stay in.
  *
  * Given `--files`, Nx counts a file as changed in full. Given a base and a
  * head, it diffs `package.json` and `pnpm-lock.yaml` field by field. The
@@ -155,8 +155,10 @@ const config = {
   // cache-hits the rest. Doing it by hand duplicated that, and every entry
   // cost another project graph build.
 
-  // Conformetry is scoped like the rest: see the template entry below for the
-  // one change `nx affected` cannot see.
+  // Conformetry is scoped like the rest. A project needs validating when its own
+  // files, the conformetry configuration, or a conformetry template change, and
+  // `nx affected` sees all three: `.nxignore` hides only the template files Nx
+  // would infer a project or target from.
 
   // Each derivation synchronization is named alongside `lint-code` rather
   // than reached through its `dependsOn`, for the reason the Lint Codebase
@@ -188,20 +190,6 @@ const config = {
   // executable name.
   "*": (files: string[]): string[] => [
     `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedRevisionFlags(files)}`,
-  ],
-
-  // Conformetry joins the `nx affected` run above. A project needs validating
-  // when its own files change, and when the conformetry configuration or its
-  // templates change; `nx affected` selects all 42 on a configuration edit, one
-  // project on a deleted or stray instance file, and none on an unrelated edit.
-  //
-  // Templates are the exception. `.nxignore` hides `conformetry-templates` from
-  // Nx, because a template holds a `project.json` that Nx would otherwise
-  // register as a project, so a template edit selects no project and leaves
-  // every cached validation looking current. This entry covers it: it runs the
-  // whole workspace, uncached, since a template change can reach any instance.
-  "configuration/conformetry-templates/**": (): string[] => [
-    "pnpm exec nx run-many --targets=conformetry-validate --skip-nx-cache --outputStyle=static",
   ],
 };
 

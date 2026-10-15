@@ -428,7 +428,7 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
 | `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-| `run-affected.sh` | `run-affected` | Runs one Nx target on the projects a CI change affects, after correcting the changed-file list Nx selects from: drops spelling files unless `INCLUDE_SPELLING` is `true`, and adds the conformetry config when a template changed and `INCLUDE_TEMPLATES` is `true`. With nothing to correct it passes `--base`/`--head` straight to Nx; otherwise it hands Nx the corrected list over `--stdin` |
+| `run-affected.sh` | `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, when the change has spelling files and `INCLUDE_SPELLING` is not `true`, hands Nx the changed files without them over `--stdin` |
 | `verify-publishable-packages.sh` | the 📦 Publishable Packages leg | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
 All three read everything from the environment, so any of them can be run locally. With
