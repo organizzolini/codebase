@@ -1,3 +1,16 @@
+## 0.0.25 (2026-10-15)
+
+### 🩹 Fixes
+
+- **configuration:** 🐛 exit non-zero when a template-generated cli command throws ([#1591](https://github.com/organizzolini/codebase/pull/1591))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.24
+- Updated codometer-measurement to 0.0.24
+- Updated codometer-output to 0.0.24
+- Updated codometer-core to 0.0.24
+
 ## 0.0.24 (2026-10-15)
 
 ### 🧱 Updated Dependencies

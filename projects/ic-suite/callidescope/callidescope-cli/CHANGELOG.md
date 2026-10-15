@@ -1,3 +1,16 @@
+## 0.0.25 (2026-10-15)
+
+### 🩹 Fixes
+
+- **configuration:** 🐛 exit non-zero when a template-generated cli command throws ([#1591](https://github.com/organizzolini/codebase/pull/1591))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.25
+- Updated callidescope-output to 0.0.24
+- Updated callidescope-graph to 0.0.24
+- Updated callidescope-core to 0.0.24
+
 ## 0.0.24 (2026-10-15)
 
 ### 🧱 Updated Dependencies

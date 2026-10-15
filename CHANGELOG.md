@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/organizzolini/codebase/compare/v3.4.0...v3.4.1) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 exit non-zero when a template-generated cli command throws ([#1591](https://github.com/organizzolini/codebase/issues/1591)) ([5b02e7a](https://github.com/organizzolini/codebase/commit/5b02e7abe3daece5eeb20e384d63004580a8a69e))
+
 ## [3.4.0](https://github.com/organizzolini/codebase/compare/v3.3.2...v3.4.0) (2026-10-15)
 
 ### ✨ Features
