@@ -250,4 +250,63 @@ describe("words service integration suite", () => {
       ).resolves.toStrictEqual([]);
     });
   });
+
+  describe("word forms by lexeme", () => {
+    it("finds the word behind each form of a lexeme", async () => {
+      expect.hasAssertions();
+
+      const wordForms = await service.findWordFormsByLexemeIds([
+        seeded.rosa.id,
+      ]);
+
+      expect(
+        wordForms.map(({ form, word }) =>
+          form instanceof NominalForm
+            ? `${word.data} ${form.case} ${form.number}`
+            : word.data,
+        ),
+      ).toStrictEqual([
+        "rosae genitive singular",
+        "rosae dative singular",
+        "rosae nominative plural",
+      ]);
+    });
+
+    it("leaves out a form whose only word was soft-deleted", async () => {
+      expect.hasAssertions();
+
+      const wordForms = await service.findWordFormsByLexemeIds([
+        seeded.rosa.id,
+      ]);
+
+      expect(wordForms.map(({ word }) => word.data)).not.toContain("rosarum");
+    });
+
+    it("carries each form's lexeme id so a batch can be split back apart", async () => {
+      expect.hasAssertions();
+
+      const wordForms = await service.findWordFormsByLexemeIds([
+        seeded.sum.id,
+        seeded.edo.id,
+        seeded.rosa.id,
+      ]);
+
+      expect(
+        [...new Set(wordForms.map(({ form }) => form.lexeme.id))].toSorted(),
+      ).toStrictEqual(
+        [seeded.edo.id, seeded.rosa.id, seeded.sum.id].toSorted(),
+      );
+    });
+
+    it("finds nothing for an unknown lexeme or for no lexemes", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.findWordFormsByLexemeIds([UNKNOWN_WORD_ID]),
+      ).resolves.toStrictEqual([]);
+      await expect(service.findWordFormsByLexemeIds([])).resolves.toStrictEqual(
+        [],
+      );
+    });
+  });
 });

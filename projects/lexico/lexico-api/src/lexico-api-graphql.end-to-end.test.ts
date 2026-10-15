@@ -255,6 +255,42 @@ describe("lexico api graphql end-to-end suite", () => {
     });
   });
 
+  it("returns the words behind a lexeme's forms", async () => {
+    expect.hasAssertions();
+
+    const response = await application.query(
+      `query ($id: ID!) {
+        lexeme(id: $id) {
+          wordForms {
+            __typename
+            id
+            word
+            form { __typename ... on NominalForm { case number } }
+          }
+        }
+      }`,
+      { id: seeded.lexeme.id },
+    );
+
+    expect(response.errors).toBeUndefined();
+    expect(response.data).toStrictEqual({
+      lexeme: {
+        wordForms: [
+          {
+            __typename: "LexemeWordForm",
+            form: {
+              __typename: "NominalForm",
+              case: "accusative",
+              number: "singular",
+            },
+            id: expect.any(String),
+            word: "puellam",
+          },
+        ],
+      },
+    });
+  });
+
   it("resolves the word on the other side of each of a word's links", async () => {
     expect.hasAssertions();
 
@@ -437,6 +473,7 @@ describe("lexico api graphql end-to-end suite", () => {
         "principalParts",
         "pronunciations",
         "translations",
+        "wordForms",
       ].toSorted(),
       line: [
         ...AUDIT_FIELDS,
