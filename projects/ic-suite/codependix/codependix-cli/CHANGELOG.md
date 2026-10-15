@@ -1,3 +1,16 @@
+## 0.0.29 (2026-10-15)
+
+### 💅 Refactors
+
+- **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/pull/1509))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.29
+- Updated codependix-boundaries to 0.0.28
+- Updated codependix-output to 0.0.28
+- Updated codependix-core to 0.0.27
+
 ## 0.0.28 (2026-10-15)
 
 ### 🧱 Updated Dependencies

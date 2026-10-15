@@ -284,6 +284,7 @@ graph LR
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
   components_web["components-web"]
+  configuration["configuration"]
   conformetry_agents["conformetry-agents"]
   conformetry_cli["conformetry-cli"]
   conformetry_configuration["conformetry-configuration"]
@@ -3273,6 +3274,100 @@ graph LR
   file_components_web_src_index_ts["components-web/src/index.ts"]
   file_components_web_src_lib_utils_ts["components-web/src/lib/utils.ts"]
   file_components_web_vite_config_mts["components-web/vite.config.mts"]
+  file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
+  file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
+  file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
+  file_configuration_commitlint_config_ts["configuration/commitlint.config.ts"]
+  file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___command_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.command.ts"]
+  file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___command_unit_test_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.command.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts"]
+  file_configuration_conformetry_templates_nestjs_command_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-command-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/eslint.config.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_end_to_end_test_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.main.end-to-end.test.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.main.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.module.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___repl_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/src/{{nameKebabCase}}.repl.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___testing_mocks_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/testing/mocks.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___testing_setup_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/testing/setup.ts"]
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___vitest_config_ts["configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/vitest.config.ts"]
+  file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___loader_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.loader.ts"]
+  file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___loader_unit_test_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.loader.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts"]
+  file_configuration_conformetry_templates_nestjs_dataloader_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-dataloader-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/eslint.config.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___end_to_end_test_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.end-to-end.test.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___entities_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.entities.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.module.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.types.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.utilities.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/src/{{nameKebabCase}}.utilities.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___testing_mocks_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/testing/mocks.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___testing_setup_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/testing/setup.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___vitest_config_ts["configuration/conformetry-templates/nestjs-graphql-application/{{nameKebabCase}}/vitest.config.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___entities_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.entities.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___factories_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.factories.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___resolver_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.resolver.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___resolver_unit_test_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.resolver.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_graphql_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-graphql-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
+  file_configuration_conformetry_templates_nestjs_resolver_file___nameKebabCase___resolver_ts["configuration/conformetry-templates/nestjs-resolver-file/{{nameKebabCase}}.resolver.ts"]
+  file_configuration_conformetry_templates_nestjs_resolver_file___nameKebabCase___resolver_unit_test_ts["configuration/conformetry-templates/nestjs-resolver-file/{{nameKebabCase}}.resolver.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_service_file___nameKebabCase___service_ts["configuration/conformetry-templates/nestjs-service-file/{{nameKebabCase}}.service.ts"]
+  file_configuration_conformetry_templates_nestjs_service_file___nameKebabCase___service_unit_test_ts["configuration/conformetry-templates/nestjs-service-file/{{nameKebabCase}}.service.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___constants_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___module_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.module.ts"]
+  file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___service_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.service.ts"]
+  file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___service_unit_test_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.service.unit.test.ts"]
+  file_configuration_conformetry_templates_nestjs_service_module___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/eslint.config.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___src_index_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/src/index.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___testing_mocks_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/testing/mocks.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___testing_setup_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/testing/setup.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___vite_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/vite.config.ts"]
+  file_configuration_conformetry_templates_nestjs_service_project___nameKebabCase___vitest_config_ts["configuration/conformetry-templates/nestjs-service-project/{{nameKebabCase}}/vitest.config.ts"]
+  file_configuration_conformetry_templates_react_component___nameKebabCase___tsx["configuration/conformetry-templates/react-component/{{nameKebabCase}}.tsx"]
+  file_configuration_conformetry_templates_react_component___nameKebabCase___unit_test_tsx["configuration/conformetry-templates/react-component/{{nameKebabCase}}.unit.test.tsx"]
+  file_configuration_conformetry_templates_react_hook___nameKebabCase___ts["configuration/conformetry-templates/react-hook/{{nameKebabCase}}.ts"]
+  file_configuration_conformetry_templates_react_hook___nameKebabCase___unit_test_ts["configuration/conformetry-templates/react-hook/{{nameKebabCase}}.unit.test.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___callidescope_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/callidescope.config.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/codometer.config.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/eslint.config.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_client_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/client.tsx"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/lib/routeTree.gen.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/router.tsx"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes___root_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/__root.tsx"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/index.integration.test.tsx"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/index.tsx"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/testing/render-route.tsx"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_setup_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/testing/setup.ts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___vite_config_mts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/vite.config.mts"]
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___vitest_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/vitest.config.ts"]
+  file_configuration_conformetry_templates_tanstack_route___name___integration_test_tsx["configuration/conformetry-templates/tanstack-route/{{name}}.integration.test.tsx"]
+  file_configuration_conformetry_templates_tanstack_route___name___tsx["configuration/conformetry-templates/tanstack-route/{{name}}.tsx"]
+  file_configuration_conformetry_templates_tanstack_server_function___nameKebabCase_____nameKebabCase___constants_ts["configuration/conformetry-templates/tanstack-server-function/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts"]
+  file_configuration_conformetry_templates_tanstack_server_function___nameKebabCase_____nameKebabCase___functions_ts["configuration/conformetry-templates/tanstack-server-function/{{nameKebabCase}}/{{nameKebabCase}}.functions.ts"]
+  file_configuration_conformetry_templates_tanstack_server_function___nameKebabCase_____nameKebabCase___types_ts["configuration/conformetry-templates/tanstack-server-function/{{nameKebabCase}}/{{nameKebabCase}}.types.ts"]
+  file_configuration_conformetry_templates_tanstack_server_function___nameKebabCase_____nameKebabCase___utilities_ts["configuration/conformetry-templates/tanstack-server-function/{{nameKebabCase}}/{{nameKebabCase}}.utilities.ts"]
+  file_configuration_conformetry_templates_tanstack_server_function___nameKebabCase_____nameKebabCase___utilities_unit_test_ts["configuration/conformetry-templates/tanstack-server-function/{{nameKebabCase}}/{{nameKebabCase}}.utilities.unit.test.ts"]
+  file_configuration_conformetry_config_ts["configuration/conformetry.config.ts"]
+  file_configuration_conventional_config_d_cts["configuration/conventional.config.d.cts"]
+  file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
+  file_configuration_knip_config_ts["configuration/knip.config.ts"]
+  file_configuration_lint_staged_config_ts["configuration/lint-staged.config.ts"]
+  file_configuration_oxfmt_config_ts["configuration/oxfmt.config.ts"]
+  file_configuration_oxlint_config_ts["configuration/oxlint.config.ts"]
+  file_configuration_prettier_config_ts["configuration/prettier.config.ts"]
+  file_configuration_vite_library_config_ts["configuration/vite.library.config.ts"]
+  file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
   file_conformetry_agents_codependix_config_ts["conformetry-agents/codependix.config.ts"]
   file_conformetry_agents_codometer_config_ts["conformetry-agents/codometer.config.ts"]
   file_conformetry_agents_eslint_config_ts["conformetry-agents/eslint.config.ts"]
@@ -7955,6 +8050,29 @@ graph LR
   file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_tooltip_tsx
   file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_hooks_use_mobile_ts
   file_components_web_src_components_ui_toggle_group_tsx --> file_components_web_src_components_ui_toggle_tsx
+  file_configuration_commitlint_config_ts --> file_configuration_conventional_config_d_cts
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_end_to_end_test_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts
+  file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___repl_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___end_to_end_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___constants_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___module_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___constants_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___constants_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___types_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___entities_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___entities_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___types_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___entities_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___types_ts
+  file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes___root_tsx
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx
+  file_configuration_conformetry_templates_tanstack_route___name___integration_test_tsx --> file_configuration_conformetry_templates_tanstack_route___name___tsx
+  file_configuration_eslint_config_ts --> file_configuration_types_eslint_plugin_better_max_params_index_d_ts
   file_conformetry_cli_src_conformetry_cli_main_end_to_end_test_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
   file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_conformetry_cli_module_ts
   file_conformetry_cli_src_conformetry_cli_main_integration_test_ts --> file_conformetry_cli_src_modules_generate_generate_command_ts
@@ -11967,105 +12085,105 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6092-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-2.24_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-70-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-22-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-47-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.88_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-65-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-1-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-15-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-3-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-0-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-0-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-45-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
-![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
+![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-1-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-0-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-36-8b5cf6?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-0-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-37-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-6-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-37-4ade80?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-6-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-0-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-60-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-41-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-12-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-710-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1424-475569?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-7-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-0-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-0-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-16-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
 
-![Python Files](https://img.shields.io/badge/Python_Files-1-3776ab?style=flat-square)
-![Python Lines](https://img.shields.io/badge/Python_Lines-5-4b8bbe?style=flat-square)
+![Python Files](https://img.shields.io/badge/Python_Files-0-3776ab?style=flat-square)
+![Python Lines](https://img.shields.io/badge/Python_Lines-0-4b8bbe?style=flat-square)
 ![Python Classes](https://img.shields.io/badge/Python_Classes-0-7c3aed?style=flat-square)
 ![Python Functions](https://img.shields.io/badge/Python_Functions-0-16a34a?style=flat-square)
 ![Python Protocols](https://img.shields.io/badge/Python_Protocols-0-0ea5e9?style=flat-square)
 ![Python Constants](https://img.shields.io/badge/Python_Constants-0-dc2626?style=flat-square)
 ![Python Imports](https://img.shields.io/badge/Python_Imports-0-0284c7?style=flat-square)
 ![Python Decorators](https://img.shields.io/badge/Python_Decorators-0-db2777?style=flat-square)
-![Docstrings](https://img.shields.io/badge/Docstrings-1-6366f1?style=flat-square)
-![Docstring Lines](https://img.shields.io/badge/Docstring_Lines-4-818cf8?style=flat-square)
+![Docstrings](https://img.shields.io/badge/Docstrings-0-6366f1?style=flat-square)
+![Docstring Lines](https://img.shields.io/badge/Docstring_Lines-0-818cf8?style=flat-square)
 ![Python Comments](https://img.shields.io/badge/Python_Comments-0-64748b?style=flat-square)
 ![Python Comment Lines](https://img.shields.io/badge/Python_Comment_Lines-0-475569?style=flat-square)
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-24-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-5794-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-740-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-302-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1839-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1848-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-40-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-137-0ea5e9?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-20-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3871-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-420-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-211-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1223-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1301-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-104-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1211-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-3067-dc2626?style=flat-square)
-![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-836-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2075-dc2626?style=flat-square)
+![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-8-ea580c?style=flat-square)
 
 ### YAML
 
-![YAML Files](https://img.shields.io/badge/YAML_Files-20-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3045-e34c26?style=flat-square)
-![YAML Documents](https://img.shields.io/badge/YAML_Documents-20-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-420-7c3aed?style=flat-square)
-![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-76-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1430-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2882-16a34a?style=flat-square)
+![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2567-e34c26?style=flat-square)
+![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-366-7c3aed?style=flat-square)
+![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1285-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2438-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-496-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-388-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
 
-![TOML Files](https://img.shields.io/badge/TOML_Files-3-9c4221?style=flat-square)
-![TOML Lines](https://img.shields.io/badge/TOML_Lines-140-b45309?style=flat-square)
-![TOML Tables](https://img.shields.io/badge/TOML_Tables-12-7c3aed?style=flat-square)
-![TOML Array Tables](https://img.shields.io/badge/TOML_Array_Tables-6-8b5cf6?style=flat-square)
-![TOML Keys](https://img.shields.io/badge/TOML_Keys-49-0284c7?style=flat-square)
-![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-15-16a34a?style=flat-square)
-![TOML Comments](https://img.shields.io/badge/TOML_Comments-33-64748b?style=flat-square)
+![TOML Files](https://img.shields.io/badge/TOML_Files-1-9c4221?style=flat-square)
+![TOML Lines](https://img.shields.io/badge/TOML_Lines-82-b45309?style=flat-square)
+![TOML Tables](https://img.shields.io/badge/TOML_Tables-11-7c3aed?style=flat-square)
+![TOML Array Tables](https://img.shields.io/badge/TOML_Array_Tables-0-8b5cf6?style=flat-square)
+![TOML Keys](https://img.shields.io/badge/TOML_Keys-34-0284c7?style=flat-square)
+![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-8-16a34a?style=flat-square)
+![TOML Comments](https://img.shields.io/badge/TOML_Comments-19-64748b?style=flat-square)
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-53-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-3814-4eaa25?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-54-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-3875-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-53-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-334-0284c7?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-343-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-240-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-241-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-48-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-121-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-53-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-957-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-957-475569?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-122-059669?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-54-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-983-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-983-475569?style=flat-square)
 
 ### SQL
 
@@ -12151,24 +12269,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-115-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19122-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-114-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-669-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-116-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19160-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-115-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-672-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-521-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5458-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-855-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4152-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5473-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-856-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4158-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-232-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1975-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-706-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-1976-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-708-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-387-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-10982-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11043-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-20-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -12232,7 +12350,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
 | `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
 | `projects/lexico/lexico-api` | 8 | 17 | 9 | 10 |
-| `configuration` | 4 | 17 | 13 | 2 |
+| `projects/configuration` | 4 | 17 | 13 | 2 |
 | `projects/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
 | `projects/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
 | `projects/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |

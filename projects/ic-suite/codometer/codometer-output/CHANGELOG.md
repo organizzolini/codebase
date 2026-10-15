@@ -1,3 +1,15 @@
+## 0.0.28 (2026-10-15)
+
+### 💅 Refactors
+
+- **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/pull/1509))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.28
+- Updated codometer-measurement to 0.0.28
+- Updated codometer-core to 0.0.28
+
 ## 0.0.27 (2026-10-15)
 
 ### 🧱 Updated Dependencies

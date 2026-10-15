@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.1](https://github.com/organizzolini/codebase/compare/v3.8.0...v3.8.1) (2026-10-15)
+
+### ♻️ Code Refactoring
+
+* **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/issues/1509)) ([e9de999](https://github.com/organizzolini/codebase/commit/e9de99988526745eead1e988765f8261daae816e))
+
 ## [3.8.0](https://github.com/organizzolini/codebase/compare/v3.7.0...v3.8.0) (2026-10-15)
 
 ### ✨ Features
