@@ -2,6 +2,7 @@
 # database.sh — Install database related tools
 #
 # squawk — Linter for PostgreSQL, focused on migrations
+# PostgreSQL 18 client tools (pg_dump, pg_restore) — Homebrew postgresql@18, linked
 
 echo "🔍 Checking for squawk installation..."
 if ! command -v squawk &> /dev/null; then

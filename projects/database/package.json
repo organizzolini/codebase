@@ -1,10 +1,13 @@
 {
   "dependencies": {
+    "@codebase/logging": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
+    "@nestjs/core": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nestjs/typeorm": "catalog:",
     "@testcontainers/postgresql": "catalog:",
+    "nest-commander": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
@@ -16,6 +19,8 @@
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
     "@nx/eslint-plugin": "catalog:",
+    "@swc-node/register": "catalog:",
+    "@swc/core": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
