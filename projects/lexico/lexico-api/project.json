@@ -65,10 +65,10 @@
     "wait-ready": {
       "cache": false,
       "dependsOn": ["develop"],
-      "description": "Block until the running LexicoApi reports ready on its lightship /ready endpoint",
+      "description": "Block until the running LexicoApi answers its GraphQL health query with true",
       "executor": "nx:run-commands",
       "options": {
-        "command": "for i in $(seq 1 120); do curl -fsS -o /dev/null \"http://localhost:${LEXICO_API_LIGHTSHIP_PORT:-9000}/ready\" && exit 0; sleep 0.5; done; echo \"LexicoApi was not ready after 60s\" >&2; exit 1"
+        "command": "for i in $(seq 1 120); do curl -fsS -H \"content-type: application/json\" -d '{\"query\":\"{ health }\"}' \"http://localhost:${LEXICO_API_PORT:-8398}/graphql\" 2>/dev/null | grep -q '\"health\":true' && exit 0; sleep 0.5; done; echo \"LexicoApi was not healthy after 60s\" >&2; exit 1"
       }
     },
     "yaml-lint": {}
