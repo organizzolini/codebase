@@ -20,7 +20,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
 [![TanStack](https://img.shields.io/badge/TanStack-Start-FF4154?logo=tanstack)](https://tanstack.com/start)
 [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-Components-000000?logo=shadcnui)](https://ui.shadcn.com/)
-[![Radix UI](https://img.shields.io/badge/Radix%20UI-Primitives-161618?logo=radixui)](https://radix-ui.com/)
+[![Base UI](https://img.shields.io/badge/Base%20UI-Primitives-161618)](https://base-ui.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Lucide](https://img.shields.io/badge/Lucide-Icons-f67373?logo=lucide)](https://lucide.dev/)
 [![Recharts](https://img.shields.io/badge/Recharts-Charts-22b5bf)](https://recharts.org/)
@@ -172,7 +172,7 @@ Latin-English dictionary suite: the web application, its components, its schema,
 
 **[lexico-web](projects/lexico/lexico-web)** - TanStack Start SSR dictionary web application\
 **[lexico-api](projects/lexico/lexico-api)** - NestJS GraphQL API exposing Latin dictionary, literature, and Relay cursor-based search\
-**[components-web](projects/components-web)** - Shared React component library using shadcn/ui and Radix primitives\
+**[components-web](projects/components-web)** - Shared React component library using shadcn/ui and Base UI primitives\
 **[lexico-entities](projects/lexico/lexico-entities)** - TypeORM entities, migrations, and grammatical enumerations for the dictionary and literature schema\
 **[lexico-cli](projects/lexico/lexico-cli)** - NestJS CLI that scrapes and loads dictionary, literature, and etymology sources
 

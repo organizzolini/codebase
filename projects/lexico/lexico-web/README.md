@@ -19,7 +19,7 @@ from [components-web](../../components-web/README.md).
 | Project | Role |
 | ------- | ---- |
 | 🐺 [lexico-web](README.md) | The SSR web application — routes, server functions, pages |
-| 🎨 [components-web](../../components-web/README.md) | Shared React component library on shadcn/ui and Radix primitives |
+| 🎨 [components-web](../../components-web/README.md) | Shared React component library on shadcn/ui and Base UI primitives |
 | 📖 [lexico-entities](../lexico-entities/README.md) | TypeORM entities and migrations for the dictionary and literature schema |
 | 🚰 [lexico-cli](../lexico-cli/README.md) | CLI that scrapes and loads dictionary, literature, and etymology sources |
 
