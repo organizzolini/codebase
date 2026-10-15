@@ -17,6 +17,10 @@ const COMMAND_NAMES = [
   "software",
 ];
 
+// Each test boots a whole Node process through the SWC loader, which takes
+// several seconds on a busy machine.
+const BOOT_TIMEOUT_MILLISECONDS = 60_000;
+
 describe("main end-to-end suite", () => {
   describe("environment schema e2e", () => {
     it("allows an empty schema by default", () => {
@@ -30,30 +34,34 @@ describe("main end-to-end suite", () => {
   // for its help builds the real container through the real command factory
   // and runs none of the command's steps.
   describe.each(COMMAND_NAMES)("the %s command", (name) => {
-    it("boots through the command factory", () => {
-      expect.hasAssertions();
+    it(
+      "boots through the command factory",
+      () => {
+        expect.hasAssertions();
 
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          "@swc-node/register/esm-register",
-          "projects/installation/src/installation.main.ts",
-          name,
-          "--help",
-        ],
-        {
-          cwd: WORKSPACE_ROOT,
-          encoding: "utf8",
-          env: { ...process.env, NODE_OPTIONS: "" },
-        },
-      );
+        const result = spawnSync(
+          process.execPath,
+          [
+            "--import",
+            "@swc-node/register/esm-register",
+            "projects/installation/src/installation.main.ts",
+            name,
+            "--help",
+          ],
+          {
+            cwd: WORKSPACE_ROOT,
+            encoding: "utf8",
+            env: { ...process.env, NODE_OPTIONS: "" },
+          },
+        );
 
-      expect(result.stderr).not.toContain("Nest can't resolve dependencies");
-      expect(result.status).toBe(0);
-      expect(result.stdout).toContain(
-        `Usage: installation.main ${name} [options]`,
-      );
-    });
+        expect(result.stderr).not.toContain("Nest can't resolve dependencies");
+        expect(result.status).toBe(0);
+        expect(result.stdout).toContain(
+          `Usage: installation.main ${name} [options]`,
+        );
+      },
+      BOOT_TIMEOUT_MILLISECONDS,
+    );
   });
 });

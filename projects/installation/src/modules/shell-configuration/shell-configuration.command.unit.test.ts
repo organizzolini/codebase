@@ -269,7 +269,7 @@ describe(ShellConfigurationCommand, () => {
     await subject.run();
 
     expect(report[1]).toBe(
-      "⚠️  Unsupported shell: . Please add the following to your shell config manually:",
+      "⚠️  Unsupported shell. Please add the following to your shell config manually:",
     );
   });
 
@@ -283,7 +283,7 @@ describe(ShellConfigurationCommand, () => {
 
     expect(report).toStrictEqual([
       "🐚 Configuring shell...",
-      "⚠️  Unsupported shell: fish. Please add the following to your shell config manually:",
+      "⚠️  Unsupported shell. Please add the following to your shell config manually:",
       '   export NVM_DIR="$HOME/.nvm"',
       `   [ -s "${NVM_PREFIX}/nvm.sh" ] && . "${NVM_PREFIX}/nvm.sh"`,
       '   export PNPM_HOME="$HOME/.local/share/pnpm"',

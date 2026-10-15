@@ -11,6 +11,13 @@ vi.mock("@nestjs/core", () => ({
   repl,
 }));
 
+// Mocked so that importing the bootstrap never loads the real command modules.
+vi.mock("./installation.module", () => ({
+  MainModule: function MainModule() {
+    return undefined;
+  },
+}));
+
 describe("repl bootstrap", () => {
   beforeEach(() => {
     repl.mockClear();
