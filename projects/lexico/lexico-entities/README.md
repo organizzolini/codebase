@@ -130,7 +130,8 @@ maintainer's call once the counts below match.
 1. **Back up everything first**, and confirm the file is not empty:
 
    ```bash
-   nx run codebase:postgres-data:dump-complete
+   PGPASSWORD=postgres pg_dump -h localhost -p 5432 -U postgres -Fc -d postgres \
+     -f data/complete.dump
    ls -l data/complete.dump
    ```
 
@@ -142,14 +143,15 @@ maintainer's call once the counts below match.
    docker exec -e POSTGRES_PROJECTS=lexico postgres sh /docker-entrypoint-initdb.d/databases.sh
    ```
 
-3. **Dump `public`'s rows alone**, leaving out TypeORM's own bookkeeping —
-   its metadata and, on a volume where the old migration ever ran, its
-   migrations table — both of which the new migration writes for `lexico`:
+3. **Dump `public`'s rows alone** with the database command line, naming
+   Lexico's tables so TypeORM's own bookkeeping — its metadata and, on a
+   volume where the old migration ever ran, its migrations table — stays
+   behind; the new migration writes both for `lexico`. The path is relative
+   to `projects/database`, where the command runs. See
+   [Moving data between databases](../../database/README.md#moving-data-between-databases):
 
    ```bash
-   nx run codebase:postgres-data:dump-custom \
-     --flags="-n public --data-only -T public.migrations -T public.typeorm_metadata" \
-     --name=lexico-public
+   pnpm exec nx run database:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
    ```
 
 4. **Build the empty schema** with the migration, as `lexico_username`:
