@@ -389,19 +389,121 @@ describe("export", () => {
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
 
-  it("fails fast with no --file, starting no process", async () => {
-    expect.hasAssertions();
+  it(
+    "fails fast with no --file, starting no process",
+    async () => {
+      expect.hasAssertions();
 
-    const result = await runExport([
+      const result = await runExport([
+        "--source-uri",
+        source.uri,
+        "--table",
+        "authors",
+        "--data",
+      ]);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain("--file is required");
+      expect(vi.mocked(execFile)).not.toHaveBeenCalled();
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  describe("with a --file that already exists", () => {
+    const common = (): string[] => [
       "--source-uri",
       source.uri,
       "--table",
       "authors",
       "--data",
-    ]);
+      "--schema",
+    ];
 
-    expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("--file is required");
-    expect(vi.mocked(execFile)).not.toHaveBeenCalled();
+    it(
+      "refuses, leaving the file byte-for-byte unchanged and starting no process",
+      async () => {
+        expect.hasAssertions();
+
+        const file = path.join(directory, "authors.dump");
+        const original = Buffer.from([0, 1, 2, 3, 255]);
+        fs.writeFileSync(file, original);
+
+        const result = await runExport([...common(), "--file", file]);
+
+        expect(result.exitCode).toBe(1);
+        expect(result.stderr).toContain(file);
+        expect(result.stderr).toContain("--overwrite");
+        expect(vi.mocked(execFile)).not.toHaveBeenCalled();
+        expect(fs.readFileSync(file).equals(original)).toBe(true);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it(
+      "replaces it with a fresh dump under --overwrite",
+      async () => {
+        expect.hasAssertions();
+
+        const file = path.join(directory, "authors.dump");
+        await runExport([...common(), "--file", file]);
+        const before = await contents(file);
+        await source.query(
+          "INSERT INTO authors (name, slug) VALUES ('Horace', 'horace')",
+        );
+        onTestFinished(async () => {
+          await source.query("DELETE FROM authors WHERE slug = 'horace'");
+        });
+
+        const refused = await runExport([...common(), "--file", file]);
+        const replaced = await runExport([
+          ...common(),
+          "--overwrite",
+          "--file",
+          file,
+        ]);
+        await restoreIntoTarget(file);
+
+        expect(before).toStrictEqual([
+          "TABLE DATA lexico authors",
+          "TABLE lexico authors",
+        ]);
+        expect(refused.exitCode).toBe(1);
+        expect(replaced.exitCode).toBe(0);
+        await expect(
+          targetRows("SELECT slug FROM lexico.authors ORDER BY slug"),
+        ).resolves.toStrictEqual([
+          { slug: "horace" },
+          { slug: "ovid" },
+          { slug: "vergil" },
+        ]);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it(
+      "does not leave a file behind when a new dump fails, so the re-run is not refused",
+      async () => {
+        expect.hasAssertions();
+
+        const file = path.join(directory, "missing.dump");
+        const argv = [
+          "--source-uri",
+          source.uri,
+          "--table",
+          "no_such_table",
+          "--data",
+          "--file",
+          file,
+        ];
+
+        const failed = await runExport(argv);
+        const rerun = await runExport(argv);
+
+        expect(failed.exitCode).toBe(1);
+        expect(rerun.stderr).not.toContain("--overwrite");
+        expect(fs.existsSync(file)).toBe(false);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
   });
 });

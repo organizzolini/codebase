@@ -24,3 +24,7 @@ export class ExportOptionsError extends Error {
     this.name = ExportOptionsError.name;
   }
 }
+
+/** What `export` says when `file` already exists and `--overwrite` was not given. */
+export const existingFileMessage = (file: string): string =>
+  `${file} already exists and was left unchanged: choose another --file, or pass --overwrite to replace it`;

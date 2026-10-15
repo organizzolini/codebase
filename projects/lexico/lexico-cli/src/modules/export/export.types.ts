@@ -12,6 +12,7 @@ import type {
 export interface ExportCommandOptions {
   data?: boolean;
   file?: string;
+  overwrite?: boolean;
   schema?: boolean;
   sourceUri?: string;
   table?: string[];

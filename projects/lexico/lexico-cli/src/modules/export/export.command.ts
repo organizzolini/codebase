@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Command, CommandRunner, Option } from "nest-commander";
@@ -12,7 +14,11 @@ import {
   qualifyTableName,
 } from "../postgres-client/postgres-client.utilities";
 
-import { EXPORT_OPTION_MESSAGES, ExportOptionsError } from "./export.constants";
+import {
+  existingFileMessage,
+  EXPORT_OPTION_MESSAGES,
+  ExportOptionsError,
+} from "./export.constants";
 
 import type { PostgresContent } from "../postgres-client/postgres-client.types";
 import type { ExportCommandOptions, ExportPlan } from "./export.types";
@@ -77,6 +83,10 @@ export class ExportCommand extends CommandRunner {
 
     const connection = parsePostgresUri(sourceUri, "--source-uri");
 
+    if (options.overwrite !== true && fs.existsSync(file)) {
+      throw new ExportOptionsError(existingFileMessage(file));
+    }
+
     return {
       connection,
       content,
@@ -136,6 +146,15 @@ export class ExportCommand extends CommandRunner {
     return value;
   }
 
+  /** Parses the boolean `--overwrite` flag. */
+  @Option({
+    description: "Replace --file when it already exists",
+    flags: "--overwrite",
+  })
+  parseOverwrite(): boolean {
+    return true;
+  }
+
   /** Parses the boolean `--schema` flag. */
   @Option({
     description: "Export the tables' definitions; combine with --data for both",
@@ -165,7 +184,11 @@ export class ExportCommand extends CommandRunner {
     return [...previous, value];
   }
 
-  /** Validates the options, then dumps the selected tables to the file. */
+  /**
+   * Validates the options, then dumps the selected tables to the file. An
+   * existing file is refused without `--overwrite`, before any process
+   * starts; a dump that fails leaves no file it newly created.
+   */
   async run(
     _passedParameters: string[],
     options: ExportCommandOptions,
@@ -177,7 +200,14 @@ export class ExportCommand extends CommandRunner {
       `📦 Exporting ${content} of ${plan.tables.join(", ")} from ${plan.source} to ${plan.file}`,
     );
 
-    await this.postgresClient.dump(plan);
+    const existed = fs.existsSync(plan.file);
+    try {
+      await this.postgresClient.dump(plan);
+    } catch (error) {
+      // A failed dump can leave a partial file that would block a re-run.
+      if (!existed) fs.rmSync(plan.file, { force: true });
+      throw error;
+    }
 
     const count = plan.tables.length;
     this.logger.log(

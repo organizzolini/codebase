@@ -1,8 +1,20 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
 import { createMock } from "@golevelup/ts-vitest";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { LoggerModule, LoggerService } from "@codebase/logging";
 
@@ -331,6 +343,77 @@ describe(ExportCommand, () => {
       expect(result.stderr).toContain(message);
       expect(result.stderr).toContain("scripts/local/software/database.sh");
       expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
+    });
+  });
+
+  describe("refuses to overwrite an existing --file", () => {
+    let directory: string;
+    let file: string;
+
+    const argv = (): string[] => [
+      "--source-uri",
+      SOURCE_URI,
+      "--table",
+      "words",
+      "--data",
+      "--file",
+      file,
+    ];
+
+    beforeEach(() => {
+      directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-unit-"));
+      file = path.join(directory, "lexico.dump");
+    });
+
+    afterEach(() => {
+      fs.rmSync(directory, { force: true, recursive: true });
+    });
+
+    it("exits non-zero naming the file and --overwrite, starting no process and leaving the file unchanged", async () => {
+      fs.writeFileSync(file, "precious");
+      const spawned = mockProcesses();
+
+      const result = await runExport(argv());
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain(file);
+      expect(result.stderr).toContain("--overwrite");
+      expect(result.stderr).not.toContain(PASSWORD);
+      expect(spawned).toStrictEqual([]);
+      expect(fs.readFileSync(file, "utf8")).toBe("precious");
+    });
+
+    it("dumps over the existing file when --overwrite is passed", async () => {
+      fs.writeFileSync(file, "precious");
+      const spawned = mockProcesses();
+
+      const result = await runExport([...argv(), "--overwrite"]);
+
+      expect(result.exitCode).toBe(0);
+      expect(dumpsOf(spawned)).toStrictEqual([
+        expect.objectContaining({
+          args: expect.arrayContaining([`--file=${file}`]) as unknown,
+        }),
+      ]);
+    });
+
+    it("dumps when the file does not exist yet, with or without --overwrite", async () => {
+      mockProcesses();
+
+      const plain = await runExport(argv());
+      const forced = await runExport([...argv(), "--overwrite"]);
+
+      expect([plain.exitCode, forced.exitCode]).toStrictEqual([0, 0]);
+    });
+
+    it("keeps a file that existed before a failed --overwrite dump, since pg_dump may never have opened it", async () => {
+      fs.writeFileSync(file, "precious");
+      mockProcesses({ error: processFailure(1), stderr: "pg_dump: error\n" });
+
+      const result = await runExport([...argv(), "--overwrite"]);
+
+      expect(result.exitCode).toBe(1);
+      expect(fs.readFileSync(file, "utf8")).toBe("precious");
     });
   });
 });
