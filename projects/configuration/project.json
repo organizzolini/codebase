@@ -52,6 +52,7 @@
       "!{workspaceRoot}/.agents/skills/receiving-code-review/**",
       "!{workspaceRoot}/.agents/skills/requesting-code-review/**",
       "!{workspaceRoot}/.agents/skills/research/**",
+      "!{workspaceRoot}/.agents/skills/reui/**",
       "!{workspaceRoot}/.agents/skills/setup-matt-pocock-skills/**",
       "!{workspaceRoot}/.agents/skills/subagent-driven-development/**",
       "!{workspaceRoot}/.agents/skills/systematic-debugging/**",

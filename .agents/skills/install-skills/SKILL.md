@@ -25,6 +25,10 @@ This skill explains how agent skills are maintained in this repository, includin
 pnpm exec skills update
 ```
 
+## Skills Without a GitHub Source
+
+`skills update` re-fetches each entry from its GitHub source, so a skill published any other way cannot ride it. The ReUI skill is one: reui.io serves it only as a JSON bundle. It is locked as `sourceType: "local"`, which `skills update` skips, and `scripts/update-reui-skill.sh` is its update step. The weekly `upgrade-dependencies.yml` runs it right after `skills update`; run it sooner with `pnpm exec nx run codebase:update-reui-skill`. It re-pins `computedHash` and also heals a folder edited by hand. Give any later skill of this kind its own script rather than hand-editing the folder.
+
 ## Restoring Missing Skills
 
 `scripts/install-skills.sh` restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. It is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build:

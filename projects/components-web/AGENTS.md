@@ -47,6 +47,30 @@ for f in $(find src/components src/hooks src/lib -name '*.ts' -o -name '*.tsx');
 done
 ```
 
+## Choosing Components with ReUI
+
+Two MCP servers are declared in the root [.mcp.json](../../.mcp.json): `shadcn`
+(browse and install from `components.json`, pinned to this project with `--cwd`) and
+`reui` (`https://mcp.reui.io`, ranked search and real component APIs). Sign in once with
+`/mcp` → `reui` → "Sign in with ReUI"; the free account has a daily request allowance
+that resets at UTC midnight (an exhausted allowance still answers, with a notice).
+
+The rules live in the vendored [reui skill](../../.agents/skills/reui/SKILL.md), which
+loads for any UI work here: the plan-first loop (find, install, read the API, adapt,
+check), which component owns which job (`data-grid`, `filters`, `kanban`, `Dialog`),
+color, spacing, and motion rules, and the `weakMatch` and `locked` handling. Read it
+instead of guessing, and call the MCP's `get_agent_skill` if the folder is missing.
+
+This project is `base-nova`, so use only the `/base/` variant of a ReUI item.
+`@reui/<name>` is a registry namespace installed through the shadcn CLI, never
+`pnpm add @reui/…`.
+
+The skill comes from `https://mcp.reui.io/api/skills/download` and is recorded in
+`skills-lock.json` as `local`, so `skills update` skips it. The weekly
+`upgrade-dependencies` workflow refreshes it with `scripts/update-reui-skill.sh`;
+run `pnpm exec nx run codebase:update-reui-skill` to refresh it sooner. Never edit
+the folder by hand.
+
 ## Architecture Overview
 
 ### Component Ownership Model
