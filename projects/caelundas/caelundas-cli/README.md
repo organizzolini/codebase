@@ -4087,7 +4087,7 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-445-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-439-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-11-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-23-a78bfa?style=flat-square)
@@ -4102,8 +4102,8 @@ graph LR
 ![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-22-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-19-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-155-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-18-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-159-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

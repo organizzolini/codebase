@@ -31,16 +31,16 @@ echo "✅ Python dependencies installed (.venv)"
 # `terraform init` downloads the required providers (linode) and configures the
 # backend. This must run before any `terraform plan/apply` or state imports.
 echo "🏗  Initializing Terraform..."
-pushd infrastructure/terraform > /dev/null || exit 1
+pushd projects/infrastructure/terraform > /dev/null || exit 1
 terraform init
 echo "✅ Terraform initialized"
 
 echo "🔑 Setting up kubeconfig..."
 # Source root .env so TF_VAR_* variables are available
-if [[ -f "../../.env" ]]; then
+if [[ -f "../../../.env" ]]; then
   set -a
   # shellcheck source=/dev/null
-  source "../../.env"
+  source "../../../.env"
   set +a
 fi
 

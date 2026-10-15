@@ -3,7 +3,7 @@
 #
 # gitleaks   — scans commits and staged changes for secrets, run by the pre-commit
 #              hook and the secure-code workflow
-# terraform  — manages Linode Kubernetes Engine (LKE) cluster (infrastructure/)
+# terraform  — manages Linode Kubernetes Engine (LKE) cluster (projects/infrastructure/)
 # trivy      — scans Docker images and infrastructure code for vulnerabilities
 # supabase   — local Supabase stack + migrations for lexico
 # jq         — JSON CLI utility used in CI scripts and Terraform output parsing
