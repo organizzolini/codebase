@@ -126,11 +126,11 @@ export class ShellConfigurationService {
   }
 
   /** Tells the user what to add by hand for a shell this project does not configure. */
-  private printManualInstructions(shell: string): void {
+  private printManualInstructions(): void {
     const nvmPrefix = this.findNvmPrefix();
 
     this.reporter.print(
-      `⚠️  Unsupported shell: ${shell}. Please add the following to your shell config manually:`,
+      "⚠️  Unsupported shell. Please add the following to your shell config manually:",
     );
     this.reporter.print('   export NVM_DIR="$HOME/.nvm"');
     this.reporter.print(
@@ -165,7 +165,7 @@ export class ShellConfigurationService {
         this.configureStartupFile(path.join(home, ".bash_profile"));
       }
     } else {
-      this.printManualInstructions(shell);
+      this.printManualInstructions();
     }
   }
 }

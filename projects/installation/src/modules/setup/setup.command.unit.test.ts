@@ -157,7 +157,7 @@ describe(SetupCommand, () => {
       "   New terminal windows will automatically have all tools available.",
       "",
       "   To activate in this terminal, run:",
-      `   source ${path.join(workspace.home, ".zshrc")}`,
+      "   source ~/.zshrc",
     ]);
   });
 

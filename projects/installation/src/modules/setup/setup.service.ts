@@ -1,4 +1,3 @@
-import os from "node:os";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
@@ -44,8 +43,12 @@ export class SetupService {
 
   /** Says setup is done, and how to pick the shell configuration up now. */
   private printCompletion(): void {
-    const startupFile =
-      STARTUP_FILES[path.basename(process.env["SHELL"] ?? "")];
+    const shell = path.basename(process.env["SHELL"] ?? "");
+    // Matched against the table rather than indexed by the environment's
+    // value, so what is printed is always one of the table's own literals.
+    const startupFile = Object.entries(STARTUP_FILES).find(
+      ([name]) => name === shell,
+    )?.[1];
 
     this.reporter.print("");
     this.reporter.print(
@@ -58,7 +61,7 @@ export class SetupService {
     if (startupFile !== undefined) {
       this.reporter.print("");
       this.reporter.print("   To activate in this terminal, run:");
-      this.reporter.print(`   source ${path.join(os.homedir(), startupFile)}`);
+      this.reporter.print(`   source ~/${startupFile}`);
     }
   }
 
