@@ -1,4 +1,6 @@
-import { screen } from "@testing-library/react";
+/* cspell:words rosae rosarum */
+
+import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "../../testing/render-route";
@@ -14,14 +16,20 @@ function answer(field: string, found: [string, number][]): Response {
       [field]: {
         edges: found.map(([id, score]) => ({
           node: {
+            enclitic: null,
+            identifiers: [],
             lexeme: {
+              etymology: `${id} comes from somewhere`,
               id,
+              inflection: { declension: "first", gender: "feminine" },
               lemma: id,
               partOfSpeech: "noun",
-              principalParts: [],
+              principalParts: [{ text: [id] }],
+              pronunciations: [{ phonetic: `[${id}]`, variant: "classical" }],
               translations: [{ data: `${id} means` }],
             },
             score,
+            source: "LEMMA_EXACT",
           },
         })),
       },
@@ -97,5 +105,52 @@ describe("search", () => {
       expect.stringContaining("love"),
       expect.stringContaining("amor"),
     ]);
+  });
+
+  it("shows what a card knows of its lexeme", async () => {
+    stubApi([["rosa", 2]], []);
+
+    await renderRoute("/search?query=rosa");
+
+    await expect(
+      screen.findByText("noun, first declension, feminine"),
+    ).resolves.toBeDefined();
+    expect(screen.getByText("[rosa]")).toBeDefined();
+    expect(screen.getByText("rosa means")).toBeDefined();
+    expect(screen.getByText("Etymology")).toBeDefined();
+  });
+
+  it("loads a card's forms only when its table is opened", async () => {
+    stubApi([["rosa", 2]], []);
+    const fetchMock = vi.mocked(fetch);
+
+    await renderRoute("/search?query=rosa");
+    const declension = await screen.findByText("declension");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    fetchMock.mockResolvedValueOnce(
+      Response.json({
+        data: {
+          lexeme: {
+            wordForms: [
+              {
+                form: {
+                  __typename: "NominalForm",
+                  case: "genitive",
+                  number: "plural",
+                },
+                id: "1",
+                word: "rosarum",
+              },
+            ],
+          },
+        },
+      }),
+    );
+    fireEvent.click(declension);
+
+    await expect(screen.findByText("rosarum")).resolves.toBeDefined();
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });

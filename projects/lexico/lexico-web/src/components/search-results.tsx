@@ -3,6 +3,7 @@ import { useBreakpoint } from "@codebase/components-web";
 import { LexemeCard } from "./lexeme-card";
 
 import type { LexemeResult } from "./lexeme-card";
+import type { LoadLexemeForms } from "./lexeme-forms";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -12,6 +13,8 @@ import type { ReactNode } from "react";
  */
 export interface SearchResultsProperties {
   className?: string;
+  /** Loads the forms of a lexeme when its table is first opened. */
+  loadForms: LoadLexemeForms;
   query: string;
   results: LexemeResult[];
 }
@@ -26,7 +29,7 @@ export interface SearchResultsProperties {
 export function SearchResults(
   properties: Readonly<SearchResultsProperties>,
 ): ReactNode {
-  const { className, query, results } = properties;
+  const { className, loadForms, query, results } = properties;
 
   // 🪝 Hooks
   const { isLg, isMd, isXl } = useBreakpoint();
@@ -72,6 +75,7 @@ export function SearchResults(
             {column.map((result) => (
               <LexemeCard
                 key={result.id}
+                loadForms={loadForms}
                 result={result}
               />
             ))}
