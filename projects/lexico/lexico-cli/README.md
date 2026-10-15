@@ -91,6 +91,7 @@ The dump is always PostgreSQL's custom format; there is no format option.
 | `--overwrite` | `export` | Replace `--file` when it exists; otherwise an existing file is refused |
 | `--clean` | `import` | Delete before restoring, after confirmation. See below |
 | `--yes` | `import` | Skip the `--clean` confirmation, for unattended runs |
+| `--dry-run` | `import` | Run every check, print what would happen, and connect to nothing. See below |
 
 Every option is validated before anything runs, and `import` reads the dump's
 table of contents before it connects: a dump that lacks the rows or definitions
@@ -123,6 +124,21 @@ empty. The error says so; re-run the import from the same file to refill them.
 A data-only dump's sequence values belong to no single table, so `import`
 restores them only when `--table` selects every table in the dump. Importing a
 subset of a dump's tables leaves the target's sequences where they were.
+
+### Previewing an import
+
+`--dry-run` runs every check a real import runs (the options, the `pg_restore`
+version, the file, and the dump's table of contents), then prints a plan and
+exits without connecting to the target, asking, or deleting anything. The plan
+names the target's host and database, the file, what the dump holds of each
+selected table (data, schema, or both), and, with `--clean`, which tables would
+be truncated (`--data`) or dropped and recreated (`--schema`). A selection the
+dump lacks fails exactly as a real import would. `--yes` changes nothing here,
+since a dry run never asks.
+
+```bash
+nx run lexico-cli:start:import --args="--target-uri postgresql://user:password@localhost:5432/lexico_staging --table words --data --clean --file lexico.dump --dry-run"
+```
 
 ### Requirements
 

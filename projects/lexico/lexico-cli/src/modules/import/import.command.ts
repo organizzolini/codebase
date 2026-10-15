@@ -24,6 +24,7 @@ import { dumpedTables } from "../postgres-client/postgres-dump.utilities";
 
 import {
   cleanPromptMessage,
+  dryRunMessages,
   IMPORT_OPTION_MESSAGES,
   ImportCancelledError,
   ImportCleanError,
@@ -76,6 +77,22 @@ export class ImportCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Every check a real import and a `--dry-run` share, none of which
+   * connects to the target: the options, the pg_restore version, and the
+   * dump's table of contents. Resolves the plan and the listed contents.
+   */
+  private async check(options: ImportCommandOptions): Promise<{
+    readonly contents: readonly PostgresDumpEntry[];
+    readonly plan: ImportPlan;
+  }> {
+    const plan = this.plan(options);
+    await this.postgresClient.ensureTool("pg_restore");
+    const contents = await this.postgresClient.list(plan.file);
+    this.ensureContents(plan, contents);
+    return { contents, plan };
+  }
 
   /**
    * Asks the user to confirm `--clean`, naming the target's host and
@@ -133,6 +150,25 @@ export class ImportCommand extends CommandRunner {
   }
 
   /**
+   * Logs what the import would do, the `--dry-run` plan: the target, what
+   * the dump holds of each selected table, and what `--clean` would clear.
+   */
+  private logDryRun(
+    plan: ImportPlan,
+    contents: readonly PostgresDumpEntry[],
+  ): void {
+    const data = dumpedTables(contents, "data");
+    const schema = dumpedTables(contents, "table");
+    const held = new Map(
+      plan.tables.map((table) => [
+        table,
+        { data: data.has(table), schema: schema.has(table) },
+      ]),
+    );
+    for (const line of dryRunMessages(plan, held)) this.logger.log(line);
+  }
+
+  /**
    * Validates every option, resolves the tables, and checks the file
    * exists, so nothing runs against a half-specified command line.
    *
@@ -166,7 +202,10 @@ export class ImportCommand extends CommandRunner {
       connection,
       content,
       file,
-      tables: tables.map((table) => qualifyTableName(table, schemaName)),
+      // One table named twice, even once qualified, is restored once.
+      tables: [
+        ...new Set(tables.map((table) => qualifyTableName(table, schemaName))),
+      ],
       target: maskPostgresCredentials(targetUri, connection.password),
     };
   }
@@ -280,6 +319,16 @@ export class ImportCommand extends CommandRunner {
     return true;
   }
 
+  /** Parses the boolean `--dry-run` flag. */
+  @Option({
+    description:
+      "Check the options and the dump, print what would be imported, and connect to nothing",
+    flags: "--dry-run",
+  })
+  parseDryRun(): boolean {
+    return true;
+  }
+
   /** Parses `--file`, the dump to restore. */
   @Option({
     description: "Path of the dump file, as written by export, to restore",
@@ -333,16 +382,18 @@ export class ImportCommand extends CommandRunner {
    * Validates the options, checks pg_restore and the dump's contents,
    * confirms and applies any `--clean`, then restores the selected tables
    * in one transaction. Nothing connects to the target until the dump is
-   * known to hold what was asked for.
+   * known to hold what was asked for; `--dry-run` stops there, printing the
+   * plan instead of asking or importing.
    */
   async run(
     _passedParameters: string[],
     options: ImportCommandOptions,
   ): Promise<void> {
-    const plan = this.plan(options);
-    await this.postgresClient.ensureTool("pg_restore");
-    const contents = await this.postgresClient.list(plan.file);
-    this.ensureContents(plan, contents);
+    const { contents, plan } = await this.check(options);
+    if (options.dryRun === true) {
+      this.logDryRun(plan, contents);
+      return;
+    }
     await this.confirmClean(plan, options.yes === true);
 
     const content = describePostgresContent(plan.content);

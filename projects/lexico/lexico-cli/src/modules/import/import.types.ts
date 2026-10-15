@@ -12,6 +12,7 @@ import type {
 export interface ImportCommandOptions {
   clean?: boolean;
   data?: boolean;
+  dryRun?: boolean;
   file?: string;
   schema?: boolean;
   table?: string[];

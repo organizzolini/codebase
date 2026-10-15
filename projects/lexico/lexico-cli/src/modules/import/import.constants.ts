@@ -1,5 +1,8 @@
 // ♟️ Constants
 
+import { describePostgresContent } from "../postgres-client/postgres-client.utilities";
+
+import type { PostgresContent } from "../postgres-client/postgres-client.types";
 import type { ImportPlan } from "./import.types";
 
 /**
@@ -136,3 +139,31 @@ export const truncatedMessage = (
 /** What `import --clean` says when it cannot ask: no terminal, no `--yes`. */
 export const noTerminalMessage = (): string =>
   "Import cancelled: --clean needs confirmation but standard input is not a terminal. Pass --yes to run it unattended. The target was not changed.";
+
+/**
+ * What `import --dry-run` prints, one line each: where it would import
+ * to, what the dump holds of each selected table (`held`, keyed by the
+ * qualified name, in the plan's order), and what `--clean` would drop and
+ * recreate (with `--schema`) or truncate. Never carries the password.
+ */
+export const dryRunMessages = (
+  {
+    clean,
+    connection: { database, host },
+    content,
+    file,
+    tables,
+  }: Pick<ImportPlan, "clean" | "connection" | "content" | "file" | "tables">,
+  held: ReadonlyMap<string, PostgresContent>,
+): string[] => [
+  `🔍 Dry run: would import ${describePostgresContent(content)} from ${file} into database "${database}" on ${host}; nothing was connected to or changed`,
+  ...[...held].map(
+    ([table, holds]) =>
+      `  ${table}: the dump holds ${describePostgresContent(holds)}`,
+  ),
+  ...(clean
+    ? [
+        `  --clean ${content.schema ? "would drop and recreate" : "would truncate"} ${tables.join(", ")}`,
+      ]
+    : []),
+];

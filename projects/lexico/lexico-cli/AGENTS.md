@@ -180,6 +180,7 @@ nx run lexico-cli:start:import --args="--target-uri postgresql://user:password@l
 | `--overwrite` | `export` | Replace an existing file, otherwise refused |
 | `--clean` | `import` | Delete before restoring; confirmed first |
 | `--yes` | `import` | Skip the confirmation |
+| `--dry-run` | `import` | Check everything, print the plan, connect to nothing |
 
 - **Format**: always PostgreSQL custom format; there is no format option.
 - **Default import**: deletes nothing and runs as one transaction. A conflict aborts it, and so does a selected table that already exists in a `--schema` import.
@@ -187,6 +188,7 @@ nx run lexico-cli:start:import --args="--target-uri postgresql://user:password@l
 - **`--clean --data`**: truncates exactly the selected tables, never cascading. When an unselected table references one, it refuses and lists the `--table` options to add.
 - **Sequences**: a data-only dump's sequence values belong to no table, so they are restored only when `--table` selects every table in the dump; importing a subset leaves the target's sequences as they were.
 - **Confirmation**: names the target's host and database. A run whose standard input is not a terminal fails with the target unchanged unless `--yes` is passed; a TTY-less prompt must never exit 0 doing nothing.
+- **Dry run**: `--dry-run` runs every check a real import runs (options, `pg_restore` version, file, table of contents), then prints the target's host and database, the file, what the dump holds of each table, and what `--clean` would truncate or drop, and exits 0. It never connects, prompts, or deletes, so it needs no `--yes` and no terminal; a selection the dump lacks still fails. Use it to check an import before running it, e.g. `nx run lexico-cli:start:import --args="... --file lexico.dump --dry-run"`.
 - **Truncate caveat**: `--clean --data` is not atomic. The truncate commits before the restore, so a failed restore can leave the selected tables empty. Tell the user to re-run from the same file; do not try to engineer around it.
 - **Client tools**: `pg_dump` and `pg_restore` must be PostgreSQL 18, checked before anything runs. `scripts/local/software/database.sh` and the devcontainer install them.
 - **Credentials**: passed as `PG*` environment variables, never argv, and masked in every log line and surfaced error. Inherited `PG*` variables are stripped and URI query parameters are refused, so TLS options are not currently passed through. `pg_dump` and `pg_restore` still negotiate TLS when the server offers it (libpq's default SSL mode is `prefer`), but the `--clean --data` truncate connects through the `pg` driver with no TLS option, so it fails against a server that requires TLS, before anything is truncated.
