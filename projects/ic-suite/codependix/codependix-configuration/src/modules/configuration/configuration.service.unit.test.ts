@@ -13,6 +13,7 @@ import { ConfigurationLoaderService } from "./configuration-loader.service";
 import {
   codependixConfigurationSchema,
   ConfigurationFileNotFoundError,
+  ConfigurationPathRequiredError,
   DEFAULT_INCLUDE_GLOBS,
 } from "./configuration.constants";
 import { ConfigurationService } from "./configuration.service";
@@ -66,32 +67,28 @@ describe(ConfigurationService, () => {
     expect(service).toBeDefined();
   });
 
+  describe("requireConfigurationPath", () => {
+    it("returns a path it was given unchanged", () => {
+      expect(
+        service.requireConfigurationPath("codependix.config.ts", "`--config`"),
+      ).toBe("codependix.config.ts");
+    });
+
+    it.each([
+      ["absent", undefined],
+      ["empty", ""],
+      ["blank", "   "],
+    ])("refuses a path that is %s, naming the surface", (_name, value) => {
+      expect(() =>
+        service.requireConfigurationPath(value, "`--config` flag"),
+      ).toThrow(ConfigurationPathRequiredError);
+      expect(() =>
+        service.requireConfigurationPath(value, "`--config` flag"),
+      ).toThrow("`--config` flag");
+    });
+  });
+
   describe("loading", () => {
-    it("falls back to defaults when no configuration file exists", async () => {
-      const searchDirectory = await mkdtemp(
-        path.join(tmpdir(), "codependix-empty-"),
-      );
-
-      const configuration = await service.loadConfiguration({
-        searchDirectory,
-      });
-
-      expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE_GLOBS]);
-      expect(configuration.exclude).toStrictEqual([]);
-    });
-
-    it("discovers a configuration file in the search directory", async () => {
-      const configurationPath = await writeConfiguration({
-        exclude: ["scratch-*"],
-      });
-
-      const configuration = await service.loadConfiguration({
-        searchDirectory: path.dirname(configurationPath),
-      });
-
-      expect(configuration.exclude).toStrictEqual(["scratch-*"]);
-    });
-
     it("reads a TypeScript configuration's default export", async () => {
       const configurationPath = await writeConfigurationFile(
         "codependix.config.ts",
@@ -119,21 +116,6 @@ describe(ConfigurationService, () => {
       });
 
       expect(configuration.include).toStrictEqual(["packages/*"]);
-    });
-
-    it("searches the process cwd when no directory is given", async () => {
-      const configurationPath = await writeConfiguration({
-        include: ["packages/from-cwd"],
-      });
-      const cwdSpy = vi
-        .spyOn(process, "cwd")
-        .mockReturnValue(path.dirname(configurationPath));
-
-      const configuration = await service.loadConfiguration();
-
-      expect(configuration.include).toStrictEqual(["packages/from-cwd"]);
-
-      cwdSpy.mockRestore();
     });
 
     it("falls back to defaults when the module exports no object", async () => {
@@ -319,21 +301,6 @@ describe(ConfigurationService, () => {
         }),
       ).rejects.toThrow(
         "--exclude overrides a value the configuration does not declare. Add `exclude` to the configuration this run reads, then use --exclude to change it.",
-      );
-    });
-
-    it("refuses an override when no configuration file exists at all", async () => {
-      const searchDirectory = await mkdtemp(
-        path.join(tmpdir(), "codependix-empty-"),
-      );
-
-      await expect(
-        service.loadConfiguration({
-          overrides: { include: ["applications/**"] },
-          searchDirectory,
-        }),
-      ).rejects.toThrow(
-        "--include overrides a value the configuration does not declare. Add `include` to the configuration this run reads, then use --include to change it.",
       );
     });
 

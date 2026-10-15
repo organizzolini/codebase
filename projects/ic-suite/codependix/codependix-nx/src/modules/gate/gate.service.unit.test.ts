@@ -1,9 +1,10 @@
 import { ChildProcess, spawn } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { PassThrough } from "node:stream";
 import { pathToFileURL } from "node:url";
 
+import { ConfigurationModule } from "@codependix/configuration";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -22,7 +23,6 @@ vi.mock("node:child_process", async (importOriginal) => ({
 }));
 
 vi.mock("node:fs", () => ({
-  existsSync: vi.fn<() => boolean>(() => false),
   readFileSync: vi.fn<() => string>(() => "{}"),
 }));
 
@@ -65,6 +65,7 @@ describe(GateService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
+      imports: [ConfigurationModule],
       providers: [GateService, PluginService],
     }).compile();
 
@@ -72,8 +73,16 @@ describe(GateService, () => {
   });
 
   beforeEach(() => {
-    vi.mocked(existsSync).mockReturnValue(false);
-    vi.mocked(readFileSync).mockReturnValue("{}");
+    vi.mocked(readFileSync).mockReturnValue(
+      JSON.stringify({
+        plugins: [
+          {
+            options: { configurationPath: "codependix.config.ts" },
+            plugin: "@codependix/nx",
+          },
+        ],
+      }),
+    );
     vi.mocked(spawn).mockReturnValue(buildChild({ exitCode: 0 }));
     vi.spyOn(process.stdout, "write").mockReturnValue(true);
     vi.spyOn(process.stderr, "write").mockReturnValue(true);
@@ -161,12 +170,27 @@ describe(GateService, () => {
 
       expect(
         service.resolveConfigurationPath({
-          configurationPath: "elsewhere.ts",
+          configuration: "elsewhere.ts",
           workspaceRoot: "/workspace",
         }),
       ).toBe("elsewhere.ts");
       expect(readFileSync).not.toHaveBeenCalled();
     });
+
+    it.each(["", "   "])(
+      "refuses a blank configuration option %j, naming the executor option",
+      (configuration) => {
+        expect.hasAssertions();
+
+        expect(() =>
+          service.resolveConfigurationPath({
+            configuration,
+            workspaceRoot: "/workspace",
+          }),
+        ).toThrow("`configuration` executor option");
+        expect(readFileSync).not.toHaveBeenCalled();
+      },
+    );
 
     it("re-reads the path this plugin was registered with from nx.json", () => {
       expect.hasAssertions();
@@ -188,20 +212,28 @@ describe(GateService, () => {
       expect(readFileSync).toHaveBeenCalledWith("/workspace/nx.json", "utf8");
     });
 
-    it("searches the conventional paths when nx.json cannot be read", () => {
+    it("refuses a gate given no path when nx.json cannot be read", () => {
       expect.hasAssertions();
 
       vi.mocked(readFileSync).mockImplementation(() => {
         throw new Error("ENOENT");
       });
-      vi.mocked(existsSync).mockImplementation(
-        (candidatePath) =>
-          candidatePath === "/workspace/configuration/codependix.config.ts",
+
+      expect(() =>
+        service.resolveConfigurationPath({ workspaceRoot: "/workspace" }),
+      ).toThrow("`configurationPath` option on the @codependix/nx plugin");
+    });
+
+    it("refuses a gate given no path when the registration names none", () => {
+      expect.hasAssertions();
+
+      vi.mocked(readFileSync).mockReturnValue(
+        JSON.stringify({ plugins: [{ plugin: "@codependix/nx" }] }),
       );
 
-      expect(
+      expect(() =>
         service.resolveConfigurationPath({ workspaceRoot: "/workspace" }),
-      ).toBe("configuration/codependix.config.ts");
+      ).toThrow("`configurationPath` option on the @codependix/nx plugin");
     });
   });
 
@@ -261,7 +293,7 @@ describe(GateService, () => {
       expect.hasAssertions();
 
       await service.run({
-        options: { configurationPath: "codependix.config.ts" },
+        options: { configuration: "codependix.config.ts" },
         projectName: "alpha",
         workspaceRoot: "/workspace",
       });

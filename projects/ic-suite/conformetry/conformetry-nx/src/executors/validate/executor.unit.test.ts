@@ -106,6 +106,17 @@ describe(validateExecutor, () => {
     );
   });
 
+  it("passes the configuration option through when the caller set one", async () => {
+    await validateExecutor(
+      { configuration: "other/conformetry.config.ts" },
+      createContext({ projectName: "widgets" }),
+    );
+
+    expect(runValidation).toHaveBeenCalledWith(
+      expect.objectContaining({ configuration: "other/conformetry.config.ts" }),
+    );
+  });
+
   it("passes a language filter through when the caller set one", async () => {
     await validateExecutor(
       { languages: ["typescript"] },

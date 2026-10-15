@@ -18,16 +18,19 @@ npm install --save-dev @callidescope/configuration
 
 ## Configuration File
 
-Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, searched for
-upward from the working directory. TypeScript is tried first, because that is
-the form that gets type checking. A repository with no configuration file is
-traced with the defaults rather than told to write one.
+Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, named by the
+required `--config` path (or the `configurationPath` option of the Nx plugin, which every inferred target passes to its executor as `configuration`).
+It is never searched for and never defaulted: a run that names no file is
+refused with a `ConfigurationPathRequiredError` naming the surface that should have carried it, decided by `ConfigurationService.requireConfigurationPath`. A relative path is resolved against the working directory, then the
+repository root. TypeScript is the form that gets type checking. What _is_
+discovered is each traced project's own `callidescope.config.*`, read from the
+project's root with no upward walk.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["configuration/.callidescopeignore"],
+  excludeFrom: ["projects/configuration/.callidescopeignore"],
   limits: { maximumBreadth: 5, maximumDepth: 6 },
 };
 
@@ -327,7 +330,7 @@ A project spreads it and overrides what it means to, which is what makes a
 complete file cost one line:
 
 ```ts
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
 
 export default {
   ...projectDefaults,

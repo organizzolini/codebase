@@ -10,7 +10,8 @@ workspace root, so `nx affected -t codependix-gate` checks codependix
 boundaries per project and fails the task named after the project whose
 boundary broke.
 
-The executor runs `codependix map --check boundaries --projects <project>`
+The executor runs `codependix map --check boundaries --projects <project>
+--config <configuration>`
 **as a child process**, from the workspace root, under `node --import
 <file URL of @codependix/nx/loader>`. A child process rather than an
 in-process call, because the boundary check boots NestJS containers from
@@ -24,8 +25,10 @@ installed copy runs `dist/src/codependix-cli.main.js`.
 The command line builds over the project's Nx dependency closure and fails
 only on a finding charged to the project; this plugin adds selection and
 caching, not judgment. It deliberately ships **no CLI of its own**, and it
-depends on `@codependix/cli` alone — the `codependix-nx-layer` rule in
-`projects/configuration/codependix.config.ts` holds it to that.
+depends on `@codependix/cli` and `@codependix/configuration` alone, the second
+only for the check that a configuration path was given — the
+`codependix-nx-layer` rule in `projects/configuration/codependix.config.ts`
+holds it to that.
 
 ## Architecture Overview
 

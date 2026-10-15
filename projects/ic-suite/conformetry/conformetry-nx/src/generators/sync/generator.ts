@@ -5,7 +5,10 @@ import {
   DEFAULT_PACKAGE_NAME,
   OUT_OF_SYNC_MESSAGE,
 } from "../../modules/generator/generator.constants";
-import { NX_CONFIGURATION_FILENAME } from "../../modules/options/options.constants";
+import {
+  EXECUTION_OPTION_SURFACE,
+  NX_CONFIGURATION_FILENAME,
+} from "../../modules/options/options.constants";
 import {
   resolveGeneratorService,
   resolveOptionsService,
@@ -36,12 +39,11 @@ export default async function syncGenerator(
   const files = await generatorService.emitPlugin({
     // Nx registers this as a global sync generator, which receives no plugin
     // options, so the workspace's own registration is read for the path.
-    configurationPath:
-      options?.configurationPath ??
-      optionsService.resolveConfigurationPath({
-        exists: (candidatePath) => tree.exists(candidatePath),
-        nxConfiguration: readNxConfiguration(tree),
-      }),
+    configurationPath: optionsService.resolveConfigurationPath({
+      configuration: options?.configuration,
+      nxConfiguration: readNxConfiguration(tree),
+      surface: EXECUTION_OPTION_SURFACE,
+    }),
     outputPath: options?.outputPath ?? DEFAULT_OUTPUT_PATH,
     packageName: options?.packageName ?? DEFAULT_PACKAGE_NAME,
     projects: projectsService.listWorkspaceProjects(tree.root),

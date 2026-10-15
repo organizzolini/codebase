@@ -82,8 +82,8 @@ export type RunGateArguments = Omit<RunTraceArguments, "format">;
 
 /** Arguments for tracing one resolved selection. */
 export interface RunTraceArguments {
-  /** Resolved from this plugin's `nx.json` registration when omitted. */
-  readonly configurationPath?: string | undefined;
+  /** The workspace configuration file, as this plugin's registration names it. */
+  readonly configurationPath: string;
   readonly directories: readonly string[];
   /** What the run prints. Defaults to markdown when omitted. */
   readonly format?: CallidescopeOutputFormat | undefined;

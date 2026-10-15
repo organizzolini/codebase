@@ -18,21 +18,22 @@ pnpm add --filter <project> --save-dev @codependix/cli
 ```
 
 ```bash
-codependix map --write
+codependix map --write --config projects/configuration/codependix.config.ts
 ```
 
 ## Usage
 
 One command, `map`, and no per-graph-type subcommand. Which graphs run for a
 project, where its export lands, and which rules judge it is entirely a
-function of the configuration file; see
+function of the configuration file, which every run names with `--config`
+because nothing searches for it and there is no default; see
 [`projects/configuration/codependix.config.ts`](../../../configuration/codependix.config.ts)
 for this repository's own.
 
 | Flag | Meaning |
 | ---- | ------- |
 | `--check [check]` | Fail on a comma-separated set drawn from `boundaries` and `reports` |
-| `--config [config]` | Path to a `codependix.config.ts`. Searched for upward from `--directory` when omitted |
+| `--config <config>` | **Required.** Path to the codependix configuration file. Omitting it fails the run, naming the flag; nothing is searched for |
 | `--dependencies` | Build `--check boundaries` over the dependencies of the projects `--projects` or `--tags` named, reporting their findings as notes (default). No effect without `--projects` or `--tags` |
 | `--no-dependencies` | Build `--check boundaries` over only the projects `--projects` or `--tags` named, not their dependencies. No effect without `--projects` or `--tags` |
 | `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |

@@ -31,3 +31,9 @@ export const CLI_ENTRY_SPECIFIER = "@codependix/cli/main";
  * plugin options to `createNodes` and never to an executor.
  */
 export const NX_CONFIGURATION_FILENAME = "nx.json";
+
+/**
+ * What the configuration refusal names when the executor's `configuration`
+ * option is blank.
+ */
+export const EXECUTOR_OPTION_SURFACE = "`configuration` executor option";

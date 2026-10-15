@@ -32,6 +32,14 @@ nx run configuration:knip:check
   `nx.json`: `@nx/vite`, `@nx/eslint`, and `@nx/vitest` would otherwise infer a
   `vitest` run and an `eslint` target from the config files held here.
 
+## The tools find no configuration
+
+Every ic-suite CLI requires `--config` and every Nx plugin requires its
+`configurationPath` option: there is no default file, filename search, or upward
+walk for the main configuration. This repository names
+`projects/configuration/<tool>.config.ts` in `nx.json` and in the targets here,
+and each project's codometer target names its own `codometer.config.ts`.
+
 ## What stays at the repository root
 
 Only files a tool insists on finding there: `nx.json`, `package.json`,

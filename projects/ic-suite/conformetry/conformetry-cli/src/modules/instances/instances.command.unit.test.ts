@@ -13,6 +13,8 @@ import { InstancesCommand } from "./instances.command";
 import type { InventoriedInstance } from "@conformetry/core";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
+const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
+
 const GEARS: InventoriedInstance = {
   /** Discovery reports absolute paths, so the fixtures do too. */
   path: path.join(process.cwd(), "packages/widgets/src/modules/gears"),
@@ -121,7 +123,7 @@ describe(InstancesCommand, () => {
   describe("run", () => {
     // A path is only readable next to the directory the caller is standing in.
     it("lists every instance found, shortened against the working directory", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
       const lines = written();
 
       expect(lines).toContain("packages/widgets/src/modules/gears");
@@ -130,7 +132,7 @@ describe(InstancesCommand, () => {
     });
 
     it("names the templates that explain each instance, and how well", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
       const lines = written();
 
       expect(lines).toContain("Templates:");
@@ -139,7 +141,10 @@ describe(InstancesCommand, () => {
     });
 
     it("passes the template filter through", async () => {
-      await command.run([], { templates: ["nestjs-service-module"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["nestjs-service-module"],
+      });
 
       expect(
         configurationService.resolveInventoriedInstances,
@@ -173,7 +178,7 @@ describe(InstancesCommand, () => {
     it("says so when the configured globs find nothing", async () => {
       configurationService.resolveInventoriedInstances.mockReturnValue([]);
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(written()).toContain("No instances were found");
     });
@@ -181,7 +186,10 @@ describe(InstancesCommand, () => {
     it("distinguishes an unmatched filter from an empty workspace", async () => {
       configurationService.resolveInventoriedInstances.mockReturnValue([]);
 
-      await command.run([], { templates: ["react-component"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["react-component"],
+      });
 
       expect(written()).toContain(
         "No instance is explained by those templates",
@@ -191,20 +199,23 @@ describe(InstancesCommand, () => {
     // The shared logger asserts every message opens with an emoji and a verb,
     // which is why the report-printing commands throw outside production.
     it("writes program output without going through the logger", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(output).not.toHaveLength(0);
       expect(commandLogger.info).not.toHaveBeenCalled();
     });
 
     it("does not fail the command", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(process.exitCode).toBeUndefined();
     });
 
     it("logs a debug entry marker naming the template filter", async () => {
-      await command.run([], { templates: ["nestjs-service-module"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["nestjs-service-module"],
+      });
 
       expect(commandLogger.debug).toHaveBeenCalledWith(
         "📋 Listing conformetry instances",
@@ -219,7 +230,7 @@ describe(InstancesCommand, () => {
     // the two commands compose without reformatting — which means the parseable
     // listing is shortened too, not only the readable one.
     it("writes parseable output carrying every instance", async () => {
-      await command.run([], { json: true });
+      await command.run([], { config: CONFIGURATION_PATH, json: true });
 
       expect(JSON.parse(written())).toStrictEqual([
         { ...GEARS, path: "packages/widgets/src/modules/gears" },
@@ -230,13 +241,22 @@ describe(InstancesCommand, () => {
     it("writes an empty collection when nothing is found", async () => {
       configurationService.resolveInventoriedInstances.mockReturnValue([]);
 
-      await command.run([], { json: true });
+      await command.run([], { config: CONFIGURATION_PATH, json: true });
 
       expect(JSON.parse(written())).toStrictEqual([]);
     });
   });
 
   describe("option parsing", () => {
+    it("hands the --config value to the configuration layer's requirement", () => {
+      configurationService.requireConfigurationPath.mockReturnValue("a.ts");
+
+      expect(command.parseConfig(" a.ts ")).toBe("a.ts");
+      expect(
+        configurationService.requireConfigurationPath,
+      ).toHaveBeenCalledWith(" a.ts ", "the --config flag");
+    });
+
     it("parses each option through the input service", () => {
       expect(command.parseJson()).toBe(true);
       expect(command.parseConfig("path")).toBeDefined();

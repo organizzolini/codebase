@@ -21,7 +21,7 @@ nothing about sibling projects. There is no `--directory`: a run always
 measures the process's working directory, with no per-invocation override.
 
 ```bash
-cd packages/widgets && codometer --check limits
+cd packages/widgets && codometer --config codometer.config.ts --check limits
 ```
 
 Do not assume it takes a project name, a package name, or anything a task
@@ -30,16 +30,18 @@ runner's job, not codometer's. `--inputs [globs...]` narrows a single run to
 exactly the globs given, running only `language` analysis over them, with no
 configured input — not even the built-in `codebase` one — active.
 
-## Finding the configuration
+## Naming the configuration
 
-With no `--config`, codometer searches upward from the measured directory and
-takes the **first** configuration file it finds. The nearest one wins outright:
-nothing from a further ancestor is folded into it. A project with no
-configuration of its own is measured by the nearest ancestor's, in full. A
-configuration file is always read as a plain object — exporting a function is
+**`--config <path>` is required.** Codometer never searches for a configuration
+file and has no default one: a run without the flag is refused with an error
+naming it. The named file answers alone — nothing from any other file is folded
+into it — and a relative path is resolved against the working directory, then
+the repository root. In this repository the workspace file is
+`projects/configuration/codometer.config.ts`; a project's own is its
+`codometer.config.ts`. A configuration file is always read as a plain object — exporting a function is
 not recognized and falls back to an empty configuration.
 
-`.gitignore` is already in force through discovery — a build directory or
+`.gitignore` is already in force through file discovery — a build directory or
 virtual environment pruned by an ignore file needs no exclusion naming it
 again — and git itself is never invoked, so an unversioned directory measures
 the same way a repository does.
@@ -51,19 +53,19 @@ separately, and none of them turns another on:
 
 | Invocation | Writes | Fails on staleness | Fails on a breach |
 | ---------- | ------ | ------------------ | ------------------ |
-| `codometer` | no | no | no |
-| `codometer --check limits` | no | no | yes |
-| `codometer --check reports` | no | yes | no |
-| `codometer --check limits,reports` | no | yes | yes |
-| `codometer --output-json` | yes | no | no |
-| `codometer --output-json --check limits` | yes | no | yes, after writing |
+| `codometer --config <path>` | no | no | no |
+| `codometer --config <path> --check limits` | no | no | yes |
+| `codometer --config <path> --check reports` | no | yes | no |
+| `codometer --config <path> --check limits,reports` | no | yes | yes |
+| `codometer --config <path> --output-json` | yes | no | no |
+| `codometer --config <path> --output-json --check limits` | yes | no | yes, after writing |
 
 `--output-json`/`--output-markdown` passed **bare** write wherever the
 resolved configuration's own output of that kind declares, and are refused
 before anything is measured when the configuration names no such output —
 there is then nowhere to write it. Passed **with a path**, that path is used
 for this run alone, whether or not the configuration declares an output of
-that kind: `codometer --output-json report.json` writes there regardless of
+that kind: `codometer --config <path> --output-json report.json` writes there regardless of
 what `outputs` says.
 
 Combining an `--output-*` flag with `--check reports` is refused rather than
@@ -78,7 +80,7 @@ breach exits `1`, and only where `--check limits` asked for a gate at all. For
 what to do about either, reach for the `codometer-triage` skill.
 
 ```yaml
-- run: npx @codometer/cli --check limits,reports
+- run: npx @codometer/cli --config codometer.config.ts --check limits,reports
 ```
 
 ## Reading a report

@@ -1,3 +1,4 @@
+import { ConfigurationModule } from "@codependix/configuration";
 import { Module } from "@nestjs/common";
 
 import { PluginModule } from "../plugin/plugin.module";
@@ -8,7 +9,7 @@ import { GateService } from "./gate.service";
 @Module({
   controllers: [],
   exports: [GateService],
-  imports: [PluginModule],
+  imports: [ConfigurationModule, PluginModule],
   providers: [GateService],
 })
 export class GateModule {}

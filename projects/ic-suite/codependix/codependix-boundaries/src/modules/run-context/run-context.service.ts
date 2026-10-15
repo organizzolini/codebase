@@ -68,6 +68,27 @@ export class RunContextService {
   }
 
   /**
+   * Loads the configuration at the path the caller named, with the command
+   * line's overrides and selection layered over it.
+   */
+  private async loadConfiguration(args: {
+    configuration: string;
+    options: MapCommandOptions;
+  }): Promise<ResolvedCodependixConfiguration> {
+    const { configuration, options } = args;
+
+    return this.configurationService.loadConfiguration({
+      configurationPath: configuration,
+      overrides: { exclude: options.exclude, include: options.include },
+      selection: {
+        dependencies: options.dependencies,
+        projects: options.projects,
+        tags: options.tags,
+      },
+    });
+  }
+
+  /**
    * Loads every project's own `codependix.config.ts`, keyed by project name.
    *
    * Loaded once per run, up front, rather than once per graph-type pass: a
@@ -223,20 +244,16 @@ export class RunContextService {
    * twice.
    */
   async build(args: {
+    /** The configuration file's path, already required by the caller. */
+    configuration: string;
     mode: CodependixRunMode;
     options: MapCommandOptions;
     workingDirectory: string;
   }): Promise<GraphRunContext> {
     const { mode, options, workingDirectory } = args;
-    const configuration = await this.configurationService.loadConfiguration({
-      configurationPath: options.config,
-      overrides: { exclude: options.exclude, include: options.include },
-      searchDirectory: workingDirectory,
-      selection: {
-        dependencies: options.dependencies,
-        projects: options.projects,
-        tags: options.tags,
-      },
+    const configuration = await this.loadConfiguration({
+      configuration: args.configuration,
+      options,
     });
     const graph = await this.neighborhoodService.readProjectGraph(
       this.resolveProjectGraphPath(

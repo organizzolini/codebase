@@ -15,6 +15,7 @@ import { RenderingService } from "../rendering/rendering.service";
 import { TemplateDiscoveryService } from "../template-discovery/template-discovery.service";
 
 import {
+  ConfigurationPathRequiredError,
   conformetryConfigurationSchema,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
   UnknownConfigurationFileTypeError,
@@ -327,6 +328,28 @@ export class ConfigurationService {
     args: Parameters<RenderingService["renderPath"]>[0],
   ): string {
     return this.renderingService.renderPath(args);
+  }
+
+  /**
+   * Returns the configuration path a run was given, or refuses.
+   *
+   * Every host asks here, so "a path is required" and what the refusal says
+   * have one home. `surface` names where the caller expected the path to be
+   * set, for example the `--config` flag.
+   *
+   * Throws `ConfigurationPathRequiredError` for an absent or blank value.
+   */
+  public requireConfigurationPath(
+    value: string | undefined,
+    surface: string,
+  ): string {
+    const trimmed = value?.trim();
+
+    if (trimmed === undefined || trimmed === "") {
+      throw new ConfigurationPathRequiredError(surface);
+    }
+
+    return trimmed;
   }
 
   /** Resolves generator inputs from raw command-line arguments. */

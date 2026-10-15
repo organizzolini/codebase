@@ -23,8 +23,9 @@ the rule says about why it exists.
 has its own `codependix-gate` target, so a red `nx run <project>:codependix-gate`
 means a finding is charged to that project: a forbidden edge to the project
 owning its source, a cycle to every project on it. Reproduce it with the same
-target, or with `codependix map --check boundaries --projects <project>`,
-adding `--format json` to read the findings as data. The finding that fails a
+target, or with `codependix map --check boundaries --projects <project>
+--config projects/configuration/codependix.config.ts`, adding `--format json`
+to read the findings as data. The finding that fails a
 gate is the one charged to its project; a line reading "in dependency X, not
 failing" is a note, and X's own gate is the one that fails. Fix it where the
 note says it lives, not in the project that printed it.
@@ -181,7 +182,9 @@ Every mistake on one command line is collected before any is reported, so two
 complaints are two things to fix rather than two runs.
 
 The command is `codependix map`, not bare `codependix`: a command line with no
-subcommand is rejected by the argument parser before any of this applies.
+subcommand is rejected by the argument parser before any of this applies. So is
+one with no `--config <path>` (`--config projects/configuration/codependix.config.ts`
+in this repository): the flag is required, and the error names it.
 
 ## A `--write` that produced no files
 
@@ -194,8 +197,9 @@ to produce nothing.
 
 Work down this list before suspecting the tool:
 
-1. **Was a configuration file found at all?** An absent one is legal and
-   silent. Name it with `--config` to make its absence fail loudly instead.
+1. **Is `--config` naming the file you meant?** The flag is required and the
+   file must exist, so a missing or misspelled path fails loudly — but the
+   wrong file reads exactly like an empty one.
 2. **Is `target` set?** A graph type carrying destinations but no `target`
    still resolves to `"none"`.
 3. **Is the field spelled `defaults`?** `default` is stripped as an unknown

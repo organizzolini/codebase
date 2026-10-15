@@ -1,3 +1,4 @@
+import { ConfigurationModule } from "@callidescope/configuration";
 import { Module } from "@nestjs/common";
 
 import { OptionsService } from "./options.service";
@@ -6,7 +7,7 @@ import { OptionsService } from "./options.service";
 @Module({
   controllers: [],
   exports: [OptionsService],
-  imports: [],
+  imports: [ConfigurationModule],
   providers: [OptionsService],
 })
 export class OptionsModule {}

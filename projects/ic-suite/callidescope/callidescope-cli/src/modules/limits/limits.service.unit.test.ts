@@ -24,6 +24,9 @@ import type {
 } from "@callidescope/configuration";
 import type { MockInstance } from "vitest";
 
+/** The workspace configuration `--config` must name. */
+const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
+
 /** The workspace configuration file this suite's runs are pointed at. */
 const WORKSPACE_CONFIGURATION_PATH = path.join(
   process.cwd(),
@@ -98,11 +101,11 @@ function buildConfiguration(
  */
 function buildLoadedFile(args: {
   authored: CallidescopeConfiguration;
-  path: string | undefined;
+  path: string;
 }): {
   authored: CallidescopeConfiguration;
   configuration: ResolvedCallidescopeConfiguration;
-  path: string | undefined;
+  path: string;
 } {
   const authoredLimits: CallidescopeLimits = {
     maximumBreadth: undefined,
@@ -143,7 +146,7 @@ describe(LimitsService, () => {
   >;
   let loadConfigurationFile: MockInstance<
     (
-      args?: LoadConfigurationArguments,
+      args: LoadConfigurationArguments,
     ) => Promise<LoadedCallidescopeConfiguration>
   >;
   let logger: ReturnType<typeof createMock<LoggerService>>;
@@ -233,10 +236,9 @@ describe(LimitsService, () => {
 
     loadConfigurationFile.mockImplementation(
       // eslint-disable-next-line @typescript-eslint/require-await
-      async (args?: { configurationPath?: string | undefined }) => {
-        const requested = args?.configurationPath;
-        const authored =
-          requested === undefined ? undefined : byPath.get(requested);
+      async (args: { configurationPath: string }) => {
+        const requested = args.configurationPath;
+        const authored = byPath.get(requested);
 
         return authored === undefined
           ? buildLoadedFile({
@@ -258,7 +260,7 @@ describe(LimitsService, () => {
   it("names the workspace's own numbers, in the file they are written in", async () => {
     discover([]);
 
-    const rows = await service.list({});
+    const rows = await service.list({ config: CONFIGURATION_PATH });
 
     expect(rows).toStrictEqual([
       {
@@ -266,30 +268,6 @@ describe(LimitsService, () => {
         path: "configuration/callidescope.config.ts",
         project: undefined,
         value: 17,
-      },
-      {
-        limit: "maximumBreadth",
-        path: undefined,
-        project: undefined,
-        value: undefined,
-      },
-    ]);
-  });
-
-  it("claims no file for a workspace that has no configuration at all", async () => {
-    discover([]);
-    loadConfigurationFile.mockResolvedValue(
-      buildLoadedFile({ authored: {}, path: undefined }),
-    );
-
-    const rows = await service.list({});
-
-    expect(rows).toStrictEqual([
-      {
-        limit: "maximumDepth",
-        path: undefined,
-        project: undefined,
-        value: DEFAULT_MAXIMUM_DEPTH,
       },
       {
         limit: "maximumBreadth",
@@ -312,7 +290,7 @@ describe(LimitsService, () => {
       }),
     );
 
-    const rows = await service.list({});
+    const rows = await service.list({ config: CONFIGURATION_PATH });
 
     expect(rows).toStrictEqual([
       {
@@ -331,7 +309,7 @@ describe(LimitsService, () => {
   });
 
   it("names the quiet project's own file, the defaults having been spread into it", async () => {
-    const rows = await service.list({});
+    const rows = await service.list({ config: CONFIGURATION_PATH });
 
     expect(rows.filter((row) => row.project === QUIET_PROJECT)).toStrictEqual([
       {
@@ -355,7 +333,7 @@ describe(LimitsService, () => {
     // number that project never wrote.
     findConfigurationFileAt.mockReturnValue(undefined);
 
-    await expect(service.list({})).rejects.toThrow(
+    await expect(service.list({ config: CONFIGURATION_PATH })).rejects.toThrow(
       ProjectConfigurationMissingError,
     );
   });
@@ -363,7 +341,7 @@ describe(LimitsService, () => {
   it("names a project that declared both limits as declaring them, in its own file", async () => {
     declareProjectLimits({ maximumBreadth: 6, maximumDepth: 10 });
 
-    const rows = await service.list({});
+    const rows = await service.list({ config: CONFIGURATION_PATH });
 
     expect(
       rows.filter((row) => row.project === DECLARING_PROJECT),
@@ -384,7 +362,7 @@ describe(LimitsService, () => {
   });
 
   it("lists the workspace default ahead of every project it walked", async () => {
-    const rows = await service.list({});
+    const rows = await service.list({ config: CONFIGURATION_PATH });
 
     expect(rows.map((row) => row.project)).toStrictEqual([
       undefined,
@@ -403,7 +381,6 @@ describe(LimitsService, () => {
 
     expect(loadConfigurationFile).toHaveBeenCalledWith({
       configurationPath: "configuration/callidescope.config.ts",
-      searchDirectory: process.cwd(),
     });
   });
 
@@ -419,7 +396,7 @@ describe(LimitsService, () => {
       path: WORKSPACE_CONFIGURATION_PATH,
     });
 
-    await service.list({});
+    await service.list({ config: CONFIGURATION_PATH });
 
     expect(fileFilterService.buildFileFilter).toHaveBeenCalledWith({
       exclude: ["packages/ignored/**"],
@@ -431,7 +408,7 @@ describe(LimitsService, () => {
   it("counts the projects it walked and the ones that declared anything", async () => {
     declareProjectLimits({ maximumDepth: 10 });
 
-    await service.list({});
+    await service.list({ config: CONFIGURATION_PATH });
 
     expect(logger.info).toHaveBeenCalledWith(
       "🔭 Listed every project's limits",

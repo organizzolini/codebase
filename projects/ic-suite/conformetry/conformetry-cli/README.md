@@ -15,10 +15,10 @@ npm install --save-dev @conformetry/cli
 
 ```bash
 # Scaffold a new module from the `nestjs-service-module` template
-conformetry generate --template nestjs-service-module --name billing
+conformetry generate --config projects/configuration/conformetry.config.ts --template nestjs-service-module --name billing
 
 # Check every existing instance still matches the template it came from
-conformetry validate
+conformetry validate --config projects/configuration/conformetry.config.ts
 ```
 
 ## Why
@@ -67,13 +67,17 @@ Renders one template folder into a target directory.
 | Flag | Purpose |
 | ---- | ------- |
 | `--template [name]` | Which template from the registry to render. Asked for when omitted |
-| `--config [path]` | Configuration file to read. Defaults to `configuration/conformetry.config.ts` |
+| `--config <path>` | Configuration file to read. Required: the run is refused without it, and no filename is searched for |
 | `--directory [path]` | Where to write the rendered files. Required: the run is refused without it |
+
+A blank `--config` is refused by `@conformetry/configuration` with a
+`ConfigurationPathRequiredError` naming the `--config` flag; commander refuses a
+missing one before that.
 
 A template's own inputs are passed as flags alongside these:
 
 ```bash
-conformetry generate --template react-component --name search-bar
+conformetry generate --config projects/configuration/conformetry.config.ts --template react-component --name search-bar
 ```
 
 **Omitting `--template` at a terminal offers a picker** — an autocomplete over
@@ -127,7 +131,7 @@ one.
 
 | Flag | Purpose |
 | ---- | ------- |
-| `--config [path]` | Configuration file to read |
+| `--config <path>` | Configuration file to read. Required |
 | `--instances [globs]` | Comma-separated paths or globs; report only the templates that explain them |
 | `--json` | Write the listing as JSON |
 
@@ -135,18 +139,18 @@ With `--instances` it answers the other direction — which templates explain a
 given path:
 
 ```bash
-conformetry templates --instances packages/billing/src/modules/billing
+conformetry templates --config projects/configuration/conformetry.config.ts --instances packages/billing/src/modules/billing
 ```
 
 ```text
   nestjs-service-module (nsm)
     Generate a NestJS service module
-    Template: configuration/conformetry-templates/nestjs-service-module
+    Template: projects/configuration/conformetry-templates/nestjs-service-module
     Instances:
       packages/billing/src/modules/billing 5/5 files 100%
   nestjs-command-module (ncm)
     Generate a NestJS command module
-    Template: configuration/conformetry-templates/nestjs-command-module
+    Template: projects/configuration/conformetry-templates/nestjs-command-module
     Instances:
       packages/billing/src/modules/billing 3/5 files 60%
 ```
@@ -166,7 +170,7 @@ one. The complement of the command above: that one asks what standard a path
 answers to, this one asks what generated code exists.
 
 ```bash
-conformetry instances --templates nestjs-service-module
+conformetry instances --config projects/configuration/conformetry.config.ts --templates nestjs-service-module
 ```
 
 ```text
@@ -177,7 +181,7 @@ conformetry instances --templates nestjs-service-module
 
 | Flag | Purpose |
 | ---- | ------- |
-| `--config [path]` | Configuration file to read |
+| `--config <path>` | Configuration file to read. Required |
 | `--json` | Write the listing as JSON |
 | `--templates [names]` | Comma-separated template names; report only the instances they explain |
 
@@ -196,13 +200,13 @@ the template it was generated from.
 
 | Flag | Purpose |
 | ---- | ------- |
-| `--config [path]` | Configuration file to read |
+| `--config <path>` | Configuration file to read. Required |
 | `--instances [globs]` | Comma-separated globs to validate, overriding the configuration |
 | `--languages [names]` | Comma-separated languages to run — `typescript`, `markdown`, `python`, `json`, `jupyter`, `text` |
 | `--templates [names]` | Comma-separated template names to narrow the run to, or `all` for every one |
 | `--threshold [ratio]` | Lowest conformance score an instance may have, 0 to 1. The weakest of the three threshold levels |
 
-Every flag is optional; an absent filter means "everything". The command exits
+Every flag but `--config` is optional; an absent filter means "everything". The command exits
 non-zero when any instance scores below its threshold, which is what makes it
 usable as a pre-merge gate.
 
@@ -257,7 +261,7 @@ Conformance scores:
 
   1. file: logger.types.ts — 1/2 requirements met (50.0%)
      Instance: projects/logging/src/modules/logger/logger.types.ts
-     Template: configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
+     Template: projects/configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
 
      1. Missing comment // 🏷️ Types
         Template: Line 1, Column 1
@@ -311,7 +315,7 @@ expected value and a concrete fix:
 ```text
 1. file: billing.service.ts
    Instance: packages/billing/src/modules/billing/billing.service.ts
-   Template: configuration/conformetry-templates/nestjs-service-module/…
+   Template: projects/configuration/conformetry-templates/nestjs-service-module/…
 
    1. Missing required comment
       Instance: line 24
@@ -538,7 +542,7 @@ nx run conformetry-cli:start
 Pass a subcommand and its flags after `--`:
 
 ```bash
-nx run conformetry-cli:start -- validate --languages typescript
+nx run conformetry-cli:start -- validate --config projects/configuration/conformetry.config.ts --languages typescript
 ```
 
 ## Test

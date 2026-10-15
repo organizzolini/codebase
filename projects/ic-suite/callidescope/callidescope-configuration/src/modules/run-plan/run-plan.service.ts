@@ -148,7 +148,6 @@ export class RunPlanService {
       path: configurationPath,
     } = await reader.loadConfigurationFile({
       configurationPath: options.config,
-      searchDirectory: workspaceRoot,
     });
     const { configuration, errors, format } =
       this.flagResolutionService.resolveRunFlags({
@@ -212,7 +211,6 @@ export class RunPlanService {
       path: configurationPath,
     } = await reader.loadConfigurationFile({
       configurationPath: options.config,
-      searchDirectory: workspaceRoot,
     });
     // Every combination of a flag with a configured value happens here and
     // nowhere else, under one precedence rule this service does not restate.
@@ -268,7 +266,9 @@ export class RunPlanService {
    * stale immediately after being written, so a run asking for both has
    * misunderstood one of them and would pass whatever it was meant to catch.
    */
-  public selectMode(options: CallidescopeCommandOptions): RunModeSelection {
+  public selectMode(
+    options: Partial<CallidescopeCommandOptions>,
+  ): RunModeSelection {
     const errors: string[] = [];
     const names = this.readCheckNames(options.check, errors);
     const writes = options.write === true;

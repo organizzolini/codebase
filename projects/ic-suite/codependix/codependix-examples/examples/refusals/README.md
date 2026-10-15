@@ -54,9 +54,17 @@ Reproduced by `codependixConfigurationSchema.parse({"workspace":{"nxProjects":{"
 A markdown destination needs an anchor, a path, or both — otherwise nothing names where the export goes.
 ```
 
+## A run naming no configuration path
+
+Reproduced by running `codependix map` or `codependix path` without `--config`: the flag is required, and nothing falls back to a default filename or searches for one. The same refusal names the `configuration` executor option of the Nx gate, or the `configurationPath` option of the `@codependix/nx` registration, when one of those is the setting left out.
+
+```text
+ConfigurationPathRequiredError: A configuration path is required, but the `--config` flag named none: give it the path of the codependix configuration file.
+```
+
 ## An explicitly named configuration file that does not exist
 
-A path named on the command line must exist: a typo in a task runner's arguments should fail rather than quietly resolving every graph to `none`. A path that was _not_ named is searched for, and its absence is legal — see [configuration-resolution](../configuration-resolution).
+`--config` is required and the file it names must exist: a typo in a task runner's arguments should fail rather than quietly resolving every graph to `none`. A run naming no path is refused outright — see [configuration-resolution](../configuration-resolution).
 
 ```text
 ConfigurationFileNotFoundError: Configuration file not found: <examples>/refusals/codependix.config.missing.ts

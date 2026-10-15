@@ -7,8 +7,8 @@
       "items": { "type": "string" },
       "type": "array"
     },
-    "configurationPath": {
-      "description": "Path to the callidescope configuration file, relative to the workspace root.",
+    "configuration": {
+      "description": "Required. Path to the callidescope configuration file, relative to the workspace root.",
       "type": "string"
     },
     "format": {
@@ -32,7 +32,7 @@
       "type": "boolean"
     }
   },
-  "required": ["addresses"],
+  "required": ["addresses", "configuration"],
   "title": "Callidescope depth",
   "type": "object"
 }

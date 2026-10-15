@@ -1,16 +1,18 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { ConfigurationService } from "@codependix/configuration";
 import { Injectable } from "@nestjs/common";
 
 import { PluginService } from "../plugin/plugin.service";
 
 import {
   CLI_ENTRY_SPECIFIER,
+  EXECUTOR_OPTION_SURFACE,
   LOADER_SPECIFIER,
   NX_CONFIGURATION_FILENAME,
 } from "./gate.constants";
@@ -37,7 +39,10 @@ import type { Hash } from "@nx/devkit";
 export class GateService {
   // 🏗 Dependency Injection
 
-  constructor(private readonly pluginService: PluginService) {}
+  constructor(
+    private readonly configurationService: ConfigurationService,
+    private readonly pluginService: PluginService,
+  ) {}
 
   // 🔐 Private Fields
 
@@ -233,22 +238,23 @@ export class GateService {
   /**
    * Resolves the configuration path one gate runs with.
    *
-   * A path the target was given wins. Otherwise the one this plugin was
-   * registered with is read back out of `nx.json`, and resolved exactly as
-   * inference resolved it — so the file a gate reads is always the file its
-   * cache inputs named.
+   * A `configuration` option the target was given wins, and is refused when
+   * blank. Otherwise the path this plugin was registered with is read back
+   * out of `nx.json`, so the file a gate reads is always the file its cache
+   * inputs named. A gate given neither throws: no default path is assumed.
    */
   public resolveConfigurationPath(args: {
-    configurationPath?: string | undefined;
+    configuration?: string | undefined;
     workspaceRoot: string;
   }): string {
-    if (args.configurationPath !== undefined && args.configurationPath !== "") {
-      return args.configurationPath;
+    if (args.configuration !== undefined) {
+      return this.configurationService.requireConfigurationPath(
+        args.configuration,
+        EXECUTOR_OPTION_SURFACE,
+      );
     }
 
     return this.pluginService.resolvePluginOptions({
-      exists: (candidatePath) =>
-        existsSync(path.join(args.workspaceRoot, candidatePath)),
       options: this.pluginService.readRegisteredOptions(
         this.readNxConfiguration(args.workspaceRoot),
       ),
@@ -289,7 +295,7 @@ export class GateService {
       ...this.resolveSelection(args),
       cliEntryPath: createRequire(import.meta.url).resolve(CLI_ENTRY_SPECIFIER),
       configurationPath: this.resolveConfigurationPath({
-        configurationPath: args.options.configurationPath,
+        configuration: args.options.configuration,
         workspaceRoot: args.workspaceRoot,
       }),
       dependencies: args.options.dependencies !== false,

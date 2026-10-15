@@ -126,10 +126,10 @@ export async function runBoundaryCheck(
 
     const runContextService = await getRunContextService();
     const context = await runContextService.build({
+      configuration: configurationPath,
       mode: "check",
       options: {
         check: "boundaries",
-        config: configurationPath,
         ...(args.dependencies !== undefined && {
           dependencies: args.dependencies,
         }),

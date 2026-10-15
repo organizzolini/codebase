@@ -2034,6 +2034,9 @@ importers:
       '@codependix/cli':
         specifier: workspace:*
         version: link:../codependix-cli
+      '@codependix/configuration':
+        specifier: workspace:*
+        version: link:../codependix-configuration
       '@nestjs/common':
         specifier: catalog:ic-suite
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)

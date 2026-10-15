@@ -39,9 +39,7 @@ export default async function traceExecutor(
   const optionsService = await resolveOptionsService();
   const pluginService = await resolvePluginService();
   const result = await pluginService.runTrace({
-    ...(options.configurationPath === undefined
-      ? {}
-      : { configurationPath: options.configurationPath }),
+    configurationPath: optionsService.readConfiguration(options.configuration),
     directories: scope.directories,
     format: optionsService.readFormat(options.format),
     judgedProjectNames: scope.selectedDirectories,

@@ -24,7 +24,7 @@ export type GateHasherContext = HasherContext & {
 /** Options the gate executor accepts. */
 export interface GateOptions {
   /** Workspace-relative configuration path; the registration's when omitted. */
-  readonly configurationPath?: string | undefined;
+  readonly configuration?: string | undefined;
   /** Build over the named projects' dependency closure. Defaults to true. */
   readonly dependencies?: boolean | undefined;
   /** Nx project names to judge, replacing the target's own project. */

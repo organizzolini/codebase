@@ -2,8 +2,8 @@
   "$schema": "http://json-schema.org/schema",
   "description": "Regenerate the workspace's conformetry generator plugin from the conformetry configuration.",
   "properties": {
-    "configurationPath": {
-      "description": "Path to the conformetry configuration file, relative to the workspace root.",
+    "configuration": {
+      "description": "Path to the conformetry configuration file, relative to the workspace root. Falls back to the configurationPath option of the @conformetry/nx plugin in nx.json.",
       "type": "string"
     },
     "outputPath": {
