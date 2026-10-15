@@ -621,14 +621,16 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
+        "compose-config",
         "eslint",
+        "helm-lint",
         "oxlint",
         "ruff-lint",
         "shellcheck",
         "sqlfluff-lint",
         "stylelint"
       ],
-      "description": "Aggregator for lint-code",
+      "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config creates the gitignored root .env from .env.default when it is missing.",
       "executor": "nx:noop"
     },
     "markdown-lint": [
@@ -645,7 +647,11 @@
         "defaultConfiguration": "check",
         "executor": "nx:run-commands",
         "filter": {
-          "projects": ["tag:language:python", "tag:language:typescript"]
+          "projects": [
+            "tag:language:infrastructure",
+            "tag:language:python",
+            "tag:language:typescript"
+          ]
         },
         "inputs": [
           "{projectRoot}/**/*.md",
@@ -739,7 +745,7 @@
         "defaultConfiguration": "check",
         "executor": "nx:run-commands",
         "filter": {
-          "projects": ["tag:language:typescript"]
+          "projects": ["tag:language:infrastructure", "tag:language:typescript"]
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
@@ -964,7 +970,11 @@
         "cache": true,
         "executor": "nx:run-commands",
         "filter": {
-          "projects": ["tag:language:python", "tag:language:typescript"]
+          "projects": [
+            "tag:language:infrastructure",
+            "tag:language:python",
+            "tag:language:typescript"
+          ]
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
@@ -1298,7 +1308,11 @@
         "cache": true,
         "executor": "nx:run-commands",
         "filter": {
-          "projects": ["tag:language:python", "tag:language:typescript"]
+          "projects": [
+            "tag:language:infrastructure",
+            "tag:language:python",
+            "tag:language:typescript"
+          ]
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",

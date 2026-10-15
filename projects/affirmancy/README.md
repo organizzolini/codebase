@@ -37,13 +37,15 @@ uv sync
 ```bash
 # 1. Start the local services
 nx run affirmancy:ollama --configuration=start
-nx run affirmancy:searxng --configuration=start
-nx run affirmancy:open-webui --configuration=start
+nx run infrastructure:searxng:up
+nx run infrastructure:open-webui:up
 
 # 2. Pull the model (one-time download)
 nx run affirmancy:ollama --configuration=pull-small   # gemma4:e2b
 
 # 3. Open src/affirmancy.ipynb in VSCode and run the pipeline
+#    (the notebooks raise an error naming `nx run infrastructure:searxng:up`
+#    if SearxNG is not running)
 ```
 
 ## Project Structure
@@ -110,8 +112,6 @@ one combination the model is asked to write in.
 | `spell-check`, `markdown-lint`, `yaml-lint` | Prose and configuration checks |
 | `lint-codebase` | All of the above; `--configuration=write` to auto-fix |
 | `ollama` | `start`, `stop`, `pull-small`, `pull-medium`, `pull-large` |
-| `searxng` | `start`, `stop`, `open` |
-| `open-webui` | `start`, `stop`, `open` |
 
 ## Run tests
 

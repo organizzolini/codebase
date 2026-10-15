@@ -7,14 +7,14 @@
 ### Helm (Batch Jobs)
 
 ```bash
-helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
-  --values infrastructure/helm/kubernetes-job/values/base.yaml
+helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
+  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml
 ```
 
 ### Terraform
 
 ```bash
-cd infrastructure/terraform
+cd projects/infrastructure/terraform
 terraform init
 terraform plan
 terraform apply
@@ -25,7 +25,7 @@ terraform apply
 ### Directory Structure
 
 ```text
-infrastructure/
+projects/infrastructure/
 ├── helm/
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning
@@ -50,12 +50,12 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the build → push → deploy → retrieve → clean pipeline.
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint` and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Troubleshooting
 
 - **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod and PVC. Usual causes are an image pull failure against GHCR, insufficient cluster CPU/memory, or an unbound PVC.
-- **PVCs outliving their Job** — PVCs are never deleted automatically when a Job or pod goes away. Remove them explicitly (`kubectl delete pvc <name>`) after retrieving output.
+- **PVCs outliving their Job** — PVCs are never deleted automatically when a Job or pod goes away. Remove them explicitly (`kubectl delete pvc <name>`) once you have what you need from it.
 - **`exec format error`** — the image was built for arm64. Rebuild with `--platform linux/amd64`.
 
 ## Key Files

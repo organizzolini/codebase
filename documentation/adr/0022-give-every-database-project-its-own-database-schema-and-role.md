@@ -36,8 +36,8 @@ The database name carries the environment; the schema name never does. TypeORM w
 
 ## Consequences
 
-- `nx run codebase:postgres-container:recreate` gives a working setup for every project, but it deletes the volume, and with it any data held there, such as lexico's ingested rows.
-- A developer keeping an existing volume runs the same init script by hand instead, once for each domain the volume lacks, after `nx run codebase:postgres-container:up` has recreated the container with the new list. For caelundas:
+- `nx run infrastructure:postgres:recreate` gives a working setup for every project, but it deletes the volume, and with it any data held there, such as lexico's ingested rows.
+- A developer keeping an existing volume runs the same init script by hand instead, once for each domain the volume lacks, after `nx run infrastructure:postgres:up` has recreated the container with the new list. For caelundas:
 
   ```bash
   docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/databases.sh

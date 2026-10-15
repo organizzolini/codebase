@@ -208,7 +208,7 @@ Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed
 Always prefer running tasks through Nx rather than calling the underlying tools directly.
 
 ```bash
-nx run codebase:postgres-container:up     # The local Postgres the database lives in
+nx run infrastructure:postgres:up     # The local Postgres the database lives in
 nx run meanderaw-cli:migration:run            # Build or update the meanders table
 nx run meanderaw-cli:start                    # Clear the meander rows, then draw every meander back into them
 nx run meanderaw-cli:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
