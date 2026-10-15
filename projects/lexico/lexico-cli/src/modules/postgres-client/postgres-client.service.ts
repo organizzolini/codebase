@@ -193,6 +193,7 @@ export class PostgresClientService {
    * @throws PostgresClientError when pg_restore fails.
    */
   async restore({
+    clean = false,
     connection,
     content,
     contents,
@@ -220,6 +221,7 @@ export class PostgresClientService {
           "--exit-on-error",
           "--no-owner",
           "--no-privileges",
+          ...(clean && content.schema ? ["--clean", "--if-exists"] : []),
           ...postgresContentFlags(content),
           `--use-list=${list}`,
           file,

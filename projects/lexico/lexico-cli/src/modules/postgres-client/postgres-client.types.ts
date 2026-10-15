@@ -78,6 +78,13 @@ export interface PostgresDumpOptions {
  * What `PostgresClientService.restore` is given.
  */
 export interface PostgresRestoreOptions {
+  /**
+   * Drop each selected table, with `IF EXISTS`, before recreating it.
+   * Applies only when `content.schema`: `pg_restore` refuses its clean
+   * option with a data-only restore.
+   */
+  readonly clean?: boolean;
+
   /** The database to restore into. */
   readonly connection: PostgresUriConnection;
 

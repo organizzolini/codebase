@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Command, CommandRunner, Option } from "nest-commander";
+import prompts from "prompts";
 
 import { postgresEnvironmentKey } from "@codebase/database";
 import { LoggerService } from "@codebase/logging";
@@ -18,12 +19,15 @@ import {
 import { dumpedTables } from "../postgres-client/postgres-dump.utilities";
 
 import {
+  cleanPromptMessage,
   IMPORT_OPTION_MESSAGES,
+  ImportCancelledError,
   ImportContentsError,
   ImportOptionsError,
   ImportRestoreError,
   missingContentsMessage,
   missingFileMessage,
+  noTerminalMessage,
   rolledBackMessage,
 } from "./import.constants";
 
@@ -64,6 +68,40 @@ export class ImportCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Asks the user to confirm `--clean`, naming the target's host and
+   * database, unless `--yes` was passed. Runs after every check that needs
+   * no connection, and before any destructive step.
+   *
+   * @throws ImportCancelledError when there is no terminal to ask on, or
+   * the user declines or aborts the prompt.
+   */
+  private async confirmClean(
+    { clean, connection, tables }: ImportPlan,
+    yes: boolean,
+  ): Promise<void> {
+    if (!clean || yes) return;
+    if (!process.stdin.isTTY) {
+      throw new ImportCancelledError(noTerminalMessage());
+    }
+
+    const response: unknown = await prompts({
+      initial: false,
+      message: cleanPromptMessage(connection, tables),
+      name: "confirmed",
+      type: "confirm",
+    });
+    const confirmed =
+      typeof response === "object" &&
+      response !== null &&
+      "confirmed" in response &&
+      response.confirmed === true;
+    if (!confirmed)
+      throw new ImportCancelledError(
+        "Import cancelled: the target was not changed.",
+      );
+  }
 
   /**
    * Checks that the dump holds the rows `--data` and the definitions
@@ -111,6 +149,11 @@ export class ImportCommand extends CommandRunner {
       postgresEnvironmentKey("lexico", "schema"),
     );
 
+    const clean = options.clean === true;
+    if (clean && !content.schema) {
+      throw new ImportOptionsError(IMPORT_OPTION_MESSAGES.cleanContent);
+    }
+
     const connection = parsePostgresUri(targetUri, "--target-uri");
 
     // A directory-format dump is a directory, which pg_restore reads too.
@@ -119,6 +162,7 @@ export class ImportCommand extends CommandRunner {
     }
 
     return {
+      clean,
       connection,
       content,
       file,
@@ -180,6 +224,16 @@ export class ImportCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
+  /** Parses the boolean `--clean` flag. */
+  @Option({
+    description:
+      "Drop and recreate the selected tables before importing, after asking for confirmation; requires --schema",
+    flags: "--clean",
+  })
+  parseClean(): boolean {
+    return true;
+  }
+
   /** Parses the boolean `--data` flag. */
   @Option({
     description: "Import the tables' rows; combine with --schema for both",
@@ -228,6 +282,16 @@ export class ImportCommand extends CommandRunner {
     return value;
   }
 
+  /** Parses the boolean `--yes` flag. */
+  @Option({
+    description:
+      "Skip the --clean confirmation, for scripts and other unattended runs",
+    flags: "--yes",
+  })
+  parseYes(): boolean {
+    return true;
+  }
+
   /**
    * Validates the options, checks pg_restore and the dump's contents, then
    * restores the selected tables in one transaction. Nothing connects to
@@ -241,6 +305,7 @@ export class ImportCommand extends CommandRunner {
     await this.postgresClient.ensureTool("pg_restore");
     const contents = await this.postgresClient.list(plan.file);
     this.ensureContents(plan, contents);
+    await this.confirmClean(plan, options.yes === true);
 
     const content = describePostgresContent(plan.content);
     this.logger.log(

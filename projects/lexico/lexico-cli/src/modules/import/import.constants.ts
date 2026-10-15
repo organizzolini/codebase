@@ -1,10 +1,14 @@
 // ♟️ Constants
 
+import type { PostgresUriConnection } from "../postgres-client/postgres-client.types";
+
 /**
  * What `import` says when an option it requires is missing, keyed by the
  * option. Each names the option and shows it in use.
  */
 export const IMPORT_OPTION_MESSAGES = {
+  cleanContent:
+    "--clean requires --schema: it drops and recreates the selected tables; add --schema (cleaning rows alone is not supported yet)",
   content:
     "--data or --schema is required: pass --data for rows, --schema for table definitions, or both",
   file: "--file is required: name the dump file to import, e.g. --file lexico.dump",
@@ -13,6 +17,17 @@ export const IMPORT_OPTION_MESSAGES = {
   targetUri:
     "--target-uri is required: name the database to import into, e.g. --target-uri postgresql://user@host:5432/database",
 } as const;
+
+/**
+ * An import the user did not confirm: declined at the `--clean` prompt, or
+ * asked to confirm with no terminal to answer on. Nothing has changed.
+ */
+export class ImportCancelledError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = ImportCancelledError.name;
+  }
+}
 
 /**
  * A dump that does not hold what `import` was asked to restore, found by
@@ -71,3 +86,17 @@ export const missingContentsMessage = (
 /** What `import` adds to a failed restore's error: the target is unchanged. */
 export const rolledBackMessage = (detail: string, target: string): string =>
   `${detail}\nNothing was imported: the restore ran as one transaction, so ${target} was left unchanged.`;
+
+/**
+ * The `--clean` question: which tables, in which database on which host.
+ * Never carries the password.
+ */
+export const cleanPromptMessage = (
+  { database, host }: Pick<PostgresUriConnection, "database" | "host">,
+  tables: readonly string[],
+): string =>
+  `--clean drops ${tables.join(", ")}, and every row they hold, in database "${database}" on ${host} before restoring them. Continue?`;
+
+/** What `import --clean` says when it cannot ask: no terminal, no `--yes`. */
+export const noTerminalMessage = (): string =>
+  "Import cancelled: --clean needs confirmation but standard input is not a terminal. Pass --yes to run it unattended. The target was not changed.";

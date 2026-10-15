@@ -10,17 +10,22 @@ import type {
  * is optional here; `ImportCommand` validates them before anything runs.
  */
 export interface ImportCommandOptions {
+  clean?: boolean;
   data?: boolean;
   file?: string;
   schema?: boolean;
   table?: string[];
   targetUri?: string;
+  yes?: boolean;
 }
 
 /**
  * A validated import: what to restore, from which file, and into where.
  */
 export interface ImportPlan {
+  /** Drop and recreate the selected tables before restoring them. */
+  readonly clean: boolean;
+
   readonly connection: PostgresUriConnection;
   readonly content: PostgresContent;
 
