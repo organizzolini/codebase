@@ -4,7 +4,7 @@
 
 **Type**: SSR web app (TanStack Start)
 
-**Purpose**: Latin word lookup with authentication, bookmarks, and personal library
+**Purpose**: Latin word lookup, searching Latin and English at once
 
 ### Run Locally
 
@@ -24,25 +24,16 @@ nx run lexico-web:develop
 
 ```text
 routes/
-├── __root.tsx              # Root layout (HTML shell, providers)
-├── index.tsx               # /
-├── search.tsx              # /search
-├── word.$id.tsx            # /word/:id
-├── bookmarks.tsx           # /bookmarks (auth)
-├── library.tsx             # /library (auth)
-└── settings.tsx            # /settings (auth)
+├── __root.tsx              # Root layout (HTML shell, sidebar)
+├── index.tsx               # / (redirects to /search)
+└── search.tsx              # /search
 ```
 
-Generated route tree: [src/lib/routeTree.gen.ts](src/lib/routeTree.gen.ts) (auto-generated, never edit; its path is set by `router.generatedRouteTree` in `vite.config.mts`, resolved relative to `srcDirectory`)
+Generated route tree: [src/routes/routeTree.gen.ts](src/routes/routeTree.gen.ts) (auto-generated, never edit; its path is set by `router.generatedRouteTree` in `vite.config.mts`, resolved relative to `srcDirectory`)
 
-### Authentication Flow
+### Data
 
-```text
-User → OAuth Provider → Server Cookie
-```
-
-- **Auth helpers**: [src/lib/auth.ts](src/lib/auth.ts)
-- **Route guards**: TanStack Router `beforeLoad`
+`/search` defines its server function in the route file and calls it from the route loader. The function runs the API's `searchLatin` and `searchEnglish` queries together and merges them. There is no `src/lib/`: code lives in the route, in `src/components/`, or in a generated module.
 
 See the [write-react skill](../../../.agents/skills/write-react/SKILL.md) for route, loader, and server function patterns, and the conformetry generators that scaffold them.
 
@@ -67,4 +58,4 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 ## Key Files
 
 - [src/routes/](src/routes/): File-based routes
-- [src/lib/auth.ts](src/lib/auth.ts): Auth helpers
+- [src/components/](src/components/): One component and its test per file

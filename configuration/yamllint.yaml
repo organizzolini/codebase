@@ -18,7 +18,7 @@ ignore: |
   **/pnpm-lock.yaml
   **/templates/
   CHANGELOG.md
-  projects/components-web/src/components/ui/
+  projects/components-web/src/components/
   projects/components-web/src/hooks/use-mobile.tsx
   projects/components-web/src/lib/utils.ts
 

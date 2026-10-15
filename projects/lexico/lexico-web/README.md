@@ -2,10 +2,10 @@
 
 **A Latin–English dictionary, rebuilt.**
 
-> ⚠️ **Work in progress.** The application shell, routing, and component
-> library are real; the data layer is not yet wired up. Server functions in
-> `src/lib/` are typed stubs returning empty results, so the UI renders but the
-> dictionary does not yet answer.
+> ⚠️ **Work in progress.** The old application is being replaced one page at
+> a time. Search is the first page rebuilt: it answers from the
+> [lexico-api](../lexico-api/README.md) GraphQL endpoint. Bookmarks, literature,
+> grammar, and accounts are gone until their replacements land.
 
 Lexico is a server-side rendered web application built with TanStack Start and
 React 19. It is the front end of a small suite: the dictionary's shape lives in
@@ -45,32 +45,23 @@ nx run lexico-web:develop     # http://localhost:3000
 ```text
 src/
 ├── routes/              # File-based routing (TanStack Router)
-│   ├── __root.tsx       # Root layout
-│   ├── index.tsx        # /
-│   ├── search.tsx       # /search
-│   ├── word.$id.tsx     # /word/:id
-│   ├── bookmarks.tsx    # /bookmarks
-│   ├── library.tsx      # /library
-│   ├── settings.tsx     # /settings
-│   └── tools.tsx        # /tools
-├── lib/                 # Server functions and shared types
-│   ├── auth.ts          # Current user, sign out
-│   ├── search.ts        # Entry search and lookup
-│   ├── bookmarks.ts     # Saved words
-│   ├── library.ts       # Vocabulary tracking
-│   ├── forms.ts         # Inflection tables
-│   └── pronunciation.ts # Audio playback
-├── components/          # Page-specific components
+│   ├── __root.tsx       # Root layout and sidebar
+│   ├── index.tsx        # / (redirects to /search)
+│   ├── search.tsx       # /search — loader, server function, page
+│   └── routeTree.gen.ts # Generated route tree, never edited
+├── components/          # One component and its test per file
+├── styles/              # Lexico's accent color over the shadcn tokens
+├── client.tsx           # Client entry
 └── router.tsx           # Router construction
 ```
 
-Routes are defined by file structure: `src/routes/search.tsx` serves `/search`,
-and `src/routes/word.$id.tsx` serves `/word/:id`.
+Routes are defined by file structure: `src/routes/search.tsx` serves `/search`.
 
-Data access goes through TanStack Start **server functions** — type-safe RPC
-from client to server — declared in `src/lib/` and called from route loaders so
-the first render is already populated. Wiring those handlers to a real
-datastore is the outstanding work.
+Data access goes through a TanStack Start **server function** — type-safe RPC
+from client to server — defined beside the route that uses it and called from
+its loader, so the first render is already populated. `/search` asks the API
+for Latin and English matches at once and merges them, best first; set
+`LEXICO_API_URL` to point it somewhere other than `http://localhost:8398/graphql`.
 
 ## Technology
 
