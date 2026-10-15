@@ -171,6 +171,7 @@ export class ExportCommand extends CommandRunner {
     options: ExportCommandOptions,
   ): Promise<void> {
     const plan = this.plan(options);
+    await this.postgresClient.ensureTool("pg_dump");
     const content = this.describeContent(plan.content);
     this.logger.log(
       `📦 Exporting ${content} of ${plan.tables.join(", ")} from ${plan.source} to ${plan.file}`,

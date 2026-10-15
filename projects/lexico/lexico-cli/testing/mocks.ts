@@ -34,7 +34,13 @@ export const childProcessMock = {
       options: ExecFileOptions,
       callback: ExecFileCallback,
     ): void => {
-      const { error = null, stderr = "", stdout = "" } = processes.outcome;
+      const {
+        error = null,
+        stderr = "",
+        stdout = "",
+      } = isVersionCheck(args)
+        ? versionOutcome(file, processes.outcome)
+        : processes.outcome;
       processes.spawned.push({ args, environment: options.env, file });
       callback(error, stdout, stderr);
     },
@@ -74,7 +80,16 @@ interface ProcessOutcome {
   readonly error?: ExecException;
   readonly stderr?: string;
   readonly stdout?: string;
+
+  /**
+   * How a `--version` check exits, which never follows the rest of the
+   * outcome; by default the tool reports version 18.
+   */
+  readonly version?: VersionOutcome;
 }
+
+/** How a `--version` check exits. */
+type VersionOutcome = Pick<ProcessOutcome, "error" | "stderr" | "stdout">;
 
 /**
  * Sets up fake timers with a fixed system time before each test
@@ -182,6 +197,16 @@ export function setPromptsMockResponseOnce<
   Response extends Record<string, unknown>,
 >(promptsMock: PromptsMock<Response>, response: Awaited<Response>): void {
   promptsMock.mockResolvedValueOnce(response);
+}
+
+/** Whether `args` ask a client tool only for its version. */
+function isVersionCheck(args: readonly string[]): boolean {
+  return args.length === 1 && args[0] === "--version";
+}
+
+/** How `file --version` exits: as `outcome.version` says, else as version 18. */
+function versionOutcome(file: string, outcome: ProcessOutcome): VersionOutcome {
+  return outcome.version ?? { stdout: `${file} (PostgreSQL) 18.6\n` };
 }
 
 /**

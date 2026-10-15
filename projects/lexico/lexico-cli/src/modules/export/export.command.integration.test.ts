@@ -254,30 +254,39 @@ describe("export", () => {
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
 
-  it("keeps the password out of pg_dump's arguments and masks it in every log line", async () => {
-    expect.hasAssertions();
+  it(
+    "keeps the password out of pg_dump's arguments and masks it in every log line",
+    async () => {
+      expect.hasAssertions();
 
-    const { password } = source.connection;
+      const { password } = source.connection;
 
-    const result = await runExport([
-      "--source-uri",
-      source.uri,
-      "--table",
-      "authors",
-      "--data",
-      "--file",
-      path.join(directory, "authors.dump"),
-    ]);
+      const result = await runExport([
+        "--source-uri",
+        source.uri,
+        "--table",
+        "authors",
+        "--data",
+        "--file",
+        path.join(directory, "authors.dump"),
+      ]);
 
-    const [[tool, args, options] = []] = vi.mocked(execFile).mock.calls;
+      const [tool, args, options] =
+        vi
+          .mocked(execFile)
+          .mock.calls.find(
+            ([, toolArguments]) => toolArguments?.[0] !== "--version",
+          ) ?? [];
 
-    expect(result.exitCode).toBe(0);
-    expect(tool).toBe("pg_dump");
-    expect(JSON.stringify(args)).not.toContain(password);
-    expect(options).toMatchObject({ env: { PGPASSWORD: password } });
-    expect(result.logs.join("\n")).not.toContain(password);
-    expect(result.logs.join("\n")).toContain(":****@");
-  });
+      expect(result.exitCode).toBe(0);
+      expect(tool).toBe("pg_dump");
+      expect(JSON.stringify(args)).not.toContain(password);
+      expect(options).toMatchObject({ env: { PGPASSWORD: password } });
+      expect(result.logs.join("\n")).not.toContain(password);
+      expect(result.logs.join("\n")).toContain(":****@");
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
 
   it(
     "surfaces pg_dump's own error, masked, and exits non-zero",

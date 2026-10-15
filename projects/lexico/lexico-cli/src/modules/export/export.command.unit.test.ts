@@ -14,6 +14,7 @@ import { PostgresClientService } from "../postgres-client/postgres-client.servic
 import { ExportCommand } from "./export.command";
 import { ExportModule } from "./export.module";
 
+import type { SpawnedProcess } from "../../../testing/mocks";
 import type { DynamicModule } from "@nestjs/common";
 
 vi.mock("node:child_process", async () => {
@@ -27,6 +28,11 @@ const SOURCE_URI = `postgresql://lexico_username:${PASSWORD}@database.example.co
 /** Holds whichever configuration `exportTestModule` was last built with. */
 @Module({})
 class ExportTestModule {}
+
+/** The processes that dumped, leaving out the version check before them. */
+function dumpsOf(spawned: readonly SpawnedProcess[]): SpawnedProcess[] {
+  return spawned.filter(({ args }) => args[0] !== "--version");
+}
 
 /**
  * The export command on its own: the real runner and option parsing, with
@@ -177,7 +183,7 @@ describe(ExportCommand, () => {
     ]);
 
     expect(result.exitCode).toBe(0);
-    expect(spawned).toStrictEqual([
+    expect(dumpsOf(spawned)).toStrictEqual([
       expect.objectContaining({
         args: [
           "--format=custom",
@@ -209,7 +215,7 @@ describe(ExportCommand, () => {
       "lexico.dump",
     ]);
 
-    expect(spawned[0]?.args.slice(4, -1)).toStrictEqual(dumpFlags);
+    expect(dumpsOf(spawned)[0]?.args.slice(4, -1)).toStrictEqual(dumpFlags);
   });
 
   it("resolves unqualified names in LEXICO_POSTGRES_SCHEMA when it is set", async () => {
@@ -228,7 +234,7 @@ describe(ExportCommand, () => {
       { LEXICO_POSTGRES_SCHEMA: "archive" },
     );
 
-    expect(spawned[0]?.args).toContain("--table=archive.words");
+    expect(dumpsOf(spawned)[0]?.args).toContain("--table=archive.words");
   });
 
   it("keeps the password out of the arguments and masks it in every log line", async () => {
@@ -245,8 +251,10 @@ describe(ExportCommand, () => {
       "lexico.dump",
     ]);
 
-    expect(spawned[0]?.args.join(" ")).not.toContain(PASSWORD);
-    expect(spawned[0]?.environment).toMatchObject({ PGPASSWORD: PASSWORD });
+    expect(dumpsOf(spawned)[0]?.args.join(" ")).not.toContain(PASSWORD);
+    expect(dumpsOf(spawned)[0]?.environment).toMatchObject({
+      PGPASSWORD: PASSWORD,
+    });
     expect(result.logs.join("\n")).not.toContain(PASSWORD);
     expect(result.logs).toContainEqual(
       expect.stringContaining(
@@ -279,5 +287,50 @@ describe(ExportCommand, () => {
       'pg_dump failed with exit code 1: pg_dump: error: no matching tables were found for pattern "lexico.nope"',
     );
     expect(result.stderr).not.toContain(PASSWORD);
+  });
+
+  describe("checks pg_dump's version before any database work", () => {
+    const argv = [
+      "--source-uri",
+      SOURCE_URI,
+      "--table",
+      "words",
+      "--data",
+      "--file",
+      "lexico.dump",
+    ];
+
+    it("asks pg_dump for its version first, then dumps", async () => {
+      const spawned = mockProcesses();
+
+      await runExport(argv);
+
+      expect(spawned.map(({ args }) => args[0])).toStrictEqual([
+        "--version",
+        "--format=custom",
+      ]);
+    });
+
+    it.each([
+      [
+        "a missing binary",
+        { error: processFailure("ENOENT", "spawn pg_dump ENOENT") },
+        "pg_dump was not found on your PATH",
+      ],
+      [
+        "a wrong major version",
+        { stdout: "pg_dump (PostgreSQL) 16.4\n" },
+        "pg_dump is major version 16, but 18 is required",
+      ],
+    ])("stops at %s without dumping", async (_case, version, message) => {
+      const spawned = mockProcesses({ version });
+
+      const result = await runExport(argv);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain(message);
+      expect(result.stderr).toContain("scripts/local/software/database.sh");
+      expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
+    });
   });
 });

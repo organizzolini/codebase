@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { PostgresUriError } from "./postgres-client.constants";
 import {
   maskPostgresCredentials,
+  parsePostgresMajorVersion,
   parsePostgresUri,
   postgresContentFlags,
   postgresProcessEnvironment,
@@ -20,6 +21,25 @@ const CONNECTION: PostgresUriConnection = {
 };
 
 describe("postgres-client utilities", () => {
+  describe(parsePostgresMajorVersion, () => {
+    it.each([
+      ["pg_dump (PostgreSQL) 18.6", 18],
+      ["pg_restore (PostgreSQL) 18.0\n", 18],
+      ["pg_dump (PostgreSQL) 18beta1", 18],
+      ["pg_dump (PostgreSQL) 17.6", 17],
+      ["pg_dump (PostgreSQL) 16.4 (Ubuntu 16.4-1.pgdg22.04+1)", 16],
+    ])("reads the major version from %j", (output, major) => {
+      expect(parsePostgresMajorVersion(output)).toBe(major);
+    });
+
+    it.each(["", "   \n", "command not found", "pg_dump (PostgreSQL) dev"])(
+      "reads nothing from unexpected output %j",
+      (output) => {
+        expect(parsePostgresMajorVersion(output)).toBeUndefined();
+      },
+    );
+  });
+
   describe(parsePostgresUri, () => {
     it("parses every part of a postgresql URI, decoding its credentials", () => {
       expect(

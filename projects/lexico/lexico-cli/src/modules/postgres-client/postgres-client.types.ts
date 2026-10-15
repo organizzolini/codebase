@@ -19,7 +19,7 @@ export interface PostgresClientOutput {
 }
 
 /** A PostgreSQL client binary this module runs. */
-export type PostgresClientTool = "pg_dump";
+export type PostgresClientTool = "pg_dump" | "pg_restore";
 
 /**
  * Which parts of the selected tables a dump or restore moves. At least one

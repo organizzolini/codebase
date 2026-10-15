@@ -3,11 +3,14 @@ import { execFile } from "node:child_process";
 import { Injectable } from "@nestjs/common";
 
 import {
+  POSTGRES_CLIENT_MAJOR_VERSION,
   POSTGRES_CLIENT_MAXIMUM_BUFFER_BYTES,
   PostgresClientError,
+  PostgresClientToolError,
 } from "./postgres-client.constants";
 import {
   maskPostgresCredentials,
+  parsePostgresMajorVersion,
   postgresContentFlags,
   postgresProcessEnvironment,
 } from "./postgres-client.utilities";
@@ -102,5 +105,54 @@ export class PostgresClientService {
       ],
       connection,
     );
+  }
+
+  /**
+   * Checks that `tool` is installed and major version 18, by running
+   * `tool --version`. Run it before any database work: it opens no
+   * connection and gives the tool no credentials.
+   *
+   * @throws PostgresClientToolError when the binary is missing, cannot
+   * report a version, reports one that is not understood, or is not 18;
+   * the message names the setup script that installs it.
+   */
+  async ensureTool(tool: PostgresClientTool): Promise<void> {
+    const { error, stderr, stdout } = await new Promise<{
+      error: Error | null;
+      stderr: string;
+      stdout: string;
+    }>((resolve) => {
+      execFile(
+        tool,
+        ["--version"],
+        { maxBuffer: POSTGRES_CLIENT_MAXIMUM_BUFFER_BYTES },
+        (failure, out, error_) => {
+          resolve({ error: failure, stderr: error_, stdout: out });
+        },
+      );
+    });
+
+    if (error !== null) {
+      throw new PostgresClientToolError(
+        tool,
+        "code" in error && error.code === "ENOENT"
+          ? "was not found on your PATH"
+          : `could not report its version: ${stderr.trim() === "" ? error.message : stderr.trim()}`,
+      );
+    }
+
+    const major = parsePostgresMajorVersion(stdout);
+    if (major === undefined) {
+      throw new PostgresClientToolError(
+        tool,
+        `reported an unrecognized version: ${JSON.stringify(stdout.trim())}`,
+      );
+    }
+    if (major !== POSTGRES_CLIENT_MAJOR_VERSION) {
+      throw new PostgresClientToolError(
+        tool,
+        `is major version ${String(major)}, but ${String(POSTGRES_CLIENT_MAJOR_VERSION)} is required`,
+      );
+    }
   }
 }

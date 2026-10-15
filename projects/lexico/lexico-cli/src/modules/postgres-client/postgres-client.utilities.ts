@@ -5,6 +5,7 @@ import {
   POSTGRES_ENVIRONMENT_PREFIX,
   POSTGRES_URI_PASSWORD_PATTERN,
   POSTGRES_URI_PROTOCOLS,
+  POSTGRES_VERSION_PATTERN,
   PostgresUriError,
 } from "./postgres-client.constants";
 
@@ -29,6 +30,16 @@ export function maskPostgresCredentials(text: string, password = ""): string {
   return password === ""
     ? masked
     : masked.replaceAll(password, MASKED_PASSWORD);
+}
+
+/**
+ * The major version a client tool's `--version` output reports, such as 18
+ * for `pg_dump (PostgreSQL) 18.6` or `18beta1`; `undefined` when the output
+ * is not in that shape.
+ */
+export function parsePostgresMajorVersion(output: string): number | undefined {
+  const major = POSTGRES_VERSION_PATTERN.exec(output)?.[1];
+  return major === undefined ? undefined : Number(major);
 }
 
 /**

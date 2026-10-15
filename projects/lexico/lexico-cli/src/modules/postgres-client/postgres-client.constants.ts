@@ -20,6 +20,16 @@ export const POSTGRES_URI_PROTOCOLS: readonly string[] = [
  */
 export const POSTGRES_CLIENT_MAXIMUM_BUFFER_BYTES = 64 * 1024 * 1024;
 
+/** The only major version of the client tools this CLI accepts. */
+export const POSTGRES_CLIENT_MAJOR_VERSION = 18;
+
+/** The script that installs the PostgreSQL client tools locally. */
+export const POSTGRES_CLIENT_SETUP_SCRIPT =
+  "scripts/local/software/database.sh";
+
+/** Reads the major version from a client tool's `--version` output. */
+export const POSTGRES_VERSION_PATTERN = /\(PostgreSQL\)\s+(\d+)/u;
+
 /** Every libpq connection variable starts with this. */
 export const POSTGRES_ENVIRONMENT_PREFIX = "PG";
 
@@ -45,6 +55,21 @@ export class PostgresClientError extends Error {
   }
   readonly code: number | string | undefined;
   readonly detail: string;
+  readonly tool: PostgresClientTool;
+}
+
+/**
+ * A PostgreSQL client tool that is missing, cannot be run, or is not major
+ * version 18. Every message names the setup script that installs it.
+ */
+export class PostgresClientToolError extends Error {
+  constructor(tool: PostgresClientTool, problem: string) {
+    super(
+      `${tool} ${problem}. Install the PostgreSQL ${String(POSTGRES_CLIENT_MAJOR_VERSION)} client tools by running ${POSTGRES_CLIENT_SETUP_SCRIPT}.`,
+    );
+    this.name = PostgresClientToolError.name;
+    this.tool = tool;
+  }
   readonly tool: PostgresClientTool;
 }
 
