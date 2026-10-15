@@ -1,5 +1,5 @@
 // 📤 Exports
-export { MainModule } from "./main.module";
+export { MainModule } from "./callidescope-cli.module";
 export { AddressLookupModule } from "./modules/address-lookup/address-lookup.module";
 export { AddressLookupService } from "./modules/address-lookup/address-lookup.service";
 export type { LocatedWorkspace } from "./modules/address-lookup/address-lookup.types";

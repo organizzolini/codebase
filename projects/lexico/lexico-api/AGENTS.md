@@ -29,7 +29,7 @@ nx run lexico-api:start
 ### Execution Flow
 
 ```text
-src/main.ts
+src/lexico-api.ts
   └─ NestFactory.create(LexicoApiModule)
        └─ GraphQLModule.forRoot(ApolloDriver)
             └─ Feature modules (SampleModule, ...)
@@ -40,12 +40,11 @@ src/main.ts
 
 ```text
 src/
-  main.ts                             # Bootstrap — do not modify
+  lexico-api.ts            # Bootstrap — do not modify
+  lexico-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
+  lexico-api.constants.ts  # Zod environmentSchema for env validation
+  lexico-api.types.ts      # Application-scoped TypeScript types
   modules/
-    lexico-api/
-      lexico-api.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
-      lexico-api.constants.ts  # Zod environmentSchema for env validation
-      lexico-api.types.ts      # Module-scoped TypeScript types
     sample/                           # Example GraphQL module — replace with your domain
       sample.module.ts
       sample.resolver.ts
@@ -258,7 +257,7 @@ Key rules:
 
 ## Best Practices
 
-- **Never** put business logic in `main.ts` — it bootstraps `NestFactory` only.
+- **Never** put business logic in `lexico-api.ts` — it bootstraps `NestFactory` only.
 - **One module per domain** — split large domains into sub-domain modules.
 - **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
 - **Use DataLoaders for relations** — never load related entities inside resolver field methods without batching.
@@ -279,9 +278,9 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
-- [src/modules/lexico-api/lexico-api.module.ts](src/modules/lexico-api/lexico-api.module.ts): Root NestJS module
-- [src/modules/lexico-api/lexico-api.constants.ts](src/modules/lexico-api/lexico-api.constants.ts): `environmentSchema` (Zod)
+- [src/lexico-api.ts](src/lexico-api.ts): Application bootstrap
+- [src/lexico-api.module.ts](src/lexico-api.module.ts): Root NestJS module
+- [src/lexico-api.constants.ts](src/lexico-api.constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [src/modules/sample/sample.module.ts](src/modules/sample/sample.module.ts): Example GraphQL module
 - [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)

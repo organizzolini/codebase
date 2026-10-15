@@ -194,6 +194,7 @@ export class BoundaryCheckService {
       levelArguments: args,
       projects: this.nestjsProjectService.discoverProjects(
         args.context.buildProjects,
+        args.context.configuration.nestjsRootModules,
       ),
     });
   }

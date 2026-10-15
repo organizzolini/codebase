@@ -9,7 +9,7 @@ import { vi } from "vitest";
 
 import { LoggerModule } from "@codebase/logging";
 
-import { environmentSchema } from "../src/constants";
+import { environmentSchema } from "../src/caelundas-cli.constants";
 import { CaelundasCommand } from "../src/modules/caelundas/caelundas.command";
 import { CalendarEventsModule } from "../src/modules/calendar-events/calendar-events.module";
 import { CalendarModule } from "../src/modules/calendar/calendar.module";

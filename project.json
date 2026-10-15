@@ -75,7 +75,7 @@
       "cache": true,
       "configurations": {
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/main.ts callidescope --config configuration/callidescope.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --config configuration/callidescope.config.ts --write"
         }
       },
       "defaultConfiguration": "write",
@@ -97,7 +97,7 @@
       "cache": true,
       "configurations": {
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/main.ts map --directory . --config configuration/codependix.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/codependix-cli.main.ts map --directory . --config configuration/codependix.config.ts --write"
         }
       },
       "defaultConfiguration": "write",
@@ -118,10 +118,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/main.ts measure --config configuration/codometer.config.ts --output-json --check limits"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/codometer.config.ts --output-json --check limits"
         },
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/main.ts measure --config configuration/codometer.config.ts --output-json --output-markdown"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config configuration/codometer.config.ts --output-json --output-markdown"
         }
       },
       "defaultConfiguration": "check",

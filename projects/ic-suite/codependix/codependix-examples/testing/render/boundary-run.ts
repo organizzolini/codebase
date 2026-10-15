@@ -16,6 +16,7 @@ import type {
   BoundaryReport,
 } from "@codependix/boundaries";
 import type { CodependixBoundaryRule } from "@codependix/configuration";
+import type { NestjsRootModule } from "@codependix/nestjs-modules";
 
 // 🏷️ Types
 
@@ -37,6 +38,8 @@ export interface BoundaryRunArguments {
   readonly dependencies?: boolean;
   /** What `--projects` names: project names or globs, as the flag takes them. */
   readonly judged: readonly string[];
+  /** The `nestjsModules.rootModules` the run's configuration declares. */
+  readonly rootModules?: Readonly<Record<string, NestjsRootModule>>;
   /** The rules the run is judged against, at the one level a run declares. */
   readonly rules: {
     readonly nestjsModules?: CodependixBoundaryRule[];
@@ -116,6 +119,7 @@ export async function runBoundaryCheck(
       configurationPath,
       JSON.stringify({
         boundaries: args.rules,
+        nestjsModules: { rootModules: args.rootModules },
         projectGraph: graphPath,
       }),
     );

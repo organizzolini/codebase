@@ -13,7 +13,7 @@ import {
   DEFAULT_CONFIGURATION_PATH,
   removedGeneratorOptionError,
   unknownTemplateError,
-} from "../../constants.js";
+} from "../../conformetry-cli.constants.js";
 
 import { missingTemplateError } from "./generate.constants";
 

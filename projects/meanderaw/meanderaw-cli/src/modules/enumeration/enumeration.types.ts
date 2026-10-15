@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-import type { environmentSchema } from "../../constants";
+import type { environmentSchema } from "../../meanderaw-cli.constants";
 import type { z } from "zod";
 
 /** Where one edge sits in an `EdgesDraft`: the grid that holds it, and its row and column within that grid. */

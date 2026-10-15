@@ -3,7 +3,7 @@
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
 
-import { MainModule } from "../../main.module";
+import { MainModule } from "../../conformetry-nx.module";
 import { GeneratorService } from "../generator/generator.service";
 import { OptionsService } from "../options/options.service";
 import { ProjectsService } from "../projects/projects.service";

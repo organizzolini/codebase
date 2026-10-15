@@ -19,7 +19,7 @@ all, which [`declared-entry-points`](../declared-entry-points/README.md) is for:
 | ---- | ------- | ---- |
 | `decorated-method` | `EntryPointsService.readReport` | Carries `@Get()`, one of the configured decorators |
 | `lifecycle` | `EntryPointsService.onModuleInit` | A NestJS lifecycle method name |
-| `module-bootstrap` | `bootstrap` in [`src/main.ts`](../../src/main.ts) | A function named `bootstrap` or `main` in `src/main.ts` |
+| `module-bootstrap` | `bootstrap` in [`src/callidescope-examples.main.ts`](../../src/callidescope-examples.main.ts) | A function named `bootstrap` or `main` in a `*.main.ts` file |
 | `exported-function` | `normalizeExampleLabel` in [`src/index.ts`](../../src/index.ts) | Exported from the barrel |
 | `orphan-root` | `summarizeOrphanedWork`, here | Nothing calls it |
 | `declared` | [`DeclaredEntryPointsService.collect`](../declared-entry-points/README.md) | No rule at all — a project named its address |

@@ -12,7 +12,7 @@ import { LoggerService } from "@codebase/logging";
 import {
   DEFAULT_CONFIGURATION_PATH,
   unknownTemplateError,
-} from "../../constants.js";
+} from "../../conformetry-cli.constants.js";
 
 import type { ValidateCommandOptions } from "./validate.types.js";
 import type {

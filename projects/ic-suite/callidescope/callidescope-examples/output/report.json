@@ -1064,7 +1064,7 @@
       "limit": 5
     },
     {
-      "depth": 5,
+      "depth": 6,
       "entryPointKind": "orphan-root",
       "frames": [
         {
@@ -1074,12 +1074,12 @@
             "summary": "Logs an informational message at the `info` level. NestJS and `nest-commander` call this method directly as part of the framework's own `LoggerService` contract, so it must keep working exactly as before. Application code should call `info` instead — the same behavior under a name that says what level it logs at.",
             "tags": []
           },
-          "id": "projects/logging/src/modules/logger/logger.service.ts#9600",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#10138",
           "isCycle": false,
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 292
+            "line": 305
           },
           "signature": {
             "parameters": [
@@ -1113,12 +1113,12 @@
             "summary": "Logs an informational message at the `info` level.",
             "tags": []
           },
-          "id": "projects/logging/src/modules/logger/logger.service.ts#8999",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#9537",
           "isCycle": false,
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 276
+            "line": 289
           },
           "signature": {
             "parameters": [
@@ -1152,12 +1152,12 @@
             "summary": "Assembles the object pino merges into the line.",
             "tags": []
           },
-          "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
           "isCycle": false,
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 158
+            "line": 144
           },
           "signature": {
             "parameters": [
@@ -1200,18 +1200,665 @@
           }
         },
         {
+          "displayName": "LoggerService.getConventionalMessageViolation",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Returns a human-readable explanation when the message format is invalid.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 163
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "parsed",
+                "type": "ParsedLogMessage"
+              }
+            ],
+            "returnType": "string | undefined",
+            "text": "(parsed: ParsedLogMessage): string | undefined"
+          }
+        },
+        {
           "displayName": "LoggerService.isConventionalVerb",
           "documentation": {
             "isDeprecated": false,
             "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
             "tags": []
           },
-          "id": "projects/logging/src/modules/logger/logger.service.ts#6074",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
           "isCycle": false,
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 183
+            "line": 189
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "word",
+                "type": "string"
+              }
+            ],
+            "returnType": "boolean",
+            "text": "(word: string): boolean"
+          }
+        }
+      ],
+      "isLowerBound": false,
+      "limit": 4
+    },
+    {
+      "depth": 5,
+      "entryPointKind": "orphan-root",
+      "frames": [
+        {
+          "displayName": "LoggerService.debug",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Logs a debug message at the `debug` level.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#8398",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 254
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "message",
+                "type": "unknown"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "context",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "data",
+                "type": "LogData | undefined"
+              }
+            ],
+            "returnType": "void",
+            "text": "(message: unknown, context?: string, data?: LogData): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.buildBindings",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Assembles the object pino merges into the line.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 144
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "Record<string, unknown>",
+            "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+          }
+        },
+        {
+          "displayName": "LoggerService.assertConventionalMessage",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 125
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "void",
+            "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.getConventionalMessageViolation",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Returns a human-readable explanation when the message format is invalid.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 163
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "parsed",
+                "type": "ParsedLogMessage"
+              }
+            ],
+            "returnType": "string | undefined",
+            "text": "(parsed: ParsedLogMessage): string | undefined"
+          }
+        },
+        {
+          "displayName": "LoggerService.isConventionalVerb",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 189
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "word",
+                "type": "string"
+              }
+            ],
+            "returnType": "boolean",
+            "text": "(word: string): boolean"
+          }
+        }
+      ],
+      "isLowerBound": false,
+      "limit": 4
+    },
+    {
+      "depth": 5,
+      "entryPointKind": "orphan-root",
+      "frames": [
+        {
+          "displayName": "LoggerService.error",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Logs an error message at the `error` level, optionally including a stack trace. `ConsoleLogger.error` spends a third slot on a context string that the other levels do not have, so this one accepts either: a string keeps NestJS's meaning, an object is structured data like everywhere else.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#8979",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 269
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "message",
+                "type": "unknown"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "stackOrContext",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "contextOrData",
+                "type": "string | LogData | undefined"
+              }
+            ],
+            "returnType": "void",
+            "text": "(message: unknown, stackOrContext?: string, contextOrData?: LogData | string): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.buildBindings",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Assembles the object pino merges into the line.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 144
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "Record<string, unknown>",
+            "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+          }
+        },
+        {
+          "displayName": "LoggerService.assertConventionalMessage",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 125
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "void",
+            "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.getConventionalMessageViolation",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Returns a human-readable explanation when the message format is invalid.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 163
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "parsed",
+                "type": "ParsedLogMessage"
+              }
+            ],
+            "returnType": "string | undefined",
+            "text": "(parsed: ParsedLogMessage): string | undefined"
+          }
+        },
+        {
+          "displayName": "LoggerService.isConventionalVerb",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 189
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "word",
+                "type": "string"
+              }
+            ],
+            "returnType": "boolean",
+            "text": "(word: string): boolean"
+          }
+        }
+      ],
+      "isLowerBound": false,
+      "limit": 4
+    },
+    {
+      "depth": 5,
+      "entryPointKind": "orphan-root",
+      "frames": [
+        {
+          "displayName": "LoggerService.verbose",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Logs a verbose message at the `trace` level.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#10521",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 316
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "message",
+                "type": "unknown"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "context",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "data",
+                "type": "LogData | undefined"
+              }
+            ],
+            "returnType": "void",
+            "text": "(message: unknown, context?: string, data?: LogData): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.buildBindings",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Assembles the object pino merges into the line.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 144
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "Record<string, unknown>",
+            "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+          }
+        },
+        {
+          "displayName": "LoggerService.assertConventionalMessage",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 125
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "void",
+            "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.getConventionalMessageViolation",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Returns a human-readable explanation when the message format is invalid.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 163
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "parsed",
+                "type": "ParsedLogMessage"
+              }
+            ],
+            "returnType": "string | undefined",
+            "text": "(parsed: ParsedLogMessage): string | undefined"
+          }
+        },
+        {
+          "displayName": "LoggerService.isConventionalVerb",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 189
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "word",
+                "type": "string"
+              }
+            ],
+            "returnType": "boolean",
+            "text": "(word: string): boolean"
+          }
+        }
+      ],
+      "isLowerBound": false,
+      "limit": 4
+    },
+    {
+      "depth": 5,
+      "entryPointKind": "orphan-root",
+      "frames": [
+        {
+          "displayName": "LoggerService.warn",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Logs a warning message at the `warn` level.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#10831",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 325
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "message",
+                "type": "unknown"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "context",
+                "type": "string | undefined"
+              },
+              {
+                "isOptional": true,
+                "isRest": false,
+                "name": "data",
+                "type": "LogData | undefined"
+              }
+            ],
+            "returnType": "void",
+            "text": "(message: unknown, context?: string, data?: LogData): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.buildBindings",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Assembles the object pino merges into the line.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 144
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "Record<string, unknown>",
+            "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+          }
+        },
+        {
+          "displayName": "LoggerService.assertConventionalMessage",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 125
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "void",
+            "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+          }
+        },
+        {
+          "displayName": "LoggerService.getConventionalMessageViolation",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Returns a human-readable explanation when the message format is invalid.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 163
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "parsed",
+                "type": "ParsedLogMessage"
+              }
+            ],
+            "returnType": "string | undefined",
+            "text": "(parsed: ParsedLogMessage): string | undefined"
+          }
+        },
+        {
+          "displayName": "LoggerService.isConventionalVerb",
+          "documentation": {
+            "isDeprecated": false,
+            "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+            "tags": []
+          },
+          "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+          "isCycle": false,
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 189
           },
           "signature": {
             "parameters": [
@@ -1419,7 +2066,7 @@
             },
             {
               "displayName": "UnknownConfigurationFileTypeError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9847"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#9849"
             },
             {
               "displayName": "ConfigurationFileService.loadConfigurationModule",
@@ -1621,7 +2268,7 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationMissingError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#16221"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#16223"
             },
             {
               "displayName": "ProjectConfigurationService.loadProjectConfiguration",
@@ -1739,15 +2386,15 @@
           "callees": [
             {
               "displayName": "map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4620"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4622"
             },
             {
               "displayName": "filter(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4571"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4573"
             }
           ],
           "displayName": "readPermittedNames",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4281",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4283",
           "location": {
             "column": 28,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
@@ -2011,7 +2658,7 @@
             },
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#13462"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#13464"
             }
           ],
           "displayName": "ConfigurationFileService.resolveConfigurationPath",
@@ -2043,7 +2690,7 @@
             },
             {
               "displayName": "ProjectConfigurationIncompleteError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#15484"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#15486"
             }
           ],
           "displayName": "ProjectConfigurationService.assertComplete",
@@ -2075,7 +2722,7 @@
             },
             {
               "displayName": "ProjectConfigurationFieldNotPermittedError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#14745"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#14747"
             }
           ],
           "displayName": "ProjectConfigurationService.assertNoForbiddenFields",
@@ -2167,11 +2814,11 @@
           "callees": [
             {
               "displayName": "readPermittedNames",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4281"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4283"
             }
           ],
           "displayName": "flatMap(…)",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7675",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7677",
           "location": {
             "column": 5,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
@@ -2195,11 +2842,11 @@
           "callees": [
             {
               "displayName": "custom(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10372"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10374"
             }
           ],
           "displayName": "callbackSchema",
-          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10311",
+          "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10313",
           "location": {
             "column": 24,
             "filePath": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts",
@@ -2719,7 +3366,7 @@
           "callees": [
             {
               "displayName": "ProjectConfigurationError.constructor",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#13986"
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#13988"
             }
           ],
           "displayName": "ProjectConfigurationService.loadProjectConfiguration",
@@ -4340,7 +4987,7 @@
           "frames": [
             {
               "displayName": "flatMap(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7675",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#7677",
               "isCycle": false,
               "location": {
                 "column": 5,
@@ -4367,7 +5014,7 @@
                 "summary": "Reads the names one classified field contributes to the permitted set. A field classified whole contributes itself or nothing; a field classified a member at a time contributes each permitted member as a dotted name, which is what a reader has to type to fix the file and so what a refusal prints.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4281",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4283",
               "isCycle": false,
               "location": {
                 "column": 28,
@@ -4389,7 +5036,7 @@
             },
             {
               "displayName": "map(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4620",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#4622",
               "isCycle": false,
               "location": {
                 "column": 10,
@@ -4584,7 +5231,7 @@
                 "summary": "Accepts a function-valued option without inspecting its signature. Zod cannot describe a callback's parameters, and parsing one would replace the caller's function with a wrapper. Checking that it is callable is the whole of what validation can honestly assert here.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10311",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10313",
               "isCycle": false,
               "location": {
                 "column": 24,
@@ -4599,7 +5246,7 @@
             },
             {
               "displayName": "custom(…)",
-              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10372",
+              "id": "projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.constants.ts#10374",
               "isCycle": false,
               "location": {
                 "column": 23,
@@ -4811,7 +5458,7 @@
         "cyclicComponentCount": 0,
         "edgeCount": 112,
         "entryPointCount": 15,
-        "fileCount": 26,
+        "fileCount": 27,
         "maximumDepth": 7,
         "projectCount": 1,
         "unresolvedCallCount": 11
@@ -4822,11 +5469,11 @@
       "projectName": "projects/ic-suite/callidescope/callidescope-core",
       "stacks": [],
       "summary": {
-        "callableCount": 0,
+        "callableCount": 1,
         "cyclicComponentCount": 0,
         "edgeCount": 0,
         "entryPointCount": 0,
-        "fileCount": 7,
+        "fileCount": 11,
         "maximumDepth": 0,
         "projectCount": 1,
         "unresolvedCallCount": 0
@@ -4847,10 +5494,10 @@
             }
           ],
           "displayName": "bootstrap",
-          "id": "projects/ic-suite/callidescope/callidescope-examples/src/main.ts#618",
+          "id": "projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts#622",
           "location": {
             "column": 26,
-            "filePath": "projects/ic-suite/callidescope/callidescope-examples/src/main.ts",
+            "filePath": "projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts",
             "line": 14
           },
           "signature": {
@@ -7751,14 +8398,14 @@
               "displayName": "bootstrap",
               "documentation": {
                 "isDeprecated": false,
-                "summary": "The `module-bootstrap` entry-point kind. A function named `bootstrap` or `main` in `src/main.ts` is where a project starts itself, so it is a root regardless of whether anything imports it. This one is never executed — the package ships fixtures, not a program. It lives in `src/` rather than beside the other entry-point fixtures because the rule keys on that literal path. See `examples/entry-points`.",
+                "summary": "The `module-bootstrap` entry-point kind. A function named `bootstrap` or `main` in a `*.main.ts` file is where a project starts itself, so it is a root regardless of whether anything imports it. This one is never executed — the package ships fixtures, not a program. It lives in `src/` rather than beside the other entry-point fixtures because the rule keys on that file's name. See `examples/entry-points`.",
                 "tags": []
               },
-              "id": "projects/ic-suite/callidescope/callidescope-examples/src/main.ts#618",
+              "id": "projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts#622",
               "isCycle": false,
               "location": {
                 "column": 26,
-                "filePath": "projects/ic-suite/callidescope/callidescope-examples/src/main.ts",
+                "filePath": "projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts",
                 "line": 14
               },
               "signature": {
@@ -8851,15 +9498,15 @@
             },
             {
               "displayName": "ConfigurationService.resolveConfiguration",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10762"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10955"
             }
           ],
           "displayName": "ConfigurationService.loadConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7558",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7751",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 220
+            "line": 224
           },
           "signature": {
             "parameters": [
@@ -8891,11 +9538,11 @@
             }
           ],
           "displayName": "ConfigurationService.loadProjectConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8496",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8689",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 244
+            "line": 248
           },
           "signature": {
             "parameters": [
@@ -8983,7 +9630,7 @@
             },
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#9489"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.constants.ts#9801"
             }
           ],
           "displayName": "ConfigurationLoaderService.resolveConfigurationPath",
@@ -9011,19 +9658,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.matchesAnyName",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2856"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2913"
             },
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2506"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2563"
             }
           ],
           "displayName": "ConfigurationService.isProjectNamedOnCommandLine",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2209",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2266",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 67
+            "line": 69
           },
           "signature": {
             "parameters": [
@@ -9043,19 +9690,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.filter(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5309"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5502"
             },
             {
               "displayName": "ConfigurationService.map(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5270"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5463"
             }
           ],
           "displayName": "ConfigurationService.splitSelectionArgument",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5124",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5317",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 157
+            "line": 161
           },
           "signature": {
             "parameters": [
@@ -9075,19 +9722,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.matchesAnyName",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2856"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2913"
             },
             {
               "displayName": "ConfigurationService.isProjectNamedOnCommandLine",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2209"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2266"
             }
           ],
           "displayName": "ConfigurationService.isProjectIncluded",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5965",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6158",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 177
+            "line": 181
           },
           "signature": {
             "parameters": [
@@ -9107,19 +9754,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.resolveBoundaries",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3505"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3562"
             },
             {
               "displayName": "ConfigurationService.resolveSelection",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4779"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4917"
             }
           ],
           "displayName": "ConfigurationService.resolveConfiguration",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10762",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10955",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 305
+            "line": 309
           },
           "signature": {
             "parameters": [
@@ -9145,19 +9792,19 @@
           "callees": [
             {
               "displayName": "ConfigurationService.isProjectIncluded",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5965"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6158"
             },
             {
               "displayName": "ConfigurationService.resolveGraphOutput",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3989"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4046"
             }
           ],
           "displayName": "ConfigurationService.resolveForProject",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12121",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12387",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 333
+            "line": 338
           },
           "signature": {
             "parameters": [
@@ -9505,15 +10152,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2728"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2785"
             }
           ],
           "displayName": "ConfigurationService.matchesAnyGlob",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2634",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2691",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 82
+            "line": 84
           },
           "signature": {
             "parameters": [
@@ -9539,15 +10186,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.matchesAnyGlob",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2634"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2691"
             }
           ],
           "displayName": "ConfigurationService.matchesAnyName",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2856",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2913",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 87
+            "line": 89
           },
           "signature": {
             "parameters": [
@@ -9579,15 +10226,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.splitSelectionArgument",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5124"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5317"
             }
           ],
           "displayName": "ConfigurationService.resolveSelection",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4779",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4917",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 147
+            "line": 150
           },
           "signature": {
             "parameters": [
@@ -9607,15 +10254,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.isProjectNamedOnCommandLine",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2209"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2266"
             }
           ],
           "displayName": "ConfigurationService.isProjectSelected",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6930",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7123",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 202
+            "line": 206
           },
           "signature": {
             "parameters": [
@@ -9639,11 +10286,11 @@
             }
           ],
           "displayName": "ConfigurationService.parseCommaDelimitedOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9781",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9974",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 279
+            "line": 283
           },
           "signature": {
             "parameters": [
@@ -9667,11 +10314,11 @@
             }
           ],
           "displayName": "ConfigurationService.parseFlagOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9996",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10189",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 284
+            "line": 288
           },
           "signature": {
             "parameters": [
@@ -9695,11 +10342,11 @@
             }
           ],
           "displayName": "ConfigurationService.parseOptionalOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10186",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10379",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 289
+            "line": 293
           },
           "signature": {
             "parameters": [
@@ -9723,11 +10370,11 @@
             }
           ],
           "displayName": "ConfigurationService.parsePathOption",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10398",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10591",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 294
+            "line": 298
           },
           "signature": {
             "parameters": [
@@ -9747,15 +10394,15 @@
           "callees": [
             {
               "displayName": "ConfigurationService.resolveGraphOutput",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3989"
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4046"
             }
           ],
           "displayName": "ConfigurationService.resolveForWorkspace",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#13372",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#13638",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 375
+            "line": 380
           },
           "signature": {
             "parameters": [
@@ -9785,11 +10432,11 @@
             }
           ],
           "displayName": "ConfigurationService.selectMode",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#13782",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#14048",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 388
+            "line": 393
           },
           "signature": {
             "parameters": [
@@ -9813,11 +10460,11 @@
             }
           ],
           "displayName": "ConfigurationService.touchesFiles",
-          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#14010",
+          "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#14276",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-            "line": 395
+            "line": 400
           },
           "signature": {
             "parameters": [
@@ -9846,12 +10493,12 @@
                 "summary": "Reads the flags into what the run writes and what it fails on. See `FlagResolutionService.selectMode` for which combinations are refused and why.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#13782",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#14048",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 388
+                "line": 393
               },
               "signature": {
                 "parameters": [
@@ -10030,12 +10677,12 @@
                 "summary": "Resolves one project's export configuration for one graph type. A project's own `codependix.config.ts`, when it has one, is read exactly as loaded — no merge against a workspace-wide default happens here, since spreading the root-exported `projectDefaults` already happened when the project's own file was authored. A project excluded by the configured `include`/`exclude` globs, or one that has no configuration file of its own at all, always resolves to `target: \"none\"`: the former because a project excluded from graph export should not need every field rewritten to `\"none\"` by hand, the latter because a project matched by `include` with no file of its own has nothing to export, even though it still contributes to the Workspace Graph and is judged by boundary rules.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12121",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#12387",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 333
+                "line": 338
               },
               "signature": {
                 "parameters": [
@@ -10057,12 +10704,12 @@
                 "summary": "Whether a project participates in graph export at all. A project matches when something claims it — an `include` glob, a `--projects` glob, or a `--tags` tag — and no `exclude` glob claims its name or root. The command line **widens** what the configuration already selects rather than replacing it; `exclude` wins over all three, because a flag that could resurrect an excluded project would make `exclude` advisory. `projectRoot` and `projectTags` are optional: a caller with neither handy still resolves against globs written against project names.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#5965",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6158",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 177
+                "line": 181
               },
               "signature": {
                 "parameters": [
@@ -10084,12 +10731,12 @@
                 "summary": "Whether `--projects` or `--tags` names a project.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2209",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2266",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 67
+                "line": 69
               },
               "signature": {
                 "parameters": [
@@ -10111,12 +10758,12 @@
                 "summary": "Whether a project's name or its root matches at least one glob.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2856",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2913",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 87
+                "line": 89
               },
               "signature": {
                 "parameters": [
@@ -10150,12 +10797,12 @@
                 "summary": "Whether a project's name matches at least one of a list of globs.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2634",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2691",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 82
+                "line": 84
               },
               "signature": {
                 "parameters": [
@@ -10178,12 +10825,12 @@
             },
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2728",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2785",
               "isCycle": false,
               "location": {
                 "column": 23,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 83
+                "line": 85
               },
               "signature": {
                 "parameters": [
@@ -10212,12 +10859,12 @@
                 "summary": "Whether a project is in the set a run's command line narrowed to. A run naming no selection selects **everything**, which is what keeps the whole-workspace graph and the boundary gate judging every project by default. Naming one narrows both to what it named. This is where `--projects`/`--tags` differ from `include`: `include` is about which projects have exports written for them, and never reaches the workspace graph or the gate. A selection reaches all three.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#6930",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7123",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 202
+                "line": 206
               },
               "signature": {
                 "parameters": [
@@ -10239,12 +10886,12 @@
                 "summary": "Whether `--projects` or `--tags` names a project.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2209",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2266",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 67
+                "line": 69
               },
               "signature": {
                 "parameters": [
@@ -10266,12 +10913,12 @@
                 "summary": "Whether a project's name or its root matches at least one glob.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2856",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2913",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 87
+                "line": 89
               },
               "signature": {
                 "parameters": [
@@ -10305,12 +10952,12 @@
                 "summary": "Whether a project's name matches at least one of a list of globs.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2634",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2691",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 82
+                "line": 84
               },
               "signature": {
                 "parameters": [
@@ -10333,12 +10980,12 @@
             },
             {
               "displayName": "ConfigurationService.some(…)",
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2728",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#2785",
               "isCycle": false,
               "location": {
                 "column": 23,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 83
+                "line": 85
               },
               "signature": {
                 "parameters": [
@@ -10367,12 +11014,12 @@
                 "summary": "Loads and validates a codependix configuration file. A path that was named explicitly must exist — a typo in a task runner's arguments should fail rather than quietly resolving every graph to `target: \"none\"`. A path that was not named is searched for from the search directory upward, and its absence is legal.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7558",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#7751",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 220
+                "line": 224
               },
               "signature": {
                 "parameters": [
@@ -10497,12 +11144,12 @@
                 "summary": "Loads and validates one project's own `codependix.config.ts`, or `undefined` when it has none. Searched for exactly at `projectRoot` — see `ConfigurationLoaderService.findProjectConfigurationFile` — rather than the upward search `loadConfiguration` performs for the workspace root's own file: a project's file is either colocated with it or it does not exist, and a project with none produces no per-project output rather than inheriting one from a parent directory.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8496",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#8689",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 244
+                "line": 248
               },
               "signature": {
                 "parameters": [
@@ -10585,12 +11232,12 @@
                 "summary": "Parses a comma-separated list option, dropping blank entries. One of the six command-line methods this service forwards to the `input` and flag-resolution providers it owns. They are stated here rather than exported alongside it because this package makes exactly one service public: a host asking what a run is configured to do — from its configuration file or from its flags — asks `ConfigurationService`.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9781",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9974",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 279
+                "line": 283
               },
               "signature": {
                 "parameters": [
@@ -10668,12 +11315,12 @@
                 "summary": "Parses a path option that falls back to the working directory.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10398",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10591",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 294
+                "line": 298
               },
               "signature": {
                 "parameters": [
@@ -10807,12 +11454,12 @@
                 "summary": "Parses a valueless boolean flag, which is present or it is not.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#9996",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10189",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 284
+                "line": 288
               },
               "signature": {
                 "parameters": [
@@ -10868,12 +11515,12 @@
                 "summary": "Trims an optional string option, treating blank as absent.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10186",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#10379",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 289
+                "line": 293
               },
               "signature": {
                 "parameters": [
@@ -10929,12 +11576,12 @@
                 "summary": "Resolves the Workspace Graph's export configuration for one graph type. A Workspace Graph is exported once for the whole repository rather than once per project, so it has no per-project override and is unaffected by `include`/`exclude` — those two apply only to `resolveForProject`. `--projects` and `--tags` do reach it, through the node set rather than through this: a run naming a selection draws the graph over the projects it named. Where that graph lands is still read from `workspace`, keyed by `graphType`.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#13372",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#13638",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 375
+                "line": 380
               },
               "signature": {
                 "parameters": [
@@ -10962,12 +11609,12 @@
                 "summary": "Applies defaults to one graph type's export configuration.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#3989",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#4046",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 120
+                "line": 122
               },
               "signature": {
                 "parameters": [
@@ -10996,12 +11643,12 @@
                 "summary": "Whether a run reads or rewrites the files its exports live in.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#14010",
+              "id": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts#14276",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codependix/codependix-configuration/src/modules/configuration/configuration.service.ts",
-                "line": 395
+                "line": 400
               },
               "signature": {
                 "parameters": [
@@ -11052,7 +11699,7 @@
         "cyclicComponentCount": 0,
         "edgeCount": 64,
         "entryPointCount": 12,
-        "fileCount": 20,
+        "fileCount": 22,
         "maximumDepth": 7,
         "projectCount": 1,
         "unresolvedCallCount": 3
@@ -11063,11 +11710,11 @@
       "projectName": "projects/ic-suite/codependix/codependix-core",
       "stacks": [],
       "summary": {
-        "callableCount": 0,
+        "callableCount": 1,
         "cyclicComponentCount": 0,
         "edgeCount": 0,
         "entryPointCount": 0,
-        "fileCount": 8,
+        "fileCount": 11,
         "maximumDepth": 0,
         "projectCount": 1,
         "unresolvedCallCount": 0
@@ -11134,7 +11781,7 @@
             },
             {
               "displayName": "UnknownConfigurationFileTypeError.constructor",
-              "id": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts#1621"
+              "id": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts#1766"
             },
             {
               "displayName": "ConfigurationLoaderService.loadConfigurationModule",
@@ -11358,7 +12005,7 @@
             },
             {
               "displayName": "ConfigurationFileNotFoundError.constructor",
-              "id": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts#167"
+              "id": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts#167"
             }
           ],
           "displayName": "ConfigurationLoaderService.resolveConfigurationPath",
@@ -11390,7 +12037,7 @@
             },
             {
               "displayName": "InvalidLimitValueError.constructor",
-              "id": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts#1151"
+              "id": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts#1151"
             }
           ],
           "displayName": "ConfigurationResolverService.parseLimitValue",
@@ -11906,7 +12553,7 @@
           "callees": [
             {
               "displayName": "InvalidConfigurationError.constructor",
-              "id": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts#647"
+              "id": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts#647"
             }
           ],
           "displayName": "ConfigurationResolverService.parseConfigurationInternal",
@@ -11934,7 +12581,7 @@
           "callees": [
             {
               "displayName": "InvalidLimitValueError.constructor",
-              "id": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts#1151"
+              "id": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts#1151"
             }
           ],
           "displayName": "ConfigurationResolverService.parseLimitValueText",
@@ -12673,11 +13320,11 @@
             },
             {
               "displayName": "InvalidLimitValueError.constructor",
-              "id": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts#1151",
+              "id": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts#1151",
               "isCycle": false,
               "location": {
                 "column": 3,
-                "filePath": "projects/ic-suite/codometer/codometer-core/src/lib/errors.constants.ts",
+                "filePath": "projects/ic-suite/codometer/codometer-core/src/modules/codometer-core/codometer-core.constants.ts",
                 "line": 35
               },
               "signature": {
@@ -13623,7 +14270,7 @@
         "cyclicComponentCount": 0,
         "edgeCount": 68,
         "entryPointCount": 12,
-        "fileCount": 18,
+        "fileCount": 19,
         "maximumDepth": 9,
         "projectCount": 1,
         "unresolvedCallCount": 0
@@ -13634,7 +14281,7 @@
       "projectName": "projects/ic-suite/codometer/codometer-core",
       "stacks": [],
       "summary": {
-        "callableCount": 4,
+        "callableCount": 5,
         "cyclicComponentCount": 0,
         "edgeCount": 0,
         "entryPointCount": 0,
@@ -13691,11 +14338,11 @@
             }
           ],
           "displayName": "CallExpression",
-          "id": "projects/logging/src/lib/conventional-log-message.eslint-rule.ts#5140",
+          "id": "projects/logging/src/lib/conventional-log-message.eslint-rule.ts#5795",
           "location": {
             "column": 7,
             "filePath": "projects/logging/src/lib/conventional-log-message.eslint-rule.ts",
-            "line": 151
+            "line": 174
           },
           "signature": {
             "parameters": [
@@ -13714,20 +14361,52 @@
           "breadth": 2,
           "callees": [
             {
-              "displayName": "LoggerService.parseMessage",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6380"
+              "displayName": "LoggerService.shouldSkipConventionalMessageValidation",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#7044"
             },
             {
-              "displayName": "LoggerService.buildBindings",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285"
+              "displayName": "LoggerService.getConventionalMessageViolation",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#5455"
             }
           ],
-          "displayName": "LoggerService.debug",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#7860",
+          "displayName": "LoggerService.assertConventionalMessage",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 241
+            "line": 125
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "args",
+                "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+              }
+            ],
+            "returnType": "void",
+            "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+          }
+        },
+        {
+          "breadth": 2,
+          "callees": [
+            {
+              "displayName": "LoggerService.parseMessage",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6662"
+            },
+            {
+              "displayName": "LoggerService.buildBindings",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888"
+            }
+          ],
+          "displayName": "LoggerService.debug",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#8398",
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 254
           },
           "signature": {
             "parameters": [
@@ -13759,19 +14438,19 @@
           "callees": [
             {
               "displayName": "LoggerService.parseMessage",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6380"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6662"
             },
             {
               "displayName": "LoggerService.buildBindings",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888"
             }
           ],
           "displayName": "LoggerService.error",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#8441",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#8979",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 256
+            "line": 269
           },
           "signature": {
             "parameters": [
@@ -13803,19 +14482,19 @@
           "callees": [
             {
               "displayName": "LoggerService.parseMessage",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6380"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6662"
             },
             {
               "displayName": "LoggerService.buildBindings",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888"
             }
           ],
           "displayName": "LoggerService.info",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#8999",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#9537",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 276
+            "line": 289
           },
           "signature": {
             "parameters": [
@@ -13847,19 +14526,19 @@
           "callees": [
             {
               "displayName": "LoggerService.parseMessage",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6380"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6662"
             },
             {
               "displayName": "LoggerService.buildBindings",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888"
             }
           ],
           "displayName": "LoggerService.verbose",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#9983",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#10521",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 303
+            "line": 316
           },
           "signature": {
             "parameters": [
@@ -13891,19 +14570,19 @@
           "callees": [
             {
               "displayName": "LoggerService.parseMessage",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6380"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6662"
             },
             {
               "displayName": "LoggerService.buildBindings",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888"
             }
           ],
           "displayName": "LoggerService.warn",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#10293",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#10831",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 312
+            "line": 325
           },
           "signature": {
             "parameters": [
@@ -13962,44 +14641,16 @@
           "breadth": 1,
           "callees": [
             {
-              "displayName": "LoggerService.isConventionalVerb",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6074"
-            }
-          ],
-          "displayName": "LoggerService.assertConventionalMessage",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
-          "location": {
-            "column": 3,
-            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 125
-          },
-          "signature": {
-            "parameters": [
-              {
-                "isOptional": false,
-                "isRest": false,
-                "name": "args",
-                "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
-              }
-            ],
-            "returnType": "void",
-            "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
-          }
-        },
-        {
-          "breadth": 1,
-          "callees": [
-            {
               "displayName": "LoggerService.assertConventionalMessage",
               "id": "projects/logging/src/modules/logger/logger.service.ts#4418"
             }
           ],
           "displayName": "LoggerService.buildBindings",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 158
+            "line": 144
           },
           "signature": {
             "parameters": [
@@ -14018,16 +14669,44 @@
           "breadth": 1,
           "callees": [
             {
+              "displayName": "LoggerService.isConventionalVerb",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6356"
+            }
+          ],
+          "displayName": "LoggerService.getConventionalMessageViolation",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+          "location": {
+            "column": 3,
+            "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+            "line": 163
+          },
+          "signature": {
+            "parameters": [
+              {
+                "isOptional": false,
+                "isRest": false,
+                "name": "parsed",
+                "type": "ParsedLogMessage"
+              }
+            ],
+            "returnType": "string | undefined",
+            "text": "(parsed: ParsedLogMessage): string | undefined"
+          }
+        },
+        {
+          "breadth": 1,
+          "callees": [
+            {
               "displayName": "LoggerService.createRootLogger",
               "id": "projects/logging/src/modules/logger/logger.service.ts#2060"
             }
           ],
           "displayName": "LoggerService.get root",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#6772",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#7310",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 207
+            "line": 220
           },
           "signature": {
             "parameters": [],
@@ -14040,15 +14719,15 @@
           "callees": [
             {
               "displayName": "LoggerService.info",
-              "id": "projects/logging/src/modules/logger/logger.service.ts#8999"
+              "id": "projects/logging/src/modules/logger/logger.service.ts#9537"
             }
           ],
           "displayName": "LoggerService.log",
-          "id": "projects/logging/src/modules/logger/logger.service.ts#9600",
+          "id": "projects/logging/src/modules/logger/logger.service.ts#10138",
           "location": {
             "column": 3,
             "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-            "line": 292
+            "line": 305
           },
           "signature": {
             "parameters": [
@@ -14079,7 +14758,7 @@
       "projectName": "projects/logging",
       "stacks": [
         {
-          "depth": 5,
+          "depth": 6,
           "entryPointKind": "orphan-root",
           "frames": [
             {
@@ -14089,12 +14768,12 @@
                 "summary": "Logs an informational message at the `info` level. NestJS and `nest-commander` call this method directly as part of the framework's own `LoggerService` contract, so it must keep working exactly as before. Application code should call `info` instead — the same behavior under a name that says what level it logs at.",
                 "tags": []
               },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#9600",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#10138",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 292
+                "line": 305
               },
               "signature": {
                 "parameters": [
@@ -14128,12 +14807,12 @@
                 "summary": "Logs an informational message at the `info` level.",
                 "tags": []
               },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#8999",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#9537",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 276
+                "line": 289
               },
               "signature": {
                 "parameters": [
@@ -14167,12 +14846,12 @@
                 "summary": "Assembles the object pino merges into the line.",
                 "tags": []
               },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 158
+                "line": 144
               },
               "signature": {
                 "parameters": [
@@ -14215,18 +14894,661 @@
               }
             },
             {
+              "displayName": "LoggerService.getConventionalMessageViolation",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Returns a human-readable explanation when the message format is invalid.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 163
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "parsed",
+                    "type": "ParsedLogMessage"
+                  }
+                ],
+                "returnType": "string | undefined",
+                "text": "(parsed: ParsedLogMessage): string | undefined"
+              }
+            },
+            {
               "displayName": "LoggerService.isConventionalVerb",
               "documentation": {
                 "isDeprecated": false,
                 "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
                 "tags": []
               },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6074",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 183
+                "line": 189
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "word",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "boolean",
+                "text": "(word: string): boolean"
+              }
+            }
+          ],
+          "isLowerBound": false
+        },
+        {
+          "depth": 5,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "LoggerService.debug",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Logs a debug message at the `debug` level.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#8398",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 254
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "message",
+                    "type": "unknown"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "context",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "data",
+                    "type": "LogData | undefined"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(message: unknown, context?: string, data?: LogData): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.buildBindings",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Assembles the object pino merges into the line.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 144
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "Record<string, unknown>",
+                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+              }
+            },
+            {
+              "displayName": "LoggerService.assertConventionalMessage",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 125
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.getConventionalMessageViolation",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Returns a human-readable explanation when the message format is invalid.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 163
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "parsed",
+                    "type": "ParsedLogMessage"
+                  }
+                ],
+                "returnType": "string | undefined",
+                "text": "(parsed: ParsedLogMessage): string | undefined"
+              }
+            },
+            {
+              "displayName": "LoggerService.isConventionalVerb",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 189
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "word",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "boolean",
+                "text": "(word: string): boolean"
+              }
+            }
+          ],
+          "isLowerBound": false
+        },
+        {
+          "depth": 5,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "LoggerService.error",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Logs an error message at the `error` level, optionally including a stack trace. `ConsoleLogger.error` spends a third slot on a context string that the other levels do not have, so this one accepts either: a string keeps NestJS's meaning, an object is structured data like everywhere else.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#8979",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 269
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "message",
+                    "type": "unknown"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "stackOrContext",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "contextOrData",
+                    "type": "string | LogData | undefined"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(message: unknown, stackOrContext?: string, contextOrData?: LogData | string): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.buildBindings",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Assembles the object pino merges into the line.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 144
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "Record<string, unknown>",
+                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+              }
+            },
+            {
+              "displayName": "LoggerService.assertConventionalMessage",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 125
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.getConventionalMessageViolation",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Returns a human-readable explanation when the message format is invalid.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 163
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "parsed",
+                    "type": "ParsedLogMessage"
+                  }
+                ],
+                "returnType": "string | undefined",
+                "text": "(parsed: ParsedLogMessage): string | undefined"
+              }
+            },
+            {
+              "displayName": "LoggerService.isConventionalVerb",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 189
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "word",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "boolean",
+                "text": "(word: string): boolean"
+              }
+            }
+          ],
+          "isLowerBound": false
+        },
+        {
+          "depth": 5,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "LoggerService.verbose",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Logs a verbose message at the `trace` level.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#10521",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 316
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "message",
+                    "type": "unknown"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "context",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "data",
+                    "type": "LogData | undefined"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(message: unknown, context?: string, data?: LogData): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.buildBindings",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Assembles the object pino merges into the line.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 144
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "Record<string, unknown>",
+                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+              }
+            },
+            {
+              "displayName": "LoggerService.assertConventionalMessage",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 125
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.getConventionalMessageViolation",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Returns a human-readable explanation when the message format is invalid.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 163
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "parsed",
+                    "type": "ParsedLogMessage"
+                  }
+                ],
+                "returnType": "string | undefined",
+                "text": "(parsed: ParsedLogMessage): string | undefined"
+              }
+            },
+            {
+              "displayName": "LoggerService.isConventionalVerb",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 189
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "word",
+                    "type": "string"
+                  }
+                ],
+                "returnType": "boolean",
+                "text": "(word: string): boolean"
+              }
+            }
+          ],
+          "isLowerBound": false
+        },
+        {
+          "depth": 5,
+          "entryPointKind": "orphan-root",
+          "frames": [
+            {
+              "displayName": "LoggerService.warn",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Logs a warning message at the `warn` level.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#10831",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 325
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "message",
+                    "type": "unknown"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "context",
+                    "type": "string | undefined"
+                  },
+                  {
+                    "isOptional": true,
+                    "isRest": false,
+                    "name": "data",
+                    "type": "LogData | undefined"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(message: unknown, context?: string, data?: LogData): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.buildBindings",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Assembles the object pino merges into the line.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4888",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 144
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "Record<string, unknown>",
+                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
+              }
+            },
+            {
+              "displayName": "LoggerService.assertConventionalMessage",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 125
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "args",
+                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
+                  }
+                ],
+                "returnType": "void",
+                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
+              }
+            },
+            {
+              "displayName": "LoggerService.getConventionalMessageViolation",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Returns a human-readable explanation when the message format is invalid.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#5455",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 163
+              },
+              "signature": {
+                "parameters": [
+                  {
+                    "isOptional": false,
+                    "isRest": false,
+                    "name": "parsed",
+                    "type": "ParsedLogMessage"
+                  }
+                ],
+                "returnType": "string | undefined",
+                "text": "(parsed: ParsedLogMessage): string | undefined"
+              }
+            },
+            {
+              "displayName": "LoggerService.isConventionalVerb",
+              "documentation": {
+                "isDeprecated": false,
+                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
+                "tags": []
+              },
+              "id": "projects/logging/src/modules/logger/logger.service.ts#6356",
+              "isCycle": false,
+              "location": {
+                "column": 3,
+                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
+                "line": 189
               },
               "signature": {
                 "parameters": [
@@ -14250,12 +15572,12 @@
           "frames": [
             {
               "displayName": "CallExpression",
-              "id": "projects/logging/src/lib/conventional-log-message.eslint-rule.ts#5140",
+              "id": "projects/logging/src/lib/conventional-log-message.eslint-rule.ts#5795",
               "isCycle": false,
               "location": {
                 "column": 7,
                 "filePath": "projects/logging/src/lib/conventional-log-message.eslint-rule.ts",
-                "line": 151
+                "line": 174
               },
               "signature": {
                 "parameters": [
@@ -14355,514 +15677,6 @@
           "isLowerBound": false
         },
         {
-          "depth": 4,
-          "entryPointKind": "orphan-root",
-          "frames": [
-            {
-              "displayName": "LoggerService.debug",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Logs a debug message at the `debug` level.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#7860",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 241
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "message",
-                    "type": "unknown"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "context",
-                    "type": "string | undefined"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "data",
-                    "type": "LogData | undefined"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(message: unknown, context?: string, data?: LogData): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.buildBindings",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Assembles the object pino merges into the line.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 158
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "Record<string, unknown>",
-                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
-              }
-            },
-            {
-              "displayName": "LoggerService.assertConventionalMessage",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 125
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.isConventionalVerb",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6074",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 183
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "word",
-                    "type": "string"
-                  }
-                ],
-                "returnType": "boolean",
-                "text": "(word: string): boolean"
-              }
-            }
-          ],
-          "isLowerBound": false
-        },
-        {
-          "depth": 4,
-          "entryPointKind": "orphan-root",
-          "frames": [
-            {
-              "displayName": "LoggerService.error",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Logs an error message at the `error` level, optionally including a stack trace. `ConsoleLogger.error` spends a third slot on a context string that the other levels do not have, so this one accepts either: a string keeps NestJS's meaning, an object is structured data like everywhere else.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#8441",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 256
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "message",
-                    "type": "unknown"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "stackOrContext",
-                    "type": "string | undefined"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "contextOrData",
-                    "type": "string | LogData | undefined"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(message: unknown, stackOrContext?: string, contextOrData?: LogData | string): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.buildBindings",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Assembles the object pino merges into the line.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 158
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "Record<string, unknown>",
-                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
-              }
-            },
-            {
-              "displayName": "LoggerService.assertConventionalMessage",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 125
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.isConventionalVerb",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6074",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 183
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "word",
-                    "type": "string"
-                  }
-                ],
-                "returnType": "boolean",
-                "text": "(word: string): boolean"
-              }
-            }
-          ],
-          "isLowerBound": false
-        },
-        {
-          "depth": 4,
-          "entryPointKind": "orphan-root",
-          "frames": [
-            {
-              "displayName": "LoggerService.verbose",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Logs a verbose message at the `trace` level.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#9983",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 303
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "message",
-                    "type": "unknown"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "context",
-                    "type": "string | undefined"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "data",
-                    "type": "LogData | undefined"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(message: unknown, context?: string, data?: LogData): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.buildBindings",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Assembles the object pino merges into the line.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 158
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "Record<string, unknown>",
-                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
-              }
-            },
-            {
-              "displayName": "LoggerService.assertConventionalMessage",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 125
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.isConventionalVerb",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6074",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 183
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "word",
-                    "type": "string"
-                  }
-                ],
-                "returnType": "boolean",
-                "text": "(word: string): boolean"
-              }
-            }
-          ],
-          "isLowerBound": false
-        },
-        {
-          "depth": 4,
-          "entryPointKind": "orphan-root",
-          "frames": [
-            {
-              "displayName": "LoggerService.warn",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Logs a warning message at the `warn` level.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#10293",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 312
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "message",
-                    "type": "unknown"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "context",
-                    "type": "string | undefined"
-                  },
-                  {
-                    "isOptional": true,
-                    "isRest": false,
-                    "name": "data",
-                    "type": "LogData | undefined"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(message: unknown, context?: string, data?: LogData): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.buildBindings",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Assembles the object pino merges into the line.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#5285",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 158
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "Record<string, unknown>",
-                "text": "(args: { context: string | undefined; data: LogData | undefined; parsed: ParsedLogMessage; }): Record<string, unknown>"
-              }
-            },
-            {
-              "displayName": "LoggerService.assertConventionalMessage",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Fails a malformed message in development, and never in production. A logger that throws in production turns an observability call into an outage, so the check runs only where a developer is present to fix it.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#4418",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 125
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "args",
-                    "type": "{ context: string | undefined; parsed: ParsedLogMessage; }"
-                  }
-                ],
-                "returnType": "void",
-                "text": "(args: { context: string | undefined; parsed: ParsedLogMessage; }): void"
-              }
-            },
-            {
-              "displayName": "LoggerService.isConventionalVerb",
-              "documentation": {
-                "isDeprecated": false,
-                "summary": "Whether a word is a verb in one of the two tenses the convention allows. Present progressive means the operation is under way; past means it finished. Regular morphology covers both, so a new verb needs no registration anywhere — only irregular pasts are enumerated.",
-                "tags": []
-              },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6074",
-              "isCycle": false,
-              "location": {
-                "column": 3,
-                "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 183
-              },
-              "signature": {
-                "parameters": [
-                  {
-                    "isOptional": false,
-                    "isRest": false,
-                    "name": "word",
-                    "type": "string"
-                  }
-                ],
-                "returnType": "boolean",
-                "text": "(word: string): boolean"
-              }
-            }
-          ],
-          "isLowerBound": false
-        },
-        {
           "depth": 2,
           "entryPointKind": "orphan-root",
           "frames": [
@@ -14873,12 +15687,12 @@
                 "summary": "The pino instance every logger's child is taken from.",
                 "tags": []
               },
-              "id": "projects/logging/src/modules/logger/logger.service.ts#6772",
+              "id": "projects/logging/src/modules/logger/logger.service.ts#7310",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/logging/src/modules/logger/logger.service.ts",
-                "line": 207
+                "line": 220
               },
               "signature": {
                 "parameters": [],
@@ -14911,23 +15725,23 @@
         }
       ],
       "summary": {
-        "callableCount": 24,
+        "callableCount": 26,
         "cyclicComponentCount": 0,
-        "edgeCount": 19,
+        "edgeCount": 21,
         "entryPointCount": 7,
         "fileCount": 11,
-        "maximumDepth": 5,
+        "maximumDepth": 6,
         "projectCount": 1,
         "unresolvedCallCount": 1
       }
     }
   ],
   "summary": {
-    "callableCount": 365,
+    "callableCount": 370,
     "cyclicComponentCount": 1,
-    "edgeCount": 322,
-    "entryPointCount": 107,
-    "fileCount": 143,
+    "edgeCount": 324,
+    "entryPointCount": 110,
+    "fileCount": 154,
     "maximumDepth": 9,
     "projectCount": 9,
     "unresolvedCallCount": 21

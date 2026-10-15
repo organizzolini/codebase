@@ -20,10 +20,27 @@ export interface NestjsProject {
   /** Project directory name, which is also the Nx project name. */
   readonly name: string;
   /**
+   * Name of the class the root module file exports, when it has one.
+   *
+   * Defined exactly when `rootModuleFile` is.
+   */
+  readonly rootModuleExport: string | undefined;
+  /**
    * Absolute path of the project's root module file, when it has one.
    *
    * Undefined for a library package, whose container is rooted in a
    * synthetic module built from every module the package defines.
    */
   readonly rootModuleFile: string | undefined;
+}
+
+/**
+ * Where a project's root module lives, as the workspace configuration
+ * declares it.
+ */
+export interface NestjsRootModule {
+  /** Name of the class the file exports. */
+  readonly export: string;
+  /** Path of the root module file, relative to the project root. */
+  readonly file: string;
 }

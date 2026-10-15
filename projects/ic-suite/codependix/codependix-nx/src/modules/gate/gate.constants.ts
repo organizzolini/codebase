@@ -19,8 +19,8 @@ export const LOADER_SPECIFIER = "@codependix/nx/loader";
  * The codependix command line's entry, as `@codependix/cli` exports it.
  *
  * Resolved through the package's exports rather than a path into this
- * repository, so the same specifier reaches `src/main.ts` in this workspace
- * and `dist/src/main.js` in an installed copy.
+ * repository, so the same specifier reaches `src/codependix-cli.main.ts` in this workspace
+ * and `dist/src/codependix-cli.main.js` in an installed copy.
  */
 export const CLI_ENTRY_SPECIFIER = "@codependix/cli/main";
 

@@ -25,8 +25,6 @@ export type {
 export {
   NESTJS_PROJECT_IGNORED_MODULES,
   NESTJS_PROJECT_MODULE_FILE_SUFFIX,
-  NESTJS_PROJECT_ROOT_MODULE_EXPORT,
-  NESTJS_PROJECT_ROOT_MODULE_FILE,
   NESTJS_PROJECT_SYNTHETIC_IGNORED_MODULES,
   NESTJS_PROJECT_TAG,
 } from "./modules/nestjs-project/nestjs-project.constants";
@@ -35,4 +33,5 @@ export { NestjsProjectService } from "./modules/nestjs-project/nestjs-project.se
 export type {
   NestjsExploredModule,
   NestjsProject,
+  NestjsRootModule,
 } from "./modules/nestjs-project/nestjs-project.types";

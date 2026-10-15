@@ -7,8 +7,11 @@ const packageDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export default createViteLibraryConfig({
   entry: {
+    "src/codependix-cli.main": path.resolve(
+      packageDirectory,
+      "src/codependix-cli.main.ts",
+    ),
     "src/index": path.resolve(packageDirectory, "src/index.ts"),
-    "src/main": path.resolve(packageDirectory, "src/main.ts"),
   },
   packageDirectory,
 });

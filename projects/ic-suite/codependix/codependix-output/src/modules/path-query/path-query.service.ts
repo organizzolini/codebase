@@ -84,9 +84,12 @@ export class PathQueryService {
    */
   private async buildNestjsModuleGraphs(
     selectedProjects: GraphRunContext["selectedProjects"],
+    rootModules: GraphRunContext["configuration"]["nestjsRootModules"],
   ): Promise<NestjsModuleGraph[]> {
-    const nestjsProjects =
-      this.nestjsProjectService.discoverProjects(selectedProjects);
+    const nestjsProjects = this.nestjsProjectService.discoverProjects(
+      selectedProjects,
+      rootModules,
+    );
     const moduleGraphs: NestjsModuleGraph[] = [];
 
     for (const project of nestjsProjects) {
@@ -142,6 +145,7 @@ export class PathQueryService {
   ): Promise<null | string[]> {
     const moduleGraphs = await this.buildNestjsModuleGraphs(
       args.context.selectedProjects,
+      args.context.configuration.nestjsRootModules,
     );
     const graph =
       this.nestjsModulesWorkspaceGraphService.buildWorkspaceGraph(moduleGraphs);

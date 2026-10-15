@@ -183,12 +183,12 @@ has a fixture:
 | ---- | ------- |
 | `decorated-method` | `EntryPointsService.readReport`, carrying `@Get()` |
 | `lifecycle` | `EntryPointsService.onModuleInit` |
-| `module-bootstrap` | `bootstrap` in [`src/main.ts`](src/main.ts) |
+| `module-bootstrap` | `bootstrap` in [`src/callidescope-examples.main.ts`](src/callidescope-examples.main.ts) |
 | `exported-function` | `normalizeExampleLabel` in [`src/index.ts`](src/index.ts) |
 | `orphan-root` | [`summarizeOrphanedWork`](examples/entry-points/entry-points.ts), which nothing calls |
 | `declared` | [`DeclaredEntryPointsService.collect`](examples/declared-entry-points), whose address this package's own configuration names |
 
-The bootstrap and barrel rules key on the literal paths `src/main.ts` and
+The bootstrap and barrel rules key on the file names `*.main.ts` and
 `src/index.ts`, so those two fixtures are the only files in this package outside
 `examples/`.
 
@@ -477,7 +477,7 @@ callidescope-examples/
 │   └── diagram.md                     the same stacks, drawn
 ├── src/
 │   ├── index.ts                       the barrel — an `exported-function` root
-│   └── main.ts                        the bootstrap — a `module-bootstrap` root
+│   └── callidescope-examples.main.ts  the bootstrap — a `module-bootstrap` root
 └── testing/
     └── examples.integration.test.ts   every finding this guide documents
 ```
@@ -485,7 +485,7 @@ callidescope-examples/
 `src/` is the one thing this package has that its three sibling `*-examples`
 packages do not, and it is a requirement rather than a leftover: the
 `module-bootstrap` and `exported-function` entry-point rules key on the
-**literal paths** `src/main.ts` and `src/index.ts`, so those two fixtures cannot
+**file names** `*.main.ts` and `src/index.ts`, so those two fixtures cannot
 live under `examples/` with the rest. They are the only files in this package
 outside `examples/`.
 
@@ -515,7 +515,7 @@ Call stacks traced through `projects/ic-suite/callidescope/callidescope-examples
 | --- | --- |
 | Callables | 80 |
 | Files | 40 |
-| Calls traced | 53 |
+| Calls traced | 54 |
 | Call stacks | 19 |
 | Deepest stack | 8 |
 | Stacks through recursion | 1 |
@@ -634,7 +634,22 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Reads the file the number the verdict used was written in.
 ```
 
-**6. `FrameAnnotationsService.legacyRender`** — depth 4 · orphan-root
+**6. `DependencyClosureService.allowsDepth`** — depth 5 · orphan-root
+
+```text
+🚀 DependencyClosureService.allowsDepth(args: { configuration: CallidescopeConfiguration; depth: number; }): boolean [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:32]
+   ↳ Whether a configuration allows a stack as deep as the one asked about.
+  └─> DependencyClosureService.readDepthLimit(configuration: CallidescopeConfiguration): number [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:24]
+     ↳ Reads the depth limit the dependency's own defaulting settles on.
+    └─> ConfigurationService.resolveConfiguration(configuration: CallidescopeConfiguration): ResolvedCallidescopeConfiguration [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.service.ts:146]
+       ↳ Fills in every field a configuration file may leave out.
+      └─> ConfigurationFileService.resolveConfiguration(configuration: CallidescopeConfiguration): ResolvedCallidescopeConfiguration [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:369]
+         ↳ Fills in every field a configuration file may leave out.
+        └─> ConfigurationFileService.resolveEntryPoints(…): ResolvedCallidescopeEntryPoints [projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration-file.service.ts:190]
+           ↳ Applies defaults to the entry-point rules.
+```
+
+**7. `FrameAnnotationsService.legacyRender`** — depth 4 · orphan-root
 
 ```text
 🚀 FrameAnnotationsService.legacyRender(value: string): string ⚠ deprecated [projects/ic-suite/callidescope/callidescope-examples/examples/frame-annotations/frame-annotations.ts:74]
@@ -647,7 +662,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Finishes the chain and hands back what the layers above it built.
 ```
 
-**7. `MutualRecursionService.traverse`** — depth 4 · orphan-root
+**8. `MutualRecursionService.traverse`** — depth 4 · orphan-root
 
 ```text
 🚀 MutualRecursionService.traverse(remaining: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/mutual-recursion/mutual-recursion.ts:45]
@@ -660,10 +675,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ First of the three, and the way into the cycle.
 ```
 
-**8. `bootstrap`** — depth 3 · module-bootstrap
+**9. `bootstrap`** — depth 3 · module-bootstrap
 
 ```text
-🚀 bootstrap(): number [projects/ic-suite/callidescope/callidescope-examples/src/main.ts:14]
+🚀 bootstrap(): number [projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:14]
    ↳ The `module-bootstrap` entry-point kind.
   └─> OrdersService.place(available: number): number [projects/ic-suite/callidescope/callidescope-examples/examples/injected-dependency/orders.ts:21]
      ↳ Places one order against the injected inventory.
@@ -671,7 +686,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Reserves one unit and reports the count left behind.
 ```
 
-**9. `CallbackArgumentService.shoutAll`** — depth 3 · orphan-root
+**10. `CallbackArgumentService.shoutAll`** — depth 3 · orphan-root
 
 ```text
 🚀 CallbackArgumentService.shoutAll(entries: readonly string[]): string[] [projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:22]
@@ -681,7 +696,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Upper-cases one entry.
 ```
 
-**10. `DeclaredEntryPointsService.publish`** — depth 3 · orphan-root
+**11. `DeclaredEntryPointsService.publish`** — depth 3 · orphan-root
 
 ```text
 🚀 DeclaredEntryPointsService.publish(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:29]
@@ -692,7 +707,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Renders whatever was collected, and ends both stacks.
 ```
 
-**11. `EntryPointsService.onModuleInit`** — depth 2 · lifecycle
+**12. `EntryPointsService.onModuleInit`** — depth 2 · lifecycle
 
 ```text
 🚀 EntryPointsService.onModuleInit(): string [projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:29]
@@ -701,7 +716,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Does the work a lifecycle hook is called to do.
 ```
 
-**12. `EntryPointsService.readReport`** — depth 2 · decorated-method
+**13. `EntryPointsService.readReport`** — depth 2 · decorated-method
 
 ```text
 🚀 EntryPointsService.readReport(): string [projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:34]
@@ -710,7 +725,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Builds the body a decorated request handler answers with.
 ```
 
-**13. `normalizeExampleLabel`** — depth 2 · exported-function
+**14. `normalizeExampleLabel`** — depth 2 · exported-function
 
 ```text
 🚀 normalizeExampleLabel(label: string): string [projects/ic-suite/callidescope/callidescope-examples/src/index.ts:15]
@@ -719,7 +734,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Trims a label and collapses the whitespace inside it.
 ```
 
-**14. `DeclaredEntryPointsService.collect`** — depth 2 · declared
+**15. `DeclaredEntryPointsService.collect`** — depth 2 · declared
 
 ```text
 🚀 DeclaredEntryPointsService.collect(entries: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/declared-entry-points/declared-entry-points.ts:24]
@@ -728,7 +743,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Renders whatever was collected, and ends both stacks.
 ```
 
-**15. `BaseClassService.run`** — depth 2 · orphan-root
+**16. `BaseClassService.run`** — depth 2 · orphan-root
 
 ```text
 🚀 BaseClassService.run(): string [projects/ic-suite/callidescope/callidescope-examples/examples/base-class/base-class.ts:16]
@@ -737,21 +752,12 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Reports the work the base class claims to have done.
 ```
 
-**16. `ConstructedClassService.count`** — depth 2 · orphan-root
+**17. `ConstructedClassService.count`** — depth 2 · orphan-root
 
 ```text
 🚀 ConstructedClassService.count(source: string): number [projects/ic-suite/callidescope/callidescope-examples/examples/constructed-class/constructed-class.ts:17]
    ↳ Counts the tokens the constructed parser produced.
   └─> ParserService.constructor(source: string): ParserService [projects/ic-suite/callidescope/callidescope-examples/examples/constructed-class/parser.ts:9]
-```
-
-**17. `DependencyClosureService.allowsDepth`** — depth 2 · orphan-root
-
-```text
-🚀 DependencyClosureService.allowsDepth(args: { configuration: CallidescopeConfiguration; depth: number; }): boolean [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:32]
-   ↳ Whether a configuration allows a stack as deep as the one asked about.
-  └─> DependencyClosureService.readDepthLimit(configuration: CallidescopeConfiguration): number [projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:24]
-     ↳ Reads the depth limit the dependency's own defaulting settles on.
 ```
 
 **18. `PlainCallService.render`** — depth 2 · orphan-root
@@ -778,12 +784,12 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `bootstrap` | 2 | `OrdersService.place`, `OrdersService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/src/main.ts:14` |
+| `bootstrap` | 2 | `OrdersService.place`, `OrdersService.constructor` | `projects/ic-suite/callidescope/callidescope-examples/src/callidescope-examples.main.ts:14` |
 | `BaseClassService.run` | 1 | `BaseTaskService.run` | `projects/ic-suite/callidescope/callidescope-examples/examples/base-class/base-class.ts:16` |
 | `CallbackArgumentService.shoutAll` | 1 | `CallbackArgumentService.map(…)` | `projects/ic-suite/callidescope/callidescope-examples/examples/callback-argument/callback-argument.ts:22` |
 
 <details>
-<summary>48 more callables</summary>
+<summary>49 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -805,6 +811,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `DeepStackService.resolveTier` | 1 | `DeepStackService.loadRate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:38` |
 | `DeepStackService.validate` | 1 | `DeepStackService.removeDiscount` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:43` |
 | `DeepStackService.quote` | 1 | `DeepStackService.validate` | `projects/ic-suite/callidescope/callidescope-examples/examples/deep-stack/deep-stack.ts:50` |
+| `DependencyClosureService.readDepthLimit` | 1 | `ConfigurationService.resolveConfiguration` | `projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:24` |
 | `DependencyClosureService.allowsDepth` | 1 | `DependencyClosureService.readDepthLimit` | `projects/ic-suite/callidescope/callidescope-examples/examples/dependency-closure/dependency-closure.ts:32` |
 | `EntryPointsService.onModuleInit` | 1 | `EntryPointsService.prepareCache` | `projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:29` |
 | `EntryPointsService.readReport` | 1 | `EntryPointsService.buildReport` | `projects/ic-suite/callidescope/callidescope-examples/examples/entry-points/entry-points.ts:34` |

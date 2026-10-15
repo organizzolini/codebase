@@ -32,7 +32,7 @@ enforced: `configuration/conformetry.config.ts` selects instances by tag
   it holds the workspace's only static `react-dom/client` import; without it
   every dependency check strips `react-dom` from the manifest and the catalog.
   `src/router.tsx` is the one that cannot move — TanStack resolves that entry
-  with `required: true`. `@conformetry/nx`'s postinstall shim is `src/main.mjs`
+  with `required: true`. `@conformetry/nx`'s postinstall shim is `src/conformetry-nx.main.mjs`
   for the same reason in reverse: a `bin` has to stay a TypeScript-source entry
   point, so it takes an entry-point name and keeps its work in
   `modules/generator/`.

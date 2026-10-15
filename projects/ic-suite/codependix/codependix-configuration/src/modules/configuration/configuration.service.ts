@@ -19,6 +19,9 @@ import { FlagResolutionService } from "./flag-resolution.service";
 
 import type {
   CodependixBoundariesConfiguration,
+  ResolvedCodependixBoundariesConfiguration,
+} from "./configuration-boundaries.types";
+import type {
   CodependixConfiguration,
   CodependixGraphOutput,
   CodependixGraphType,
@@ -28,7 +31,6 @@ import type {
   LoadProjectConfigurationArguments,
   MapCommandOptions,
   ProjectSelectionArguments,
-  ResolvedCodependixBoundariesConfiguration,
   ResolvedCodependixConfiguration,
   ResolvedCodependixGraphOutput,
   ResolvedCodependixSelection,
@@ -312,6 +314,7 @@ export class ConfigurationService {
       boundaries: this.resolveBoundaries(configuration.boundaries),
       exclude: configuration.exclude ?? [],
       include: configuration.include ?? [...DEFAULT_INCLUDE_GLOBS],
+      nestjsRootModules: configuration.nestjsModules?.rootModules ?? {},
       projectGraph: configuration.projectGraph,
       selection: this.resolveSelection(selection),
       workspace: configuration.workspace ?? {},

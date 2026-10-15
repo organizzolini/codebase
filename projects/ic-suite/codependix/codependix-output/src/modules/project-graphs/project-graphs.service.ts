@@ -257,6 +257,7 @@ export class ProjectGraphsService {
   ): Promise<GraphRunOutcome> {
     const nestjsProjects = this.nestjsProjectService.discoverProjects(
       context.projects,
+      context.configuration.nestjsRootModules,
     );
     const results: GraphRunOutcome["results"] = [];
     const failures: ProjectRunFailure[] = [];

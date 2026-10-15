@@ -126,7 +126,7 @@ async function buildConfiguredWorkspace(
   await writeProject({
     name: "application",
     sources: {
-      "src/main.ts": `
+      "src/application.main.ts": `
         import { Repository } from "../../library/src/repository";
 
         export function bootstrap(repository: Repository): void {
@@ -176,7 +176,7 @@ async function buildLayeredWorkspace(): Promise<string> {
   await writeProject({
     name: "application",
     sources: {
-      "src/main.ts": `
+      "src/application.main.ts": `
         import { Repository } from "../../library/src/index";
         import { SETTINGS } from "../../settings/src/index";
 
@@ -196,7 +196,7 @@ async function buildLayeredWorkspace(): Promise<string> {
     name: "consumer",
     sources: {
       "src/index.ts": `
-        import { ApplicationCommand } from "../../application/src/main";
+        import { ApplicationCommand } from "../../application/src/application.main";
 
         export function bootstrap(command: ApplicationCommand): void {
           command.run();

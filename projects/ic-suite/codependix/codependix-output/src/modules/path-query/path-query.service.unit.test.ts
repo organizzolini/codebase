@@ -43,6 +43,7 @@ describe(PathQueryService, () => {
         },
         exclude: [],
         include: ["**"],
+        nestjsRootModules: {},
         projectGraph: undefined,
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
@@ -135,6 +136,7 @@ describe(PathQueryService, () => {
       {
         absoluteRoot: "/root/package-a",
         name: "package-a",
+        rootModuleExport: undefined,
         rootModuleFile: undefined,
       },
     ];

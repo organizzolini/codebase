@@ -4,10 +4,10 @@
 
 | Measure | Value |
 | --- | --- |
-| Callables | 365 |
-| Files | 143 |
-| Calls traced | 322 |
-| Call stacks | 107 |
+| Callables | 370 |
+| Files | 154 |
+| Calls traced | 324 |
+| Call stacks | 110 |
 | Deepest stack | 9 |
 | Stacks through recursion | 1 |
 | Unfollowable calls | 21 |
@@ -17,8 +17,8 @@
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `projects/ic-suite/callidescope/callidescope-examples` | 8 | 5 | -3 | 2 |
+| `projects/logging` | 6 | 4 | -2 | 2 |
 | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf` | 4 | 3 | -1 | 3 |
-| `projects/logging` | 5 | 4 | -1 | 2 |
 | `projects/ic-suite/codependix/codependix-configuration` | 7 | 7 | 0 | 4 |
 | `projects/ic-suite/codometer/codometer-configuration` | 9 | 9 | 0 | 4 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 7 | 8 | 1 | 7 |
@@ -37,7 +37,7 @@
 | 4+ | 0 |
 | no stacks | 3 |
 
-## Call stacks over the depth limit (7)
+## Call stacks over the depth limit (11)
 
 **1. `ComputedMemberService.dispatch`** — depth ≥ 8 · orphan-root
 
@@ -103,7 +103,7 @@
 ```
 
 <details>
-<summary>4 more call stacks</summary>
+<summary>8 more call stacks</summary>
 
 **4. `FrameAnnotationsService.trace`** — depth 7 · orphan-root
 
@@ -141,22 +141,84 @@
              ↳ Reads the file the number the verdict used was written in.
 ```
 
-**6. `LoggerService.log`** — depth 5 · orphan-root
+**6. `LoggerService.log`** — depth 6 · orphan-root
 
 ```text
-🚀 LoggerService.log(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:292]
+🚀 LoggerService.log(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:305]
    ↳ Logs an informational message at the `info` level.
-  └─> LoggerService.info(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:276]
+  └─> LoggerService.info(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:289]
      ↳ Logs an informational message at the `info` level.
-    └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:158]
+    └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
        ↳ Assembles the object pino merges into the line.
       └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
          ↳ Fails a malformed message in development, and never in production.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:183]
+        └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+           ↳ Returns a human-readable explanation when the message format is invalid.
+          └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+             ↳ Whether a word is a verb in one of the two tenses the convention allows.
+```
+
+**7. `LoggerService.debug`** — depth 5 · orphan-root
+
+```text
+🚀 LoggerService.debug(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:254]
+   ↳ Logs a debug message at the `debug` level.
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+     ↳ Assembles the object pino merges into the line.
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+       ↳ Fails a malformed message in development, and never in production.
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+         ↳ Returns a human-readable explanation when the message format is invalid.
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
            ↳ Whether a word is a verb in one of the two tenses the convention allows.
 ```
 
-**7. `GatedLeafService.read`** — depth 4 · declared
+**8. `LoggerService.error`** — depth 5 · orphan-root
+
+```text
+🚀 LoggerService.error(…): void [projects/logging/src/modules/logger/logger.service.ts:269]
+   ↳ Logs an error message at the `error` level, optionally including a stack trace. `ConsoleLogger.error` spends a third…
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+     ↳ Assembles the object pino merges into the line.
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+       ↳ Fails a malformed message in development, and never in production.
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+         ↳ Returns a human-readable explanation when the message format is invalid.
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+           ↳ Whether a word is a verb in one of the two tenses the convention allows.
+```
+
+**9. `LoggerService.verbose`** — depth 5 · orphan-root
+
+```text
+🚀 LoggerService.verbose(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:316]
+   ↳ Logs a verbose message at the `trace` level.
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+     ↳ Assembles the object pino merges into the line.
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+       ↳ Fails a malformed message in development, and never in production.
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+         ↳ Returns a human-readable explanation when the message format is invalid.
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+           ↳ Whether a word is a verb in one of the two tenses the convention allows.
+```
+
+**10. `LoggerService.warn`** — depth 5 · orphan-root
+
+```text
+🚀 LoggerService.warn(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:325]
+   ↳ Logs a warning message at the `warn` level.
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+     ↳ Assembles the object pino merges into the line.
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+       ↳ Fails a malformed message in development, and never in production.
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+         ↳ Returns a human-readable explanation when the message format is invalid.
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+           ↳ Whether a word is a verb in one of the two tenses the convention allows.
+```
+
+**11. `GatedLeafService.read`** — depth 4 · declared
 
 ```text
 🚀 GatedLeafService.read(key: string): string [projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf/gated-leaf.ts:40]

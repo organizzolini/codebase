@@ -324,10 +324,10 @@
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
     "source-entry-file": {
-      "name": "^(constants|index|main|repl|router|types|utilities|{templatePlaceholder}|[a-z0-9-]+)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
+      "name": "^(?!(main|repl)[.])(constants|index|router|types|utilities|{templatePlaceholder}|[a-z0-9-]+)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
     },
     "source-entry-support-file": {
-      "name": "^(main|{templatePlaceholder}|[a-z0-9-]+).(command|constants|entities|factories|loader|module|resolver|service|types|utilities)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
+      "name": "^(?!(main|repl)[.])({templatePlaceholder}|[a-z0-9-]+).(command|constants|entities|factories|loader|main|module|repl|resolver|service|types|utilities)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
     },
     "source-python-file": {
       "name": "^(py.typed|[a-z0-9_]+.(ipynb|py))$"

@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { startDatabaseTestingModule } from "@codebase/database/testing";
 import { LoggerModule } from "@codebase/logging";
 
-import { environmentSchema } from "../../constants";
+import { environmentSchema } from "../../caelundas-cli.constants";
 import { CaelundasDatabaseModule } from "../caelundas-database/caelundas-database.module";
 import { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
 import { Migration1791255787877 } from "../caelundas-database/migrations/1791255787877-migration";

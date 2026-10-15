@@ -23,7 +23,7 @@
           }
         ],
         "generatePackageJson": false,
-        "main": "projects/lexico/lexico-cli/src/main.ts",
+        "main": "projects/lexico/lexico-cli/src/lexico-cli.main.ts",
         "outputPath": "projects/lexico/lexico-cli/dist",
         "tsConfig": "projects/lexico/lexico-cli/tsconfig.build.json"
       },
@@ -48,41 +48,41 @@
       "cache": false,
       "configurations": {
         "clear": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts clear {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts clear {args}"
         },
         "corpus-scriptorum-ecclesiasticorum-latinorum": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts corpus-scriptorum-ecclesiasticorum-latinorum {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts corpus-scriptorum-ecclesiasticorum-latinorum {args}"
         },
         "dictionary": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts dictionary {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts dictionary {args}"
         },
         "epigraphik-datenbank-clauss-slaby": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts epigraphik-datenbank-clauss-slaby {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts epigraphik-datenbank-clauss-slaby {args}"
         },
         "latin-library": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts latin-library {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts latin-library {args}"
         },
         "lexico-ingestion": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts lexico-ingestion {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts lexico-ingestion {args}"
         },
         "library": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts library {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts library {args}"
         },
         "literature": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts literature {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts literature {args}"
         },
         "perseus": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts perseus {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts perseus {args}"
         },
         "wiktionary": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts wiktionary {args}"
+          "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts wiktionary {args}"
         }
       },
       "defaultConfiguration": "lexico-ingestion",
       "description": "Start the Lexico ingestion application or run an ingestion command",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/main.ts lexico-ingestion {args}",
+        "command": "node --import @swc-node/register/esm-register src/lexico-cli.main.ts lexico-ingestion {args}",
         "cwd": "{projectRoot}"
       }
     },

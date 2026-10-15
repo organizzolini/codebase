@@ -76,7 +76,7 @@ callidescope-examples/
 │   └── diagram.md                     the same stacks, drawn
 ├── src/
 │   ├── index.ts                       an `exported-function` root
-│   └── main.ts                        a `module-bootstrap` root
+│   └── callidescope-examples.main.ts  a `module-bootstrap` root
 └── testing/
     └── examples.integration.test.ts   every finding this guide documents
 ```
@@ -104,7 +104,7 @@ callidescope-examples/
   and `<!-- callidescope:end -->`. Do not hand-edit inside those anchors —
   regenerate.
 - **`src/` is a requirement, not a leftover.** The `module-bootstrap` and
-  `exported-function` entry-point rules key on the literal paths `src/main.ts`
+  `exported-function` entry-point rules key on the file names `*.main.ts`
   and `src/index.ts`, so those two fixtures cannot live under `examples/` with
   the rest. This is the one structural difference from the three sibling
   `*-examples` packages, and this is why.

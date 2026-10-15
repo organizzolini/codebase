@@ -7,7 +7,7 @@ import {
 } from "@codebase/database/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
-import { environmentSchema } from "../../constants";
+import { environmentSchema } from "../../meanderaw-cli.constants";
 
 import { Meander } from "./entities/meander.entity";
 import { MeanderawDatabaseModule } from "./meanderaw-database.module";

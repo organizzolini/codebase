@@ -111,6 +111,7 @@ describe(BoundaryCheckService, () => {
         boundaries: buildBoundaries(boundaries),
         exclude: [],
         include: ["**"],
+        nestjsRootModules: {},
         projectGraph: undefined,
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
@@ -238,6 +239,7 @@ describe(BoundaryCheckService, () => {
       {
         absoluteRoot: "/workspace/packages/a",
         name: "a",
+        rootModuleExport: "MainModule",
         rootModuleFile: "src/main.ts",
       },
     ]);
@@ -260,11 +262,13 @@ describe(BoundaryCheckService, () => {
       {
         absoluteRoot: "/workspace/packages/a",
         name: "a",
+        rootModuleExport: "MainModule",
         rootModuleFile: "src/main.ts",
       },
       {
         absoluteRoot: "/workspace/packages/b",
         name: "b",
+        rootModuleExport: "MainModule",
         rootModuleFile: "src/main.ts",
       },
     ]);
@@ -302,6 +306,7 @@ describe(BoundaryCheckService, () => {
       {
         absoluteRoot: "/workspace/packages/a",
         name: "a",
+        rootModuleExport: "MainModule",
         rootModuleFile: "src/main.ts",
       },
     ]);
@@ -585,10 +590,10 @@ describe(BoundaryCheckService, () => {
         }),
       );
 
-      expect(nestjsProjectService.discoverProjects).toHaveBeenCalledWith([
-        ...PROJECTS,
-        DEPENDENCY,
-      ]);
+      expect(nestjsProjectService.discoverProjects).toHaveBeenCalledWith(
+        [...PROJECTS, DEPENDENCY],
+        {},
+      );
       expect(pythonService.discoverProjects).toHaveBeenCalledWith([
         ...PROJECTS,
         DEPENDENCY,
@@ -601,7 +606,11 @@ describe(BoundaryCheckService, () => {
 
     it("notes a container failure in a dependency, charged to that dependency", async () => {
       vi.mocked(nestjsProjectService.discoverProjects).mockReturnValue([
-        { ...DEPENDENCY, rootModuleFile: "src/main.ts" },
+        {
+          ...DEPENDENCY,
+          rootModuleExport: "MainModule",
+          rootModuleFile: "src/main.ts",
+        },
       ]);
       vi.mocked(nestjsProjectService.exploreProject).mockRejectedValueOnce(
         new Error("boom"),
@@ -637,6 +646,7 @@ describe(BoundaryCheckService, () => {
         {
           absoluteRoot: "/workspace/packages/a",
           name: "a",
+          rootModuleExport: "MainModule",
           rootModuleFile: "src/main.ts",
         },
       ]);
