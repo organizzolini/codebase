@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "reui": {
+      "type": "http",
+      "url": "https://mcp.reui.io"
+    },
+    "shadcn": {
+      "args": ["-c", "npx shadcn@latest mcp --cwd projects/components-web"],
+      "command": "bash"
+    }
+  }
+}

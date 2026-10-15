@@ -247,6 +247,11 @@
       "skillPath": "skills/engineering/research/SKILL.md",
       "computedHash": "c8c1cba327a6f824b554cd978079a3dadd7406d73174f8fb9bfef58824691970"
     },
+    "reui": {
+      "source": "./.agents/skills/reui",
+      "sourceType": "local",
+      "computedHash": "b270da46d53ce81ac282bc6e5ea180327f41c405a32e514bc7870a2b08b3f8f7"
+    },
     "setup-matt-pocock-skills": {
       "source": "mattpocock/skills",
       "sourceType": "github",
