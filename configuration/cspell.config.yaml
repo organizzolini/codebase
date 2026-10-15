@@ -285,6 +285,12 @@ patterns:
   # slash-delimited path is still spell-checked.
   - name: ipa-transcription
     pattern: /\/[^\/\s]*[ɪʊəɜɑɔæʌθðʃʒŋɹˈˌː][^\/\s]*\//gu
+  # Vendored component paths in a generated dependency graph: node ids
+  # (`file_components_web_src_components_reui_cascader_cascader_nav_tsx`) and their
+  # quoted file paths. The vendored sources are excluded from spell-check, but codependix quotes
+  # their names into every README that embeds the file graph.
+  - name: vendored-component-path
+    pattern: /\bfile_(?:[a-z]+_)*?src_components_\w+|\b(?:[\w-]+\/)?src\/components\/[\w./-]+/g
 # cspell:enable
 ignoreRegExpList:
   - postcss-declaration-property
@@ -298,6 +304,7 @@ ignoreRegExpList:
   - lint-rule-name
   - external-identifier
   - react-intrinsic-element
+  - vendored-component-path
   - ipa-transcription
 overrides:
   - filename: "**/*.ipynb"
