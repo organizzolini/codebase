@@ -1,4 +1,15 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { DataSource } from "typeorm";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
+
+import { StandaloneModule } from "../src/standalone.module";
 
 import { runCliCommandLine } from "./command-line-runner";
 import {
@@ -53,25 +64,42 @@ describe("lexico database testing helpers", () => {
   it("runs --help through the real runner and captures its output", async () => {
     expect.hasAssertions();
 
+    const initialize = vi.spyOn(DataSource.prototype, "initialize");
+    onTestFinished(() => {
+      initialize.mockRestore();
+    });
+
+    // 🎯 Root help, because a subcommand's help exits the process itself.
+    // rootModule would boot MainModule, and with it the Lexico database
+    // connection, for a command line that names no command.
     const result = await runCliCommandLine({
       argv: ["--help"],
-      env: database.environment,
+      module: StandaloneModule,
     });
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("Usage:");
-    expect(result.stdout).toContain("clear");
+    expect(result.stdout).toContain("export");
+    expect(initialize).not.toHaveBeenCalled();
   });
 
   it("reports a non-zero exit code and message for an unknown command", async () => {
     expect.hasAssertions();
 
+    const initialize = vi.spyOn(DataSource.prototype, "initialize");
+    onTestFinished(() => {
+      initialize.mockRestore();
+    });
+
+    // 🎯 rootModule would boot MainModule, and with it the Lexico database
+    // connection, for a command it does not recognize.
     const result = await runCliCommandLine({
       argv: ["no-such-command"],
-      env: database.environment,
+      module: StandaloneModule,
     });
 
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("no-such-command");
+    expect(initialize).not.toHaveBeenCalled();
   });
 });

@@ -37,6 +37,7 @@ isready
 kubeconfig
 kubectl
 kubernetes
+libpq
 lockfiles
 messagebird
 migra
@@ -49,10 +50,16 @@ opencontainers
 orioledb
 pgaudit
 PGDATA
+PGDATABASE
 pgdg
+PGHOST
 pgjwt
+PGPASSFILE
 PGPASSWORD
+PGPORT
 pgrst
+PGSERVICE
+PGUSER
 photostructure
 pkey
 plainto

@@ -8,12 +8,38 @@ import * as cheerio from "cheerio";
 import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
 
 import type { AnyNode } from "domhandler";
+import type { ExecException, ExecFileOptions } from "node:child_process";
 import type { ObjectLiteral, QueryBuilder, Repository } from "typeorm";
 
 /**
  * Default test date used across time-sensitive tests.
  */
 export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
+
+/** What the next process the mocked `execFile` starts does, and every start so far. */
+const processes: { outcome: ProcessOutcome; spawned: SpawnedProcess[] } = {
+  outcome: {},
+  spawned: [],
+};
+
+/**
+ * A stand-in for `node:child_process` whose `execFile` records each start
+ * and exits as {@link mockProcesses} last said.
+ */
+export const childProcessMock = {
+  execFile: vi.fn(
+    (
+      file: string,
+      args: readonly string[],
+      options: ExecFileOptions,
+      callback: ExecFileCallback,
+    ): void => {
+      const { error = null, stderr = "", stdout = "" } = processes.outcome;
+      processes.spawned.push({ args, environment: options.env, file });
+      callback(error, stdout, stderr);
+    },
+  ),
+};
 
 // 🧪 Prompts Helpers
 
@@ -24,6 +50,31 @@ export const DEFAULT_TEST_DATE = new Date("2025-03-20T14:46:00Z");
 export type PromptsMock<Response extends Record<string, unknown>> = ReturnType<
   typeof vi.fn<() => Promise<Response>>
 >;
+
+/**
+ * One process the mocked `execFile` was asked to start.
+ */
+export interface SpawnedProcess {
+  readonly args: readonly string[];
+  readonly environment: NodeJS.ProcessEnv | undefined;
+  readonly file: string;
+}
+
+/** The callback `execFile` reports a process's exit to. */
+type ExecFileCallback = (
+  error: ExecException | null,
+  stdout: string,
+  stderr: string,
+) => void;
+
+/**
+ * How every process the mocked `execFile` starts will exit.
+ */
+interface ProcessOutcome {
+  readonly error?: ExecException;
+  readonly stderr?: string;
+  readonly stdout?: string;
+}
 
 /**
  * Sets up fake timers with a fixed system time before each test
@@ -48,6 +99,28 @@ export function mockDates(date: Date = DEFAULT_TEST_DATE): void {
   afterEach(() => {
     vi.useRealTimers();
   });
+}
+
+/**
+ * Makes every process the mocked `execFile` starts exit as `outcome` says,
+ * and returns the list each start is recorded into. The calling test file
+ * replaces the module with {@link childProcessMock}:
+ *
+ * ```ts
+ * vi.mock("node:child_process", async () => {
+ *   const { childProcessMock } = await import("../../../testing/mocks")
+ *   return childProcessMock
+ * })
+ *
+ * const spawned = mockProcesses({ stderr: "pg_dump: error: …", error })
+ * expect(spawned[0]?.args).not.toContain(password)
+ * ```
+ */
+export function mockProcesses(outcome: ProcessOutcome = {}): SpawnedProcess[] {
+  const spawned: SpawnedProcess[] = [];
+  processes.outcome = outcome;
+  processes.spawned = spawned;
+  return spawned;
 }
 
 /**
@@ -80,6 +153,17 @@ export function mockStandardInputTerminal(): (isTerminal: boolean) => void {
       }
     });
   };
+}
+
+/**
+ * An `execFile` error as Node reports it: a process that exited with a
+ * numeric `code`, or one that never started, with a string `code`.
+ */
+export function processFailure(
+  code: number | string,
+  message = "Command failed",
+): ExecException {
+  return Object.assign(new Error(message), { cmd: "", code });
 }
 
 /**

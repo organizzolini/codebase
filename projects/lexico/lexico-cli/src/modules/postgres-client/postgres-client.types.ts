@@ -1,0 +1,72 @@
+// 🏷️ Types
+
+/** What a `PostgresClientError` is built from. */
+export interface PostgresClientFailure {
+  /** The process's exit code, or the spawn error's code when it never ran. */
+  readonly code: number | string | undefined;
+
+  /** The tool's own error text, credentials already masked. */
+  readonly detail: string;
+
+  /** The tool that failed. */
+  readonly tool: PostgresClientTool;
+}
+
+/** What a client tool printed, once it exited successfully. */
+export interface PostgresClientOutput {
+  readonly stderr: string;
+  readonly stdout: string;
+}
+
+/** A PostgreSQL client binary this module runs. */
+export type PostgresClientTool = "pg_dump";
+
+/**
+ * Which parts of the selected tables a dump or restore moves. At least one
+ * is true; both true means table definitions and rows together.
+ */
+export interface PostgresContent {
+  /** Move the tables' rows. */
+  readonly data: boolean;
+
+  /** Move the tables' definitions. */
+  readonly schema: boolean;
+}
+
+/**
+ * What `PostgresClientService.dump` is given.
+ */
+export interface PostgresDumpOptions {
+  /** The database to dump from. */
+  readonly connection: PostgresUriConnection;
+
+  /** Whether to dump rows, definitions, or both. */
+  readonly content: PostgresContent;
+
+  /** The custom-format dump file to write, relative to the working directory. */
+  readonly file: string;
+
+  /** Schema-qualified table names; see `qualifyTableName`. */
+  readonly tables: readonly string[];
+}
+
+/**
+ * Where a client tool connects, parsed from a `postgresql://` URI. Handed to
+ * the tool as `PG*` variables, so none of it reaches the process arguments.
+ */
+export interface PostgresUriConnection {
+  /** The database the URI's path names. */
+  readonly database: string;
+
+  /** The server's host name or address. */
+  readonly host: string;
+
+  /** The decoded password, or `""` when the URI carries none. */
+  readonly password: string;
+
+  /** The server's port; 5432 when the URI names none. */
+  readonly port: number;
+
+  /** The decoded role name. */
+  readonly username: string;
+}

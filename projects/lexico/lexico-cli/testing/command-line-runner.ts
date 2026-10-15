@@ -3,7 +3,7 @@ import { vi } from "vitest";
 
 import { LoggerService } from "@codebase/logging";
 
-import { MainModule } from "../src/main.module";
+import { rootModule } from "../src/main.utilities";
 
 import type { DynamicModule, Type } from "@nestjs/common";
 
@@ -33,11 +33,14 @@ interface RunCliCommandLineOptions {
 
   /**
    * Environment for the run, laid over `process.env` and restored after. A
-   * `undefined` value removes the variable for the run.
+   * `undefined` value removes the variable for the run. It reaches only
+   * what reads `process.env` while the command runs: `ConfigModule`
+   * validated its variables, `LEXICO_POSTGRES_*` among them, when the root
+   * module was imported, and `ConfigService` serves that copy first.
    */
   readonly env?: Readonly<Record<string, string | undefined>>;
 
-  /** The root module; the real `MainModule` unless a test narrows it. */
+  /** The root module; the one `main.ts` would choose unless a test narrows it. */
   readonly module?: DynamicModule | Type<unknown>;
 }
 
@@ -62,7 +65,7 @@ const LOGGER_LEVELS = [
 export async function runCliCommandLine({
   argv,
   env = {},
-  module = MainModule,
+  module = rootModule(argv),
 }: RunCliCommandLineOptions): Promise<CommandLineResult> {
   const logs: string[] = [];
   const stdout: string[] = [];
