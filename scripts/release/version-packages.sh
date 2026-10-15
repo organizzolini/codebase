@@ -40,4 +40,16 @@ fi
 # such tags first; on a fresh checkout it has nothing to commit.
 bash "$(dirname "${BASH_SOURCE[0]}")/tag-packages.sh"
 
-pnpm exec nx release --skip-publish
+# `configuration` is in the Nx project graph, so a change to it reaches every
+# project, which is right for CI and wrong here: tooling configuration is not a
+# reason to release a package. Nx drops files matching `.nxignore` from the
+# changes it reads for a commit and from the graph, so for this one command the
+# configuration project is ignored, and a commit that edits only it releases
+# nothing. A commit that also edits a package still releases that package.
+# The ignore file is restored on exit, before anything commits.
+nxignore_backup="$(mktemp)"
+cp .nxignore "${nxignore_backup}"
+trap 'cp "${nxignore_backup}" .nxignore' EXIT
+printf '\n# Added by scripts/release/version-packages.sh for the release only.\nprojects/configuration/\n' >> .nxignore
+
+NX_DAEMON=false pnpm exec nx release --skip-publish

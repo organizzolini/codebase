@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../../projects/configuration/callidescope.config.js";
 
 /**
  * What conformetry-languages is held to, measured rather than assumed.
@@ -33,7 +33,7 @@ import { projectDefaults } from "../../../../configuration/callidescope.config.j
  * The next node kind a Language learns to compare is what moves this number
  * now.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

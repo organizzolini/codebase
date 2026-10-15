@@ -140,10 +140,10 @@ describe(SkillExclusionsCommand, () => {
     it("covers every tool whose scan reaches .agents/", () => {
       expect(SKILL_EXCLUSION_FILES.map((file) => file.filePath)).toStrictEqual([
         ".gitattributes",
-        "configuration/.codometerignore",
-        "configuration/.markdownlint-cli2.jsonc",
-        "configuration/.prettierignore",
-        "configuration/cspell.config.yaml",
+        "projects/configuration/.codometerignore",
+        "projects/configuration/.markdownlint-cli2.jsonc",
+        "projects/configuration/.prettierignore",
+        "projects/configuration/cspell.config.yaml",
       ]);
       expect(SKILL_EXCLUSION_FILES.map((file) => file.tool)).toStrictEqual([
         "Linguist",
@@ -157,11 +157,13 @@ describe(SkillExclusionsCommand, () => {
     // A `#` marker in JSONC is a syntax error, so the markers cannot be shared.
     it("delimits the JSONC file with // and every other file with #", () => {
       expect(
-        fileNamed("configuration/.markdownlint-cli2.jsonc").commentPrefix,
+        fileNamed("projects/configuration/.markdownlint-cli2.jsonc")
+          .commentPrefix,
       ).toBe("//");
       expect(
         SKILL_EXCLUSION_FILES.filter(
-          (file) => file.filePath !== "configuration/.markdownlint-cli2.jsonc",
+          (file) =>
+            file.filePath !== "projects/configuration/.markdownlint-cli2.jsonc",
         ).map((file) => file.commentPrefix),
       ).toStrictEqual(["#", "#", "#", "#"]);
     });
@@ -170,7 +172,9 @@ describe(SkillExclusionsCommand, () => {
     // array's indentation with the trailing comma the next element needs.
     it("renders a markdownlint entry as an indented JSONC array element", () => {
       expect(
-        fileNamed("configuration/.markdownlint-cli2.jsonc").renderEntry("tdd"),
+        fileNamed(
+          "projects/configuration/.markdownlint-cli2.jsonc",
+        ).renderEntry("tdd"),
       ).toBe('    ".agents/skills/tdd/**",');
     });
 
@@ -178,7 +182,9 @@ describe(SkillExclusionsCommand, () => {
     // sequence's indentation, quoted because the glob starts with `*`.
     it("renders a cspell entry as an indented YAML list item", () => {
       expect(
-        fileNamed("configuration/cspell.config.yaml").renderEntry("tdd"),
+        fileNamed("projects/configuration/cspell.config.yaml").renderEntry(
+          "tdd",
+        ),
       ).toBe('  - "**/.agents/skills/tdd/**"');
     });
   });
@@ -260,7 +266,9 @@ describe(SkillExclusionsCommand, () => {
     it("fails when the JSONC file carries the wrong comment syntax", async () => {
       setLockedSkills(["tdd"]);
       setSynchronizedFiles(["tdd"]);
-      const jsonc = fileNamed("configuration/.markdownlint-cli2.jsonc");
+      const jsonc = fileNamed(
+        "projects/configuration/.markdownlint-cli2.jsonc",
+      );
 
       fileContents.set(
         resolve(jsonc.filePath),
@@ -278,7 +286,9 @@ describe(SkillExclusionsCommand, () => {
     it("names the markdownlint file when only its block is stale", async () => {
       setLockedSkills(["ask-matt", "tdd"]);
       setSynchronizedFiles(["ask-matt", "tdd"]);
-      const jsonc = fileNamed("configuration/.markdownlint-cli2.jsonc");
+      const jsonc = fileNamed(
+        "projects/configuration/.markdownlint-cli2.jsonc",
+      );
       const [startMarker, endMarker] = markers(jsonc);
 
       fileContents.set(
@@ -383,7 +393,9 @@ describe(SkillExclusionsCommand, () => {
     it("keeps the closing marker's own indentation", async () => {
       setLockedSkills(["tdd"]);
       setSynchronizedFiles([]);
-      const jsonc = fileNamed("configuration/.markdownlint-cli2.jsonc");
+      const jsonc = fileNamed(
+        "projects/configuration/.markdownlint-cli2.jsonc",
+      );
       const [startMarker, endMarker] = markers(jsonc);
 
       fileContents.set(

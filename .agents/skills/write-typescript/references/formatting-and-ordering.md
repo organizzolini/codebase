@@ -8,7 +8,7 @@ is a no-op.
 
 80-column print width, 2-space indent, double quotes, semicolons, trailing
 commas everywhere, LF endings, one JSX attribute per line. Configured in
-`configuration/oxfmt.config.ts`. `prettier` stays installed as a supplementary
+`projects/configuration/oxfmt.config.ts`. `prettier` stays installed as a supplementary
 formatter for manual or non-default use; it is not what a target runs.
 
 ```bash
@@ -43,7 +43,7 @@ reaching for a disable comment.
 > package manifest `exports` conditions are order-sensitive: Node and TypeScript
 > resolve conditions in declaration order (first matching condition wins), so
 > `types` must precede `default` for type declarations to be reachable. The
-> `exports` subtree is exempted in `configuration/eslint.config.ts` so that
+> `exports` subtree is exempted in `projects/configuration/eslint.config.ts` so that
 > condition order can be authored deliberately.
 
 ## Cross-project imports

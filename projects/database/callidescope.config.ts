@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
 
 /**
  * What database is held to, re-measured when it became a command line as
@@ -19,7 +19,7 @@ import { projectDefaults } from "../../configuration/callidescope.config.js";
  * set **at** those numbers, so each is a starting point to ratchet down
  * from.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

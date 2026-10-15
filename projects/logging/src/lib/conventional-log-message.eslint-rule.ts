@@ -212,7 +212,7 @@ export const conventionalLogMessageRule: Rule.RuleModule = {
   meta: conventionalLogMessageMeta,
 };
 
-/** The flat-config plugin object `configuration/eslint.config.ts` registers. */
+/** The flat-config plugin object `projects/configuration/eslint.config.ts` registers. */
 export const conventionalLogMessagePlugin: ESLint.Plugin = {
   rules: {
     "conventional-log-message": conventionalLogMessageRule,

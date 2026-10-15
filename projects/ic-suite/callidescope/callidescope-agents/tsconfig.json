@@ -5,16 +5,16 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "codebase/configuration/*": ["../../../../configuration/*"],
+      "codebase/configuration/*": ["../../../../projects/configuration/*"],
       "eslint-plugin-better-max-params": [
-        "../../../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
+        "../../../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "target": "esnext",
     "types": ["node", "vitest/globals"]
   },
   "exclude": ["dist", "node_modules", "output"],
-  "extends": "../../../../configuration/tsconfig.json",
+  "extends": "../../../../projects/configuration/tsconfig.json",
   "include": [
     "codependix.config.ts",
     "codometer.config.ts",

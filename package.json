@@ -99,19 +99,19 @@
     "vscode": "^1.22.0"
   },
   "exports": {
-    "./configuration/*": "./configuration/*"
+    "./configuration/*": "./projects/configuration/*"
   },
   "keywords": [],
   "license": "MIT",
   "name": "codebase",
   "packageManager": "pnpm@12.6.0",
   "release": {
-    "extends": "./configuration/release.config.cjs"
+    "extends": "./projects/configuration/release.config.cjs"
   },
   "repository": "organizzolini/codebase.git",
   "scripts": {
     "postinstall": "conformetry-nx-bootstrap-generators && bash scripts/install-skills.sh",
-    "prepare": "husky configuration/.husky",
+    "prepare": "husky projects/configuration/.husky",
     "semantic-release": "semantic-release",
     "semantic-release:dry-run": "semantic-release --dry-run"
   },

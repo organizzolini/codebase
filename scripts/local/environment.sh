@@ -40,7 +40,7 @@ while IFS= read -r default_file; do
 done < <(
   git ls-files --cached --others --exclude-standard -- \
     '.env.default' '*/.env.default' \
-    ':!:configuration/conformetry-templates/**' | sort -u
+    ':!:projects/configuration/conformetry-templates/**' | sort -u
 )
 
 # Ensure LOCAL_WORKSPACE_FOLDER is set for docker-compose volume mounts

@@ -9,8 +9,8 @@ packages a commit belongs to with the same logic as `nx affected`:
   `@codebase/logging`;
 - `nx.json`, which Nx treats as touching every project;
 - any `{workspaceRoot}` file a target declares as an input, such as the cspell
-  dictionaries, `configuration/eslint.config.ts` and
-  `configuration/codebase-structure.json`.
+  dictionaries, `projects/configuration/eslint.config.ts` and
+  `projects/configuration/codebase-structure.json`.
 
 So a releasing commit (`feat`, `fix`, `refactor`, `perf` or `build`) that only
 edits a shared lint config gives all 28 packages a patch. We keep that: a
@@ -19,6 +19,12 @@ entry, while a missed one leaves a real change unpublished.
 [ADR 0017](0017-independent-package-versioning-with-cascading-dependents.md)
 described packages as versioned by the commits touching their own paths; this
 records what Nx actually does, and that we chose to keep it.
+
+Amended by [ADR 0025](0025-run-the-workspace-tools-from-a-configuration-project.md):
+`projects/configuration` is the exception. It is in the project graph and every
+project depends on it, but `scripts/release/version-packages.sh` ignores it for
+the release, so a commit that edits only tooling configuration releases no
+package. Changes to `nx.json`, the lockfile, and other declared inputs still do.
 
 ## Considered options
 

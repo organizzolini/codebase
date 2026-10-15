@@ -44,7 +44,7 @@
       "{workspaceRoot}/uv.lock"
     ],
     "python-tests": ["{projectRoot}/testing/**/*.py"],
-    "shared-globals": ["{workspaceRoot}/configuration/tsconfig.json"],
+    "shared-globals": ["{workspaceRoot}/projects/configuration/tsconfig.json"],
     "typescript-files": [
       "{projectRoot}/**/*.{ts,tsx,mts,cts}",
       "{projectRoot}/**/*.json",
@@ -56,6 +56,7 @@
   "parallel": 2,
   "plugins": [
     {
+      "exclude": ["projects/configuration/**"],
       "options": {
         "buildTargetName": "build",
         "devTargetName": "vite-dev",
@@ -64,12 +65,14 @@
       "plugin": "@nx/vite/plugin"
     },
     {
+      "exclude": ["projects/configuration/**"],
       "options": {
         "targetName": "eslint"
       },
       "plugin": "@nx/eslint/plugin"
     },
     {
+      "exclude": ["projects/configuration/**"],
       "options": {
         "testMode": "run",
         "testTargetName": "vitest"
@@ -78,21 +81,21 @@
     },
     {
       "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "projects/configuration/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       },
       "plugin": "@conformetry/nx"
     },
     {
       "options": {
-        "configurationPath": "configuration/callidescope.config.ts",
+        "configurationPath": "projects/configuration/callidescope.config.ts",
         "gateTargetName": "callidescope-gate"
       },
       "plugin": "@callidescope/nx"
     },
     {
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
+        "configurationPath": "projects/configuration/codependix.config.ts",
         "gateTargetName": "codependix-gate"
       },
       "plugin": "@codependix/nx"
@@ -223,13 +226,13 @@
       {
         "cache": true,
         "dependsOn": ["^build"],
-        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/vite.library.config.ts`, which belongs to the root project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
+        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `projects/configuration/vite.library.config.ts`, which belongs to the root project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
         "filter": {
           "projects": ["projects/ic-suite/*/*"]
         },
         "inputs": [
           "^production",
-          "{workspaceRoot}/configuration/vite.library.config.ts",
+          "{workspaceRoot}/projects/configuration/vite.library.config.ts",
           "dependency-versions",
           "production"
         ]
@@ -254,19 +257,19 @@
         },
         "defaultConfiguration": "check",
         "dependsOn": ["build"],
-        "description": "Measure one project and gate the limit it declares, writing the report the pull request's ⏲️ Codometer section reads. This default depends on `build` because size analysis reads compiled output; the workspace-root `codebase:codometer` target must NOT, because it measures source and waiting on every build would be both slow and circular — it pins `dependsOn` to an empty list of its own so this default can never reach it, and neither half of that asymmetry may be collapsed into the other. The command runs with `cwd` set to `{projectRoot}` rather than the workspace root: codometer has no `--directory` flag of its own and always measures the process's own working directory, so running there is what makes a project's `limits[]` address paths like `Compiled JavaScript.size` rather than ones synthesized under a `Command Line` input, and it is also what lets `--config`'s upward-ancestor search land on the project's own `codometer.config.ts` instead of the workspace one. `main.ts` is addressed with a literal `../../` rather than `{workspaceRoot}` for the same reason — the working directory it runs from is no longer the workspace root, and Nx only resolves the `{workspaceRoot}` token when it opens the whole option's value, not when it appears partway through one; this entry reaches every project that sits exactly two directories below the workspace root, at `projects/<project>`; the ones nested one level deeper under a domain folder such as `projects/lexico/`, and the ones under `projects/ic-suite/<suite>/`, each have their own override below. `SWC_NODE_PROJECT` is pinned the same way, to the shared base every project's own tsconfig already extends: `@swc-node/register`'s ESM hook resolves its tsconfig as `<cwd>/tsconfig.json` with no upward search, so a project with no `tsconfig.json` of its own — `affirmancy`, which is pure Python — would otherwise fail to load `codometer-cli` at all rather than measure anything, the same way `codometer-cli`'s own `start` target already pins this for the same hook. `--output-json` is a bare flag rather than a path, so it writes wherever the resolved configuration's own `json` output says to — the shared configuration's `codometer-report.json`, the same path for every project — and a target that left the flag off would write nothing at all and still exit clean — contributing nothing to the ⏲️ Codometer section and looking exactly like a project that changed nothing — so passing it is what makes the report exist, not something the tool refuses to run without. `--output-markdown README.md` stays a literal path on the command line because only the `write` configuration passes it, which is what keeps a branch's `check` run from rewriting every project README; `check` adds `--check limits` so a breach fails only after the report is on disk. Neither checks staleness: project READMEs are written on main by the release workflow, so they are expected to be stale on a branch. The report this target writes is subtracted from its own inputs, because `production` would otherwise glob it back in and every run would rewrite the hash it was just cached under — a local run could never hit its own cache, and a fresh checkout could never match one. `README.md` stays an input despite also being an output: codometer measures markdown, so an edit to it genuinely changes the measurement, and restoring it from cache writes back the identical bytes.",
+        "description": "Measure one project and gate the limit it declares, writing the report the pull request's ⏲️ Codometer section reads. This default depends on `build` because size analysis reads compiled output; the workspace-wide `configuration:codometer` target must NOT, because it measures source and waiting on every build would be both slow and circular — it pins `dependsOn` to an empty list of its own so this default can never reach it, and neither half of that asymmetry may be collapsed into the other. The command runs with `cwd` set to `{projectRoot}` rather than the workspace root: codometer has no `--directory` flag of its own and always measures the process's own working directory, so running there is what makes a project's `limits[]` address paths like `Compiled JavaScript.size` rather than ones synthesized under a `Command Line` input, and it is also what lets `--config`'s upward-ancestor search land on the project's own `codometer.config.ts` instead of the workspace one. `main.ts` is addressed with a literal `../../` rather than `{workspaceRoot}` for the same reason — the working directory it runs from is no longer the workspace root, and Nx only resolves the `{workspaceRoot}` token when it opens the whole option's value, not when it appears partway through one; this entry reaches every project that sits exactly two directories below the workspace root, at `projects/<project>`; the ones nested one level deeper under a domain folder such as `projects/lexico/`, and the ones under `projects/ic-suite/<suite>/`, each have their own override below. `SWC_NODE_PROJECT` is pinned the same way, to the shared base every project's own tsconfig already extends: `@swc-node/register`'s ESM hook resolves its tsconfig as `<cwd>/tsconfig.json` with no upward search, so a project with no `tsconfig.json` of its own — `affirmancy`, which is pure Python — would otherwise fail to load `codometer-cli` at all rather than measure anything, the same way `codometer-cli`'s own `start` target already pins this for the same hook. `--output-json` is a bare flag rather than a path, so it writes wherever the resolved configuration's own `json` output says to — the shared configuration's `codometer-report.json`, the same path for every project — and a target that left the flag off would write nothing at all and still exit clean — contributing nothing to the ⏲️ Codometer section and looking exactly like a project that changed nothing — so passing it is what makes the report exist, not something the tool refuses to run without. `--output-markdown README.md` stays a literal path on the command line because only the `write` configuration passes it, which is what keeps a branch's `check` run from rewriting every project README; `check` adds `--check limits` so a breach fails only after the report is on disk. Neither checks staleness: project READMEs are written on main by the release workflow, so they are expected to be stale on a branch. The report this target writes is subtracted from its own inputs, because `production` would otherwise glob it back in and every run would rewrite the hash it was just cached under — a local run could never hit its own cache, and a fresh checkout could never match one. `README.md` stays an input despite also being an output: codometer measures markdown, so an edit to it genuinely changes the measurement, and restoring it from cache writes back the identical bytes.",
         "executor": "nx:run-commands",
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
+          "{workspaceRoot}/projects/configuration/.codometerignore",
+          "{workspaceRoot}/projects/configuration/codometer.config.ts",
           "production"
         ],
         "options": {
           "cwd": "{projectRoot}",
           "env": {
-            "SWC_NODE_PROJECT": "../../configuration/tsconfig.json"
+            "SWC_NODE_PROJECT": "../../projects/configuration/tsconfig.json"
           }
         },
         "outputs": [
@@ -332,14 +335,14 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
+          "{workspaceRoot}/projects/configuration/.codometerignore",
+          "{workspaceRoot}/projects/configuration/codometer.config.ts",
           "production"
         ],
         "options": {
           "cwd": "{projectRoot}",
           "env": {
-            "SWC_NODE_PROJECT": "../../../../configuration/tsconfig.json"
+            "SWC_NODE_PROJECT": "../../../../projects/configuration/tsconfig.json"
           }
         },
         "outputs": [
@@ -367,14 +370,14 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/configuration/.codometerignore",
-          "{workspaceRoot}/configuration/codometer.config.ts",
+          "{workspaceRoot}/projects/configuration/.codometerignore",
+          "{workspaceRoot}/projects/configuration/codometer.config.ts",
           "production"
         ],
         "options": {
           "cwd": "{projectRoot}",
           "env": {
-            "SWC_NODE_PROJECT": "../../../configuration/tsconfig.json"
+            "SWC_NODE_PROJECT": "../../../projects/configuration/tsconfig.json"
           }
         },
         "outputs": [
@@ -394,14 +397,14 @@
           "^default",
           "{projectRoot}/**/*.ts",
           "{projectRoot}/**/*.tsx",
-          "{workspaceRoot}/configuration/dependency-cruiser.cjs",
+          "{workspaceRoot}/projects/configuration/dependency-cruiser.cjs",
           "default",
           {
             "externalDependencies": ["dependency-cruiser"]
           }
         ],
         "options": {
-          "command": "depcruise {projectRoot}/src --config configuration/dependency-cruiser.cjs",
+          "command": "depcruise {projectRoot}/src --config projects/configuration/dependency-cruiser.cjs",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -444,8 +447,8 @@
         "inputs": [
           "!{projectRoot}/.eslintcache/**",
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/codebase-structure.json",
-          "{workspaceRoot}/configuration/eslint.config.ts",
+          "{workspaceRoot}/projects/configuration/codebase-structure.json",
+          "{workspaceRoot}/projects/configuration/eslint.config.ts",
           "shared-globals",
           {
             "externalDependencies": [
@@ -486,7 +489,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -504,7 +507,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -522,7 +525,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -540,7 +543,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -558,7 +561,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -600,7 +603,7 @@
         "readme-projects",
         "vscode-extensions"
       ],
-      "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `codebase:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
+      "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
       "executor": "nx:noop"
     },
     "knip": [
@@ -608,10 +611,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}"
+            "command": "knip --config projects/configuration/knip.config.ts --workspace {projectRoot}"
           },
           "write": {
-            "command": "knip --fix --config configuration/knip.config.ts --workspace {projectRoot}"
+            "command": "knip --fix --config projects/configuration/knip.config.ts --workspace {projectRoot}"
           }
         },
         "defaultConfiguration": "check",
@@ -620,14 +623,14 @@
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
-          "{workspaceRoot}/configuration/knip.config.ts",
+          "{workspaceRoot}/projects/configuration/knip.config.ts",
           "default",
           {
             "externalDependencies": ["knip", "typescript"]
           }
         ],
         "options": {
-          "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}",
+          "command": "knip --config projects/configuration/knip.config.ts --workspace {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -657,10 +660,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "markdownlint-cli2 --config configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'"
           },
           "write": {
-            "command": "markdownlint-cli2 --fix --config configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --fix --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'"
           }
         },
         "defaultConfiguration": "check",
@@ -674,14 +677,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.md",
-          "{workspaceRoot}/configuration/.markdownlint-cli2.jsonc",
+          "{workspaceRoot}/projects/configuration/.markdownlint-cli2.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["markdownlint-cli2"]
           }
         ],
         "options": {
-          "command": "markdownlint-cli2 --config configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'",
+          "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -768,15 +771,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/.oxfmtignore",
-          "{workspaceRoot}/configuration/oxfmt.config.ts",
+          "{workspaceRoot}/projects/configuration/.oxfmtignore",
+          "{workspaceRoot}/projects/configuration/oxfmt.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxfmt"]
           }
         ],
         "options": {
-          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} {projectRoot}",
+          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -797,15 +800,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/configuration/.oxlintignore",
-          "{workspaceRoot}/configuration/oxlint.config.ts",
+          "{workspaceRoot}/projects/configuration/.oxlintignore",
+          "{workspaceRoot}/projects/configuration/oxlint.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxlint"]
           }
         ],
         "options": {
-          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} {projectRoot}/src",
+          "command": "oxlint --config projects/configuration/oxlint.config.ts --ignore-path \"$PWD/projects/configuration/.oxlintignore\" {args} {projectRoot}/src",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -845,15 +848,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/configuration/.prettierignore",
-          "{workspaceRoot}/configuration/prettier.config.ts",
+          "{workspaceRoot}/projects/configuration/.prettierignore",
+          "{workspaceRoot}/projects/configuration/prettier.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["prettier"]
           }
         ],
         "options": {
-          "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path configuration/.prettierignore {projectRoot}"
+          "command": "prettier {args} --config projects/configuration/prettier.config.ts --ignore-path projects/configuration/.prettierignore {projectRoot}"
         }
       }
     ],
@@ -997,15 +1000,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
-          "{workspaceRoot}/configuration/.cspell/**",
-          "{workspaceRoot}/configuration/cspell.config.yaml",
+          "{workspaceRoot}/projects/configuration/.cspell/**",
+          "{workspaceRoot}/projects/configuration/cspell.config.yaml",
           "shared-globals",
           {
             "externalDependencies": ["cspell"]
           }
         ],
         "options": {
-          "command": "cspell --config configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}' --no-progress --gitignore --gitignore-root .",
+          "command": "cspell --config projects/configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}' --no-progress --gitignore --gitignore-root .",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1081,14 +1084,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/configuration/squawk.toml",
+          "{workspaceRoot}/projects/configuration/squawk.toml",
           "shared-globals",
           {
             "externalDependencies": ["squawk-cli"]
           }
         ],
         "options": {
-          "command": "squawk --config configuration/squawk.toml '{projectRoot}/**/*.sql'",
+          "command": "squawk --config projects/configuration/squawk.toml '{projectRoot}/**/*.sql'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1128,10 +1131,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config projects/configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config projects/configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1141,7 +1144,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/projects/configuration/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1152,17 +1155,17 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+          "command": "stylelint --allow-empty-input --config projects/configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
         }
       },
       {
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1180,7 +1183,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/projects/configuration/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1191,7 +1194,7 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'",
+          "command": "stylelint --allow-empty-input --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'",
           "cwd": "{projectRoot}"
         }
       }
@@ -1351,7 +1354,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",
-          "{workspaceRoot}/configuration/yamllint.yaml",
+          "{workspaceRoot}/projects/configuration/yamllint.yaml",
           "{workspaceRoot}/pyproject.toml",
           "{workspaceRoot}/uv.lock",
           "shared-globals",
@@ -1360,7 +1363,7 @@
           }
         ],
         "options": {
-          "command": "uv run yamllint -c configuration/yamllint.yaml '{projectRoot}'",
+          "command": "uv run yamllint -c projects/configuration/yamllint.yaml '{projectRoot}'",
           "cwd": "{workspaceRoot}"
         }
       }

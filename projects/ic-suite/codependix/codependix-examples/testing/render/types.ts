@@ -37,7 +37,7 @@ export interface ExampleJsonExport {
    * File name, committed inside the example's own directory.
    *
    * Named `codependix-*graph.json` so the committed exports inherit the
-   * carve-outs `configuration/eslint.config.ts` and `configuration/.oxfmtignore`
+   * carve-outs `projects/configuration/eslint.config.ts` and `projects/configuration/.oxfmtignore`
    * declare for every graph codependix writes — see the `json-exports` example.
    */
   readonly fileName: string;

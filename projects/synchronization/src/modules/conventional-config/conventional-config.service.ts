@@ -46,7 +46,7 @@ export class ConventionalConfigService {
   private readonly workspaceRoot = this.resolveWorkspaceRoot();
   private readonly conventionalConfigFile = path.join(
     this.workspaceRoot,
-    "configuration/conventional.config.cjs",
+    "projects/configuration/conventional.config.cjs",
   );
   private readonly issueTemplateFiles =
     SYNC_CONVENTIONAL_CONFIG_ISSUE_TEMPLATE_FILES.map((file) =>
@@ -54,7 +54,7 @@ export class ConventionalConfigService {
     );
   private readonly releaseConfigFile = path.join(
     this.workspaceRoot,
-    "configuration/release.config.cjs",
+    "projects/configuration/release.config.cjs",
   );
   private readonly requireFromCurrentModule = createRequire(import.meta.url);
   private readonly settingsFile = path.join(

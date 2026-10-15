@@ -31,7 +31,7 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
   },
   {
     commentPrefix: "#",
-    filePath: "configuration/.codometerignore",
+    filePath: "projects/configuration/.codometerignore",
     renderEntry: (skillName) => `.agents/skills/${skillName}/`,
     tool: "codometer",
   },
@@ -40,7 +40,7 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     // quoted string element carrying the array's indentation and a trailing
     // comma, and the markers are `//` comments rather than `#` ones.
     commentPrefix: "//",
-    filePath: "configuration/.markdownlint-cli2.jsonc",
+    filePath: "projects/configuration/.markdownlint-cli2.jsonc",
     renderEntry: (skillName) => `    ".agents/skills/${skillName}/**",`,
     tool: "markdownlint",
   },
@@ -48,7 +48,7 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     // Prettier resolves ignore patterns relative to the ignore file, hence the
     // leading `**/`.
     commentPrefix: "#",
-    filePath: "configuration/.prettierignore",
+    filePath: "projects/configuration/.prettierignore",
     renderEntry: (skillName) => `**/.agents/skills/${skillName}/**`,
     tool: "prettier",
   },
@@ -58,7 +58,7 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     // prettier pattern: cspell resolves globs relative to its configuration
     // file too.
     commentPrefix: "#",
-    filePath: "configuration/cspell.config.yaml",
+    filePath: "projects/configuration/cspell.config.yaml",
     renderEntry: (skillName) => `  - "**/.agents/skills/${skillName}/**"`,
     tool: "cspell",
   },

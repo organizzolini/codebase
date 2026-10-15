@@ -76,7 +76,7 @@ Two things differ from every other example here:
     {
       "plugin": "@conformetry/nx",
       "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "projects/configuration/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       }
     }
@@ -121,8 +121,8 @@ lists every other target the project has, and one input per template:
   "executor": "@conformetry/nx:validate",
   "inputs": [
     "default",
-    "{workspaceRoot}/configuration/conformetry.config.ts",
-    "{workspaceRoot}/configuration/conformetry-templates/nestjs-service-module/**/*"
+    "{workspaceRoot}/projects/configuration/conformetry.config.ts",
+    "{workspaceRoot}/projects/configuration/conformetry-templates/nestjs-service-module/**/*"
   ]
 }
 ```

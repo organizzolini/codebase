@@ -262,14 +262,14 @@ jobs:
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'push-releases' &&
           env.RELEASE_SUPERSEDED != 'true'
-        run: pnpm exec nx run codebase:callidescope:write
+        run: pnpm exec nx run configuration:callidescope:write
 
       - name: 🕸️ Graph Dependencies
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'push-releases' &&
           env.RELEASE_SUPERSEDED != 'true'
-        run: pnpm exec nx run codebase:codependix:write
+        run: pnpm exec nx run configuration:codependix:write
 
       - name: 👔 Inventory Generators
         if: >-
@@ -301,8 +301,8 @@ jobs:
           env.RELEASE_SUPERSEDED != 'true'
         run: |
           pnpm exec nx run-many --target=codometer --configuration=write \
-            --exclude=codebase
-          pnpm exec nx run codebase:codometer:write
+            --exclude=configuration
+          pnpm exec nx run configuration:codometer:write
 
       # semantic-release versions and tags the codebase itself, and creates the
       # `v*` release the README badge shows, never an ic-suite package. Its one

@@ -1,11 +1,11 @@
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
 
 /**
  * What logging is held to, measured rather than assumed.
  *
  * Four frames, which is this package reaching its own transport. Every other
  * project's calls into it are excluded by the run — `excludeCallees` in
- * `configuration/callidescope.config.ts` names `LoggerService.*` — so what is
+ * `projects/configuration/callidescope.config.ts` names `LoggerService.*` — so what is
  * gated here is the logger judged on its own rather than as the callee sitting
  * behind everything else.
  *
@@ -28,7 +28,7 @@ import { projectDefaults } from "../../configuration/callidescope.config.js";
  * than a closed enumeration, so the next helper anybody extracts here is what
  * moves the number.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

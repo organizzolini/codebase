@@ -7,16 +7,16 @@
     "moduleResolution": "Bundler",
     "noEmit": true,
     "paths": {
-      "codebase/configuration/*": ["../../../configuration/*"],
+      "codebase/configuration/*": ["../../../projects/configuration/*"],
       "eslint-plugin-better-max-params": [
-        "../../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
+        "../../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "target": "ES2022",
     "types": ["node", "vite/client"]
   },
   "exclude": ["dist", "node_modules", "output"],
-  "extends": "../../../configuration/tsconfig.json",
+  "extends": "../../../projects/configuration/tsconfig.json",
   "include": [
     "callidescope.config.ts",
     "codometer.config.ts",

@@ -39,7 +39,7 @@ if [[ -z "${NX_BASE:-}" || -z "${NX_HEAD:-}" ]]; then
   exit 1
 fi
 
-default_spelling_paths='^configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
+default_spelling_paths='^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
 spelling_paths="${SPELLING_PATHS:-${default_spelling_paths}}"
 
 arguments=()

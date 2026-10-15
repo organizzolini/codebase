@@ -126,7 +126,7 @@ was named at, and three its imports reached:
 | `.../examples/gated-leaf` | Named — a nested project, for the reason [gated-leaf](examples/gated-leaf/README.md) gives |
 | `projects/ic-suite/callidescope/callidescope-configuration` | Imported by the fixture, and by [`callidescope.workspace.config.ts`](callidescope.workspace.config.ts) |
 | `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared configuration [`codometer.config.ts`](codometer.config.ts) spreads |
-| `projects/logging` | Reached through the shared `configuration/eslint.config.ts` |
+| `projects/logging` | Reached through the shared `projects/configuration/eslint.config.ts` |
 
 That is what the closure buys, and it is measurable: the fixture's stack is
 depth 4 as traced, and depth 2 when the same fixtures are traced again with
@@ -134,7 +134,7 @@ depth 4 as traced, and depth 2 when the same fixtures are traced again with
 from growing past those three — a project root holding no `package.json` is not
 a destination, and neither is the workspace root — and the example's guide works
 through both, including the shared
-[`configuration/`](../../../../configuration) directory this package's program really
+[`projects/configuration/`](../../../../projects/configuration) directory this package's program really
 reads and the closure deliberately refuses.
 
 ### The cap on structural matching
@@ -270,7 +270,7 @@ sections and no more, even though it measures five projects. That is the rule th
 closure is read against: **measurement reaches into a package's dependencies,
 publishing does not.** A scoped run that also published would rewrite the
 section in three sibling packages that never asked for it, and fight
-`nx run codebase:callidescope:write` — which sets different limits and ignores
+`nx run configuration:callidescope:write` — which sets different limits and ignores
 `LoggerService.*` — over the same three anchor blocks forever. The
 whole-workspace run still publishes every project's section, because a run that
 names no directory has every project as a scoped one.
@@ -324,8 +324,8 @@ moved the dependency, and the `examples` target names those packages' sources in
 its `inputs` so a cached run is never replayed over them. Their READMEs are not
 named there, because this run does not write into them.
 
-`{workspaceRoot}/configuration/*.config.ts` is in those `inputs` too, and it is
-not redundant with `shared-globals` — which holds `configuration/tsconfig.json`
+`{workspaceRoot}/projects/configuration/*.config.ts` is in those `inputs` too, and it is
+not redundant with `shared-globals` — which holds `projects/configuration/tsconfig.json`
 and nothing else. Two of the three dependency packages are in the closure only
 because this package's own `eslint.config.ts` and `codometer.config.ts` spread
 the root ones, and the root ones import `@codebase/logging/eslint` and
@@ -411,7 +411,7 @@ Four decisions are worth making deliberately:
    a wrong-looking label rather than a missing subtree.
 3. **`excludeFrom`.** Point it at a gitignore-syntax file rather than growing
    the configuration. This repository's
-   [`.callidescopeignore`](../../../../configuration/.callidescopeignore) excludes
+   [`.callidescopeignore`](../../../../projects/configuration/.callidescopeignore) excludes
    generated code, template sources, and — the reason it matters here — this
    package, whose fixtures exist to breach the limits the workspace gate
    enforces.
@@ -432,7 +432,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 
 | Check | Answer |
 | ----- | ------ |
-| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../configuration/.callidescopeignore) and traced by its own configuration instead |
+| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../projects/configuration/.callidescopeignore) and traced by its own configuration instead |
 | Published section | Yes — this package declares its own `write.markdown`, because a section reporting the deliberately-bad fixtures is the best example in the package, not noise |
 | Test coverage | Nothing is instrumented. Fixture code exists to be read by the type checker, not executed; what is verified is what callidescope makes of it |
 | `knip` and `fallow` | Every fixture is declared an entry point rather than ignored, so both keep checking dependencies while the orphan-root fixture stops being a finding |
@@ -440,7 +440,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 | `codometer` | No declared size limit: the package is private and never built, so there is no bundle to gate |
 | Nested projects | One example directory, `gated-leaf`, holds a `tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
 | Nx tags | `type:package`, `framework:nestjs`, `language:typescript`, `name:callidescope-examples`. The NestJS dependency is real — `injected-dependency` is the headline case |
-| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/codebase-structure.json` declares it |
+| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `projects/configuration/codebase-structure.json` declares it |
 | `conformetry` | Not an instance of any template, and nothing had to be suppressed to keep it that way — see below |
 
 The layout is what keeps this package out of conformance, and it is worth
@@ -848,7 +848,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ## 🕸️ Codependix
 
-Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run codebase:codependix:write`.
+Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
 
 ### Nx Neighborhood
 
