@@ -106,27 +106,6 @@ describe("import --clean", () => {
     fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("rejects --clean without --schema, before any process starts", async () => {
-    const spawned = mockProcesses();
-
-    const result = await run([
-      "import",
-      "--target-uri",
-      TARGET_URI,
-      "--table",
-      "words",
-      "--data",
-      "--file",
-      file,
-      "--clean",
-    ]);
-
-    expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("--clean requires --schema");
-    expect(spawned).toStrictEqual([]);
-    expect(promptsMock).not.toHaveBeenCalled();
-  });
-
   it("asks on a terminal, naming the host and database but not the password", async () => {
     setStandardInputTerminal(true);
     promptsMock.mockReset().mockResolvedValue({ confirmed: true });

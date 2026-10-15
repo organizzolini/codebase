@@ -1,5 +1,7 @@
 // ♟️ Constants
 
+import { z } from "zod";
+
 import type {
   PostgresClientFailure,
   PostgresClientTool,
@@ -71,6 +73,58 @@ export class PostgresClientToolError extends Error {
     this.tool = tool;
   }
   readonly tool: PostgresClientTool;
+}
+
+/**
+ * The error code Postgres raises for a truncate of a table that a table
+ * outside the same statement references, among other unsupported features.
+ */
+export const POSTGRES_FEATURE_NOT_SUPPORTED = "0A000";
+
+/**
+ * Lists the tables outside `$1`, a `regclass[]`, whose foreign keys
+ * reference a table inside it, schema-qualified and sorted.
+ */
+export const POSTGRES_REFERENCING_TABLES_SQL = `SELECT DISTINCT namespace.nspname || '.' || referencing.relname AS "table"
+FROM pg_catalog.pg_constraint AS foreign_key
+JOIN pg_catalog.pg_class AS referencing ON referencing.oid = foreign_key.conrelid
+JOIN pg_catalog.pg_namespace AS namespace ON namespace.oid = referencing.relnamespace
+WHERE foreign_key.contype = 'f'
+  AND foreign_key.confrelid = ANY ($1::regclass[])
+  AND NOT foreign_key.conrelid = ANY ($1::regclass[])
+ORDER BY 1`;
+
+/** The rows `POSTGRES_REFERENCING_TABLES_SQL` resolves. */
+export const POSTGRES_REFERENCING_TABLES_SCHEMA = z.array(
+  z.object({ table: z.string() }),
+);
+
+/**
+ * A truncate Postgres refused because tables outside it reference the
+ * tables inside it. The failed statement truncated nothing.
+ */
+export class PostgresReferencedTablesError extends Error {
+  constructor(referencing: readonly string[]) {
+    super(
+      `Cannot truncate the selected tables: ${referencing.join(", ")} reference them`,
+    );
+    this.name = PostgresReferencedTablesError.name;
+    this.referencing = referencing;
+  }
+
+  /** The schema-qualified tables to add to the truncate, sorted. */
+  readonly referencing: readonly string[];
+}
+
+/**
+ * A truncate that could not connect or run, carrying the driver's own
+ * error text with credentials masked. The truncate did not take effect.
+ */
+export class PostgresTruncateError extends Error {
+  constructor(detail: string) {
+    super(`Truncate failed: ${detail}`);
+    this.name = PostgresTruncateError.name;
+  }
 }
 
 /**

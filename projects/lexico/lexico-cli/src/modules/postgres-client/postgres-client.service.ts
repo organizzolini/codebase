@@ -4,12 +4,15 @@ import os from "node:os";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
+import { DataSource } from "typeorm";
 
 import {
   POSTGRES_CLIENT_MAJOR_VERSION,
   POSTGRES_CLIENT_MAXIMUM_BUFFER_BYTES,
   PostgresClientError,
   PostgresClientToolError,
+  PostgresReferencedTablesError,
+  PostgresTruncateError,
 } from "./postgres-client.constants";
 import {
   maskPostgresCredentials,
@@ -21,6 +24,7 @@ import {
   parsePostgresDumpContents,
   selectPostgresDumpEntries,
 } from "./postgres-dump.utilities";
+import { truncatePostgresTables } from "./postgres-truncate.utilities";
 
 import type {
   PostgresClientOutput,
@@ -28,6 +32,7 @@ import type {
   PostgresDumpEntry,
   PostgresDumpOptions,
   PostgresRestoreOptions,
+  PostgresTruncateOptions,
   PostgresUriConnection,
 } from "./postgres-client.types";
 
@@ -230,6 +235,50 @@ export class PostgresClientService {
       );
     } finally {
       await fs.rm(directory, { force: true, recursive: true });
+    }
+  }
+
+  /**
+   * Empties exactly `tables` in `connection`'s database through the `pg`
+   * driver, which `pg_restore` cannot do for a data-only restore. The
+   * truncate commits on its own, before any restore begins.
+   *
+   * @throws PostgresReferencedTablesError when a table outside `tables`
+   * references one of them, or PostgresTruncateError when the database
+   * cannot be reached or the truncate fails; either way nothing was
+   * truncated.
+   */
+  async truncate({
+    connection,
+    tables,
+  }: PostgresTruncateOptions): Promise<void> {
+    const { database, host, password, port, username } = connection;
+    const dataSource = new DataSource({
+      applicationName: "lexico-cli",
+      database,
+      host,
+      logging: false,
+      password,
+      port,
+      type: "postgres",
+      username,
+    });
+
+    try {
+      await dataSource.initialize();
+      await truncatePostgresTables(
+        async (sql, parameters = []) =>
+          dataSource.query<unknown[]>(sql, [...parameters]),
+        tables,
+      );
+    } catch (error) {
+      if (error instanceof PostgresReferencedTablesError) throw error;
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new PostgresTruncateError(
+        maskPostgresCredentials(detail, password),
+      );
+    } finally {
+      if (dataSource.isInitialized) await dataSource.destroy();
     }
   }
 }

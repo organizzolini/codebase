@@ -8,6 +8,7 @@ buildkit
 buildx
 bullmq
 burstable
+confrelid
 conrelid
 contype
 cves

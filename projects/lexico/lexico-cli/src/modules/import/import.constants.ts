@@ -1,14 +1,12 @@
 // ♟️ Constants
 
-import type { PostgresUriConnection } from "../postgres-client/postgres-client.types";
+import type { ImportPlan } from "./import.types";
 
 /**
  * What `import` says when an option it requires is missing, keyed by the
  * option. Each names the option and shows it in use.
  */
 export const IMPORT_OPTION_MESSAGES = {
-  cleanContent:
-    "--clean requires --schema: it drops and recreates the selected tables; add --schema (cleaning rows alone is not supported yet)",
   content:
     "--data or --schema is required: pass --data for rows, --schema for table definitions, or both",
   file: "--file is required: name the dump file to import, e.g. --file lexico.dump",
@@ -26,6 +24,17 @@ export class ImportCancelledError extends Error {
   constructor(message: string) {
     super(message);
     this.name = ImportCancelledError.name;
+  }
+}
+
+/**
+ * A `--clean --data` truncate that was refused or failed. The truncate
+ * did not take effect, so nothing has changed.
+ */
+export class ImportCleanError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = ImportCleanError.name;
   }
 }
 
@@ -52,8 +61,8 @@ export class ImportOptionsError extends Error {
 }
 
 /**
- * A restore that failed and was rolled back, carrying the client tool's
- * own error, credentials masked.
+ * A restore that failed, carrying the client tool's own error,
+ * credentials masked.
  */
 export class ImportRestoreError extends Error {
   constructor(message: string) {
@@ -88,14 +97,41 @@ export const rolledBackMessage = (detail: string, target: string): string =>
   `${detail}\nNothing was imported: the restore ran as one transaction, so ${target} was left unchanged.`;
 
 /**
- * The `--clean` question: which tables, in which database on which host.
- * Never carries the password.
+ * The `--clean` question: which tables, in which database on which host,
+ * and whether they are dropped (with `--schema`) or emptied. Never carries
+ * the password.
  */
-export const cleanPromptMessage = (
-  { database, host }: Pick<PostgresUriConnection, "database" | "host">,
+export const cleanPromptMessage = ({
+  connection: { database, host },
+  content,
+  tables,
+}: Pick<ImportPlan, "connection" | "content" | "tables">): string =>
+  `--clean ${content.schema ? `drops ${tables.join(", ")}, and every row they hold,` : `deletes every row of ${tables.join(", ")}`} in database "${database}" on ${host} before restoring them. Continue?`;
+
+/**
+ * What `import --clean --data` says when tables outside the selection,
+ * `referencing`, reference a selected one: the `--table` options to add.
+ */
+export const referencedTablesMessage = (
+  referencing: readonly string[],
+  target: string,
+): string =>
+  `--clean cannot empty the selected tables: ${referencing.join(", ")} ${referencing.length === 1 ? "references them but is" : "reference them but are"} not selected, and --clean never cascades. Add ${referencing.map((table) => `--table ${table}`).join(" ")} to empty them too.\nNothing was truncated: ${target} was left unchanged.`;
+
+/** What `import` adds to a failed truncate's error: nothing changed. */
+export const notTruncatedMessage = (detail: string, target: string): string =>
+  `${detail}\nNothing was truncated: ${target} was left unchanged.`;
+
+/**
+ * What `import` adds to a restore that failed after `--clean --data`
+ * emptied `tables`: they may be empty, and the import should be re-run.
+ */
+export const truncatedMessage = (
+  detail: string,
+  target: string,
   tables: readonly string[],
 ): string =>
-  `--clean drops ${tables.join(", ")}, and every row they hold, in database "${database}" on ${host} before restoring them. Continue?`;
+  `${detail}\n--clean had already emptied ${tables.join(", ")} in ${target}, so they may now be empty. Re-run the import from the same file to refill them.`;
 
 /** What `import --clean` says when it cannot ask: no terminal, no `--yes`. */
 export const noTerminalMessage = (): string =>

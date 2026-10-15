@@ -75,6 +75,15 @@ export interface PostgresDumpOptions {
 }
 
 /**
+ * Runs one SQL statement with positional `$n` parameters and resolves its
+ * rows; how `truncatePostgresTables` reaches a database.
+ */
+export type PostgresQuery = (
+  sql: string,
+  parameters?: readonly unknown[],
+) => Promise<unknown[]>;
+
+/**
  * What `PostgresClientService.restore` is given.
  */
 export interface PostgresRestoreOptions {
@@ -96,6 +105,17 @@ export interface PostgresRestoreOptions {
 
   /** The dump file or directory to restore from. */
   readonly file: string;
+
+  /** Schema-qualified table names; see `qualifyTableName`. */
+  readonly tables: readonly string[];
+}
+
+/**
+ * What `PostgresClientService.truncate` is given.
+ */
+export interface PostgresTruncateOptions {
+  /** The database whose tables to empty. */
+  readonly connection: PostgresUriConnection;
 
   /** Schema-qualified table names; see `qualifyTableName`. */
   readonly tables: readonly string[];

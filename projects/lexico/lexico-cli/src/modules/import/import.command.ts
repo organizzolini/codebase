@@ -8,7 +8,11 @@ import prompts from "prompts";
 import { postgresEnvironmentKey } from "@codebase/database";
 import { LoggerService } from "@codebase/logging";
 
-import { PostgresClientError } from "../postgres-client/postgres-client.constants";
+import {
+  PostgresClientError,
+  PostgresReferencedTablesError,
+  PostgresTruncateError,
+} from "../postgres-client/postgres-client.constants";
 import { PostgresClientService } from "../postgres-client/postgres-client.service";
 import {
   describePostgresContent,
@@ -22,13 +26,17 @@ import {
   cleanPromptMessage,
   IMPORT_OPTION_MESSAGES,
   ImportCancelledError,
+  ImportCleanError,
   ImportContentsError,
   ImportOptionsError,
   ImportRestoreError,
   missingContentsMessage,
   missingFileMessage,
   noTerminalMessage,
+  notTruncatedMessage,
+  referencedTablesMessage,
   rolledBackMessage,
+  truncatedMessage,
 } from "./import.constants";
 
 import type {
@@ -41,13 +49,13 @@ import type { ImportCommandOptions, ImportPlan } from "./import.types";
  * Restores selected tables from a dump file into the database a URI names,
  * through `pg_restore`. Every option is validated and the dump's contents
  * checked before any connection opens; the restore runs as one
- * transaction and never deletes anything, so a conflict leaves the target
- * as it was. The password reaches `pg_restore` only through its
- * environment.
+ * transaction and deletes nothing unless `--clean` was confirmed, so a
+ * conflict leaves the target as it was. The password reaches `pg_restore`
+ * only through its environment.
  */
 @Command({
   description:
-    "Import selected Lexico tables from a dump file into a database, without deleting anything",
+    "Import selected Lexico tables from a dump file into a database, deleting nothing unless --clean is confirmed",
   name: "import",
 })
 @Injectable()
@@ -77,18 +85,15 @@ export class ImportCommand extends CommandRunner {
    * @throws ImportCancelledError when there is no terminal to ask on, or
    * the user declines or aborts the prompt.
    */
-  private async confirmClean(
-    { clean, connection, tables }: ImportPlan,
-    yes: boolean,
-  ): Promise<void> {
-    if (!clean || yes) return;
+  private async confirmClean(plan: ImportPlan, yes: boolean): Promise<void> {
+    if (!plan.clean || yes) return;
     if (!process.stdin.isTTY) {
       throw new ImportCancelledError(noTerminalMessage());
     }
 
     const response: unknown = await prompts({
       initial: false,
-      message: cleanPromptMessage(connection, tables),
+      message: cleanPromptMessage(plan),
       name: "confirmed",
       type: "confirm",
     });
@@ -149,11 +154,6 @@ export class ImportCommand extends CommandRunner {
       postgresEnvironmentKey("lexico", "schema"),
     );
 
-    const clean = options.clean === true;
-    if (clean && !content.schema) {
-      throw new ImportOptionsError(IMPORT_OPTION_MESSAGES.cleanContent);
-    }
-
     const connection = parsePostgresUri(targetUri, "--target-uri");
 
     // A directory-format dump is a directory, which pg_restore reads too.
@@ -162,7 +162,7 @@ export class ImportCommand extends CommandRunner {
     }
 
     return {
-      clean,
+      clean: options.clean === true,
       connection,
       content,
       file,
@@ -188,20 +188,24 @@ export class ImportCommand extends CommandRunner {
   /**
    * Restores the plan's tables from the listed dump. A client-tool failure
    * says the target was left unchanged, which the single transaction
-   * guarantees.
+   * guarantees, unless `truncated`: then the tables may be empty, and the
+   * import should be re-run.
    *
    * @throws ImportRestoreError when pg_restore fails.
    */
   private async restore(
     plan: ImportPlan,
     contents: readonly PostgresDumpEntry[],
+    truncated: boolean,
   ): Promise<void> {
     try {
       await this.postgresClient.restore({ ...plan, contents });
     } catch (error) {
       if (!(error instanceof PostgresClientError)) throw error;
       throw new ImportRestoreError(
-        rolledBackMessage(error.message, plan.target),
+        truncated
+          ? truncatedMessage(error.message, plan.target, plan.tables)
+          : rolledBackMessage(error.message, plan.target),
       );
     }
   }
@@ -222,12 +226,45 @@ export class ImportCommand extends CommandRunner {
     return content;
   }
 
+  /**
+   * Empties the plan's tables before a `--clean --data` restore. With
+   * `--schema`, `pg_restore` drops and recreates them instead, so nothing
+   * is truncated. Resolves whether the tables were emptied.
+   *
+   * @throws ImportCleanError when an unselected table references a
+   * selected one, or the truncate fails; nothing was truncated.
+   */
+  private async truncate({
+    clean,
+    connection,
+    content,
+    tables,
+    target,
+  }: ImportPlan): Promise<boolean> {
+    if (!clean || content.schema) return false;
+
+    try {
+      await this.postgresClient.truncate({ connection, tables });
+    } catch (error) {
+      if (error instanceof PostgresReferencedTablesError) {
+        throw new ImportCleanError(
+          referencedTablesMessage(error.referencing, target),
+        );
+      }
+      if (error instanceof PostgresTruncateError) {
+        throw new ImportCleanError(notTruncatedMessage(error.message, target));
+      }
+      throw error;
+    }
+    return true;
+  }
+
   // 🌎 Public Methods
 
   /** Parses the boolean `--clean` flag. */
   @Option({
     description:
-      "Drop and recreate the selected tables before importing, after asking for confirmation; requires --schema",
+      "Before importing, empty the selected tables (--data) or drop and recreate them (--schema), after asking for confirmation",
     flags: "--clean",
   })
   parseClean(): boolean {
@@ -293,9 +330,10 @@ export class ImportCommand extends CommandRunner {
   }
 
   /**
-   * Validates the options, checks pg_restore and the dump's contents, then
-   * restores the selected tables in one transaction. Nothing connects to
-   * the target until the dump is known to hold what was asked for.
+   * Validates the options, checks pg_restore and the dump's contents,
+   * confirms and applies any `--clean`, then restores the selected tables
+   * in one transaction. Nothing connects to the target until the dump is
+   * known to hold what was asked for.
    */
   async run(
     _passedParameters: string[],
@@ -311,7 +349,8 @@ export class ImportCommand extends CommandRunner {
     this.logger.log(
       `📥 Importing ${content} of ${plan.tables.join(", ")} from ${plan.file} into ${plan.target}`,
     );
-    await this.restore(plan, contents);
+    const truncated = await this.truncate(plan);
+    await this.restore(plan, contents, truncated);
 
     const count = plan.tables.length;
     this.logger.log(

@@ -23,7 +23,10 @@ export interface ImportCommandOptions {
  * A validated import: what to restore, from which file, and into where.
  */
 export interface ImportPlan {
-  /** Drop and recreate the selected tables before restoring them. */
+  /**
+   * Clear the selected tables before restoring them: truncate them for
+   * data alone, or drop and recreate them when the schema is restored too.
+   */
   readonly clean: boolean;
 
   readonly connection: PostgresUriConnection;
