@@ -156,7 +156,7 @@ export function mockProcesses(outcome: ProcessOutcome = {}): SpawnedProcess[] {
  * ```ts
  * const setStandardInputTerminal = mockStandardInputTerminal()
  *
- * it('prompts', () => { setStandardInputTerminal(true) })
+ * it('reads a terminal', () => { setStandardInputTerminal(true) })
  * ```
  */
 export function mockStandardInputTerminal(): (isTerminal: boolean) => void {

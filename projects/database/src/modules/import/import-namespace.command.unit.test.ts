@@ -75,7 +75,7 @@ describe("import --namespace", () => {
   it.each([
     ["an import", []],
     ["a dry run", ["--dry-run"]],
-    ["a --clean import", ["--clean", "--yes"]],
+    ["a --clean import", ["--clean"]],
   ])(
     "fails %s fast on an unqualified --table without --namespace, starting no process",
     async (_case, extra) => {
@@ -138,7 +138,6 @@ describe("import --namespace", () => {
         "--namespace",
         "fixture",
         "--clean",
-        "--yes",
       );
 
       expect(result.exitCode).toBe(0);

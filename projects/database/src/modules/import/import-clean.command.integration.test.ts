@@ -31,10 +31,9 @@ describe("import --clean --schema", () => {
     return result;
   }
 
-  /** `import --clean` of `tables` from the dump, plus `extra` options. */
+  /** `import --clean` of `tables` from the dump. */
   async function runClean(
     tables: readonly string[],
-    ...extra: readonly string[]
   ): ReturnType<typeof runCliCommandLine> {
     return runCliCommandLine({
       argv: [
@@ -47,7 +46,6 @@ describe("import --clean --schema", () => {
         "--clean",
         "--file",
         dump,
-        ...extra,
       ],
     });
   }
@@ -109,11 +107,11 @@ describe("import --clean --schema", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "replaces the selected table with the dump's, and leaves an unselected table alone",
+    "replaces the selected table with the dump's, without asking when there is no terminal, and leaves an unselected table alone",
     async () => {
       expect.hasAssertions();
 
-      const result = await runClean(["archive.notes"], "--yes");
+      const result = await runClean(["archive.notes"]);
 
       expect(result.exitCode).toBe(0);
       await expect(
@@ -136,28 +134,12 @@ describe("import --clean --schema", () => {
 
       await targetDataSource.query("DROP TABLE archive.notes");
 
-      const result = await runClean(["archive.notes"], "--yes");
+      const result = await runClean(["archive.notes"]);
 
       expect(result.exitCode).toBe(0);
       await expect(
         rows("SELECT count(*)::int AS count FROM archive.notes"),
       ).resolves.toStrictEqual([{ count: 2 }]);
-    },
-    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
-  );
-
-  it(
-    "fails without --yes when there is no terminal, changing nothing",
-    async () => {
-      expect.hasAssertions();
-
-      const result = await runClean(["archive.notes"]);
-
-      expect(result.exitCode).toBe(1);
-      expect(result.stderr).toContain("--yes");
-      await expect(
-        rows("SELECT stale FROM archive.notes"),
-      ).resolves.toStrictEqual([{ stale: "old" }]);
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
@@ -172,7 +154,7 @@ describe("import --clean --schema", () => {
         "CREATE TABLE archive.refs (id serial PRIMARY KEY, note_id integer REFERENCES archive.notes (id))",
       );
 
-      const result = await runClean(["archive.notes"], "--yes");
+      const result = await runClean(["archive.notes"]);
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain("Nothing was imported");

@@ -2,7 +2,6 @@ import fs from "node:fs";
 
 import { Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
-import prompts from "prompts";
 
 import { LoggerService } from "@codebase/logging";
 
@@ -21,17 +20,14 @@ import {
 import { dumpedTables } from "../postgres-client/postgres-dump.utilities";
 
 import {
-  cleanPromptMessage,
   dryRunMessages,
   IMPORT_OPTION_MESSAGES,
-  ImportCancelledError,
   ImportCleanError,
   ImportContentsError,
   ImportOptionsError,
   ImportRestoreError,
   missingContentsMessage,
   missingFileMessage,
-  noTerminalMessage,
   notTruncatedMessage,
   referencedTablesMessage,
   rolledBackMessage,
@@ -48,13 +44,13 @@ import type { ImportCommandOptions, ImportPlan } from "./import.types";
  * Restores selected tables from a dump file into the database a URI names,
  * through `pg_restore`. Every option is validated and the dump's contents
  * checked before any connection opens; the restore runs as one
- * transaction and deletes nothing unless `--clean` was confirmed, so a
+ * transaction and deletes nothing unless `--clean` was given, so a
  * conflict leaves the target as it was. The password reaches `pg_restore`
  * only through its environment.
  */
 @Command({
   description:
-    "Import selected tables from a dump file into a database, deleting nothing unless --clean is confirmed",
+    "Import selected tables from a dump file into a database, deleting nothing unless --clean is given",
   name: "import",
 })
 @Injectable()
@@ -89,37 +85,6 @@ export class ImportCommand extends CommandRunner {
     const contents = await this.postgresClient.list(plan.file);
     this.ensureContents(plan, contents);
     return { contents, plan };
-  }
-
-  /**
-   * Asks the user to confirm `--clean`, naming the target's host and
-   * database, unless `--yes` was passed. Runs after every check that needs
-   * no connection, and before any destructive step.
-   *
-   * @throws ImportCancelledError when there is no terminal to ask on, or
-   * the user declines or aborts the prompt.
-   */
-  private async confirmClean(plan: ImportPlan, yes: boolean): Promise<void> {
-    if (!plan.clean || yes) return;
-    if (!process.stdin.isTTY) {
-      throw new ImportCancelledError(noTerminalMessage());
-    }
-
-    const response: unknown = await prompts({
-      initial: false,
-      message: cleanPromptMessage(plan),
-      name: "confirmed",
-      type: "confirm",
-    });
-    const confirmed =
-      typeof response === "object" &&
-      response !== null &&
-      "confirmed" in response &&
-      response.confirmed === true;
-    if (!confirmed)
-      throw new ImportCancelledError(
-        "Import cancelled: the target was not changed.",
-      );
   }
 
   /**
@@ -297,7 +262,7 @@ export class ImportCommand extends CommandRunner {
   /** Parses the boolean `--clean` flag. */
   @Option({
     description:
-      "Before importing, empty the selected tables (--data) or drop and recreate them (--schema), after asking for confirmation",
+      "Before importing, empty the selected tables (--data) or drop and recreate them (--schema); --dry-run shows what it would clear",
     flags: "--clean",
   })
   parseClean(): boolean {
@@ -371,22 +336,12 @@ export class ImportCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses the boolean `--yes` flag. */
-  @Option({
-    description:
-      "Skip the --clean confirmation, for scripts and other unattended runs",
-    flags: "--yes",
-  })
-  parseYes(): boolean {
-    return true;
-  }
-
   /**
    * Validates the options, checks pg_restore and the dump's contents,
-   * confirms and applies any `--clean`, then restores the selected tables
-   * in one transaction. Nothing connects to the target until the dump is
-   * known to hold what was asked for; `--dry-run` stops there, printing the
-   * plan instead of asking or importing.
+   * applies any `--clean`, then restores the selected tables in one
+   * transaction. Nothing connects to the target until the dump is known to
+   * hold what was asked for; `--dry-run` stops there, printing the plan
+   * instead of importing.
    */
   async run(
     _passedParameters: string[],
@@ -397,7 +352,6 @@ export class ImportCommand extends CommandRunner {
       this.logDryRun(plan, contents);
       return;
     }
-    await this.confirmClean(plan, options.yes === true);
 
     const content = describePostgresContent(plan.content);
     this.logger.log(

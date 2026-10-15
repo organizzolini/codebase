@@ -5,21 +5,11 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import {
-  mockProcesses,
-  mockStandardInputTerminal,
-  processFailure,
-} from "../../../testing/mocks";
+import { mockProcesses, processFailure } from "../../../testing/mocks";
 import { PostgresReferencedTablesError } from "../postgres-client/postgres-client.constants";
 import { PostgresClientService } from "../postgres-client/postgres-client.service";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<(question: { message: string }) => Promise<unknown>>(),
-}));
-
-vi.mock("prompts", () => ({ default: promptsMock }));
 
 vi.mock("node:child_process", async () => {
   const { childProcessMock } = await import("../../../testing/mocks");
@@ -49,7 +39,6 @@ function restoresOf(spawned: readonly SpawnedProcess[]): SpawnedProcess[] {
 }
 
 describe("import --clean --data", () => {
-  const setStandardInputTerminal = mockStandardInputTerminal();
   let directory: string;
   let file: string;
 
@@ -89,28 +78,23 @@ describe("import --clean --data", () => {
     fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("asks before deleting the rows, naming the host and database", async () => {
-    setStandardInputTerminal(true);
-    promptsMock.mockReset().mockResolvedValue({ confirmed: true });
+  it("empties and refills the rows without asking, whatever the terminal", async () => {
     stubTruncate();
-    mockProcesses({ list: { stdout: LISTING } });
+    const truncate = vi.spyOn(PostgresClientService.prototype, "truncate");
+    const spawned = mockProcesses({ list: { stdout: LISTING } });
 
     const result = await run();
 
-    const [question] = promptsMock.mock.calls[0] ?? [];
-
     expect(result.exitCode).toBe(0);
-    expect(question?.message).toContain("every row");
-    expect(question?.message).toContain("127.0.0.1");
-    expect(question?.message).toContain("fixture_development");
-    expect(question?.message).not.toContain(PASSWORD);
+    expect(truncate).toHaveBeenCalledTimes(1);
+    expect(restoresOf(spawned)).toHaveLength(1);
   });
 
   it("restores the rows without pg_restore's own --clean", async () => {
     stubTruncate();
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await run("--yes");
+    const result = await run();
 
     expect(result.exitCode).toBe(0);
     expect(restoresOf(spawned)[0]?.args).toContain("--data-only");
@@ -123,7 +107,7 @@ describe("import --clean --data", () => {
     );
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await run("--yes");
+    const result = await run();
 
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain(
@@ -141,7 +125,7 @@ describe("import --clean --data", () => {
       stderr: `pg_restore: error: could not connect to postgresql://fixture_username:${PASSWORD}@127.0.0.1:1\n`,
     });
 
-    const result = await run("--yes");
+    const result = await run();
 
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("fixture.widgets");
@@ -155,7 +139,7 @@ describe("import --clean --data", () => {
     vi.restoreAllMocks();
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await run("--yes");
+    const result = await run();
 
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("Nothing was truncated");
@@ -167,7 +151,7 @@ describe("import --clean --data", () => {
     vi.restoreAllMocks();
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await run("--schema", "--yes");
+    const result = await run("--schema");
 
     expect(result.exitCode).toBe(0);
     expect(restoresOf(spawned)[0]?.args).toContain("--clean");

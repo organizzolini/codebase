@@ -11,13 +11,11 @@ import {
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
 } from "../../../testing/fixture-database";
-import { mockStandardInputTerminal } from "../../../testing/mocks";
 import { startPostgresContainer } from "../database/postgres-container.utilities";
 
 import type { StartedPostgresContainer } from "../database/postgres-container.types";
 
 describe("import --clean --data", () => {
-  const setStandardInputTerminal = mockStandardInputTerminal();
   let source: StartedPostgresContainer;
   let target: StartedPostgresContainer;
   let sourceDataSource: DataSource;
@@ -31,7 +29,7 @@ describe("import --clean --data", () => {
     return result;
   }
 
-  /** `import --clean --data --yes` of `tables` from the dump. */
+  /** `import --clean --data` of `tables` from the dump. */
   async function runClean(
     tables: readonly string[],
   ): ReturnType<typeof runCliCommandLine> {
@@ -43,7 +41,6 @@ describe("import --clean --data", () => {
         ...tables.flatMap((table) => ["--table", table]),
         "--data",
         "--clean",
-        "--yes",
         "--file",
         dump,
       ],
@@ -94,7 +91,6 @@ describe("import --clean --data", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    setStandardInputTerminal(false);
     // The target holds other rows in the same shape, and a table not dumped.
     await targetDataSource.query(
       "DROP SCHEMA IF EXISTS archive CASCADE; CREATE SCHEMA archive; CREATE TABLE archive.notes (id integer PRIMARY KEY, body text NOT NULL); INSERT INTO archive.notes VALUES (1, 'old'), (3, 'stale'); CREATE TABLE archive.refs (id integer PRIMARY KEY, note_id integer REFERENCES archive.notes (id)); INSERT INTO archive.refs VALUES (20, 1); CREATE TABLE archive.other (id integer PRIMARY KEY, kept text); INSERT INTO archive.other VALUES (1, 'mine')",

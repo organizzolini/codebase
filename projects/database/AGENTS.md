@@ -45,7 +45,7 @@ src/
       entities/                     # identifiable → creatable → updatable → deletable
       postgres-container.*.ts       # startPostgresContainer, the testing entry's harness
     export/                         # The export command: options, plan, dry run, atomic write
-    import/                         # The import command: options, plan, --clean, dry run
+    import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
 scripts/
   extract-migration-sql.ts          # Run by every project's migration:extract-sql-* target
@@ -94,6 +94,10 @@ nx run database:type-coverage
 nx run database:start:export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
 nx run database:start:import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
 ```
+
+`import --clean` never prompts and has no `--yes`; the preview is
+`import --dry-run`, which names what `--clean` would drop or truncate. Run it
+first.
 
 The `start` configurations run the command line with the working directory at
 `projects/database`. Both commands need the PostgreSQL 18 client tools; see

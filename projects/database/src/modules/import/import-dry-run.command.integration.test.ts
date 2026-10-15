@@ -11,7 +11,6 @@ import {
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
 } from "../../../testing/fixture-database";
-import { mockStandardInputTerminal } from "../../../testing/mocks";
 import { startPostgresContainer } from "../database/postgres-container.utilities";
 
 import type { StartedPostgresContainer } from "../database/postgres-container.types";
@@ -22,7 +21,6 @@ const PASSWORD = "hunter2-secret";
 const UNREACHABLE_TARGET_URI = `postgresql://fixture_username:${PASSWORD}@127.0.0.1:1/fixture_development`;
 
 describe("import --dry-run", () => {
-  const setStandardInputTerminal = mockStandardInputTerminal();
   let source: StartedPostgresContainer;
   let target: StartedPostgresContainer;
   let targetDataSource: DataSource;
@@ -116,8 +114,6 @@ describe("import --dry-run", () => {
     "prints the plan and leaves the target unchanged, even with --clean",
     async () => {
       expect.hasAssertions();
-
-      setStandardInputTerminal(false);
 
       const result = await runDryRun(
         postgresUri(target.connection),

@@ -72,7 +72,10 @@ in this project's `data/` directory, where `*.dump` is gitignored:
 nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --namespace lexico --table words --data --schema --file ../lexico/lexico-cli/data/lexico.dump"
 ```
 
-See the [database README](../../database/README.md#moving-data-between-databases) for every option.
+`import --clean` runs without asking, so run `import --dry-run` with the same
+options first to see what it would drop or truncate. See the
+[database README](../../database/README.md#moving-data-between-databases) for
+every option.
 
 ## How it works
 

@@ -18,7 +18,6 @@ export interface ImportCommandOptions {
   schema?: boolean;
   table?: string[];
   targetUri?: string;
-  yes?: boolean;
 }
 
 /**

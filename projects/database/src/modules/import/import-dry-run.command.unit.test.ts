@@ -6,16 +6,7 @@ import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import {
-  mockProcesses,
-  mockStandardInputTerminal,
-} from "../../../testing/mocks";
-
-const { promptsMock } = vi.hoisted(() => ({
-  promptsMock: vi.fn<(question: { message: string }) => Promise<unknown>>(),
-}));
-
-vi.mock("prompts", () => ({ default: promptsMock }));
+import { mockProcesses } from "../../../testing/mocks";
 
 vi.mock("node:child_process", async () => {
   const { childProcessMock } = await import("../../../testing/mocks");
@@ -40,7 +31,6 @@ const listing = (...entries: readonly string[]): string =>
   ].join("\n");
 
 describe("import --dry-run", () => {
-  const setStandardInputTerminal = mockStandardInputTerminal();
   let directory: string;
   let file: string;
 
@@ -73,8 +63,6 @@ describe("import --dry-run", () => {
   });
 
   it("prints the plan and runs nothing but the version check and listing", async () => {
-    setStandardInputTerminal(true);
-    promptsMock.mockReset();
     const initialize = vi.spyOn(DataSource.prototype, "initialize");
     const spawned = mockProcesses({
       list: { stdout: listing(DEFINITION, ROWS) },
@@ -95,7 +83,6 @@ describe("import --dry-run", () => {
       "--list",
     ]);
     expect(initialize).not.toHaveBeenCalled();
-    expect(promptsMock).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -113,31 +100,34 @@ describe("import --dry-run", () => {
   });
 
   it.each([
-    [["--data"], "would truncate fixture.widgets"],
-    [["--schema"], "would drop and recreate fixture.widgets"],
-    [["--data", "--schema"], "would drop and recreate fixture.widgets"],
-  ])(
-    "with --clean %j says it %s, without prompting or a terminal",
-    async (options, says) => {
-      setStandardInputTerminal(false);
-      promptsMock.mockReset();
-      const spawned = mockProcesses({
-        list: { stdout: listing(DEFINITION, ROWS) },
-      });
+    [
+      ["--data"],
+      "would truncate fixture.widgets, deleting every row it holds, then restore the dump's rows",
+    ],
+    [
+      ["--schema"],
+      "would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
+    ],
+    [
+      ["--data", "--schema"],
+      "would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
+    ],
+  ])("with --clean %j says it %s", async (options, says) => {
+    const spawned = mockProcesses({
+      list: { stdout: listing(DEFINITION, ROWS) },
+    });
 
-      const result = await run(...options, "--clean");
+    const result = await run(...options, "--clean");
 
-      const output = result.logs.join("\n");
+    const output = result.logs.join("\n");
 
-      expect(result.exitCode).toBe(0);
-      expect(output).toContain(`--clean ${says}`);
-      expect(promptsMock).not.toHaveBeenCalled();
-      expect(spawned.map(({ args }) => args[0])).toStrictEqual([
-        "--version",
-        "--list",
-      ]);
-    },
-  );
+    expect(result.exitCode).toBe(0);
+    expect(output).toContain(`--clean ${says}`);
+    expect(spawned.map(({ args }) => args[0])).toStrictEqual([
+      "--version",
+      "--list",
+    ]);
+  });
 
   it("does not truncate with --clean --data --schema", async () => {
     mockProcesses({ list: { stdout: listing(DEFINITION, ROWS) } });
@@ -171,16 +161,13 @@ describe("import --dry-run", () => {
     expect(output).not.toContain("fixture.widgets, fixture.widgets");
   });
 
-  it("behaves the same with --yes", async () => {
-    setStandardInputTerminal(false);
-    mockProcesses({ list: { stdout: listing(DEFINITION, ROWS) } });
-    const without = await run("--data", "--clean");
+  it("rejects --yes as an unknown option", async () => {
     mockProcesses({ list: { stdout: listing(DEFINITION, ROWS) } });
 
     const result = await run("--data", "--clean", "--yes");
 
-    expect(result.exitCode).toBe(0);
-    expect(result.logs).toStrictEqual(without.logs);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("--yes");
   });
 
   it("fails a selection missing from the dump, as a real import does", async () => {

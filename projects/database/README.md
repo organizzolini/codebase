@@ -280,8 +280,7 @@ pnpm exec nx run database:start:import --args="--target-uri postgresql://user:pa
 | `--data`, `--schema`    | both    | Rows, table definitions, or both; at least one is required                                  |
 | `--file <path>`         | both    | Required. The dump to write or read                                                         |
 | `--overwrite`           | export  | Replace `--file` when it exists                                                             |
-| `--clean`               | import  | Clear the selected tables before restoring, after confirmation                              |
-| `--yes`                 | import  | Skip the `--clean` confirmation                                                             |
+| `--clean`               | import  | Clear the selected tables before restoring, with no confirmation                            |
 | `--dry-run`             | both    | Validate and print the plan without connecting to a database or changing anything           |
 
 Qualified names (`schema.table`) are used as written. There is no default
@@ -311,10 +310,11 @@ grants are not restored; the target's own role owns what it creates.
 `--schema` without `--clean` fails when a selected table already exists on the
 target.
 `--dry-run` stops there, printing what the dump holds of each table and what
-`--clean` would clear.
+`--clean` would drop or truncate.
 
-`--clean` empties the selected tables first, after asking you to confirm
-which tables, database, and host:
+`--clean` empties the selected tables first and never asks for confirmation,
+in a terminal or out of one. Run `import --dry-run` with the same options
+before `import --clean` to see the tables, database, and host it would clear:
 
 - With `--schema`, `pg_restore --clean --if-exists` drops and recreates them.
 - With `--data` alone, a `TRUNCATE` on exactly the selected tables empties
@@ -323,8 +323,7 @@ which tables, database, and host:
 
 The truncate commits on its own before the restore, so the pair is not atomic:
 a restore that fails afterwards leaves the tables empty, and the error says so.
-Re-run the import from the same file. Without a terminal to answer on,
-`--clean` fails before changing anything; pass `--yes` for unattended runs.
+Re-run the import from the same file.
 A data-only import of some tables does not restore the values of the
 sequences behind them.
 

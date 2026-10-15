@@ -218,7 +218,6 @@ describe("--namespace across export and import", () => {
         "--namespace",
         "fixture",
         "--clean",
-        "--yes",
       );
 
       expect([exported.exitCode, imported.exitCode]).toStrictEqual([0, 0]);
