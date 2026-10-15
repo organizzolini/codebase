@@ -104,6 +104,11 @@ jobs:
           # We remove it here until the CLI is fixed.
           rm -rf agent/
 
+      - name: 🧩 Upgrade ReUI Skill
+        # ReUI serves its skill as a JSON bundle rather than a GitHub source, so
+        # `skills update` skips it; this script re-fetches and re-pins it.
+        run: bash scripts/update-reui-skill.sh
+
       - name: 🔍 Detect Upgrades
         id: check
         run: |

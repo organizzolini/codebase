@@ -99,6 +99,7 @@ dist/** linguist-generated
 .agents/skills/receiving-code-review/** linguist-vendored
 .agents/skills/requesting-code-review/** linguist-vendored
 .agents/skills/research/** linguist-vendored
+.agents/skills/reui/** linguist-vendored
 .agents/skills/setup-matt-pocock-skills/** linguist-vendored
 .agents/skills/subagent-driven-development/** linguist-vendored
 .agents/skills/systematic-debugging/** linguist-vendored
