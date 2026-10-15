@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-nx run meanderaw-web:develop
+nx run meanderaw-web:start
 ```
 
 ## Architecture Overview
@@ -65,7 +65,7 @@ nx g conformetry:react-hook --name=use-<hook> --project=meanderaw-web
 A route's name is its file stem — `index`, `search`, `word.$id` — and its route
 path is the URL it serves: `/`, `/search`, `/word/$id`. TanStack's route
 generator rewrites the path argument to match the file whenever they disagree,
-and regenerates `src/lib/routeTree.gen.ts` on every `develop` or `build`. Each page is a `<section>` with an `<h1>`, named after its
+and regenerates `src/lib/routeTree.gen.ts` on every `start` or `build`. Each page is a `<section>` with an `<h1>`, named after its
 route — `word.$id` renders `WordIdPage` — inside the `<main>` the root layout
 renders.
 
@@ -92,7 +92,7 @@ pnpm add --filter meanderaw-web zod
 ### Key Commands
 
 ```bash
-nx run meanderaw-web:develop      # Development server on http://localhost:3000
+nx run meanderaw-web:start      # Development server on http://localhost:3000
 nx run meanderaw-web:build        # Production build into dist/
 nx run meanderaw-web:preview      # Serve the production build
 nx run meanderaw-web:vitest       # Unit tests

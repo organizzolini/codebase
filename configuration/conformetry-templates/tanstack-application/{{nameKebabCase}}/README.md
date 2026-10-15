@@ -1,7 +1,7 @@
 ## Develop
 
 ```bash
-nx run {{nameKebabCase}}:develop
+nx run {{nameKebabCase}}:start
 ```
 
 ## Test

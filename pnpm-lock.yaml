@@ -962,8 +962,6 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
 
-  projects/JimmyPaolini: {}
-
   projects/affirmancy: {}
 
   projects/caelundas/caelundas-cli:

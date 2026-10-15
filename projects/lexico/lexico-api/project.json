@@ -12,6 +12,11 @@
     "type:application"
   ],
   "targets": {
+    "await-health": {
+      "options": {
+        "url": "http://localhost:${LEXICO_API_PORT:-5003}/graphql"
+      }
+    },
     "build": {
       "executor": "@nx/js:tsc",
       "options": {
@@ -42,11 +47,18 @@
     "prettier": {},
     "spell-check": {},
     "start": {
-      "description": "Start the LexicoApi GraphQL API",
+      "continuous": true,
+      "description": "Start the LexicoApi GraphQL API with restart on change",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/lexico-api.ts",
+        "command": "node --watch --import @swc-node/register/esm-register src/lexico-api.ts",
         "cwd": "{projectRoot}"
+      }
+    },
+    "stop": {
+      "dependsOn": ["lexico-web:stop"],
+      "options": {
+        "port": "${LEXICO_API_PORT:-5003}"
       }
     },
     "test-code": {},

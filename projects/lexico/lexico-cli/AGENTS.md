@@ -300,7 +300,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/lexico-cli.module.ts](src/lexico-cli.module.ts): Root NestJS module
 - [src/lexico-cli.constants.ts](src/lexico-cli.constants.ts): environmentSchema (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
+- [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template
 
 **Project Files**:

@@ -204,7 +204,7 @@ Adds a user profile page where users can view and edit their information.
    nx run lexico-web:vitest
    ```
 
-2. Run `nx run lexico-web:develop` and navigate to `/profile`.
+2. Run `nx run lexico-web:start` and navigate to `/profile`.
 
 ## 🔗 Related
 
@@ -387,7 +387,7 @@ Adds autocomplete suggestions to the dictionary search input.
 ## 🧪 Testing
 
 1. Run `nx run lexico-web:vitest`.
-2. Run `nx run lexico-web:develop`, navigate to the search page, and type a query.
+2. Run `nx run lexico-web:start`, navigate to the search page, and type a query.
 
 ## 🔗 Related
 
@@ -465,7 +465,7 @@ Updates TanStack Router to latest version with bug fixes.
 ## 🧪 Testing
 
 1. Run `nx run lexico-web:vitest`.
-2. Run `nx run lexico-web:develop` and confirm every route works as before.
+2. Run `nx run lexico-web:start` and confirm every route works as before.
 
 ## 🔗 Related
 
