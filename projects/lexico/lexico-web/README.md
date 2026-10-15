@@ -90,13 +90,13 @@ Call stacks traced through `projects/lexico/lexico-web`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 212 |
-| Files | 37 |
-| Calls traced | 118 |
+| Callables | 126 |
+| Files | 28 |
+| Calls traced | 71 |
 | Call stacks | 21 |
-| Deepest stack | 9 |
+| Deepest stack | 4 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 66 |
+| Unfollowable calls | 13 |
 
 ### Limits
 
@@ -109,241 +109,187 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `SearchResultsList`** — depth 9 · orphan-root
+**1. `FormsTable`** — depth ≥ 4 · orphan-root
 
 ```text
-🚀 SearchResultsList(properties: SearchResultsListProperties): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:182]
-   ↳ Search results list.
-  └─> map(…)(entry: EntrySearchResult): JSX.Element [projects/lexico/lexico-web/src/routes/search.tsx:187]
-    └─> transformForms(partOfSpeech: string, forms: Forms): TransformResult [projects/lexico/lexico-web/src/lib/forms.ts:100]
-       ↳ Transform forms based on part of speech.
-      └─> dispatchFormTransform(pos: string, forms: Forms): TransformResult [projects/lexico/lexico-web/src/lib/forms.ts:298]
-         ↳ Dispatch form transformation by part-of-speech string, then fall back to type-guard auto-detection.
-        └─> autoDetectFormTransform(forms: Forms): TransformResult [projects/lexico/lexico-web/src/lib/forms.ts:153]
-           ↳ Auto-detect form type by structure inspection when part-of-speech does not match.
-          └─> transformVerbForms(forms: VerbForms): VerbForm[] [projects/lexico/lexico-web/src/lib/forms.ts:140]
-             ↳ Convert nested verb forms from database to flat array for VerbFormsTable.
-            └─> transformIndicativeForms(forms: VerbForms): VerbForm[] [projects/lexico/lexico-web/src/lib/forms.ts:413]
-               ↳ Extract indicative mood forms into flat VerbForm rows.
-              └─> collectPersonNumberForms(…): void [projects/lexico/lexico-web/src/lib/forms.ts:244]
-                 ↳ Collect finite verb forms from a number/person structure into result array.
-                └─> personDisplay(person: string): string [projects/lexico/lexico-web/src/lib/forms.ts:365]
-                   ↳ Helper to get person display string.
+🚀 FormsTable(properties: Readonly<FormsTableProperties>): ReactNode [projects/lexico/lexico-web/src/components/forms-table.tsx:46]
+   ↳ A grid of the words a lexeme's forms are written as, such as a noun's cases down the side and its numbers across the…
+  └─> map(…)(row: FormsTableAxis, rowIndex: number): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:70]
+    └─> map(…)(column: FormsTableAxis, columnIndex: number): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:75]
+      └─> map(…)(word: string): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:109]
 ```
 
-**2. `AdjectiveFormsTable`** — depth 8 · orphan-root
+**2. `VerbForms`** — depth 4 · orphan-root
 
 ```text
-🚀 AdjectiveFormsTable(properties: AdjectiveFormsTableProperties): null | React.ReactElement [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:73]
-   ↳ Render adjective forms with degree and gender tab navigation.
-  └─> useMemo(…)(): AdjectiveFormGroup[] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:77]
-    └─> groupAdjectiveForms(forms: AdjectiveForm[]): AdjectiveFormGroup[] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:165]
-       ↳ Group adjective forms by degree -\> gender for tabs.
-      └─> buildDegreeGroupsFromForms(forms: AdjectiveForm[]): AdjectiveFormGroup[] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:140]
-         ↳ Build degree groups when the forms include degree data.
-        └─> groupByGender(forms: AdjectiveForm[]): AdjectiveFormGroup["genders"] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:175]
-           ↳ Group forms by gender and restructure into cells.
-          └─> restructureAdjectiveForms(forms: AdjectiveForm[]): FormCellProperties[] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:236]
-             ↳ Restructure adjective forms for a specific gender into cells.
-            └─> flatMap(…)(this: undefined, caseName: string): [FormCellProperties, FormCellProperties] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:252]
-              └─> buildAdjectiveCaseRow(…): [FormCellProperties, FormCellProperties] [projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:120]
-                 ↳ Build the singular + plural cell pair for one grammatical case.
+🚀 VerbForms(properties: Readonly<VerbFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:117]
+   ↳ A verb's conjugation: tabs for voice, then mood, then tense, over a table of its words by person and number, and a last…
+  └─> narrow(rows: VerbFormRow[], selection: Selection): Conjugation [projects/lexico/lexico-web/src/components/verb-forms.tsx:241]
+     ↳ Narrows a conjugation down by the voice, mood and tense chosen.
+    └─> filter(…)(voice: string): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:245]
+      └─> some(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:245]
 ```
 
-**3. `WordForms`** — depth 8 · orphan-root
+**3. `LexemeIdentifiers`** — depth 3 · orphan-root
 
 ```text
-🚀 WordForms(properties: WordFormsProperties): ReactNode [projects/lexico/lexico-web/src/routes/word.$id.tsx:56]
-   ↳ Word forms.
-  └─> transformForms(partOfSpeech: string, forms: Forms): TransformResult [projects/lexico/lexico-web/src/lib/forms.ts:100]
-     ↳ Transform forms based on part of speech.
-    └─> dispatchFormTransform(pos: string, forms: Forms): TransformResult [projects/lexico/lexico-web/src/lib/forms.ts:298]
-       ↳ Dispatch form transformation by part-of-speech string, then fall back to type-guard auto-detection.
-      └─> autoDetectFormTransform(forms: Forms): TransformResult [projects/lexico/lexico-web/src/lib/forms.ts:153]
-         ↳ Auto-detect form type by structure inspection when part-of-speech does not match.
-        └─> transformVerbForms(forms: VerbForms): VerbForm[] [projects/lexico/lexico-web/src/lib/forms.ts:140]
-           ↳ Convert nested verb forms from database to flat array for VerbFormsTable.
-          └─> transformIndicativeForms(forms: VerbForms): VerbForm[] [projects/lexico/lexico-web/src/lib/forms.ts:413]
-             ↳ Extract indicative mood forms into flat VerbForm rows.
-            └─> collectPersonNumberForms(…): void [projects/lexico/lexico-web/src/lib/forms.ts:244]
-               ↳ Collect finite verb forms from a number/person structure into result array.
-              └─> personDisplay(person: string): string [projects/lexico/lexico-web/src/lib/forms.ts:365]
-                 ↳ Helper to get person display string.
+🚀 LexemeIdentifiers(properties: Readonly<LexemeIdentifiersProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60]
+   ↳ What the searched word is as a form of this lexeme, such as "1ST SG PRES ACT IND", for when a search matched an…
+  └─> map(…)(identifier: string): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:85]
+    └─> flatMap(…)(this: undefined, word: string): string | never[] [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:94]
 ```
 
 <details>
 <summary>18 more call stacks</summary>
 
-**4. `VerbFormsTable`** — depth 7 · orphan-root
+**4. `AdjectiveForms`** — depth 3 · orphan-root
 
 ```text
-🚀 VerbFormsTable(properties: VerbFormsTableProperties): null | React.ReactElement [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:261]
-   ↳ Render verb forms with mood, tense, and voice tab navigation.
-  └─> useMemo(…)(): VerbFormGroup[] [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:265]
-    └─> groupVerbForms(forms: VerbForm[]): VerbFormGroup[] [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:165]
-       ↳ Group verb forms by mood -\> tense -\> voice for nested tabs.
-      └─> buildVerbFormTenses(moodGroup: Record<string, Record<string, VerbForm[]>>): VerbFormGroup["tenses"] [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:114]
-         ↳ Convert a mood's nested tense/voice record into the ordered tenses array.
-        └─> restructureVerbForms(forms: VerbForm[]): FormCellProperties[] [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:239]
-           ↳ Restructure verb forms for a specific mood/tense/voice into cells.
-          └─> flatMap(…)(this: undefined, person: string): FormCellProperties[] [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:253]
-            └─> buildPersonCells(person: string, byPersonNumber: Record<string, string>): FormCellProperties[] [projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:87]
-               ↳ Build the singular + plural cell pair for one grammatical person.
+🚀 AdjectiveForms(properties: Readonly<AdjectiveFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/adjective-forms.tsx:50]
+   ↳ An adjective's declension: a table of its words by case and number for each gender, switched with tabs.
+  └─> filter(…)(gender: string): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:59]
+    └─> some(…)(row: AdjectiveFormRow): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:60]
 ```
 
-**5. `LibraryPage`** — depth ≥ 6 · orphan-root
+**5. `NounForms`** — depth 3 · orphan-root
 
 ```text
-🚀 LibraryPage(): ReactNode [projects/lexico/lexico-web/src/routes/library.tsx:275]
-   ↳ Library page component that displays and manages user's saved texts.
-  └─> useLibraryPage(): LibraryPageState [projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:67]
-     ↳ Hook managing the library page state and operations. Handles text CRUD operations, form state, and UI dialogs.
-    └─> useCallback(…)(): Promise<void> [projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:95]
-      └─> updateTextAsync(…): Promise<void> [projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:265]
-         ↳ Updates the currently edited text and synchronizes the local sorted collection.
-        └─> setTexts(…)(previous: UserText[]): UserText[] [projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:292]
-          └─> map(…)(t: UserText): UserText [projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:293]
+🚀 NounForms(properties: Readonly<NounFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/noun-forms.tsx:47]
+   ↳ A noun's declension: its words by case and number. Cases the noun has no form for are left out.
+  └─> filter(…)(case_: string): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:55]
+    └─> some(…)(row: NounFormRow): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:55]
 ```
 
-**6. `NounFormsTable`** — depth 5 · orphan-root
+**6. `handleOpenChange`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 NounFormsTable(properties: NounFormsTableProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:74]
-   ↳ Render noun forms in a singular/plural table.
-  └─> useMemo(…)(): FormCellProperties[] [projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:78]
-    └─> restructureNounForms(forms: NounForm[]): FormCellProperties[] [projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:94]
-       ↳ Restructure noun forms into a 2-column grid (singular, plural) Each row is a case, columns are singular and plural.
-      └─> flatMap(…)(this: undefined, caseName: string): [FormCellProperties, FormCellProperties] [projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:108]
-        └─> buildNounCaseRow(…): [FormCellProperties, FormCellProperties] [projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:54]
-           ↳ Build the singular + plural cell pair for one grammatical case.
+🚀 handleOpenChange(open: boolean): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:121]
+   ↳ Opens or closes the table, loading the forms on the way open.
+  └─> load(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:103]
+     ↳ Asks for the forms, unless they are already loaded or on their way.
+    └─> catch(…)(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:113]
 ```
 
-**7. `BookmarksPage`** — depth ≥ 4 · orphan-root
+**7. `LexemeHeader`** — depth 3 · orphan-root
 
 ```text
-🚀 BookmarksPage(): ReactNode [projects/lexico/lexico-web/src/routes/bookmarks.tsx:110]
-   ↳ Bookmarks page component that displays user's bookmarked entries.
-  └─> useCallback(…)(entryId: string): Promise<void> [projects/lexico/lexico-web/src/routes/bookmarks.tsx:137]
-    └─> setBookmarks(…)(previous: BookmarkedEntry[]): BookmarkedEntry[] [projects/lexico/lexico-web/src/routes/bookmarks.tsx:141]
-      └─> filter(…)(b: BookmarkedEntry): boolean [projects/lexico/lexico-web/src/routes/bookmarks.tsx:141]
+🚀 LexemeHeader(properties: Readonly<LexemeHeaderProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-header.tsx:44]
+   ↳ The top of a lexeme card: its principal parts, or its lemma when none were ingested, over its part of speech and…
+  └─> describeInflection(…): string[] [projects/lexico/lexico-web/src/components/lexeme-header.tsx:110]
+     ↳ What an inflection says about a lexeme, as the fields its part of speech fills, with the empty ones left out.
+    └─> filter(…)(detail: string | null | undefined): detail is string [projects/lexico/lexico-web/src/components/lexeme-header.tsx:121]
 ```
 
-**8. `SearchPage`** — depth ≥ 4 · orphan-root
+**8. `SearchResults`** — depth 3 · orphan-root
 
 ```text
-🚀 SearchPage(): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:75]
-   ↳ Search page component that allows users to search for Latin entries.
-  └─> useDebounce<T>(value: T, delay: number): T [projects/lexico/lexico-web/src/routes/search.tsx:220]
-     ↳ Custom hook that debounces a value by the specified delay.
-    └─> useEffect(…)(): () => void [projects/lexico/lexico-web/src/routes/search.tsx:223]
-      └─> setTimeout(…)(): void [projects/lexico/lexico-web/src/routes/search.tsx:224]
+🚀 SearchResults(properties: Readonly<SearchResultsProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-results.tsx:29]
+   ↳ The lexemes a query matched, in a masonry of cards.
+  └─> from(…)(_: unknown, column: number): LexemeResult[] [projects/lexico/lexico-web/src/components/search-results.tsx:42]
+    └─> filter(…)(_result: LexemeResult, index: number): boolean [projects/lexico/lexico-web/src/components/search-results.tsx:43]
 ```
 
-**9. `PrincipalParts`** — depth 3 · orphan-root
+**9. `handler(…)`** — depth 3 · orphan-root
 
 ```text
-🚀 PrincipalParts(properties: PrincipalPartsProperties): ReactElement [projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:125]
-   ↳ Component that displays principal parts, part of speech, and inflection info.
-  └─> getPrincipalPartsLabel(principalParts: PrincipalPart[] | Record<string, string | undefined>): string [projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:194]
-     ↳ Gets a formatted label from principal parts data.
-    └─> map(…)(principalPart: PrincipalPart): string [projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:199]
+🚀 handler(…)(…): Promise<LexemeResult[]> [projects/lexico/lexico-web/src/routes/search.tsx:233]
+  └─> searchLanguage(field: "searchEnglish" | "searchLatin", query: string): Promise<ResultNode[]> [projects/lexico/lexico-web/src/routes/search.tsx:211]
+     ↳ Searches Latin or English through the lexico API, which exposes each as its own query, and returns the results it…
+    └─> queryApi(…): Promise<Record<string, unknown>> [projects/lexico/lexico-web/src/routes/search.tsx:186]
+       ↳ Runs one GraphQL query against the lexico API and returns its data.
 ```
 
-**10. `Translations`** — depth 3 · orphan-root
+**10. `ApplicationSidebar`** — depth 2 · orphan-root
 
 ```text
-🚀 Translations(properties: TranslationsProperties): ReactElement [projects/lexico/lexico-web/src/components/entry/translations.tsx:26]
-   ↳ Renders translations inline, collapsing entries after the first two when expandable.
-  └─> map(…)(t: string): ReactElement<unknown, string | JSXElementConstructor<any>> [projects/lexico/lexico-web/src/components/entry/translations.tsx:57]
-    └─> renderTranslation(translation: string): ReactElement [projects/lexico/lexico-web/src/components/entry/translations.tsx:38]
-```
-
-**11. `PronunciationButton`** — depth ≥ 3 · orphan-root
-
-```text
-🚀 PronunciationButton(properties: Readonly<PronunciationButtonProperties>): ReactNode [projects/lexico/lexico-web/src/components/pronunciation-button.tsx:26]
-   ↳ Plays the pronunciation of a word in the chosen dialect.
-  └─> useCallback(…)(): Promise<void> [projects/lexico/lexico-web/src/components/pronunciation-button.tsx:37]
-    └─> addEventListener(…)(): void [projects/lexico/lexico-web/src/components/pronunciation-button.tsx:56]
-```
-
-**12. `FormTabs`** — depth 2 · orphan-root
-
-```text
-🚀 FormTabs(properties: FormTabsProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:32]
-   ↳ Render shared tab UI for selecting form groupings.
-  └─> map(…)(tab: string): React.JSX.Element [projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:54]
-```
-
-**13. `FormCell`** — depth 2 · orphan-root
-
-```text
-🚀 FormCell(properties: FormCellProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/form-cell.tsx:57]
-   ↳ Render a single grid cell with optional corner identifiers.
-  └─> computeBorderClasses(position: FormCellPosition | undefined): string [projects/lexico/lexico-web/src/components/entry/form-cell.tsx:43]
-     ↳ Compute border classes for a form cell based on its grid position.
-```
-
-**14. `FormsTable`** — depth 2 · orphan-root
-
-```text
-🚀 FormsTable(properties: FormsTableProperties): React.ReactElement [projects/lexico/lexico-web/src/components/entry/forms-table.tsx:27]
-   ↳ Render two-column form cells with border-position metadata.
-  └─> map(…)(…): Element [projects/lexico/lexico-web/src/components/entry/forms-table.tsx:31]
-```
-
-**15. `ApplicationSidebar`** — depth 2 · orphan-root
-
-```text
-🚀 ApplicationSidebar(): ReactNode [projects/lexico/lexico-web/src/routes/__root.tsx:109]
+🚀 ApplicationSidebar(): ReactNode [projects/lexico/lexico-web/src/routes/__root.tsx:90]
    ↳ Application sidebar: a rail that collapses to icons, with the brand in the header, navigation in a labelled group, and…
-  └─> map(…)(item: NavigationItem): JSX.Element [projects/lexico/lexico-web/src/routes/__root.tsx:147]
+  └─> map(…)(item: NavigationItem): JSX.Element [projects/lexico/lexico-web/src/routes/__root.tsx:128]
 ```
 
-**16. `BookmarksList`** — depth 2 · orphan-root
+**11. `SearchBar`** — depth 2 · orphan-root
 
 ```text
-🚀 BookmarksList(properties: BookmarksListProperties): ReactNode [projects/lexico/lexico-web/src/routes/bookmarks.tsx:88]
-   ↳ Bookmarks list.
-  └─> map(…)(entry: BookmarkedEntry): JSX.Element [projects/lexico/lexico-web/src/routes/bookmarks.tsx:92]
+🚀 SearchBar(properties: Readonly<SearchBarProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-bar.tsx:40]
+   ↳ The search field. It searches as you type, once typing pauses, and at once when the form is submitted.
+  └─> useMemo(…)(): lodash.DebouncedFunc<(query: string) => void> [projects/lexico/lexico-web/src/components/search-bar.tsx:55]
 ```
 
-**17. `LibraryTextGrid`** — depth 2 · orphan-root
+**12. `anonymous`** — depth 2 · orphan-root
 
 ```text
-🚀 LibraryTextGrid(…): ReactNode [projects/lexico/lexico-web/src/routes/library.tsx:453]
-   ↳ Library text grid.
-  └─> map(…)(text: UserText): JSX.Element [projects/lexico/lexico-web/src/routes/library.tsx:468]
+🚀 anonymous(case_: string, number: string): string[] [projects/lexico/lexico-web/src/components/adjective-forms.tsx:103]
+  └─> map(…)(row: AdjectiveFormRow): string [projects/lexico/lexico-web/src/components/adjective-forms.tsx:106]
 ```
 
-**18. `anonymous`** — depth 2 · orphan-root
+**13. `anonymous`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(): undefined [projects/lexico/lexico-web/src/routes/settings.tsx:81]
-  └─> handleSignIn(): Promise<void> [projects/lexico/lexico-web/src/routes/settings.tsx:29]
-     ↳ Handle sign in.
+🚀 anonymous(case_: string, number: string): string[] [projects/lexico/lexico-web/src/components/noun-forms.tsx:71]
+  └─> map(…)(row: NounFormRow): string [projects/lexico/lexico-web/src/components/noun-forms.tsx:74]
 ```
 
-**19. `anonymous`** — depth 2 · orphan-root
+**14. `anonymous`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(): undefined [projects/lexico/lexico-web/src/routes/settings.tsx:107]
-  └─> handleSignOut(): Promise<void> [projects/lexico/lexico-web/src/routes/settings.tsx:52]
+🚀 anonymous(person: string, number: string): string[] [projects/lexico/lexico-web/src/components/verb-forms.tsx:175]
+  └─> map(…)(row: VerbFormRow): string [projects/lexico/lexico-web/src/components/verb-forms.tsx:180]
 ```
 
-**20. `anonymous`** — depth 2 · orphan-root
+**15. `AxisTabs`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(): undefined [projects/lexico/lexico-web/src/routes/settings.tsx:144]
-  └─> handleDeleteAccount(): Promise<void> [projects/lexico/lexico-web/src/routes/settings.tsx:57]
+🚀 AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:200]
+   ↳ One row of tabs for a single axis of the conjugation, such as its moods.
+  └─> map(…)(option: string): JSX.Element [projects/lexico/lexico-web/src/components/verb-forms.tsx:216]
 ```
 
-**21. `WordIdPage`** — depth ≥ 2 · orphan-root
+**16. `NonFiniteForms`** — depth 2 · orphan-root
 
 ```text
-🚀 WordIdPage(): ReactNode [projects/lexico/lexico-web/src/routes/word.$id.tsx:85]
-   ↳ Word detail page component that displays full entry information.
-  └─> useEffect(…)(): void [projects/lexico/lexico-web/src/routes/word.$id.tsx:91]
+🚀 NonFiniteForms(properties: Readonly<{ rows: VerbFormRow[]; }>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:275]
+   ↳ The forms that have no person, such as infinitives, participles, gerunds and supines, each named for its kind and what…
+  └─> filter(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:278]
+```
+
+**17. `FormsOfKind`** — depth 2 · orphan-root
+
+```text
+🚀 FormsOfKind(…): ReactNode [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:193]
+   ↳ The table for the kind of forms a lexeme turned out to have, or a note that it has none.
+  └─> filter(…)(row: LexemeFormRow): boolean [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:202]
+```
+
+**18. `LexemePronunciations`** — depth 2 · orphan-root
+
+```text
+🚀 LexemePronunciations(properties: Readonly<LexemePronunciationsProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:38]
+   ↳ How a lexeme is pronounced in each variant of Latin that has a transcription, such as classical and ecclesiastical,…
+  └─> map(…)({ phonetic, variant }: LexemePronunciation): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:78]
+```
+
+**19. `LexemeTranslations`** — depth 2 · orphan-root
+
+```text
+🚀 LexemeTranslations(properties: Readonly<LexemeTranslationsProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-translations.tsx:37]
+   ↳ A lexeme's English translations as a bulleted list under a heading. Folded, it shows the first two; opened, all of them.
+  └─> map(…)(translation: string): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-translations.tsx:83]
+```
+
+**20. `handler(…)`** — depth 2 · orphan-root
+
+```text
+🚀 handler(…)(…): Promise<LexemeFormRow[]> [projects/lexico/lexico-web/src/routes/search.tsx:284]
+  └─> queryApi(…): Promise<Record<string, unknown>> [projects/lexico/lexico-web/src/routes/search.tsx:186]
+     ↳ Runs one GraphQL query against the lexico API and returns its data.
+```
+
+**21. `SearchPage`** — depth 2 · orphan-root
+
+```text
+🚀 SearchPage(): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:367]
+   ↳ The search page: a search bar over either the landing logo or the results.
+  └─> useCallback(…)(nextQuery: string): void [projects/lexico/lexico-web/src/routes/search.tsx:380]
 ```
 
 </details>
@@ -352,79 +298,49 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `dispatchFormTransform` | 9 | `isVerbForms`, `transformVerbForms`, `isNounPos`, `isNounForms`, `transformNounForms`, `isAdjectivePos`, `isAdjectiveForms`, `transformAdjectiveForms`, `autoDetectFormTransform` | `projects/lexico/lexico-web/src/lib/forms.ts:298` |
-| `useLibraryPage` | 7 | `useLibraryPageStateInitialization`, `useCallback(…)`, `useEffect(…)`, `useCallback(…)`, `useCallback(…)`, `useCallback(…)`, `buildLibraryPageState` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:67` |
-| `autoDetectFormTransform` | 6 | `isVerbForms`, `transformVerbForms`, `isAdjectiveForms`, `transformAdjectiveForms`, `isNounForms`, `transformNounForms` | `projects/lexico/lexico-web/src/lib/forms.ts:153` |
+| `narrow` | 8 | `filter(…)`, `filter(…)`, `pick`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:241` |
+| `AdjectiveForms` | 6 | `filter(…)`, `filter(…)`, `filter(…)`, `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:50` |
+| `map(…)` | 4 | `describeMatch`, `flatMap(…)`, `flatMap(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:249` |
 
 <details>
-<summary>64 more callables</summary>
+<summary>34 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `VerbFormsTable` | 5 | `useMemo(…)`, `map(…)`, `map(…)`, `map(…)`, `renderVerbFormContent` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:261` |
-| `transformVerbForms` | 5 | `transformIndicativeForms`, `transformSubjunctiveForms`, `transformImperativeForms`, `transformNonFiniteForms`, `transformVerbalNounForms` | `projects/lexico/lexico-web/src/lib/forms.ts:140` |
-| `SearchPage` | 5 | `useDebounce`, `useEffect(…)`, `useEffect(…)`, `useCallback(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:75` |
-| `AdjectiveFormsTable` | 3 | `useMemo(…)`, `map(…)`, `renderAdjectiveGenderContent` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:73` |
-| `groupAdjectiveForms` | 3 | `some(…)`, `groupByGender`, `buildDegreeGroupsFromForms` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:165` |
-| `restructureVerbForms` | 3 | `some(…)`, `map(…)`, `flatMap(…)` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:239` |
-| `Translations` | 3 | `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:26` |
-| `BookmarksPage` | 3 | `useCallback(…)`, `useEffect(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:110` |
-| `WordIdPage` | 3 | `useEffect(…)`, `useCallback(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/word.$id.tsx:85` |
-| `FormTabs` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/entry/form-tabs.tsx:32` |
-| `restructureAdjectiveForms` | 2 | `flatMap(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:236` |
-| `restructureNounForms` | 2 | `flatMap(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:94` |
-| `groupVerbForms` | 2 | `buildVerbGroupRecord`, `buildVerbFormTenses` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:165` |
-| `transformNonFiniteForms` | 2 | `collectInfinitiveForms`, `collectParticipleForms` | `projects/lexico/lexico-web/src/lib/forms.ts:441` |
-| `ApplicationSidebar` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:109` |
-| `FormCell` | 1 | `computeBorderClasses` | `projects/lexico/lexico-web/src/components/entry/form-cell.tsx:57` |
-| `FormsTable` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/entry/forms-table.tsx:27` |
-| `useMemo(…)` | 1 | `groupAdjectiveForms` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:77` |
-| `buildDegreeGroupsFromForms` | 1 | `groupByGender` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:140` |
-| `groupByGender` | 1 | `restructureAdjectiveForms` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:175` |
-| `renderAdjectiveGenderContent` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:201` |
-| `flatMap(…)` | 1 | `buildAdjectiveCaseRow` | `projects/lexico/lexico-web/src/components/entry/adjective-forms-table.tsx:252` |
-| `NounFormsTable` | 1 | `useMemo(…)` | `projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:74` |
-| `useMemo(…)` | 1 | `restructureNounForms` | `projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:78` |
-| `flatMap(…)` | 1 | `buildNounCaseRow` | `projects/lexico/lexico-web/src/components/entry/noun-forms-table.tsx:108` |
-| `buildVerbFormTenses` | 1 | `restructureVerbForms` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:114` |
-| `flatMap(…)` | 1 | `buildPersonCells` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:253` |
-| `useMemo(…)` | 1 | `groupVerbForms` | `projects/lexico/lexico-web/src/components/entry/verb-forms-table.tsx:265` |
-| `transformForms` | 1 | `dispatchFormTransform` | `projects/lexico/lexico-web/src/lib/forms.ts:100` |
-| `collectParticipleForms` | 1 | `collectParticipialTenseForms` | `projects/lexico/lexico-web/src/lib/forms.ts:218` |
-| `collectPersonNumberForms` | 1 | `personDisplay` | `projects/lexico/lexico-web/src/lib/forms.ts:244` |
-| `transformImperativeForms` | 1 | `collectPersonNumberForms` | `projects/lexico/lexico-web/src/lib/forms.ts:385` |
-| `transformIndicativeForms` | 1 | `collectPersonNumberForms` | `projects/lexico/lexico-web/src/lib/forms.ts:413` |
-| `transformSubjunctiveForms` | 1 | `collectPersonNumberForms` | `projects/lexico/lexico-web/src/lib/forms.ts:459` |
-| `transformVerbalNounForms` | 1 | `collectVerbalNounCaseForms` | `projects/lexico/lexico-web/src/lib/forms.ts:487` |
-| `PrincipalParts` | 1 | `getPrincipalPartsLabel` | `projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:125` |
-| `getPrincipalPartsLabel` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/entry/principal-parts.tsx:194` |
-| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:57` |
-| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:68` |
-| `map(…)` | 1 | `renderTranslation` | `projects/lexico/lexico-web/src/components/entry/translations.tsx:72` |
-| `BookmarksList` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:88` |
-| `useCallback(…)` | 1 | `setBookmarks(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:137` |
-| `setBookmarks(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/routes/bookmarks.tsx:141` |
-| `useCallback(…)` | 1 | `fetchTextsAsync` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:71` |
-| `useCallback(…)` | 1 | `createTextAsync` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:81` |
-| `useCallback(…)` | 1 | `updateTextAsync` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:95` |
-| `useCallback(…)` | 1 | `deleteTextAsync` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:110` |
-| `createTextAsync` | 1 | `setTexts(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:173` |
-| `deleteTextAsync` | 1 | `setTexts(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:218` |
-| `setTexts(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:228` |
-| `updateTextAsync` | 1 | `setTexts(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:265` |
-| `setTexts(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/hooks/useLibraryPage.ts:292` |
-| `LibraryPage` | 1 | `useLibraryPage` | `projects/lexico/lexico-web/src/routes/library.tsx:275` |
-| `LibraryTextGrid` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/library.tsx:453` |
-| `SearchResultsList` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:182` |
-| `map(…)` | 1 | `transformForms` | `projects/lexico/lexico-web/src/routes/search.tsx:187` |
-| `useDebounce` | 1 | `useEffect(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:220` |
-| `useEffect(…)` | 1 | `setTimeout(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:223` |
-| `anonymous` | 1 | `handleSignIn` | `projects/lexico/lexico-web/src/routes/settings.tsx:81` |
-| `anonymous` | 1 | `handleSignOut` | `projects/lexico/lexico-web/src/routes/settings.tsx:107` |
-| `anonymous` | 1 | `handleDeleteAccount` | `projects/lexico/lexico-web/src/routes/settings.tsx:144` |
-| `PronunciationButton` | 1 | `useCallback(…)` | `projects/lexico/lexico-web/src/components/pronunciation-button.tsx:26` |
-| `useCallback(…)` | 1 | `addEventListener(…)` | `projects/lexico/lexico-web/src/components/pronunciation-button.tsx:37` |
-| `WordForms` | 1 | `transformForms` | `projects/lexico/lexico-web/src/routes/word.$id.tsx:56` |
+| `NounForms` | 3 | `filter(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:47` |
+| `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:40` |
+| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:103` |
+| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:71` |
+| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:175` |
+| `NonFiniteForms` | 2 | `filter(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:275` |
+| `load` | 2 | `catch(…)`, `then(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:103` |
+| `FormsOfKind` | 2 | `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:193` |
+| `LexemeTranslations` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-translations.tsx:37` |
+| `SearchResults` | 2 | `from(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:29` |
+| `map(…)` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:71` |
+| `searchLanguage` | 2 | `queryApi`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:211` |
+| `handler(…)` | 2 | `searchLanguage`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:233` |
+| `handler(…)` | 2 | `queryApi`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:284` |
+| `SearchPage` | 2 | `useCallback(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:367` |
+| `ApplicationSidebar` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:90` |
+| `LexemeIdentifiers` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60` |
+| `map(…)` | 1 | `flatMap(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:85` |
+| `FormsTable` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:46` |
+| `map(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:70` |
+| `map(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:75` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:59` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:66` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:55` |
+| `VerbForms` | 1 | `narrow` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:117` |
+| `AxisTabs` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:200` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:245` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:250` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:255` |
+| `handleOpenChange` | 1 | `load` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:121` |
+| `LexemeHeader` | 1 | `describeInflection` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:44` |
+| `describeInflection` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:110` |
+| `LexemePronunciations` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:38` |
+| `from(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:42` |
 
 </details>
 <!-- callidescope:end -->
@@ -455,122 +371,103 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_components_entry_adjective_forms_table_tsx["src/components/entry/adjective-forms-table.tsx"]
-  file_src_components_entry_entry_card_tsx["src/components/entry/entry-card.tsx"]
-  file_src_components_entry_form_cell_tsx["src/components/entry/form-cell.tsx"]
-  file_src_components_entry_form_tabs_tsx["src/components/entry/form-tabs.tsx"]
-  file_src_components_entry_forms_table_tsx["src/components/entry/forms-table.tsx"]
-  file_src_components_entry_identifier_tsx["src/components/entry/identifier.tsx"]
-  file_src_components_entry_noun_forms_table_tsx["src/components/entry/noun-forms-table.tsx"]
-  file_src_components_entry_principal_parts_tsx["src/components/entry/principal-parts.tsx"]
-  file_src_components_entry_translations_tsx["src/components/entry/translations.tsx"]
-  file_src_components_entry_verb_forms_table_tsx["src/components/entry/verb-forms-table.tsx"]
+  file_src_client_tsx["src/client.tsx"]
+  file_src_components_adjective_forms_tsx["src/components/adjective-forms.tsx"]
+  file_src_components_adjective_forms_unit_test_tsx["src/components/adjective-forms.unit.test.tsx"]
+  file_src_components_forms_table_tsx["src/components/forms-table.tsx"]
+  file_src_components_forms_table_unit_test_tsx["src/components/forms-table.unit.test.tsx"]
   file_src_components_layout_index_ts["src/components/layout/index.ts"]
   file_src_components_layout_logo_tsx["src/components/layout/logo.tsx"]
-  file_src_components_pronunciation_button_tsx["src/components/pronunciation-button.tsx"]
-  file_src_components_pronunciation_button_unit_test_tsx["src/components/pronunciation-button.unit.test.tsx"]
-  file_src_lib_auth_ts["src/lib/auth.ts"]
-  file_src_lib_bookmarks_ts["src/lib/bookmarks.ts"]
-  file_src_lib_client_tsx["src/lib/client.tsx"]
-  file_src_lib_forms_ts["src/lib/forms.ts"]
-  file_src_lib_library_ts["src/lib/library.ts"]
-  file_src_lib_pronunciation_ts["src/lib/pronunciation.ts"]
-  file_src_lib_routeTree_gen_ts["src/lib/routeTree.gen.ts"]
-  file_src_lib_search_ts["src/lib/search.ts"]
-  file_src_lib_types_ts["src/lib/types.ts"]
+  file_src_components_lexeme_card_tsx["src/components/lexeme-card.tsx"]
+  file_src_components_lexeme_card_unit_test_tsx["src/components/lexeme-card.unit.test.tsx"]
+  file_src_components_lexeme_etymology_tsx["src/components/lexeme-etymology.tsx"]
+  file_src_components_lexeme_etymology_unit_test_tsx["src/components/lexeme-etymology.unit.test.tsx"]
+  file_src_components_lexeme_forms_tsx["src/components/lexeme-forms.tsx"]
+  file_src_components_lexeme_forms_unit_test_tsx["src/components/lexeme-forms.unit.test.tsx"]
+  file_src_components_lexeme_header_tsx["src/components/lexeme-header.tsx"]
+  file_src_components_lexeme_header_unit_test_tsx["src/components/lexeme-header.unit.test.tsx"]
+  file_src_components_lexeme_identifiers_tsx["src/components/lexeme-identifiers.tsx"]
+  file_src_components_lexeme_identifiers_unit_test_tsx["src/components/lexeme-identifiers.unit.test.tsx"]
+  file_src_components_lexeme_match_tsx["src/components/lexeme-match.tsx"]
+  file_src_components_lexeme_match_unit_test_tsx["src/components/lexeme-match.unit.test.tsx"]
+  file_src_components_lexeme_pronunciations_tsx["src/components/lexeme-pronunciations.tsx"]
+  file_src_components_lexeme_pronunciations_unit_test_tsx["src/components/lexeme-pronunciations.unit.test.tsx"]
+  file_src_components_lexeme_translations_tsx["src/components/lexeme-translations.tsx"]
+  file_src_components_lexeme_translations_unit_test_tsx["src/components/lexeme-translations.unit.test.tsx"]
+  file_src_components_noun_forms_tsx["src/components/noun-forms.tsx"]
+  file_src_components_noun_forms_unit_test_tsx["src/components/noun-forms.unit.test.tsx"]
+  file_src_components_search_bar_tsx["src/components/search-bar.tsx"]
+  file_src_components_search_bar_unit_test_tsx["src/components/search-bar.unit.test.tsx"]
+  file_src_components_search_landing_tsx["src/components/search-landing.tsx"]
+  file_src_components_search_landing_unit_test_tsx["src/components/search-landing.unit.test.tsx"]
+  file_src_components_search_results_tsx["src/components/search-results.tsx"]
+  file_src_components_search_results_unit_test_tsx["src/components/search-results.unit.test.tsx"]
+  file_src_components_verb_forms_tsx["src/components/verb-forms.tsx"]
+  file_src_components_verb_forms_unit_test_tsx["src/components/verb-forms.unit.test.tsx"]
   file_src_router_tsx["src/router.tsx"]
   file_src_routes___root_tsx["src/routes/__root.tsx"]
-  file_src_routes_bookmarks_integration_test_tsx["src/routes/bookmarks.integration.test.tsx"]
-  file_src_routes_bookmarks_tsx["src/routes/bookmarks.tsx"]
-  file_src_routes_hooks_useLibraryPage_ts["src/routes/hooks/useLibraryPage.ts"]
   file_src_routes_index_integration_test_tsx["src/routes/index.integration.test.tsx"]
   file_src_routes_index_tsx["src/routes/index.tsx"]
-  file_src_routes_library_integration_test_tsx["src/routes/library.integration.test.tsx"]
-  file_src_routes_library_tsx["src/routes/library.tsx"]
+  file_src_routes_routeTree_gen_ts["src/routes/routeTree.gen.ts"]
   file_src_routes_search_integration_test_tsx["src/routes/search.integration.test.tsx"]
   file_src_routes_search_tsx["src/routes/search.tsx"]
-  file_src_routes_settings_integration_test_tsx["src/routes/settings.integration.test.tsx"]
-  file_src_routes_settings_tsx["src/routes/settings.tsx"]
-  file_src_routes_tools_integration_test_tsx["src/routes/tools.integration.test.tsx"]
-  file_src_routes_tools_tsx["src/routes/tools.tsx"]
-  file_src_routes_word__id_integration_test_tsx["src/routes/word.$id.integration.test.tsx"]
-  file_src_routes_word__id_tsx["src/routes/word.$id.tsx"]
   file_testing_render_route_tsx["testing/render-route.tsx"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_mts["vite.config.mts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_components_entry_adjective_forms_table_tsx --> file_src_components_entry_form_cell_tsx
-  file_src_components_entry_adjective_forms_table_tsx --> file_src_components_entry_form_tabs_tsx
-  file_src_components_entry_adjective_forms_table_tsx --> file_src_components_entry_forms_table_tsx
-  file_src_components_entry_entry_card_tsx --> file_src_components_entry_adjective_forms_table_tsx
-  file_src_components_entry_entry_card_tsx --> file_src_components_entry_noun_forms_table_tsx
-  file_src_components_entry_entry_card_tsx --> file_src_components_entry_principal_parts_tsx
-  file_src_components_entry_entry_card_tsx --> file_src_components_entry_translations_tsx
-  file_src_components_entry_entry_card_tsx --> file_src_components_entry_verb_forms_table_tsx
-  file_src_components_entry_entry_card_tsx --> file_src_lib_types_ts
-  file_src_components_entry_form_cell_tsx --> file_src_components_entry_identifier_tsx
-  file_src_components_entry_form_tabs_tsx --> file_src_components_entry_identifier_tsx
-  file_src_components_entry_forms_table_tsx --> file_src_components_entry_form_cell_tsx
-  file_src_components_entry_noun_forms_table_tsx --> file_src_components_entry_form_cell_tsx
-  file_src_components_entry_noun_forms_table_tsx --> file_src_components_entry_forms_table_tsx
-  file_src_components_entry_principal_parts_tsx --> file_src_components_entry_identifier_tsx
-  file_src_components_entry_principal_parts_tsx --> file_src_lib_types_ts
-  file_src_components_entry_verb_forms_table_tsx --> file_src_components_entry_form_cell_tsx
-  file_src_components_entry_verb_forms_table_tsx --> file_src_components_entry_form_tabs_tsx
-  file_src_components_entry_verb_forms_table_tsx --> file_src_components_entry_forms_table_tsx
-  file_src_components_pronunciation_button_tsx --> file_src_lib_pronunciation_ts
-  file_src_components_pronunciation_button_unit_test_tsx --> file_src_components_pronunciation_button_tsx
-  file_src_lib_bookmarks_ts --> file_src_lib_types_ts
-  file_src_lib_forms_ts --> file_src_components_entry_adjective_forms_table_tsx
-  file_src_lib_forms_ts --> file_src_components_entry_noun_forms_table_tsx
-  file_src_lib_forms_ts --> file_src_components_entry_verb_forms_table_tsx
-  file_src_lib_forms_ts --> file_src_lib_types_ts
-  file_src_lib_routeTree_gen_ts --> file_src_router_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes___root_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_bookmarks_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_index_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_library_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_search_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_settings_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_tools_tsx
-  file_src_lib_routeTree_gen_ts --> file_src_routes_word__id_tsx
-  file_src_lib_search_ts --> file_src_lib_types_ts
-  file_src_router_tsx --> file_src_lib_routeTree_gen_ts
+  file_src_components_adjective_forms_tsx --> file_src_components_forms_table_tsx
+  file_src_components_adjective_forms_unit_test_tsx --> file_src_components_adjective_forms_tsx
+  file_src_components_forms_table_tsx --> file_src_components_lexeme_identifiers_tsx
+  file_src_components_forms_table_unit_test_tsx --> file_src_components_forms_table_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_etymology_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_forms_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_header_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_identifiers_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_match_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_pronunciations_tsx
+  file_src_components_lexeme_card_tsx --> file_src_components_lexeme_translations_tsx
+  file_src_components_lexeme_card_unit_test_tsx --> file_src_components_lexeme_card_tsx
+  file_src_components_lexeme_card_unit_test_tsx --> file_src_components_lexeme_forms_tsx
+  file_src_components_lexeme_etymology_unit_test_tsx --> file_src_components_lexeme_etymology_tsx
+  file_src_components_lexeme_forms_tsx --> file_src_components_adjective_forms_tsx
+  file_src_components_lexeme_forms_tsx --> file_src_components_noun_forms_tsx
+  file_src_components_lexeme_forms_tsx --> file_src_components_verb_forms_tsx
+  file_src_components_lexeme_forms_unit_test_tsx --> file_src_components_lexeme_forms_tsx
+  file_src_components_lexeme_header_unit_test_tsx --> file_src_components_lexeme_header_tsx
+  file_src_components_lexeme_identifiers_unit_test_tsx --> file_src_components_lexeme_identifiers_tsx
+  file_src_components_lexeme_match_unit_test_tsx --> file_src_components_lexeme_match_tsx
+  file_src_components_lexeme_pronunciations_unit_test_tsx --> file_src_components_lexeme_pronunciations_tsx
+  file_src_components_lexeme_translations_unit_test_tsx --> file_src_components_lexeme_translations_tsx
+  file_src_components_noun_forms_tsx --> file_src_components_forms_table_tsx
+  file_src_components_noun_forms_unit_test_tsx --> file_src_components_noun_forms_tsx
+  file_src_components_search_bar_unit_test_tsx --> file_src_components_search_bar_tsx
+  file_src_components_search_landing_tsx --> file_src_components_layout_index_ts
+  file_src_components_search_landing_unit_test_tsx --> file_src_components_search_landing_tsx
+  file_src_components_search_results_tsx --> file_src_components_lexeme_card_tsx
+  file_src_components_search_results_tsx --> file_src_components_lexeme_forms_tsx
+  file_src_components_search_results_unit_test_tsx --> file_src_components_lexeme_card_tsx
+  file_src_components_search_results_unit_test_tsx --> file_src_components_lexeme_forms_tsx
+  file_src_components_search_results_unit_test_tsx --> file_src_components_search_results_tsx
+  file_src_components_verb_forms_tsx --> file_src_components_forms_table_tsx
+  file_src_components_verb_forms_tsx --> file_src_components_lexeme_identifiers_tsx
+  file_src_components_verb_forms_unit_test_tsx --> file_src_components_verb_forms_tsx
+  file_src_router_tsx --> file_src_routes_routeTree_gen_ts
   file_src_routes___root_tsx --> file_src_components_layout_index_ts
-  file_src_routes___root_tsx --> file_src_lib_auth_ts
-  file_src_routes_bookmarks_integration_test_tsx --> file_src_routes_bookmarks_tsx
-  file_src_routes_bookmarks_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_bookmarks_tsx --> file_src_components_entry_entry_card_tsx
-  file_src_routes_bookmarks_tsx --> file_src_lib_bookmarks_ts
-  file_src_routes_hooks_useLibraryPage_ts --> file_src_lib_library_ts
   file_src_routes_index_integration_test_tsx --> file_src_routes_index_tsx
   file_src_routes_index_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_library_integration_test_tsx --> file_src_routes_library_tsx
-  file_src_routes_library_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_library_tsx --> file_src_lib_library_ts
-  file_src_routes_library_tsx --> file_src_routes_hooks_useLibraryPage_ts
+  file_src_routes_routeTree_gen_ts --> file_src_router_tsx
+  file_src_routes_routeTree_gen_ts --> file_src_routes___root_tsx
+  file_src_routes_routeTree_gen_ts --> file_src_routes_index_tsx
+  file_src_routes_routeTree_gen_ts --> file_src_routes_search_tsx
   file_src_routes_search_integration_test_tsx --> file_src_routes_search_tsx
   file_src_routes_search_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_search_tsx --> file_src_components_entry_entry_card_tsx
-  file_src_routes_search_tsx --> file_src_lib_forms_ts
-  file_src_routes_search_tsx --> file_src_lib_search_ts
-  file_src_routes_search_tsx --> file_src_lib_types_ts
-  file_src_routes_settings_integration_test_tsx --> file_src_routes_settings_tsx
-  file_src_routes_settings_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_settings_tsx --> file_src_lib_auth_ts
-  file_src_routes_tools_integration_test_tsx --> file_src_routes_tools_tsx
-  file_src_routes_tools_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_word__id_integration_test_tsx --> file_src_routes_word__id_tsx
-  file_src_routes_word__id_integration_test_tsx --> file_testing_render_route_tsx
-  file_src_routes_word__id_tsx --> file_src_components_entry_adjective_forms_table_tsx
-  file_src_routes_word__id_tsx --> file_src_components_entry_noun_forms_table_tsx
-  file_src_routes_word__id_tsx --> file_src_components_entry_principal_parts_tsx
-  file_src_routes_word__id_tsx --> file_src_components_entry_verb_forms_table_tsx
-  file_src_routes_word__id_tsx --> file_src_components_pronunciation_button_tsx
-  file_src_routes_word__id_tsx --> file_src_lib_bookmarks_ts
-  file_src_routes_word__id_tsx --> file_src_lib_forms_ts
-  file_src_routes_word__id_tsx --> file_src_lib_search_ts
-  file_src_routes_word__id_tsx --> file_src_lib_types_ts
+  file_src_routes_search_tsx --> file_src_components_lexeme_card_tsx
+  file_src_routes_search_tsx --> file_src_components_lexeme_forms_tsx
+  file_src_routes_search_tsx --> file_src_components_lexeme_header_tsx
+  file_src_routes_search_tsx --> file_src_components_lexeme_match_tsx
+  file_src_routes_search_tsx --> file_src_components_search_bar_tsx
+  file_src_routes_search_tsx --> file_src_components_search_landing_tsx
+  file_src_routes_search_tsx --> file_src_components_search_results_tsx
   file_testing_render_route_tsx --> file_src_router_tsx
 ```
 <!-- codependix:end name="codependix-file-imports" -->
@@ -581,43 +478,43 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5808-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-173.08_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4441-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-138.15_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-148.66_kB_gzip-6b7280?style=flat-square)
-![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-110.75_kB_gzip-6b7280?style=flat-square)
-![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-47.58_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-228.21_kB_gzip-6b7280?style=flat-square)
+![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.76_kB_gzip-6b7280?style=flat-square)
+![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.40_kB_gzip-6b7280?style=flat-square)
+![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.95_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.35_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
 ![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-48-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-78-0ea5e9?style=flat-square)
-![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-3-0369a1?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-41-0ea5e9?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-288-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-106-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-2-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-8-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-16-8b5cf6?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-17-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-15-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-240-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-243-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-196-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-44-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-286-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-188-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-83-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-478-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-728-475569?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-224-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-19-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-165-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-180-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-54-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-295-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-473-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -638,16 +535,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-158-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-160-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-36-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-106-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-87-16a34a?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-89-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-8-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-35-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-144-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-37-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-146-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
@@ -716,15 +613,15 @@ graph LR
 
 ### CSS
 
-![CSS Files](https://img.shields.io/badge/CSS_Files-0-264de4?style=flat-square)
-![CSS Lines](https://img.shields.io/badge/CSS_Lines-0-2965f1?style=flat-square)
-![CSS Rules](https://img.shields.io/badge/CSS_Rules-0-7c3aed?style=flat-square)
-![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-0-8b5cf6?style=flat-square)
-![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-0-0284c7?style=flat-square)
+![CSS Files](https://img.shields.io/badge/CSS_Files-1-264de4?style=flat-square)
+![CSS Lines](https://img.shields.io/badge/CSS_Lines-30-2965f1?style=flat-square)
+![CSS Rules](https://img.shields.io/badge/CSS_Rules-3-7c3aed?style=flat-square)
+![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-4-8b5cf6?style=flat-square)
+![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-10-0284c7?style=flat-square)
 ![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-0-f97316?style=flat-square)
 ![CSS Media Queries](https://img.shields.io/badge/CSS_Media_Queries-0-ea580c?style=flat-square)
-![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-0-16a34a?style=flat-square)
-![CSS Comments](https://img.shields.io/badge/CSS_Comments-0-64748b?style=flat-square)
+![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-10-16a34a?style=flat-square)
+![CSS Comments](https://img.shields.io/badge/CSS_Comments-2-64748b?style=flat-square)
 
 ### Conventions
 
@@ -773,23 +670,23 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-71-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-62-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-4-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-15-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-3-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-7-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-14-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-2-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-5-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-0-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-0-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-10-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-4-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-5-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-3-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-9-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

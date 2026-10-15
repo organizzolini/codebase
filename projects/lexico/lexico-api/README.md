@@ -205,6 +205,11 @@ graph LR
   file_src_modules_search_search_types_ts["src/modules/search/search.types.ts"]
   file_src_modules_search_search_utilities_ts["src/modules/search/search.utilities.ts"]
   file_src_modules_search_search_utilities_unit_test_ts["src/modules/search/search.utilities.unit.test.ts"]
+  file_src_modules_words_lexeme_word_form_entities_ts["src/modules/words/lexeme-word-form.entities.ts"]
+  file_src_modules_words_lexeme_word_form_loader_ts["src/modules/words/lexeme-word-form.loader.ts"]
+  file_src_modules_words_lexeme_word_form_loader_unit_test_ts["src/modules/words/lexeme-word-form.loader.unit.test.ts"]
+  file_src_modules_words_lexeme_word_form_resolver_ts["src/modules/words/lexeme-word-form.resolver.ts"]
+  file_src_modules_words_lexeme_word_form_resolver_unit_test_ts["src/modules/words/lexeme-word-form.resolver.unit.test.ts"]
   file_src_modules_words_word_arguments_entities_ts["src/modules/words/word-arguments.entities.ts"]
   file_src_modules_words_word_form_entities_ts["src/modules/words/word-form.entities.ts"]
   file_src_modules_words_word_form_resolver_ts["src/modules/words/word-form.resolver.ts"]
@@ -730,6 +735,17 @@ graph LR
   file_src_modules_search_search_utilities_unit_test_ts --> file_src_modules_lexemes_lexeme_entities_ts
   file_src_modules_search_search_utilities_unit_test_ts --> file_src_modules_search_search_entities_ts
   file_src_modules_search_search_utilities_unit_test_ts --> file_src_modules_search_search_utilities_ts
+  file_src_modules_words_lexeme_word_form_entities_ts --> file_src_modules_lexemes_forms_form_entities_ts
+  file_src_modules_words_lexeme_word_form_loader_ts --> file_src_modules_words_words_service_ts
+  file_src_modules_words_lexeme_word_form_loader_unit_test_ts --> file_src_modules_words_lexeme_word_form_loader_ts
+  file_src_modules_words_lexeme_word_form_loader_unit_test_ts --> file_src_modules_words_words_service_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_lexemes_lexeme_entities_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_lexeme_word_form_entities_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_lexeme_word_form_loader_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_words_utilities_ts
+  file_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_src_modules_lexemes_lexeme_entities_ts
+  file_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_src_modules_words_lexeme_word_form_loader_ts
+  file_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_src_modules_words_lexeme_word_form_resolver_ts
   file_src_modules_words_word_form_entities_ts --> file_src_deletable_entities_ts
   file_src_modules_words_word_form_entities_ts --> file_src_lexico_api_types_ts
   file_src_modules_words_word_form_entities_ts --> file_src_modules_lexemes_forms_form_entities_ts
@@ -764,6 +780,8 @@ graph LR
   file_src_modules_words_word_entities_ts --> file_src_modules_words_word_form_entities_ts
   file_src_modules_words_word_entities_ts --> file_src_modules_words_word_lexeme_entities_ts
   file_src_modules_words_word_entities_ts --> file_src_modules_words_words_types_ts
+  file_src_modules_words_words_module_ts --> file_src_modules_words_lexeme_word_form_loader_ts
+  file_src_modules_words_words_module_ts --> file_src_modules_words_lexeme_word_form_resolver_ts
   file_src_modules_words_words_module_ts --> file_src_modules_words_word_form_resolver_ts
   file_src_modules_words_words_module_ts --> file_src_modules_words_word_lexeme_resolver_ts
   file_src_modules_words_words_module_ts --> file_src_modules_words_word_link_loader_ts
@@ -791,6 +809,7 @@ graph LR
   file_src_modules_words_words_utilities_ts --> file_src_lexico_api_utilities_ts
   file_src_modules_words_words_utilities_ts --> file_src_modules_lexemes_forms_forms_utilities_ts
   file_src_modules_words_words_utilities_ts --> file_src_modules_lexemes_lexemes_utilities_ts
+  file_src_modules_words_words_utilities_ts --> file_src_modules_words_lexeme_word_form_entities_ts
   file_src_modules_words_words_utilities_ts --> file_src_modules_words_word_form_entities_ts
   file_src_modules_words_words_utilities_ts --> file_src_modules_words_word_lexeme_entities_ts
   file_src_modules_words_words_utilities_ts --> file_src_modules_words_word_entities_ts
@@ -865,10 +884,10 @@ Call stacks traced through `projects/lexico/lexico-api`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 400 |
-| Files | 108 |
-| Calls traced | 234 |
-| Call stacks | 54 |
+| Callables | 412 |
+| Files | 111 |
+| Calls traced | 239 |
+| Call stacks | 55 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
 | Unfollowable calls | 15 |
@@ -946,7 +965,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>51 more call stacks</summary>
+<summary>52 more call stacks</summary>
 
 **4. `AuthorsResolver.authors`** — depth ≥ 7 · decorated-method
 
@@ -1168,7 +1187,23 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**16. `LexemesResolver.lexeme`** — depth ≥ 5 · decorated-method
+**16. `LexemeWordFormResolver.wordForms`** — depth 6 · decorated-method
+
+```text
+🚀 LexemeWordFormResolver.wordForms(lexeme: LexemeType): Promise<LexemeWordFormType[]> [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:34]
+   ↳ Resolves every written word that surfaces as one of this lexeme's forms, batched into one query per request however…
+  └─> LexemeWordFormResolver.map(…)(wordForm: WordForm): LexemeWordFormType [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:46]
+    └─> toLexemeWordFormType(wordForm: WordForm): LexemeWordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:26]
+       ↳ Maps a word-form link, with its form and word joined, to the type a lexeme exposes it as.
+      └─> toFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:29]
+         ↳ Maps a form entity to the GraphQL type of its own kind, the class the `Form` interface resolves a returned form by.
+        └─> toNonFiniteFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:59]
+           ↳ Maps the verbal-noun, participle, infinitive, and adverb forms.
+          └─> toVerbalNounFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:78]
+             ↳ Maps the gerund, supine, and adverb forms, the last of the kinds.
+```
+
+**17. `LexemesResolver.lexeme`** — depth ≥ 5 · decorated-method
 
 ```text
 🚀 LexemesResolver.lexeme(arguments_: LexemeArguments): Promise<LexemeType | null> [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:26]
@@ -1182,20 +1217,20 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**17. `WordsResolver.words`** — depth ≥ 5 · decorated-method
+**18. `WordsResolver.words`** — depth ≥ 5 · decorated-method
 
 ```text
 🚀 WordsResolver.words(arguments_: WordsArguments): Promise<WordType[]> [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:41]
    ↳ Retrieves multiple surface words by a batch of normalized input strings.
   └─> WordsResolver.map(…)(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:49]
-    └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:38]
+    └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
        ↳ Maps a word, and each link it loaded, to its GraphQL type.
       └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
          ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
         └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**18. `createConnectionLoader`** — depth ≥ 5 · orphan-root
+**19. `createConnectionLoader`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 createConnectionLoader(…): DataLoader<ConnectionRequest, Connection<Node>, string> [projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:38]
@@ -1208,7 +1243,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Creates a Relay Connection containing edges, page info, and total count.
 ```
 
-**19. `toLexemeSearchResult`** — depth ≥ 5 · orphan-root
+**20. `toLexemeSearchResult`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 toLexemeSearchResult(match: LexemeSearchMatch): LexemeSearchResult [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:104]
@@ -1222,7 +1257,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**20. `AuthorsResolver.resolveAuthorTexts`** — depth ≥ 4 · decorated-method
+**21. `AuthorsResolver.resolveAuthorTexts`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 AuthorsResolver.resolveAuthorTexts(…): Promise<Connection<TextType>> [projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:81]
@@ -1234,7 +1269,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**21. `LinesResolver.tokensForLine`** — depth ≥ 4 · decorated-method
+**22. `LinesResolver.tokensForLine`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 LinesResolver.tokensForLine(…): Promise<Connection<TokenType>> [projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:83]
@@ -1246,7 +1281,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**22. `TextsResolver.childTexts`** — depth ≥ 4 · decorated-method
+**23. `TextsResolver.childTexts`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 TextsResolver.childTexts(text: TextType, arguments_: PaginationArguments): Promise<Connection<TextType>> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:48]
@@ -1258,7 +1293,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**23. `TextsResolver.linesForText`** — depth ≥ 4 · decorated-method
+**24. `TextsResolver.linesForText`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 TextsResolver.linesForText(text: TextType, arguments_: PaginationArguments): Promise<Connection<LineType>> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:66]
@@ -1270,7 +1305,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**24. `TextsResolver.text`** — depth ≥ 4 · decorated-method
+**25. `TextsResolver.text`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 TextsResolver.text(arguments_: TextArguments): Promise<null | TextType> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:116]
@@ -1283,43 +1318,43 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Maps a to-one relation to its GraphQL type.
 ```
 
-**25. `WordFormResolver.word`** — depth ≥ 4 · decorated-method
+**26. `WordFormResolver.word`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 WordFormResolver.word(wordForm: WordFormType): Promise<WordType> [projects/lexico/lexico-api/src/modules/words/word-form.resolver.ts:28]
    ↳ Resolves the word side of a word-form link, batched per request.
-  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:38]
+  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
      ↳ Maps a word, and each link it loaded, to its GraphQL type.
     └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
        ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
       └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**26. `WordLexemeResolver.word`** — depth ≥ 4 · decorated-method
+**27. `WordLexemeResolver.word`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 WordLexemeResolver.word(wordLexeme: WordLexemeType): Promise<WordType> [projects/lexico/lexico-api/src/modules/words/word-lexeme.resolver.ts:29]
    ↳ Resolves the word side of a word-lexeme link, batched per request.
-  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:38]
+  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
      ↳ Maps a word, and each link it loaded, to its GraphQL type.
     └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
        ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
       └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**27. `WordsResolver.word`** — depth ≥ 4 · decorated-method
+**28. `WordsResolver.word`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 WordsResolver.word(arguments_: WordArguments): Promise<null | WordType> [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:26]
    ↳ Retrieves a single surface word by normalized input string.
-  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:38]
+  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
      ↳ Maps a word, and each link it loaded, to its GraphQL type.
     └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
        ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
       └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
 ```
 
-**28. `AuthorsResolver.author`** — depth 3 · decorated-method
+**29. `AuthorsResolver.author`** — depth 3 · decorated-method
 
 ```text
 🚀 AuthorsResolver.author(arguments_: AuthorArguments): Promise<AuthorType | null> [projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:46]
@@ -1330,7 +1365,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**29. `TextsResolver.parentText`** — depth ≥ 3 · decorated-method
+**30. `TextsResolver.parentText`** — depth ≥ 3 · decorated-method
 
 ```text
 🚀 TextsResolver.parentText(text: TextType): Promise<null | TextType> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:84]
@@ -1341,7 +1376,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Maps a to-one relation to its GraphQL type.
 ```
 
-**30. `decodeOffsetCursor`** — depth ≥ 3 · orphan-root
+**31. `decodeOffsetCursor`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 decodeOffsetCursor(cursor?: null | string, defaultOffset?: number): number [projects/lexico/lexico-api/src/lexico-api.utilities.ts:75]
@@ -1352,7 +1387,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**31. `Paginated`** — depth ≥ 3 · orphan-root
+**32. `Paginated`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 Paginated(…): ClassConstructor<Connection<T>> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:197]
@@ -1360,17 +1395,6 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> createEdgeType(…): ClassConstructor<Edge<T>> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:49]
      ↳ Mixin type factory producing a Relay Edge ObjectType for GraphQL schema generation, named after the node's GraphQL type…
     └─> Field(…)(): StringConstructor [projects/lexico/lexico-api/src/lexico-api.utilities.ts:60]
-```
-
-**32. `toFormType`** — depth 3 · orphan-root
-
-```text
-🚀 toFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:29]
-   ↳ Maps a form entity to the GraphQL type of its own kind, the class the `Form` interface resolves a returned form by.
-  └─> toNonFiniteFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:59]
-     ↳ Maps the verbal-noun, participle, infinitive, and adverb forms.
-    └─> toVerbalNounFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:78]
-       ↳ Maps the gerund, supine, and adverb forms, the last of the kinds.
 ```
 
 **33. `toTokenType`** — depth ≥ 3 · orphan-root
@@ -1495,7 +1519,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **46. `toWordFormType`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 toWordFormType(wordForm: WordForm): WordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:22]
+🚀 toWordFormType(wordForm: WordForm): WordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:35]
    ↳ Maps a word-form link, and the form it loaded, to its GraphQL type.
   └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
@@ -1504,7 +1528,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **47. `toWordLexemeType`** — depth ≥ 2 · orphan-root
 
 ```text
-🚀 toWordLexemeType(wordLexeme: WordLexeme): WordLexemeType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:30]
+🚀 toWordLexemeType(wordLexeme: WordLexeme): WordLexemeType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:43]
    ↳ Maps a word-lexeme link, and the lexeme it loaded, to its GraphQL type.
   └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
@@ -1561,7 +1585,15 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a single surface word and all of its morphological and lexical links.
 ```
 
-**54. `main`** — depth 2 · orphan-root
+**54. `LexemeWordFormLoader.anonymous`** — depth 2 · orphan-root
+
+```text
+🚀 LexemeWordFormLoader.anonymous(lexemeIds: readonly string[]): Promise<WordForm[][]> [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.loader.ts:28]
+  └─> WordsService.findWordFormsByLexemeIds(lexemeIds: readonly string[]): Promise<WordForm[]> [projects/lexico/lexico-api/src/modules/words/words.service.ts:133]
+     ↳ Finds every word-form link of the given lexemes in one query, each with its form and word joined and the form's lexeme…
+```
+
+**55. `main`** — depth 2 · orphan-root
 
 ```text
 🚀 main(): Promise<void> [projects/lexico/lexico-api/src/lexico-api.ts:16]
@@ -1580,7 +1612,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LiteratureService.searchLiterature` | 7 | `createEmptyConnection`, `LiteratureService.searchAuthors`, `LiteratureService.searchTexts`, `LiteratureService.searchLines`, `LiteratureService.map(…)`, `LiteratureService.map(…)`, `LiteratureService.map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:259` |
 
 <details>
-<summary>116 more callables</summary>
+<summary>120 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -1601,9 +1633,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `createEdgeType` | 2 | `Field(…)`, `Field(…)` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:49` |
 | `LexemesResolver.lexeme` | 2 | `LexemesService.findById`, `toLexemeType` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:26` |
 | `LexemesResolver.lexemes` | 2 | `LexemesService.findByIds`, `LexemesResolver.map(…)` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:41` |
-| `toWordFormType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:22` |
-| `toWordLexemeType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:30` |
-| `toWordType` | 2 | `toDeletableFields`, `mapRelations` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:38` |
+| `toWordFormType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:35` |
+| `toWordLexemeType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:43` |
+| `toWordType` | 2 | `toDeletableFields`, `mapRelations` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51` |
 | `map(…)` | 2 | `createEdge`, `encodeCursor` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:76` |
 | `readCursorId` | 2 | `fromCursorSafe`, `toCursor` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:97` |
 | `toLineType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:140` |
@@ -1632,6 +1664,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SearchResolver.searchEnglish` | 2 | `mapConnection`, `SearchService.searchEnglish` | `projects/lexico/lexico-api/src/modules/search/search.resolver.ts:31` |
 | `SearchResolver.searchLatin` | 2 | `mapConnection`, `SearchService.searchLatin` | `projects/lexico/lexico-api/src/modules/search/search.resolver.ts:47` |
 | `WordsService.findByDataList` | 2 | `WordsService.map(…)`, `WordsService.flatMap(…)` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:52` |
+| `LexemeWordFormLoader.anonymous` | 2 | `WordsService.findWordFormsByLexemeIds`, `LexemeWordFormLoader.map(…)` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.loader.ts:28` |
 | `WordLinkLoader.anonymous` | 2 | `WordLinkLoader.loadWords`, `WordsService.findWordFormsByIds` | `projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:28` |
 | `WordLinkLoader.anonymous` | 2 | `WordLinkLoader.loadWords`, `WordsService.findWordLexemesByIds` | `projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:36` |
 | `WordLinkLoader.loadWords` | 2 | `WordLinkLoader.map(…)`, `WordLinkLoader.map(…)` | `projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:49` |
@@ -1653,6 +1686,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `toPronunciationType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:55` |
 | `toTranslationType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:68` |
 | `LexemesResolver.map(…)` | 1 | `toLexemeType` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:49` |
+| `toLexemeWordFormType` | 1 | `toFormType` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:26` |
 | `createEmptyConnection` | 1 | `createConnection` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:36` |
 | `toAuthorType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:131` |
 | `decodeCursor` | 1 | `readCursorId` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:181` |
@@ -1695,6 +1729,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.describeLatinMatches` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:436` |
 | `WordsService.findFormsByData` | 1 | `WordsService.findByData` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:93` |
 | `WordsService.findLexemeLinksByData` | 1 | `WordsService.findByData` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:101` |
+| `LexemeWordFormResolver.wordForms` | 1 | `LexemeWordFormResolver.map(…)` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:34` |
+| `LexemeWordFormResolver.map(…)` | 1 | `toLexemeWordFormType` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:46` |
 | `WordFormResolver.word` | 1 | `toWordType` | `projects/lexico/lexico-api/src/modules/words/word-form.resolver.ts:28` |
 | `WordLexemeResolver.word` | 1 | `toWordType` | `projects/lexico/lexico-api/src/modules/words/word-lexeme.resolver.ts:29` |
 | `WordsResolver.map(…)` | 1 | `toWordType` | `projects/lexico/lexico-api/src/modules/words/words.resolver.ts:49` |
@@ -1710,36 +1746,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18407-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-569.43_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18803-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-580.70_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-177-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-182-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-177-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-182-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-62-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-73-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-1-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-318-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-452-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-328-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-462-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-55-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-57-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-26-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-85-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-1032-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-303-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-851-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-484-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-1069-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-955-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-251-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-591-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1014-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-88-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1054-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-312-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-869-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-497-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-1087-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-981-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-255-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-610-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1052-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -1857,7 +1893,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Types Files](https://img.shields.io/badge/Types_Files-9-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-8-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-38-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-40-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-10-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-7-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)

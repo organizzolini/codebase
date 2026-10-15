@@ -1,3 +1,14 @@
+## 0.0.25 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.24
+- Updated codependix-configuration to 0.0.26
+- Updated codependix-file-imports to 0.0.24
+- Updated codependix-nx-projects to 0.0.25
+- Updated codependix-boundaries to 0.0.25
+- Updated codependix-core to 0.0.24
+
 ## 0.0.24 (2026-10-15)
 
 ### 🧱 Updated Dependencies

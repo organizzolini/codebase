@@ -3778,6 +3778,11 @@ graph LR
   file_lexico_api_src_modules_search_search_types_ts["lexico-api/src/modules/search/search.types.ts"]
   file_lexico_api_src_modules_search_search_utilities_ts["lexico-api/src/modules/search/search.utilities.ts"]
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts["lexico-api/src/modules/search/search.utilities.unit.test.ts"]
+  file_lexico_api_src_modules_words_lexeme_word_form_entities_ts["lexico-api/src/modules/words/lexeme-word-form.entities.ts"]
+  file_lexico_api_src_modules_words_lexeme_word_form_loader_ts["lexico-api/src/modules/words/lexeme-word-form.loader.ts"]
+  file_lexico_api_src_modules_words_lexeme_word_form_loader_unit_test_ts["lexico-api/src/modules/words/lexeme-word-form.loader.unit.test.ts"]
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts["lexico-api/src/modules/words/lexeme-word-form.resolver.ts"]
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_unit_test_ts["lexico-api/src/modules/words/lexeme-word-form.resolver.unit.test.ts"]
   file_lexico_api_src_modules_words_word_arguments_entities_ts["lexico-api/src/modules/words/word-arguments.entities.ts"]
   file_lexico_api_src_modules_words_word_form_entities_ts["lexico-api/src/modules/words/word-form.entities.ts"]
   file_lexico_api_src_modules_words_word_form_resolver_ts["lexico-api/src/modules/words/word-form.resolver.ts"]
@@ -4030,46 +4035,46 @@ graph LR
   file_lexico_web_codependix_config_ts["lexico-web/codependix.config.ts"]
   file_lexico_web_codometer_config_ts["lexico-web/codometer.config.ts"]
   file_lexico_web_eslint_config_ts["lexico-web/eslint.config.ts"]
-  file_lexico_web_src_components_entry_adjective_forms_table_tsx["lexico-web/src/components/entry/adjective-forms-table.tsx"]
-  file_lexico_web_src_components_entry_entry_card_tsx["lexico-web/src/components/entry/entry-card.tsx"]
-  file_lexico_web_src_components_entry_form_cell_tsx["lexico-web/src/components/entry/form-cell.tsx"]
-  file_lexico_web_src_components_entry_form_tabs_tsx["lexico-web/src/components/entry/form-tabs.tsx"]
-  file_lexico_web_src_components_entry_forms_table_tsx["lexico-web/src/components/entry/forms-table.tsx"]
-  file_lexico_web_src_components_entry_identifier_tsx["lexico-web/src/components/entry/identifier.tsx"]
-  file_lexico_web_src_components_entry_noun_forms_table_tsx["lexico-web/src/components/entry/noun-forms-table.tsx"]
-  file_lexico_web_src_components_entry_principal_parts_tsx["lexico-web/src/components/entry/principal-parts.tsx"]
-  file_lexico_web_src_components_entry_translations_tsx["lexico-web/src/components/entry/translations.tsx"]
-  file_lexico_web_src_components_entry_verb_forms_table_tsx["lexico-web/src/components/entry/verb-forms-table.tsx"]
+  file_lexico_web_src_client_tsx["lexico-web/src/client.tsx"]
+  file_lexico_web_src_components_adjective_forms_tsx["lexico-web/src/components/adjective-forms.tsx"]
+  file_lexico_web_src_components_adjective_forms_unit_test_tsx["lexico-web/src/components/adjective-forms.unit.test.tsx"]
+  file_lexico_web_src_components_forms_table_tsx["lexico-web/src/components/forms-table.tsx"]
+  file_lexico_web_src_components_forms_table_unit_test_tsx["lexico-web/src/components/forms-table.unit.test.tsx"]
   file_lexico_web_src_components_layout_index_ts["lexico-web/src/components/layout/index.ts"]
   file_lexico_web_src_components_layout_logo_tsx["lexico-web/src/components/layout/logo.tsx"]
-  file_lexico_web_src_components_pronunciation_button_tsx["lexico-web/src/components/pronunciation-button.tsx"]
-  file_lexico_web_src_components_pronunciation_button_unit_test_tsx["lexico-web/src/components/pronunciation-button.unit.test.tsx"]
-  file_lexico_web_src_lib_auth_ts["lexico-web/src/lib/auth.ts"]
-  file_lexico_web_src_lib_bookmarks_ts["lexico-web/src/lib/bookmarks.ts"]
-  file_lexico_web_src_lib_client_tsx["lexico-web/src/lib/client.tsx"]
-  file_lexico_web_src_lib_forms_ts["lexico-web/src/lib/forms.ts"]
-  file_lexico_web_src_lib_library_ts["lexico-web/src/lib/library.ts"]
-  file_lexico_web_src_lib_pronunciation_ts["lexico-web/src/lib/pronunciation.ts"]
-  file_lexico_web_src_lib_routeTree_gen_ts["lexico-web/src/lib/routeTree.gen.ts"]
-  file_lexico_web_src_lib_search_ts["lexico-web/src/lib/search.ts"]
-  file_lexico_web_src_lib_types_ts["lexico-web/src/lib/types.ts"]
+  file_lexico_web_src_components_lexeme_card_tsx["lexico-web/src/components/lexeme-card.tsx"]
+  file_lexico_web_src_components_lexeme_card_unit_test_tsx["lexico-web/src/components/lexeme-card.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_etymology_tsx["lexico-web/src/components/lexeme-etymology.tsx"]
+  file_lexico_web_src_components_lexeme_etymology_unit_test_tsx["lexico-web/src/components/lexeme-etymology.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_forms_tsx["lexico-web/src/components/lexeme-forms.tsx"]
+  file_lexico_web_src_components_lexeme_forms_unit_test_tsx["lexico-web/src/components/lexeme-forms.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_header_tsx["lexico-web/src/components/lexeme-header.tsx"]
+  file_lexico_web_src_components_lexeme_header_unit_test_tsx["lexico-web/src/components/lexeme-header.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_identifiers_tsx["lexico-web/src/components/lexeme-identifiers.tsx"]
+  file_lexico_web_src_components_lexeme_identifiers_unit_test_tsx["lexico-web/src/components/lexeme-identifiers.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_match_tsx["lexico-web/src/components/lexeme-match.tsx"]
+  file_lexico_web_src_components_lexeme_match_unit_test_tsx["lexico-web/src/components/lexeme-match.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_pronunciations_tsx["lexico-web/src/components/lexeme-pronunciations.tsx"]
+  file_lexico_web_src_components_lexeme_pronunciations_unit_test_tsx["lexico-web/src/components/lexeme-pronunciations.unit.test.tsx"]
+  file_lexico_web_src_components_lexeme_translations_tsx["lexico-web/src/components/lexeme-translations.tsx"]
+  file_lexico_web_src_components_lexeme_translations_unit_test_tsx["lexico-web/src/components/lexeme-translations.unit.test.tsx"]
+  file_lexico_web_src_components_noun_forms_tsx["lexico-web/src/components/noun-forms.tsx"]
+  file_lexico_web_src_components_noun_forms_unit_test_tsx["lexico-web/src/components/noun-forms.unit.test.tsx"]
+  file_lexico_web_src_components_search_bar_tsx["lexico-web/src/components/search-bar.tsx"]
+  file_lexico_web_src_components_search_bar_unit_test_tsx["lexico-web/src/components/search-bar.unit.test.tsx"]
+  file_lexico_web_src_components_search_landing_tsx["lexico-web/src/components/search-landing.tsx"]
+  file_lexico_web_src_components_search_landing_unit_test_tsx["lexico-web/src/components/search-landing.unit.test.tsx"]
+  file_lexico_web_src_components_search_results_tsx["lexico-web/src/components/search-results.tsx"]
+  file_lexico_web_src_components_search_results_unit_test_tsx["lexico-web/src/components/search-results.unit.test.tsx"]
+  file_lexico_web_src_components_verb_forms_tsx["lexico-web/src/components/verb-forms.tsx"]
+  file_lexico_web_src_components_verb_forms_unit_test_tsx["lexico-web/src/components/verb-forms.unit.test.tsx"]
   file_lexico_web_src_router_tsx["lexico-web/src/router.tsx"]
   file_lexico_web_src_routes___root_tsx["lexico-web/src/routes/__root.tsx"]
-  file_lexico_web_src_routes_bookmarks_integration_test_tsx["lexico-web/src/routes/bookmarks.integration.test.tsx"]
-  file_lexico_web_src_routes_bookmarks_tsx["lexico-web/src/routes/bookmarks.tsx"]
-  file_lexico_web_src_routes_hooks_useLibraryPage_ts["lexico-web/src/routes/hooks/useLibraryPage.ts"]
   file_lexico_web_src_routes_index_integration_test_tsx["lexico-web/src/routes/index.integration.test.tsx"]
   file_lexico_web_src_routes_index_tsx["lexico-web/src/routes/index.tsx"]
-  file_lexico_web_src_routes_library_integration_test_tsx["lexico-web/src/routes/library.integration.test.tsx"]
-  file_lexico_web_src_routes_library_tsx["lexico-web/src/routes/library.tsx"]
+  file_lexico_web_src_routes_routeTree_gen_ts["lexico-web/src/routes/routeTree.gen.ts"]
   file_lexico_web_src_routes_search_integration_test_tsx["lexico-web/src/routes/search.integration.test.tsx"]
   file_lexico_web_src_routes_search_tsx["lexico-web/src/routes/search.tsx"]
-  file_lexico_web_src_routes_settings_integration_test_tsx["lexico-web/src/routes/settings.integration.test.tsx"]
-  file_lexico_web_src_routes_settings_tsx["lexico-web/src/routes/settings.tsx"]
-  file_lexico_web_src_routes_tools_integration_test_tsx["lexico-web/src/routes/tools.integration.test.tsx"]
-  file_lexico_web_src_routes_tools_tsx["lexico-web/src/routes/tools.tsx"]
-  file_lexico_web_src_routes_word__id_integration_test_tsx["lexico-web/src/routes/word.$id.integration.test.tsx"]
-  file_lexico_web_src_routes_word__id_tsx["lexico-web/src/routes/word.$id.tsx"]
   file_lexico_web_testing_render_route_tsx["lexico-web/testing/render-route.tsx"]
   file_lexico_web_testing_setup_ts["lexico-web/testing/setup.ts"]
   file_lexico_web_vite_config_mts["lexico-web/vite.config.mts"]
@@ -8889,6 +8894,17 @@ graph LR
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_lexemes_lexeme_entities_ts
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_search_search_entities_ts
   file_lexico_api_src_modules_search_search_utilities_unit_test_ts --> file_lexico_api_src_modules_search_search_utilities_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_entities_ts --> file_lexico_api_src_modules_lexemes_forms_form_entities_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_loader_ts --> file_lexico_api_src_modules_words_words_service_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_loader_unit_test_ts --> file_lexico_api_src_modules_words_lexeme_word_form_loader_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_loader_unit_test_ts --> file_lexico_api_src_modules_words_words_service_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts --> file_lexico_api_src_modules_lexemes_lexeme_entities_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts --> file_lexico_api_src_modules_words_lexeme_word_form_entities_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts --> file_lexico_api_src_modules_words_lexeme_word_form_loader_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts --> file_lexico_api_src_modules_words_words_utilities_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_lexico_api_src_modules_lexemes_lexeme_entities_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_lexico_api_src_modules_words_lexeme_word_form_loader_ts
+  file_lexico_api_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts
   file_lexico_api_src_modules_words_word_form_entities_ts --> file_lexico_api_src_deletable_entities_ts
   file_lexico_api_src_modules_words_word_form_entities_ts --> file_lexico_api_src_lexico_api_types_ts
   file_lexico_api_src_modules_words_word_form_entities_ts --> file_lexico_api_src_modules_lexemes_forms_form_entities_ts
@@ -8923,6 +8939,8 @@ graph LR
   file_lexico_api_src_modules_words_word_entities_ts --> file_lexico_api_src_modules_words_word_form_entities_ts
   file_lexico_api_src_modules_words_word_entities_ts --> file_lexico_api_src_modules_words_word_lexeme_entities_ts
   file_lexico_api_src_modules_words_word_entities_ts --> file_lexico_api_src_modules_words_words_types_ts
+  file_lexico_api_src_modules_words_words_module_ts --> file_lexico_api_src_modules_words_lexeme_word_form_loader_ts
+  file_lexico_api_src_modules_words_words_module_ts --> file_lexico_api_src_modules_words_lexeme_word_form_resolver_ts
   file_lexico_api_src_modules_words_words_module_ts --> file_lexico_api_src_modules_words_word_form_resolver_ts
   file_lexico_api_src_modules_words_words_module_ts --> file_lexico_api_src_modules_words_word_lexeme_resolver_ts
   file_lexico_api_src_modules_words_words_module_ts --> file_lexico_api_src_modules_words_word_link_loader_ts
@@ -8950,6 +8968,7 @@ graph LR
   file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_lexico_api_utilities_ts
   file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_modules_lexemes_forms_forms_utilities_ts
   file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_modules_lexemes_lexemes_utilities_ts
+  file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_modules_words_lexeme_word_form_entities_ts
   file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_modules_words_word_form_entities_ts
   file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_modules_words_word_lexeme_entities_ts
   file_lexico_api_src_modules_words_words_utilities_ts --> file_lexico_api_src_modules_words_word_entities_ts
@@ -9385,78 +9404,59 @@ graph LR
   file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts
   file_lexico_entities_src_modules_lexico_database_lexico_database_service_unit_test_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts
-  file_lexico_web_src_components_entry_adjective_forms_table_tsx --> file_lexico_web_src_components_entry_form_cell_tsx
-  file_lexico_web_src_components_entry_adjective_forms_table_tsx --> file_lexico_web_src_components_entry_form_tabs_tsx
-  file_lexico_web_src_components_entry_adjective_forms_table_tsx --> file_lexico_web_src_components_entry_forms_table_tsx
-  file_lexico_web_src_components_entry_entry_card_tsx --> file_lexico_web_src_components_entry_adjective_forms_table_tsx
-  file_lexico_web_src_components_entry_entry_card_tsx --> file_lexico_web_src_components_entry_noun_forms_table_tsx
-  file_lexico_web_src_components_entry_entry_card_tsx --> file_lexico_web_src_components_entry_principal_parts_tsx
-  file_lexico_web_src_components_entry_entry_card_tsx --> file_lexico_web_src_components_entry_translations_tsx
-  file_lexico_web_src_components_entry_entry_card_tsx --> file_lexico_web_src_components_entry_verb_forms_table_tsx
-  file_lexico_web_src_components_entry_entry_card_tsx --> file_lexico_web_src_lib_types_ts
-  file_lexico_web_src_components_entry_form_cell_tsx --> file_lexico_web_src_components_entry_identifier_tsx
-  file_lexico_web_src_components_entry_form_tabs_tsx --> file_lexico_web_src_components_entry_identifier_tsx
-  file_lexico_web_src_components_entry_forms_table_tsx --> file_lexico_web_src_components_entry_form_cell_tsx
-  file_lexico_web_src_components_entry_noun_forms_table_tsx --> file_lexico_web_src_components_entry_form_cell_tsx
-  file_lexico_web_src_components_entry_noun_forms_table_tsx --> file_lexico_web_src_components_entry_forms_table_tsx
-  file_lexico_web_src_components_entry_principal_parts_tsx --> file_lexico_web_src_components_entry_identifier_tsx
-  file_lexico_web_src_components_entry_principal_parts_tsx --> file_lexico_web_src_lib_types_ts
-  file_lexico_web_src_components_entry_verb_forms_table_tsx --> file_lexico_web_src_components_entry_form_cell_tsx
-  file_lexico_web_src_components_entry_verb_forms_table_tsx --> file_lexico_web_src_components_entry_form_tabs_tsx
-  file_lexico_web_src_components_entry_verb_forms_table_tsx --> file_lexico_web_src_components_entry_forms_table_tsx
-  file_lexico_web_src_components_pronunciation_button_tsx --> file_lexico_web_src_lib_pronunciation_ts
-  file_lexico_web_src_components_pronunciation_button_unit_test_tsx --> file_lexico_web_src_components_pronunciation_button_tsx
-  file_lexico_web_src_lib_bookmarks_ts --> file_lexico_web_src_lib_types_ts
-  file_lexico_web_src_lib_forms_ts --> file_lexico_web_src_components_entry_adjective_forms_table_tsx
-  file_lexico_web_src_lib_forms_ts --> file_lexico_web_src_components_entry_noun_forms_table_tsx
-  file_lexico_web_src_lib_forms_ts --> file_lexico_web_src_components_entry_verb_forms_table_tsx
-  file_lexico_web_src_lib_forms_ts --> file_lexico_web_src_lib_types_ts
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_router_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes___root_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_bookmarks_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_index_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_library_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_search_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_settings_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_tools_tsx
-  file_lexico_web_src_lib_routeTree_gen_ts --> file_lexico_web_src_routes_word__id_tsx
-  file_lexico_web_src_lib_search_ts --> file_lexico_web_src_lib_types_ts
-  file_lexico_web_src_router_tsx --> file_lexico_web_src_lib_routeTree_gen_ts
+  file_lexico_web_src_components_adjective_forms_tsx --> file_lexico_web_src_components_forms_table_tsx
+  file_lexico_web_src_components_adjective_forms_unit_test_tsx --> file_lexico_web_src_components_adjective_forms_tsx
+  file_lexico_web_src_components_forms_table_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
+  file_lexico_web_src_components_forms_table_unit_test_tsx --> file_lexico_web_src_components_forms_table_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_etymology_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_header_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_match_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_pronunciations_tsx
+  file_lexico_web_src_components_lexeme_card_tsx --> file_lexico_web_src_components_lexeme_translations_tsx
+  file_lexico_web_src_components_lexeme_card_unit_test_tsx --> file_lexico_web_src_components_lexeme_card_tsx
+  file_lexico_web_src_components_lexeme_card_unit_test_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
+  file_lexico_web_src_components_lexeme_etymology_unit_test_tsx --> file_lexico_web_src_components_lexeme_etymology_tsx
+  file_lexico_web_src_components_lexeme_forms_tsx --> file_lexico_web_src_components_adjective_forms_tsx
+  file_lexico_web_src_components_lexeme_forms_tsx --> file_lexico_web_src_components_noun_forms_tsx
+  file_lexico_web_src_components_lexeme_forms_tsx --> file_lexico_web_src_components_verb_forms_tsx
+  file_lexico_web_src_components_lexeme_forms_unit_test_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
+  file_lexico_web_src_components_lexeme_header_unit_test_tsx --> file_lexico_web_src_components_lexeme_header_tsx
+  file_lexico_web_src_components_lexeme_identifiers_unit_test_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
+  file_lexico_web_src_components_lexeme_match_unit_test_tsx --> file_lexico_web_src_components_lexeme_match_tsx
+  file_lexico_web_src_components_lexeme_pronunciations_unit_test_tsx --> file_lexico_web_src_components_lexeme_pronunciations_tsx
+  file_lexico_web_src_components_lexeme_translations_unit_test_tsx --> file_lexico_web_src_components_lexeme_translations_tsx
+  file_lexico_web_src_components_noun_forms_tsx --> file_lexico_web_src_components_forms_table_tsx
+  file_lexico_web_src_components_noun_forms_unit_test_tsx --> file_lexico_web_src_components_noun_forms_tsx
+  file_lexico_web_src_components_search_bar_unit_test_tsx --> file_lexico_web_src_components_search_bar_tsx
+  file_lexico_web_src_components_search_landing_tsx --> file_lexico_web_src_components_layout_index_ts
+  file_lexico_web_src_components_search_landing_unit_test_tsx --> file_lexico_web_src_components_search_landing_tsx
+  file_lexico_web_src_components_search_results_tsx --> file_lexico_web_src_components_lexeme_card_tsx
+  file_lexico_web_src_components_search_results_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
+  file_lexico_web_src_components_search_results_unit_test_tsx --> file_lexico_web_src_components_lexeme_card_tsx
+  file_lexico_web_src_components_search_results_unit_test_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
+  file_lexico_web_src_components_search_results_unit_test_tsx --> file_lexico_web_src_components_search_results_tsx
+  file_lexico_web_src_components_verb_forms_tsx --> file_lexico_web_src_components_forms_table_tsx
+  file_lexico_web_src_components_verb_forms_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
+  file_lexico_web_src_components_verb_forms_unit_test_tsx --> file_lexico_web_src_components_verb_forms_tsx
+  file_lexico_web_src_router_tsx --> file_lexico_web_src_routes_routeTree_gen_ts
   file_lexico_web_src_routes___root_tsx --> file_lexico_web_src_components_layout_index_ts
-  file_lexico_web_src_routes___root_tsx --> file_lexico_web_src_lib_auth_ts
-  file_lexico_web_src_routes_bookmarks_integration_test_tsx --> file_lexico_web_src_routes_bookmarks_tsx
-  file_lexico_web_src_routes_bookmarks_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_bookmarks_tsx --> file_lexico_web_src_components_entry_entry_card_tsx
-  file_lexico_web_src_routes_bookmarks_tsx --> file_lexico_web_src_lib_bookmarks_ts
-  file_lexico_web_src_routes_hooks_useLibraryPage_ts --> file_lexico_web_src_lib_library_ts
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_src_routes_index_tsx
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_library_integration_test_tsx --> file_lexico_web_src_routes_library_tsx
-  file_lexico_web_src_routes_library_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_library_tsx --> file_lexico_web_src_lib_library_ts
-  file_lexico_web_src_routes_library_tsx --> file_lexico_web_src_routes_hooks_useLibraryPage_ts
+  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_router_tsx
+  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_routes___root_tsx
+  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_routes_index_tsx
+  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_routes_search_tsx
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_routes_search_tsx
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_entry_entry_card_tsx
-  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_lib_forms_ts
-  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_lib_search_ts
-  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_lib_types_ts
-  file_lexico_web_src_routes_settings_integration_test_tsx --> file_lexico_web_src_routes_settings_tsx
-  file_lexico_web_src_routes_settings_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_settings_tsx --> file_lexico_web_src_lib_auth_ts
-  file_lexico_web_src_routes_tools_integration_test_tsx --> file_lexico_web_src_routes_tools_tsx
-  file_lexico_web_src_routes_tools_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_word__id_integration_test_tsx --> file_lexico_web_src_routes_word__id_tsx
-  file_lexico_web_src_routes_word__id_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_components_entry_adjective_forms_table_tsx
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_components_entry_noun_forms_table_tsx
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_components_entry_principal_parts_tsx
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_components_entry_verb_forms_table_tsx
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_components_pronunciation_button_tsx
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_lib_bookmarks_ts
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_lib_forms_ts
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_lib_search_ts
-  file_lexico_web_src_routes_word__id_tsx --> file_lexico_web_src_lib_types_ts
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_card_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_header_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_match_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_bar_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_landing_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_results_tsx
   file_lexico_web_testing_render_route_tsx --> file_lexico_web_src_router_tsx
   file_logging_src_lib_conventional_log_message_eslint_rule_ts --> file_logging_src_modules_logger_logger_constants_ts
   file_logging_src_lib_conventional_log_message_eslint_rule_unit_test_ts --> file_logging_src_lib_conventional_log_message_eslint_rule_ts
@@ -11778,7 +11778,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6036-22c55e?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6032-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-2.23_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-71-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-22-3178c6?style=flat-square)
@@ -11806,8 +11806,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-60-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-41-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-12-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-711-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1419-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-707-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1415-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -11828,7 +11828,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-23-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-5794-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-5783-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-744-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-296-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-1833-0284c7?style=flat-square)
@@ -11992,13 +11992,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6121 |
-| Files | 1753 |
-| Calls traced | 6534 |
-| Call stacks | 1715 |
+| Callables | 6047 |
+| Files | 1747 |
+| Calls traced | 6492 |
+| Call stacks | 1673 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 362 |
+| Unfollowable calls | 309 |
 
 ### Projects
 
@@ -12015,7 +12015,6 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
-| `projects/lexico/lexico-web` | 9 | 9 | 0 | 9 |
 | `projects/logging` | 4 | 4 | 0 | 2 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
 | `projects/validation` | 8 | 8 | 0 | 9 |
@@ -12032,6 +12031,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
 | `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
 | `projects/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
+| `projects/lexico/lexico-web` | 4 | 9 | 5 | 8 |
 | `projects/caelundas/caelundas-web` | 0 | 6 | 6 | 0 |
 | `projects/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
 | `projects/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
@@ -12053,10 +12053,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 15 |
+| 0 — at limit | 14 |
 | 1 | 2 |
 | 2–3 | 2 |
-| 4+ | 10 |
+| 4+ | 11 |
 | no stacks | 14 |
 
 ### Call stacks over the depth limit (0)

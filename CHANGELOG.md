@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.0](https://github.com/organizzolini/codebase/compare/v3.4.1...v3.5.0) (2026-10-15)
+
+### ✨ Features
+
+* **lexico,configuration:** ✨ rebuild search page and remove legacy code ([#1513](https://github.com/organizzolini/codebase/issues/1513)) ([4d97785](https://github.com/organizzolini/codebase/commit/4d97785f7603876db1d8c2e62ee5e450c59ad1f7))
+* **lexico:** ✨ expose the words behind each form of a lexeme ([#1586](https://github.com/organizzolini/codebase/issues/1586)) ([41285d5](https://github.com/organizzolini/codebase/commit/41285d530366a261e4a06171899ce236545997c7))
+* **lexico:** ✨ rebuild the lexeme card with etymology, pronunciation, and forms ([#1587](https://github.com/organizzolini/codebase/issues/1587)) ([431c13e](https://github.com/organizzolini/codebase/commit/431c13e5334240ba31a12119f12fbf1c67010f7b))
+
 ## [3.4.1](https://github.com/organizzolini/codebase/compare/v3.4.0...v3.4.1) (2026-10-15)
 
 ### 🐛 Bug Fixes

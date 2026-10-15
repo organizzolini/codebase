@@ -1,3 +1,9 @@
+## 0.0.11 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.26
+
 ## 0.0.10 (2026-10-15)
 
 ### 🧱 Updated Dependencies
