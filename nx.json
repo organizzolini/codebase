@@ -1107,6 +1107,22 @@
         }
       }
     ],
+    "stop": [
+      {
+        "cache": false,
+        "description": "Stop the process listening on a project's port, so a dev server started by `develop` can be shut down from another terminal. A project opts in with `\"stop\": { \"options\": { \"port\": 3000 } }`; `port` may use shell expansion such as `${LEXICO_API_PORT:-8398}`, and the script fails with a message when it is unset. Only listeners are stopped, never clients connected to the port. A listener gets SIGTERM, then SIGKILL after `timeout` seconds (default 10). Succeeds when nothing is listening. To stop a stack in the reverse of the order `develop` starts it, give each project's `stop` a `dependsOn` on the stop of whatever depends on it. Never cached: it acts on live processes.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:type:application"]
+        },
+        "options": {
+          "command": "./scripts/nx/stop-port.sh --port \"{args.port}\" --timeout '{args.timeout}'",
+          "cwd": "{workspaceRoot}",
+          "forwardAllArgs": false,
+          "timeout": 10
+        }
+      }
+    ],
     "stylelint": [
       {
         "cache": true,

@@ -60,6 +60,11 @@
         "cwd": "projects/lexico/lexico-web"
       }
     },
+    "stop": {
+      "options": {
+        "port": 3000
+      }
+    },
     "stylelint": {},
     "test-code": {},
     "type-coverage": {},

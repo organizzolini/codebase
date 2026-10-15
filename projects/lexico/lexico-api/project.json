@@ -63,6 +63,12 @@
         "cwd": "{projectRoot}"
       }
     },
+    "stop": {
+      "dependsOn": ["lexico-web:stop"],
+      "options": {
+        "port": "${LEXICO_API_PORT:-8398}"
+      }
+    },
     "test-code": {},
     "type-coverage": {},
     "typecheck": {},
