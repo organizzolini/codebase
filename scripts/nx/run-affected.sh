@@ -1,74 +1,44 @@
 #!/usr/bin/env bash
 # Runs one Nx target on the projects a CI change affects, after correcting the
-# list of changed files that Nx would otherwise select projects from.
+# list of changed files Nx selects projects from.
 #
-# WHERE IT FITS
+# Fits in as: CI matrix leg -> `run-affected` action -> this script ->
+# `nx affected --target=$TARGET`. The caller picks the target and the revisions;
+# Nx picks the projects. This script only decides which changed files Nx is
+# told about. The pre-commit hook does not use it (see
+# `configuration/lint-staged.config.ts`).
 #
-#   CI matrix leg (continuous-integration.yml)
-#     -> `run-affected` composite action (.github/actions/run-affected)
-#       -> this script
-#         -> `nx affected --target=$TARGET`
+# 1. List the files changed between NX_BASE and NX_HEAD.
+# 2. Find the files that would mislead Nx for this target:
+#    - Spelling files over-select. Nx decides affected per project, not per
+#      target, and `spell-check` lists the dictionaries as inputs, so one new
+#      word selected every project for every target. Dropped unless
+#      INCLUDE_SPELLING is "true".
+#    - Conformetry templates under-select. `.nxignore` hides them from Nx, so
+#      an edit selected nothing. With INCLUDE_TEMPLATES, a changed template
+#      adds `configuration/conformetry.config.ts`, an input of every instance
+#      project. Set it only for the target that runs `conformetry-validate`.
+# 3. With nothing to correct, run `nx affected --base --head`. Otherwise give
+#    Nx the corrected list over `--stdin`.
 #
-# The CI job picks the target (`guard-code`, `test-code`, ...) and the
-# revisions (`NX_BASE`, `NX_HEAD`, from `nrwl/nx-set-shas`). This script does not
-# choose targets or projects. Nx does, by mapping changed files onto the
-# `inputs` each project's target declares. This script only decides which
-# changed files Nx is told about. The pre-commit hook does not use it: it hands
-# Nx its own revisions in `configuration/lint-staged.config.ts` and covers
-# templates with a separate entry there.
+# `--stdin` is the fallback because Nx reads every file it is handed as changed
+# in full: a lockfile then touches every project, and a one-line version bump
+# selected 47 projects instead of 3. Only `--base`/`--head` diff such files
+# field by field.
 #
-# HOW IT WORKS
+# The list is built the way Nx builds its own: merge base of the revisions,
+# falling back to NX_BASE. An empty list affects nothing; it never falls back
+# to everything.
 #
-#   1. List the files changed between the two revisions.
-#   2. Find the ones that would mislead Nx for this target:
-#        - spelling files, which over-select (see SPELLING below)
-#        - conformetry templates, which under-select (see TEMPLATES below)
-#   3. If there are none, run `nx affected --base --head` and let Nx diff the
-#      revisions itself. Otherwise rewrite the list and give it to Nx over
-#      `--stdin`.
-#
-# SPELLING (dropped unless INCLUDE_SPELLING is "true")
-#
-# `spell-check` lists the shared dictionaries among its `{workspaceRoot}`
-# inputs, and Nx decides affected per project, not per target: one new word in
-# a dictionary marks every project affected for every target, so a word list
-# edit ran the whole workspace's tests and timed the job out. Only the target
-# that runs `spell-check` should see those files.
-#
-# TEMPLATES (added to only if INCLUDE_TEMPLATES is "true")
-#
-# `.nxignore` hides `configuration/conformetry-templates` from Nx, because a
-# template holds a `project.json` that Nx would register as a project, so a
-# template edit marks no project affected and every cached
-# `conformetry-validate` looks current. With `INCLUDE_TEMPLATES` set, a changed
-# template adds `configuration/conformetry.config.ts` to the list, which every
-# instance project already lists as an input, so they are all selected. Only
-# the target that runs `conformetry-validate` should set it: Nx decides affected
-# per project, so every other target would run the whole workspace too.
-#
-# WHY --stdin IS THE FALLBACK, NOT THE DEFAULT
-#
-# Nx reads every file it is handed over `--stdin` as changed in full. A lockfile
-# then touches every project, defeating `projectsAffectedByDependencyUpdates:
-# "auto"`, and a release commit's one-line `package.json` version bump affected
-# 47 projects instead of 3. Only `--base`/`--head` let Nx diff those files field
-# by field, so any change set with nothing to correct goes through them
-# unchanged.
-#
-# The changed-file list is built the way Nx builds its own: the merge base of
-# the two revisions, falling back to `NX_BASE` itself, then
-# `git diff --name-only --no-renames --relative`. An empty list affects nothing
-# and exits cleanly; it never falls back to everything.
-#
-# Inputs, all from the environment:
+# Environment:
 #   TARGET            the Nx target to run (required)
 #   ARGUMENTS         extra `nx affected` flags, space separated
 #   NX_BASE, NX_HEAD  the revisions, as `nrwl/nx-set-shas` exports them
 #   INCLUDE_SPELLING  "true" to keep spelling files in the list
-#   INCLUDE_TEMPLATES "true" to select every conformetry instance project when
-#                     a template changes
-#   SPELLING_PATHS    an extended regex overriding which files are spelling
-#   TEMPLATE_PATHS    an extended regex overriding which files are templates
+#   INCLUDE_TEMPLATES "true" to select every conformetry instance on a
+#                     template change
+#   SPELLING_PATHS    extended regex overriding which files are spelling
+#   TEMPLATE_PATHS    extended regex overriding which files are templates
 
 set -euo pipefail
 
@@ -82,24 +52,24 @@ template_paths="${TEMPLATE_PATHS:-${DEFAULT_TEMPLATE_PATHS}}"
 arguments=()
 read -ra arguments <<<"${ARGUMENTS:-}"
 
-# Prints the files changed between the revisions, one per line.
+# Prints the changed files, one per line.
 list_changed_files() {
   local base
   base="$(git merge-base "${NX_BASE}" "${NX_HEAD}" || echo "${NX_BASE}")"
   git diff --name-only --no-renames --relative "${base}" "${NX_HEAD}"
 }
 
-# Prints the lines of "$2" that match the extended regex "$1", or nothing.
+# Prints the lines of "$2" matching the regex "$1".
 matching() {
   grep -E "$1" <<<"$2" || true
 }
 
-# Prints the lines of "$2" that do not match the extended regex "$1".
+# Prints the lines of "$2" not matching the regex "$1".
 excluding() {
   grep -Ev "$1" <<<"$2" || true
 }
 
-# Names each file in "$2" under the heading "$1".
+# Prints heading "$1", then each file in "$2".
 report() {
   local heading="$1" files="$2" file
   echo "${heading}"
@@ -118,8 +88,7 @@ if [[ -z "${NX_BASE:-}" || -z "${NX_HEAD:-}" ]]; then
   exit 1
 fi
 
-# Step 1 and 2: list the changes and find the files that need correcting. The
-# list is only built when this target asks for a correction.
+# Steps 1 and 2. The list is only built when this target asks for a correction.
 changed=""
 spelling=""
 templates=""
@@ -138,13 +107,13 @@ if [[ "${add_templates}" == true ]]; then
   templates="$(matching "${template_paths}" "${changed}")"
 fi
 
-# Step 3, nothing to correct: let Nx diff the revisions itself.
+# Step 3, nothing to correct: Nx diffs the revisions itself.
 if [[ -z "${spelling}" && -z "${templates}" ]]; then
   exec pnpm exec nx affected --base="${NX_BASE}" --head="${NX_HEAD}" \
     --target="${TARGET}" ${arguments[@]+"${arguments[@]}"}
 fi
 
-# Step 3, corrected: rewrite the list and hand it to Nx.
+# Step 3, corrected: hand Nx the rewritten list.
 corrected="${changed}"
 
 if [[ -n "${spelling}" ]]; then
