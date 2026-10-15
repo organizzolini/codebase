@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.9](https://github.com/organizzolini/codebase/compare/v3.2.8...v3.2.9) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **lexico-cli:** 🐛 send user agent and skip cached wiktionary pages ([#1570](https://github.com/organizzolini/codebase/issues/1570)) ([9ba0ce9](https://github.com/organizzolini/codebase/commit/9ba0ce9a6964caaef714d6f20e91dddb03d8350e))
+
 ## [3.2.8](https://github.com/organizzolini/codebase/compare/v3.2.7...v3.2.8) (2026-10-14)
 
 ### 🐛 Bug Fixes
