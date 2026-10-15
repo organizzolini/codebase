@@ -12,7 +12,10 @@ import {
   resolveProjectsService,
 } from "../../modules/plugin/plugin-context.utilities";
 
-import type { SyncGeneratorOptions } from "./generator.types";
+import type {
+  SyncGeneratorOptions,
+  SyncGeneratorResult,
+} from "./generator.types";
 import type { Tree } from "@nx/devkit";
 
 /**
@@ -26,7 +29,7 @@ import type { Tree } from "@nx/devkit";
 export default async function syncGenerator(
   tree: Tree,
   options?: SyncGeneratorOptions,
-): Promise<{ outOfSyncMessage: string }> {
+): Promise<SyncGeneratorResult> {
   const generatorService = await resolveGeneratorService();
   const optionsService = await resolveOptionsService();
   const projectsService = await resolveProjectsService();
@@ -48,7 +51,11 @@ export default async function syncGenerator(
     tree.write(file.filePath, file.content);
   }
 
-  return { outOfSyncMessage: OUT_OF_SYNC_MESSAGE };
+  // `nx sync` reads `outOfSyncMessage`; `nx g` calls whatever is returned as a
+  // post-generation task. One value is both, so each path gets what it expects.
+  return Object.assign(() => {}, {
+    outOfSyncMessage: OUT_OF_SYNC_MESSAGE,
+  });
 }
 
 /**

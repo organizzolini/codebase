@@ -181,10 +181,8 @@ function EntryCardBody(properties: EntryCardBodyProperties): ReactElement {
       />
       <Separator />
       <Accordion
-        type="single"
-        collapsible
-        {...(accordionValue ? { value: accordionValue } : {})}
-        onValueChange={(value: string) => onAccordionChange(value || "")}
+        {...(accordionValue ? { value: [accordionValue] } : {})}
+        onValueChange={(value: string[]) => onAccordionChange(value[0] ?? "")}
       >
         <PronunciationAccordionItem
           hasNext={Boolean(forms) || hasEtymology}
