@@ -32,6 +32,15 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "develop": {
+      "continuous": true,
+      "description": "Start the LexicoApi GraphQL API with restart on change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --watch --import @swc-node/register/esm-register src/lexico-api.ts",
+        "cwd": "{projectRoot}"
+      }
+    },
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -53,6 +62,15 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "wait-ready": {
+      "cache": false,
+      "dependsOn": ["develop"],
+      "description": "Block until the running LexicoApi reports ready on its lightship /ready endpoint",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "for i in $(seq 1 120); do curl -fsS -o /dev/null \"http://localhost:${LEXICO_API_LIGHTSHIP_PORT:-9000}/ready\" && exit 0; sleep 0.5; done; echo \"LexicoApi was not ready after 60s\" >&2; exit 1"
+      }
+    },
     "yaml-lint": {}
   }
 }
