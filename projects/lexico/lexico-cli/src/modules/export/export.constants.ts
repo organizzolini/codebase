@@ -28,3 +28,26 @@ export class ExportOptionsError extends Error {
 /** What `export` says when `file` already exists and `--overwrite` was not given. */
 export const existingFileMessage = (file: string): string =>
   `${file} already exists and was left unchanged: choose another --file, or pass --overwrite to replace it`;
+
+/**
+ * What `export` says when `pg_dump` found no table for `tables`: it names
+ * them and the masked `source`, never pg_dump's own text.
+ */
+export const missingTablesMessage = (
+  tables: readonly string[],
+  source: string,
+): string => {
+  const several = tables.length > 1;
+  const [noun, verb, suffix] = several
+    ? ["tables", "exist", "s"]
+    : ["table", "exists", ""];
+  return `No ${noun} ${tables.join(", ")} ${verb} in ${source}; check the --table name${suffix}.`;
+};
+
+/** An `export` whose `--table` matched nothing in the source database. */
+export class ExportTableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = ExportTableError.name;
+  }
+}

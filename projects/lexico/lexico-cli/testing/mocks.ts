@@ -47,6 +47,16 @@ export const childProcessMock = {
         file,
         useList: useListOf(args),
       });
+      // A pg_dump that succeeds has written the file it was given.
+      for (const argument of args) {
+        if (
+          error === null &&
+          file === "pg_dump" &&
+          argument.startsWith("--file=")
+        ) {
+          fs.writeFileSync(argument.slice("--file=".length), "dump");
+        }
+      }
       callback(error, stdout, stderr);
     },
   ),

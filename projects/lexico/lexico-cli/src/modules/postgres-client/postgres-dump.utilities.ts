@@ -2,6 +2,7 @@ import {
   POSTGRES_DUMP_DEPENDENCIES_PATTERN,
   POSTGRES_DUMP_ENTRY_PATTERN,
   POSTGRES_DUMP_HEADER_PATTERN,
+  POSTGRES_DUMP_MISSING_TABLE_PATTERN,
   POSTGRES_DUMP_TABLE_DATA_PATTERN,
   POSTGRES_DUMP_TABLE_PATTERN,
 } from "./postgres-client.constants";
@@ -25,6 +26,16 @@ export function dumpedTables(
     entries.flatMap((entry) =>
       entry.kind === kind && entry.table !== undefined ? [entry.table] : [],
     ),
+  );
+}
+
+/**
+ * The tables `pg_dump --strict-names` reports it found nothing for, as
+ * schema-qualified in its error text; empty for any other failure.
+ */
+export function missingDumpTables(detail: string): string[] {
+  return [...detail.matchAll(POSTGRES_DUMP_MISSING_TABLE_PATTERN)].map(
+    ([, table]) => String(table),
   );
 }
 

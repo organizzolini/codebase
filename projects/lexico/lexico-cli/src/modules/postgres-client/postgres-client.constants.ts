@@ -154,3 +154,10 @@ export const POSTGRES_DUMP_TABLE_PATTERN = /^TABLE (?!ATTACH )(.*)$/u;
 
 /** A table's rows. */
 export const POSTGRES_DUMP_TABLE_DATA_PATTERN = /^TABLE DATA (.*)$/u;
+
+/**
+ * What `pg_dump --strict-names` prints for each `--table` that matches
+ * nothing, capturing the pattern it was given.
+ */
+export const POSTGRES_DUMP_MISSING_TABLE_PATTERN =
+  /no matching tables were found for pattern "([^"]+)"/gu;

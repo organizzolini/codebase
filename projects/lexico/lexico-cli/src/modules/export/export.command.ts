@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 
 import { Injectable } from "@nestjs/common";
@@ -7,6 +8,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import { postgresEnvironmentKey } from "@codebase/database";
 import { LoggerService } from "@codebase/logging";
 
+import { PostgresClientError } from "../postgres-client/postgres-client.constants";
 import { PostgresClientService } from "../postgres-client/postgres-client.service";
 import {
   describePostgresContent,
@@ -14,11 +16,14 @@ import {
   parsePostgresUri,
   qualifyTableName,
 } from "../postgres-client/postgres-client.utilities";
+import { missingDumpTables } from "../postgres-client/postgres-dump.utilities";
 
 import {
   existingFileMessage,
   EXPORT_OPTION_MESSAGES,
   ExportOptionsError,
+  ExportTableError,
+  missingTablesMessage,
 } from "./export.constants";
 
 import type { PostgresContent } from "../postgres-client/postgres-client.types";
@@ -53,6 +58,18 @@ export class ExportCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * `error`, or an `ExportTableError` naming the tables when it is
+   * `pg_dump` reporting that `--table` matched nothing in `source`.
+   */
+  private explain(error: unknown, source: string): unknown {
+    if (!(error instanceof PostgresClientError)) return error;
+    const missing = missingDumpTables(error.detail);
+    return missing.length === 0
+      ? error
+      : new ExportTableError(missingTablesMessage(missing, source));
+  }
 
   /**
    * Validates every option and resolves the tables, so nothing runs
@@ -182,7 +199,7 @@ export class ExportCommand extends CommandRunner {
   /**
    * Validates the options, then dumps the selected tables to the file. An
    * existing file is refused without `--overwrite`, before any process
-   * starts; a dump that fails leaves no file it newly created.
+   * starts; a dump that fails leaves --file exactly as it was.
    */
   async run(
     _passedParameters: string[],
@@ -195,13 +212,15 @@ export class ExportCommand extends CommandRunner {
       `📦 Exporting ${content} of ${plan.tables.join(", ")} from ${plan.source} to ${plan.file}`,
     );
 
-    const existed = fs.existsSync(plan.file);
+    // pg_dump truncates its output before it resolves tables, so it writes
+    // beside --file and the result replaces it only once the dump succeeded.
+    const partial = `${plan.file}.${randomUUID()}.partial`;
     try {
-      await this.postgresClient.dump(plan);
+      await this.postgresClient.dump({ ...plan, file: partial });
+      fs.renameSync(partial, plan.file);
     } catch (error) {
-      // A failed dump can leave a partial file that would block a re-run.
-      if (!existed) fs.rmSync(plan.file, { force: true });
-      throw error;
+      fs.rmSync(partial, { force: true });
+      throw this.explain(error, plan.source);
     }
 
     const count = plan.tables.length;

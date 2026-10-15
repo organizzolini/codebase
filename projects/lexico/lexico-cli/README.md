@@ -98,6 +98,12 @@ table of contents before it connects: a dump that lacks the rows or definitions
 a `--table` asks for fails naming the tables, rather than restoring part of
 what was requested.
 
+A `--table` that names nothing in the source database fails `export` with a message
+naming the table (`No table lexico.nope exists in <source>; check the --table name.`).
+`export` writes beside `--file` and moves the result into place only when
+`pg_dump` succeeds, so a failed export leaves `--file` exactly as it was, even
+with `--overwrite`.
+
 ### What `import` does to the target
 
 By default `import` deletes nothing. It restores in a single transaction, so a

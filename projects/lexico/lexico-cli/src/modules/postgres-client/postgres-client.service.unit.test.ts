@@ -1,7 +1,9 @@
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { mockProcesses, processFailure } from "../../../testing/mocks";
 
@@ -49,10 +51,14 @@ const RESTORE: PostgresRestoreOptions = {
   tables: ["lexico.words"],
 };
 
+/** Where the mocked pg_dump writes, so no run leaves a file behind. */
+const DUMP_DIRECTORY = fs.mkdtempSync(path.join(os.tmpdir(), "client-dump-"));
+const DUMP_FILE = path.join(DUMP_DIRECTORY, "lexico.dump");
+
 const DUMP: PostgresDumpOptions = {
   connection: CONNECTION,
   content: { data: true, schema: true },
-  file: "lexico.dump",
+  file: DUMP_FILE,
   tables: ["lexico.words"],
 };
 
@@ -65,6 +71,10 @@ describe(PostgresClientService, () => {
     }).compile();
 
     service = await module.resolve(PostgresClientService);
+  });
+
+  afterAll(() => {
+    fs.rmSync(DUMP_DIRECTORY, { force: true, recursive: true });
   });
 
   it("is defined", () => {
@@ -132,7 +142,7 @@ describe(PostgresClientService, () => {
       await service.dump({
         ...DUMP,
         content: { data: true, schema: false },
-        file: "/tmp/lexico.dump",
+        file: DUMP_FILE,
         tables: ["lexico.words", "archive.lexemes"],
       });
 
@@ -140,7 +150,7 @@ describe(PostgresClientService, () => {
         expect.objectContaining({
           args: [
             "--format=custom",
-            "--file=/tmp/lexico.dump",
+            `--file=${DUMP_FILE}`,
             "--no-password",
             "--strict-names",
             "--data-only",

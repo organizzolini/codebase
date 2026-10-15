@@ -289,7 +289,7 @@ describe("export", () => {
   );
 
   it(
-    "surfaces pg_dump's own error, masked, and exits non-zero",
+    "names a missing table, and surfaces pg_dump's other errors masked, exiting non-zero",
     async () => {
       expect.hasAssertions();
 
@@ -318,7 +318,7 @@ describe("export", () => {
 
       expect(missingTable.exitCode).toBe(1);
       expect(missingTable.stderr).toContain(
-        'no matching tables were found for pattern "lexico.no_such_table"',
+        "No table lexico.no_such_table exists in",
       );
       expect(badLogin.exitCode).toBe(1);
       expect(badLogin.stderr).toContain("password authentication failed");

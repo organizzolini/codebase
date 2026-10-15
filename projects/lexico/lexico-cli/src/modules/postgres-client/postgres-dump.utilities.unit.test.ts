@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   dumpedTables,
+  missingDumpTables,
   parsePostgresDumpContents,
   selectPostgresDumpEntries,
 } from "./postgres-dump.utilities";
@@ -171,6 +172,28 @@ describe("postgres-dump utilities", () => {
       expect(
         selectPostgresDumpEntries(dataOnly, ["lexico.words"]),
       ).toStrictEqual([3477]);
+    });
+  });
+
+  describe(missingDumpTables, () => {
+    it("names every table pg_dump found no match for, in order", () => {
+      const detail = [
+        'pg_dump: error: no matching tables were found for pattern "lexico.nope"',
+        'pg_dump: error: no matching tables were found for pattern "lexico.also nope"',
+      ].join("\n");
+
+      expect(missingDumpTables(detail)).toStrictEqual([
+        "lexico.nope",
+        "lexico.also nope",
+      ]);
+    });
+
+    it.each([
+      ["an unrelated failure", "pg_dump: error: connection to server failed"],
+      ["an empty message", ""],
+      ["a different pattern", "pg_dump: error: no matching schemas were found"],
+    ])("finds nothing in %s", (_name, detail) => {
+      expect(missingDumpTables(detail)).toStrictEqual([]);
     });
   });
 });

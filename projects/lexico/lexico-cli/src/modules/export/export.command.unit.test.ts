@@ -7,6 +7,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 import {
+  afterAll,
   afterEach,
   beforeAll,
   beforeEach,
@@ -33,6 +34,13 @@ vi.mock("node:child_process", async () => {
   const { childProcessMock } = await import("../../../testing/mocks");
   return childProcessMock;
 });
+
+/** Where successful exports write, so none lands in the working directory. */
+const DIRECTORY = fs.mkdtempSync(path.join(os.tmpdir(), "export-unit-dump-"));
+const DUMP = path.join(DIRECTORY, "lexico.dump");
+
+/** The temporary file pg_dump writes beside `DUMP` before it is renamed. */
+const PARTIAL_PATTERN = /^--file=.*lexico\.dump\.[\w-]+\.partial$/u;
 
 const PASSWORD = "hunter2-secret";
 const SOURCE_URI = `postgresql://lexico_username:${PASSWORD}@database.example.com:6543/lexico_development`;
@@ -107,6 +115,14 @@ describe(ExportCommand, () => {
     command = await module.resolve(ExportCommand);
   });
 
+  beforeEach(() => {
+    fs.rmSync(DUMP, { force: true });
+  });
+
+  afterAll(() => {
+    fs.rmSync(DIRECTORY, { force: true, recursive: true });
+  });
+
   it("is defined", () => {
     expect(command).toBeDefined();
   });
@@ -136,7 +152,7 @@ describe(ExportCommand, () => {
     it.each([
       [
         "no --source-uri",
-        ["--table", "words", "--data", "--file", "lexico.dump"],
+        ["--table", "words", "--data", "--file", DUMP],
         "--source-uri is required",
       ],
       [
@@ -148,13 +164,13 @@ describe(ExportCommand, () => {
           "words",
           "--data",
           "--file",
-          "lexico.dump",
+          DUMP,
         ],
         "--source-uri must start with postgresql://",
       ],
       [
         "no --table",
-        ["--source-uri", SOURCE_URI, "--data", "--file", "lexico.dump"],
+        ["--source-uri", SOURCE_URI, "--data", "--file", DUMP],
         "--table is required",
       ],
       [
@@ -191,7 +207,7 @@ describe(ExportCommand, () => {
       "archive.lexemes",
       "--data",
       "--file",
-      "lexico.dump",
+      DUMP,
     ]);
 
     expect(result.exitCode).toBe(0);
@@ -199,7 +215,7 @@ describe(ExportCommand, () => {
       expect.objectContaining({
         args: [
           "--format=custom",
-          "--file=lexico.dump",
+          expect.stringMatching(PARTIAL_PATTERN),
           "--no-password",
           "--strict-names",
           "--data-only",
@@ -224,7 +240,7 @@ describe(ExportCommand, () => {
       "words",
       ...contentFlags,
       "--file",
-      "lexico.dump",
+      DUMP,
     ]);
 
     expect(dumpsOf(spawned)[0]?.args.slice(4, -1)).toStrictEqual(dumpFlags);
@@ -241,7 +257,7 @@ describe(ExportCommand, () => {
         "words",
         "--schema",
         "--file",
-        "lexico.dump",
+        DUMP,
       ],
       { LEXICO_POSTGRES_SCHEMA: "archive" },
     );
@@ -260,7 +276,7 @@ describe(ExportCommand, () => {
       "--data",
       "--schema",
       "--file",
-      "lexico.dump",
+      DUMP,
     ]);
 
     expect(dumpsOf(spawned)[0]?.args.join(" ")).not.toContain(PASSWORD);
@@ -278,29 +294,6 @@ describe(ExportCommand, () => {
     );
   });
 
-  it("surfaces pg_dump's own error, masked, with a non-zero exit code", async () => {
-    mockProcesses({
-      error: processFailure(1),
-      stderr: `pg_dump: error: no matching tables were found for pattern "lexico.nope" on ${SOURCE_URI}\n`,
-    });
-
-    const result = await runExport([
-      "--source-uri",
-      SOURCE_URI,
-      "--table",
-      "nope",
-      "--data",
-      "--file",
-      "lexico.dump",
-    ]);
-
-    expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain(
-      'pg_dump failed with exit code 1: pg_dump: error: no matching tables were found for pattern "lexico.nope"',
-    );
-    expect(result.stderr).not.toContain(PASSWORD);
-  });
-
   describe("checks pg_dump's version before any database work", () => {
     const argv = [
       "--source-uri",
@@ -309,7 +302,7 @@ describe(ExportCommand, () => {
       "words",
       "--data",
       "--file",
-      "lexico.dump",
+      DUMP,
     ];
 
     it("asks pg_dump for its version first, then dumps", async () => {
@@ -392,7 +385,9 @@ describe(ExportCommand, () => {
       expect(result.exitCode).toBe(0);
       expect(dumpsOf(spawned)).toStrictEqual([
         expect.objectContaining({
-          args: expect.arrayContaining([`--file=${file}`]) as unknown,
+          args: expect.arrayContaining([
+            expect.stringContaining(`--file=${file}.`),
+          ]) as unknown,
         }),
       ]);
     });
@@ -406,7 +401,7 @@ describe(ExportCommand, () => {
       expect([plain.exitCode, forced.exitCode]).toStrictEqual([0, 0]);
     });
 
-    it("keeps a file that existed before a failed --overwrite dump, since pg_dump may never have opened it", async () => {
+    it("keeps the previous file's bytes and leaves no temporary file when a --overwrite dump fails", async () => {
       fs.writeFileSync(file, "precious");
       mockProcesses({ error: processFailure(1), stderr: "pg_dump: error\n" });
 
@@ -414,6 +409,29 @@ describe(ExportCommand, () => {
 
       expect(result.exitCode).toBe(1);
       expect(fs.readFileSync(file, "utf8")).toBe("precious");
+      expect(fs.readdirSync(directory)).toStrictEqual(["lexico.dump"]);
+    });
+
+    it("replaces the previous file with the dump and leaves no temporary file on success", async () => {
+      fs.writeFileSync(file, "precious");
+      mockProcesses();
+
+      const result = await runExport([...argv(), "--overwrite"]);
+
+      expect(result.exitCode).toBe(0);
+      expect(fs.readFileSync(file, "utf8")).toBe("dump");
+      expect(fs.readdirSync(directory)).toStrictEqual(["lexico.dump"]);
+    });
+
+    it("surfaces an error that is not pg_dump's unchanged, leaving no temporary file", async () => {
+      fs.mkdirSync(path.join(file, "occupied"), { recursive: true });
+      mockProcesses();
+
+      const result = await runExport([...argv(), "--overwrite"]);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).not.toContain("pg_dump failed");
+      expect(fs.readdirSync(directory)).toStrictEqual(["lexico.dump"]);
     });
   });
 });
