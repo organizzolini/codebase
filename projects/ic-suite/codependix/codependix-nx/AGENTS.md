@@ -25,7 +25,7 @@ The command line builds over the project's Nx dependency closure and fails
 only on a finding charged to the project; this plugin adds selection and
 caching, not judgment. It deliberately ships **no CLI of its own**, and it
 depends on `@codependix/cli` alone — the `codependix-nx-layer` rule in
-`projects/configuration/codependix.config.ts` holds it to that.
+`configuration/codependix.config.ts` holds it to that.
 
 ## Architecture Overview
 

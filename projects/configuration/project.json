@@ -514,10 +514,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
+          "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
         },
         "write": {
-          "command": "markdownlint-cli2 --fix --config projects/configuration/markdownlint-cli2.config.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
+          "command": "markdownlint-cli2 --fix --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'infrastructure/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
         }
       },
       "defaultConfiguration": "check",
@@ -529,7 +529,7 @@
         "{workspaceRoot}/.agents/**/*.md",
         "{workspaceRoot}/documentation/**/*.md",
         "{workspaceRoot}/infrastructure/**/*.md",
-        "{workspaceRoot}/projects/configuration/markdownlint-cli2.config.jsonc",
+        "{workspaceRoot}/projects/configuration/.markdownlint-cli2.jsonc",
         "{workspaceRoot}/scripts/**/*.md",
         "shared-globals",
         "vendored-skills",
@@ -629,20 +629,20 @@
     "secure-code": {},
     "shellcheck": {
       "cache": true,
-      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The installed skills under .agents/ are owned upstream and stay out too. projects/configuration/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. pyproject.toml and uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
+      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The installed skills under .agents/ are owned upstream and stay out too. projects/configuration/.shellcheckrc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. pyproject.toml and uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.devcontainer/**/*.sh",
         "{workspaceRoot}/projects/configuration/.husky/commit-msg",
         "{workspaceRoot}/projects/configuration/.husky/pre-commit",
         "{workspaceRoot}/projects/configuration/.husky/pre-push",
-        "{workspaceRoot}/projects/configuration/.shellcheck.rc",
+        "{workspaceRoot}/projects/configuration/.shellcheckrc",
         "{workspaceRoot}/pyproject.toml",
         "{workspaceRoot}/scripts/**/*.sh",
         "{workspaceRoot}/uv.lock"
       ],
       "options": {
-        "command": "uv run shellcheck --rcfile projects/configuration/.shellcheck.rc --severity=style $(git ls-files -- '.devcontainer/*.sh' 'scripts/*.sh' projects/configuration/.husky/commit-msg projects/configuration/.husky/pre-commit projects/configuration/.husky/pre-push)",
+        "command": "uv run shellcheck --rcfile projects/configuration/.shellcheckrc --severity=style $(git ls-files -- '.devcontainer/*.sh' 'scripts/*.sh' projects/configuration/.husky/commit-msg projects/configuration/.husky/pre-commit projects/configuration/.husky/pre-push)",
         "cwd": "{workspaceRoot}"
       }
     },

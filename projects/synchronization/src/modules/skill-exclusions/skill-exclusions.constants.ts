@@ -40,7 +40,7 @@ export const SKILL_EXCLUSION_FILES: SkillExclusionFile[] = [
     // quoted string element carrying the array's indentation and a trailing
     // comma, and the markers are `//` comments rather than `#` ones.
     commentPrefix: "//",
-    filePath: "projects/configuration/markdownlint-cli2.config.jsonc",
+    filePath: "projects/configuration/.markdownlint-cli2.jsonc",
     renderEntry: (skillName) => `    ".agents/skills/${skillName}/**",`,
     tool: "markdownlint",
   },

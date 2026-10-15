@@ -251,7 +251,7 @@ to add one, spreading the workspace's `projectDefaults` export and overriding
 what it means to:
 
 ```ts
-import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "../../configuration/callidescope.config.js";
 
 export default { ...projectDefaults };
 ```

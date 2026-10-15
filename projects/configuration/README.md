@@ -58,7 +58,7 @@ The tools that locate their own file at the root stay there: `nx.json`,
 `package.json`, the pnpm and uv workspace files, `tsconfig.json`, the git and
 editor dotfiles, and `validate-branch-name.config.cjs`, whose tool takes no
 path. Everything a tool can be told to read lives here, and every command
-passes the path explicitly; see [AGENTS.md](AGENTS.md).
+passes the path explicitly.
 
 ## Reading root paths
 

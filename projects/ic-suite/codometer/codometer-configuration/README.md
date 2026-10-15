@@ -33,7 +33,7 @@ const codometerConfiguration: CodometerConfiguration = {
   // .nx), matched against repository-relative paths with `path.matchesGlob`.
   exclude: ["notepads/**", "**/templates/**"],
   // Ignore files in gitignore syntax, whose patterns exclude as well.
-  excludeFrom: ["projects/configuration/.codometerignore"],
+  excludeFrom: ["configuration/.codometerignore"],
   // Named sets of files measured alongside the codebase itself. The built-in
   // `codebase` whole-tree scan is always present unless one of these entries
   // replaces it by name.
@@ -74,7 +74,7 @@ export default codometerConfiguration;
 ```
 
 Output paths are resolved relative to the process's working directory, not to
-the configuration file, so a configuration kept in a `projects/configuration/` folder
+the configuration file, so a configuration kept in a `configuration/` folder
 still writes to the repository root.
 
 ## Resolution

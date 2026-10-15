@@ -127,7 +127,7 @@ project, so a container that will not boot is collected as a
 `BoundaryCheckFailure` while every other project is still judged.
 
 Nothing here depends on `@codependix/cli` — the host calls in, never the
-reverse — and a rule in `projects/configuration/codependix.config.ts` says so, so the
+reverse — and a rule in `configuration/codependix.config.ts` says so, so the
 two cannot close a cycle.
 
 ## Test

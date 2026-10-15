@@ -91,8 +91,8 @@ Two options qualify whichever mode was picked:
 
 ```bash
 codependix map --write
-codependix map --check boundaries --directory . --config projects/configuration/codependix.config.ts
-codependix map --check reports --directory . --config projects/configuration/codependix.config.ts
+codependix map --check boundaries --directory . --config configuration/codependix.config.ts
+codependix map --check reports --directory . --config configuration/codependix.config.ts
 ```
 
 ## Codependix reads the Nx project graph

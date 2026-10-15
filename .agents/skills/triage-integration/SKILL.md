@@ -215,10 +215,10 @@ Config: [projects/configuration/cspell.config.yaml](../../../projects/configurat
 
 #### `markdown-lint`
 
-|       | Command                                                                                                                         | Config                                                                                                                  |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| check | `markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'` (cwd: workspaceRoot) | [projects/configuration/markdownlint-cli2.config.jsonc](../../../projects/configuration/markdownlint-cli2.config.jsonc) |
-| write | same with `--fix`                                                                                                               |                                                                                                                         |
+|       | Command                                                                                                                   | Config                                                                                                      |
+| ----- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| check | `markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'` (cwd: workspaceRoot) | [projects/configuration/.markdownlint-cli2.jsonc](../../../projects/configuration/.markdownlint-cli2.jsonc) |
+| write | same with `--fix`                                                                                                         |                                                                                                             |
 
 #### `yaml-lint`
 
@@ -529,7 +529,7 @@ Remaining Actions
 | Prettier                            | [projects/configuration/prettier.config.ts](../../../projects/configuration/prettier.config.ts), [projects/configuration/.prettierignore](../../../projects/configuration/.prettierignore) |
 | TypeScript (base)                   | [projects/configuration/tsconfig.json](../../../projects/configuration/tsconfig.json)                                                                                                      |
 | cspell                              | [projects/configuration/cspell.config.yaml](../../../projects/configuration/cspell.config.yaml)                                                                                            |
-| markdownlint                        | [projects/configuration/markdownlint-cli2.config.jsonc](../../../projects/configuration/markdownlint-cli2.config.jsonc)                                                                    |
+| markdownlint                        | [projects/configuration/.markdownlint-cli2.jsonc](../../../projects/configuration/.markdownlint-cli2.jsonc)                                                                                |
 | yamllint                            | [projects/configuration/yamllint.yaml](../../../projects/configuration/yamllint.yaml)                                                                                                      |
 | stylelint                           | [projects/configuration/stylelint.config.cjs](../../../projects/configuration/stylelint.config.cjs)                                                                                        |
 | knip                                | [projects/configuration/knip.config.ts](../../../projects/configuration/knip.config.ts)                                                                                                    |

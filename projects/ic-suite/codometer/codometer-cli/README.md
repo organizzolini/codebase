@@ -45,7 +45,7 @@ Measuring the repository is codometer's default command, so `codometer` on its
 own is `codometer measure`:
 
 ```bash
-codometer --config projects/configuration/codometer.config.ts --check limits
+codometer --config configuration/codometer.config.ts --check limits
 ```
 
 | Flag | Purpose |
@@ -295,7 +295,7 @@ project spreads rather than at its own root, and the upward search then finds
 nothing:
 
 ```bash
-codometer configuration --limits --config projects/configuration/codometer.config.ts
+codometer configuration --limits --config configuration/codometer.config.ts
 ```
 
 Drop `--limits` to list everything each configuration resolved to: its inputs,

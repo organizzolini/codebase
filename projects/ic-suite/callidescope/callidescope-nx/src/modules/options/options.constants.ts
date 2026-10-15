@@ -37,7 +37,10 @@ export const DEFAULT_GATE_TARGET_NAME = "gate";
  * `@callidescope/configuration` searches for on its own, so a workspace that
  * never registers a path behaves the same through Nx as it does at a prompt.
  */
-export const DEFAULT_CONFIGURATION_PATHS = ["callidescope.config.ts"] as const;
+export const DEFAULT_CONFIGURATION_PATHS = [
+  "callidescope.config.ts",
+  "configuration/callidescope.config.ts",
+] as const;
 
 /** Marks a project as one whose directory holds a TypeScript program. */
 export const PROJECT_PROGRAM_FILENAME = "tsconfig.json";

@@ -195,12 +195,13 @@ describe(GateService, () => {
         throw new Error("ENOENT");
       });
       vi.mocked(existsSync).mockImplementation(
-        (candidatePath) => candidatePath === "/workspace/codependix.config.ts",
+        (candidatePath) =>
+          candidatePath === "/workspace/configuration/codependix.config.ts",
       );
 
       expect(
         service.resolveConfigurationPath({ workspaceRoot: "/workspace" }),
-      ).toBe("codependix.config.ts");
+      ).toBe("configuration/codependix.config.ts");
     });
   });
 

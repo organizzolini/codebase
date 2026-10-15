@@ -639,10 +639,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'"
           },
           "write": {
-            "command": "markdownlint-cli2 --fix --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --fix --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'"
           }
         },
         "defaultConfiguration": "check",
@@ -652,14 +652,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.md",
-          "{workspaceRoot}/projects/configuration/markdownlint-cli2.config.jsonc",
+          "{workspaceRoot}/projects/configuration/.markdownlint-cli2.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["markdownlint-cli2"]
           }
         ],
         "options": {
-          "command": "markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
+          "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '{projectRoot}/**/*.md'",
           "cwd": "{workspaceRoot}"
         }
       }

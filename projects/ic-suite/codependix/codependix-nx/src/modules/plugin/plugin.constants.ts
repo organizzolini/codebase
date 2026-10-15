@@ -49,11 +49,15 @@ export const DEFAULT_GATE_TARGET_NAME = "codependix-gate";
  * Where the codependix configuration lives, when the registration names no
  * path.
  *
- * The workspace root, under codependix's own filename. A workspace that keeps
- * its configuration anywhere else, in any folder, says so in its `nx.json`
- * plugin entry; no folder name is assumed.
+ * Tried in order; the first that exists wins, and the first is assumed when
+ * neither does. The same two places `@callidescope/nx` searches, so a
+ * workspace keeping both configurations together needs no registration
+ * options for either.
  */
-export const DEFAULT_CONFIGURATION_PATHS = ["codependix.config.ts"] as const;
+export const DEFAULT_CONFIGURATION_PATHS = [
+  "codependix.config.ts",
+  "configuration/codependix.config.ts",
+] as const;
 
 /**
  * Root of the workspace-level project, which inference skips.

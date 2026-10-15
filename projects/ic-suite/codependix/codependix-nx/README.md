@@ -31,7 +31,7 @@ Register it in `nx.json`:
     {
       "plugin": "@codependix/nx",
       "options": {
-        "configurationPath": "projects/configuration/codependix.config.ts",
+        "configurationPath": "configuration/codependix.config.ts",
         "gateTargetName": "codependix-gate"
       }
     }
@@ -41,7 +41,7 @@ Register it in `nx.json`:
 
 | Option | Meaning |
 | ------ | ------- |
-| `configurationPath` | Where the codependix configuration lives. `codependix.config.ts` at the workspace root is used when omitted |
+| `configurationPath` | Where the codependix configuration lives. `codependix.config.ts`, then `configuration/codependix.config.ts`, are searched when omitted |
 | `gateTargetName` | Name of the inferred gate target. `codependix-gate` when omitted |
 
 The gate runs the command line under the `@swc-node/register` hooks, which

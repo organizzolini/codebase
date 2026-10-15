@@ -112,6 +112,10 @@ const config: KnipConfig = {
         "projects/configuration/stylelint.config.cjs",
         "projects/configuration/syncpack.config.cjs",
         "projects/configuration/vite.library.config.ts",
+        // Read by codometer's nearest-ancestor search rather than imported;
+        // it re-exports projects/configuration/codometer.config.ts from the workspace
+        // root, which is the only place that search can reach.
+        "codometer.config.ts",
         "projects/configuration/release.config.cjs",
         "validate-branch-name.config.cjs",
       ],

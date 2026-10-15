@@ -30,7 +30,7 @@ The `lint-code` Nx target hangs every quality tool off `dependsOn`, so one invoc
 | `fallow dead-code` | The same, workspace-wide in one pass | `projects/configuration/fallow.config.jsonc` |
 | `vulture` | Unused Python code | `projects/configuration/vulture_whitelist.py` |
 | `cspell` | Spell checking | `projects/configuration/cspell.config.yaml` |
-| `markdownlint` | Markdown linting | `projects/configuration/markdownlint-cli2.config.jsonc` |
+| `markdownlint` | Markdown linting | `projects/configuration/.markdownlint-cli2.jsonc` |
 | `yamllint` | YAML linting | `projects/configuration/yamllint.yaml` |
 
 ## Validation Workflow

@@ -32,22 +32,6 @@ nx run configuration:knip:check
   `nx.json`: `@nx/vite`, `@nx/eslint`, and `@nx/vitest` would otherwise infer a
   `vitest` run and an `eslint` target from the config files held here.
 
-## Pass every config and ignore file explicitly
-
-No target relies on a tool finding a file by walking up the directory tree.
-Each command names its config (`--config`, `-c`, `--rcfile`, `--ignore-path`,
-`--ignorefile`, `--gitleaks-ignore-path`), and the editor settings in
-`.vscode/settings.json` name the same files. Two files whose tools would
-otherwise discover them by name have non-dot names for that reason:
-`markdownlint-cli2.config.jsonc` and `.shellcheck.rc`. Give a new tool's file a
-name its tool does not auto-discover, and pass the path.
-
-The tools' own packages assume no folder either: `@conformetry/cli` reads
-`conformetry.config.ts` from the working directory unless given `--config`, and
-the three Nx plugins read their `configurationPath` option or a root file named
-for the tool. This repository names `projects/configuration/…` in `nx.json` and
-in the `conformetry-generate` target.
-
 ## What stays at the repository root
 
 Only files a tool insists on finding there: `nx.json`, `package.json`,
