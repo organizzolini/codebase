@@ -181,7 +181,7 @@ jobs:
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/main.ts publishable-packages-gate
+            projects/publication/src/publication.main.ts publishable-packages-gate
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         id: run-check

@@ -15,6 +15,3 @@ export const environmentSchema = z.object({
   SPELLING_PATHS: z.string().optional(),
   TARGET: z.string().optional(),
 });
-
-/** The validated shape of the environment the commands read. */
-export type Environment = z.infer<typeof environmentSchema>;

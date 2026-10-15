@@ -40,5 +40,5 @@ runs:
         SPELLING_PATHS: ^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/main.ts run-affected
+          projects/publication/src/publication.main.ts run-affected
       shell: bash

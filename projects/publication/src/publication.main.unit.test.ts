@@ -32,7 +32,7 @@ vi.mock("nest-commander", () => ({
 }));
 
 vi.mock("@codebase/logging", () => ({
-  // `main.module` imports `LoggerModule` from the same specifier, so the mock
+  // `publication.module` imports `LoggerModule` from the same specifier, so the mock
   // has to stand in for the whole package, not just the service.
   LoggerModule: function LoggerModule() {},
   LoggerService: function LoggerService() {
@@ -75,7 +75,7 @@ describe("main bootstrap", () => {
   it("runs the command factory with a configured logger", async () => {
     expect.hasAssertions();
 
-    await import("./main");
+    await import("./publication.main");
 
     expect(loggerServiceMock.setContext).toHaveBeenCalledWith("CommandFactory");
     expect(run).toHaveBeenCalledTimes(1);
@@ -91,7 +91,7 @@ describe("main bootstrap", () => {
   it("exits non-zero and logs when a command throws", async () => {
     expect.hasAssertions();
 
-    await import("./main");
+    await import("./publication.main");
 
     const serviceErrorHandler = run.mock.calls[0]?.[1].serviceErrorHandler;
 

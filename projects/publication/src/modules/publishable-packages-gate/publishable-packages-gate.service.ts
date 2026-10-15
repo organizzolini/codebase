@@ -9,7 +9,7 @@ import {
   REVISIONS_UNSET_MESSAGE,
 } from "./publishable-packages-gate.constants";
 
-import type { Environment } from "../../constants";
+import type { Environment } from "../../publication.types";
 import type { PublishablePackagesGateOutcome } from "./publishable-packages-gate.types";
 
 /**

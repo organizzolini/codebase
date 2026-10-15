@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { environmentSchema } from "./constants";
+import { environmentSchema } from "./publication.constants";
 
 /** The workspace root, which the spawned command runs from, as the Nx targets do. */
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -17,7 +17,7 @@ const runCommand = (
     [
       "--import",
       "@swc-node/register/esm-register",
-      "projects/publication/src/main.ts",
+      "projects/publication/src/publication.main.ts",
       name,
     ],
     {

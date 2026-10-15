@@ -10,7 +10,7 @@ import {
   TARGET_UNSET_MESSAGE,
 } from "./run-affected.constants";
 
-import type { Environment } from "../../constants";
+import type { Environment } from "../../publication.types";
 import type {
   RunAffectedFailure,
   RunAffectedInputs,

@@ -288,7 +288,7 @@ const config: KnipConfig = {
 
     // publication: NestJS CLI tool for the CI release and Nx plumbing steps
     "projects/publication": {
-      entry: ["src/main.ts", "src/repl.ts"], // Main CLI entry + the REPL its own target runs
+      entry: ["src/publication.main.ts", "src/publication.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],
