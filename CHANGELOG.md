@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/organizzolini/codebase/compare/v3.3.0...v3.3.1) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 ignore vendored component paths in spell-check ([#1585](https://github.com/organizzolini/codebase/issues/1585)) ([7d46cd4](https://github.com/organizzolini/codebase/commit/7d46cd4709c66c00989e34c649bd261edff5354e)), closes [#1510](https://github.com/organizzolini/codebase/issues/1510)
+
 ## [3.3.0](https://github.com/organizzolini/codebase/compare/v3.2.9...v3.3.0) (2026-10-15)
 
 ### ✨ Features
