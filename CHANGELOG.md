@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.0](https://github.com/organizzolini/codebase/compare/v3.3.2...v3.4.0) (2026-10-15)
+
+### ✨ Features
+
+* **infrastructure,affirmancy,validation,documentation:** ✨ make infrastructure an Nx project and check searxng ([#1512](https://github.com/organizzolini/codebase/issues/1512)) ([d229cf9](https://github.com/organizzolini/codebase/commit/d229cf99c869c003145635b844d3a5a40f6e3b50)), closes [.github/CONTRIBUTING.md#release-significance](https://github.com/.github/CONTRIBUTING.md/issues/release-significance)
+
 ## [3.3.2](https://github.com/organizzolini/codebase/compare/v3.3.1...v3.3.2) (2026-10-15)
 
 ### 🐛 Bug Fixes
