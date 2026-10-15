@@ -25,7 +25,7 @@ This runs the following in sequence:
 
 1. `software/brew.sh` and `software/node.sh` - Check Homebrew, then install nvm, Node.js, pnpm, and nx
 2. `pnpm install` - Installs the packages the next step is written in
-3. `projects/installation/src/main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
+3. `projects/installation/src/installation.main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
 
 > **Note:** If using a devcontainer, these scripts are not needed — the devcontainer handles setup automatically via `.devcontainer/scripts/post-create-command.sh`.
 
@@ -50,7 +50,7 @@ The devcontainer handles equivalent setup automatically.
 - Sources `utilities.sh` for common functions
 - Sources `software/brew.sh` and `software/node.sh` to install nvm, Node.js (from `.nvmrc`), pnpm, and nx
 - Runs `pnpm install`, so the command can start
-- Runs `projects/installation/src/main.ts setup`, which does everything else
+- Runs `projects/installation/src/installation.main.ts setup`, which does everything else
 
 **Prerequisites:**
 

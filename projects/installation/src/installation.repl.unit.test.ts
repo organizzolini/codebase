@@ -20,7 +20,7 @@ describe("repl bootstrap", () => {
   it("starts the nest repl for the main module", async () => {
     expect.hasAssertions();
 
-    await import("./repl");
+    await import("./installation.repl");
 
     expect(repl).toHaveBeenCalledTimes(1);
   });

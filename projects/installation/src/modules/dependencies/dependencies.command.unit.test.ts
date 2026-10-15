@@ -223,7 +223,7 @@ describe(DependenciesCommand, () => {
     await subject.run();
 
     expect(options.get("terraform init")?.cwd).toBe(
-      path.join(workspace.root, "infrastructure/terraform"),
+      path.join(workspace.root, "projects/infrastructure/terraform"),
     );
     expect(
       options.get("terraform import linode_lke_cluster.cluster 99")

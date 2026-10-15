@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { environmentSchema } from "./constants";
+import { environmentSchema } from "./installation.constants";
 
 /** The workspace root, which the Nx `start` target runs from. */
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -38,7 +38,7 @@ describe("main end-to-end suite", () => {
         [
           "--import",
           "@swc-node/register/esm-register",
-          "projects/installation/src/main.ts",
+          "projects/installation/src/installation.main.ts",
           name,
           "--help",
         ],
@@ -51,7 +51,9 @@ describe("main end-to-end suite", () => {
 
       expect(result.stderr).not.toContain("Nest can't resolve dependencies");
       expect(result.status).toBe(0);
-      expect(result.stdout).toContain(`Usage: main ${name} [options]`);
+      expect(result.stdout).toContain(
+        `Usage: installation.main ${name} [options]`,
+      );
     });
   });
 });

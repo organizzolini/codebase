@@ -4,7 +4,7 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/logging";
 
-import { environmentSchema } from "./constants";
+import { environmentSchema } from "./installation.constants";
 import { DependenciesModule } from "./modules/dependencies/dependencies.module";
 import { EnvironmentFilesModule } from "./modules/environment-files/environment-files.module";
 import { ReporterModule } from "./modules/reporter/reporter.module";

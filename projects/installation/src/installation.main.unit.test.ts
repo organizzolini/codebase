@@ -27,7 +27,7 @@ vi.mock("nest-commander", () => ({
 }));
 
 vi.mock("@codebase/logging", () => ({
-  // `main.module` imports `LoggerModule` from the same specifier, so the mock
+  // `installation.module` imports `LoggerModule` from the same specifier, so the mock
   // has to stand in for the whole package, not just the service.
   LoggerModule: function LoggerModule() {},
   LoggerService: function LoggerService() {
@@ -37,7 +37,7 @@ vi.mock("@codebase/logging", () => ({
 
 // Mocked so that bootstrapping never reaches the real commands, which extend a
 // `nest-commander` class this suite has replaced.
-vi.mock("./main.module", () => ({
+vi.mock("./installation.module", () => ({
   MainModule: function MainModule() {},
 }));
 
@@ -59,7 +59,7 @@ describe("main bootstrap", () => {
   it("runs the command factory with a configured logger", async () => {
     expect.hasAssertions();
 
-    await import("./main");
+    await import("./installation.main");
 
     expect(loggerServiceMock.setContext).toHaveBeenCalledWith("CommandFactory");
     expect(run).toHaveBeenCalledTimes(1);
@@ -75,7 +75,7 @@ describe("main bootstrap", () => {
   it("exits non-zero and logs when a command throws", async () => {
     expect.hasAssertions();
 
-    await import("./main");
+    await import("./installation.main");
 
     const serviceErrorHandler = run.mock.calls[0]?.[1].serviceErrorHandler;
 

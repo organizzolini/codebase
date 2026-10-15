@@ -3,7 +3,7 @@ import { CommandFactory } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
-import { MainModule } from "./main.module";
+import { MainModule } from "./installation.module";
 
 /** Bootstraps the installation CLI application. */
 async function main(): Promise<void> {

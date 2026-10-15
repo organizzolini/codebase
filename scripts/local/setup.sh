@@ -29,4 +29,4 @@ source ./scripts/local/software/node.sh
 echo "📦 Installing the packages the setup command runs on..."
 pnpm install
 
-NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/main.ts setup
+NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts setup

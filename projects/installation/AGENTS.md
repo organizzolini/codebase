@@ -45,7 +45,7 @@ From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`,
 ### Execution Flow
 
 ```text
-src/main.ts
+src/installation.main.ts
   └─ CommandFactory.run(MainModule)
        └─ domain command modules            ← add under src/modules/
 ```
@@ -54,9 +54,9 @@ src/main.ts
 
 ```text
 src/
-  main.ts                           # Bootstrap — do not modify
-  main.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
-  constants.ts                      # Zod environmentSchema for env validation
+  installation.main.ts                           # Bootstrap — do not modify
+  installation.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
+  installation.constants.ts                      # Zod environmentSchema for env validation
   modules/
     <domain>/                       # Add feature modules here
       <domain>.module.ts
@@ -73,7 +73,7 @@ testing/                            # Shared test utilities
 ### Adding Business Logic
 
 1. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
-2. **Register in root module** — import the new module in `main.module.ts`.
+2. **Register in root module** — import the new module in `installation.module.ts`.
 3. **Validate env vars** — extend `environmentSchema` in `constants.ts` with all required environment variables.
 
 ### Logging
@@ -214,7 +214,7 @@ Do not re-export types from `index.ts` unless they are part of the public API co
 
 ### Registering in the root module
 
-After generating a module, import it in `main.module.ts`:
+After generating a module, import it in `installation.module.ts`:
 
 ```ts
 @Module({
@@ -257,8 +257,8 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
-- [src/main.module.ts](src/main.module.ts): Root NestJS module
+- [src/installation.main.ts](src/installation.main.ts): Application bootstrap
+- [src/installation.module.ts](src/installation.module.ts): Root NestJS module
 - [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
