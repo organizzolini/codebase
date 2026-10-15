@@ -300,11 +300,11 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Synchronizes the generators table and reports success without exiting.
     └─> ConformetryGeneratorsCommand.readGenerators(): Promise<ConformetryGeneratorMetadata[]> [projects/synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111]
        ↳ Reads projects/configuration/conformetry.config.ts and returns the list of generator metadata.
-      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:243]
+      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:244]
          ↳ Loads, validates, and normalizes a conformetry configuration file.
-        └─> ConfigurationService.resolveConfigurationPath(configurationPath: string): Promise<string> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:174]
+        └─> ConfigurationService.resolveConfigurationPath(configurationPath: string): Promise<string> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:175]
            ↳ Resolves a config path against the cwd, falling back to the workspace root.
-          └─> ConfigurationService.findWorkspaceRoot(): Promise<string | undefined> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:113]
+          └─> ConfigurationService.findWorkspaceRoot(): Promise<string | undefined> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:114]
              ↳ Walks upward from the process cwd looking for the workspace manifest.
 ```
 

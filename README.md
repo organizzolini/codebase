@@ -352,6 +352,7 @@ graph LR
   codependix_examples --> logging
   codependix_nestjs_modules --> logging
   codependix_nx --> codependix_cli
+  codependix_nx --> codependix_configuration
   codependix_output --> codependix_boundaries
   codependix_output --> codependix_configuration
   codependix_output --> codependix_core
@@ -611,8 +612,11 @@ graph LR
   module_codependix_nestjs_modules_NestjsProjectModule["codependix-nestjs-modules/NestjsProjectModule"]
   module_codependix_nx_projects_NeighborhoodModule["codependix-nx-projects/NeighborhoodModule"]
   module_codependix_nx_projects_WorkspaceGraphModule["codependix-nx-projects/WorkspaceGraphModule"]
+  module_codependix_nx_ConfigurationModule["codependix-nx/ConfigurationModule"]
   module_codependix_nx_GateModule["codependix-nx/GateModule"]
+  module_codependix_nx_InputModule["codependix-nx/InputModule"]
   module_codependix_nx_MainModule["codependix-nx/MainModule"]
+  module_codependix_nx_OverrideResolutionModule["codependix-nx/OverrideResolutionModule"]
   module_codependix_nx_PluginModule["codependix-nx/PluginModule"]
   module_codependix_output_AnchorsModule["codependix-output/AnchorsModule"]
   module_codependix_output_BoundariesModule["codependix-output/BoundariesModule"]
@@ -1156,6 +1160,7 @@ graph LR
   module_callidescope_nx_GraphModule --> module_callidescope_nx_SignaturesModule
   module_callidescope_nx_MainModule --> module_callidescope_nx_AddressModule
   module_callidescope_nx_MainModule --> module_callidescope_nx_PluginModule
+  module_callidescope_nx_OptionsModule --> module_callidescope_nx_ConfigurationModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_CallidescopeModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_ConfigurationModule
   module_callidescope_nx_PluginModule --> module_callidescope_nx_OptionsModule
@@ -1168,7 +1173,6 @@ graph LR
   module_callidescope_nx_ProjectReportsModule --> module_callidescope_nx_GraphModule
   module_callidescope_nx_ProjectReportsModule --> module_callidescope_nx_SignaturesModule
   module_callidescope_nx_RunConfigurationModule --> module_callidescope_nx_ConfigurationModule
-  module_callidescope_nx_RunConfigurationModule --> module_callidescope_nx_OptionsModule
   module_callidescope_nx_RunPlanModule --> module_callidescope_nx_FlagResolutionModule
   module_callidescope_nx_WriteDestinationsModule --> module_callidescope_nx_OutputJsonModule
   module_callidescope_nx_WriteDestinationsModule --> module_callidescope_nx_OutputMarkdownModule
@@ -1262,9 +1266,13 @@ graph LR
   module_codependix_configuration_ConfigurationModule --> module_codependix_configuration_InputModule
   module_codependix_configuration_ConfigurationModule --> module_codependix_configuration_OverrideResolutionModule
   module_codependix_nx_projects_WorkspaceGraphModule --> module_codependix_nx_projects_NeighborhoodModule
+  module_codependix_nx_ConfigurationModule --> module_codependix_nx_InputModule
+  module_codependix_nx_ConfigurationModule --> module_codependix_nx_OverrideResolutionModule
+  module_codependix_nx_GateModule --> module_codependix_nx_ConfigurationModule
   module_codependix_nx_GateModule --> module_codependix_nx_PluginModule
   module_codependix_nx_MainModule --> module_codependix_nx_GateModule
   module_codependix_nx_MainModule --> module_codependix_nx_PluginModule
+  module_codependix_nx_PluginModule --> module_codependix_nx_ConfigurationModule
   module_codependix_output_BoundaryCheckModule --> module_codependix_output_BoundariesModule
   module_codependix_output_BoundaryCheckModule --> module_codependix_output_ModuleGraphModule
   module_codependix_output_BoundaryCheckModule --> module_codependix_output_NeighborhoodModule
@@ -1515,6 +1523,7 @@ graph LR
   module_conformetry_nx_MainModule --> module_conformetry_nx_GeneratorModule
   module_conformetry_nx_MainModule --> module_conformetry_nx_PluginModule
   module_conformetry_nx_MarkdownModule --> module_conformetry_nx_ScoringModule
+  module_conformetry_nx_OptionsModule --> module_conformetry_nx_ConfigurationModule
   module_conformetry_nx_PathsModule --> module_conformetry_nx_ConfigurationModule
   module_conformetry_nx_PathsModule --> module_conformetry_nx_InstancesModule
   module_conformetry_nx_PathsModule --> module_conformetry_nx_ScopeModule
@@ -6340,6 +6349,7 @@ graph LR
   file_callidescope_configuration_src_modules_input_input_module_ts --> file_callidescope_configuration_src_modules_input_input_service_ts
   file_callidescope_configuration_src_modules_input_input_service_ts --> file_callidescope_configuration_src_modules_input_input_constants_ts
   file_callidescope_configuration_src_modules_input_input_service_ts --> file_callidescope_configuration_src_modules_input_input_types_ts
+  file_callidescope_configuration_src_modules_input_input_service_unit_test_ts --> file_callidescope_configuration_src_modules_input_input_constants_ts
   file_callidescope_configuration_src_modules_input_input_service_unit_test_ts --> file_callidescope_configuration_src_modules_input_input_service_ts
   file_callidescope_configuration_src_modules_run_plan_run_plan_module_ts --> file_callidescope_configuration_src_modules_flag_resolution_flag_resolution_module_ts
   file_callidescope_configuration_src_modules_run_plan_run_plan_module_ts --> file_callidescope_configuration_src_modules_run_plan_run_plan_service_ts
@@ -6665,6 +6675,7 @@ graph LR
   file_callidescope_nx_src_modules_options_options_module_ts --> file_callidescope_nx_src_modules_options_options_service_ts
   file_callidescope_nx_src_modules_options_options_service_ts --> file_callidescope_nx_src_modules_options_options_constants_ts
   file_callidescope_nx_src_modules_options_options_service_ts --> file_callidescope_nx_src_modules_options_options_types_ts
+  file_callidescope_nx_src_modules_options_options_service_unit_test_ts --> file_callidescope_nx_src_modules_options_options_constants_ts
   file_callidescope_nx_src_modules_options_options_service_unit_test_ts --> file_callidescope_nx_src_modules_options_options_service_ts
   file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_callidescope_nx_module_ts
   file_callidescope_nx_src_modules_plugin_plugin_context_utilities_ts --> file_callidescope_nx_src_modules_address_address_service_ts
@@ -6701,12 +6712,8 @@ graph LR
   file_callidescope_nx_src_modules_projects_projects_module_ts --> file_callidescope_nx_src_modules_projects_projects_service_ts
   file_callidescope_nx_src_modules_projects_projects_service_ts --> file_callidescope_nx_src_modules_projects_projects_types_ts
   file_callidescope_nx_src_modules_projects_projects_service_unit_test_ts --> file_callidescope_nx_src_modules_projects_projects_service_ts
-  file_callidescope_nx_src_modules_run_configuration_run_configuration_module_ts --> file_callidescope_nx_src_modules_options_options_module_ts
   file_callidescope_nx_src_modules_run_configuration_run_configuration_module_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts
-  file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts --> file_callidescope_nx_src_modules_options_options_service_ts
-  file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_constants_ts
   file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_types_ts
-  file_callidescope_nx_src_modules_run_configuration_run_configuration_service_unit_test_ts --> file_callidescope_nx_src_modules_options_options_service_ts
   file_callidescope_nx_src_modules_run_configuration_run_configuration_service_unit_test_ts --> file_callidescope_nx_src_modules_run_configuration_run_configuration_service_ts
   file_callidescope_output_src_modules_address_report_address_report_module_ts --> file_callidescope_output_src_modules_address_report_address_report_service_ts
   file_callidescope_output_src_modules_address_report_address_report_module_ts --> file_callidescope_output_src_modules_report_report_module_ts
@@ -6872,6 +6879,7 @@ graph LR
   file_codependix_cli_src_index_unit_test_ts --> file_codependix_cli_src_index_ts
   file_codependix_cli_src_modules_map_map_command_integration_test_ts --> file_codependix_cli_src_codependix_cli_module_ts
   file_codependix_cli_src_modules_map_map_command_integration_test_ts --> file_codependix_cli_src_modules_map_map_command_ts
+  file_codependix_cli_src_modules_map_map_command_ts --> file_codependix_cli_src_modules_map_map_constants_ts
   file_codependix_cli_src_modules_map_map_command_unit_test_ts --> file_codependix_cli_src_modules_map_map_command_ts
   file_codependix_cli_src_modules_map_map_module_ts --> file_codependix_cli_src_modules_map_map_command_ts
   file_codependix_cli_src_modules_map_map_module_unit_test_ts --> file_codependix_cli_src_modules_map_map_command_ts
@@ -7327,6 +7335,7 @@ graph LR
   file_codometer_configuration_src_index_unit_test_ts --> file_codometer_configuration_src_index_ts
   file_codometer_configuration_src_modules_configuration_configuration_flags_service_ts --> file_codometer_configuration_src_modules_configuration_configuration_flags_constants_ts
   file_codometer_configuration_src_modules_configuration_configuration_flags_service_ts --> file_codometer_configuration_src_modules_configuration_configuration_types_ts
+  file_codometer_configuration_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_codometer_configuration_src_modules_configuration_configuration_flags_constants_ts
   file_codometer_configuration_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_codometer_configuration_src_modules_configuration_configuration_flags_service_ts
   file_codometer_configuration_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_codometer_configuration_src_modules_configuration_configuration_types_ts
   file_codometer_configuration_src_modules_configuration_configuration_loader_service_ts --> file_codometer_configuration_src_modules_configuration_configuration_loader_types_ts
@@ -8399,6 +8408,7 @@ graph LR
   file_conformetry_nx_src_generators_sync_generator_ts --> file_conformetry_nx_src_modules_options_options_constants_ts
   file_conformetry_nx_src_generators_sync_generator_ts --> file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts
   file_conformetry_nx_src_generators_sync_generator_unit_test_ts --> file_conformetry_nx_src_generators_sync_generator_ts
+  file_conformetry_nx_src_generators_sync_generator_unit_test_ts --> file_conformetry_nx_src_modules_options_options_constants_ts
   file_conformetry_nx_src_generators_sync_generator_unit_test_ts --> file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts
   file_conformetry_nx_src_index_ts --> file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts
   file_conformetry_nx_src_index_ts --> file_conformetry_nx_src_modules_plugin_plugin_constants_ts
@@ -12270,23 +12280,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-116-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19160-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19161-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-115-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-672-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-521-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5473-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5474-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-856-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4158-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4159-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-232-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-1976-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-708-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-387-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11043-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11052-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-20-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -12299,13 +12309,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6156 |
+| Callables | 6153 |
 | Files | 1766 |
-| Calls traced | 6608 |
-| Call stacks | 1697 |
+| Calls traced | 6615 |
+| Call stacks | 1691 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 328 |
+| Unfollowable calls | 329 |
 
 ### Projects
 

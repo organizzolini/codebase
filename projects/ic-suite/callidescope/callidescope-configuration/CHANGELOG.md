@@ -1,3 +1,13 @@
+## 0.0.30 (2026-10-15)
+
+### 💅 Refactors
+
+- **callidescope,codependix,codometer,conformetry:** ♻️ require --config on every ic-suite command line ([#1598](https://github.com/organizzolini/codebase/pull/1598))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-core to 0.0.29
+
 ## 0.0.29 (2026-10-15)
 
 ### 💅 Refactors

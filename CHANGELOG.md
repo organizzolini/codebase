@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.2](https://github.com/organizzolini/codebase/compare/v3.8.1...v3.8.2) (2026-10-15)
+
+### ♻️ Code Refactoring
+
+* **callidescope,codependix,codometer,conformetry:** ♻️ require --config on every ic-suite command line ([#1598](https://github.com/organizzolini/codebase/issues/1598)) ([541a319](https://github.com/organizzolini/codebase/commit/541a3197012a76135d1258490d458a25b72ba983))
+
 ## [3.8.1](https://github.com/organizzolini/codebase/compare/v3.8.0...v3.8.1) (2026-10-15)
 
 ### ♻️ Code Refactoring
