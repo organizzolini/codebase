@@ -54,7 +54,7 @@ async function runImport(
   argv: readonly string[],
 ): ReturnType<typeof runCliCommandLine> {
   return runCliCommandLine({
-    argv: ["import", "--namespace", "fixture", ...argv],
+    argv: ["import", "--schema", "fixture", ...argv],
   });
 }
 
@@ -149,16 +149,16 @@ describe(ImportCommand, () => {
       [
         "no --table",
         ["--target-uri", TARGET_URI, "--data", "--file", "fixture.dump"],
-        "--table is required",
+        "--table is required: name each table to import, e.g. --table <schema>.<table>, or --schema <schema> --table <table>",
       ],
       [
-        "neither --data nor --schema",
+        "neither --data nor --ddl",
         ["--target-uri", TARGET_URI, "--table", "widgets", "--file", "x.dump"],
-        "--data or --schema is required",
+        "--data and/or --ddl is required",
       ],
       [
         "no --file",
-        ["--target-uri", TARGET_URI, "--table", "widgets", "--schema"],
+        ["--target-uri", TARGET_URI, "--table", "widgets", "--ddl"],
         "--file is required",
       ],
       [
@@ -168,7 +168,7 @@ describe(ImportCommand, () => {
           TARGET_URI,
           "--table",
           "widgets",
-          "--schema",
+          "--ddl",
           "--file",
           "/nonexistent/fixture.dump",
         ],
@@ -211,8 +211,8 @@ describe(ImportCommand, () => {
   });
 
   it.each([
-    [["--schema"], "--schema-only"],
-    [["--data", "--schema"], undefined],
+    [["--ddl"], "--schema-only"],
+    [["--data", "--ddl"], undefined],
   ])("maps %o to the pg_restore content flag %s", async (content, flag) => {
     const spawned = mockProcesses({
       list: {
@@ -230,10 +230,10 @@ describe(ImportCommand, () => {
     );
   });
 
-  it("uses a schema-qualified name as written, outside --namespace", async () => {
+  it("uses a schema-qualified name as written, outside --schema", async () => {
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await runImport(argv(["--schema"], ["archive.parts"]));
+    const result = await runImport(argv(["--ddl"], ["archive.parts"]));
 
     expect(result.exitCode).toBe(0);
     expect(restoresOf(spawned)[0]?.useList).toBe("3496;\n222;\n");
@@ -249,13 +249,13 @@ describe(ImportCommand, () => {
       ],
       [
         "definitions",
-        ["--schema"],
+        ["--ddl"],
         ["widgets", "fixture.missing"],
         "holds no table definitions for fixture.missing",
       ],
       [
         "rows and definitions",
-        ["--data", "--schema"],
+        ["--data", "--ddl"],
         ["nothing", "archive.parts"],
         "holds no rows for fixture.nothing, archive.parts and no table definitions for fixture.nothing",
       ],
@@ -374,7 +374,7 @@ describe(ImportCommand, () => {
     const failure = importCommand.run([], {
       data: true,
       file,
-      namespace: "fixture",
+      schema: "fixture",
       table: ["widgets"],
       targetUri: TARGET_URI,
     });

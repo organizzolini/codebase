@@ -75,7 +75,7 @@ describe("import --dry-run", () => {
     expect(result.exitCode).toBe(0);
     expect(output).toContain('database "fixture_development" on 127.0.0.1');
     expect(output).toContain(file);
-    expect(output).toContain("fixture.widgets: the dump holds data and schema");
+    expect(output).toContain("fixture.widgets: the dump holds data and DDL");
     expect(output).not.toContain("--clean");
     expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
     expect(spawned.map(({ args }) => args[0])).toStrictEqual([
@@ -87,7 +87,7 @@ describe("import --dry-run", () => {
 
   it.each([
     ["data", [ROWS], "--data"],
-    ["schema", [DEFINITION], "--schema"],
+    ["DDL", [DEFINITION], "--ddl"],
   ])("names a dump that holds only %s", async (holds, entries, option) => {
     mockProcesses({ list: { stdout: listing(...entries) } });
 
@@ -102,15 +102,15 @@ describe("import --dry-run", () => {
   it.each([
     [
       ["--data"],
-      "would truncate fixture.widgets, deleting every row it holds, then restore the dump's rows",
+      "with --data would truncate fixture.widgets, deleting every row it holds, then restore the dump's rows",
     ],
     [
-      ["--schema"],
-      "would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
+      ["--ddl"],
+      "with --ddl would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
     ],
     [
-      ["--data", "--schema"],
-      "would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
+      ["--data", "--ddl"],
+      "with --ddl would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
     ],
   ])("with --clean %j says it %s", async (options, says) => {
     const spawned = mockProcesses({
@@ -129,23 +129,25 @@ describe("import --dry-run", () => {
     ]);
   });
 
-  it("does not truncate with --clean --data --schema", async () => {
+  it("does not truncate with --clean --data --ddl", async () => {
     mockProcesses({ list: { stdout: listing(DEFINITION, ROWS) } });
 
-    const result = await run("--data", "--schema", "--clean");
+    const result = await run("--data", "--ddl", "--clean");
 
     const output = result.logs.join("\n");
 
     expect(result.exitCode).toBe(0);
-    expect(output).toContain("--clean would drop and recreate fixture.widgets");
+    expect(output).toContain(
+      "--clean with --ddl would drop and recreate fixture.widgets",
+    );
     expect(output).not.toContain("truncate");
   });
 
-  it("names a table given twice once, qualified or resolved in --namespace", async () => {
+  it("names a table given twice once, qualified or resolved in --schema", async () => {
     mockProcesses({ list: { stdout: listing(DEFINITION, ROWS) } });
 
     const result = await run(
-      "--namespace",
+      "--schema",
       "fixture",
       "--table",
       "widgets",
@@ -157,7 +159,9 @@ describe("import --dry-run", () => {
 
     expect(result.exitCode).toBe(0);
     expect(output.match(/fixture\.widgets: the dump holds/gu)).toHaveLength(1);
-    expect(output).toContain("--clean would truncate fixture.widgets");
+    expect(output).toContain(
+      "--clean with --data would truncate fixture.widgets",
+    );
     expect(output).not.toContain("fixture.widgets, fixture.widgets");
   });
 

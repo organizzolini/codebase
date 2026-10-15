@@ -43,14 +43,14 @@ describe("import --clean", () => {
   let directory: string;
   let file: string;
 
-  /** A command line that imports `fixture.widgets`' schema, plus `extra`. */
+  /** A command line that imports `fixture.widgets`' definitions, plus `extra`. */
   const argv = (...extra: readonly string[]): string[] => [
     "import",
     "--target-uri",
     TARGET_URI,
     "--table",
     "fixture.widgets",
-    "--schema",
+    "--ddl",
     "--file",
     file,
     ...extra,

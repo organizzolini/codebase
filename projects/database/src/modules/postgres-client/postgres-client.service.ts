@@ -226,7 +226,7 @@ export class PostgresClientService {
           "--exit-on-error",
           "--no-owner",
           "--no-privileges",
-          ...(clean && content.schema ? ["--clean", "--if-exists"] : []),
+          ...(clean && content.ddl ? ["--clean", "--if-exists"] : []),
           ...postgresContentFlags(content),
           `--use-list=${list}`,
           file,

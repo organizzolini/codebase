@@ -64,12 +64,12 @@ input is a terminal; otherwise the command takes its default of no bound or
 This application does not copy tables between databases. The database
 package's command line does, with `nx run database:start:export` and
 `nx run database:start:import`. It has no default schema, so name the Lexico
-schema with `--namespace lexico`, or qualify each table as `lexico.words`.
+schema with `--schema lexico`, or qualify each table as `lexico.words`.
 A relative `--file` resolves from `projects/database`, so this keeps the dump
 in this project's `data/` directory, where `*.dump` is gitignored:
 
 ```bash
-nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --namespace lexico --table words --data --schema --file ../lexico/lexico-cli/data/lexico.dump"
+nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --schema lexico --table words --data --ddl --file ../lexico/lexico-cli/data/lexico.dump"
 ```
 
 `import --clean` runs without asking, so run `import --dry-run` with the same

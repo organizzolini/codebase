@@ -53,7 +53,7 @@ async function runExport(
   argv: readonly string[],
 ): ReturnType<typeof runCliCommandLine> {
   return runCliCommandLine({
-    argv: ["export", "--namespace", "fixture", ...argv],
+    argv: ["export", "--schema", "fixture", ...argv],
   });
 }
 
@@ -133,16 +133,16 @@ describe(ExportCommand, () => {
       [
         "no --table",
         ["--source-uri", SOURCE_URI, "--data", "--file", DUMP],
-        "--table is required",
+        "--table is required: name each table to export, e.g. --table <schema>.<table>, or --schema <schema> --table <table>",
       ],
       [
-        "neither --data nor --schema",
+        "neither --data nor --ddl",
         ["--source-uri", SOURCE_URI, "--table", "widgets", "--file", "x.dump"],
-        "--data or --schema is required",
+        "--data and/or --ddl is required",
       ],
       [
         "no --file",
-        ["--source-uri", SOURCE_URI, "--table", "widgets", "--schema"],
+        ["--source-uri", SOURCE_URI, "--table", "widgets", "--ddl"],
         "--file is required",
       ],
     ])("with %s", async (_case, argv, message) => {
@@ -157,7 +157,7 @@ describe(ExportCommand, () => {
     });
   });
 
-  it("dumps the selected tables, resolving unqualified names in --namespace", async () => {
+  it("dumps the selected tables, resolving unqualified names in --schema", async () => {
     const spawned = mockProcesses();
 
     const result = await runExport([
@@ -190,8 +190,8 @@ describe(ExportCommand, () => {
   });
 
   it.each([
-    [["--schema"], ["--schema-only"]],
-    [["--data", "--schema"], []],
+    [["--ddl"], ["--schema-only"]],
+    [["--data", "--ddl"], []],
   ])("maps %o to the pg_dump flags %o", async (contentFlags, dumpFlags) => {
     const spawned = mockProcesses();
 
@@ -208,7 +208,7 @@ describe(ExportCommand, () => {
     expect(dumpsOf(spawned)[0]?.args.slice(4, -1)).toStrictEqual(dumpFlags);
   });
 
-  it("uses a schema-qualified name as written, outside --namespace", async () => {
+  it("uses a schema-qualified name as written, outside --schema", async () => {
     const spawned = mockProcesses();
 
     await runExport([
@@ -216,7 +216,7 @@ describe(ExportCommand, () => {
       SOURCE_URI,
       "--table",
       "sample.widgets",
-      "--schema",
+      "--ddl",
       "--file",
       DUMP,
     ]);
@@ -233,7 +233,7 @@ describe(ExportCommand, () => {
       "--table",
       "widgets",
       "--data",
-      "--schema",
+      "--ddl",
       "--file",
       DUMP,
     ]);
@@ -249,7 +249,7 @@ describe(ExportCommand, () => {
       ),
     );
     expect(result.logs).toContainEqual(
-      expect.stringContaining("Exported 1 table (data and schema)"),
+      expect.stringContaining("Exported 1 table (data and DDL)"),
     );
   });
 

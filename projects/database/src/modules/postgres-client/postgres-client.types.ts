@@ -29,8 +29,8 @@ export interface PostgresContent {
   /** Move the tables' rows. */
   readonly data: boolean;
 
-  /** Move the tables' definitions. */
-  readonly schema: boolean;
+  /** Move the tables' definitions, their DDL. */
+  readonly ddl: boolean;
 }
 
 /**
@@ -89,7 +89,7 @@ export type PostgresQuery = (
 export interface PostgresRestoreOptions {
   /**
    * Drop each selected table, with `IF EXISTS`, before recreating it.
-   * Applies only when `content.schema`: `pg_restore` refuses its clean
+   * Applies only when `content.ddl`: `pg_restore` refuses its clean
    * option with a data-only restore.
    */
   readonly clean?: boolean;

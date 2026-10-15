@@ -67,7 +67,7 @@ describe("main end-to-end suite", () => {
 
       expect(status).toBe(1);
       expect(output).toContain(
-        "--table widgets names no schema: qualify it as schema.table, or pass --namespace <schema>",
+        "--table widgets names no schema: qualify it as schema.table, or pass --schema <name>",
       );
       expect(output).not.toContain("hunter2-secret");
     },

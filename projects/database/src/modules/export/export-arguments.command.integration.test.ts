@@ -34,7 +34,7 @@ describe("export with missing arguments", () => {
     argv: readonly string[],
   ): ReturnType<typeof runCliCommandLine> {
     return runCliCommandLine({
-      argv: ["export", "--namespace", "fixture", ...argv],
+      argv: ["export", "--schema", "fixture", ...argv],
     });
   }
 
@@ -46,9 +46,9 @@ describe("export with missing arguments", () => {
     ],
     ["no --table", ["--source-uri", "<uri>", "--data"], "--table is required"],
     [
-      "neither --data nor --schema",
+      "neither --data nor --ddl",
       ["--source-uri", "<uri>", "--table", "widgets"],
-      "--data or --schema is required",
+      "--data and/or --ddl is required",
     ],
   ])(
     "fails fast with %s, starting no process and writing no file",

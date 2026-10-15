@@ -40,17 +40,10 @@ const UNREACHABLE_TARGET_URI =
 
 /** The dumps `export` writes once for every test, keyed by what they hold. */
 const DUMPS = {
-  archive: ["--table", "archive.notes", "--data", "--schema"],
-  both: [
-    "--table",
-    "widgets",
-    "--table",
-    "fixture.parts",
-    "--data",
-    "--schema",
-  ],
+  archive: ["--table", "archive.notes", "--data", "--ddl"],
+  both: ["--table", "widgets", "--table", "fixture.parts", "--data", "--ddl"],
   data: ["--table", "widgets", "--table", "fixture.parts", "--data"],
-  schema: ["--table", "widgets", "--table", "fixture.parts", "--schema"],
+  ddl: ["--table", "widgets", "--table", "fixture.parts", "--ddl"],
 } as const;
 
 describe("import", () => {
@@ -73,7 +66,7 @@ describe("import", () => {
     argv: readonly string[],
   ): ReturnType<typeof runCliCommandLine> {
     return runCliCommandLine({
-      argv: ["import", "--namespace", "fixture", ...argv],
+      argv: ["import", "--schema", "fixture", ...argv],
     });
   }
 
@@ -133,7 +126,7 @@ describe("import", () => {
           "export",
           "--source-uri",
           source.uri,
-          "--namespace",
+          "--schema",
           "fixture",
           ...argv,
           "--file",
@@ -250,7 +243,7 @@ describe("import", () => {
     );
   });
 
-  describe("--schema, into a database without the tables", () => {
+  describe("--ddl, into a database without the tables", () => {
     it(
       "imports the definitions with their keys, indexes, and foreign keys, but no rows",
       async () => {
@@ -263,9 +256,9 @@ describe("import", () => {
           "widgets",
           "--table",
           "fixture.parts",
-          "--schema",
+          "--ddl",
           "--file",
-          dump("schema"),
+          dump("ddl"),
         ]);
 
         expect(result.exitCode).toBe(0);
@@ -301,9 +294,9 @@ describe("import", () => {
           target.uri,
           "--table",
           "widgets",
-          "--schema",
+          "--ddl",
           "--file",
-          dump("schema"),
+          dump("ddl"),
         ]);
 
         expect(result.exitCode).toBe(1);
@@ -317,7 +310,7 @@ describe("import", () => {
     );
   });
 
-  describe("--data --schema together", () => {
+  describe("--data --ddl together", () => {
     it(
       "imports a table from a non-default schema, its sequence set past its rows",
       async () => {
@@ -329,7 +322,7 @@ describe("import", () => {
           "--table",
           "archive.notes",
           "--data",
-          "--schema",
+          "--ddl",
           "--file",
           dump("archive"),
         ]);
@@ -360,14 +353,14 @@ describe("import", () => {
           "--table",
           "widgets",
           "--data",
-          "--schema",
+          "--ddl",
           "--file",
           dump("both"),
         ]);
 
         expect(result.exitCode).toBe(0);
         expect(result.logs).toContainEqual(
-          expect.stringContaining("Imported 1 table (data and schema)"),
+          expect.stringContaining("Imported 1 table (data and DDL)"),
         );
         await expect(
           emptyRows(
@@ -381,10 +374,10 @@ describe("import", () => {
 
   describe("fails fast, before connecting, when the dump lacks what was asked for", () => {
     it.each([
-      ["rows", "--data", "schema", "holds no rows for fixture.widgets"],
+      ["rows", "--data", "ddl", "holds no rows for fixture.widgets"],
       [
         "definitions",
-        "--schema",
+        "--ddl",
         "data",
         "holds no table definitions for fixture.widgets",
       ],

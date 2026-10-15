@@ -45,7 +45,7 @@ const CONTENTS: readonly PostgresDumpEntry[] = [
 
 const RESTORE: PostgresRestoreOptions = {
   connection: CONNECTION,
-  content: { data: true, schema: false },
+  content: { data: true, ddl: false },
   contents: CONTENTS,
   file: "/tmp/fixture.dump",
   tables: ["fixture.widgets"],
@@ -57,7 +57,7 @@ const DUMP_FILE = path.join(DUMP_DIRECTORY, "fixture.dump");
 
 const DUMP: PostgresDumpOptions = {
   connection: CONNECTION,
-  content: { data: true, schema: true },
+  content: { data: true, ddl: true },
   file: DUMP_FILE,
   tables: ["fixture.widgets"],
 };
@@ -141,7 +141,7 @@ describe(PostgresClientService, () => {
 
       await service.dump({
         ...DUMP,
-        content: { data: true, schema: false },
+        content: { data: true, ddl: false },
         file: DUMP_FILE,
         tables: ["fixture.widgets", "archive.parts"],
       });
@@ -185,7 +185,7 @@ describe(PostgresClientService, () => {
 
       const failure = service.dump({
         ...DUMP,
-        content: { data: false, schema: true },
+        content: { data: false, ddl: true },
       });
 
       await expect(failure).rejects.toThrow(PostgresClientError);
@@ -287,8 +287,8 @@ describe(PostgresClientService, () => {
     });
 
     it.each([
-      [{ data: false, schema: true }, ["--schema-only"]],
-      [{ data: true, schema: true }, []],
+      [{ data: false, ddl: true }, ["--schema-only"]],
+      [{ data: true, ddl: true }, []],
     ])("maps %o to the pg_restore flags %o", async (content, flags) => {
       const spawned = mockProcesses();
 

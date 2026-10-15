@@ -78,7 +78,7 @@ describe("import --clean --data", () => {
     fs.rmSync(directory, { force: true, recursive: true });
   });
 
-  it("empties and refills the rows without asking, whatever the terminal", async () => {
+  it("empties and refills the rows without asking", async () => {
     stubTruncate();
     const truncate = vi.spyOn(PostgresClientService.prototype, "truncate");
     const spawned = mockProcesses({ list: { stdout: LISTING } });
@@ -147,11 +147,11 @@ describe("import --clean --data", () => {
     expect(restoresOf(spawned)).toStrictEqual([]);
   });
 
-  it("drops through pg_restore rather than connecting itself when --schema is given too", async () => {
+  it("drops through pg_restore rather than connecting itself when --ddl is given too", async () => {
     vi.restoreAllMocks();
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await run("--schema");
+    const result = await run("--ddl");
 
     expect(result.exitCode).toBe(0);
     expect(restoresOf(spawned)[0]?.args).toContain("--clean");

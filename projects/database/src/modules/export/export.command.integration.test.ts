@@ -58,7 +58,7 @@ describe("export", () => {
     argv: readonly string[],
   ): ReturnType<typeof runCliCommandLine> {
     return runCliCommandLine({
-      argv: ["export", "--namespace", "fixture", ...argv],
+      argv: ["export", "--schema", "fixture", ...argv],
     });
   }
 
@@ -144,7 +144,7 @@ describe("export", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "exports one table's schema and data into a dump that restores",
+    "exports one table's DDL and data into a dump that restores",
     async () => {
       expect.hasAssertions();
 
@@ -156,7 +156,7 @@ describe("export", () => {
         "--table",
         "widgets",
         "--data",
-        "--schema",
+        "--ddl",
         "--file",
         file,
       ]);
@@ -196,7 +196,7 @@ describe("export", () => {
         "--table",
         "fixture.parts",
         "--data",
-        "--schema",
+        "--ddl",
         "--file",
         file,
       ]);
@@ -215,19 +215,19 @@ describe("export", () => {
   );
 
   it(
-    "exports schema only and data only as separate dumps that restore in turn",
+    "exports DDL only and data only as separate dumps that restore in turn",
     async () => {
       expect.hasAssertions();
 
-      const schemaFile = path.join(directory, "schema.dump");
+      const ddlFile = path.join(directory, "ddl.dump");
       const dataFile = path.join(directory, "data.dump");
       const common = ["--source-uri", source.uri, "--table", "widgets"];
 
-      const schemaResult = await runExport([
+      const ddlResult = await runExport([
         ...common,
-        "--schema",
+        "--ddl",
         "--file",
-        schemaFile,
+        ddlFile,
       ]);
       const dataResult = await runExport([
         ...common,
@@ -236,17 +236,15 @@ describe("export", () => {
         dataFile,
       ]);
 
-      expect([schemaResult.exitCode, dataResult.exitCode]).toStrictEqual([
-        0, 0,
-      ]);
-      await expect(contents(schemaFile)).resolves.toStrictEqual([
+      expect([ddlResult.exitCode, dataResult.exitCode]).toStrictEqual([0, 0]);
+      await expect(contents(ddlFile)).resolves.toStrictEqual([
         "TABLE fixture widgets",
       ]);
       await expect(contents(dataFile)).resolves.toStrictEqual([
         "TABLE DATA fixture widgets",
       ]);
 
-      await restoreIntoTarget(schemaFile);
+      await restoreIntoTarget(ddlFile);
 
       await expect(
         targetRows("SELECT count(*)::int AS count FROM fixture.widgets"),
@@ -375,7 +373,7 @@ describe("export", () => {
       "--table",
       "widgets",
       "--data",
-      "--schema",
+      "--ddl",
     ];
 
     it(

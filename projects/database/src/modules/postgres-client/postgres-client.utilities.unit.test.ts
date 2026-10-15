@@ -189,51 +189,51 @@ describe("postgres-client utilities", () => {
   });
 
   describe(qualifyTableNames, () => {
-    it("resolves each unqualified name in the namespace", () => {
+    it("resolves each unqualified name in the schema", () => {
       expect(qualifyTableNames(["widgets", "parts"], "fixture")).toStrictEqual([
         "fixture.widgets",
         "fixture.parts",
       ]);
     });
 
-    it("uses a schema-qualified name as written, even with a namespace", () => {
+    it("uses a schema-qualified name as written, even with a schema", () => {
       expect(
         qualifyTableNames(["sample.widgets", "widgets"], "fixture"),
       ).toStrictEqual(["sample.widgets", "fixture.widgets"]);
     });
 
-    it("needs no namespace when every name is schema-qualified", () => {
+    it("needs no schema when every name is schema-qualified", () => {
       expect(
         qualifyTableNames(["fixture.widgets", "sample.parts"], undefined),
       ).toStrictEqual(["fixture.widgets", "sample.parts"]);
     });
 
     it.each([undefined, ""])(
-      "names the one unqualified table to fix when the namespace is %j",
-      (namespace) => {
+      "names the one unqualified table to fix when the schema is %j",
+      (schema) => {
         expect(() =>
-          qualifyTableNames(["fixture.widgets", "parts"], namespace),
+          qualifyTableNames(["fixture.widgets", "parts"], schema),
         ).toThrow(new PostgresTableNameError(["parts"]));
         expect(() =>
-          qualifyTableNames(["fixture.widgets", "parts"], namespace),
+          qualifyTableNames(["fixture.widgets", "parts"], schema),
         ).toThrow(
-          "--table parts names no schema: qualify it as schema.table, or pass --namespace <schema> to resolve unqualified names in that schema",
+          "--table parts names no schema: qualify it as schema.table, or pass --schema <name> to resolve unqualified names in that schema",
         );
       },
     );
 
     it("names every unqualified table at once", () => {
       expect(() => qualifyTableNames(["widgets", "parts"], undefined)).toThrow(
-        "--table widgets, parts name no schema: qualify them as schema.table, or pass --namespace <schema> to resolve unqualified names in that schema",
+        "--table widgets, parts name no schema: qualify them as schema.table, or pass --schema <name> to resolve unqualified names in that schema",
       );
     });
   });
 
   describe(describePostgresContent, () => {
     it.each([
-      [{ data: true, schema: false }, "data"],
-      [{ data: false, schema: true }, "schema"],
-      [{ data: true, schema: true }, "data and schema"],
+      [{ data: true, ddl: false }, "data"],
+      [{ data: false, ddl: true }, "DDL"],
+      [{ data: true, ddl: true }, "data and DDL"],
     ])("names %o as %j", (content, name) => {
       expect(describePostgresContent(content)).toBe(name);
     });
@@ -241,17 +241,17 @@ describe("postgres-client utilities", () => {
 
   describe(postgresContentFlags, () => {
     it.each([
-      [{ data: true, schema: false }, ["--data-only"]],
-      [{ data: false, schema: true }, ["--schema-only"]],
-      [{ data: true, schema: true }, []],
+      [{ data: true, ddl: false }, ["--data-only"]],
+      [{ data: false, ddl: true }, ["--schema-only"]],
+      [{ data: true, ddl: true }, []],
     ])("maps %o to %o", (content, flags) => {
       expect(postgresContentFlags(content)).toStrictEqual(flags);
     });
 
     it("refuses to choose for a caller that selected neither", () => {
-      expect(() =>
-        postgresContentFlags({ data: false, schema: false }),
-      ).toThrow("neither data nor schema");
+      expect(() => postgresContentFlags({ data: false, ddl: false })).toThrow(
+        "neither data nor DDL",
+      );
     });
   });
 });

@@ -17,13 +17,13 @@ import type {
 
 // 🌎 Utilities
 
-/** Names `content` for a log line: `data`, `schema`, or `data and schema`. */
+/** Names `content` for a log line: `data`, `DDL`, or `data and DDL`. */
 export function describePostgresContent({
   data,
-  schema,
+  ddl,
 }: PostgresContent): string {
-  if (data && schema) return "data and schema";
-  return data ? "data" : "schema";
+  if (data && ddl) return "data and DDL";
+  return data ? "data" : "DDL";
 }
 
 /**
@@ -90,14 +90,11 @@ export function parsePostgresUri(
  *
  * @throws Error when neither is selected; callers validate that first.
  */
-export function postgresContentFlags({
-  data,
-  schema,
-}: PostgresContent): string[] {
-  if (data && schema) return [];
+export function postgresContentFlags({ data, ddl }: PostgresContent): string[] {
+  if (data && ddl) return [];
   if (data) return ["--data-only"];
-  if (schema) return ["--schema-only"];
-  throw new Error("Selected neither data nor schema to move.");
+  if (ddl) return ["--schema-only"];
+  throw new Error("Selected neither data nor DDL to move.");
 }
 
 /**
@@ -130,22 +127,22 @@ export function postgresProcessEnvironment(
 
 /**
  * Schema-qualifies `tables`, in order: a `schema.table` name is used as
- * written, and an unqualified one resolves in `namespace`. There is no
- * default schema, so without a namespace every name must be qualified.
+ * written, and an unqualified one resolves in `schema`. There is no
+ * default schema, so without one every name must be qualified.
  *
  * @throws PostgresTableNameError naming every unqualified table when
- * `namespace` is missing or empty.
+ * `schema` is missing or empty.
  */
 export function qualifyTableNames(
   tables: readonly string[],
-  namespace: string | undefined,
+  schema: string | undefined,
 ): string[] {
   const unqualified = tables.filter((table) => !table.includes("."));
-  if (unqualified.length > 0 && (namespace ?? "") === "") {
+  if (unqualified.length > 0 && (schema ?? "") === "") {
     throw new PostgresTableNameError(unqualified);
   }
   return tables.map((table) =>
-    table.includes(".") ? table : `${namespace ?? ""}.${table}`,
+    table.includes(".") ? table : `${schema ?? ""}.${table}`,
   );
 }
 

@@ -86,7 +86,7 @@ export class ExportCommand extends CommandRunner {
    * @throws ExportOptionsError naming the first option to fix, or
    * PostgresUriError when `--source-uri` cannot be used, or
    * PostgresTableNameError when a `--table` names no schema and no
-   * `--namespace` was given.
+   * `--schema` was given.
    */
   private plan(options: ExportCommandOptions): ExportPlan {
     const sourceUri = this.requireOption(
@@ -111,8 +111,8 @@ export class ExportCommand extends CommandRunner {
       content,
       file,
       source: maskPostgresCredentials(sourceUri, connection.password),
-      // One table named twice, once resolved in --namespace, is dumped once.
-      tables: [...new Set(qualifyTableNames(tables, options.namespace))],
+      // One table named twice, once resolved in --schema, is dumped once.
+      tables: [...new Set(qualifyTableNames(tables, options.schema))],
     };
   }
 
@@ -131,16 +131,13 @@ export class ExportCommand extends CommandRunner {
   }
 
   /**
-   * The content `--data` and `--schema` select; at least one is required.
+   * The content `--data` and `--ddl` select; at least one is required.
    *
    * @throws ExportOptionsError when neither was given.
    */
-  private selectContent({
-    data,
-    schema,
-  }: ExportCommandOptions): PostgresContent {
-    const content = { data: data === true, schema: schema === true };
-    if (!content.data && !content.schema) {
+  private selectContent({ data, ddl }: ExportCommandOptions): PostgresContent {
+    const content = { data: data === true, ddl: ddl === true };
+    if (!content.data && !content.ddl) {
       throw new ExportOptionsError(EXPORT_OPTION_MESSAGES.content);
     }
     return content;
@@ -150,10 +147,20 @@ export class ExportCommand extends CommandRunner {
 
   /** Parses the boolean `--data` flag. */
   @Option({
-    description: "Export the tables' rows; combine with --schema for both",
+    description: "Export the tables' rows; combine with --ddl for both",
     flags: "--data",
   })
   parseData(): boolean {
+    return true;
+  }
+
+  /** Parses the boolean `--ddl` flag. */
+  @Option({
+    description:
+      "Export the tables' definitions (DDL); combine with --data for both",
+    flags: "--ddl",
+  })
+  parseDdl(): boolean {
     return true;
   }
 
@@ -176,16 +183,6 @@ export class ExportCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--namespace`, the schema unqualified `--table` names resolve in. */
-  @Option({
-    description:
-      "Schema that unqualified --table names resolve in; without it, name every table as schema.table",
-    flags: "--namespace <schema>",
-  })
-  parseNamespace(value: string): string {
-    return value;
-  }
-
   /** Parses the boolean `--overwrite` flag. */
   @Option({
     description: "Replace --file when it already exists",
@@ -195,13 +192,14 @@ export class ExportCommand extends CommandRunner {
     return true;
   }
 
-  /** Parses the boolean `--schema` flag. */
+  /** Parses `--schema`, the schema unqualified `--table` names resolve in. */
   @Option({
-    description: "Export the tables' definitions; combine with --data for both",
-    flags: "--schema",
+    description:
+      "Schema that unqualified --table names resolve in; without it, name every table as schema.table",
+    flags: "--schema <name>",
   })
-  parseSchema(): boolean {
-    return true;
+  parseSchema(value: string): string {
+    return value;
   }
 
   /** Parses `--source-uri`, the database to export from. */

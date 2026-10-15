@@ -91,7 +91,7 @@ describe("export --dry-run", () => {
       fs.writeFileSync(file, "an earlier dump");
       const before = fs.statSync(file).mtimeMs;
 
-      const result = await runDryRun("--schema", "--overwrite");
+      const result = await runDryRun("--ddl", "--overwrite");
 
       expect(result.exitCode).toBe(0);
       expect(result.logs.join("\n")).toContain(`${file} would be overwritten`);

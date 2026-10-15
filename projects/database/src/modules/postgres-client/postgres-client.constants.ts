@@ -85,10 +85,10 @@ export const POSTGRES_FEATURE_NOT_SUPPORTED = "0A000";
  * Lists the tables outside `$1`, a `regclass[]`, whose foreign keys
  * reference a table inside it, schema-qualified and sorted.
  */
-export const POSTGRES_REFERENCING_TABLES_SQL = `SELECT DISTINCT namespace.nspname || '.' || referencing.relname AS "table"
+export const POSTGRES_REFERENCING_TABLES_SQL = `SELECT DISTINCT referencing_schema.nspname || '.' || referencing.relname AS "table"
 FROM pg_catalog.pg_constraint AS foreign_key
 JOIN pg_catalog.pg_class AS referencing ON referencing.oid = foreign_key.conrelid
-JOIN pg_catalog.pg_namespace AS namespace ON namespace.oid = referencing.relnamespace
+JOIN pg_catalog.pg_namespace AS referencing_schema ON referencing_schema.oid = referencing.relnamespace
 WHERE foreign_key.contype = 'f'
   AND foreign_key.confrelid = ANY ($1::regclass[])
   AND NOT foreign_key.conrelid = ANY ($1::regclass[])
@@ -117,14 +117,14 @@ export class PostgresReferencedTablesError extends Error {
 }
 
 /**
- * `--table` names that carry no schema, given without `--namespace` to
+ * `--table` names that carry no schema, given without `--schema` to
  * resolve them in. Its message names each one and both ways to fix it.
  */
 export class PostgresTableNameError extends Error {
   constructor(tables: readonly string[]) {
     const several = tables.length > 1;
     super(
-      `--table ${tables.join(", ")} ${several ? "name" : "names"} no schema: qualify ${several ? "them" : "it"} as schema.table, or pass --namespace <schema> to resolve unqualified names in that schema`,
+      `--table ${tables.join(", ")} ${several ? "name" : "names"} no schema: qualify ${several ? "them" : "it"} as schema.table, or pass --schema <name> to resolve unqualified names in that schema`,
     );
     this.name = PostgresTableNameError.name;
   }

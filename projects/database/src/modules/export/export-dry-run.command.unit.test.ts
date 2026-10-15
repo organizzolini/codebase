@@ -82,8 +82,8 @@ describe("export --dry-run", () => {
 
   it.each([
     [["--data"], "data"],
-    [["--schema"], "schema"],
-    [["--data", "--schema"], "data and schema"],
+    [["--ddl"], "DDL"],
+    [["--data", "--ddl"], "data and DDL"],
   ])("with %j says it would export %s", async (options, content) => {
     mockProcesses();
 
@@ -95,11 +95,11 @@ describe("export --dry-run", () => {
     );
   });
 
-  it("names a table given twice once, qualified or resolved in --namespace", async () => {
+  it("names a table given twice once, qualified or resolved in --schema", async () => {
     mockProcesses();
 
     const result = await run(
-      "--namespace",
+      "--schema",
       "fixture",
       "--table",
       "widgets",
@@ -149,11 +149,11 @@ describe("export --dry-run", () => {
     const result = await run();
 
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("--data or --schema is required");
+    expect(result.stderr).toContain("--data and/or --ddl is required");
     expect(spawned).toStrictEqual([]);
   });
 
-  it("fails an unqualified --table without --namespace, starting no process", async () => {
+  it("fails an unqualified --table without --schema, starting no process", async () => {
     const spawned = mockProcesses();
 
     const result = await run("--data", "--table", "widgets");

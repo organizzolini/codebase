@@ -11,10 +11,10 @@ import type { ImportPlan } from "./import.types";
  */
 export const IMPORT_OPTION_MESSAGES = {
   content:
-    "--data or --schema is required: pass --data for rows, --schema for table definitions, or both",
+    "--data and/or --ddl is required: pass --data for rows, --ddl for table definitions, or both",
   file: "--file is required: name the dump file to import, e.g. --file sample.dump",
   table:
-    "--table is required: name each table to import, e.g. --table schema.table, or --namespace schema --table table",
+    "--table is required: name each table to import, e.g. --table <schema>.<table>, or --schema <schema> --table <table>",
   targetUri:
     "--target-uri is required: name the database to import into, e.g. --target-uri postgresql://user@host:5432/database",
 } as const;
@@ -69,19 +69,17 @@ export const missingFileMessage = (file: string): string =>
 
 /**
  * What `import` says when the dump at `file` lacks the rows (`data`) or
- * table definitions (`schema`) of some selected tables.
+ * table definitions (`ddl`) of some selected tables.
  */
 export const missingContentsMessage = (
   file: string,
-  { data, schema }: Readonly<Record<"data" | "schema", readonly string[]>>,
+  { data, ddl }: Readonly<Record<"data" | "ddl", readonly string[]>>,
 ): string => {
   const missing = [
     ...(data.length === 0 ? [] : [`no rows for ${data.join(", ")}`]),
-    ...(schema.length === 0
-      ? []
-      : [`no table definitions for ${schema.join(", ")}`]),
+    ...(ddl.length === 0 ? [] : [`no table definitions for ${ddl.join(", ")}`]),
   ];
-  return `${file} holds ${missing.join(" and ")}: export them with --data or --schema, or leave them out of --table`;
+  return `${file} holds ${missing.join(" and ")}: export them with --data and/or --ddl, or leave them out of --table`;
 };
 
 /** What `import` adds to a failed restore's error: the target is unchanged. */
@@ -117,7 +115,8 @@ export const truncatedMessage = (
  * What `import --dry-run` prints, one line each: where it would import
  * to, what the dump holds of each selected table (`held`, keyed by the
  * qualified name, in the plan's order), and what `--clean` would drop and
- * recreate (with `--schema`) or truncate. Never carries the password.
+ * recreate (with `--ddl`) or truncate (with `--data` alone). Never
+ * carries the password.
  */
 export const dryRunMessages = (
   {
@@ -136,7 +135,7 @@ export const dryRunMessages = (
   ),
   ...(clean
     ? [
-        `  --clean ${content.schema ? "would drop and recreate" : "would truncate"} ${tables.join(", ")}, deleting every row ${tables.length === 1 ? "it holds" : "they hold"}, then restore ${content.schema ? "them from the dump" : "the dump's rows"}`,
+        `  --clean ${content.ddl ? "with --ddl would drop and recreate" : "with --data would truncate"} ${tables.join(", ")}, deleting every row ${tables.length === 1 ? "it holds" : "they hold"}, then restore ${content.ddl ? "them from the dump" : "the dump's rows"}`,
       ]
     : []),
 ];

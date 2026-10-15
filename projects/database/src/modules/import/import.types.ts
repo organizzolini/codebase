@@ -12,10 +12,10 @@ import type {
 export interface ImportCommandOptions {
   clean?: boolean;
   data?: boolean;
+  ddl?: boolean;
   dryRun?: boolean;
   file?: string;
-  namespace?: string;
-  schema?: boolean;
+  schema?: string;
   table?: string[];
   targetUri?: string;
 }
@@ -26,7 +26,7 @@ export interface ImportCommandOptions {
 export interface ImportPlan {
   /**
    * Clear the selected tables before restoring them: truncate them for
-   * data alone, or drop and recreate them when the schema is restored too.
+   * data alone, or drop and recreate them when their DDL is restored too.
    */
   readonly clean: boolean;
 

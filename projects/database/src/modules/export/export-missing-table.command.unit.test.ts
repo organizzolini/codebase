@@ -23,7 +23,7 @@ async function runExport(
       "export",
       "--source-uri",
       SOURCE_URI,
-      "--namespace",
+      "--schema",
       "fixture",
       ...tables.flatMap((table) => ["--table", table]),
       "--data",

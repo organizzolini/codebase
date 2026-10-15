@@ -29,7 +29,7 @@ vi.mock("node:child_process", async (importOriginal) => {
   return { ...actual, execFile: vi.fn<typeof execFile>(actual.execFile) };
 });
 
-describe("--namespace across export and import", () => {
+describe("--schema across export and import", () => {
   let source: FixtureDatabase;
   let target: FixtureDatabase;
   let directory: string;
@@ -99,7 +99,7 @@ describe("--namespace across export and import", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-namespace-"));
+    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-schema-"));
     vi.mocked(execFile).mockClear();
     await target.query("TRUNCATE widgets, parts");
     return () => {
@@ -112,7 +112,7 @@ describe("--namespace across export and import", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "refuses an unqualified --table without --namespace before any client tool starts",
+    "refuses an unqualified --table without --schema before any client tool starts",
     async () => {
       expect.hasAssertions();
 
@@ -127,7 +127,7 @@ describe("--namespace across export and import", () => {
       for (const result of [exported, imported]) {
         expect(result.exitCode).toBe(1);
         expect(result.stderr).toContain(
-          "--table widgets names no schema: qualify it as schema.table, or pass --namespace <schema>",
+          "--table widgets names no schema: qualify it as schema.table, or pass --schema <name>",
         );
       }
 
@@ -138,7 +138,7 @@ describe("--namespace across export and import", () => {
   );
 
   it(
-    "round-trips tables named in --namespace, de-duplicated after resolving",
+    "round-trips tables named in --schema, de-duplicated after resolving",
     async () => {
       expect.hasAssertions();
 
@@ -147,13 +147,13 @@ describe("--namespace across export and import", () => {
       const exported = await runExport(
         file,
         ["widgets", "parts"],
-        "--namespace",
+        "--schema",
         "fixture",
       );
       const imported = await runImport(
         file,
         ["widgets", "fixture.widgets", "parts"],
-        "--namespace",
+        "--schema",
         "fixture",
       );
 
@@ -170,7 +170,7 @@ describe("--namespace across export and import", () => {
   );
 
   it(
-    "uses schema-qualified names as written under another --namespace",
+    "uses schema-qualified names as written under another --schema",
     async () => {
       expect.hasAssertions();
 
@@ -179,13 +179,13 @@ describe("--namespace across export and import", () => {
       const exported = await runExport(
         file,
         ["fixture.widgets"],
-        "--namespace",
+        "--schema",
         "sample",
       );
       const imported = await runImport(
         file,
         ["fixture.widgets"],
-        "--namespace",
+        "--schema",
         "sample",
       );
 
@@ -199,7 +199,7 @@ describe("--namespace across export and import", () => {
   );
 
   it(
-    "empties the tables --namespace resolved before a --clean --data import",
+    "empties the tables --schema resolved before a --clean --data import",
     async () => {
       expect.hasAssertions();
 
@@ -209,13 +209,13 @@ describe("--namespace across export and import", () => {
       const exported = await runExport(
         file,
         ["widgets", "parts"],
-        "--namespace",
+        "--schema",
         "fixture",
       );
       const imported = await runImport(
         file,
         ["widgets", "parts"],
-        "--namespace",
+        "--schema",
         "fixture",
         "--clean",
       );

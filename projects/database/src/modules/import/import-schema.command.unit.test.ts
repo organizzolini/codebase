@@ -38,7 +38,7 @@ function restoresOf(spawned: readonly SpawnedProcess[]): SpawnedProcess[] {
   );
 }
 
-describe("import --namespace", () => {
+describe("import --schema", () => {
   let directory: string;
   let file: string;
 
@@ -61,9 +61,7 @@ describe("import --namespace", () => {
     });
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(
-      path.join(os.tmpdir(), "import-namespace-unit-"),
-    );
+    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-schema-unit-"));
     file = path.join(directory, "fixture.dump");
     fs.writeFileSync(file, "a dump");
   });
@@ -77,7 +75,7 @@ describe("import --namespace", () => {
     ["a dry run", ["--dry-run"]],
     ["a --clean import", ["--clean"]],
   ])(
-    "fails %s fast on an unqualified --table without --namespace, starting no process",
+    "fails %s fast on an unqualified --table without --schema, starting no process",
     async (_case, extra) => {
       const spawned = mockProcesses({ list: { stdout: LISTING } });
 
@@ -85,19 +83,19 @@ describe("import --namespace", () => {
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain(
-        "--table widgets names no schema: qualify it as schema.table, or pass --namespace <schema> to resolve unqualified names in that schema",
+        "--table widgets names no schema: qualify it as schema.table, or pass --schema <name> to resolve unqualified names in that schema",
       );
       expect(result.stderr).not.toContain(PASSWORD);
       expect(spawned).toStrictEqual([]);
     },
   );
 
-  it("resolves unqualified names in --namespace and keeps qualified ones as written", async () => {
+  it("resolves unqualified names in --schema and keeps qualified ones as written", async () => {
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
     const result = await run(
       ["widgets", "sample.parts"],
-      "--namespace",
+      "--schema",
       "fixture",
     );
 
@@ -115,7 +113,7 @@ describe("import --namespace", () => {
 
     const result = await run(
       ["widgets", "fixture.widgets"],
-      "--namespace",
+      "--schema",
       "fixture",
     );
 
@@ -126,7 +124,7 @@ describe("import --namespace", () => {
     );
   });
 
-  it("truncates the tables --namespace resolved before a --clean --data restore", async () => {
+  it("truncates the tables --schema resolved before a --clean --data restore", async () => {
     mockProcesses({ list: { stdout: LISTING } });
     const truncate = vi
       .spyOn(PostgresClientService.prototype, "truncate")
@@ -135,7 +133,7 @@ describe("import --namespace", () => {
     try {
       const result = await run(
         ["widgets", "sample.parts", "widgets"],
-        "--namespace",
+        "--schema",
         "fixture",
         "--clean",
       );
@@ -154,12 +152,7 @@ describe("import --namespace", () => {
   it("names the resolved tables in a dry run", async () => {
     mockProcesses({ list: { stdout: LISTING } });
 
-    const result = await run(
-      ["widgets"],
-      "--namespace",
-      "fixture",
-      "--dry-run",
-    );
+    const result = await run(["widgets"], "--schema", "fixture", "--dry-run");
 
     expect(result.exitCode).toBe(0);
     expect(result.logs).toContainEqual(
@@ -167,9 +160,31 @@ describe("import --namespace", () => {
     );
   });
 
-  it("documents --namespace in its help", async () => {
+  it("documents --schema and --ddl in its help, and no --namespace", async () => {
     const result = await runCliCommandLine({ argv: ["import", "--help"] });
 
-    expect(result.stdout).toContain("--namespace <schema>");
+    expect(result.stdout).toContain("--schema <name>");
+    expect(result.stdout).toContain("--ddl");
+    expect(result.stdout).not.toContain("--namespace");
+  });
+
+  it("rejects the removed --namespace, starting no process", async () => {
+    const spawned = mockProcesses();
+
+    const result = await run(["widgets"], "--namespace", "fixture");
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("unknown option '--namespace'");
+    expect(spawned).toStrictEqual([]);
+  });
+
+  it("takes --schema as the schema's name, not as a flag", async () => {
+    const spawned = mockProcesses();
+
+    const result = await run(["widgets"], "--schema");
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("argument missing");
+    expect(spawned).toStrictEqual([]);
   });
 });

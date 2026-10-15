@@ -31,7 +31,7 @@ describe("export of a table that does not exist", () => {
         "export",
         "--source-uri",
         source.uri,
-        "--namespace",
+        "--schema",
         "fixture",
         ...tables.flatMap((table) => ["--table", table]),
         "--data",

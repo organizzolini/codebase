@@ -125,7 +125,9 @@ describe("import --dry-run", () => {
 
       expect(result.exitCode).toBe(0);
       expect(output).toContain("archive.notes: the dump holds data");
-      expect(output).toContain("--clean would truncate archive.notes");
+      expect(output).toContain(
+        "--clean with --data would truncate archive.notes",
+      );
       expect(output).not.toContain(target.connection.password);
       await expect(
         rows("SELECT body FROM archive.notes ORDER BY id"),
@@ -152,7 +154,7 @@ describe("import --dry-run", () => {
   it(
     "fails a selection missing from the dump",
     async () => {
-      const result = await runDryRun(UNREACHABLE_TARGET_URI, "--schema");
+      const result = await runDryRun(UNREACHABLE_TARGET_URI, "--ddl");
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain(

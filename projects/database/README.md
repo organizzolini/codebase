@@ -265,26 +265,26 @@ with the working directory at `projects/database`, so a relative `--file`
 resolves from there, and `*.dump` is gitignored there:
 
 ```bash
-pnpm exec nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --namespace your_schema --table sample --data --schema --file sample.dump"
-pnpm exec nx run database:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --namespace your_schema --table sample --data --schema --file sample.dump"
+pnpm exec nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run database:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Options
 
-| Option                  | Command | Does                                                                                        |
-| ----------------------- | ------- | ------------------------------------------------------------------------------------------- |
-| `--source-uri <uri>`    | export  | Required. The database to dump                                                              |
-| `--target-uri <uri>`    | import  | Required. The database to restore into                                                      |
-| `--table <name>`        | both    | Required, repeatable. A table to move                                                       |
-| `--namespace <schema>`  | both    | The schema unqualified `--table` names resolve in                                           |
-| `--data`, `--schema`    | both    | Rows, table definitions, or both; at least one is required                                  |
-| `--file <path>`         | both    | Required. The dump to write or read                                                         |
-| `--overwrite`           | export  | Replace `--file` when it exists                                                             |
-| `--clean`               | import  | Clear the selected tables before restoring, with no confirmation                            |
-| `--dry-run`             | both    | Validate and print the plan without connecting to a database or changing anything           |
+| Option               | Command | Does                                                                              |
+| -------------------- | ------- | --------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | export  | Required. The database to dump                                                    |
+| `--target-uri <uri>` | import  | Required. The database to restore into                                            |
+| `--table <name>`     | both    | Required, repeatable. A table to move                                             |
+| `--schema <name>`    | both    | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
+| `--data`, `--ddl`    | both    | Rows, table definitions (DDL), or both; at least one is required                  |
+| `--file <path>`      | both    | Required. The dump to write or read                                               |
+| `--overwrite`        | export  | Replace `--file` when it exists                                                   |
+| `--clean`            | import  | Clear the selected tables before restoring, with no confirmation                  |
+| `--dry-run`          | both    | Validate and print the plan without connecting to a database or changing anything |
 
 Qualified names (`schema.table`) are used as written. There is no default
-schema: without `--namespace`, an unqualified `--table` fails before anything
+schema: without `--schema`, an unqualified `--table` fails before anything
 runs, naming it. Naming one table twice moves it once.
 
 ### Export
@@ -305,9 +305,9 @@ whether `--file` would be created or overwritten.
 `import` restores the selected tables in one transaction that stops at the
 first error, so by default it deletes nothing and a conflict leaves the target
 as it was. Before any connection opens it lists the dump and fails when it
-lacks the rows or definitions `--data` and `--schema` ask for. Owners and
+lacks the rows or definitions `--data` and `--ddl` ask for. Owners and
 grants are not restored; the target's own role owns what it creates.
-`--schema` without `--clean` fails when a selected table already exists on the
+`--ddl` without `--clean` fails when a selected table already exists on the
 target.
 `--dry-run` stops there, printing what the dump holds of each table and what
 `--clean` would drop or truncate.
@@ -316,7 +316,7 @@ target.
 in a terminal or out of one. Run `import --dry-run` with the same options
 before `import --clean` to see the tables, database, and host it would clear:
 
-- With `--schema`, `pg_restore --clean --if-exists` drops and recreates them.
+- With `--ddl`, `pg_restore --clean --if-exists` drops and recreates them.
 - With `--data` alone, a `TRUNCATE` on exactly the selected tables empties
   them, without `CASCADE`. When a table outside the selection references one,
   the import refuses and lists the `--table` options to add.

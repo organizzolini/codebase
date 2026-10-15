@@ -10,12 +10,12 @@ import type { ExportPlan } from "./export.types";
  */
 export const EXPORT_OPTION_MESSAGES = {
   content:
-    "--data or --schema is required: pass --data for rows, --schema for table definitions, or both",
+    "--data and/or --ddl is required: pass --data for rows, --ddl for table definitions, or both",
   file: "--file is required: name the dump file to write, e.g. --file sample.dump",
   sourceUri:
     "--source-uri is required: name the database to export from, e.g. --source-uri postgresql://user@host:5432/database",
   table:
-    "--table is required: name each table to export, e.g. --table schema.table, or --namespace schema --table table",
+    "--table is required: name each table to export, e.g. --table <schema>.<table>, or --schema <schema> --table <table>",
 } as const;
 
 /**

@@ -89,7 +89,7 @@ export class ImportCommand extends CommandRunner {
 
   /**
    * Checks that the dump holds the rows `--data` and the definitions
-   * `--schema` ask for, for every selected table.
+   * `--ddl` ask for, for every selected table.
    *
    * @throws ImportContentsError naming each table that lacks them.
    */
@@ -102,11 +102,11 @@ export class ImportCommand extends CommandRunner {
       return tables.filter((table) => !dumped.has(table));
     };
     const data = content.data ? missing("data") : [];
-    const schema = content.schema ? missing("table") : [];
+    const ddl = content.ddl ? missing("table") : [];
 
-    if (data.length > 0 || schema.length > 0) {
+    if (data.length > 0 || ddl.length > 0) {
       throw new ImportContentsError(
-        missingContentsMessage(file, { data, schema }),
+        missingContentsMessage(file, { data, ddl }),
       );
     }
   }
@@ -120,11 +120,11 @@ export class ImportCommand extends CommandRunner {
     contents: readonly PostgresDumpEntry[],
   ): void {
     const data = dumpedTables(contents, "data");
-    const schema = dumpedTables(contents, "table");
+    const ddl = dumpedTables(contents, "table");
     const held = new Map(
       plan.tables.map((table) => [
         table,
-        { data: data.has(table), schema: schema.has(table) },
+        { data: data.has(table), ddl: ddl.has(table) },
       ]),
     );
     for (const line of dryRunMessages(plan, held)) this.logger.log(line);
@@ -137,7 +137,7 @@ export class ImportCommand extends CommandRunner {
    * @throws ImportOptionsError naming the first option to fix, or
    * PostgresUriError when `--target-uri` cannot be used, or
    * PostgresTableNameError when a `--table` names no schema and no
-   * `--namespace` was given.
+   * `--schema` was given.
    */
   private plan(options: ImportCommandOptions): ImportPlan {
     const targetUri = this.requireOption(
@@ -163,8 +163,8 @@ export class ImportCommand extends CommandRunner {
       connection,
       content,
       file,
-      // One table named twice, once resolved in --namespace, is restored once.
-      tables: [...new Set(qualifyTableNames(tables, options.namespace))],
+      // One table named twice, once resolved in --schema, is restored once.
+      tables: [...new Set(qualifyTableNames(tables, options.schema))],
       target: maskPostgresCredentials(targetUri, connection.password),
     };
   }
@@ -209,16 +209,13 @@ export class ImportCommand extends CommandRunner {
   }
 
   /**
-   * The content `--data` and `--schema` select; at least one is required.
+   * The content `--data` and `--ddl` select; at least one is required.
    *
    * @throws ImportOptionsError when neither was given.
    */
-  private selectContent({
-    data,
-    schema,
-  }: ImportCommandOptions): PostgresContent {
-    const content = { data: data === true, schema: schema === true };
-    if (!content.data && !content.schema) {
+  private selectContent({ data, ddl }: ImportCommandOptions): PostgresContent {
+    const content = { data: data === true, ddl: ddl === true };
+    if (!content.data && !content.ddl) {
       throw new ImportOptionsError(IMPORT_OPTION_MESSAGES.content);
     }
     return content;
@@ -226,7 +223,7 @@ export class ImportCommand extends CommandRunner {
 
   /**
    * Empties the plan's tables before a `--clean --data` restore. With
-   * `--schema`, `pg_restore` drops and recreates them instead, so nothing
+   * `--ddl`, `pg_restore` drops and recreates them instead, so nothing
    * is truncated. Resolves whether the tables were emptied.
    *
    * @throws ImportCleanError when an unselected table references a
@@ -239,7 +236,7 @@ export class ImportCommand extends CommandRunner {
     tables,
     target,
   }: ImportPlan): Promise<boolean> {
-    if (!clean || content.schema) return false;
+    if (!clean || content.ddl) return false;
 
     try {
       await this.postgresClient.truncate({ connection, tables });
@@ -262,7 +259,7 @@ export class ImportCommand extends CommandRunner {
   /** Parses the boolean `--clean` flag. */
   @Option({
     description:
-      "Before importing, empty the selected tables (--data) or drop and recreate them (--schema); --dry-run shows what it would clear",
+      "Before importing, empty the selected tables (--data) or drop and recreate them (--ddl); --dry-run shows what it would clear",
     flags: "--clean",
   })
   parseClean(): boolean {
@@ -271,10 +268,20 @@ export class ImportCommand extends CommandRunner {
 
   /** Parses the boolean `--data` flag. */
   @Option({
-    description: "Import the tables' rows; combine with --schema for both",
+    description: "Import the tables' rows; combine with --ddl for both",
     flags: "--data",
   })
   parseData(): boolean {
+    return true;
+  }
+
+  /** Parses the boolean `--ddl` flag. */
+  @Option({
+    description:
+      "Import the tables' definitions (DDL), which must not exist yet; combine with --data for both",
+    flags: "--ddl",
+  })
+  parseDdl(): boolean {
     return true;
   }
 
@@ -297,24 +304,14 @@ export class ImportCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--namespace`, the schema unqualified `--table` names resolve in. */
+  /** Parses `--schema`, the schema unqualified `--table` names resolve in. */
   @Option({
     description:
       "Schema that unqualified --table names resolve in; without it, name every table as schema.table",
-    flags: "--namespace <schema>",
+    flags: "--schema <name>",
   })
-  parseNamespace(value: string): string {
+  parseSchema(value: string): string {
     return value;
-  }
-
-  /** Parses the boolean `--schema` flag. */
-  @Option({
-    description:
-      "Import the tables' definitions, which must not exist yet; combine with --data for both",
-    flags: "--schema",
-  })
-  parseSchema(): boolean {
-    return true;
   }
 
   /** Collects each repeated `--table` into one list. */

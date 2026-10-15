@@ -16,7 +16,7 @@ import { startPostgresContainer } from "../database/postgres-container.utilities
 
 import type { StartedPostgresContainer } from "../database/postgres-container.types";
 
-describe("import --clean --schema", () => {
+describe("import --clean --ddl", () => {
   const setStandardInputTerminal = mockStandardInputTerminal();
   let source: StartedPostgresContainer;
   let target: StartedPostgresContainer;
@@ -41,7 +41,7 @@ describe("import --clean --schema", () => {
         "--target-uri",
         postgresUri(target.connection),
         ...tables.flatMap((table) => ["--table", table]),
-        "--schema",
+        "--ddl",
         "--data",
         "--clean",
         "--file",
@@ -84,7 +84,7 @@ describe("import --clean --schema", () => {
         "--table",
         "archive.notes",
         "--data",
-        "--schema",
+        "--ddl",
         "--file",
         dump,
       ],

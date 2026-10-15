@@ -11,11 +11,11 @@ import type {
  */
 export interface ExportCommandOptions {
   data?: boolean;
+  ddl?: boolean;
   dryRun?: boolean;
   file?: string;
-  namespace?: string;
   overwrite?: boolean;
-  schema?: boolean;
+  schema?: string;
   sourceUri?: string;
   table?: string[];
 }
