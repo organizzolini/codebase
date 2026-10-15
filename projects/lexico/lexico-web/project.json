@@ -25,16 +25,6 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
-    "develop": {
-      "continuous": true,
-      "dependsOn": ["lexico-api:await-health", "lexico-api:develop"],
-      "description": "Start development server with hot reload, once the API is ready",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite dev",
-        "cwd": "projects/lexico/lexico-web"
-      }
-    },
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -44,7 +34,8 @@
     "oxlint": {},
     "prettier": {},
     "preview": {
-      "description": "Preview the production build",
+      "dependsOn": ["build"],
+      "description": "Build, then serve the production build",
       "executor": "nx:run-commands",
       "options": {
         "command": "vite preview",
@@ -53,10 +44,12 @@
     },
     "spell-check": {},
     "start": {
-      "description": "Start the production server",
+      "continuous": true,
+      "dependsOn": ["lexico-api:await-health", "lexico-api:start"],
+      "description": "Start development server with hot reload, once the API is ready",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node .output/server/index.mjs",
+        "command": "vite dev",
         "cwd": "projects/lexico/lexico-web"
       }
     },

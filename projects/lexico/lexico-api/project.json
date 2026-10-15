@@ -37,15 +37,6 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
-    "develop": {
-      "continuous": true,
-      "description": "Start the LexicoApi GraphQL API with restart on change",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node --watch --import @swc-node/register/esm-register src/lexico-api.ts",
-        "cwd": "{projectRoot}"
-      }
-    },
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -56,10 +47,11 @@
     "prettier": {},
     "spell-check": {},
     "start": {
-      "description": "Start the LexicoApi GraphQL API",
+      "continuous": true,
+      "description": "Start the LexicoApi GraphQL API with restart on change",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import @swc-node/register/esm-register src/lexico-api.ts",
+        "command": "node --watch --import @swc-node/register/esm-register src/lexico-api.ts",
         "cwd": "{projectRoot}"
       }
     },

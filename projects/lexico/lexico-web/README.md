@@ -27,15 +27,15 @@ from [components-web](../../components-web/README.md).
 
 ```bash
 pnpm install
-nx run lexico-web:develop     # http://localhost:3000
+nx run lexico-web:start     # http://localhost:3000
 ```
 
 | Target | Does |
 | ------ | ---- |
-| `develop` | Vite dev server with hot reload |
+| `start` | Vite dev server with hot reload, once the API is ready |
+| `stop` | Free port 3000; `nx stop lexico-api` stops this and then the API |
 | `build` | Production SSR bundle |
-| `start` | Serve a built bundle |
-| `preview` | Preview the production build locally |
+| `preview` | Build, then serve the production build locally |
 | `codometer` | Measure the entry, route, CSS, and server bundles and gate the limit each declares |
 | `vitest` | Tests — `:unit`, `:integration`, `:end-to-end` |
 | `lint-code` | All static analysis; `--configuration=write` to auto-fix |

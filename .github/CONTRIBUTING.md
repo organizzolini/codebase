@@ -205,7 +205,7 @@ git checkout -b feat/lexico-your-feature
 
 ```bash
 # Run an application — target names differ by project
-pnpm exec nx run lexico-web:develop           # Vite dev server with hot reload
+pnpm exec nx run lexico-web:start           # Vite dev server with hot reload
 pnpm exec nx run caelundas-cli:start          # CLI entry point
 pnpm exec nx run meanderaw-cli:repl           # Interactive REPL
 ```

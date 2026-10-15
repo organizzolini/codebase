@@ -23,14 +23,6 @@
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
-    "develop": {
-      "description": "Start the development server with hot reload",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite dev",
-        "cwd": "{projectRoot}"
-      }
-    },
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -49,6 +41,14 @@
       }
     },
     "spell-check": {},
+    "start": {
+      "description": "Start the development server with hot reload",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vite dev",
+        "cwd": "{projectRoot}"
+      }
+    },
     "stylelint": {},
     "test-code": {},
     "type-coverage": {},
