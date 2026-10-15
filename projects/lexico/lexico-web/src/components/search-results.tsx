@@ -3,6 +3,7 @@ import { useBreakpoint } from "@codebase/components-web";
 import { LexemeCard } from "./lexeme-card";
 
 import type { LexemeResult } from "./lexeme-card";
+import type { LoadLexemeForms } from "./lexeme-forms";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -12,6 +13,8 @@ import type { ReactNode } from "react";
  */
 export interface SearchResultsProperties {
   className?: string;
+  /** Loads the forms of a lexeme when its table is first opened. */
+  loadForms: LoadLexemeForms;
   query: string;
   results: LexemeResult[];
 }
@@ -26,15 +29,16 @@ export interface SearchResultsProperties {
 export function SearchResults(
   properties: Readonly<SearchResultsProperties>,
 ): ReactNode {
-  const { className, query, results } = properties;
+  const { className, loadForms, query, results } = properties;
 
   // 🪝 Hooks
-  const { isLg, isMd, isXl } = useBreakpoint();
+  const { is2xl, isLg, isMd } = useBreakpoint();
 
   // 🏗 Setup
-  // One column on a phone, then a column more at each of the md, lg, and xl
-  // breakpoints.
-  const columnCount = [true, isMd, isLg, isXl].filter(Boolean).length;
+  // One column on a phone, then a column more at the md, lg, and 2xl
+  // breakpoints. The fourth waits for 2xl (1536px) so that a 14-inch laptop,
+  // which is 1512px wide, gets three columns wide enough for a forms table.
+  const columnCount = [true, isMd, isLg, is2xl].filter(Boolean).length;
   const columns = Array.from({ length: columnCount }, (_, column) =>
     results.filter((_result, index) => index % columnCount === column),
   );
@@ -72,6 +76,7 @@ export function SearchResults(
             {column.map((result) => (
               <LexemeCard
                 key={result.id}
+                loadForms={loadForms}
                 result={result}
               />
             ))}

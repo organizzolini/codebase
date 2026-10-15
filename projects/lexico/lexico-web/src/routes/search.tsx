@@ -1,3 +1,5 @@
+/* cspell:words FULLTEXT */
+
 import {
   createFileRoute,
   useRouter,
@@ -15,6 +17,9 @@ import { SearchLanding } from "../components/search-landing";
 import { SearchResults } from "../components/search-results";
 
 import type { LexemeResult } from "../components/lexeme-card";
+import type { LexemeFormRow } from "../components/lexeme-forms";
+import type { LexemeInflection } from "../components/lexeme-header";
+import type { LexemeMatchInfo } from "../components/lexeme-match";
 import type { ReactNode } from "react";
 
 // ♟️ Constants
@@ -30,19 +35,54 @@ const DEFAULT_LEXICO_API_URL = "http://localhost:8398/graphql";
 const SEARCH_PAGE_SIZE = 24;
 
 /**
- * What a search selects of each result, the same for either language.
+ * What a search selects of each result, the same for either language. The
+ * inflection is a union, so each kind names the fields it has.
  */
 const SEARCH_SELECTION = `
   edges {
     node {
+      enclitic
+      identifiers
       score
+      source
       lexeme {
         id
+        etymology
         lemma
         partOfSpeech
+        inflection {
+          ... on AdjectiveInflection { declension degree }
+          ... on AdverbInflection { adverbType degree }
+          ... on NounInflection { declension gender }
+          ... on PrepositionInflection { case }
+          ... on VerbInflection { conjugation other }
+        }
         principalParts { text }
+        pronunciations { phonetic variant }
         translations { data }
       }
+    }
+  }
+`;
+
+/**
+ * What a lexeme's forms select: the word written for each, and the grammar of
+ * the form, whose fields depend on its kind.
+ */
+const FORMS_SELECTION = `
+  wordForms {
+    id
+    word
+    form {
+      __typename
+      ... on AdjectivalForm { case gender number }
+      ... on AdverbForm { degree }
+      ... on FiniteVerbForm { mood number person tense voice }
+      ... on GerundForm { case }
+      ... on InfinitiveForm { tense voice }
+      ... on NominalForm { case number }
+      ... on ParticipleForm { tense voice }
+      ... on SupineForm { case }
     }
   }
 `;
@@ -52,17 +92,41 @@ const searchSchema = z.object({ query: z.string().optional() });
 // 🏷️ Types
 
 /**
+ * What the API answers a query with.
+ */
+interface ApiResponse {
+  data?: Record<string, unknown>;
+  errors?: { message: string }[];
+}
+
+/**
+ * One form of a lexeme as the GraphQL API returns it: the grammar of the form
+ * beside its kind.
+ */
+interface FormNode {
+  form: Omit<LexemeFormRow, "id" | "kind" | "word"> & { __typename: string };
+  id: string;
+  word: string;
+}
+
+/**
  * One result as the GraphQL API returns it.
  */
 interface ResultNode {
+  enclitic: null | string;
+  identifiers: string[];
   lexeme: {
+    etymology: null | string;
     id: string;
+    inflection: LexemeInflection | null;
     lemma: string;
     partOfSpeech: string;
     principalParts: { text: string[] }[];
+    pronunciations: null | { phonetic: null | string; variant: string }[];
     translations: null | { data: string }[];
   };
   score: number;
+  source: string;
 }
 
 /**
@@ -70,15 +134,75 @@ interface ResultNode {
  */
 type SearchParameters = z.infer<typeof searchSchema>;
 
+// 🛰️ Server Functions
+
 /**
- * A search query's GraphQL response.
+ * Says how a search matched a lexeme from the tier the API ranked it in. The
+ * API scores every Latin tier differently and calls a match on part of a
+ * headword "fuzzy", though it is a substring match, so how far off one is means
+ * how many letters the headword has beyond the query. English matches all come
+ * back as full-text matches, and only their score says whether a translation
+ * was exactly the query, started with it, or merely mentioned it.
  */
-interface SearchResponse {
-  data?: Record<string, undefined | { edges: { node: ResultNode }[] }>;
-  errors?: { message: string }[];
+function describeMatch(match: {
+  lemma: string;
+  query: string;
+  score: number;
+  source: string;
+}): LexemeMatchInfo {
+  const { lemma, query, score, source } = match;
+  const letters = lemma.normalize("NFD").replaceAll(/\p{Diacritic}/gu, "");
+  const extraLetters = Math.max(0, letters.length - query.length);
+
+  switch (source) {
+    case "ENCLITIC": {
+      return { kind: "enclitic" };
+    }
+    case "LEMMA_EXACT": {
+      return { kind: "exact-headword" };
+    }
+    case "PREFIX": {
+      return { extraLetters, kind: "prefix" };
+    }
+    case "TRANSLATION_FULLTEXT": {
+      if (score >= 1) {
+        return { kind: "translation-exact" };
+      }
+
+      return { kind: score >= 0.8 ? "translation-prefix" : "translation-text" };
+    }
+    case "WORD_EXACT": {
+      return { kind: "exact-form" };
+    }
+    default: {
+      return { extraLetters, kind: "contains" };
+    }
+  }
 }
 
-// 🛰️ Server Functions
+/**
+ * Runs one GraphQL query against the lexico API and returns its data.
+ */
+async function queryApi(
+  query: string,
+  variables: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  const response = await fetch(
+    process.env["LEXICO_API_URL"] ?? DEFAULT_LEXICO_API_URL,
+    {
+      body: JSON.stringify({ query, variables }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    },
+  );
+  const body = (await response.json()) as ApiResponse;
+
+  if (body.errors?.[0] !== undefined) {
+    throw new Error(body.errors[0].message);
+  }
+
+  return body.data ?? {};
+}
 
 /**
  * Searches Latin or English through the lexico API, which exposes each as its
@@ -88,24 +212,15 @@ async function searchLanguage(
   field: "searchEnglish" | "searchLatin",
   query: string,
 ): Promise<ResultNode[]> {
-  const response = await fetch(
-    process.env["LEXICO_API_URL"] ?? DEFAULT_LEXICO_API_URL,
-    {
-      body: JSON.stringify({
-        query: `query ($query: String!, $first: Int!) { ${field}(query: $query, first: $first) { ${SEARCH_SELECTION} } }`,
-        variables: { first: SEARCH_PAGE_SIZE, query },
-      }),
-      headers: { "content-type": "application/json" },
-      method: "POST",
-    },
+  const data = await queryApi(
+    `query ($query: String!, $first: Int!) { ${field}(query: $query, first: $first) { ${SEARCH_SELECTION} } }`,
+    { first: SEARCH_PAGE_SIZE, query },
   );
-  const body = (await response.json()) as SearchResponse;
+  const connection = data[field] as
+    | undefined
+    | { edges: { node: ResultNode }[] };
 
-  if (body.errors?.[0] !== undefined) {
-    throw new Error(body.errors[0].message);
-  }
-
-  return body.data?.[field]?.edges.map((edge) => edge.node) ?? [];
+  return connection?.edges.map((edge) => edge.node) ?? [];
 }
 
 /**
@@ -131,17 +246,56 @@ const getSearch = createServerFunction({ method: "GET" })
       "lexeme.id",
     );
 
-    return best.map(({ lexeme }) => ({
+    return best.map(({ enclitic, identifiers, lexeme, score, source }) => ({
+      enclitic,
+      etymology: lexeme.etymology,
       id: lexeme.id,
+      identifiers,
+      inflection: lexeme.inflection,
       lemma: lexeme.lemma,
+      match: describeMatch({
+        lemma: lexeme.lemma,
+        query: query.toLowerCase(),
+        score,
+        source,
+      }),
       partOfSpeech: lexeme.partOfSpeech,
       principalParts: lexeme.principalParts.flatMap((part) =>
         part.text.slice(0, 1),
       ),
+      pronunciations: (lexeme.pronunciations ?? []).flatMap(
+        ({ phonetic, variant }) =>
+          phonetic === null ? [] : [{ phonetic, variant }],
+      ),
+      source,
       translations: (lexeme.translations ?? []).map(
         (translation) => translation.data,
       ),
     }));
+  });
+
+/**
+ * Loads every form of one lexeme with the word written for it, for the table a
+ * card opens on demand. It is a separate request because a lexeme can have
+ * well over a hundred forms and most cards are never opened.
+ */
+const getLexemeForms = createServerFunction({ method: "GET" })
+  .validator(z.object({ lexemeId: z.string() }))
+  .handler(async ({ data }): Promise<LexemeFormRow[]> => {
+    const response = await queryApi(
+      `query ($id: ID!) { lexeme(id: $id) { ${FORMS_SELECTION} } }`,
+      { id: data.lexemeId },
+    );
+    const lexeme = response["lexeme"] as null | { wordForms: FormNode[] };
+
+    return (lexeme?.wordForms ?? []).map(
+      ({ form: { __typename: kind, ...grammar }, id, word }) => ({
+        ...grammar,
+        id,
+        kind,
+        word,
+      }),
+    );
   });
 
 // 🧭 Route
@@ -231,6 +385,11 @@ function SearchPage(): ReactNode {
     },
     [navigate],
   );
+  const handleLoadForms = useCallback(
+    async (lexemeId: string): Promise<LexemeFormRow[]> =>
+      getLexemeForms({ data: { lexemeId } }),
+    [],
+  );
 
   // ♻️ Lifecycle
 
@@ -249,6 +408,7 @@ function SearchPage(): ReactNode {
         <SearchLanding />
       ) : (
         <SearchResults
+          loadForms={handleLoadForms}
           query={query}
           results={results}
         />

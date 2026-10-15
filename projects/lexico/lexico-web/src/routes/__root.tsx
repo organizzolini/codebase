@@ -7,12 +7,13 @@ import {
   useMatches,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Search } from "lucide-react";
+import { PanelLeft, Search } from "lucide-react";
 
 import {
   Button,
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -22,6 +23,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@codebase/components-web";
 import applicationCss from "@codebase/components-web/styles/globals.css?url";
 
@@ -82,11 +84,13 @@ interface RootDocumentProperties {
 
 /**
  * Application sidebar: a rail that collapses to icons, with the brand in the
- * header and navigation in a labelled group.
+ * header, navigation in a labelled group, and the collapse toggle in the
+ * footer, so the page needs no bar of its own.
  */
 function ApplicationSidebar(): ReactNode {
   const matches = useMatches();
   const currentPath = matches.at(-1)?.pathname ?? "/";
+  const { state, toggleSidebar } = useSidebar();
 
   return (
     <Sidebar
@@ -132,6 +136,19 @@ function ApplicationSidebar(): ReactNode {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={toggleSidebar}
+              tooltip="Toggle sidebar"
+            >
+              <PanelLeft className="h-5 w-5" />
+              <span>{state === "expanded" ? "Collapse" : "Expand"}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
@@ -212,11 +229,8 @@ function RootDocument(properties: Readonly<RootDocumentProperties>): ReactNode {
         <SidebarProvider>
           <ApplicationSidebar />
           <SidebarInset>
-            {/* Trigger stays in the inset: it is the only control that opens the sheet on mobile */}
-            <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3">
-              <SidebarTrigger />
-              <span className="text-sm font-medium md:hidden">Lexico</span>
-            </header>
+            {/* On a phone the sidebar is a sheet with no rail, so this is the only control that opens it */}
+            <SidebarTrigger className="fixed top-3 left-3 z-20 md:hidden" />
             {/* Page content */}
             <div className="flex-1 px-4 py-8 md:px-8">{children}</div>
           </SidebarInset>
