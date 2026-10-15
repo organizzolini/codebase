@@ -254,8 +254,8 @@ const config: KnipConfig = {
       // the migrations are read by the TypeORM command line the `migration`
       // target runs, by path rather than by import.
       entry: [
-        "src/main.ts",
-        "src/repl.ts",
+        "src/meanderaw-cli.main.ts",
+        "src/meanderaw-cli.repl.ts",
         "src/worker.ts",
         "src/modules/meanderaw-database/data-source.constants.ts",
         "src/modules/meanderaw-database/migrations/**/*.ts",
@@ -272,7 +272,7 @@ const config: KnipConfig = {
 
     // synchronization: NestJS CLI tool for codebase config synchronization commands
     "projects/synchronization": {
-      entry: ["src/main.ts", "src/files.ts"], // Main CLI entry + public file-list constant exports
+      entry: ["src/synchronization.main.ts", "src/files.ts"], // Main CLI entry + public file-list constant exports
       ignore: [
         "testing/**", // Test fixtures and setup
       ],
@@ -281,7 +281,7 @@ const config: KnipConfig = {
 
     // validation: NestJS CLI tool for the repository's one-sided checks
     "projects/validation": {
-      entry: ["src/main.ts", "src/repl.ts"], // Main CLI entry + the REPL its own target runs
+      entry: ["src/validation.main.ts", "src/validation.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],
@@ -291,7 +291,7 @@ const config: KnipConfig = {
     // callidescope packages: the call-stack linting CLI and the configuration
     // it reads.
     "projects/ic-suite/callidescope/callidescope-cli": {
-      entry: ["src/main.ts", "src/repl.ts"],
+      entry: ["src/callidescope-cli.main.ts", "src/callidescope-cli.repl.ts"],
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
@@ -343,7 +343,7 @@ const config: KnipConfig = {
     },
     // codometer packages: the measurement CLI and the configuration it reads
     "projects/ic-suite/codometer/codometer-cli": {
-      entry: ["src/main.ts", "src/repl.ts"],
+      entry: ["src/codometer-cli.main.ts", "src/codometer-cli.repl.ts"],
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
@@ -384,7 +384,7 @@ const config: KnipConfig = {
 
     // conformetry packages: NestJS service/command application scaffolds
     "projects/ic-suite/conformetry/conformetry-cli": {
-      entry: ["src/main.ts", "src/repl.ts"],
+      entry: ["src/conformetry-cli.main.ts", "src/conformetry-cli.repl.ts"],
       project: "src/**/*.ts",
     },
     "projects/ic-suite/conformetry/conformetry-core": {

@@ -29,7 +29,7 @@ nx run {{nameKebabCase}}:start
 ### Execution Flow
 
 ```text
-src/main.ts
+src/{{nameKebabCase}}.ts
   └─ NestFactory.create({{namePascalCase}}Module)
        └─ GraphQLModule.forRoot(ApolloDriver)
             └─ Feature modules (SampleModule, ...)
@@ -40,12 +40,11 @@ src/main.ts
 
 ```text
 src/
-  main.ts                             # Bootstrap — do not modify
+  {{nameKebabCase}}.ts            # Bootstrap — do not modify
+  {{nameKebabCase}}.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
+  {{nameKebabCase}}.constants.ts  # Zod environmentSchema for env validation
+  {{nameKebabCase}}.types.ts      # Application-scoped TypeScript types
   modules/
-    {{nameKebabCase}}/
-      {{nameKebabCase}}.module.ts     # Root NestJS module (imports GraphQLModule, LoggerModule)
-      {{nameKebabCase}}.constants.ts  # Zod environmentSchema for env validation
-      {{nameKebabCase}}.types.ts      # Module-scoped TypeScript types
     sample/                           # Example GraphQL module — replace with your domain
       sample.module.ts
       sample.resolver.ts
@@ -258,7 +257,7 @@ Key rules:
 
 ## Best Practices
 
-- **Never** put business logic in `main.ts` — it bootstraps `NestFactory` only.
+- **Never** put business logic in `{{nameKebabCase}}.ts` — it bootstraps `NestFactory` only.
 - **One module per domain** — split large domains into sub-domain modules.
 - **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
 - **Use DataLoaders for relations** — never load related entities inside resolver field methods without batching.
@@ -279,9 +278,9 @@ See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
-- [src/modules/{{nameKebabCase}}/{{nameKebabCase}}.module.ts](src/modules/{{nameKebabCase}}/{{nameKebabCase}}.module.ts): Root NestJS module
-- [src/modules/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts](src/modules/{{nameKebabCase}}/{{nameKebabCase}}.constants.ts): `environmentSchema` (Zod)
+- [src/{{nameKebabCase}}.ts](src/{{nameKebabCase}}.ts): Application bootstrap
+- [src/{{nameKebabCase}}.module.ts](src/{{nameKebabCase}}.module.ts): Root NestJS module
+- [src/{{nameKebabCase}}.constants.ts](src/{{nameKebabCase}}.constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [src/modules/sample/sample.module.ts](src/modules/sample/sample.module.ts): Example GraphQL module
 - [project.json](project.json): Nx targets (`start`, `test`, `lint`, `typecheck`, `format`)

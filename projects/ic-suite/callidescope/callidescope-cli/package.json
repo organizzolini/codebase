@@ -1,7 +1,7 @@
 {
   "author": "Jimmy Paolini",
   "bin": {
-    "callidescope": "./dist/src/main.js"
+    "callidescope": "./dist/src/callidescope-cli.main.js"
   },
   "bugs": {
     "url": "https://github.com/organizzolini/codebase/issues"
@@ -62,7 +62,7 @@
   "publishConfig": {
     "access": "public",
     "bin": {
-      "callidescope": "./dist/src/main.js"
+      "callidescope": "./dist/src/callidescope-cli.main.js"
     },
     "exports": {
       ".": {

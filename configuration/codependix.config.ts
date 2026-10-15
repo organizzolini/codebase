@@ -691,6 +691,60 @@ const codependixConfiguration: CodependixConfiguration = {
    */
   include: ["**"],
   /**
+   * The root module each NestJS application boots from, keyed by Nx project
+   * name. Nothing about where one lives is assumed, so every application is
+   * named here and a `framework:nestjs` project that is not is graphed as a
+   * library: rooted in a synthetic module built from every module it defines.
+   * `lexico-api` is left out on purpose — it has always been graphed that way,
+   * and naming it would change its committed graph.
+   */
+  nestjsModules: {
+    rootModules: {
+      "caelundas-cli": {
+        export: "MainModule",
+        file: "src/caelundas-cli.module.ts",
+      },
+      "callidescope-cli": {
+        export: "MainModule",
+        file: "src/callidescope-cli.module.ts",
+      },
+      "callidescope-nx": {
+        export: "MainModule",
+        file: "src/callidescope-nx.module.ts",
+      },
+      "codependix-cli": {
+        export: "MainModule",
+        file: "src/codependix-cli.module.ts",
+      },
+      "codependix-nx": {
+        export: "MainModule",
+        file: "src/codependix-nx.module.ts",
+      },
+      "codometer-cli": {
+        export: "MainModule",
+        file: "src/codometer-cli.module.ts",
+      },
+      "conformetry-cli": {
+        export: "MainModule",
+        file: "src/conformetry-cli.module.ts",
+      },
+      "conformetry-nx": {
+        export: "MainModule",
+        file: "src/conformetry-nx.module.ts",
+      },
+      "lexico-cli": { export: "MainModule", file: "src/lexico-cli.module.ts" },
+      "meanderaw-cli": {
+        export: "MainModule",
+        file: "src/meanderaw-cli.module.ts",
+      },
+      synchronization: {
+        export: "MainModule",
+        file: "src/synchronization.module.ts",
+      },
+      validation: { export: "MainModule", file: "src/validation.module.ts" },
+    },
+  },
+  /**
    * All three graph types are exported once for the whole repository, each
    * spliced into its own anchor under the root README's `## 🕸️ Codependix`
    * heading.

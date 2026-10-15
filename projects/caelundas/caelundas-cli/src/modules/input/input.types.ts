@@ -1,5 +1,5 @@
 // 🏷️ Types
-import type { environmentSchema } from "../../constants";
+import type { environmentSchema } from "../../caelundas-cli.constants";
 import type { inputSchema } from "./input.constants";
 import type { z } from "zod";
 

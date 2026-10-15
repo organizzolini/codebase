@@ -17,7 +17,7 @@ describe("caelundas module", () => {
     const importedConfigModule = await import("@nestjs/config");
     const forRootSpy = vi.spyOn(importedConfigModule.ConfigModule, "forRoot");
 
-    const importedModule = await import("../../main.module");
+    const importedModule = await import("../../caelundas-cli.module");
     mainModule = importedModule.MainModule;
     configOptions = forRootSpy.mock.calls[0]?.[0];
   });

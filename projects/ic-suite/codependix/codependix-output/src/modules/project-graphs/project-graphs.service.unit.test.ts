@@ -83,6 +83,7 @@ describe(ProjectGraphsService, () => {
         },
         exclude: [],
         include: ["**"],
+        nestjsRootModules: {},
         projectGraph: undefined,
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
@@ -138,6 +139,7 @@ describe(ProjectGraphsService, () => {
       {
         absoluteRoot: projectRoot,
         name: "codependix-cli",
+        rootModuleExport: undefined,
         rootModuleFile: undefined,
       },
     ]);
@@ -390,6 +392,7 @@ describe(ProjectGraphsService, () => {
       expect(nestjsProjectService.exploreProject).toHaveBeenCalledWith({
         absoluteRoot: projectRoot,
         name: "codependix-cli",
+        rootModuleExport: undefined,
         rootModuleFile: undefined,
       });
     });
@@ -508,11 +511,13 @@ describe(ProjectGraphsService, () => {
         {
           absoluteRoot: projectRoot,
           name: "codependix-cli",
+          rootModuleExport: undefined,
           rootModuleFile: undefined,
         },
         {
           absoluteRoot: otherProjectRoot,
           name: "other-nestjs-project",
+          rootModuleExport: undefined,
           rootModuleFile: undefined,
         },
       ]);

@@ -11,8 +11,6 @@ import { SyntheticRootModule } from "./nestjs-project-synthetic.module";
 import {
   NESTJS_PROJECT_IGNORED_MODULES,
   NESTJS_PROJECT_MODULE_FILE_SUFFIX,
-  NESTJS_PROJECT_ROOT_MODULE_EXPORT,
-  NESTJS_PROJECT_ROOT_MODULE_FILE,
   NESTJS_PROJECT_SYNTHETIC_IGNORED_MODULES,
   NESTJS_PROJECT_TAG,
 } from "./nestjs-project.constants";
@@ -20,6 +18,7 @@ import {
 import type {
   NestjsExploredModule,
   NestjsProject,
+  NestjsRootModule,
 } from "./nestjs-project.types";
 import type {
   DynamicModule,
@@ -178,16 +177,19 @@ export class NestjsProjectService {
   }
 
   /** Imports a root module file and returns the module class it exports. */
-  private async loadRootModule(rootModuleFile: string): Promise<Type<unknown>> {
+  private async loadRootModule(
+    rootModuleFile: string,
+    rootModuleExport: string,
+  ): Promise<Type<unknown>> {
     const loaded = (await import(pathToFileURL(rootModuleFile).href)) as Record<
       string,
       Type<unknown> | undefined
     >;
-    const rootModule = loaded[NESTJS_PROJECT_ROOT_MODULE_EXPORT];
+    const rootModule = loaded[rootModuleExport];
 
     if (typeof rootModule !== "function") {
       throw new TypeError(
-        `Expected ${rootModuleFile} to export a ${NESTJS_PROJECT_ROOT_MODULE_EXPORT} class`,
+        `Expected ${rootModuleFile} to export a ${rootModuleExport} class`,
       );
     }
 
@@ -197,16 +199,19 @@ export class NestjsProjectService {
   // 🌎 Public Methods
 
   /** Describes a project, noting whether it bootstraps a root module. */
-  describeProject(absoluteRoot: string, name: string): NestjsProject {
-    const rootModuleFile = path.join(
-      absoluteRoot,
-      NESTJS_PROJECT_ROOT_MODULE_FILE,
-    );
-
+  describeProject(
+    absoluteRoot: string,
+    name: string,
+    rootModule?: NestjsRootModule,
+  ): NestjsProject {
     return {
       absoluteRoot,
       name,
-      rootModuleFile: existsSync(rootModuleFile) ? rootModuleFile : undefined,
+      rootModuleExport: rootModule?.export,
+      rootModuleFile:
+        rootModule === undefined
+          ? undefined
+          : path.join(absoluteRoot, rootModule.file),
     };
   }
 
@@ -220,11 +225,16 @@ export class NestjsProjectService {
    */
   discoverProjects(
     projects: { absoluteRoot: string; name: string; tags: string[] }[],
+    rootModules: Readonly<Record<string, NestjsRootModule>>,
   ): NestjsProject[] {
     return projects
       .filter((project) => this.isNestjsProject(project))
       .map((project) =>
-        this.describeProject(project.absoluteRoot, project.name),
+        this.describeProject(
+          project.absoluteRoot,
+          project.name,
+          rootModules[project.name],
+        ),
       );
   }
 
@@ -232,11 +242,11 @@ export class NestjsProjectService {
   async exploreProject(
     project: NestjsProject,
   ): Promise<NestjsExploredModule[]> {
-    const { rootModuleFile } = project;
+    const { rootModuleExport, rootModuleFile } = project;
     const rootModule =
-      rootModuleFile === undefined
+      rootModuleFile === undefined || rootModuleExport === undefined
         ? await this.buildSyntheticRootModule(project)
-        : await this.loadRootModule(rootModuleFile);
+        : await this.loadRootModule(rootModuleFile, rootModuleExport);
     const declaringFiles = await this.discoverModuleDeclaringFiles(project);
 
     const application = await NestFactory.createApplicationContext(rootModule, {

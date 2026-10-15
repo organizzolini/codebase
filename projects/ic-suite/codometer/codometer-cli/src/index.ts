@@ -1,5 +1,5 @@
 // 📤 Exports
-export { MainModule } from "./main.module";
+export { MainModule } from "./codometer-cli.module";
 export { ChangesCommand } from "./modules/changes/changes.command";
 export { ChangesModule } from "./modules/changes/changes.module";
 export { ConfigurationCommand } from "./modules/configuration/configuration.command";

@@ -3,7 +3,7 @@
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
 
-import { MainModule } from "../../main.module";
+import { MainModule } from "../../codependix-nx.module";
 import { GateService } from "../gate/gate.service";
 
 import { PLUGIN_CONTEXT_GLOBAL_KEY } from "./plugin.constants";

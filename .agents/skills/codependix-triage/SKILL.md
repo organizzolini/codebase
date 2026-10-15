@@ -122,7 +122,7 @@ before its module finished evaluating, surfaces here as
 `Cannot access 'X' before initialization` — a boot failure, not an `acyclic`
 finding.
 
-An application is rooted in `src/main.module.ts` and its `MainModule` export; a
+An application is rooted in the module and export its `nestjsModules.rootModules` entry names; a
 library package with no such file is rooted in a synthetic module built from
 every `*.module.ts` it defines, so a module file that cannot be imported on its
 own fails a library that an application would not notice.

@@ -1,6 +1,6 @@
 import { startDatabaseTestingModule } from "@codebase/database/testing";
 
-import { environmentSchema } from "../src/constants";
+import { environmentSchema } from "../src/meanderaw-cli.constants";
 import { CharacteristicsModule } from "../src/modules/characteristics/characteristics.module";
 import { CodeModule } from "../src/modules/code/code.module";
 import { CorpusService } from "../src/modules/corpus/corpus.service";

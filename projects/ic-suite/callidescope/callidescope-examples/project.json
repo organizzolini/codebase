@@ -19,10 +19,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/main.ts callidescope --directories projects/ic-suite/callidescope/callidescope-examples,projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf --config projects/ic-suite/callidescope/callidescope-examples/callidescope.workspace.config.ts --check reports"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --directories projects/ic-suite/callidescope/callidescope-examples,projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf --config projects/ic-suite/callidescope/callidescope-examples/callidescope.workspace.config.ts --check reports"
         },
         "write": {
-          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/main.ts callidescope --directories projects/ic-suite/callidescope/callidescope-examples,projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf --config projects/ic-suite/callidescope/callidescope-examples/callidescope.workspace.config.ts --write"
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --directories projects/ic-suite/callidescope/callidescope-examples,projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf --config projects/ic-suite/callidescope/callidescope-examples/callidescope.workspace.config.ts --write"
         }
       },
       "defaultConfiguration": "check",

@@ -227,10 +227,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "node --import @swc-node/register/esm-register ../../projects/ic-suite/codometer/codometer-cli/src/main.ts measure --output-json --check limits"
+            "command": "node --import @swc-node/register/esm-register ../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --output-json --check limits"
           },
           "write": {
-            "command": "node --import @swc-node/register/esm-register ../../projects/ic-suite/codometer/codometer-cli/src/main.ts measure --output-json --output-markdown README.md"
+            "command": "node --import @swc-node/register/esm-register ../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --output-json --output-markdown README.md"
           }
         },
         "defaultConfiguration": "check",
@@ -259,10 +259,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "node --import @swc-node/register/esm-register ../../../../projects/ic-suite/codometer/codometer-cli/src/main.ts measure --output-json --check limits"
+            "command": "node --import @swc-node/register/esm-register ../../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --output-json --check limits"
           },
           "write": {
-            "command": "node --import @swc-node/register/esm-register ../../../../projects/ic-suite/codometer/codometer-cli/src/main.ts measure --output-json --output-markdown README.md"
+            "command": "node --import @swc-node/register/esm-register ../../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --output-json --output-markdown README.md"
           }
         },
         "defaultConfiguration": "check",
@@ -332,10 +332,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "node --import @swc-node/register/esm-register ../../../projects/ic-suite/codometer/codometer-cli/src/main.ts measure --output-json --check limits"
+            "command": "node --import @swc-node/register/esm-register ../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --output-json --check limits"
           },
           "write": {
-            "command": "node --import @swc-node/register/esm-register ../../../projects/ic-suite/codometer/codometer-cli/src/main.ts measure --output-json --output-markdown README.md"
+            "command": "node --import @swc-node/register/esm-register ../../../projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --output-json --output-markdown README.md"
           }
         },
         "defaultConfiguration": "check",
@@ -892,7 +892,7 @@
           "projects": ["tag:framework:nest-commander"]
         },
         "options": {
-          "command": "node --import @swc-node/register/esm-register src/repl.ts",
+          "command": "node --import @swc-node/register/esm-register src/{projectName}.repl.ts",
           "cwd": "{projectRoot}"
         }
       }
@@ -1073,7 +1073,7 @@
           "projects": ["tag:framework:nest-commander"]
         },
         "options": {
-          "command": "node --import @swc-node/register/esm-register src/main.ts {projectName}",
+          "command": "node --import @swc-node/register/esm-register src/{projectName}.main.ts {projectName}",
           "cwd": "{projectRoot}"
         }
       }

@@ -112,6 +112,7 @@ describe(MapCommand, () => {
         },
         exclude: [],
         include,
+        nestjsRootModules: {},
         projectGraph: undefined,
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},

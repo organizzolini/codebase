@@ -29,7 +29,7 @@ nx run caelundas-cli:start
 ### Execution Flow
 
 ```text
-src/main.ts
+src/caelundas-cli.main.ts
   └─ CommandFactory.run(MainModule)
        └─ domain command modules            ← add under src/modules/
 ```
@@ -37,7 +37,7 @@ src/main.ts
 **Project Implementation**:
 
 ```text
-src/main.ts
+src/caelundas-cli.main.ts
   └─ CommandFactory.run(MainModule)
        └─ CaelundasCommand.run()
             ├─ Input (ENV) Validation      ← InputService.parse()
@@ -53,9 +53,9 @@ src/main.ts
 
 ```text
 src/
-  main.ts                           # Bootstrap — do not modify
-  main.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
-  constants.ts                      # Zod environmentSchema for env validation
+  caelundas-cli.main.ts  # Bootstrap — do not modify
+  caelundas-cli.module.ts  # Root NestJS module (imports ConfigModule, LoggerModule)
+  caelundas-cli.constants.ts  # Zod environmentSchema for env validation
   modules/
     <domain>/                       # Add feature modules here
       <domain>.module.ts
@@ -115,8 +115,8 @@ Astronomical concepts, event detection, and storage:
 
 1. **Implement the root command** — add logic to `caelundas.command.ts` `run()`, or delegate to injected services.
 2. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
-3. **Register in root module** — import the new module in `main.module.ts`.
-4. **Validate env vars** — extend `environmentSchema` in `constants.ts` with all required environment variables.
+3. **Register in root module** — import the new module in `caelundas-cli.module.ts`.
+4. **Validate env vars** — extend `environmentSchema` in `caelundas-cli.constants.ts` with all required environment variables.
 
 ### Logging
 
@@ -377,7 +377,7 @@ Do not re-export types from `index.ts` unless they are part of the public API co
 
 ### Registering in the root module
 
-After generating a module, import it in main.module.ts:
+After generating a module, import it in `caelundas-cli.module.ts`:
 
 ```ts
 @Module({
@@ -401,7 +401,7 @@ pnpm nx run-many --targets=conformetry-validate
 
 ## Best Practices
 
-- **Never** put business logic in `main.ts` — it bootstraps `CommandFactory` only.
+- **Never** put business logic in `caelundas-cli.main.ts` — it bootstraps `CommandFactory` only.
 - **One command per class** — split sub-commands into separate `CommandRunner` subclasses.
 - **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
 - **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
@@ -414,7 +414,7 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to environmentSchema in src/constants.ts and to .env.default.
+- **Env var validation error on startup** — add the missing variable to environmentSchema in src/caelundas-cli.constants.ts and to .env.default.
 - **TypeORM entity not found** — register the entity via `TypeOrmModule.forFeature([MyEntity])` in the module that uses it.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
@@ -427,10 +427,10 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
+- [src/caelundas-cli.main.ts](src/caelundas-cli.main.ts): Application bootstrap
 - [src/modules/caelundas/caelundas.command.ts](src/modules/caelundas/caelundas.command.ts): Root CLI command
-- [src/main.module.ts](src/main.module.ts): Root NestJS module
-- [src/constants.ts](src/constants.ts): environmentSchema (Zod)
+- [src/caelundas-cli.module.ts](src/caelundas-cli.module.ts): Root NestJS module
+- [src/caelundas-cli.constants.ts](src/caelundas-cli.constants.ts): environmentSchema (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
 - [.env.default](.env.default): Environment variable template
