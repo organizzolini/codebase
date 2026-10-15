@@ -1747,7 +1747,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18803-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-580.70_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-580.62_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-182-3178c6?style=flat-square)
 
@@ -1931,7 +1931,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-289-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-288-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-14-a78bfa?style=flat-square)

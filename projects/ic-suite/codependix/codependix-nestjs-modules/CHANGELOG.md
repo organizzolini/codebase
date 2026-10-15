@@ -1,3 +1,9 @@
+## 0.0.25 (2026-10-15)
+
+### 🚀 Features
+
+- **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/pull/1588), [#1480](https://github.com/organizzolini/codebase/issues/1480))
+
 ## 0.0.24 (2026-10-15)
 
 This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.

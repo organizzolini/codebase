@@ -940,11 +940,13 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
+  file_src_lexico_cli_constants_ts["src/lexico-cli.constants.ts"]
+  file_src_lexico_cli_main_end_to_end_test_ts["src/lexico-cli.main.end-to-end.test.ts"]
+  file_src_lexico_cli_main_ts["src/lexico-cli.main.ts"]
+  file_src_lexico_cli_main_unit_test_ts["src/lexico-cli.main.unit.test.ts"]
+  file_src_lexico_cli_module_ts["src/lexico-cli.module.ts"]
+  file_src_lexico_cli_repl_ts["src/lexico-cli.repl.ts"]
+  file_src_lexico_cli_repl_unit_test_ts["src/lexico-cli.repl.unit.test.ts"]
   file_src_modules_clear_clear_command_ts["src/modules/clear/clear.command.ts"]
   file_src_modules_clear_clear_command_unit_test_ts["src/modules/clear/clear.command.unit.test.ts"]
   file_src_modules_clear_clear_constants_ts["src/modules/clear/clear.constants.ts"]
@@ -1089,16 +1091,15 @@ graph LR
   file_src_modules_words_words_service_ts["src/modules/words/words.service.ts"]
   file_src_modules_words_words_service_unit_test_ts["src/modules/words/words.service.unit.test.ts"]
   file_src_modules_words_words_types_ts["src/modules/words/words.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_command_harness_ts["testing/command-harness.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_lexico_ingestion_lexico_ingestion_module_ts
-  file_src_main_ts --> file_src_main_module_ts
+  file_src_lexico_cli_main_end_to_end_test_ts --> file_src_lexico_cli_constants_ts
+  file_src_lexico_cli_main_ts --> file_src_lexico_cli_module_ts
+  file_src_lexico_cli_module_ts --> file_src_lexico_cli_constants_ts
+  file_src_lexico_cli_module_ts --> file_src_modules_lexico_ingestion_lexico_ingestion_module_ts
+  file_src_lexico_cli_repl_ts --> file_src_lexico_cli_module_ts
   file_src_modules_clear_clear_command_ts --> file_src_modules_clear_clear_types_ts
   file_src_modules_clear_clear_command_unit_test_ts --> file_src_modules_clear_clear_command_ts
   file_src_modules_clear_clear_command_unit_test_ts --> file_testing_command_harness_ts
@@ -1397,7 +1398,6 @@ graph LR
   file_src_modules_words_words_service_unit_test_ts --> file_src_modules_lexico_ingestion_lexico_ingestion_constants_ts
   file_src_modules_words_words_service_unit_test_ts --> file_src_modules_words_words_service_ts
   file_src_modules_words_words_service_unit_test_ts --> file_testing_mocks_ts
-  file_src_repl_ts --> file_src_main_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -1414,7 +1414,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.81_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.83_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -1554,7 +1554,7 @@ graph LR
 ![Module Files](https://img.shields.io/badge/Module_Files-21-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-23-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-10-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-20-ea580c?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-21-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-20-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-3-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
@@ -1612,7 +1612,7 @@ graph LR
 ![Links](https://img.shields.io/badge/Links-10-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-15-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-109-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-110-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

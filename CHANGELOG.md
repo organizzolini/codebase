@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.0](https://github.com/organizzolini/codebase/compare/v3.5.0...v3.6.0) (2026-10-15)
+
+### ✨ Features
+
+* **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/issues/1588)) ([e503714](https://github.com/organizzolini/codebase/commit/e503714d3bbca9ff3a7f2121bb3575f7a9d97dc7)), closes [#1480](https://github.com/organizzolini/codebase/issues/1480) [#1480](https://github.com/organizzolini/codebase/issues/1480)
+
 ## [3.5.0](https://github.com/organizzolini/codebase/compare/v3.4.1...v3.5.0) (2026-10-15)
 
 ### ✨ Features
