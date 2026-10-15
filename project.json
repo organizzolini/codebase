@@ -211,6 +211,7 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/**/*.{ts,tsx}",
+        "{workspaceRoot}/projects/configuration/**/*.{ts,tsx}",
         "{workspaceRoot}/tsconfig.json",
         "default",
         {

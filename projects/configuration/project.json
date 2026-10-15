@@ -398,10 +398,10 @@
       "cache": true,
       "configurations": {
         "ci": {
-          "command": "gitleaks git --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path configuration"
+          "command": "gitleaks git --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path projects/configuration"
         },
         "ci-incremental": {
-          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path configuration"
+          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path projects/configuration"
         }
       },
       "description": "Detect hardcoded secrets in git history using Gitleaks (detection only). The ci-incremental configuration scopes the scan to NX_BASE..NX_HEAD instead of full history, for push/pull_request/merge_group events where the weekly ci scan already covers everything older.",
@@ -415,7 +415,7 @@
         }
       ],
       "options": {
-        "command": "gitleaks git --staged --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path configuration",
+        "command": "gitleaks git --staged --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path projects/configuration",
         "cwd": "{workspaceRoot}"
       }
     },
