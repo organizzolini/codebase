@@ -19,7 +19,7 @@ limit's value, and its severity:
   the run fails; it is advance notice that a number is moving in a direction
   worth watching.
 - **`fail`** exits `1`, and only when the run asked `--check limits` for a gate
-  at all — a bare `codometer measure` measuring the same breach reports nothing
+  at all — a `codometer measure --config <path>` measuring the same breach reports nothing
   wrong, because nothing asked it to gate.
 
 **The instinctive fix — raising the limit's `value` — is not an option.** The
@@ -98,7 +98,9 @@ into `failures` in the report rather than folded into any metric.
   there is no config-as-function escape hatch any more, so it is not
   recognized and falls back to an empty configuration — which then fails on
   the missing `format` rather than on anything naming the real cause. Fix the
-  configuration rather than the command line.
+  configuration rather than the command line. A run with no `--config` at
+  all is refused before anything is measured: pass `--config <path>` naming
+  the configuration file.
 
 Every failure in one run is collected and reported together, so treat a report
 naming three as three things to fix, not one flaky run to retry.

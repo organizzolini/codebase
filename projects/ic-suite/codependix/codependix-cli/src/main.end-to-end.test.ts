@@ -215,4 +215,78 @@ describe("main end-to-end suite", () => {
       expect(standardError).toContain("boundary violations");
     });
   });
+
+  describe("a command line naming no configuration", () => {
+    /** Runs a command with no `--config`, in a directory holding a default-named file. */
+    function runWithoutConfig(command: string[]): {
+      exitCode: null | number;
+      standardError: string;
+      standardOutput: string;
+    } {
+      mkdirSync(FIXTURE_ROOT, { recursive: true });
+
+      const workingDirectory = mkdtempSync(
+        path.join(FIXTURE_ROOT, "codependix-cli-no-config-test-"),
+      );
+
+      try {
+        // A default-named file must not be found: nothing is searched for.
+        writeFileSync(
+          path.join(workingDirectory, "codependix.config.json"),
+          "{}",
+        );
+        writeFileSync(
+          path.join(workingDirectory, "tsconfig.json"),
+          JSON.stringify({
+            extends: path.relative(
+              workingDirectory,
+              path.resolve(import.meta.dirname, "../tsconfig.json"),
+            ),
+          }),
+        );
+
+        const result = spawnSync(
+          process.execPath,
+          [
+            "--import",
+            "@swc-node/register/esm-register",
+            COMMAND_PATH,
+            ...command,
+          ],
+          {
+            cwd: workingDirectory,
+            encoding: "utf8",
+            env: { ...process.env, FORCE_COLOR: "0" },
+            timeout: 120_000,
+          },
+        );
+
+        return {
+          exitCode: result.status,
+          standardError: result.stderr,
+          standardOutput: result.stdout,
+        };
+      } finally {
+        rmSync(workingDirectory, { force: true, recursive: true });
+      }
+    }
+
+    it.each([
+      ["map", ["map", "--check", "boundaries"]],
+      ["path", ["path", "a", "b"]],
+    ])(
+      "refuses %s, naming the --config flag",
+      (_name, command) => {
+        expect.hasAssertions();
+
+        const { exitCode, standardError, standardOutput } =
+          runWithoutConfig(command);
+
+        expect(exitCode).not.toBe(0);
+        expect(standardOutput).toBe("");
+        expect(standardError).toContain("--config");
+      },
+      150_000,
+    );
+  });
 });

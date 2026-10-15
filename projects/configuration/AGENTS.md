@@ -57,13 +57,24 @@ workspace root), `tsconfig.json` (the root project's typecheck scope),
 `.openwikiignore`, `.node-version`, `.nvmrc`, `skills-lock.json`, and
 `validate-branch-name.config.cjs`, whose tool takes no config path.
 
-## Why no project depends on it
+## In the graph, and out of releases
 
-`nx-plugin.cjs` adds `implicitDependencies: ["!configuration"]` to every other
-project. Without it, every project's config imports would record an edge to this
-project, which imports the IC-suite packages in turn: 52 inbound edges and 13
-cycles through the `core` layers. Check with `nx graph --print` after touching
-the plugin; no project may list `configuration` as a dependency.
+Every project depends on `configuration` in the Nx graph, because each project's
+tool configs import it. Keep that: it is true, and `nx affected` uses it.
+
+- **Outbound edges are cut.** This project imports six packages for types, and
+  edges back to them would close cycles. `implicitDependencies` in
+  `project.json` removes them. Check with `nx graph --print` that no cycle
+  appears and that no project is missing from the inbound list.
+- **The boundary rules know it.** The project carries the `name:configuration`
+  tag. Each `allow` rule in `codependix.config.ts` lists it as a permitted
+  target, and the `*-is-a-leaf` rules reach every project but it. A new rule
+  must do the same, or every project's `codependix-gate` fails.
+- **Releases ignore it.** A change here would otherwise patch-bump every
+  package. `scripts/release/version-packages.sh` appends this folder to
+  `.nxignore` for the `nx release` command and restores the file on exit. Do not
+  run `nx release` by hand without the same ignore, or it will version every
+  package.
 
 ## Where each caller names these targets
 

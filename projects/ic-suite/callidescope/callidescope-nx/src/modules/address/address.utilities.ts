@@ -42,9 +42,7 @@ export async function runAddressExecutor(args: {
   const addressService = await resolveAddressService();
   const lookupArguments = {
     addresses,
-    ...(args.options.configurationPath === undefined
-      ? {}
-      : { configurationPath: args.options.configurationPath }),
+    configurationPath: args.options.configurationPath,
     directories: scope.directories,
     format: optionsService.readFormat(args.options.format),
   };

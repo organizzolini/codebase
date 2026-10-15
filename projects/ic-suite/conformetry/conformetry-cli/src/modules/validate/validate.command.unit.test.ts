@@ -15,6 +15,8 @@ import type {
   TemplateDefinition,
 } from "@conformetry/configuration";
 
+const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
+
 const CONFIGURATION: ConformetryConfiguration = [
   {
     inputs: {},
@@ -149,7 +151,7 @@ describe(ValidateCommand, () => {
 
   describe("run", () => {
     it("validates the configured instances and reports the outcome", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(configurationService.findInstances).toHaveBeenCalledWith(
         expect.objectContaining({ patterns: ["packages/*/src/modules/*"] }),
@@ -167,7 +169,7 @@ describe(ValidateCommand, () => {
         "All checked files conform.",
       );
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       // The report is a document for a reader, and the logger rejects any
       // message that does not open with an emoji and a verb — which every
@@ -179,7 +181,7 @@ describe(ValidateCommand, () => {
     });
 
     it("logs the outcome as a conventional message with the counts as data", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(commandLogger.info).toHaveBeenCalledWith(
         expect.stringMatching(/^👔 Validated /u),
@@ -189,7 +191,10 @@ describe(ValidateCommand, () => {
     });
 
     it("logs a debug entry marker naming the instance filter", async () => {
-      await command.run([], { instances: ["tools/*"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        instances: ["tools/*"],
+      });
 
       expect(commandLogger.debug).toHaveBeenCalledWith(
         "🔍 Validating conformetry instances",
@@ -199,7 +204,10 @@ describe(ValidateCommand, () => {
     });
 
     it("lets an explicit glob override the configured instances", async () => {
-      await command.run([], { instances: ["tools/*"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        instances: ["tools/*"],
+      });
 
       expect(configurationService.findInstances).toHaveBeenCalledWith(
         expect.objectContaining({ patterns: ["tools/*"] }),
@@ -223,7 +231,7 @@ describe(ValidateCommand, () => {
         },
       ]);
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(configurationService.findInstances).toHaveBeenCalledWith(
         expect.objectContaining({ substitutions: { type: "packages" } }),
@@ -242,7 +250,7 @@ describe(ValidateCommand, () => {
         },
       ]);
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(configurationService.findInstances).toHaveBeenCalledWith(
         expect.objectContaining({ patterns: [] }),
@@ -250,7 +258,7 @@ describe(ValidateCommand, () => {
     });
 
     it("passes a run-level threshold through to validation", async () => {
-      await command.run([], { threshold: 0.9 });
+      await command.run([], { config: CONFIGURATION_PATH, threshold: 0.9 });
 
       expect(validationService.validate).toHaveBeenCalledWith(
         expect.objectContaining({ threshold: 0.9 }),
@@ -269,7 +277,7 @@ describe(ValidateCommand, () => {
         },
       ]);
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(configurationService.findInstances).toHaveBeenCalledWith(
         expect.objectContaining({ threshold: 0.75 }),
@@ -289,9 +297,9 @@ describe(ValidateCommand, () => {
 
       // An unmatched instance has no score to report, so the count is the only
       // thing that can explain why the run failed.
-      await expect(command.run([], {})).rejects.toThrow(
-        "1 instance(s) matched no template",
-      );
+      await expect(
+        command.run([], { config: CONFIGURATION_PATH }),
+      ).rejects.toThrow("1 instance(s) matched no template");
       expect(commandLogger.warn).toHaveBeenCalledWith(
         "⚠️ Rejected non-conforming instances",
         undefined,
@@ -302,7 +310,10 @@ describe(ValidateCommand, () => {
     });
 
     it("passes a language filter through", async () => {
-      await command.run([], { languages: ["typescript"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        languages: ["typescript"],
+      });
 
       expect(validationService.validate).toHaveBeenCalledWith(
         expect.objectContaining({ languageNames: ["typescript"] }),
@@ -344,7 +355,9 @@ describe(ValidateCommand, () => {
         unmatched: [],
       });
 
-      await expect(command.run([], {})).rejects.toThrow("Validation failed");
+      await expect(
+        command.run([], { config: CONFIGURATION_PATH }),
+      ).rejects.toThrow("Validation failed");
       expect(process.exitCode).toBe(1);
       expect(commandLogger.warn).toHaveBeenCalledWith(
         "⚠️ Rejected non-conforming instances",
@@ -387,7 +400,10 @@ describe(ValidateCommand, () => {
 
       const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
-      await command.run([], { templates: ["widget"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["widget"],
+      });
 
       expect(write).toHaveBeenCalledWith(
         expect.stringContaining("No instances belong to widget"),
@@ -417,7 +433,10 @@ describe(ValidateCommand, () => {
 
       const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
-      await command.run([], { templates: ["widget"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["widget"],
+      });
 
       expect(write).toHaveBeenCalledWith(
         expect.stringContaining("locates instances by project tag"),
@@ -443,7 +462,10 @@ describe(ValidateCommand, () => {
 
       vi.mocked(configurationService.readWorkspaceGroups).mockReturnValue([]);
 
-      await command.run([], { templates: ["widget"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["widget"],
+      });
 
       expect(configurationService.findInstances).not.toHaveBeenCalledWith(
         expect.objectContaining({ patterns: ["src/modules/*"] }),
@@ -451,7 +473,10 @@ describe(ValidateCommand, () => {
     });
 
     it("validates only the selected template's instances", async () => {
-      await command.run([], { templates: ["gadget"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["gadget"],
+      });
 
       expect(validationService.validate).toHaveBeenCalledWith(
         expect.objectContaining({ instances: [GADGET_INSTANCE] }),
@@ -459,7 +484,10 @@ describe(ValidateCommand, () => {
     });
 
     it("measures against only the selected templates", async () => {
-      await command.run([], { templates: ["gadget"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["gadget"],
+      });
 
       expect(configurationService.collectTemplates).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -469,7 +497,10 @@ describe(ValidateCommand, () => {
     });
 
     it("accepts several templates at once", async () => {
-      await command.run([], { templates: ["gadget", "widget"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        templates: ["gadget", "widget"],
+      });
 
       expect(validationService.validate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -494,6 +525,7 @@ describe(ValidateCommand, () => {
       );
 
       await command.run([], {
+        config: CONFIGURATION_PATH,
         instances: ["tools/*"],
         templates: ["gadget"],
       });
@@ -505,6 +537,7 @@ describe(ValidateCommand, () => {
 
     it("composes with a language filter", async () => {
       await command.run([], {
+        config: CONFIGURATION_PATH,
         languages: ["typescript"],
         templates: ["gadget"],
       });
@@ -520,15 +553,15 @@ describe(ValidateCommand, () => {
     // Silently dropping the name would produce a narrower run than asked for
     // and, with nothing left, a vacuous pass.
     it("names the real templates when given one that does not exist", async () => {
-      await expect(command.run([], { templates: ["nope"] })).rejects.toThrow(
-        'Unknown template "nope". Available: widget, gadget',
-      );
+      await expect(
+        command.run([], { config: CONFIGURATION_PATH, templates: ["nope"] }),
+      ).rejects.toThrow('Unknown template "nope". Available: widget, gadget');
     });
 
     it("covers every template when told all, without asking", async () => {
       vi.mocked(configurationService.isAtTerminal).mockReturnValue(true);
 
-      await command.run([], { templates: ["all"] });
+      await command.run([], { config: CONFIGURATION_PATH, templates: ["all"] });
 
       expect(configurationService.promptForTemplates).not.toHaveBeenCalled();
       expect(validationService.validate).toHaveBeenCalledWith(
@@ -539,7 +572,7 @@ describe(ValidateCommand, () => {
     // The regression that matters most: every invocation that exists today
     // omits this flag, and a prompt nobody can answer would hang the job.
     it("covers every template when nobody can be asked", async () => {
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(configurationService.promptForTemplates).not.toHaveBeenCalled();
       expect(validationService.validate).toHaveBeenCalledWith(
@@ -553,7 +586,7 @@ describe(ValidateCommand, () => {
         "gadget",
       ]);
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       // The loaded configuration itself, not a mapping of it: the picker can
       // then never disagree with what this command would actually run.
@@ -571,7 +604,7 @@ describe(ValidateCommand, () => {
         undefined,
       );
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(validationService.validate).toHaveBeenCalledWith(
         expect.objectContaining({ instances: [INSTANCE, GADGET_INSTANCE] }),
@@ -585,7 +618,7 @@ describe(ValidateCommand, () => {
         "gadget",
       ]);
 
-      await command.run([], {});
+      await command.run([], { config: CONFIGURATION_PATH });
 
       expect(validationService.validate).toHaveBeenCalledWith(
         expect.objectContaining({ instances: [INSTANCE, GADGET_INSTANCE] }),
@@ -597,7 +630,10 @@ describe(ValidateCommand, () => {
     it("leaves an instance glob alone when no template is named", async () => {
       vi.mocked(configurationService.findInstances).mockReturnValue([INSTANCE]);
 
-      await command.run([], { instances: ["tools/*"] });
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        instances: ["tools/*"],
+      });
 
       expect(configurationService.findInstances).toHaveBeenCalledWith(
         expect.objectContaining({ patterns: ["tools/*"] }),

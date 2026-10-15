@@ -21,20 +21,19 @@ import { run, selectMode, USAGE_MESSAGE } from "./render/run";
 
 describe("codependix examples", () => {
   describe("configuration resolution", () => {
-    it("prefers the TypeScript configuration file over the JSON one beside it", async () => {
+    it("reads only the file the path names, never a neighbor", async () => {
       expect.hasAssertions();
 
-      const loaded = await configuration.loadConfiguration("precedence");
+      const named = await configuration.loadConfiguration("precedence");
+      const neighbor = await configuration.loadConfiguration(
+        "precedence",
+        "codependix.config.json",
+      );
 
-      expect(loaded.workspace.nxProjects?.markdown?.anchor).toBe("example-nx");
-    });
-
-    it("resolves every graph to none when no configuration file exists", async () => {
-      expect.hasAssertions();
-
-      const loaded = await configuration.loadConfiguration("absent");
-
-      expect(loaded.workspace).toStrictEqual({});
+      expect(named.workspace.nxProjects?.markdown?.anchor).toBe("example-nx");
+      expect(neighbor.workspace.nxProjects?.markdown?.anchor).toBe(
+        "example-nx-from-json",
+      );
     });
 
     it("strips a field codependix has no opinion about", async () => {

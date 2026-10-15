@@ -13,6 +13,7 @@ import { LoggerService } from "@codebase/logging";
 import {
   CONFIGURATION_FORMATS,
   DEFAULT_CONFIGURATION_FORMAT,
+  MISSING_CONFIG_MESSAGE,
 } from "./configuration.constants";
 
 import type { ConfigurationCommandOptions } from "./configuration.types";
@@ -53,20 +54,17 @@ export class ConfigurationCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Parse the configuration file answering for the walk root.
+   * Parse the required configuration file answering for the walk root.
    *
-   * The exclusions the walk uses come from whatever configuration answers for
-   * the directory being listed, and a workspace stating its shared object
-   * somewhere every project spreads it from has nothing at its own root for
-   * the upward search to find — so it names that file here, the same way its
-   * measurement target already does.
+   * The exclusions the walk uses come from this file; nothing is searched for.
    */
   @Option({
     description:
-      "Path to the configuration file answering for the directory being listed",
-    flags: "--config [config]",
+      "Path to the configuration file answering for the directory being listed (required)",
+    flags: "--config <config>",
+    required: true,
   })
-  public parseConfig(value: string | undefined): string | undefined {
+  public parseConfig(value: string): string {
     return value;
   }
 
@@ -117,6 +115,10 @@ export class ConfigurationCommand extends CommandRunner {
       throw new Error(
         `--format does not accept "${format}". It takes one of ${CONFIGURATION_FORMATS.join(" and ")}.`,
       );
+    }
+
+    if (options.config === undefined) {
+      throw new Error(MISSING_CONFIG_MESSAGE);
     }
 
     const workingDirectory = path.resolve(options.directory ?? process.cwd());

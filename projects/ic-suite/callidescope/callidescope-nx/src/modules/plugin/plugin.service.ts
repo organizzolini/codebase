@@ -97,7 +97,6 @@ export class PluginService {
       const { configuration } =
         await this.configurationService.loadConfigurationFile({
           configurationPath: args.configurationPath,
-          searchDirectory: args.workspaceRoot,
         });
 
       return this.fileFilterService.buildFileFilter({
@@ -138,24 +137,28 @@ export class PluginService {
       "^default",
       `{workspaceRoot}/${pluginOptions.configurationPath}`,
     ];
+    // Every executor requires the path, so it is written onto each target
+    // rather than left for a run to look up: there is nowhere else it could
+    // come from, since nothing searches for it.
+    const options = { configurationPath: pluginOptions.configurationPath };
     const targets: InferredTargets = {
       [pluginOptions.breadthTargetName]: {
         cache: true,
         executor: `${CALLIDESCOPE_NX_PLUGIN_NAME}:breadth`,
         inputs,
-        options: {},
+        options,
       },
       [pluginOptions.depthTargetName]: {
         cache: true,
         executor: `${CALLIDESCOPE_NX_PLUGIN_NAME}:depth`,
         inputs,
-        options: {},
+        options,
       },
       [pluginOptions.traceTargetName]: {
         cache: true,
         executor: `${CALLIDESCOPE_NX_PLUGIN_NAME}:trace`,
         inputs,
-        options: {},
+        options,
       },
     };
 
@@ -169,7 +172,7 @@ export class PluginService {
         cache: true,
         executor: `${CALLIDESCOPE_NX_PLUGIN_NAME}:gate`,
         inputs: [...inputs, PROJECT_LIMITS_INPUT],
-        options: {},
+        options,
       },
     };
   }

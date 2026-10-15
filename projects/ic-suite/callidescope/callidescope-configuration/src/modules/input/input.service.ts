@@ -1,7 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import prompts from "prompts";
 
-import { missingInputError, promptCancelledError } from "./input.constants";
+import {
+  InputError,
+  missingInputError,
+  promptCancelledError,
+} from "./input.constants";
 
 import type { PromptRunner } from "./input.types";
 
@@ -109,6 +113,23 @@ export class InputService {
     const trimmed = value?.trim();
 
     return trimmed === undefined || trimmed.length === 0 ? undefined : trimmed;
+  }
+
+  /**
+   * Trims a required string option, refusing a blank one.
+   *
+   * The option parser a flag declared `required` runs through: the command
+   * line rejects a flag that is missing, and this rejects one given with
+   * nothing in it, so neither reaches the loader as an absent path.
+   */
+  public parseRequiredOption(value: string | undefined, flag: string): string {
+    const parsed = this.parseOptionalOption(value);
+
+    if (parsed === undefined) {
+      throw new InputError(`${flag} requires a value, and it was blank.`);
+    }
+
+    return parsed;
   }
 
   /**

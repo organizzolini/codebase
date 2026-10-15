@@ -87,14 +87,16 @@ describe(AddressLookupService, () => {
     configurationService.prepareLookup.mockResolvedValue({
       authoredLimits: undefined,
       configuration,
-      configurationPath: undefined,
+      configurationPath: "callidescope.config.ts",
       format: "markdown",
       workspaceRoot: "/workspace",
     });
     callidescopeService.locate.mockResolvedValue(located);
     addressService.resolve.mockReturnValue({ id: "a#0", kind: "resolved" });
 
-    const workspace = await service.locate({});
+    const workspace = await service.locate({
+      config: "callidescope.config.ts",
+    });
 
     expect(workspace).toStrictEqual({
       configuration,
@@ -120,14 +122,16 @@ describe(AddressLookupService, () => {
     configurationService.prepareLookup.mockResolvedValue({
       authoredLimits: undefined,
       configuration: buildConfiguration(),
-      configurationPath: undefined,
+      configurationPath: "callidescope.config.ts",
       format: "markdown",
       workspaceRoot: "/workspace",
     });
     callidescopeService.locate.mockResolvedValue(located);
     addressService.listAddresses.mockReturnValue(["a.ts#Foo.bar"]);
 
-    const workspace = await service.locate({});
+    const workspace = await service.locate({
+      config: "callidescope.config.ts",
+    });
 
     expect(service.listAddresses(workspace)).toStrictEqual(["a.ts#Foo.bar"]);
     expect(addressService.listAddresses).toHaveBeenCalledExactlyOnceWith(
@@ -144,14 +148,17 @@ describe(AddressLookupService, () => {
     configurationService.prepareLookup.mockResolvedValue({
       authoredLimits: undefined,
       configuration: { ...buildConfiguration(), directories: ["alpha"] },
-      configurationPath: undefined,
+      configurationPath: "callidescope.config.ts",
       format: "markdown",
       workspaceRoot: "/workspace",
     });
     callidescopeService.locate.mockResolvedValue(buildLocated());
     addressService.resolve.mockReturnValue({ kind: "not-found" });
 
-    await service.locate({ directories: ["ignored-because-already-merged"] });
+    await service.locate({
+      config: "callidescope.config.ts",
+      directories: ["ignored-because-already-merged"],
+    });
 
     expect(
       callidescopeService.locate.mock.calls[0]?.[0].directories,

@@ -1,18 +1,7 @@
-import { existsSync } from "node:fs";
-
 import { Test } from "@nestjs/testing";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { PluginService } from "./plugin.service";
-
-vi.mock("node:fs", () => ({
-  existsSync: vi.fn<() => boolean>(() => false),
-}));
-
-/** A filesystem holding exactly the given workspace-relative paths. */
-function existsOnly(...paths: string[]): (candidatePath: string) => boolean {
-  return (candidatePath) => paths.includes(candidatePath);
-}
 
 describe(PluginService, () => {
   let service: PluginService;
@@ -23,10 +12,6 @@ describe(PluginService, () => {
     }).compile();
 
     service = await module.resolve(PluginService);
-  });
-
-  beforeEach(() => {
-    vi.mocked(existsSync).mockReturnValue(false);
   });
 
   it("is defined", () => {
@@ -76,7 +61,7 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = service.inferTargets({
-        options: {},
+        options: { configurationPath: "codependix.config.ts" },
         projectConfigurationFiles: [
           "project.json",
           "packages/alpha/project.json",
@@ -94,7 +79,7 @@ describe(PluginService, () => {
       // The glob matches it only so that editing it re-runs inference.
       expect(
         service.inferTargets({
-          options: {},
+          options: { configurationPath: "codependix.config.ts" },
           projectConfigurationFiles: ["packages/alpha/codependix.config.ts"],
           toolInputs: ["{workspaceRoot}/tool/src/**/*"],
           workspaceRoot: "/workspace",
@@ -106,7 +91,10 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = service.inferTargets({
-        options: { gateTargetName: "boundaries" },
+        options: {
+          configurationPath: "codependix.config.ts",
+          gateTargetName: "boundaries",
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         toolInputs: ["{workspaceRoot}/tool/src/**/*"],
         workspaceRoot: "/workspace",
@@ -120,23 +108,19 @@ describe(PluginService, () => {
       );
     });
 
-    it("searches the workspace for a configuration the registration did not name", () => {
+    it("refuses to infer a gate for a registration naming no configuration path", () => {
       expect.hasAssertions();
 
-      vi.mocked(existsSync).mockImplementation(
-        (candidatePath) => candidatePath === "/workspace/codependix.config.ts",
+      expect(() =>
+        service.inferTargets({
+          options: {},
+          projectConfigurationFiles: ["packages/alpha/project.json"],
+          toolInputs: ["{workspaceRoot}/tool/src/**/*"],
+          workspaceRoot: "/workspace",
+        }),
+      ).toThrow(
+        /@codependix\/nx plugin requires the `configurationPath` option/,
       );
-
-      const targets = service.inferTargets({
-        options: {},
-        projectConfigurationFiles: ["packages/alpha/project.json"],
-        toolInputs: ["{workspaceRoot}/tool/src/**/*"],
-        workspaceRoot: "/workspace",
-      });
-
-      expect(
-        targets.get("packages/alpha")?.["codependix-gate"]?.inputs,
-      ).toContain("{workspaceRoot}/codependix.config.ts");
     });
   });
 
@@ -146,7 +130,6 @@ describe(PluginService, () => {
 
       expect(
         service.resolvePluginOptions({
-          exists: existsOnly(),
           options: {
             configurationPath: "configuration/codependix.config.ts",
             gateTargetName: "boundaries",
@@ -163,29 +146,35 @@ describe(PluginService, () => {
       ["a null registration", null],
       ["a string registration", "@codependix/nx"],
       ["an empty registration", {}],
-      ["non-string values", { configurationPath: 7, gateTargetName: false }],
-      ["empty strings", { configurationPath: "", gateTargetName: "" }],
-    ])("falls back to the defaults given %s", (_description, options) => {
+      ["a non-string path", { configurationPath: 7, gateTargetName: false }],
+      ["an empty path", { configurationPath: "", gateTargetName: "" }],
+      ["only a target name", { gateTargetName: "boundaries" }],
+    ])(
+      "refuses a registration with no usable path given %s",
+      (_description, options) => {
+        expect.hasAssertions();
+
+        expect(() => service.resolvePluginOptions({ options })).toThrow(
+          "`configurationPath`",
+        );
+      },
+    );
+
+    it("falls back to the default target name when the registered one is unusable", () => {
       expect.hasAssertions();
 
       // A typo in nx.json must not stop the project graph from being built.
       expect(
-        service.resolvePluginOptions({ exists: existsOnly(), options }),
+        service.resolvePluginOptions({
+          options: {
+            configurationPath: "codependix.config.ts",
+            gateTargetName: 3,
+          },
+        }),
       ).toStrictEqual({
         configurationPath: "codependix.config.ts",
         gateTargetName: "codependix-gate",
       });
-    });
-
-    it("searches the conventional paths for a configuration nobody named", () => {
-      expect.hasAssertions();
-
-      expect(
-        service.resolvePluginOptions({
-          exists: existsOnly("codependix.config.ts"),
-          options: {},
-        }).configurationPath,
-      ).toBe("codependix.config.ts");
     });
   });
 

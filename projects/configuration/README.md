@@ -34,18 +34,23 @@ other project.
 | Git hooks        | `commit-msg`, `commitlint`, `pre-commit`, `pre-push`, `lint-staged`, `validate-branch-name`                                                        |
 | Local publishing | `local-registry`                                                                                                                                   |
 
-## Nobody depends on it
+## In the graph, and out of releases
 
 Every project's `eslint.config.ts`, `vite.config.ts`, and `vitest.config.ts`
-imports from this folder, and this folder imports the IC-suite packages in turn.
-Left alone, Nx would record an edge from every project to this one, and those
-edges would close cycles through each package's `core` layer. A change here
-would also mark every ic-suite package affected, and `nx release` reads that
-affected set.
+imports from this folder, so every project depends on `configuration` in the Nx
+graph. That is the honest picture, and CI relies on it: a change here affects
+every project, and the task cache keeps the ones it does not touch cheap.
 
-[`nx-plugin.cjs`](nx-plugin.cjs) removes the edges: it gives every other project
-`implicitDependencies: ["!configuration"]`, so a new project needs nothing added.
-The edges this project has to the packages it imports stay.
+The folder also imports a few IC-suite packages for their types. Those edges
+would close cycles through each package's `core` layer, so
+[`project.json`](project.json) removes them with `implicitDependencies`. The
+codependix rules name the `name:configuration` tag as a permitted target for
+every layer, so nothing there fails on it.
+
+A release is the one place a change here must not spread.
+`scripts/release/version-packages.sh` adds this folder to `.nxignore` for the
+single `nx release` command, so a commit that edits only configuration releases
+no package, while a commit that edits a package still does.
 
 ## What this repository keeps outside it
 

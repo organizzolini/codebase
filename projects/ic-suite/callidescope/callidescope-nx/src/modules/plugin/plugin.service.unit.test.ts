@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 
 import { CallidescopeService } from "@callidescope/cli";
 import { ConfigurationService } from "@callidescope/configuration";
@@ -34,9 +34,11 @@ import type {
 } from "@callidescope/core";
 import type { ProjectGraph } from "@nx/devkit";
 
+/** The workspace configuration every run must name. */
+const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
+
 vi.mock("node:fs", () => ({
   existsSync: vi.fn<() => boolean>(() => true),
-  readFileSync: vi.fn<() => string>(() => "{}"),
 }));
 
 /** The limits a stubbed run resolved, so a forwarded lookup can be pinned. */
@@ -106,7 +108,6 @@ describe(PluginService, () => {
 
   beforeEach(() => {
     vi.mocked(existsSync).mockReturnValue(true);
-    vi.mocked(readFileSync).mockReturnValue("{}");
     vi.spyOn(projectsService, "readProjectGraph").mockResolvedValue(GRAPH);
     configurationService.loadConfigurationFile.mockResolvedValue({
       authored: {},
@@ -114,7 +115,7 @@ describe(PluginService, () => {
         exclude: [],
         excludeFrom: [],
       }),
-      path: undefined,
+      path: "/workspace/callidescope.config.ts",
     });
     fileFilterService.buildFileFilter.mockReturnValue({
       isExcluded: (): boolean => false,
@@ -171,14 +172,17 @@ describe(PluginService, () => {
     const INPUTS = [
       "default",
       "^default",
-      "{workspaceRoot}/callidescope.config.ts",
+      `{workspaceRoot}/${CONFIGURATION_PATH}`,
     ];
 
     it("infers all four targets onto a project holding a tsconfig", async () => {
       expect.hasAssertions();
 
       const inferred = await service.inferTargets({
-        options: { traceTargetName: "callidescope-trace" },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          traceTargetName: "callidescope-trace",
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -198,7 +202,10 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const inferred = await service.inferTargets({
-        options: { gateTargetName: "callidescope-gate" },
+        options: {
+          configurationPath: CONFIGURATION_PATH,
+          gateTargetName: "callidescope-gate",
+        },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -215,7 +222,7 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = await service.inferTargets({
-        options: {},
+        options: { configurationPath: CONFIGURATION_PATH },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -225,13 +232,13 @@ describe(PluginService, () => {
           cache: true,
           executor: "@callidescope/nx:breadth",
           inputs: INPUTS,
-          options: {},
+          options: { configurationPath: CONFIGURATION_PATH },
         },
         depth: {
           cache: true,
           executor: "@callidescope/nx:depth",
           inputs: INPUTS,
-          options: {},
+          options: { configurationPath: CONFIGURATION_PATH },
         },
         gate: {
           cache: true,
@@ -240,13 +247,13 @@ describe(PluginService, () => {
           // `{projectRoot}` glob: a workspace-wide one would invalidate every
           // project's gate whenever any project changed a limit.
           inputs: [...INPUTS, "{projectRoot}/callidescope.config.*"],
-          options: {},
+          options: { configurationPath: CONFIGURATION_PATH },
         },
         trace: {
           cache: true,
           executor: "@callidescope/nx:trace",
           inputs: INPUTS,
-          options: {},
+          options: { configurationPath: CONFIGURATION_PATH },
         },
       });
     });
@@ -255,7 +262,7 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const targets = await service.inferTargets({
-        options: {},
+        options: { configurationPath: CONFIGURATION_PATH },
         projectConfigurationFiles: ["packages/beta/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -278,7 +285,7 @@ describe(PluginService, () => {
       });
 
       const targets = await service.inferTargets({
-        options: {},
+        options: { configurationPath: CONFIGURATION_PATH },
         projectConfigurationFiles: [
           "packages/ic-suite/callidescope/callidescope-examples/project.json",
           "packages/alpha/project.json",
@@ -306,7 +313,7 @@ describe(PluginService, () => {
       // Inference runs while Nx builds the project graph, where a throw stops
       // every command in the workspace rather than one task.
       const targets = await service.inferTargets({
-        options: {},
+        options: { configurationPath: CONFIGURATION_PATH },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
@@ -318,7 +325,7 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       await service.inferTargets({
-        options: {},
+        options: { configurationPath: CONFIGURATION_PATH },
         projectConfigurationFiles: [
           "packages/alpha/project.json",
           "packages/beta/project.json",
@@ -338,7 +345,7 @@ describe(PluginService, () => {
       await expect(
         service
           .inferTargets({
-            options: {},
+            options: { configurationPath: CONFIGURATION_PATH },
             projectConfigurationFiles: ["project.json"],
             workspaceRoot: "/workspace",
           })
@@ -354,7 +361,7 @@ describe(PluginService, () => {
       await expect(
         service
           .inferTargets({
-            options: {},
+            options: { configurationPath: CONFIGURATION_PATH },
             projectConfigurationFiles: ["applications/affirmancy/project.json"],
             workspaceRoot: "/workspace",
           })
@@ -370,7 +377,7 @@ describe(PluginService, () => {
       await expect(
         service
           .inferTargets({
-            options: {},
+            options: { configurationPath: CONFIGURATION_PATH },
             projectConfigurationFiles: ["configuration/callidescope.config.ts"],
             workspaceRoot: "/workspace",
           })
@@ -496,7 +503,7 @@ describe(PluginService, () => {
       configurationService.loadConfigurationFile.mockResolvedValue({
         authored: {},
         configuration: createMock<ResolvedCallidescopeConfiguration>(),
-        path: undefined,
+        path: "/workspace/callidescope.config.ts",
       });
       stubOutcome({
         callableCount: args.callableCount ?? 143,
@@ -513,6 +520,7 @@ describe(PluginService, () => {
 
       await expect(
         service.runTrace({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -531,69 +539,13 @@ describe(PluginService, () => {
       );
     });
 
-    it("resolves the configuration path from the registration when given none", async () => {
-      expect.hasAssertions();
-
-      stubTrace();
-
-      await service.runTrace({
-        directories: ["packages/alpha"],
-        judgedProjectNames: ["packages/alpha"],
-        workspaceRoot: "/workspace",
-      });
-
-      expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
-        configurationPath: "callidescope.config.ts",
-        searchDirectory: "/workspace",
-      });
-    });
-
-    it("falls back to a conventional path when nx.json cannot be read", async () => {
-      expect.hasAssertions();
-
-      stubTrace();
-      vi.mocked(readFileSync).mockImplementation(() => {
-        throw new Error("ENOENT");
-      });
-
-      // An unreadable nx.json is what a workspace with no registration looks
-      // like, so it resolves the same way rather than failing the task.
-      await service.runTrace({
-        directories: ["packages/alpha"],
-        judgedProjectNames: ["packages/alpha"],
-        workspaceRoot: "/workspace",
-      });
-
-      expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
-        configurationPath: "callidescope.config.ts",
-        searchDirectory: "/workspace",
-      });
-    });
-
-    it("prefers a configuration path it was handed", async () => {
-      expect.hasAssertions();
-
-      stubTrace();
-
-      await service.runTrace({
-        configurationPath: "elsewhere.ts",
-        directories: ["packages/alpha"],
-        judgedProjectNames: ["packages/alpha"],
-        workspaceRoot: "/workspace",
-      });
-
-      expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
-        configurationPath: "elsewhere.ts",
-        searchDirectory: "/workspace",
-      });
-    });
-
     it("draws the stacks rather than printing them for the mermaid format", async () => {
       expect.hasAssertions();
 
       stubTrace();
 
       await service.runTrace({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha"],
         format: "mermaid",
         judgedProjectNames: ["packages/alpha"],
@@ -622,6 +574,7 @@ describe(PluginService, () => {
 
       await expect(
         service.runTrace({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -643,6 +596,7 @@ describe(PluginService, () => {
       // report still shows the whole closure: only the verdict narrows.
       await expect(
         service.runTrace({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha", "packages/beta"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -665,6 +619,7 @@ describe(PluginService, () => {
       // learns to ignore. It still prints, because a reader must be able to
       // see that the project read nothing.
       const result = await service.runTrace({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha", "packages/beta"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -688,6 +643,7 @@ describe(PluginService, () => {
       ]);
 
       const result = await service.runTrace({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -706,6 +662,7 @@ describe(PluginService, () => {
       // gate's own predicate, so the two targets cannot come to disagree.
       await expect(
         service.runTrace({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -741,6 +698,7 @@ describe(PluginService, () => {
 
       await expect(
         service.runGate({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -755,6 +713,7 @@ describe(PluginService, () => {
 
       await expect(
         service.runGate({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -772,6 +731,7 @@ describe(PluginService, () => {
 
       await expect(
         service.runGate({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -788,6 +748,7 @@ describe(PluginService, () => {
       stubGate({ callableCount: 0 });
 
       const result = await service.runGate({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -814,6 +775,7 @@ describe(PluginService, () => {
       ]);
 
       const result = await service.runGate({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha", "packages/beta"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -833,6 +795,7 @@ describe(PluginService, () => {
       stubGate();
 
       await service.runGate({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha", "packages/beta"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -853,6 +816,7 @@ describe(PluginService, () => {
       stubGate();
 
       const result = await service.runGate({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -879,6 +843,7 @@ describe(PluginService, () => {
 
       await expect(
         service.runGate({
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha", "packages/beta"],
           judgedProjectNames: ["packages/alpha"],
           workspaceRoot: "/workspace",
@@ -892,6 +857,7 @@ describe(PluginService, () => {
       stubGate();
 
       await service.runGate({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha", "packages/beta"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -917,6 +883,7 @@ describe(PluginService, () => {
       });
 
       await service.runGate({
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha", "packages/beta"],
         judgedProjectNames: ["packages/alpha"],
         workspaceRoot: "/workspace",
@@ -942,7 +909,6 @@ describe(PluginService, () => {
 
       expect(configurationService.loadConfigurationFile).toHaveBeenCalledWith({
         configurationPath: "elsewhere.ts",
-        searchDirectory: "/workspace",
       });
     });
   });

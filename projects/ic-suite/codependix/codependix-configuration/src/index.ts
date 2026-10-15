@@ -10,6 +10,7 @@ export {
   codependixProjectConfigurationSchema,
   CONFIGURATION_FILE_NAMES,
   ConfigurationFileNotFoundError,
+  ConfigurationPathRequiredError,
   DEFAULT_EXPORT_TARGET,
   DEFAULT_INCLUDE_GLOBS,
   DEFAULT_MARKDOWN_PATH,

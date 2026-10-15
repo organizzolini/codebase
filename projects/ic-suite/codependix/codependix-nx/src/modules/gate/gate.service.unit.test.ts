@@ -1,5 +1,5 @@
 import { ChildProcess, spawn } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { PassThrough } from "node:stream";
 import { pathToFileURL } from "node:url";
@@ -22,7 +22,6 @@ vi.mock("node:child_process", async (importOriginal) => ({
 }));
 
 vi.mock("node:fs", () => ({
-  existsSync: vi.fn<() => boolean>(() => false),
   readFileSync: vi.fn<() => string>(() => "{}"),
 }));
 
@@ -72,8 +71,16 @@ describe(GateService, () => {
   });
 
   beforeEach(() => {
-    vi.mocked(existsSync).mockReturnValue(false);
-    vi.mocked(readFileSync).mockReturnValue("{}");
+    vi.mocked(readFileSync).mockReturnValue(
+      JSON.stringify({
+        plugins: [
+          {
+            options: { configurationPath: "codependix.config.ts" },
+            plugin: "@codependix/nx",
+          },
+        ],
+      }),
+    );
     vi.mocked(spawn).mockReturnValue(buildChild({ exitCode: 0 }));
     vi.spyOn(process.stdout, "write").mockReturnValue(true);
     vi.spyOn(process.stderr, "write").mockReturnValue(true);
@@ -188,19 +195,28 @@ describe(GateService, () => {
       expect(readFileSync).toHaveBeenCalledWith("/workspace/nx.json", "utf8");
     });
 
-    it("searches the conventional paths when nx.json cannot be read", () => {
+    it("refuses a gate given no path when nx.json cannot be read", () => {
       expect.hasAssertions();
 
       vi.mocked(readFileSync).mockImplementation(() => {
         throw new Error("ENOENT");
       });
-      vi.mocked(existsSync).mockImplementation(
-        (candidatePath) => candidatePath === "/workspace/codependix.config.ts",
+
+      expect(() =>
+        service.resolveConfigurationPath({ workspaceRoot: "/workspace" }),
+      ).toThrow("`configurationPath`");
+    });
+
+    it("refuses a gate given no path when the registration names none", () => {
+      expect.hasAssertions();
+
+      vi.mocked(readFileSync).mockReturnValue(
+        JSON.stringify({ plugins: [{ plugin: "@codependix/nx" }] }),
       );
 
-      expect(
+      expect(() =>
         service.resolveConfigurationPath({ workspaceRoot: "/workspace" }),
-      ).toBe("codependix.config.ts");
+      ).toThrow("@codependix/nx plugin requires");
     });
   });
 

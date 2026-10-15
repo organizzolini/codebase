@@ -363,10 +363,10 @@ export class ProjectConfigurationService {
     args: LoadProjectConfigurationsArguments,
     reader: ConfigurationFileReader,
   ): Promise<LoadedProjectConfiguration[]> {
-    const workspaceConfigurationPath =
-      args.workspaceConfigurationPath === undefined
-        ? undefined
-        : path.resolve(args.workspaceRoot, args.workspaceConfigurationPath);
+    const workspaceConfigurationPath = path.resolve(
+      args.workspaceRoot,
+      args.workspaceConfigurationPath,
+    );
 
     const loaded: LoadedProjectConfiguration[] = [];
 

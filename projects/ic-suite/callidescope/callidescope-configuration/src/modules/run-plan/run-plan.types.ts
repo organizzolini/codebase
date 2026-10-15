@@ -23,7 +23,7 @@ export interface AddressCommandOptions {
    * mandatory on a command line nobody is watching.
    */
   readonly addresses?: string[] | undefined;
-  readonly config?: string | undefined;
+  readonly config: string;
   /** Project directories to trace. Every project in the workspace when omitted. */
   readonly directories?: string[] | undefined;
   /** Overrides `entryPoints.addresses` for this lookup. */
@@ -53,7 +53,7 @@ export interface CallidescopeCommandOptions {
    * knows which names exist is the only place that decides what they mean.
    */
   readonly check?: string | true | undefined;
-  readonly config?: string | undefined;
+  readonly config: string;
   /** Project directories to trace. Every project in the workspace when omitted. */
   readonly directories?: string[] | undefined;
   /** Overrides `entryPoints.addresses` for this run. */
@@ -104,7 +104,7 @@ export interface PreparedLookup {
   readonly authoredLimits: CallidescopeLimits | undefined;
   /** The configuration, with the scope a `--directories` flag named applied. */
   readonly configuration: ResolvedCallidescopeConfiguration;
-  readonly configurationPath: string | undefined;
+  readonly configurationPath: string;
   readonly format: CallidescopeOutputFormat;
   readonly workspaceRoot: string;
 }
@@ -128,15 +128,14 @@ export interface PreparedRun {
    */
   readonly configuration: ResolvedCallidescopeConfiguration;
   /**
-   * The file the configuration was read from, or `undefined` when the search
-   * found none and the run is on the tool's defaults.
+   * The file the configuration was read from: always the one `--config` named.
    *
    * The trace resolves a configuration beside every project it reaches, and
    * skips this one: a file a run was pointed at is already that run's workspace
    * configuration, and reading it again as a project's would refuse it for the
    * workspace-only fields it is entitled to set.
    */
-  readonly configurationPath: string | undefined;
+  readonly configurationPath: string;
   /**
    * What the run prints to standard output.
    *

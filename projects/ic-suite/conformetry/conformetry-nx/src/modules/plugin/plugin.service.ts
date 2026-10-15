@@ -182,27 +182,24 @@ export class PluginService {
    *
    * Nx passes plugin options to `createNodes` but not to a generator or to an
    * inferred target's executor, which see only what the caller typed. Reading
-   * `nx.json` here rather than trusting a default is what lets a workspace keep
-   * its configuration somewhere other than the conventional path: the
-   * registration is the base, and anything Nx did pass wins over it.
+   * `nx.json` here is what supplies the path, which has no default: the
+   * registration is the base, anything Nx did pass wins over it, and a path
+   * given by neither is refused.
    */
   private resolveOptions(args: {
     options: unknown;
     workspaceRoot: string;
   }): ConformetryPluginOptions {
-    const registered = this.optionsService.resolveConfigurationPath({
-      exists: (candidatePath) => {
-        return existsSync(path.resolve(args.workspaceRoot, candidatePath));
-      },
-      nxConfiguration: this.readNxConfiguration(args.workspaceRoot),
-    });
+    const registered = this.optionsService.readRegisteredConfigurationPath(
+      this.readNxConfiguration(args.workspaceRoot),
+    );
     const passed: Record<string, unknown> =
       typeof args.options === "object" && args.options !== null
         ? { ...args.options }
         : {};
 
     return this.optionsService.resolvePluginOptions({
-      configurationPath: registered,
+      ...(registered === undefined ? {} : { configurationPath: registered }),
       ...passed,
     });
   }

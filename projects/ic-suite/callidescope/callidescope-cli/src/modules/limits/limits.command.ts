@@ -66,13 +66,15 @@ export class LimitsCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Parses `--config`. */
+  /** Parses `--config`, which every command that loads a configuration requires. */
   @Option({
-    description: "Path to a callidescope configuration file",
-    flags: "--config [config]",
+    description:
+      "Path to the workspace callidescope configuration file (required)",
+    flags: "--config <config>",
+    required: true,
   })
-  public parseConfig(value: string | undefined): string | undefined {
-    return this.configurationService.parseOptionalOption(value);
+  public parseConfig(value: string | undefined): string {
+    return this.configurationService.parseRequiredOption(value, "--config");
   }
 
   /**
@@ -84,7 +86,7 @@ export class LimitsCommand extends CommandRunner {
    */
   public async run(
     _passedParameters: string[],
-    options: LimitsCommandOptions = {},
+    options: LimitsCommandOptions,
   ): Promise<void> {
     try {
       const rows = await this.limitsService.list(options);

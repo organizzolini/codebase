@@ -1,4 +1,8 @@
-import { ConfigurationService, InputError } from "@codependix/configuration";
+import {
+  ConfigurationPathRequiredError,
+  ConfigurationService,
+  InputError,
+} from "@codependix/configuration";
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
@@ -8,6 +12,9 @@ import { RunContextService } from "./run-context.service";
 
 import type { ResolvedCodependixConfiguration } from "@codependix/configuration";
 import type { NxProject } from "@codependix/nx-projects";
+
+/** The configuration path every run must name. */
+const CONFIG = "codependix.config.ts";
 
 /** The projects the mocked workspace reports, tagged for selection. */
 const PROJECTS: NxProject[] = [
@@ -72,10 +79,41 @@ describe(RunContextService, () => {
     expect(service).toBeDefined();
   });
 
+  it("refuses a run that names no configuration path, reading nothing", async () => {
+    await expect(
+      service.build({
+        mode: "write",
+        options: {},
+        workingDirectory: "/workspace",
+      }),
+    ).rejects.toThrow(ConfigurationPathRequiredError);
+    await expect(
+      service.build({
+        mode: "write",
+        options: {},
+        workingDirectory: "/workspace",
+      }),
+    ).rejects.toThrow("--config");
+
+    expect(configurationService.loadConfiguration).not.toHaveBeenCalled();
+  });
+
+  it("hands the named configuration path to the loader", async () => {
+    await service.build({
+      mode: "write",
+      options: { config: CONFIG },
+      workingDirectory: "/workspace",
+    });
+
+    expect(configurationService.loadConfiguration).toHaveBeenCalledWith(
+      expect.objectContaining({ configurationPath: CONFIG }),
+    );
+  });
+
   it("loads the configuration and reads the project graph exactly once", async () => {
     await service.build({
       mode: "write",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 
@@ -86,7 +124,7 @@ describe(RunContextService, () => {
   it("carries the run mode it was given", async () => {
     const context = await service.build({
       mode: "check",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 
@@ -97,6 +135,7 @@ describe(RunContextService, () => {
     await service.build({
       mode: "write",
       options: {
+        config: CONFIG,
         dependencies: false,
         projects: "widgets",
         tags: "framework:nestjs",
@@ -118,7 +157,11 @@ describe(RunContextService, () => {
   it("hands the command line's --include/--exclude overrides to the configuration loader", async () => {
     await service.build({
       mode: "write",
-      options: { exclude: ["fixtures-*"], include: ["applications/**"] },
+      options: {
+        config: CONFIG,
+        exclude: ["fixtures-*"],
+        include: ["applications/**"],
+      },
       workingDirectory: "/workspace",
     });
 
@@ -134,7 +177,7 @@ describe(RunContextService, () => {
   it("enables every graph type when no toggle flag is given", async () => {
     const context = await service.build({
       mode: "write",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 
@@ -148,7 +191,7 @@ describe(RunContextService, () => {
   it("disables exactly the graph type its --no-* flag named", async () => {
     const context = await service.build({
       mode: "write",
-      options: { fileImports: false },
+      options: { config: CONFIG, fileImports: false },
       workingDirectory: "/workspace",
     });
 
@@ -160,7 +203,7 @@ describe(RunContextService, () => {
   it("disables every graph type its --no-* flag named at once", async () => {
     const context = await service.build({
       mode: "write",
-      options: { nestjsModules: false, nxProjects: false },
+      options: { config: CONFIG, nestjsModules: false, nxProjects: false },
       workingDirectory: "/workspace",
     });
 
@@ -170,7 +213,7 @@ describe(RunContextService, () => {
   it("reads the working directory's own graph when none is supplied", async () => {
     await service.build({
       mode: "write",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 
@@ -197,7 +240,7 @@ describe(RunContextService, () => {
 
     await service.build({
       mode: "write",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 
@@ -211,7 +254,7 @@ describe(RunContextService, () => {
   it("selects every project when nothing narrows the run", async () => {
     const context = await service.build({
       mode: "write",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 
@@ -225,7 +268,7 @@ describe(RunContextService, () => {
 
     const context = await service.build({
       mode: "write",
-      options: { projects: "widgets" },
+      options: { config: CONFIG, projects: "widgets" },
       workingDirectory: "/workspace",
     });
 
@@ -253,7 +296,7 @@ describe(RunContextService, () => {
     it("widens the judged projects to their dependency closure", async () => {
       const context = await service.build({
         mode: "check",
-        options: { projects: "widgets" },
+        options: { config: CONFIG, projects: "widgets" },
         workingDirectory: "/workspace",
       });
 
@@ -283,7 +326,7 @@ describe(RunContextService, () => {
 
       const context = await service.build({
         mode: "check",
-        options: { dependencies: false, projects: "widgets" },
+        options: { config: CONFIG, dependencies: false, projects: "widgets" },
         workingDirectory: "/workspace",
       });
 
@@ -334,7 +377,11 @@ describe(RunContextService, () => {
 
       const built = service.build({
         mode: "check",
-        options: { projects: "lexico-entity,codebase", tags: "scope:nothing" },
+        options: {
+          config: CONFIG,
+          projects: "lexico-entity,codebase",
+          tags: "scope:nothing",
+        },
         workingDirectory: "/workspace",
       });
 
@@ -356,7 +403,7 @@ describe(RunContextService, () => {
       await expect(
         service.build({
           mode: "check",
-          options: { projects: "codebase" },
+          options: { config: CONFIG, projects: "codebase" },
           workingDirectory: "/workspace",
         }),
       ).rejects.toThrow(
@@ -376,7 +423,7 @@ describe(RunContextService, () => {
       await expect(
         service.build({
           mode: "write",
-          options: { tags: "scope:nothing" },
+          options: { config: CONFIG, tags: "scope:nothing" },
           workingDirectory: "/workspace",
         }),
       ).rejects.toThrow(
@@ -391,7 +438,7 @@ describe(RunContextService, () => {
 
       const context = await service.build({
         mode: "check",
-        options: {},
+        options: { config: CONFIG },
         workingDirectory: "/workspace",
       });
 
@@ -436,7 +483,7 @@ describe(RunContextService, () => {
 
       return service.build({
         mode: "check",
-        options: {},
+        options: { config: CONFIG },
         workingDirectory: "/workspace",
       });
     }
@@ -484,7 +531,7 @@ describe(RunContextService, () => {
   it("matches a project's root against the selection as a workspace-relative path", async () => {
     await service.build({
       mode: "write",
-      options: { projects: "tools/*" },
+      options: { config: CONFIG, projects: "tools/*" },
       workingDirectory: "/workspace",
     });
 
@@ -508,7 +555,7 @@ describe(RunContextService, () => {
 
     const context = await service.build({
       mode: "write",
-      options: {},
+      options: { config: CONFIG },
       workingDirectory: "/workspace",
     });
 

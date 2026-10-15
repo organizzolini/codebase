@@ -17,10 +17,11 @@ A generator name you guess at is rejected, so read the registry rather than
 inferring it:
 
 ```bash
-conformetry templates
+conformetry templates --config projects/configuration/conformetry.config.ts
 ```
 
-In an Nx workspace, the emitted plugin answers the same question:
+Every `conformetry` command requires `--config <path>`; no default file is
+assumed. In an Nx workspace, the emitted plugin answers the same question:
 
 ```bash
 nx list conformetry
@@ -57,7 +58,7 @@ the same generator behaves differently depending on how you invoke it.
 
 | | Nx plugin | Command-line host |
 | --- | --- | --- |
-| Invocation | `nx g conformetry:<name>` | `conformetry generate --template <name>` |
+| Invocation | `nx g conformetry:<name>` | `conformetry generate --config <path> --template <name>` |
 | Inputs | **every declared input is required** | none is ever required |
 | Missing input | refuses, or prompts | refuses when the template interpolates it |
 | Default destination | resolved from the workspace | `generated/<generator-name>` |

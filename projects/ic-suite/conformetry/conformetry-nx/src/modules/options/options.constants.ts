@@ -4,36 +4,13 @@
 export const CONFORMETRY_NX_PLUGIN_NAME = "@conformetry/nx";
 
 /**
- * Root-level config filenames tried, in order, when the registration names none.
+ * Refusal for a registration that names no configuration path.
  *
- * All at the workspace root rather than under any particular repository's
- * convention for where configuration lives; a workspace that keeps it
- * elsewhere says so in its `nx.json` plugin entry. Every extension here is one
- * the configuration loader can read — an extensionless `.conformetryrc` is
- * deliberately absent, because it would resolve and then fail as an unknown
- * file type.
- *
- * The first entry doubles as the name reported when nothing is found, so it
- * stays the most conventional of them.
+ * There is no default file and no filename search: the path is the one thing
+ * the plugin cannot infer.
  */
-export const DEFAULT_CONFIGURATION_PATHS = [
-  "conformetry.config.ts",
-  "conformetry.config.mts",
-  "conformetry.config.cts",
-  "conformetry.config.js",
-  "conformetry.config.mjs",
-  "conformetry.config.cjs",
-  "conformetry.config.json",
-  "conformetry.config.jsonc",
-  "conformetry.json",
-  "conformetry.jsonc",
-  ".conformetryrc.ts",
-  ".conformetryrc.js",
-  ".conformetryrc.json",
-  "conformetryrc.ts",
-  "conformetryrc.js",
-  "conformetryrc.json",
-] as const;
+export const MISSING_CONFIGURATION_PATH_MESSAGE =
+  'The "configurationPath" option of the @conformetry/nx plugin is required. Set it in the plugin entry of nx.json, e.g. { "plugin": "@conformetry/nx", "options": { "configurationPath": "path/to/conformetry.config.ts" } }.';
 
 /** Filename the workspace's Nx configuration is read from. */
 export const NX_CONFIGURATION_FILENAME = "nx.json";

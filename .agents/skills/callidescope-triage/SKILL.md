@@ -171,7 +171,7 @@ write. The run names every file that drifted rather than stopping at the first.
 **Re-run `--write`. That is the entire fix.**
 
 ```bash
-npx callidescope --write
+npx callidescope --config projects/configuration/callidescope.config.ts --write
 ```
 
 Three things a stale report does _not_ mean:
@@ -194,6 +194,12 @@ is stale the moment it lands.
 
 Nothing was traced. The message lists the reasons; these are the ones to expect:
 
+- **`--config` is missing.** Every command that loads a configuration
+  (`callidescope`, `depth`, `breadth`, `limits`) requires it, and nothing
+  searches for a file or defaults one. Pass the workspace file, for example
+  `--config projects/configuration/callidescope.config.ts`. Under Nx the same
+  path is the plugin's `configurationPath` option, which is refused by name
+  when the `nx.json` registration omits it.
 - **`--check` needs a value.** A valueless flag, an empty string, or a
   comma-only value are all the same mistake. A set with nothing in it is
   indistinguishable from the flag having been left off, and reading it as "gate
@@ -349,7 +355,7 @@ project's limit still seems not to have taken effect after the schema passed,
 ask what it actually resolved to rather than re-reading the file:
 
 ```bash
-npx callidescope limits
+npx callidescope limits --config projects/configuration/callidescope.config.ts
 ```
 
 The row for that project says the number and the file it came from.

@@ -15,7 +15,7 @@ npm install --save-dev @codometer/cli
 ```
 
 ```bash
-codometer
+codometer --config codometer.config.ts
 ```
 
 <!-- The badge block below this README's own Codometer section is produced by exactly this. -->
@@ -41,8 +41,10 @@ the ones you declare.
 
 ## Usage
 
-Measuring the repository is codometer's default command, so `codometer` on its
-own is `codometer measure`:
+Measuring the repository is codometer's default command, so `codometer` with
+its flags and no subcommand is `codometer measure`. **`--config <path>` is
+required** — codometer never searches for a configuration file and has no
+default one, and a run without the flag is refused with an error naming it:
 
 ```bash
 codometer --config projects/configuration/codometer.config.ts --check limits
@@ -51,7 +53,7 @@ codometer --config projects/configuration/codometer.config.ts --check limits
 | Flag | Purpose |
 | ---- | ------- |
 | `--check [set]` | Fail on a comma-separated set drawn from `reports` and `limits` |
-| `--config [path]` | Configuration file to read; searched for when omitted |
+| `--config <path>` | **Required.** The configuration file to read |
 | `-f, --format <format>` | What to print to standard output, one of `json` and `markdown` |
 | `--inputs [globs...]` | Glob array measured in place of every configured input, with no configured input — not even the built-in `codebase` one — active |
 | `--output-json [path]` | Write the JSON report, at the given path or the configured one |
@@ -68,12 +70,12 @@ another on:
 
 | Invocation | Writes | Fails on staleness | Fails on a breach |
 | ---------- | ------ | ------------------ | ----------------- |
-| `codometer` | no | no | no |
-| `codometer --check limits` | no | no | yes |
-| `codometer --check reports` | no | yes | no |
-| `codometer --check limits,reports` | no | yes | yes |
-| `codometer --output-json --output-markdown` | yes, both | no | no |
-| `codometer --output-json --check limits` | yes | no | yes, after writing |
+| `codometer --config <path>` | no | no | no |
+| `codometer --config <path> --check limits` | no | no | yes |
+| `codometer --config <path> --check reports` | no | yes | no |
+| `codometer --config <path> --check limits,reports` | no | yes | yes |
+| `codometer --config <path> --output-json --output-markdown` | yes, both | no | no |
+| `codometer --config <path> --output-json --check limits` | yes | no | yes, after writing |
 
 `--output-json`/`--output-markdown` passed **bare** write to whatever the
 resolved configuration's own `json`/`markdown` output declares, and are
@@ -103,7 +105,7 @@ changed at all. Check on the runtime the repository pins, or expect false
 staleness rather than a real finding.
 
 ```yaml
-- run: npx @codometer/cli --check reports,limits
+- run: npx @codometer/cli --config codometer.config.ts --check reports,limits
 ```
 
 ## One folder at a time
@@ -114,14 +116,15 @@ measured — its own sources, and whatever inputs the configuration declares for
 it:
 
 ```bash
-cd projects/logging && codometer --check limits
+cd projects/logging && codometer --config codometer.config.ts --check limits
 ```
 
-With no `--config`, the configuration is found by walking upward from that
-folder and taking the **first** file found. The nearest one wins outright:
-nothing from a further ancestor is folded into it, because a merged
+The configuration is exactly the file `--config` names: nothing is searched
+for, no ancestor's file is consulted, and nothing is merged, because a merged
 configuration leaves a limit that never applied looking exactly like one that
-did.
+did. A relative path is resolved against the working directory, then the
+repository root, so a task runner that sets the working directory to a project
+can still name a workspace file; a path that names no file fails the run.
 
 A configuration file is always read as a plain object — one exported as a
 function is not recognized, and falls back to an empty configuration, the
@@ -273,7 +276,7 @@ A repository that declares its limits one per project has no single file left
 to read them from. `codometer configuration` is that reading:
 
 ```bash
-codometer configuration --limits
+codometer configuration --limits --config projects/configuration/codometer.config.ts
 ```
 
 ```text
@@ -283,16 +286,15 @@ codometer configuration --limits
 ```
 
 It walks for every configuration file beneath the directory it is given — in
-any of the formats codometer accepts — and resolves each one **for its own
-folder**, so what it reports is what a per-project run actually sees. The walk
+any of the formats codometer accepts — and resolves each one **by its own
+path**, so what it reports is what a run naming that file actually sees. The walk
 honors the exclusions of whatever configuration answers for the directory being
 listed, so a configuration inside a dependency or a generator template is never
 listed as something the repository configures.
 
-**Name that configuration with `--config` where the directory has none of its
-own.** A workspace often states its shared configuration in a file every
-project spreads rather than at its own root, and the upward search then finds
-nothing:
+**`--config <path>` is required here too.** It names the configuration whose
+exclusions the walk honors — a workspace often states its shared configuration
+in a file every project spreads rather than at its own root:
 
 ```bash
 codometer configuration --limits --config projects/configuration/codometer.config.ts
@@ -305,7 +307,7 @@ outputs and their custom statistics, exclusions, and Python command. Add
 It reports configuration and never measurement. No build is required and no
 limit is evaluated, so it runs in milliseconds — and no single unreadable file
 takes it down. A configuration file that cannot be loaded is listed as
-unreadable, and a walk root nothing answers for falls back to the built-in
+unreadable, and a `--config` that cannot be loaded falls back to the built-in
 exclusions, says so at the top of the listing, and still reports every limit
 the tree declares. That last case exits 1 rather than 0: the listing is real,
 but the exclusions the repository declares were never consulted, and a clean
@@ -404,8 +406,8 @@ Passed with a path, that path is used for this run alone, whether or not the
 configuration declares an output of that kind:
 
 ```bash
-codometer --output-json                    # writes the configured json output's path
-codometer --output-json report.json        # writes report.json instead, even with no json output configured
+codometer --config <path> --output-json                    # writes the configured json output's path
+codometer --config <path> --output-json report.json        # writes report.json instead, even with no json output configured
 ```
 
 **`--format` falls back to the resolved configuration's own `format` field**
@@ -420,7 +422,7 @@ for the report and nothing else, whatever the configuration file also describes;
 its own destination and never turns another on.
 
 **Standard output carries the result; every diagnostic goes to standard error.**
-`codometer --format json > report.json` has to produce a file something can
+`codometer --config <path> --format json > report.json` has to produce a file something can
 parse, so a log line never shares that stream — including the exclusion notice
 below, which is still on the console and still in front of a human, just not
 inside the data. Only `--format` ever writes to that stream: a file sink that
@@ -561,7 +563,7 @@ passing verdict.
 A failure is neither a breach nor staleness: it is the run not having finished.
 Every one of them is collected and reported together, so a configuration with
 three broken limits is one run to diagnose rather than three. A failure fails
-any run that writes or gates; a bare run reports it and exits clean, exactly as
+any run that writes or gates; a run that neither writes nor gates reports it and exits clean, exactly as
 the flag table promises.
 
 ## Packages

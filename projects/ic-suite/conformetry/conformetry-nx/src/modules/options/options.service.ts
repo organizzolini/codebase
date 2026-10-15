@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 
 import {
   CONFORMETRY_NX_PLUGIN_NAME,
-  DEFAULT_CONFIGURATION_PATHS,
   DEFAULT_VALIDATE_TARGET_NAME,
+  MISSING_CONFIGURATION_PATH_MESSAGE,
   PLUGIN_OPTION_NAMES,
 } from "./options.constants";
 
@@ -34,8 +34,20 @@ export class OptionsService {
     return Array.isArray(value);
   }
 
+  /** Reads a string field from an untrusted record, or `undefined`. */
+  private readString(args: {
+    key: string;
+    options: Record<string, unknown>;
+  }): string | undefined {
+    const value = args.options[args.key];
+
+    return typeof value === "string" && value !== "" ? value : undefined;
+  }
+
+  // 🌎 Public Methods
+
   /** Reads this plugin's `configurationPath` out of an `nx.json`, if it names one. */
-  private readRegisteredConfigurationPath(
+  public readRegisteredConfigurationPath(
     nxConfiguration: unknown,
   ): string | undefined {
     if (typeof nxConfiguration !== "object" || nxConfiguration === null) {
@@ -69,43 +81,25 @@ export class OptionsService {
     return undefined;
   }
 
-  /** Reads a string field from an untrusted record, or `undefined`. */
-  private readString(args: {
-    key: string;
-    options: Record<string, unknown>;
-  }): string | undefined {
-    const value = args.options[args.key];
-
-    return typeof value === "string" && value !== "" ? value : undefined;
-  }
-
-  // 🌎 Public Methods
-
   /**
-   * Resolves the configuration path a workspace means, without assuming one.
+   * Reads the configuration path the workspace registered, or refuses.
    *
    * Nx passes plugin options to `createNodes` and to executors, but not to a
    * global sync generator or to anything run outside Nx entirely, such as the
-   * install-time bootstrap. Those read the registration themselves rather than
-   * assuming a path, so a workspace that keeps its configuration somewhere
-   * other than the root is not silently read from nothing.
-   *
-   * With no registration, the conventional root filenames are tried in order.
-   * `exists` is supplied by the caller rather than reached for here, because
-   * the callers do not agree on what a filesystem is: two of them read disk
-   * and the sync generator reads an Nx `Tree`.
+   * install-time bootstrap. Those read the registration themselves. No path is
+   * assumed or searched for: a registration without one is an error naming the
+   * option, because a guessed file is a silently wrong configuration.
    */
-  public resolveConfigurationPath(args: {
-    exists: (candidatePath: string) => boolean;
-    nxConfiguration: unknown;
-  }): string {
-    return (
-      this.readRegisteredConfigurationPath(args.nxConfiguration) ??
-      DEFAULT_CONFIGURATION_PATHS.find((candidatePath) => {
-        return args.exists(candidatePath);
-      }) ??
-      DEFAULT_CONFIGURATION_PATHS[0]
+  public resolveConfigurationPath(args: { nxConfiguration: unknown }): string {
+    const registered = this.readRegisteredConfigurationPath(
+      args.nxConfiguration,
     );
+
+    if (registered === undefined) {
+      throw new Error(MISSING_CONFIGURATION_PATH_MESSAGE);
+    }
+
+    return registered;
   }
 
   /**
@@ -139,25 +133,24 @@ export class OptionsService {
   /**
    * Resolves the effective plugin options from an untrusted value.
    *
-   * Falls back to the most conventional configuration filename rather than
-   * discovering which one is present, which needs a filesystem; callers that
-   * have one resolve the path with `resolveConfigurationPath` first and pass
-   * the result in.
+   * `configurationPath` is required and has no default; a missing one throws
+   * an error naming the option and the plugin. `validateTargetName` falls back
+   * to its default.
    */
   public resolvePluginOptions(options: unknown): ConformetryPluginOptions {
-    if (typeof options !== "object" || options === null) {
-      return {
-        configurationPath: DEFAULT_CONFIGURATION_PATHS[0],
-        validateTargetName: DEFAULT_VALIDATE_TARGET_NAME,
-      };
+    const record: Record<string, unknown> =
+      typeof options === "object" && options !== null ? { ...options } : {};
+    const configurationPath = this.readString({
+      key: "configurationPath",
+      options: record,
+    });
+
+    if (configurationPath === undefined) {
+      throw new Error(MISSING_CONFIGURATION_PATH_MESSAGE);
     }
 
-    const record: Record<string, unknown> = { ...options };
-
     return {
-      configurationPath:
-        this.readString({ key: "configurationPath", options: record }) ??
-        DEFAULT_CONFIGURATION_PATHS[0],
+      configurationPath,
       validateTargetName:
         this.readString({ key: "validateTargetName", options: record }) ??
         DEFAULT_VALIDATE_TARGET_NAME,

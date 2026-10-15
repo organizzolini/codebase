@@ -10,6 +10,9 @@ import type { PluginService } from "../../modules/plugin/plugin.service";
 import type { ResolvedTraceScope } from "../../modules/plugin/plugin.types";
 import type { ExecutorContext } from "@nx/devkit";
 
+/** The workspace configuration every run must name. */
+const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
+
 const pluginService = createMock<PluginService>();
 
 vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
@@ -70,7 +73,10 @@ describe(gateExecutor, () => {
     expect.hasAssertions();
 
     await expect(
-      gateExecutor({}, buildContext("alpha")),
+      gateExecutor(
+        { configurationPath: CONFIGURATION_PATH },
+        buildContext("alpha"),
+      ),
     ).resolves.toStrictEqual({ success: true });
     expect(pluginService.resolveTraceScope).toHaveBeenCalledWith({
       projectNames: ["alpha"],
@@ -88,7 +94,10 @@ describe(gateExecutor, () => {
     });
 
     await expect(
-      gateExecutor({}, buildContext("alpha")),
+      gateExecutor(
+        { configurationPath: CONFIGURATION_PATH },
+        buildContext("alpha"),
+      ),
     ).resolves.toStrictEqual({ success: false });
     // The findings still reach stdout: a failing gate is exactly when the
     // reader needs to see what tripped it.
@@ -100,7 +109,10 @@ describe(gateExecutor, () => {
   it("prints the findings of a gate that passed", async () => {
     expect.hasAssertions();
 
-    await gateExecutor({}, buildContext("alpha"));
+    await gateExecutor(
+      { configurationPath: CONFIGURATION_PATH },
+      buildContext("alpha"),
+    );
 
     expect(process.stdout.write).toHaveBeenCalledWith(
       "## Call stacks over the depth limit (0)\n",
@@ -111,7 +123,11 @@ describe(gateExecutor, () => {
     expect.hasAssertions();
 
     await gateExecutor(
-      { projects: ["beta"], tags: ["type:package"] },
+      {
+        configurationPath: CONFIGURATION_PATH,
+        projects: ["beta"],
+        tags: ["type:package"],
+      },
       buildContext("alpha"),
     );
 
@@ -138,7 +154,10 @@ describe(gateExecutor, () => {
   it("passes withDependencies false straight through", async () => {
     expect.hasAssertions();
 
-    await gateExecutor({ withDependencies: false }, buildContext("alpha"));
+    await gateExecutor(
+      { configurationPath: CONFIGURATION_PATH, withDependencies: false },
+      buildContext("alpha"),
+    );
 
     expect(pluginService.resolveTraceScope).toHaveBeenCalledWith(
       expect.objectContaining({ withDependencies: false }),
@@ -154,7 +173,10 @@ describe(gateExecutor, () => {
 
     // Narrowing the run instead would pass while gating less than asked.
     await expect(
-      gateExecutor({ projects: ["absent"] }, buildContext("alpha")),
+      gateExecutor(
+        { configurationPath: CONFIGURATION_PATH, projects: ["absent"] },
+        buildContext("alpha"),
+      ),
     ).rejects.toThrow("Unknown Nx projects.");
     expect(pluginService.runGate).not.toHaveBeenCalled();
   });
@@ -162,9 +184,9 @@ describe(gateExecutor, () => {
   it("refuses a run with no project and no selection", async () => {
     expect.hasAssertions();
 
-    await expect(gateExecutor({}, buildContext())).rejects.toThrow(
-      "must be run against a project",
-    );
+    await expect(
+      gateExecutor({ configurationPath: CONFIGURATION_PATH }, buildContext()),
+    ).rejects.toThrow("must be run against a project");
   });
 
   it("fails without tracing when the selection resolved to nothing", async () => {
@@ -177,7 +199,10 @@ describe(gateExecutor, () => {
     // A gate with nothing to trace has no verdict to record, so it must not
     // record a passing one — and it says so, rather than failing mutely.
     await expect(
-      gateExecutor({}, buildContext("alpha")),
+      gateExecutor(
+        { configurationPath: CONFIGURATION_PATH },
+        buildContext("alpha"),
+      ),
     ).resolves.toStrictEqual({ success: false });
     expect(pluginService.runGate).not.toHaveBeenCalled();
     expect(process.stdout.write).toHaveBeenCalledWith(
@@ -188,11 +213,15 @@ describe(gateExecutor, () => {
   it("forwards the resolved scope to the gate unchanged", async () => {
     expect.hasAssertions();
 
-    await gateExecutor({}, buildContext("alpha"));
+    await gateExecutor(
+      { configurationPath: CONFIGURATION_PATH },
+      buildContext("alpha"),
+    );
 
     // Pinned exactly rather than partially: the scope-to-gate mapping is the
     // whole of what this executor does with what it resolved.
     expect(pluginService.runGate).toHaveBeenCalledWith({
+      configurationPath: CONFIGURATION_PATH,
       directories: ["packages/alpha"],
       judgedProjectNames: ["packages/alpha"],
       workspaceRoot: "/workspace",

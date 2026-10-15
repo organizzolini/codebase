@@ -9,6 +9,9 @@ import type { PluginService } from "../../modules/plugin/plugin.service";
 import type { ResolvedTraceScope } from "../../modules/plugin/plugin.types";
 import type { ExecutorContext } from "@nx/devkit";
 
+/** The workspace configuration every run must name. */
+const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
+
 const pluginService = createMock<PluginService>();
 
 vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
@@ -67,7 +70,10 @@ describe(traceExecutor, () => {
     expect.hasAssertions();
 
     await expect(
-      traceExecutor({}, buildContext("alpha")),
+      traceExecutor(
+        { configurationPath: CONFIGURATION_PATH },
+        buildContext("alpha"),
+      ),
     ).resolves.toStrictEqual({ success: true });
     expect(pluginService.resolveTraceScope).toHaveBeenCalledWith({
       projectNames: ["alpha"],
@@ -87,7 +93,10 @@ describe(traceExecutor, () => {
       }),
     );
 
-    await traceExecutor({}, buildContext("alpha"));
+    await traceExecutor(
+      { configurationPath: CONFIGURATION_PATH },
+      buildContext("alpha"),
+    );
 
     expect(pluginService.runTrace).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -100,7 +109,10 @@ describe(traceExecutor, () => {
   it("prints the report to stdout", async () => {
     expect.hasAssertions();
 
-    await traceExecutor({}, buildContext("alpha"));
+    await traceExecutor(
+      { configurationPath: CONFIGURATION_PATH },
+      buildContext("alpha"),
+    );
 
     expect(process.stdout.write).toHaveBeenCalledWith("# Report\n");
   });
@@ -109,7 +121,11 @@ describe(traceExecutor, () => {
     expect.hasAssertions();
 
     await traceExecutor(
-      { projects: ["beta"], tags: ["type:package"] },
+      {
+        configurationPath: CONFIGURATION_PATH,
+        projects: ["beta"],
+        tags: ["type:package"],
+      },
       buildContext("alpha"),
     );
 
@@ -123,7 +139,10 @@ describe(traceExecutor, () => {
   it("passes withDependencies false straight through", async () => {
     expect.hasAssertions();
 
-    await traceExecutor({ withDependencies: false }, buildContext("alpha"));
+    await traceExecutor(
+      { configurationPath: CONFIGURATION_PATH, withDependencies: false },
+      buildContext("alpha"),
+    );
 
     expect(pluginService.resolveTraceScope).toHaveBeenCalledWith(
       expect.objectContaining({ withDependencies: false }),
@@ -152,7 +171,10 @@ describe(traceExecutor, () => {
 
     // Narrowing the run instead would pass while measuring less than asked.
     await expect(
-      traceExecutor({ projects: ["absent"] }, buildContext("alpha")),
+      traceExecutor(
+        { configurationPath: CONFIGURATION_PATH, projects: ["absent"] },
+        buildContext("alpha"),
+      ),
     ).rejects.toThrow("Unknown Nx projects.");
     expect(pluginService.runTrace).not.toHaveBeenCalled();
   });
@@ -165,7 +187,10 @@ describe(traceExecutor, () => {
     );
 
     await expect(
-      traceExecutor({ tags: ["typ:package"] }, buildContext("alpha")),
+      traceExecutor(
+        { configurationPath: CONFIGURATION_PATH, tags: ["typ:package"] },
+        buildContext("alpha"),
+      ),
     ).rejects.toThrow("Unknown Nx projects.");
   });
 
@@ -178,7 +203,11 @@ describe(traceExecutor, () => {
 
     await expect(
       traceExecutor(
-        { projects: ["absent"], tags: ["typ:package"] },
+        {
+          configurationPath: CONFIGURATION_PATH,
+          projects: ["absent"],
+          tags: ["typ:package"],
+        },
         buildContext("alpha"),
       ),
     ).rejects.toThrow("Unknown Nx projects.");
@@ -193,9 +222,9 @@ describe(traceExecutor, () => {
   it("refuses a run with no project and no selection", async () => {
     expect.hasAssertions();
 
-    await expect(traceExecutor({}, buildContext())).rejects.toThrow(
-      "must be run against a project",
-    );
+    await expect(
+      traceExecutor({ configurationPath: CONFIGURATION_PATH }, buildContext()),
+    ).rejects.toThrow("must be run against a project");
   });
 
   it("succeeds without tracing when the selection resolved to nothing", async () => {
@@ -206,7 +235,10 @@ describe(traceExecutor, () => {
     );
 
     await expect(
-      traceExecutor({}, buildContext("alpha")),
+      traceExecutor(
+        { configurationPath: CONFIGURATION_PATH },
+        buildContext("alpha"),
+      ),
     ).resolves.toStrictEqual({ success: true });
     expect(pluginService.runTrace).not.toHaveBeenCalled();
   });
@@ -217,7 +249,10 @@ describe(traceExecutor, () => {
     pluginService.runTrace.mockResolvedValue({ ok: false, report: "# Report" });
 
     await expect(
-      traceExecutor({}, buildContext("alpha")),
+      traceExecutor(
+        { configurationPath: CONFIGURATION_PATH },
+        buildContext("alpha"),
+      ),
     ).resolves.toStrictEqual({ success: false });
     // The report still reaches stdout: a failing gate is exactly when the
     // reader needs to see which stacks tripped it.

@@ -10,7 +10,6 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import { LoggerService } from "@codebase/logging";
 
 import {
-  DEFAULT_CONFIGURATION_PATH,
   removedGeneratorOptionError,
   unknownTemplateError,
 } from "../../constants.js";
@@ -72,7 +71,7 @@ export class GenerateCommand extends CommandRunner {
 
     const configuration =
       await this.configurationService.loadConformetryConfiguration(
-        options.config ?? DEFAULT_CONFIGURATION_PATH,
+        options.config,
       );
     const templateName = await this.resolveTemplateName({
       configuration,
@@ -246,10 +245,11 @@ export class GenerateCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Parses the optional configuration path. */
+  /** Parses the required configuration path. */
   @Option({
     description: "Path to the conformetry configuration file",
-    flags: "--config [path]",
+    flags: "--config <path>",
+    required: true,
   })
   public parseConfig(value: string | undefined): string | undefined {
     return this.configurationService.parseOptionalOption(value);

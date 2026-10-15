@@ -5,7 +5,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
-import { DEFAULT_CONFIGURATION_PATH, JSON_INDENT } from "../../constants.js";
+import { JSON_INDENT } from "../../constants.js";
 
 import {
   NO_INSTANCES_MESSAGE,
@@ -52,10 +52,11 @@ export class InstancesCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Parses the optional configuration path. */
+  /** Parses the required configuration path. */
   @Option({
     description: "Path to the conformetry configuration file",
-    flags: "--config [path]",
+    flags: "--config <path>",
+    required: true,
   })
   public parseConfig(value: string | undefined): string | undefined {
     return this.configurationService.parseOptionalOption(value);
@@ -92,7 +93,7 @@ export class InstancesCommand extends CommandRunner {
     const workingDirectory = process.cwd();
     const configuration =
       await this.configurationService.loadConformetryConfiguration(
-        options.config ?? DEFAULT_CONFIGURATION_PATH,
+        options.config,
       );
     const instances = this.inventoryService.shortenInstancePaths({
       instances: this.configurationService.resolveInventoriedInstances({

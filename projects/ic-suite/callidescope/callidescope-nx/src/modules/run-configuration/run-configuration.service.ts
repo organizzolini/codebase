@@ -1,12 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
-
 import { ConfigurationService } from "@callidescope/configuration";
 import { Injectable } from "@nestjs/common";
-
-import { OptionsService } from "../options/options.service";
-
-import { NX_CONFIGURATION_FILENAME } from "./run-configuration.constants";
 
 import type {
   LoadedRunConfiguration,
@@ -14,11 +7,11 @@ import type {
 } from "./run-configuration.types";
 
 /**
- * Finds and reads the callidescope configuration one run is judged by.
+ * Reads the callidescope configuration one run is judged by.
  *
  * Its own service rather than more of `PluginService`, because every target
- * here starts by answering the same question — which configuration file is
- * this run's — and none of them can be written until it is answered. Keeping
+ * here starts by reading the same file — the one its `configurationPath` names
+ * — and none of them can be written until it is read. Keeping
  * it apart also keeps the verdict and the inference in `PluginService` beside
  * each other, which is where the rules a reader comes looking for are.
  */
@@ -26,36 +19,13 @@ import type {
 export class RunConfigurationService {
   // 🏗 Dependency Injection
 
-  constructor(
-    private readonly configurationService: ConfigurationService,
-    private readonly optionsService: OptionsService,
-  ) {}
+  constructor(private readonly configurationService: ConfigurationService) {}
 
   // 🔐 Private Fields
 
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Reads the workspace's `nx.json`, so this plugin's own registration can be
-   * consulted for a configuration path an executor was not given.
-   *
-   * Unreadable or malformed is not an error: the caller falls back to the
-   * conventional filenames, which a workspace with no registration gets anyway.
-   */
-  private readNxConfiguration(workspaceRoot: string): unknown {
-    try {
-      return JSON.parse(
-        readFileSync(
-          path.join(workspaceRoot, NX_CONFIGURATION_FILENAME),
-          "utf8",
-        ),
-      ) as unknown;
-    } catch {
-      return undefined;
-    }
-  }
 
   // 🌎 Public Methods
 
@@ -69,16 +39,8 @@ export class RunConfigurationService {
   public async load(
     args: LoadRunConfigurationArguments,
   ): Promise<LoadedRunConfiguration> {
-    const configurationPath =
-      args.configurationPath ??
-      this.optionsService.resolveConfigurationPath({
-        exists: (candidatePath) =>
-          existsSync(path.join(args.workspaceRoot, candidatePath)),
-        nxConfiguration: this.readNxConfiguration(args.workspaceRoot),
-      });
     const loaded = await this.configurationService.loadConfigurationFile({
-      configurationPath,
-      searchDirectory: args.workspaceRoot,
+      configurationPath: args.configurationPath,
     });
 
     return { configuration: loaded.configuration, path: loaded.path };

@@ -1,5 +1,13 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": [
+    "!callidescope-configuration",
+    "!codependix-configuration",
+    "!codometer-configuration",
+    "!conformetry-configuration",
+    "!conformetry-nx",
+    "!logging"
+  ],
   "name": "configuration",
   "namedInputs": {
     "vendored-skills": [
@@ -70,6 +78,7 @@
   },
   "projectType": "library",
   "sourceRoot": "projects/configuration",
+  "tags": ["name:configuration"],
   "targets": {
     "build-projects": {
       "cache": false,

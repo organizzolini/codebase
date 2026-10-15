@@ -1,11 +1,10 @@
-import { existsSync } from "node:fs";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
 import {
   CODEPENDIX_NX_PLUGIN_NAME,
-  DEFAULT_CONFIGURATION_PATHS,
+  ConfigurationPathRequiredError,
   DEFAULT_GATE_TARGET_NAME,
   PROJECT_CONFIGURATION_FILENAME,
   PROJECT_CONFIGURATION_INPUT,
@@ -100,8 +99,6 @@ export class PluginService {
     args: InferTargetsArguments,
   ): Map<string, InferredTargets> {
     const pluginOptions = this.resolvePluginOptions({
-      exists: (candidatePath) =>
-        existsSync(path.join(args.workspaceRoot, candidatePath)),
       options: args.options,
     });
     const targets: InferredTargets = {
@@ -151,22 +148,25 @@ export class PluginService {
   /**
    * Resolves the effective plugin options from an untrusted value.
    *
-   * A configuration path nobody named is searched for rather than assumed,
-   * because it becomes a cache input: an input naming a file that does not
-   * exist would leave every gate cached across an edit to the one that does.
+   * `configurationPath` is required and never searched for: it becomes a cache
+   * input, and a guessed path naming a file that does not exist would leave
+   * every gate cached across an edit to the one that does.
    */
   public resolvePluginOptions(
     args: ResolvePluginOptionsArguments,
   ): CodependixPluginOptions {
     const record = this.toRecord(args.options);
+    const configurationPath = this.readString({
+      key: "configurationPath",
+      record,
+    });
+
+    if (configurationPath === undefined) {
+      throw new ConfigurationPathRequiredError();
+    }
 
     return {
-      configurationPath:
-        this.readString({ key: "configurationPath", record }) ??
-        DEFAULT_CONFIGURATION_PATHS.find((candidatePath) =>
-          args.exists(candidatePath),
-        ) ??
-        DEFAULT_CONFIGURATION_PATHS[0],
+      configurationPath,
       gateTargetName:
         this.readString({ key: "gateTargetName", record }) ??
         DEFAULT_GATE_TARGET_NAME,

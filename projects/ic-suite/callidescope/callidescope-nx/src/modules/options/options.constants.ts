@@ -30,14 +30,20 @@ export const DEFAULT_BREADTH_TARGET_NAME = "breadth";
 export const DEFAULT_GATE_TARGET_NAME = "gate";
 
 /**
- * Where the callidescope configuration lives, when the registration names no
- * path.
+ * Raised when this plugin's `nx.json` registration does not name the
+ * workspace configuration.
  *
- * Tried in order; the first that exists wins. Mirrors what
- * `@callidescope/configuration` searches for on its own, so a workspace that
- * never registers a path behaves the same through Nx as it does at a prompt.
+ * There is no default location and nothing is searched for, so the
+ * registration is the only place the path can come from.
  */
-export const DEFAULT_CONFIGURATION_PATHS = ["callidescope.config.ts"] as const;
+export class PluginConfigurationPathRequiredError extends Error {
+  constructor() {
+    super(
+      `The ${CALLIDESCOPE_NX_PLUGIN_NAME} plugin requires its "configurationPath" option in nx.json, naming the callidescope configuration file, as in { "plugin": "${CALLIDESCOPE_NX_PLUGIN_NAME}", "options": { "configurationPath": "callidescope.config.ts" } }.`,
+    );
+    this.name = "PluginConfigurationPathRequiredError";
+  }
+}
 
 /** Marks a project as one whose directory holds a TypeScript program. */
 export const PROJECT_PROGRAM_FILENAME = "tsconfig.json";

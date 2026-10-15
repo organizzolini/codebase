@@ -28,6 +28,9 @@ import { BreadthCommand } from "./breadth.command";
 import type { LocatedWorkspace } from "../address-lookup/address-lookup.types";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 
+/** The workspace configuration every run must be pointed at with `--config`. */
+const CONFIGURATION_PATH = "callidescope.config.ts";
+
 /** A resolved configuration with the defaults these tests assume. */
 function buildConfiguration(): ResolvedCallidescopeConfiguration {
   return {
@@ -202,7 +205,7 @@ describe(BreadthCommand, () => {
   // 🏃 Running
 
   it("rejects a run with no addresses it could ask for", async () => {
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(addressLookupService.resolve).not.toHaveBeenCalled();
@@ -211,7 +214,7 @@ describe(BreadthCommand, () => {
   // A positional argument is no longer read at all, so one passed out of
   // habit must not quietly stand in for the flag.
   it("ignores a positional argument, asking for the flag instead", async () => {
-    await command.run(["a.ts#Foo.bar"], {});
+    await command.run(["a.ts#Foo.bar"], { config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(addressLookupService.resolve).not.toHaveBeenCalled();
@@ -229,7 +232,10 @@ describe(BreadthCommand, () => {
       "No callable matches it.",
     );
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"] });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+    });
 
     expect(process.exitCode).toBe(1);
     expect(breadthService.describeDirectCalls).not.toHaveBeenCalled();
@@ -248,7 +254,10 @@ describe(BreadthCommand, () => {
     });
     addressLookupService.describeProblem.mockReturnValue(undefined);
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"] });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+    });
 
     expect(process.exitCode).toBe(1);
     expect(breadthService.describeDirectCalls).not.toHaveBeenCalled();
@@ -282,7 +291,10 @@ describe(BreadthCommand, () => {
       "rendered breadth\n",
     );
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"] });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+    });
 
     expect(breadthService.describeDirectCalls).toHaveBeenCalledWith({
       callablesById: located.callablesById,
@@ -332,7 +344,7 @@ describe(BreadthCommand, () => {
 
     // A format is passed explicitly so this test exercises only the address
     // prompt, not the separate format prompt that would otherwise also run.
-    await command.run([], { format: "markdown" });
+    await command.run([], { config: CONFIGURATION_PATH, format: "markdown" });
 
     // The list it completes against is what the one trace found, so the
     // caller picks a callable that provably exists.
@@ -368,6 +380,7 @@ describe(BreadthCommand, () => {
 
     await command.run([], {
       addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
       format: "markdown",
     });
 
@@ -390,7 +403,10 @@ describe(BreadthCommand, () => {
       "No callable matches it.",
     );
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"] });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+    });
 
     expect(configurationService.promptForSelect).toHaveBeenCalledWith({
       choices: ["markdown", "mermaid", "json"],
@@ -401,6 +417,7 @@ describe(BreadthCommand, () => {
     // it scopes the run with.
     expect(addressLookupService.locate).toHaveBeenCalledWith({
       addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
       format: "json",
     });
   });
@@ -421,6 +438,7 @@ describe(BreadthCommand, () => {
 
     await command.run([], {
       addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
       format: "mermaid",
     });
 
@@ -433,7 +451,11 @@ describe(BreadthCommand, () => {
     addressLookupService.locate.mockRejectedValue(new Error("Trace failed."));
 
     await expect(
-      command.run([], { addresses: ["a.ts#Foo.bar"], format: "markdown" }),
+      command.run([], {
+        addresses: ["a.ts#Foo.bar"],
+        config: CONFIGURATION_PATH,
+        format: "markdown",
+      }),
     ).rejects.toThrow("Trace failed.");
   });
 
@@ -449,7 +471,11 @@ describe(BreadthCommand, () => {
 
     addressLookupService.locate.mockRejectedValue(error);
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"], format: "markdwon" });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+      format: "markdwon",
+    });
 
     expect(logger.error).toHaveBeenCalledExactlyOnceWith(
       "🔭 Rejected the command line",
@@ -471,7 +497,11 @@ describe(BreadthCommand, () => {
 
     addressLookupService.locate.mockRejectedValue(error);
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"], format: "markdown" });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+      format: "markdown",
+    });
 
     expect(logger.error).toHaveBeenCalledExactlyOnceWith(
       "🔭 Rejected a project configuration",
@@ -494,7 +524,11 @@ describe(BreadthCommand, () => {
 
     addressLookupService.locate.mockRejectedValue(error);
 
-    await command.run([], { addresses: ["a.ts#Foo.bar"], format: "markdown" });
+    await command.run([], {
+      addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
+      format: "markdown",
+    });
 
     expect(logger.error).toHaveBeenCalledExactlyOnceWith(
       "🔭 Rejected a project it could not read",
@@ -536,6 +570,7 @@ describe(BreadthCommand, () => {
 
     await command.run([], {
       addresses: ["a.ts#Foo.bar", "b.ts#Nope.nope"],
+      config: CONFIGURATION_PATH,
       format: "markdown",
     });
 
@@ -558,6 +593,7 @@ describe(BreadthCommand, () => {
 
     await command.run([], {
       addresses: ["a.ts#Foo.bar"],
+      config: CONFIGURATION_PATH,
       format: "markdown",
     });
 

@@ -2,7 +2,7 @@
 
 /** Options the gate executor accepts. */
 export interface GateExecutorOptions {
-  readonly configurationPath?: string | undefined;
+  readonly configurationPath: string;
   /** Nx project names to gate, replacing the target's own project. */
   readonly projects?: string[] | undefined;
   /** Nx project tags to gate, selecting a project carrying any of them. */

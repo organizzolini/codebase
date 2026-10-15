@@ -20,7 +20,6 @@ import type {
   CallidescopeConfiguration,
   LoadConfigurationArguments,
   LoadedCallidescopeConfiguration,
-  LoadedCallidescopeConfigurationFile,
   LoadedProjectConfiguration,
   LoadProjectConfigurationsArguments,
   ProjectLimitsLookup,
@@ -78,14 +77,8 @@ export class ConfigurationService implements ConfigurationFileReader {
    * Loads a configuration, and says what the file itself declared and which
    * file answered.
    */
-  public loadConfigurationFile(
-    args: LoadConfigurationArguments & { configurationPath: string },
-  ): Promise<LoadedCallidescopeConfigurationFile>;
-  public loadConfigurationFile(
-    args?: LoadConfigurationArguments,
-  ): Promise<LoadedCallidescopeConfiguration>;
   public async loadConfigurationFile(
-    args: LoadConfigurationArguments = {},
+    args: LoadConfigurationArguments,
   ): Promise<LoadedCallidescopeConfiguration> {
     return await this.configurationFileService.loadConfigurationFile(args);
   }
@@ -108,6 +101,11 @@ export class ConfigurationService implements ConfigurationFileReader {
   /** Reads a flag that may have been written without a value. */
   public parseOptionalOption(value: string | undefined): string | undefined {
     return this.inputService.parseOptionalOption(value);
+  }
+
+  /** Reads a flag that must carry a value, refusing one left blank. */
+  public parseRequiredOption(value: string | undefined, flag: string): string {
+    return this.inputService.parseRequiredOption(value, flag);
   }
 
   /** Reads a lookup's scoping flags into a workspace root and a configuration. */

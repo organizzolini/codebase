@@ -39,7 +39,6 @@ export type {
   CallidescopeWriteConfiguration,
   LoadConfigurationArguments,
   LoadedCallidescopeConfiguration,
-  LoadedCallidescopeConfigurationFile,
   LoadedProjectConfiguration,
   LoadProjectConfigurationsArguments,
   MarkdownAnchorHelpers,

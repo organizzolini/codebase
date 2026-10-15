@@ -46,14 +46,20 @@ export const CODEPENDIX_NX_PLUGIN_NAME = "@codependix/nx";
 export const DEFAULT_GATE_TARGET_NAME = "codependix-gate";
 
 /**
- * Where the codependix configuration lives, when the registration names no
- * path.
+ * Raised when no `configurationPath` was registered or given.
  *
- * The workspace root, under codependix's own filename. A workspace that keeps
- * its configuration anywhere else, in any folder, says so in its `nx.json`
- * plugin entry; no folder name is assumed.
+ * Required rather than defaulted: the plugin assumes no filename and no
+ * folder, so a workspace names where its configuration lives in its `nx.json`
+ * plugin entry or on the gate target.
  */
-export const DEFAULT_CONFIGURATION_PATHS = ["codependix.config.ts"] as const;
+export class ConfigurationPathRequiredError extends Error {
+  constructor() {
+    super(
+      `The ${CODEPENDIX_NX_PLUGIN_NAME} plugin requires the \`configurationPath\` option: set it on the plugin's entry in nx.json (or on the gate target) to the workspace-relative path of the codependix configuration file.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
+  }
+}
 
 /**
  * Root of the workspace-level project, which inference skips.

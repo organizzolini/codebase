@@ -20,6 +20,12 @@ entry, while a missed one leaves a real change unpublished.
 described packages as versioned by the commits touching their own paths; this
 records what Nx actually does, and that we chose to keep it.
 
+Amended by [ADR 0025](0025-run-the-workspace-tools-from-a-configuration-project.md):
+`projects/configuration` is the exception. It is in the project graph and every
+project depends on it, but `scripts/release/version-packages.sh` ignores it for
+the release, so a commit that edits only tooling configuration releases no
+package. Changes to `nx.json`, the lockfile, and other declared inputs still do.
+
 ## Considered options
 
 - **Nx version plans.** Rejected. `nx release plan` counts only the files inside

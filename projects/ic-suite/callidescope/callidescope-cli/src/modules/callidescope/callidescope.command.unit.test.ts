@@ -51,6 +51,9 @@ import type { CallGraphResult, ProjectReport } from "@callidescope/core";
 import type { UnresolvedEntryPointAddress } from "@callidescope/graph";
 import type { MockInstance } from "vitest";
 
+/** The workspace configuration every run must be pointed at with `--config`. */
+const CONFIGURATION_PATH = "callidescope.config.ts";
+
 /** Builds a resolved configuration with no destinations configured. */
 function buildConfiguration(
   overrides: Partial<ResolvedCallidescopeConfiguration> = {},
@@ -214,7 +217,7 @@ describe(CallidescopeCommand, () => {
       .mockResolvedValue({
         authored: {},
         configuration,
-        path: undefined,
+        path: "/workspace/callidescope.config.ts",
       });
   }
 
@@ -487,7 +490,7 @@ describe(CallidescopeCommand, () => {
   // 🏃 Running
 
   it("traces the workspace and prints a report", async () => {
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(callidescopeService.trace).toHaveBeenCalledTimes(1);
     // One write: the report is a single rendered document now.
@@ -499,7 +502,7 @@ describe(CallidescopeCommand, () => {
     // covered — the resolver reported the override, and `resolveLimits`
     // applied one when handed it — and the flag was still inert against every
     // gate, because nothing carried the one to the other. This is that carry.
-    await command.run([], { maximumDepth: "3" });
+    await command.run([], { config: CONFIGURATION_PATH, maximumDepth: "3" });
 
     expect(callidescopeService.trace).toHaveBeenCalledWith(
       expect.objectContaining({ limitOverrides: { maximumDepth: 3 } }),
@@ -507,7 +510,7 @@ describe(CallidescopeCommand, () => {
   });
 
   it("hands the trace no overrides when no limit flag was written", async () => {
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(callidescopeService.trace).toHaveBeenCalledWith(
       expect.objectContaining({ limitOverrides: {} }),
@@ -519,7 +522,7 @@ describe(CallidescopeCommand, () => {
     // subcommand arrives here as an operand. Tracing the whole workspace and
     // reporting success would be a worse answer to a typo than the
     // `unknown command` it replaced.
-    await command.run(["deep"], {});
+    await command.run(["deep"], { config: CONFIGURATION_PATH });
 
     expect(callidescopeService.trace).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(1);
@@ -531,7 +534,7 @@ describe(CallidescopeCommand, () => {
   });
 
   it("logs the start of a trace with the working directory as its root", async () => {
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.debug).toHaveBeenCalledWith(
       "🔭 Starting a call-stack trace",
@@ -543,7 +546,7 @@ describe(CallidescopeCommand, () => {
   it("logs the finish of a trace with its findings", async () => {
     stubDeepStack();
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.info).toHaveBeenCalledWith(
       "🔭 Finished a call-stack trace",
@@ -555,7 +558,7 @@ describe(CallidescopeCommand, () => {
   it("prints markdown by default", async () => {
     const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     const printed = String(write.mock.calls[0]?.[0] ?? "");
 
@@ -566,7 +569,7 @@ describe(CallidescopeCommand, () => {
   it("prints json when the format flag asks for it", async () => {
     outputJsonService.buildReport.mockReturnValue('{"summary":{}}\n');
 
-    await command.run([], { format: "json" });
+    await command.run([], { config: CONFIGURATION_PATH, format: "json" });
 
     expect(outputJsonService.buildReport).toHaveBeenCalledTimes(1);
   });
@@ -587,7 +590,7 @@ describe(CallidescopeCommand, () => {
   it("refuses a format nobody recognizes rather than printing markdown", async () => {
     const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
-    await command.run([], { format: "markdwon" });
+    await command.run([], { config: CONFIGURATION_PATH, format: "markdwon" });
 
     expect(process.exitCode).toBe(1);
     expect(write).not.toHaveBeenCalled();
@@ -622,7 +625,7 @@ describe(CallidescopeCommand, () => {
 
     const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
-    await command.run([], { format: "mermaid" });
+    await command.run([], { config: CONFIGURATION_PATH, format: "mermaid" });
 
     const printed = String(write.mock.calls[0]?.[0] ?? "");
 
@@ -654,7 +657,7 @@ describe(CallidescopeCommand, () => {
     );
     outputMarkdownService.sync.mockReturnValue(true);
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     const written = outputMarkdownService.sync.mock.calls.map(
       ([call]) => call.destination.path,
@@ -702,7 +705,7 @@ describe(CallidescopeCommand, () => {
       }),
     );
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     const [report, diagram] = outputMarkdownService.sync.mock.calls.map(
       ([call]) => call.content,
@@ -721,7 +724,7 @@ describe(CallidescopeCommand, () => {
       buildProjectWrite({ markdown: buildDestination("docs/CALLS.md") }),
     );
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     const written = outputMarkdownService.sync.mock.calls.map(
       ([call]) => call.destination.path,
@@ -760,7 +763,7 @@ describe(CallidescopeCommand, () => {
       }),
     );
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     const [report, diagram] = outputMarkdownService.sync.mock.calls.map(
       ([call]) => call.content,
@@ -778,13 +781,13 @@ describe(CallidescopeCommand, () => {
       buildProjectWrite({ markdown: buildDestination("README.md") }),
     );
 
-    await command.run([], { check: "reports" });
+    await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
 
   it("leaves the exit code alone when nothing was found", async () => {
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -792,7 +795,7 @@ describe(CallidescopeCommand, () => {
   it("fails when a stack exceeded the limit", async () => {
     stubDeepStack();
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -800,7 +803,7 @@ describe(CallidescopeCommand, () => {
   it("names a stack that is too deep as its own finding", async () => {
     stubDeepStack();
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     // Never worded as staleness: one says the code calls too far down, the
     // other says the checkout has not caught up, and they are fixed
@@ -815,7 +818,7 @@ describe(CallidescopeCommand, () => {
   it("passes over a stack that is too deep when only reports are checked", async () => {
     stubDeepStack();
 
-    await command.run([], { check: "reports" });
+    await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -825,7 +828,7 @@ describe(CallidescopeCommand, () => {
   it("fails when a callable exceeded the breadth limit", async () => {
     stubWideCallable();
 
-    await command.run([], { check: "breadth" });
+    await command.run([], { check: "breadth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -833,7 +836,7 @@ describe(CallidescopeCommand, () => {
   it("names a callable that calls too much directly as its own finding", async () => {
     stubWideCallable();
 
-    await command.run([], { check: "breadth" });
+    await command.run([], { check: "breadth", config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Found callables calling too much directly",
@@ -845,7 +848,7 @@ describe(CallidescopeCommand, () => {
   it("passes over a wide callable when only depth is checked", async () => {
     stubWideCallable();
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -866,7 +869,7 @@ describe(CallidescopeCommand, () => {
       ),
     );
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(callidescopeService.trace).toHaveBeenCalledTimes(1);
     expect(process.exitCode).toBeUndefined();
@@ -908,7 +911,7 @@ describe(CallidescopeCommand, () => {
       ),
     );
 
-    await command.run([], { check: "breadth" });
+    await command.run([], { check: "breadth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
@@ -926,7 +929,7 @@ describe(CallidescopeCommand, () => {
     // having nothing to judge.
     stubTrace(buildCallGraphResult({ summary: buildEmptySummary() }));
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -934,7 +937,7 @@ describe(CallidescopeCommand, () => {
   it("names an empty trace as its own finding", async () => {
     stubTrace(buildCallGraphResult({ summary: buildEmptySummary() }));
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith("🔭 Traced nothing", undefined, {
       projectCount: 0,
@@ -946,7 +949,7 @@ describe(CallidescopeCommand, () => {
     // would otherwise publish an empty report over a real one.
     stubTrace(buildCallGraphResult({ summary: buildEmptySummary() }));
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -966,7 +969,7 @@ describe(CallidescopeCommand, () => {
   it("fails a run whose trace hit a project it could not read", async () => {
     stubUnreadableProject();
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -974,7 +977,7 @@ describe(CallidescopeCommand, () => {
   it("names the project it could not read", async () => {
     stubUnreadableProject();
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project it could not read",
@@ -993,7 +996,7 @@ describe(CallidescopeCommand, () => {
     configureJsonDestination();
     stubUnreadableProject();
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(1);
@@ -1025,7 +1028,7 @@ describe(CallidescopeCommand, () => {
   it("fails a run whose trace hit a project configuration it could not read", async () => {
     stubUnreadableProjectConfiguration();
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -1033,7 +1036,7 @@ describe(CallidescopeCommand, () => {
   it("names the project configuration it could not read", async () => {
     stubUnreadableProjectConfiguration();
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1049,7 +1052,7 @@ describe(CallidescopeCommand, () => {
     configureJsonDestination();
     stubUnreadableProjectConfiguration();
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(1);
@@ -1058,7 +1061,7 @@ describe(CallidescopeCommand, () => {
   it("fails a run whose trace hit a project configuration setting a field it may not", async () => {
     stubDisallowedProjectConfigurationField();
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -1066,7 +1069,7 @@ describe(CallidescopeCommand, () => {
   it("names the project configuration field it may not set", async () => {
     stubDisallowedProjectConfigurationField();
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1089,7 +1092,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -1103,7 +1106,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1144,7 +1147,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1185,7 +1188,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1206,7 +1209,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1236,7 +1239,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
       "🔭 Rejected a project configuration",
@@ -1258,7 +1261,7 @@ describe(CallidescopeCommand, () => {
       },
     ]);
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(1);
@@ -1267,7 +1270,7 @@ describe(CallidescopeCommand, () => {
   it("leaves a run whose declared addresses all resolve unaffected", async () => {
     stubUnresolvedEntryPointAddresses([]);
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBeUndefined();
     expect(logger.error).not.toHaveBeenCalled();
@@ -1279,7 +1282,7 @@ describe(CallidescopeCommand, () => {
     // call graph has moved looks like. The depth gate has no opinion about it.
     outputJsonService.sync.mockReturnValue(false);
 
-    await command.run([], { check: "depth" });
+    await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
     expect(process.exitCode).toBeUndefined();
@@ -1288,27 +1291,27 @@ describe(CallidescopeCommand, () => {
   it("leaves every configured destination alone on a bare run", async () => {
     configureJsonDestination();
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
   });
 
   it("refuses a check flag carrying no value", async () => {
-    await command.run([], { check: true });
+    await command.run([], { check: true, config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 
   it("refuses an empty check set", async () => {
-    await command.run([], { check: "" });
+    await command.run([], { check: "", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
   });
 
   it("refuses a check name it does not accept, and says what it takes", async () => {
-    await command.run([], { check: "limits" });
+    await command.run([], { check: "limits", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
@@ -1323,7 +1326,11 @@ describe(CallidescopeCommand, () => {
   });
 
   it("refuses writing and checking reports in one run", async () => {
-    await command.run([], { check: "reports", write: true });
+    await command.run([], {
+      check: "reports",
+      config: CONFIGURATION_PATH,
+      write: true,
+    });
 
     expect(process.exitCode).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
@@ -1341,7 +1348,7 @@ describe(CallidescopeCommand, () => {
     );
     outputJsonService.sync.mockReturnValue(true);
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).toHaveBeenCalledTimes(1);
   });
@@ -1361,7 +1368,11 @@ describe(CallidescopeCommand, () => {
     );
     outputJsonService.sync.mockReturnValue(true);
 
-    await command.run([], { json: "flagged.json", write: true });
+    await command.run([], {
+      config: CONFIGURATION_PATH,
+      json: "flagged.json",
+      write: true,
+    });
 
     expect(outputJsonService.sync.mock.calls[0]?.[0].destination).toStrictEqual(
       {
@@ -1392,7 +1403,11 @@ describe(CallidescopeCommand, () => {
     );
     outputMarkdownService.sync.mockReturnValue(true);
 
-    await command.run([], { markdown: "flagged.md", write: true });
+    await command.run([], {
+      config: CONFIGURATION_PATH,
+      markdown: "flagged.md",
+      write: true,
+    });
 
     expect(
       outputMarkdownService.sync.mock.calls[0]?.[0].destination,
@@ -1417,7 +1432,7 @@ describe(CallidescopeCommand, () => {
   ])(
     "refuses %s when the configuration declares no such destination",
     async (flag, options, field) => {
-      await command.run([], options);
+      await command.run([], { ...options, config: CONFIGURATION_PATH });
 
       expect(process.exitCode).toBe(1);
       expect(outputJsonService.sync).not.toHaveBeenCalled();
@@ -1436,7 +1451,7 @@ describe(CallidescopeCommand, () => {
   );
 
   it("writes nothing when no destination is configured", async () => {
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync).not.toHaveBeenCalled();
     expect(outputMarkdownService.sync).not.toHaveBeenCalled();
@@ -1454,7 +1469,7 @@ describe(CallidescopeCommand, () => {
     );
     outputJsonService.sync.mockReturnValue(false);
 
-    await command.run([], { check: "reports" });
+    await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -1480,7 +1495,7 @@ describe(CallidescopeCommand, () => {
     );
     outputMarkdownService.sync.mockReturnValue(false);
 
-    await command.run([], { check: "reports" });
+    await command.run([], { check: "reports", config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
   });
@@ -1499,13 +1514,16 @@ describe(CallidescopeCommand, () => {
     );
     outputJsonService.sync.mockReturnValue(true);
 
-    await command.run([], { write: true });
+    await command.run([], { config: CONFIGURATION_PATH, write: true });
 
     expect(outputJsonService.sync.mock.calls[0]?.[0].check).toBe(false);
   });
 
   it("traces only the directories a flag named", async () => {
-    await command.run([], { directories: ["alpha"] });
+    await command.run([], {
+      config: CONFIGURATION_PATH,
+      directories: ["alpha"],
+    });
 
     expect(
       callidescopeService.trace.mock.calls[0]?.[0].directories,
@@ -1526,7 +1544,7 @@ describe(CallidescopeCommand, () => {
     process.stdin.isTTY = true;
     vi.spyOn(configurationService, "promptForSelect").mockResolvedValue("json");
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(configurationService.promptForSelect).toHaveBeenCalledWith({
       choices: ["markdown", "mermaid", "json"],
@@ -1542,7 +1560,7 @@ describe(CallidescopeCommand, () => {
     process.stdin.isTTY = true;
     vi.spyOn(configurationService, "promptForSelect");
 
-    await command.run([], { format: "mermaid" });
+    await command.run([], { config: CONFIGURATION_PATH, format: "mermaid" });
 
     expect(configurationService.promptForSelect).not.toHaveBeenCalled();
   });
@@ -1552,7 +1570,7 @@ describe(CallidescopeCommand, () => {
   it("traces without prompting for a format when stdin is not a terminal", async () => {
     vi.spyOn(configurationService, "promptForSelect");
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(configurationService.promptForSelect).not.toHaveBeenCalled();
     expect(callidescopeService.trace).toHaveBeenCalledTimes(1);
@@ -1567,7 +1585,7 @@ describe(CallidescopeCommand, () => {
       new InputError("An output format (--format) was not answered."),
     );
 
-    await command.run([], {});
+    await command.run([], { config: CONFIGURATION_PATH });
 
     expect(process.exitCode).toBe(1);
     expect(callidescopeService.trace).not.toHaveBeenCalled();
@@ -1580,6 +1598,8 @@ describe(CallidescopeCommand, () => {
       throw new Error("Trace failed.");
     });
 
-    await expect(command.run([], {})).rejects.toThrow("Trace failed.");
+    await expect(
+      command.run([], { config: CONFIGURATION_PATH }),
+    ).rejects.toThrow("Trace failed.");
   });
 });

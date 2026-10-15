@@ -352,8 +352,8 @@ export interface CodometerSymbolMatcher {
 
 /** Arguments accepted when loading a configuration file. */
 export interface LoadConfigurationArguments {
-  configurationPath?: string | undefined;
-  searchDirectory?: string | undefined;
+  /** The configuration file, relative to the cwd or the repository root. */
+  configurationPath: string;
 }
 
 /**

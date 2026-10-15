@@ -28,10 +28,11 @@ two fields are required:
 
 Unknown keys are **rejected**, so a misspelled field — or `aliases`, which was
 removed outright — fails the load rather than quietly doing nothing. Check your
-entry took effect by listing the generators:
+entry took effect by listing the generators. Every `conformetry` command
+requires `--config <path>` — there is no default configuration file:
 
 ```bash
-conformetry templates
+conformetry templates --config projects/configuration/conformetry.config.ts
 ```
 
 A generator with neither `inputs` nor `instances` is legal: it renders a fixed
