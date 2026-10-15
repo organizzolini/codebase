@@ -8,6 +8,7 @@
  * Invoked by Husky's pre-commit hook via `npx lint-staged`.
  */
 import { execFileSync } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 
 /**
@@ -32,7 +33,21 @@ import path from "node:path";
  * The per-project `codependix-gate` replaced the first and was measured on
  * macOS at up to 1.3 GB (`lexico-api`), under that figure.
  */
-const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : 4;
+const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
+
+/**
+ * How many tasks a local run may execute at once: two fewer than the CPU
+ * count, so the machine stays usable, within a floor of 4 and a ceiling of 12.
+ * A cold run of every target at 4 measured 31m24s against a critical path of
+ * 1m24s and used 140% of an 18-core machine, so the fixed 4 left the cores
+ * idle. Memory bounds it from the other side: the heaviest tasks peak near
+ * 1.6 GB, so each slot is budgeted 3 GB of the machine's total memory.
+ */
+function getLocalParallelism(): number {
+  const byCpu = os.availableParallelism() - 2;
+  const byMemory = Math.floor(os.totalmem() / 3 / 1024 ** 3);
+  return Math.max(4, Math.min(byCpu, byMemory, 12));
+}
 
 /**
  * Renders staged paths as one workspace-relative `--files=` flag each.
@@ -172,6 +187,15 @@ const config = {
   // executable name.
   "*": (files: string[]): string[] => [
     `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedRevisionFlags(files)}`,
+  ],
+
+  // Conformetry is a second glob entry rather than a second command under "*"
+  // because lint-staged runs the commands of one entry in sequence and the
+  // entries of different globs at once. Run after the affected set, it cost its
+  // own project graph build (12-18s) on top of it; run beside it, the two
+  // builds overlap, and conformetry's tasks are mostly cache hits. It cannot
+  // join the `nx affected` run, which would scope it to the changed projects.
+  "**/*": (): string[] => [
     "pnpm exec nx run-many --targets=conformetry-validate --outputStyle=static",
   ],
 };
