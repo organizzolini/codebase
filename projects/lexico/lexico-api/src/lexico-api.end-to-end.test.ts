@@ -7,9 +7,9 @@ describe("lexico api end-to-end suite", () => {
     it("applies defaults for an empty config", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
-        LEXICO_API_CORS_ORIGINS: ["http://localhost:3000"],
+        LEXICO_API_CORS_ORIGINS: ["http://localhost:7797"],
         LEXICO_API_LIGHTSHIP_PORT: 9000,
-        LEXICO_API_PORT: 8398,
+        LEXICO_API_PORT: 5003,
         LEXICO_POSTGRES_DATABASE: "lexico_development",
         LEXICO_POSTGRES_HOST: "localhost",
         LEXICO_POSTGRES_PASSWORD: "lexico_password",
