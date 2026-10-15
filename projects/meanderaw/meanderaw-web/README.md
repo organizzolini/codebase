@@ -1,7 +1,7 @@
 ## Develop
 
 ```bash
-nx run meanderaw-web:develop
+nx run meanderaw-web:start
 ```
 
 ## Test

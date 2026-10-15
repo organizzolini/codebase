@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-nx run lexico-web:develop
+nx run lexico-web:start
 ```
 
 ## Architecture Overview

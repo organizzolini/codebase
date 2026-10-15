@@ -334,7 +334,7 @@ pnpm install            # Should complete with no errors
 nx run lexico-web:supabase:start  # All services should start
 
 # 5. Start dev server
-nx run lexico-web:develop   # Should be accessible at localhost:3000
+nx run lexico-web:start   # Should be accessible at localhost:3000
 
 # 6. Run tests
 nx run-many --target=test --all  # Tests should pass

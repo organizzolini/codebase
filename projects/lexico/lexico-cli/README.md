@@ -59,6 +59,24 @@ or `--text` on `library` and `literature` — is asked for only when standard
 input is a terminal; otherwise the command takes its default of no bound or
 "All". A cancelled prompt, like any error a command throws, exits non-zero.
 
+## Moving data between databases
+
+This application does not copy tables between databases. The database
+package's command line does, with `nx run database:start:export` and
+`nx run database:start:import`. It has no default schema, so name the Lexico
+schema with `--schema lexico`, or qualify each table as `lexico.words`.
+A relative `--file` resolves from `projects/database`, so this keeps the dump
+in this project's `data/` directory, where `*.dump` is gitignored:
+
+```bash
+nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --schema lexico --table words --data --ddl --file ../lexico/lexico-cli/data/lexico.dump"
+```
+
+`import --clean` runs without asking, so run `import --dry-run` with the same
+options first to see what it would drop or truncate. See the
+[database README](../../database/README.md#moving-data-between-databases) for
+every option.
+
 ## How it works
 
 Each source has its own module under `src/modules/`, holding the fetcher, the

@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-nx run {{nameKebabCase}}:develop
+nx run {{nameKebabCase}}:start
 ```
 
 ## Architecture Overview
@@ -65,7 +65,7 @@ nx g conformetry:react-hook --name=use-<hook> --project={{nameKebabCase}}
 A route's name is its file stem — `index`, `search`, `word.$id` — and its route
 path is the URL it serves: `/`, `/search`, `/word/$id`. TanStack's route
 generator rewrites the path argument to match the file whenever they disagree,
-and regenerates `src/lib/routeTree.gen.ts` on every `develop` or `build`. Each page is a `<section>` with an `<h1>`, named after its
+and regenerates `src/lib/routeTree.gen.ts` on every `start` or `build`. Each page is a `<section>` with an `<h1>`, named after its
 route — `word.$id` renders `WordIdPage` — inside the `<main>` the root layout
 renders.
 
@@ -92,7 +92,7 @@ pnpm add --filter {{nameKebabCase}} zod
 ### Key Commands
 
 ```bash
-nx run {{nameKebabCase}}:develop      # Development server on http://localhost:3000
+nx run {{nameKebabCase}}:start      # Development server on http://localhost:3000
 nx run {{nameKebabCase}}:build        # Production build into dist/
 nx run {{nameKebabCase}}:preview      # Serve the production build
 nx run {{nameKebabCase}}:vitest       # Unit tests

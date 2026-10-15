@@ -5,3 +5,4 @@ data/*-source
 data/library/*
 !data/library/open-greek-and-latin
 output/**
+*.dump

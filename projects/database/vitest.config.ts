@@ -22,7 +22,7 @@ export default mergeConfig(
       },
       /**
        * Two minutes per `beforeAll`, where the shared default is ten seconds:
-       * the integration suite's one hook pulls and starts a Postgres
+       * an integration suite's hook pulls and starts a Postgres
        * container and migrates it, which takes several seconds on a
        * developer's machine and several times that on a CI runner.
        */

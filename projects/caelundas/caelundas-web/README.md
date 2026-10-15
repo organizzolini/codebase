@@ -1,7 +1,7 @@
 ## Develop
 
 ```bash
-nx run caelundas-web:develop
+nx run caelundas-web:start
 ```
 
 ## Test

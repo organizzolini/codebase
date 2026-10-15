@@ -59,7 +59,7 @@
       "exclude": ["projects/configuration/**"],
       "options": {
         "buildTargetName": "build",
-        "devTargetName": "develop",
+        "devTargetName": "vite-dev",
         "typecheckTargetName": "typecheck"
       },
       "plugin": "@nx/vite/plugin"
@@ -177,6 +177,25 @@
     "globalGenerators": ["@conformetry/nx:sync"]
   },
   "targetDefaults": {
+    "await-health": [
+      {
+        "cache": false,
+        "dependsOn": ["start"],
+        "description": "Block until a running GraphQL API reports healthy, so a dependent target such as a web app's `start` starts only once the API answers. A project opts in with `\"await-health\": { \"options\": { \"url\": \"http://localhost:<port>/graphql\" } }`; `url` may use shell expansion such as `${LEXICO_API_PORT:-5003}`, and the script fails with a message when it is unset. `query` and `expect` default to the `health` query and its `true` answer, and `timeout` to 60 seconds; each can be overridden in the project's options. Never cached: it observes a live process. Starts the project's `start` target through `dependsOn`, and Nx stops that continuous task once nothing depends on it any longer, so the dependent target must also depend on `start` itself.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:generator:nestjs-graphql-application"]
+        },
+        "options": {
+          "command": "./scripts/nx/await-health.sh --url \"{args.url}\" --query '{args.query}' --expect '{args.expect}' --timeout '{args.timeout}'",
+          "cwd": "{workspaceRoot}",
+          "expect": "\"health\":true",
+          "forwardAllArgs": false,
+          "query": "{ health }",
+          "timeout": 60
+        }
+      }
+    ],
     "bandit": [
       {
         "cache": true,
@@ -1088,6 +1107,22 @@
         "options": {
           "command": "node --import @swc-node/register/esm-register src/{projectName}.main.ts {projectName}",
           "cwd": "{projectRoot}"
+        }
+      }
+    ],
+    "stop": [
+      {
+        "cache": false,
+        "description": "Stop the process listening on a project's port, so a dev server started by `start` can be shut down from another terminal. A project opts in with `\"stop\": { \"options\": { \"port\": 7797 } }`; `port` may use shell expansion such as `${LEXICO_API_PORT:-5003}`, and the script fails with a message when it is unset. Only listeners are stopped, never clients connected to the port. A listener gets SIGTERM, then SIGKILL after `timeout` seconds (default 10). Succeeds when nothing is listening. To stop a stack in the reverse of the order `start` starts it, give each project's `stop` a `dependsOn` on the stop of whatever depends on it. Never cached: it acts on live processes.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:type:application"]
+        },
+        "options": {
+          "command": "./scripts/nx/stop-port.sh --port \"{args.port}\" --timeout '{args.timeout}'",
+          "cwd": "{workspaceRoot}",
+          "forwardAllArgs": false,
+          "timeout": 10
         }
       }
     ],

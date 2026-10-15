@@ -251,5 +251,5 @@ See the [triage-integration skill](../../../../.agents/skills/triage-integration
 - [src/callidescope-nx.module.ts](src/callidescope-nx.module.ts): Root NestJS module
 - [src/callidescope-nx.constants.ts](src/callidescope-nx.constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
+- [project.json](project.json): Nx targets (`build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template

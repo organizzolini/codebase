@@ -15,7 +15,7 @@
 #   6. docker.sh       — Docker Desktop install + daemon start
 #   7. gpg.sh          — GPG + pinentry-mac + git signing config
 #   8. infra.sh        — terraform, supabase, jq, gh, helm, kubectl + version summary
-#   9. database.sh     — squawk
+#   9. database.sh     — squawk, PostgreSQL 18 client tools (pg_dump, pg_restore)
 
 source ./scripts/local/software/brew.sh
 source ./scripts/local/software/node.sh

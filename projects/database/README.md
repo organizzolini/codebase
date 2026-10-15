@@ -1,6 +1,6 @@
 # 🐘 Database
 
-The shared Postgres package every database-backed project connects through.
+The shared Postgres package every database-backed project connects through, and a command line that moves tables between databases.
 
 ## Purpose
 
@@ -254,6 +254,96 @@ Docker must be running.
 
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.
+
+## Moving data between databases
+
+The package is also a command line, `database`, that copies selected tables
+between two Postgres databases through `pg_dump` and `pg_restore`. Each
+command names its database by URI, so it needs no `<PROJECT>_POSTGRES_*`
+variable and opens no connection at startup. Run it through Nx; `start` runs
+with the working directory at `projects/database`, so a relative `--file`
+resolves from there, and `*.dump` is gitignored there:
+
+```bash
+pnpm exec nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run database:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
+```
+
+### Options
+
+| Option               | Command | Does                                                                              |
+| -------------------- | ------- | --------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | export  | Required. The database to dump                                                    |
+| `--target-uri <uri>` | import  | Required. The database to restore into                                            |
+| `--table <name>`     | both    | Required, repeatable. A table to move                                             |
+| `--schema <name>`    | both    | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
+| `--data`, `--ddl`    | both    | Rows, table definitions (DDL), or both; at least one is required                  |
+| `--file <path>`      | both    | Required. The dump to write or read                                               |
+| `--overwrite`        | export  | Replace `--file` when it exists                                                   |
+| `--clean`            | import  | Clear the selected tables before restoring, with no confirmation                  |
+| `--dry-run`          | both    | Validate and print the plan without connecting to a database or changing anything |
+
+Qualified names (`schema.table`) are used as written. There is no default
+schema: without `--schema`, an unqualified `--table` fails before anything
+runs, naming it. Naming one table twice moves it once.
+
+### Export
+
+`export` writes a custom-format dump, the only format it produces. It passes
+`--strict-names` to `pg_dump`, so a table that does not exist fails the run
+with a message naming it and the source, never a smaller dump. An existing
+`--file` is refused unless `--overwrite` is given.
+
+`pg_dump` writes to a `.partial` file beside `--file`, which replaces it only
+once the dump succeeds. A failed `--overwrite` therefore keeps the old dump,
+and the partial file is removed. `--dry-run` still checks that `pg_dump` is
+installed, then prints the source database, what each table would export, and
+whether `--file` would be created or overwritten.
+
+### Import
+
+`import` restores the selected tables in one transaction that stops at the
+first error, so by default it deletes nothing and a conflict leaves the target
+as it was. Before any connection opens it lists the dump and fails when it
+lacks the rows or definitions `--data` and `--ddl` ask for. Owners and
+grants are not restored; the target's own role owns what it creates.
+`--ddl` without `--clean` fails when a selected table already exists on the
+target.
+`--dry-run` stops there, printing what the dump holds of each table and what
+`--clean` would drop or truncate.
+
+`--clean` empties the selected tables first and never asks for confirmation,
+in a terminal or out of one. Run `import --dry-run` with the same options
+before `import --clean` to see the tables, database, and host it would clear:
+
+- With `--ddl`, `pg_restore --clean --if-exists` drops and recreates them.
+- With `--data` alone, a `TRUNCATE` on exactly the selected tables empties
+  them, without `CASCADE`. When a table outside the selection references one,
+  the import refuses and lists the `--table` options to add.
+
+The truncate commits on its own before the restore, so the pair is not atomic:
+a restore that fails afterwards leaves the tables empty, and the error says so.
+Re-run the import from the same file.
+A data-only import of some tables does not restore the values of the
+sequences behind them.
+
+### Requirements
+
+Both commands need the PostgreSQL 18 client tools, `pg_dump` for export and
+`pg_restore` for import, and check their version before any database work. A
+missing tool or another major version fails with the setup script to run:
+`scripts/local/software/database.sh` installs them with Homebrew, and the
+devcontainer installs them too.
+
+### Credentials
+
+A URI's password reaches the client tools only through their `PG*`
+environment variables, never their arguments, and is masked in every log line
+and error. The tools run with every inherited `PG*` variable removed, and a
+URI carrying query parameters is refused, so nothing can set a TLS mode or any
+other connection option. The truncate for `--clean --data` connects through
+the `pg` driver with no `ssl` option at all. A server that requires TLS is
+therefore not reachable through these commands today.
 
 ## Test
 
