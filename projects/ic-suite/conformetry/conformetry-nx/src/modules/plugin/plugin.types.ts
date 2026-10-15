@@ -9,8 +9,11 @@ import type { Tree } from "@nx/devkit";
 export interface InferredTarget {
   readonly cache: boolean;
   readonly executor: string;
-  /** Files whose change must invalidate the cached result. */
-  readonly inputs?: string[];
+  /**
+   * What must invalidate the cached result: files and globs, or the output of
+   * a command (`runtime`).
+   */
+  readonly inputs?: (string | { readonly runtime: string })[];
   readonly options: Record<string, unknown>;
 }
 

@@ -118,6 +118,33 @@ function runGit(gitArguments: string[]): string {
   }).trim();
 }
 
+/**
+ * Hands `nx affected` the staged changes, correcting the one change it cannot
+ * see: a conformetry template.
+ *
+ * `.nxignore` hides some template files from Nx, so editing one selects no
+ * project. With a template staged, this passes the staged files plus the
+ * conformetry configuration, an input of every instance project, so all of
+ * them are selected. The edit still reaches each project's cache key through
+ * the template hash input the plugin declares, so each one re-validates.
+ *
+ * Staged files are counted in full, as with `--files`, so a commit that stages
+ * a template loses the field-level diff of `package.json` and the lockfile.
+ */
+function getStagedChangeFlags(files: string[]): string {
+  const stagedTemplates = files.some((file) =>
+    path
+      .relative(process.cwd(), file)
+      .startsWith("configuration/conformetry-templates/"),
+  );
+
+  if (!stagedTemplates) {
+    return getStagedRevisionFlags(files);
+  }
+
+  return `${getStagedFilesFlags(files)} --files=configuration/conformetry.config.ts`;
+}
+
 const config = {
   // 🔒 Lockfile integrity
   // Run as the `validation` CLI rather than through its Nx target, which would
@@ -155,10 +182,10 @@ const config = {
   // cache-hits the rest. Doing it by hand duplicated that, and every entry
   // cost another project graph build.
 
-  // Conformetry is scoped like the rest. A project needs validating when its own
-  // files, the conformetry configuration, or a conformetry template change, and
-  // `nx affected` sees all three: `.nxignore` hides only the template files Nx
-  // would infer a project or target from.
+  // Conformetry is scoped like the rest: a project needs validating when its own
+  // files, the conformetry configuration, or a conformetry template change. The
+  // template case is the one `nx affected` cannot always see, so
+  // `getStagedChangeFlags` covers it.
 
   // Each derivation synchronization is named alongside `lint-code` rather
   // than reached through its `dependsOn`, for the reason the Lint Codebase
@@ -189,7 +216,7 @@ const config = {
   // without a shell, so `NX_DAEMON=false nx ...` would be parsed as the
   // executable name.
   "*": (files: string[]): string[] => [
-    `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedRevisionFlags(files)}`,
+    `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
   ],
 };
 

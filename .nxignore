@@ -1,6 +1,8 @@
 # Files in a conformetry template that make Nx infer a project or a target from
-# the template itself. Every other template file stays visible, so editing one
-# selects every instance project and busts its cached `conformetry-validate`.
+# the template itself. Nx cannot see them, so `nx affected` selects nothing when
+# one changes; `run-affected.sh` and lint-staged correct that, and the
+# `conformetry-validate` target hashes the template folders from disk, so its
+# cache key still changes.
 configuration/conformetry-templates/**/project.json
 configuration/conformetry-templates/**/package.json
 configuration/conformetry-templates/**/pyproject.toml

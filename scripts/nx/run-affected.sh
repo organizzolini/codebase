@@ -9,12 +9,20 @@
 # `configuration/lint-staged.config.ts`).
 #
 # 1. List the files changed between NX_BASE and NX_HEAD.
-# 2. Find the spelling files. They over-select: Nx decides affected per project,
-#    not per target, and `spell-check` lists the dictionaries as inputs, so one
-#    new word selected every project for every target. Dropped unless
-#    INCLUDE_SPELLING is "true".
-# 3. With none, run `nx affected --base --head`. Otherwise give Nx the list
-#    without them over `--stdin`.
+# 2. Find the files that would mislead Nx for this target:
+#    - Spelling files over-select. Nx decides affected per project, not per
+#      target, and `spell-check` lists the dictionaries as inputs, so one new
+#      word selected every project for every target. Dropped unless
+#      INCLUDE_SPELLING is "true".
+#    - Conformetry templates under-select. `.nxignore` hides some of them from
+#      Nx, so editing one selected nothing. With INCLUDE_TEMPLATES, a changed
+#      template adds `configuration/conformetry.config.ts`, an input of every
+#      instance project, to the list. The edit still reaches the project's
+#      cache key through the template hash input, so each selected project
+#      re-validates. Set it only for the target that runs
+#      `conformetry-validate`, since selection is per project.
+# 3. With nothing to correct, run `nx affected --base --head`. Otherwise give
+#    Nx the corrected list over `--stdin`.
 #
 # `--stdin` is the fallback because Nx reads every file it is handed as changed
 # in full: a lockfile then touches every project, and a one-line version bump
@@ -30,13 +38,19 @@
 #   ARGUMENTS         extra `nx affected` flags, space separated
 #   NX_BASE, NX_HEAD  the revisions, as `nrwl/nx-set-shas` exports them
 #   INCLUDE_SPELLING  "true" to keep spelling files in the list
+#   INCLUDE_TEMPLATES "true" to select every conformetry instance on a
+#                     template change
 #   SPELLING_PATHS    extended regex overriding which files are spelling
+#   TEMPLATE_PATHS    extended regex overriding which files are templates
 
 set -euo pipefail
 
 DEFAULT_SPELLING_PATHS='^configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
+DEFAULT_TEMPLATE_PATHS='^configuration/conformetry-templates/'
+TEMPLATE_SELECTOR="configuration/conformetry.config.ts"
 
 spelling_paths="${SPELLING_PATHS:-${DEFAULT_SPELLING_PATHS}}"
+template_paths="${TEMPLATE_PATHS:-${DEFAULT_TEMPLATE_PATHS}}"
 
 arguments=()
 read -ra arguments <<<"${ARGUMENTS:-}"
@@ -77,23 +91,45 @@ if [[ -z "${NX_BASE:-}" || -z "${NX_HEAD:-}" ]]; then
   exit 1
 fi
 
-# Steps 1 and 2. The list is only built when spelling files are to be dropped.
+# Steps 1 and 2. The list is only built when this target asks for a correction.
 changed=""
 spelling=""
-if [[ "${INCLUDE_SPELLING:-false}" != "true" ]]; then
+templates=""
+drop_spelling=false
+add_templates=false
+[[ "${INCLUDE_SPELLING:-false}" != "true" ]] && drop_spelling=true
+[[ "${INCLUDE_TEMPLATES:-false}" == "true" ]] && add_templates=true
+
+if [[ "${drop_spelling}" == true || "${add_templates}" == true ]]; then
   changed="$(list_changed_files)"
+fi
+if [[ "${drop_spelling}" == true ]]; then
   spelling="$(matching "${spelling_paths}" "${changed}")"
 fi
+if [[ "${add_templates}" == true ]]; then
+  templates="$(matching "${template_paths}" "${changed}")"
+fi
 
-# Step 3, nothing to drop: Nx diffs the revisions itself.
-if [[ -z "${spelling}" ]]; then
+# Step 3, nothing to correct: Nx diffs the revisions itself.
+if [[ -z "${spelling}" && -z "${templates}" ]]; then
   exec pnpm exec nx affected --base="${NX_BASE}" --head="${NX_HEAD}" \
     --target="${TARGET}" ${arguments[@]+"${arguments[@]}"}
 fi
 
-# Step 3, dropping: hand Nx the list without the spelling files.
-report "✂️ Not affecting ${TARGET} with spelling files:" "${spelling}"
+# Step 3, corrected: hand Nx the rewritten list.
+corrected="${changed}"
 
-excluding "${spelling_paths}" "${changed}" \
+if [[ -n "${spelling}" ]]; then
+  report "✂️ Not affecting ${TARGET} with spelling files:" "${spelling}"
+  corrected="$(excluding "${spelling_paths}" "${corrected}")"
+fi
+
+if [[ -n "${templates}" ]]; then
+  report "🧬 Selecting every conformetry instance for ${TARGET}, templates changed:" \
+    "${templates}"
+  corrected="$(printf '%s\n%s' "${corrected}" "${TEMPLATE_SELECTOR}")"
+fi
+
+printf '%s\n' "${corrected}" \
   | pnpm exec nx affected --stdin --target="${TARGET}" \
     ${arguments[@]+"${arguments[@]}"}

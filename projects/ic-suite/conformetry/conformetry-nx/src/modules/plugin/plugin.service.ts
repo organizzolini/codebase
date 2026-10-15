@@ -28,6 +28,7 @@ import {
   PROJECT_CONFIGURATION_FILENAME,
   WORKSPACE_PROJECT_ROOT,
 } from "./plugin.constants";
+import { buildTemplateHashCommand } from "./plugin.utilities";
 
 import type { ConformetryPluginOptions } from "../options/options.types";
 import type {
@@ -208,28 +209,38 @@ export class PluginService {
   }
 
   /**
-   * Builds one input glob per configured generator's template folder.
+   * Builds the inputs that invalidate a validation when a template changes: one
+   * glob per configured generator's template folder, and one command hashing
+   * the folders' contents.
    *
    * A template's own files are not part of `configurationPath` or the emitted
    * plugin, so without this an instance's validate target would keep a stale
    * cache hit across an edit to the very template it is measured against —
    * which is exactly how a broken template placeholder once reached every
    * matched instance's `package.json` unnoticed.
+   *
+   * The globs read Nx's file map, which leaves out whatever `.nxignore`
+   * hides, and a workspace may hide template files there: a template holding
+   * a `project.json` would otherwise register as a project. The command reads
+   * the disk instead, so no template file escapes the cache key.
    */
   private async resolveTemplateInputs(args: {
     configurationPath: string;
-  }): Promise<string[]> {
+  }): Promise<(string | { runtime: string })[]> {
     const configuration =
       await this.configurationService.loadConformetryConfiguration(
         args.configurationPath,
       );
-    const templatePaths = new Set(
-      configuration.map((generator) => generator.templatePath),
-    );
+    const templatePaths = [
+      ...new Set(configuration.map((generator) => generator.templatePath)),
+    ];
 
-    return [...templatePaths].map(
-      (templatePath) => `{workspaceRoot}/${templatePath}/**/*`,
-    );
+    return [
+      ...templatePaths.map(
+        (templatePath) => `{workspaceRoot}/${templatePath}/**/*`,
+      ),
+      { runtime: buildTemplateHashCommand(templatePaths) },
+    ];
   }
 
   /** Reads every configured generator's template folder. */
@@ -305,8 +316,8 @@ export class PluginService {
           // The executor refuses to run against a drifted plugin, so the
           // configuration and the emitted plugin are inputs: without them a
           // cache hit would skip that check entirely. Every configured
-          // template folder joins them for the same reason — see
-          // `resolveTemplateInputs`.
+          // template folder, and a hash of their contents, joins them for the
+          // same reason — see `resolveTemplateInputs`.
           inputs: [
             "default",
             `{workspaceRoot}/${pluginOptions.configurationPath}`,
