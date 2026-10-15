@@ -48,8 +48,6 @@ nx run lexico-cli:start:clear
 | `library` | Library and work metadata |
 | `literature` | Lines and tokens for loaded texts |
 | `clear` | Empties ingested tables so a run can start clean |
-| `export` | Dumps selected tables to a file, see [Moving data](#moving-data-between-databases) |
-| `import` | Restores selected tables from such a file, see [Moving data](#moving-data-between-databases) |
 
 The lemma range on `dictionary` is what makes a long scrape restartable: a run
 that stops partway is resumed by pointing `--startLemma` at where it left off
@@ -63,105 +61,18 @@ input is a terminal; otherwise the command takes its default of no bound or
 
 ## Moving data between databases
 
-`export` and `import` copy selected Lexico tables between two databases, each
-named by a connection URI. Neither opens this application's own database
-connection, so neither reads `LEXICO_POSTGRES_HOST` and its siblings; the URI
-is the only database they touch. `LEXICO_POSTGRES_SCHEMA` (default `lexico`) is
-read for one thing, the schema that unqualified table names resolve in.
-
-The `start` configurations run from `projects/lexico/lexico-cli`, so a relative
-`--file` such as `lexico.dump` is written to and read from that directory, where
-`*.dump` is gitignored. Pass an absolute path to keep the dump elsewhere.
+This application does not copy tables between databases. The database
+package's command line does, with `nx run database:start:export` and
+`nx run database:start:import`. It has no default schema, so name the Lexico
+schema with `--namespace lexico`, or qualify each table as `lexico.words`.
+A relative `--file` resolves from `projects/database`, so this keeps the dump
+in this project's `data/` directory, where `*.dump` is gitignored:
 
 ```bash
-nx run lexico-cli:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --table words --table lexemes --data --schema --file lexico.dump"
-nx run lexico-cli:start:import --args="--target-uri postgresql://user:password@localhost:5432/lexico_staging --table words --table lexemes --data --schema --file lexico.dump"
+nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --namespace lexico --table words --data --schema --file ../lexico/lexico-cli/data/lexico.dump"
 ```
 
-The dump is always PostgreSQL's custom format; there is no format option.
-
-| Option | Command | Meaning |
-| ------ | ------- | ------- |
-| `--source-uri <uri>` | `export` | Required. The database to dump from |
-| `--target-uri <uri>` | `import` | Required. The database to restore into |
-| `--table <name>` | both | Required, repeatable. An unqualified name resolves in `LEXICO_POSTGRES_SCHEMA`; a qualified one (`schema.table`) is used as written |
-| `--data` | both | The tables' rows |
-| `--schema` | both | The tables' definitions. Give `--data`, `--schema`, or both; at least one is required |
-| `--file <path>` | both | Required. The dump to write, or to read |
-| `--overwrite` | `export` | Replace `--file` when it exists; otherwise an existing file is refused |
-| `--clean` | `import` | Delete before restoring, after confirmation. See below |
-| `--yes` | `import` | Skip the `--clean` confirmation, for unattended runs |
-| `--dry-run` | `import` | Run every check, print what would happen, and connect to nothing. See below |
-
-Every option is validated before anything runs, and `import` reads the dump's
-table of contents before it connects: a dump that lacks the rows or definitions
-a `--table` asks for fails naming the tables, rather than restoring part of
-what was requested.
-
-A `--table` that names nothing in the source database fails `export` with a message
-naming the table (`No table lexico.nope exists in <source>; check the --table name.`).
-`export` writes beside `--file` and moves the result into place only when
-`pg_dump` succeeds, so a failed export leaves `--file` exactly as it was, even
-with `--overwrite`.
-
-### What `import` does to the target
-
-By default `import` deletes nothing. It restores in a single transaction, so a
-conflict aborts the whole import and leaves the target as it was. A schema
-import aborts when any selected table already exists, and a data import aborts
-on a duplicate key.
-
-`--clean` makes room first, and it differs by what is imported:
-
-- With `--schema`, the selected tables are dropped and recreated
-  (`pg_restore --clean --if-exists`), along with the rows they held.
-- With `--data` alone, exactly the selected tables are truncated. It never
-  cascades: when a table outside the selection references one inside it,
-  `import` refuses and lists the `--table` options to add.
-
-Before either, `import` asks you to confirm, naming the target's host and
-database. When standard input is not a terminal there is nobody to ask, so the
-run fails with the target unchanged unless `--yes` was passed.
-
-A `--clean --data` import is not atomic. The truncate commits before the
-restore starts, so a restore that then fails can leave the selected tables
-empty. The error says so; re-run the import from the same file to refill them.
-
-A data-only dump's sequence values belong to no single table, so `import`
-restores them only when `--table` selects every table in the dump. Importing a
-subset of a dump's tables leaves the target's sequences where they were.
-
-### Previewing an import
-
-`--dry-run` runs every check a real import runs (the options, the `pg_restore`
-version, the file, and the dump's table of contents), then prints a plan and
-exits without connecting to the target, asking, or deleting anything. The plan
-names the target's host and database, the file, what the dump holds of each
-selected table (data, schema, or both), and, with `--clean`, which tables would
-be truncated (`--data`) or dropped and recreated (`--schema`). A selection the
-dump lacks fails exactly as a real import would. `--yes` changes nothing here,
-since a dry run never asks.
-
-```bash
-nx run lexico-cli:start:import --args="--target-uri postgresql://user:password@localhost:5432/lexico_staging --table words --data --clean --file lexico.dump --dry-run"
-```
-
-### Requirements
-
-Both commands run `pg_dump` and `pg_restore`, which must be PostgreSQL 18
-client tools. They are checked before anything runs, and a missing or
-mismatched one fails naming the installer. `scripts/local/software/database.sh`
-installs them, and the devcontainer ships them.
-
-Credentials travel to the tools through `PG*` environment variables, never
-argv, and every URI that is logged or surfaced from a tool error has its
-password masked. A URI needs a user, a host, and a database; a query string is
-refused, and `PG*` variables inherited from your shell are dropped. Together
-that means TLS options, whether set in the environment or in the URI, do not currently
-reach the tools. `pg_dump` and `pg_restore` still use TLS when the server offers
-it, since libpq's default SSL mode is `prefer`. The truncate that `--clean --data`
-runs first does not: it connects through the `pg` driver with no TLS option, so
-against a server that requires TLS that step fails, before anything is truncated.
+See the [database README](../../database/README.md) for every option.
 
 ## How it works
 

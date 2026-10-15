@@ -51,8 +51,9 @@ inputs:
   postgres-client:
     description: |
       Install the PostgreSQL 18 client tools (pg_dump, pg_restore) from the
-      PGDG apt repository, which the lexico-cli export and import integration
-      tests run for real. Ubuntu's own package is older than the server.
+      PGDG apt repository, which the database package's export and import
+      integration tests run for real. Ubuntu's own package is older than
+      the server.
     default: "false"
   trivy:
     description: Install trivy via Homebrew (infrastructure scanning)
@@ -166,7 +167,7 @@ runs:
       run: echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
       shell: bash
 
-    # Only the Test leg asks for this: the lexico-cli integration tests run
+    # Only the Test leg asks for this: the database integration tests run
     # the real `pg_dump` and `pg_restore` against Postgres 18 containers, and
     # a dump from an older client cannot be restored by, or read as, 18. The
     # runner already ships PostgreSQL 16, and `/usr/bin/pg_dump` is a wrapper

@@ -46,7 +46,7 @@ src/lexico-cli.main.ts
             └─ Step 4: ManualService.ingestManual()
 ```
 
-Sub-commands: `wiktionary`, `dictionary`, `words`, `clear`, `export`, `import`
+Sub-commands: `wiktionary`, `dictionary`, `words`, `clear`
 
 ### Directory Layout
 
@@ -73,13 +73,10 @@ src/modules/
   clear/                                   # Truncates all dictionary tables
   dictionary/                              # Orchestrates full Wiktionary → Lexeme pipeline
   etymology/                               # Parses etymology sections
-  export/                                  # Dumps selected tables to a custom-format file
   forms/                                   # Parses inflection tables
-  import/                                  # Restores selected tables from such a file
   lexemes/                                 # Creates and saves Lexeme entities
   manual/                                  # Ingests manually curated entries
   part-of-speech/                          # Detects POS from Wiktionary HTML
-  postgres-client/                         # Runs pg_dump, pg_restore, and the --clean truncate
   principal-parts/                         # Parses principal parts
   pronunciation/                           # Parses pronunciation data
   translations/                            # Parses and saves Translation entities
@@ -134,7 +131,6 @@ Always prefer running tasks through Nx rather than calling the underlying tools 
 
 ```bash
 nx run lexico-cli:start           # Run the command-line application
-nx run lexico-cli:start:export --args="--help"   # Any command: start:<command> --args="..."
 nx run lexico-cli:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
 nx run lexico-cli:typecheck       # tsc --noEmit
 nx run lexico-cli:oxfmt           # Formatting
@@ -162,39 +158,10 @@ See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.
 
 ## Moving Data Between Databases
 
-Use `export` and `import` to copy Lexico tables between two databases; they are the supported way to move Lexico data. The workspace root's `postgres-data` targets and the `seed-postgres` skill still exist on this branch and are being retired in a follow-up, so do not reach for them. Each names its database by URI, so neither boots the CLI's own database connection (`STANDALONE_COMMANDS` in `src/main.constants.ts`).
-
-The `start` configurations run from `projects/lexico/lexico-cli`, so a relative `--file` such as `lexico.dump` lands there (`*.dump` is gitignored).
-
-```bash
-nx run lexico-cli:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --table words --data --schema --file lexico.dump"
-nx run lexico-cli:start:import --args="--target-uri postgresql://user:password@localhost:5432/lexico_staging --table words --data --schema --file lexico.dump"
-```
-
-| Option | Command | Rule |
-| ------ | ------- | ---- |
-| `--source-uri` / `--target-uri` | `export` / `import` | Required |
-| `--table` | both | Required, repeatable; unqualified names resolve in `LEXICO_POSTGRES_SCHEMA` (default `lexico`) |
-| `--data`, `--schema` | both | At least one; both together is allowed |
-| `--file` | both | Required |
-| `--overwrite` | `export` | Replace an existing file, otherwise refused |
-| `--clean` | `import` | Delete before restoring; confirmed first |
-| `--yes` | `import` | Skip the confirmation |
-| `--dry-run` | `import` | Check everything, print the plan, connect to nothing |
-
-- **Format**: always PostgreSQL custom format; there is no format option.
-- **Default import**: deletes nothing and runs as one transaction. A conflict aborts it, and so does a selected table that already exists in a `--schema` import.
-- **`--clean --schema`**: drops and recreates the selected tables (`pg_restore --clean --if-exists`).
-- **`--clean --data`**: truncates exactly the selected tables, never cascading. When an unselected table references one, it refuses and lists the `--table` options to add.
-- **Sequences**: a data-only dump's sequence values belong to no table, so they are restored only when `--table` selects every table in the dump; importing a subset leaves the target's sequences as they were.
-- **Confirmation**: names the target's host and database. A run whose standard input is not a terminal fails with the target unchanged unless `--yes` is passed; a TTY-less prompt must never exit 0 doing nothing.
-- **Dry run**: `--dry-run` runs every check a real import runs (options, `pg_restore` version, file, table of contents), then prints the target's host and database, the file, what the dump holds of each table, and what `--clean` would truncate or drop, and exits 0. It never connects, prompts, or deletes, so it needs no `--yes` and no terminal; a selection the dump lacks still fails. Use it to check an import before running it, e.g. `nx run lexico-cli:start:import --args="... --file lexico.dump --dry-run"`.
-- **Truncate caveat**: `--clean --data` is not atomic. The truncate commits before the restore, so a failed restore can leave the selected tables empty. Tell the user to re-run from the same file; do not try to engineer around it.
-- **Client tools**: `pg_dump` and `pg_restore` must be PostgreSQL 18, checked before anything runs. `scripts/local/software/database.sh` and the devcontainer install them.
-- **Missing table**: a `--table` that matches nothing in the source fails `export` naming it (`--strict-names` is always on). `export` dumps to a temporary `<file>.<id>.partial` beside `--file` and renames it into place only on success, so a failed run leaves `--file` untouched (absent, or its old bytes) and no temporary file behind.
-- **Credentials**: passed as `PG*` environment variables, never argv, and masked in every log line and surfaced error. Inherited `PG*` variables are stripped and URI query parameters are refused, so TLS options are not currently passed through. `pg_dump` and `pg_restore` still negotiate TLS when the server offers it (libpq's default SSL mode is `prefer`), but the `--clean --data` truncate connects through the `pg` driver with no TLS option, so it fails against a server that requires TLS, before anything is truncated.
-
-Do not run `import --clean` against a database the user did not name. Prefer a throwaway target when testing.
+Lexico tables move between databases through the database package's command
+line, not this one: `nx run database:start:export|import`, with
+`--namespace lexico --table words` (or `--table lexico.words`). See the
+[database README](../../database/README.md).
 
 ## Writing Modules
 

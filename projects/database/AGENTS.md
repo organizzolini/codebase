@@ -10,8 +10,11 @@ the NestJS module and command-line data source built from it, and the naming
 convention behind them. See the [README](README.md) for the
 exports and the naming table.
 
-This package must never import another workspace package, or every
-database-backed project inherits that edge.
+This package may import one workspace package, `@codebase/logging`, for its
+command line's logger, and never any other, or every database-backed project
+inherits that edge. Logging has no workspace dependencies, so the edge makes
+no cycle, and lexico-cli, lexico-api, meanderaw-cli, and caelundas-cli
+already depend on it; lexico-entities gains it only transitively.
 
 ## Architecture Overview
 

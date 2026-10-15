@@ -4,6 +4,7 @@
   "projectType": "library",
   "sourceRoot": "projects/database",
   "tags": [
+    "framework:nest-commander",
     "framework:nestjs",
     "generator:nestjs-service-project",
     "language:typescript",
@@ -41,6 +42,23 @@
     "oxlint": {},
     "prettier": {},
     "spell-check": {},
+    "start": {
+      "cache": false,
+      "configurations": {
+        "export": {
+          "command": "node --import @swc-node/register/esm-register src/database.main.ts export {args}"
+        },
+        "import": {
+          "command": "node --import @swc-node/register/esm-register src/database.main.ts import {args}"
+        }
+      },
+      "description": "Run the database command line: export or import selected tables",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --import @swc-node/register/esm-register src/database.main.ts {args}",
+        "cwd": "{projectRoot}"
+      }
+    },
     "test-code": {},
     "type-coverage": {},
     "typecheck": {},
