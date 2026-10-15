@@ -7,7 +7,7 @@ separately, and each sink is independently replaceable.
 
 ```bash
 cd examples/corpus
-codometer --config ../../codometer.config.ts --format json | jq '.targets[0].files'   # 28
+codometer --format json | jq '.targets[0].files'   # 28
 ```
 
 ## What is here
@@ -31,7 +31,7 @@ A path always names a file, never the console. Passed with no value, each
 `--output-*` flag writes wherever the configuration's matching `outputs` entry
 says to. `--format` defaults to the resolved configuration's own `format` —
 `markdown` for every example here — on a run that touches no file, which is
-what a `codometer --config <path>` with no other flag does.
+what a bare `codometer` does.
 
 ## Standard output carries the result
 
@@ -45,7 +45,7 @@ that is nothing but statistics as readily as a README with prose around it:
 
 ```bash
 cd examples/corpus
-codometer --config ../../codometer.config.ts --output-markdown document.md
+codometer --output-markdown document.md
 ```
 
 ## A bare flag needs a configured entry to resolve
@@ -160,5 +160,5 @@ going to write those two files has no reason to exclude them.
 
 ## Next
 
-[discovery](../discovery/README.md), for why the named configuration is the
-only one that answers.
+[discovery](../discovery/README.md), for how a configuration is found in the
+first place.

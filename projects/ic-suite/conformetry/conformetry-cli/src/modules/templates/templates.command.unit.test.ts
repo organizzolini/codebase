@@ -13,8 +13,6 @@ import { TemplatesCommand } from "./templates.command";
 import type { InventoriedTemplate } from "@conformetry/core";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
-const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
-
 /** Discovery reports absolute paths, so the fixtures do too. */
 const GEARS_PATH = path.join(
   process.cwd(),
@@ -137,7 +135,7 @@ describe(TemplatesCommand, () => {
 
   describe("run", () => {
     it("names every declared template with its description and folder", async () => {
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
       const lines = written();
 
       expect(lines).toContain("nestjs-command-module");
@@ -146,7 +144,7 @@ describe(TemplatesCommand, () => {
     });
 
     it("names a template that declares no description", async () => {
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(written()).toContain("nestjs-service-module");
     });
@@ -154,16 +152,13 @@ describe(TemplatesCommand, () => {
     // A bare listing is a registry; naming every instance of every template
     // would bury the names somebody actually asked for.
     it("omits instances unless the caller narrowed by path", async () => {
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(written()).not.toContain("Instances:");
     });
 
     it("reports which templates explain a path, and how well", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        instances: [GEARS_PATH],
-      });
+      await command.run([], { instances: [GEARS_PATH] });
       const lines = written();
 
       expect(lines).toContain("Instances:");
@@ -173,10 +168,7 @@ describe(TemplatesCommand, () => {
 
     // A path is only readable next to the directory the caller is standing in.
     it("shortens each instance path against the working directory", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        instances: [GEARS_PATH],
-      });
+      await command.run([], { instances: [GEARS_PATH] });
 
       expect(written()).toContain("packages/widgets/src/modules/gears");
       expect(written()).not.toContain(GEARS_PATH);
@@ -185,10 +177,7 @@ describe(TemplatesCommand, () => {
     // Nothing records where an instance came from, so a path legitimately
     // belongs to more than one template and every one is reported.
     it("reports every template a path belongs to, not just the best fit", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        instances: [GEARS_PATH],
-      });
+      await command.run([], { instances: [GEARS_PATH] });
       const lines = written();
 
       expect(lines).toContain("nestjs-command-module");
@@ -196,10 +185,7 @@ describe(TemplatesCommand, () => {
     });
 
     it("passes the path filter through as instance patterns", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        instances: ["packages/*", "tools/*"],
-      });
+      await command.run([], { instances: ["packages/*", "tools/*"] });
 
       expect(
         configurationService.resolveInventoriedTemplates,
@@ -235,7 +221,7 @@ describe(TemplatesCommand, () => {
     it("says so when the configuration declares no templates", async () => {
       configurationService.resolveInventoriedTemplates.mockReturnValue([]);
 
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(written()).toContain("No templates");
     });
@@ -243,10 +229,7 @@ describe(TemplatesCommand, () => {
     it("distinguishes an unexplained path from an empty configuration", async () => {
       configurationService.resolveInventoriedTemplates.mockReturnValue([]);
 
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        instances: ["packages/widgets/nowhere"],
-      });
+      await command.run([], { instances: ["packages/widgets/nowhere"] });
 
       expect(written()).toContain("No template explains those paths");
     });
@@ -254,23 +237,20 @@ describe(TemplatesCommand, () => {
     // The shared logger asserts every message opens with an emoji and a verb,
     // which is why the report-printing commands throw outside production.
     it("writes program output without going through the logger", async () => {
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(output).not.toHaveLength(0);
       expect(commandLogger.info).not.toHaveBeenCalled();
     });
 
     it("does not fail the command", async () => {
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(process.exitCode).toBeUndefined();
     });
 
     it("logs a debug entry marker naming the instance filter", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        instances: [GEARS_PATH],
-      });
+      await command.run([], { instances: [GEARS_PATH] });
 
       expect(commandLogger.debug).toHaveBeenCalledWith(
         "📋 Listing conformetry templates",
@@ -284,7 +264,7 @@ describe(TemplatesCommand, () => {
     // Every path the readable listing shortens is shortened here too, so the
     // two listings name an instance the same way whichever format is read.
     it("writes parseable output carrying every template", async () => {
-      await command.run([], { config: CONFIGURATION_PATH, json: true });
+      await command.run([], { json: true });
 
       expect(JSON.parse(written())).toStrictEqual([
         withShortenedInstances(COMMAND_MODULE),
@@ -295,7 +275,7 @@ describe(TemplatesCommand, () => {
     it("writes an empty collection when nothing is declared", async () => {
       configurationService.resolveInventoriedTemplates.mockReturnValue([]);
 
-      await command.run([], { config: CONFIGURATION_PATH, json: true });
+      await command.run([], { json: true });
 
       expect(JSON.parse(written())).toStrictEqual([]);
     });

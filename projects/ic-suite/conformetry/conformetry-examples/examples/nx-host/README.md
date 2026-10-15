@@ -89,10 +89,6 @@ Two things differ from every other example here:
 { "scripts": { "postinstall": "conformetry-nx-bootstrap-generators" } }
 ```
 
-The `configurationPath` option is **required**: no default file is assumed and
-no filename is searched for. A plugin entry without it fails with an error
-naming the option, and so does the bootstrap, which reads it from `nx.json`.
-
 Which generators a workspace has is a property of _its_ configuration rather
 than of the package, so the plugin exposing them is **emitted rather than
 shipped**. `conformetry-nx-bootstrap-generators` derives it from the
@@ -142,7 +138,7 @@ pnpm exec nx affected --target=conformetry-validate --base=main
 
 | Executor option | Purpose |
 | --------------- | ------- |
-| `configurationPath` | Configuration file, workspace-root relative. Taken from the plugin registration in `nx.json` when omitted; one of the two is required |
+| `configurationPath` | Configuration file, workspace-root relative |
 | `languages` | Restrict the run to named validators; all run when omitted |
 
 ### Generators by name

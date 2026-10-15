@@ -300,10 +300,10 @@ export interface CodependixWorkspaceConfiguration {
 
 /** Arguments accepted when loading a configuration file. */
 export interface LoadConfigurationArguments {
-  /** The main configuration file, resolved against the cwd then the workspace root. */
-  configurationPath: string;
+  configurationPath?: string | undefined;
   /** Strict per-field CLI overrides, applied after the file is resolved. */
   overrides?: CodependixConfigurationOverrides | undefined;
+  searchDirectory?: string | undefined;
   /** Command-line project selection, unparsed — see `CodependixSelectionArguments`. */
   selection?: CodependixSelectionArguments | undefined;
 }

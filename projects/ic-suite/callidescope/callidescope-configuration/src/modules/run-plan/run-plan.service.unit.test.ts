@@ -275,7 +275,7 @@ describe(RunPlanService, () => {
       configurationFileService.loadConfigurationFile.mockResolvedValue({
         authored: {},
         configuration: buildConfiguration({ directories: ["packages/one"] }),
-        path: "/workspace/callidescope.config.ts",
+        path: undefined,
       });
 
       const flagResolutionService = new FlagResolutionService();
@@ -288,7 +288,6 @@ describe(RunPlanService, () => {
       const prepared = await subject.prepareRun(
         {
           check: "depth,reports",
-          config: "callidescope.config.ts",
           write: false,
         },
         configurationFileService,
@@ -333,16 +332,13 @@ describe(RunPlanService, () => {
       configurationFileService.loadConfigurationFile.mockResolvedValue({
         authored: {},
         configuration: buildConfiguration(),
-        path: "/workspace/callidescope.config.ts",
+        path: undefined,
       });
 
       const subject = new RunPlanService(new FlagResolutionService());
 
       await expect(
-        subject.prepareLookup(
-          { config: "callidescope.config.ts", format: "markdwon" },
-          configurationFileService,
-        ),
+        subject.prepareLookup({ format: "markdwon" }, configurationFileService),
       ).rejects.toThrow(
         '--format does not accept "markdwon". It takes one of "markdown", "mermaid", "json".',
       );
@@ -354,13 +350,13 @@ describe(RunPlanService, () => {
       configurationFileService.loadConfigurationFile.mockResolvedValue({
         authored: {},
         configuration: buildConfiguration(),
-        path: "/workspace/callidescope.config.ts",
+        path: undefined,
       });
 
       const subject = new RunPlanService(new FlagResolutionService());
 
       const prepared = await subject.prepareLookup(
-        { config: "callidescope.config.ts" },
+        {},
         configurationFileService,
       );
 
@@ -368,7 +364,8 @@ describe(RunPlanService, () => {
       expect(
         configurationFileService.loadConfigurationFile,
       ).toHaveBeenCalledWith({
-        configurationPath: "callidescope.config.ts",
+        configurationPath: undefined,
+        searchDirectory: process.cwd(),
       });
     });
 
@@ -387,7 +384,7 @@ describe(RunPlanService, () => {
       const subject = new RunPlanService(new FlagResolutionService());
 
       const prepared = await subject.prepareLookup(
-        { config: "callidescope.config.ts" },
+        {},
         configurationFileService,
       );
 

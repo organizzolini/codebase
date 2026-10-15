@@ -18,9 +18,8 @@ already depends on it.
 
 ## Configuration File
 
-A `codometer.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}` file is read from the
-path the run is given with `--config <path>`, which is required: nothing is
-searched for and there is no default file. `format` is the one
+Any of `codometer.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}` is read from the
+directory being measured, or from any directory above it. `format` is the one
 field every configuration must set — there is no code-level fallback for it —
 and every other field is optional.
 
@@ -80,15 +79,15 @@ still writes to the repository root.
 
 ## Resolution
 
-The configuration path is required: `ConfigurationService.loadConfiguration`
-takes a `configurationPath` and nothing else, and the CLI refuses a run without
-`--config`. A relative path is resolved against the working directory, then
-the repository root; a path naming no file fails with a not-found error.
+The search starts at the directory being measured and walks upward, taking the
+first configuration file it finds. **The nearest one wins outright**: nothing
+from a further ancestor is folded into it. Merging the two would leave a limit
+that never applied looking exactly like one that did, and telling them apart
+would mean knowing which of several files each field came from.
 
-**The named file answers alone**: no ancestor's configuration is folded into
-it. Merging would leave a limit that never applied looking exactly like one
-that did, and telling them apart would mean knowing which of several files
-each field came from. A configuration file is always read as a plain object — one exported as
+So a folder carrying no configuration file of its own is measured by the
+nearest ancestor that does, and a folder that writes one is measured by that
+alone. A configuration file is always read as a plain object — one exported as
 a function is not recognized, and falls back to an empty configuration, the
 same way a file exporting `42` does.
 

@@ -7,13 +7,10 @@ license: MIT
 # Writing a codependix configuration
 
 Codependix produces nothing until a configuration tells it what to export and
-where. Every field of the file is optional, but the file itself never is: every
-run names it with `--config <path>` (in this repository,
-`--config projects/configuration/codependix.config.ts`), and a run naming none
-is refused. A configuration that leaves out `include` resolves every graph type
-for every project to `target: "none"` — a successful run that writes nothing.
-The configuration is the whole control surface; there is no flag that selects a
-graph type.
+where. Every field is optional, and a workspace with no configuration file
+resolves every graph type for every project to `target: "none"` — a successful
+run that writes nothing. The configuration is the whole control surface; there
+is no flag that selects a graph type.
 
 ```ts
 import { type CodependixConfiguration } from "@codependix/configuration";
@@ -45,23 +42,19 @@ export default codependixConfiguration;
 
 ## Where the file is found
 
-Nowhere: it is named. `--config <path>` is required, with no default filename,
-no search, and no walk upward, so `codependix map --write --config
-projects/configuration/codependix.config.ts` reads that file and nothing else.
-Any extension in `ts`, `mts`, `cts`, `js`, `mjs`, `cjs`, or `json` loads; a
-neighboring file is never read in its place.
+`codependix.config.{ts,mts,cts,js,mjs,cjs,json}` is searched for **upward**
+from the run's directory, and the first file found wins outright — nothing from
+a further ancestor is merged into it. A workspace carrying both a TypeScript
+and a JSON file gets the TypeScript one.
+
+Two paths behave differently on purpose:
 
 - **A path given with `--config` must exist.** A typo fails the run rather than
   quietly resolving every graph to `"none"`. It is resolved against the working
   directory first, then against the workspace root, so a configuration kept in
   a `projects/configuration/` folder can be named relative to either.
-- **A missing `--config` fails the run too.** The flag is required: omitting
-  it is refused with an error naming `--config`, and nothing falls back to a
-  `codependix.config.ts` at the workspace root.
-
-A project's own `codependix.config.ts` is the one file that is found rather
-than named: it is read from beside the project root, never from a parent, and a
-project without one produces no per-project output.
+- **An absent configuration is legal.** A workspace that never wrote one is not
+  told to; it simply exports nothing.
 
 ## `defaults`, never `default`
 
@@ -341,10 +334,8 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
 }
 ```
 
-`configurationPath` names the one configuration every gate reads, and it is
-required: a registration without it (and a gate target given none) fails with
-an error naming the option, and no `codependix.config.ts` at the workspace root
-is assumed. Nothing else is configured per project: the rules in `boundaries`
+`configurationPath` names the one configuration every gate reads; omit it and
+`codependix.config.ts` at the workspace root is used. Nothing else is configured per project: the rules in `boundaries`
 judge every project the same way. See `codependix-export` for running a gate.
 
 The gate runs the command line under the `@swc-node/register` hooks the plugin

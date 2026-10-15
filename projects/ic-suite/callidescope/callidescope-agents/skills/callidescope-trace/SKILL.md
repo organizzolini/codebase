@@ -15,14 +15,14 @@ flow actually lives.
 Three commands, answering three different questions:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts                                        # the whole workspace
-npx callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar    # one callable, vertically
-npx callidescope breadth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar  # one callable, horizontally
+npx callidescope                                        # the whole workspace
+npx callidescope depth --addresses src/foo.service.ts#FooService.bar    # one callable, vertically
+npx callidescope breadth --addresses src/foo.service.ts#FooService.bar  # one callable, horizontally
 ```
 
-**`--config` is required on all three**, and names the workspace configuration
-file: nothing is searched for and nothing is defaulted, so a run that omits it
-is refused naming the flag. **A traced project's own `callidescope.config.ts` is a different matter**: it
+A repository with no workspace configuration file is traced with defaults
+rather than told to write one, so a bare run always produces something.
+**A traced project's own `callidescope.config.ts` is a different matter**: it
 must exist and must be complete, or the run is refused before anything is
 traced — see the `callidescope-configure` skill. What a run _gates_ on and what
 it _writes_ are both opt-in and both live in that skill; this one is about
@@ -162,7 +162,7 @@ overloads, two callbacks bound to the same property — is disambiguated with a
 trailing `:<line>`:
 
 ```bash
-npx callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar:118
+npx callidescope depth --addresses src/foo.service.ts#FooService.bar:118
 ```
 
 When it cannot tell which one was meant, the run says so and prints every
@@ -172,7 +172,7 @@ Neither command writes anything, compares a destination, or takes `--check`,
 `--write`, `--json`, `--markdown`, `--mermaid`, `--maximum-depth`, or
 `--maximum-breadth`. A lookup only ever prints. Both do take every flag that
 shapes the graph — `--directories`, the entry-point overrides, and the two
-exclusion lists — plus the required `--config` and `--format`, because resolving an address
+exclusion lists — plus `--config` and `--format`, because resolving an address
 still means tracing the workspace first.
 
 ## `breadth`: what it calls, and what calls it

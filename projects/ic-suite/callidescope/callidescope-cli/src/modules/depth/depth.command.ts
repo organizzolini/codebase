@@ -174,15 +174,13 @@ export class DepthCommand extends CommandRunner {
     return this.configurationService.parseCommaDelimitedOption(value);
   }
 
-  /** Parses `--config`, which every command that loads a configuration requires. */
+  /** Parses `--config`. */
   @Option({
-    description:
-      "Path to the workspace callidescope configuration file (required)",
-    flags: "--config <config>",
-    required: true,
+    description: "Path to a callidescope configuration file",
+    flags: "--config [config]",
   })
-  public parseConfig(value: string | undefined): string {
-    return this.configurationService.parseRequiredOption(value, "--config");
+  public parseConfig(value: string | undefined): string | undefined {
+    return this.configurationService.parseOptionalOption(value);
   }
 
   /** Parses `--directories`, a comma-separated list of project directories. */

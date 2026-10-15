@@ -7,7 +7,7 @@
  * parsed options — `--directory` arrives as `directory`.
  */
 export interface GenerateCommandOptions {
-  config: string;
+  config?: string;
   directory?: string;
   /**
    * Optional at the parse layer only. A bare `generate` has to reach the

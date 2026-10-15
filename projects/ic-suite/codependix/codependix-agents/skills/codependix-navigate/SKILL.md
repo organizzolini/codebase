@@ -15,20 +15,17 @@ committed graphs already on disk.
 ## Command first: querying dependency paths
 
 Reach for `codependix path` to trace directed dependency paths between two
-nodes without parsing diagrams or grepping source files by hand. Every
-invocation names the configuration with `--config <path>` — in this repository
-`projects/configuration/codependix.config.ts` — because nothing is searched for
-and there is no default.
+nodes without parsing diagrams or grepping source files by hand.
 
 ```bash
 # How does project-a reach project-c?
-codependix path project-a project-c --config projects/configuration/codependix.config.ts
+codependix path project-a project-c
 
 # How does one file import another?
-codependix path src/modules/auth/auth.service.ts src/modules/users/user.entity.ts --config projects/configuration/codependix.config.ts
+codependix path src/modules/auth/auth.service.ts src/modules/users/user.entity.ts
 
 # What NestJS modules connect two modules in a container?
-codependix path AuthModule DatabaseModule --config projects/configuration/codependix.config.ts
+codependix path AuthModule DatabaseModule
 ```
 
 ### Path query flags and narrowing
@@ -47,7 +44,7 @@ narrowing flags to scope the run and minimize execution time:
 | `-d, --directory <dir>` | Directory whose Nx workspace to read |
 | `--include <globs>` / `--exclude <globs>` | Override configured project inclusion or exclusion globs |
 | `--tags <tags>` | Comma-separated Nx project tags to filter by |
-| `--config <path>` | **Required.** Path to the codependix configuration file; every example here passes it |
+| `--config <path>` | Path to a specific `codependix.config.ts` |
 
 ### Path results
 
@@ -142,10 +139,10 @@ A committed graph reflects the repository state at the last
 
 ```bash
 # Check if any committed reports are stale without modifying files
-codependix map --check reports --config projects/configuration/codependix.config.ts
+codependix map --check reports
 
 # Update all committed graphs across the workspace
-codependix map --write --config projects/configuration/codependix.config.ts
+codependix map --write
 ```
 
 If committed graphs are stale with respect to recent local edits, either

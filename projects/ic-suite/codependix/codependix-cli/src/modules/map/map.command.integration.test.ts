@@ -79,7 +79,7 @@ describe("map command", () => {
       }).compile();
       const command = module.get(MapCommand, { strict: false });
 
-      await command.run([], { config: "codependix.config.ts", ...options });
+      await command.run([], options);
 
       const exitCode = process.exitCode;
       const loggedErrors = [...errorSpy.mock.calls];
@@ -312,7 +312,7 @@ describe("map command", () => {
       }).compile();
       const command = module.get(MapCommand, { strict: false });
 
-      await command.run([], { config: "codependix.config.ts", ...options });
+      await command.run([], options);
 
       const exitCode = process.exitCode;
       const loggedWarns = [...warnSpy.mock.calls];
@@ -480,7 +480,7 @@ describe("map command", () => {
       }).compile();
       const command = module.get(MapCommand, { strict: false });
 
-      await command.run([], { config: "codependix.config.ts", ...options });
+      await command.run([], options);
 
       const exitCode = process.exitCode;
       const printed = stdoutSpy.mock.calls
@@ -747,7 +747,6 @@ describe("map command", () => {
 
       await module.get(MapCommand, { strict: false }).run([], {
         check: "boundaries",
-        config: "codependix.config.ts",
         directory: workingDirectory,
         ...options,
       });

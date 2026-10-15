@@ -6,7 +6,7 @@ import type { CallidescopeOutputFormat } from "@callidescope/configuration";
 export interface LookupArguments {
   /** Each `<file>#<qualified-name>`, the form every callidescope stack prints. */
   readonly addresses: readonly string[];
-  readonly configurationPath: string;
+  readonly configurationPath?: string | undefined;
   /** Workspace-relative directories the lookup resolves the address against. */
   readonly directories: readonly string[];
   readonly format?: CallidescopeOutputFormat | undefined;

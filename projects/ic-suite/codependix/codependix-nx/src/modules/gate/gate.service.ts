@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -234,9 +234,9 @@ export class GateService {
    * Resolves the configuration path one gate runs with.
    *
    * A path the target was given wins. Otherwise the one this plugin was
-   * registered with is read back out of `nx.json`, so the file a gate reads is
-   * always the file its cache inputs named. A gate given neither throws: no
-   * default path is assumed.
+   * registered with is read back out of `nx.json`, and resolved exactly as
+   * inference resolved it — so the file a gate reads is always the file its
+   * cache inputs named.
    */
   public resolveConfigurationPath(args: {
     configurationPath?: string | undefined;
@@ -247,6 +247,8 @@ export class GateService {
     }
 
     return this.pluginService.resolvePluginOptions({
+      exists: (candidatePath) =>
+        existsSync(path.join(args.workspaceRoot, candidatePath)),
       options: this.pluginService.readRegisteredOptions(
         this.readNxConfiguration(args.workspaceRoot),
       ),

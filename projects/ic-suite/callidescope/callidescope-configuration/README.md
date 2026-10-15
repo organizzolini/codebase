@@ -18,13 +18,10 @@ npm install --save-dev @callidescope/configuration
 
 ## Configuration File
 
-Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, named by the
-required `--config` path (or the `configurationPath` option of the Nx plugin).
-It is never searched for and never defaulted: a run that names no file is
-refused. A relative path is resolved against the working directory, then the
-repository root. TypeScript is the form that gets type checking. What _is_
-discovered is each traced project's own `callidescope.config.*`, read from the
-project's root with no upward walk.
+Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, searched for
+upward from the working directory. TypeScript is tried first, because that is
+the form that gets type checking. A repository with no configuration file is
+traced with the defaults rather than told to write one.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";

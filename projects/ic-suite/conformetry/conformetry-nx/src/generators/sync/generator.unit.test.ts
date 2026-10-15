@@ -21,7 +21,12 @@ vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
 
 const emitPlugin = vi.fn();
 const resolveConfigurationPath =
-  vi.fn<(args: { nxConfiguration: unknown }) => string>();
+  vi.fn<
+    (args: {
+      exists: (candidatePath: string) => boolean;
+      nxConfiguration: unknown;
+    }) => string
+  >();
 
 describe(syncGenerator, () => {
   let tree: Tree;
@@ -58,15 +63,12 @@ describe(syncGenerator, () => {
     expect(outOfSyncMessage.length).toBeGreaterThan(0);
   });
 
-  it("refuses to emit when no configuration path is registered", async () => {
-    resolveConfigurationPath.mockImplementation(() => {
-      throw new Error('The "configurationPath" option is required');
-    });
+  it("falls back to the conventional paths when given no options", async () => {
+    await syncGenerator(tree);
 
-    await expect(syncGenerator(tree)).rejects.toThrow(
-      '"configurationPath" option is required',
-    );
-    expect(emitPlugin).not.toHaveBeenCalled();
+    // The defaults themselves are constants; what matters here is that the
+    // generator supplies all three rather than passing undefined through.
+    expect(emitPlugin).toHaveBeenCalledTimes(1);
   });
 
   it("reads the plugin registration out of the workspace's nx.json", async () => {
@@ -90,15 +92,21 @@ describe(syncGenerator, () => {
     expect(call?.[0].nxConfiguration).toStrictEqual(nxConfiguration);
   });
 
-  it("uses the registered path when given no options", async () => {
-    resolveConfigurationPath.mockReturnValue("elsewhere/conformetry.config.ts");
+  it("checks the tree for a candidate path when resolving from the registration", async () => {
+    tree.write("conformetry.json", "[]\n");
+    // Stands in for the real candidate walk, so what is asserted is that the
+    // generator hands over a predicate answering about its own tree rather
+    // than the filesystem.
+    resolveConfigurationPath.mockImplementation((args) => {
+      return args.exists("conformetry.json")
+        ? "conformetry.json"
+        : "conformetry.config.ts";
+    });
 
     await syncGenerator(tree);
 
     expect(emitPlugin).toHaveBeenCalledWith(
-      expect.objectContaining({
-        configurationPath: "elsewhere/conformetry.config.ts",
-      }),
+      expect.objectContaining({ configurationPath: "conformetry.json" }),
     );
   });
 

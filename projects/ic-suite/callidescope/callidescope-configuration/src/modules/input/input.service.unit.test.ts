@@ -263,23 +263,6 @@ describe(InputService, () => {
     expect(service.parseOptionalOption(undefined)).toBeUndefined();
   });
 
-  // 🔒 Required option
-
-  it("passes a non-blank required option through trimmed", () => {
-    expect(
-      service.parseRequiredOption("  callidescope.config.ts  ", "--config"),
-    ).toBe("callidescope.config.ts");
-  });
-
-  it.each(["   ", undefined])(
-    "refuses a required option that is blank or absent: %j",
-    (value) => {
-      expect(() => service.parseRequiredOption(value, "--config")).toThrow(
-        "--config requires a value, and it was blank.",
-      );
-    },
-  );
-
   // 🗣️ Prompting
 
   it("resolves a select prompt to the choice the user picked", async () => {

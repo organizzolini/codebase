@@ -43,10 +43,7 @@ Content rules worth knowing before editing:
   never as this repository's own.
 - **Lead with the configuration, not with the command line.** Codependix's
   worst outcome is a run that exits 0 having written nothing, because a
-  configuration selecting no project resolves every graph type to
-  `target: "none"`. Every example invocation passes `--config <path>` (this
-  repository's is `projects/configuration/codependix.config.ts`): the flag is
-  required and nothing is searched for.
+  workspace with no configuration resolves every graph type to `target: "none"`.
   Nothing in the command's own output says so, so every skill that touches a
   run says it instead.
 - **Never suggest hand-editing inside the anchor markers.** The next `--write`

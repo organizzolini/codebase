@@ -1,7 +1,6 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { PluginConfigurationPathRequiredError } from "./options.constants";
 import { OptionsService } from "./options.service";
 
 describe(OptionsService, () => {
@@ -42,38 +41,29 @@ describe(OptionsService, () => {
     });
 
     it.each([
-      ["only the configuration path", {}],
+      ["nothing registered", undefined],
+      ["a null registration", null],
+      ["an empty registration", {}],
       ["a non-string target name", { traceTargetName: 7 }],
       ["an empty target name", { traceTargetName: "" }],
-    ])(
-      "falls back to the default target names given %s",
-      (_description, extra) => {
-        expect.hasAssertions();
+    ])("falls back to the defaults given %s", (_description, options) => {
+      expect.hasAssertions();
 
-        // A typo in a target name must not stop the project graph being built.
-        expect(
-          service.resolvePluginOptions({
-            configurationPath: "callidescope.config.ts",
-            ...extra,
-          }),
-        ).toStrictEqual({
-          breadthTargetName: "breadth",
-          configurationPath: "callidescope.config.ts",
-          depthTargetName: "depth",
-          gateTargetName: "gate",
-          traceTargetName: "trace",
-        });
-      },
-    );
+      // A typo in a target name must not stop the project graph being built.
+      expect(service.resolvePluginOptions(options)).toStrictEqual({
+        breadthTargetName: "breadth",
+        configurationPath: "callidescope.config.ts",
+        depthTargetName: "depth",
+        gateTargetName: "gate",
+        traceTargetName: "trace",
+      });
+    });
 
     it("overrides one target name without disturbing the others", () => {
       expect.hasAssertions();
 
       expect(
-        service.resolvePluginOptions({
-          configurationPath: "callidescope.config.ts",
-          depthTargetName: "callidescope-depth",
-        }),
+        service.resolvePluginOptions({ depthTargetName: "callidescope-depth" }),
       ).toMatchObject({
         breadthTargetName: "breadth",
         depthTargetName: "callidescope-depth",
@@ -83,26 +73,75 @@ describe(OptionsService, () => {
     });
   });
 
-  describe("configurationPath", () => {
-    it("is required, and refused by name when the registration omits it", () => {
+  describe("resolveConfigurationPath", () => {
+    it("prefers the path this plugin's registration names", () => {
       expect.hasAssertions();
-      expect(() => service.resolvePluginOptions({})).toThrow(
-        PluginConfigurationPathRequiredError,
-      );
-      expect(() => service.resolvePluginOptions({})).toThrow(
-        /@callidescope\/nx.*"configurationPath"/,
-      );
+
+      expect(
+        service.resolveConfigurationPath({
+          exists: () => true,
+          nxConfiguration: {
+            plugins: [
+              {
+                options: { configurationPath: "elsewhere.ts" },
+                plugin: "@callidescope/nx",
+              },
+            ],
+          },
+        }),
+      ).toBe("elsewhere.ts");
+    });
+
+    it("ignores another plugin's registration", () => {
+      expect.hasAssertions();
+
+      expect(
+        service.resolveConfigurationPath({
+          exists: (candidatePath) => candidatePath === "callidescope.config.ts",
+          nxConfiguration: {
+            plugins: [
+              {
+                options: { configurationPath: "elsewhere.ts" },
+                plugin: "@conformetry/nx",
+              },
+            ],
+          },
+        }),
+      ).toBe("callidescope.config.ts");
     });
 
     it.each([
-      ["nothing", undefined],
-      ["a blank path", { configurationPath: "" }],
-      ["a non-string path", { configurationPath: 7 }],
-    ])("refuses %s", (_description, options) => {
+      ["an unreadable nx.json", undefined],
+      ["a null nx.json", null],
+      ["a non-object nx.json", "nx.json"],
+      ["an nx.json with no plugins array", { plugins: "not an array" }],
+      ["a plugins array holding a non-entry", { plugins: [null, 7] }],
+      [
+        "a registration with non-object options",
+        {
+          plugins: [{ options: 7, plugin: "@callidescope/nx" }],
+        },
+      ],
+    ])("ignores %s", (_description, nxConfiguration) => {
       expect.hasAssertions();
-      expect(() => service.resolvePluginOptions(options)).toThrow(
-        PluginConfigurationPathRequiredError,
-      );
+
+      expect(
+        service.resolveConfigurationPath({
+          exists: (candidatePath) => candidatePath === "callidescope.config.ts",
+          nxConfiguration,
+        }),
+      ).toBe("callidescope.config.ts");
+    });
+
+    it("falls back to the first conventional path when none exists", () => {
+      expect.hasAssertions();
+
+      expect(
+        service.resolveConfigurationPath({
+          exists: () => false,
+          nxConfiguration: { plugins: "not an array" },
+        }),
+      ).toBe("callidescope.config.ts");
     });
   });
 

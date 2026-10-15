@@ -21,12 +21,12 @@ write-check/
 
 | Invocation | Writes | Fails on staleness | Fails on a breach | Exit |
 | ---------- | ------ | ------------------ | ----------------- | ---- |
-| `codometer --config <path>` | no | no | no | 0 |
-| `codometer --config <path> --check limits` | no | no | yes | 1 |
-| `codometer --config <path> --check reports` | no | yes | no | 0 |
-| `codometer --config <path> --check reports,limits` | no | yes | yes | 1 |
-| `codometer --config <path> --output-json --output-markdown` | yes | no | no | 0 |
-| `codometer --config <path> --output-json --output-markdown --check limits` | yes | no | yes, after writing | 1 |
+| `codometer` | no | no | no | 0 |
+| `codometer --check limits` | no | no | yes | 1 |
+| `codometer --check reports` | no | yes | no | 0 |
+| `codometer --check reports,limits` | no | yes | yes | 1 |
+| `codometer --output-json --output-markdown` | yes | no | no | 0 |
+| `codometer --output-json --output-markdown --check limits` | yes | no | yes, after writing | 1 |
 
 Every row is run against a scratch copy of the corpus by the test beside these
 files, with the exit code above and the files on disk checked afterwards. The
@@ -34,7 +34,7 @@ last row is the one worth trying yourself: **the report is on disk even though
 the run exits 1**, because a pull request that failed the gate is exactly the
 one that needs the numbers.
 
-A run with neither `--output-*` nor `--check` reports a breach and exits 0. A breach is a finding; only
+A bare run reports a breach and exits 0. A breach is a finding; only
 `--check limits` turns a finding into a gate.
 
 ## Two command lines refused before anything is measured

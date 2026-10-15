@@ -9,7 +9,7 @@ export interface AddressExecutorOptions {
    * run answers about a whole rename rather than one callable at a time.
    */
   readonly addresses?: string[] | undefined;
-  readonly configurationPath: string;
+  readonly configurationPath?: string | undefined;
   readonly format?: string | undefined;
   /** Nx project names to resolve against, replacing the target's own project. */
   readonly projects?: string[] | undefined;

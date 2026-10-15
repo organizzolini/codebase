@@ -6,9 +6,6 @@ import breadthExecutor from "./executor";
 
 import type { ExecutorContext } from "@nx/devkit";
 
-/** The workspace configuration every run must name. */
-const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
-
 vi.mock("../../modules/address/address.utilities", () => ({
   runAddressExecutor: vi.fn<() => Promise<{ success: boolean }>>(
     async () => await Promise.resolve({ success: true }),
@@ -37,10 +34,7 @@ describe(breadthExecutor, () => {
     expect.hasAssertions();
 
     const context = buildContext();
-    const options = {
-      addresses: ["src/foo.service.ts#FooService.bar"],
-      configurationPath: CONFIGURATION_PATH,
-    };
+    const options = { addresses: ["src/foo.service.ts#FooService.bar"] };
 
     await expect(breadthExecutor(options, context)).resolves.toStrictEqual({
       success: true,

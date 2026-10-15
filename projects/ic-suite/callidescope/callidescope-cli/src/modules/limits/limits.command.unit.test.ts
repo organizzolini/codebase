@@ -24,9 +24,6 @@ import { LimitsCommand } from "./limits.command";
 import { LimitsService } from "./limits.service";
 import { RenderLimitsService } from "./render-limits.service";
 
-/** The workspace configuration every run must be pointed at with `--config`. */
-const CONFIGURATION_PATH = "callidescope.config.ts";
-
 describe(LimitsCommand, () => {
   let command: LimitsCommand;
   let limitsService: LimitsService;
@@ -92,7 +89,7 @@ describe(LimitsCommand, () => {
   });
 
   it("writes the rendered listing to standard output", async () => {
-    await command.run([], { config: CONFIGURATION_PATH });
+    await command.run([], {});
 
     expect(write).toHaveBeenCalledWith("rendered\n");
   });
@@ -110,7 +107,7 @@ describe(LimitsCommand, () => {
 
     vi.mocked(limitsService.list).mockResolvedValue(rows);
 
-    await command.run([], { config: CONFIGURATION_PATH });
+    await command.run([], {});
 
     expect(renderLimitsService.render).toHaveBeenCalledWith(rows);
   });
@@ -124,19 +121,17 @@ describe(LimitsCommand, () => {
   });
 
   it("leaves the exit code alone, because it gates nothing", async () => {
-    await command.run([], { config: CONFIGURATION_PATH });
+    await command.run([], {});
 
     expect(process.exitCode).toBeUndefined();
   });
 
-  it("reads the configuration path it is given, and refuses a blank one", () => {
+  it("reads the configuration path it is given, and treats blank as absent", () => {
     expect(command.parseConfig("callidescope.config.ts")).toBe(
       "callidescope.config.ts",
     );
-    expect(() => command.parseConfig(" ")).toThrow("--config requires a value");
-    expect(() => command.parseConfig(undefined)).toThrow(
-      "--config requires a value",
-    );
+    expect(command.parseConfig(" ")).toBeUndefined();
+    expect(command.parseConfig(undefined)).toBeUndefined();
   });
 
   // The headline is per refusal class rather than one word for all three, so a
@@ -178,7 +173,7 @@ describe(LimitsCommand, () => {
     async (_name, error, headline) => {
       vi.mocked(limitsService.list).mockRejectedValue(error);
 
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(write).not.toHaveBeenCalled();
       expect(process.exitCode).toBe(1);
@@ -191,8 +186,6 @@ describe(LimitsCommand, () => {
   it("lets an unexpected failure through rather than reporting it as a refusal", async () => {
     vi.mocked(limitsService.list).mockRejectedValue(new Error("boom"));
 
-    await expect(
-      command.run([], { config: CONFIGURATION_PATH }),
-    ).rejects.toThrow("boom");
+    await expect(command.run([], {})).rejects.toThrow("boom");
   });
 });

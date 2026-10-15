@@ -3,7 +3,7 @@
   "description": "Fail a project whose call stacks broke the depth or breadth limits it is held to, resolved against the project and its Nx dependencies.",
   "properties": {
     "configurationPath": {
-      "description": "Required. Path to the callidescope configuration file, relative to the workspace root.",
+      "description": "Path to the callidescope configuration file, relative to the workspace root.",
       "type": "string"
     },
     "projects": {
@@ -22,7 +22,7 @@
       "type": "boolean"
     }
   },
-  "required": ["configurationPath"],
+  "required": [],
   "title": "Callidescope gate",
   "type": "object"
 }

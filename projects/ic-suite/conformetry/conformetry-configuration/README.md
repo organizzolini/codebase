@@ -19,9 +19,7 @@ configuration file, or embedding conformetry in a host of your own.
 
 ## The configuration file
 
-The file's extension may be any of `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`,
-`.json`, or `.jsonc`. The path is always passed in explicitly — no filename is
-searched for. TypeScript and
+Any of `conformetry.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`. TypeScript and
 JavaScript files are loaded through [jiti](https://github.com/unjs/jiti), so a
 `.ts` config needs no build step and may import from your workspace.
 

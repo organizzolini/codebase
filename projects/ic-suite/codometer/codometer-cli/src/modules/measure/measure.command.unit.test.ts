@@ -147,7 +147,7 @@ describe(MeasureCommand, () => {
 
   /** Runs the command over the mocked configuration. */
   async function run(options: MeasureCommandOptions = {}): Promise<void> {
-    await buildCommand().run([], { config: "codometer.config.ts", ...options });
+    await buildCommand().run([], options);
   }
 
   /** Reports the limits the measurement found breached. */
@@ -248,26 +248,6 @@ describe(MeasureCommand, () => {
 
       expect(measureService.measure).not.toHaveBeenCalled();
       expect(process.exitCode).toBe(1);
-    });
-
-    it("refuses a run that names no --config, naming the flag", async () => {
-      await buildCommand().run([], {});
-
-      expect(configurationService.loadConfiguration).not.toHaveBeenCalled();
-      expect(measureService.measure).not.toHaveBeenCalled();
-      expect(process.exitCode).toBe(1);
-      expect(loggerService.error).toHaveBeenCalledTimes(1);
-      expect(
-        JSON.stringify(vi.mocked(loggerService.error).mock.calls[0]),
-      ).toContain("--config <path> is required");
-    });
-
-    it("loads exactly the configuration it was named", async () => {
-      await run({ config: "projects/configuration/codometer.config.ts" });
-
-      expect(configurationService.loadConfiguration).toHaveBeenCalledWith({
-        configurationPath: "projects/configuration/codometer.config.ts",
-      });
     });
 
     it("refuses a configuration nothing can read", async () => {

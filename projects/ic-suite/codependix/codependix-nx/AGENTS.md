@@ -10,8 +10,7 @@ workspace root, so `nx affected -t codependix-gate` checks codependix
 boundaries per project and fails the task named after the project whose
 boundary broke.
 
-The executor runs `codependix map --check boundaries --projects <project>
---config <configurationPath>`
+The executor runs `codependix map --check boundaries --projects <project>`
 **as a child process**, from the workspace root, under `node --import
 <file URL of @codependix/nx/loader>`. A child process rather than an
 in-process call, because the boundary check boots NestJS containers from

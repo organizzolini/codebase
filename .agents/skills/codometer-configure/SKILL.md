@@ -6,12 +6,11 @@ license: MIT
 
 # Writing a codometer configuration
 
-`codometer.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}` is read from the path a
-run names with `--config <path>`, which is required — nothing is searched for
-and there is no default file. In this repository the workspace file is
-`projects/configuration/codometer.config.ts`; a project's own is its
-`codometer.config.ts`. The named file is never merged with another: a merged
-limit that never applied to this folder would look exactly like one that did. `format` is the one field every
+`codometer.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}` is read from the directory
+being measured, or from any directory above it — the search walks upward and
+takes the **first** file found. The nearest configuration wins outright, and is
+never merged with one further up: a merged limit that never applied to this
+folder would look exactly like one that did. `format` is the one field every
 configuration must set — there is no code-level fallback for it — and every
 other field is optional.
 
@@ -48,7 +47,7 @@ spreads a shared object across them, the way this repository's own
 
 ## Exclusions
 
-`.gitignore` is already in force through file discovery, so `exclude` and
+`.gitignore` is already in force through discovery, so `exclude` and
 `excludeFrom` are for files that are **kept** but that nobody wrote by hand —
 lockfiles, vendored bundles, generated documentation:
 

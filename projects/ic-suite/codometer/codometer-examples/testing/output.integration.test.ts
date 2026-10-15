@@ -7,7 +7,6 @@ import {
   type CodometerRun,
   corpusDirectory,
   exampleConfiguration,
-  packageConfiguration,
   runCodometer,
   runPipeline,
   withCorpusCopy,
@@ -28,10 +27,7 @@ describe("every example configuration this package ships", () => {
     let consoleRun: CodometerRun;
 
     beforeAll(() => {
-      consoleRun = runCodometer(
-        ["--config", packageConfiguration, "--format", "json"],
-        corpusDirectory,
-      );
+      consoleRun = runCodometer(["--format", "json"], corpusDirectory);
     });
 
     it("carries the report on standard output and diagnostics on standard error", () => {

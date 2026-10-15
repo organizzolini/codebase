@@ -72,6 +72,7 @@ export class ConfigurationListingService {
       const { configuration } =
         await this.configurationService.loadConfigurationFile({
           configurationPath: path.resolve(args.workingDirectory, args.file),
+          searchDirectory: path.resolve(args.workingDirectory, args.directory),
         });
 
       return {
@@ -106,11 +107,15 @@ export class ConfigurationListingService {
   /**
    * Resolves the exclusions the walk uses, reporting rather than throwing.
    *
-   * The configuration named by the required path may not exist or may not
-   * parse. That must not take the listing down — the listing is most wanted
-   * precisely when the configuration is in a state somebody is trying to
-   * understand — so the built-in exclusions stand in and the failure is
-   * carried back to be reported and to fail the run's exit code.
+   * The walk root is not guaranteed to have a configuration answering for it:
+   * a workspace states its `format` once in a shared object that each project
+   * spreads, so the root itself may carry no configuration file at all and the
+   * upward search then finds nothing to resolve. A workspace in that shape
+   * names its own file with `--config`; one that does neither must not take
+   * the listing down — the listing is most wanted precisely when the
+   * configuration is in a state somebody is trying to understand — so the
+   * built-in exclusions stand in and the failure is carried back to be
+   * reported and to fail the run's exit code.
    */
   private async resolveWalkExclusions(
     args: DescribeConfigurationsArguments,
@@ -119,6 +124,7 @@ export class ConfigurationListingService {
       const { configuration } =
         await this.configurationService.loadConfigurationFile({
           configurationPath: args.configurationPath,
+          searchDirectory: args.workingDirectory,
         });
 
       return {
@@ -140,8 +146,11 @@ export class ConfigurationListingService {
   /**
    * Resolves the configuration each file in a tree answers with.
    *
-   * Every file found is resolved by its own path, which is what makes the
-   * result match what a run of codometer given that file would see.
+   * Every file is resolved for **its own directory** rather than for the walk
+   * root, which is what makes the result match what a per-project run of
+   * codometer actually sees: every configuration file is resolved against the
+   * directory it sits in, so resolving one anywhere else would report
+   * something no run would ever use.
    */
   public async describeConfigurations(
     args: DescribeConfigurationsArguments,
@@ -173,7 +182,7 @@ export class ConfigurationListingService {
    * The exclusions come from whatever configuration answers for the walk root,
    * because that is what says which files this repository considers its own —
    * walking without them would list every configuration in a vendored
-   * dependency or a generator template. A path that does not load falls back
+   * dependency or a generator template. A root nothing answers for falls back
    * to the built-in exclusions and reports itself instead of failing.
    */
   public async findConfigurationFiles(

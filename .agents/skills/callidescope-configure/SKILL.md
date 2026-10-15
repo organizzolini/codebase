@@ -30,7 +30,7 @@ leaves every committed report exactly as it found it.
 | Flag                                                                                                                          | Meaning                                                                                                                                                                                 |
 | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `-a, --addresses`                                                                                                             | Comma-separated callable addresses, each `<file>#<qualified-name>`. `depth` and `breadth` only. Prompted for when omitted                                                               |
-| `--config`                                                                                                                    | Required. Path to the workspace `callidescope.config.ts`. Never searched for; omitting it is refused naming the flag                                                                    |
+| `--config`                                                                                                                    | Path to a `callidescope.config.ts`. Searched for when omitted                                                                                                                           |
 | `-d, --directories`                                                                                                           | Comma-separated project directories to trace, each holding its own `tsconfig.json`                                                                                                      |
 | `--entry-point-addresses`, `--entry-point-decorators`, `--include-exported-functions`, `--include-orphans`, `--include-tests` | Override the matching `entryPoints` field. The two lists are comma-separated; the three switches take `true` or `false`, or the bare flag for `true`                                    |
 | `--exclude`, `--exclude-callees`                                                                                              | Comma-separated globs and callee patterns, overriding the **authored** field. The tool's own default exclusions are folded back in, exactly as they are under a configured `exclude`    |
@@ -44,7 +44,7 @@ names the ignore files a run _reads_ — no flag corresponds to it. An override
 may change a declared value and may not supply one, so no flag makes an
 under-configured run legal, and a list written empty reads as absent. `depth`
 and `breadth` take every override above but the destinations and the limits,
-plus the required `--config` and `--format`; `--addresses` is theirs alone.
+plus `--config` and `--format`; `--addresses` is theirs alone.
 
 ### One precedence rule governs every override
 
@@ -57,10 +57,9 @@ one place, `FlagResolutionService`, under one rule:
 > under-configured run legal.
 
 `--check`, `--write`, and `--format` are mode or presentation and are never
-written into the configuration. `--config` is neither: it is **required**, never
-defaulted or searched for, and chooses the file everything else is resolved
-against, so it has done its whole job before the rest of resolution runs.
-Every other flag is an override, and an
+written into the configuration. `--config` is neither: it chooses the file
+everything else is resolved against, so it has already done its whole job by
+the time the rest of resolution runs. Every other flag is an override, and an
 override answers a question the configuration already asked: a path flag
 replaces only the `path` of a destination already declared, keeping its
 heading, description, anchors, and hooks; `--maximum-breadth` cannot conjure a
@@ -97,7 +96,7 @@ depth reads source and needs no build, which is what keeps it cheap enough for
 a commit hook.
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts --check depth
+npx callidescope --check depth
 ```
 
 **In an Nx workspace, prefer the per-project `gate` target to this flag.** A
@@ -116,7 +115,7 @@ drift they did not cause. Publish on the default branch instead, where nothing
 else competes to rewrite the same block:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts --write
+npx callidescope --write
 ```
 
 `--write --check reports` is **refused outright**: a report cannot be stale in
@@ -133,7 +132,7 @@ built are those plus every project they transitively import, so a call into a
 dependency still resolves to a real frame:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts -d packages/foo,packages/bar --check depth
+npx callidescope -d packages/foo,packages/bar --check depth
 ```
 
 Omit it and callidescope walks the working directory for every `tsconfig.json`
@@ -186,10 +185,11 @@ an argument would read as a green one.
 
 ## The workspace configuration file
 
-Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, TypeScript
-first because it gets type checking. This is the **workspace** configuration,
-the file a run is pointed at with the required `--config` or the Nx plugin's
-`configurationPath`, never searched for: `projects/configuration/callidescope.config.ts` here.
+Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, searched for
+upward from the working directory, TypeScript first because that is the form
+that gets type checking. This is the **workspace** configuration — the file a
+run is pointed at. A repository with none is traced with defaults rather than
+told to write one.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
@@ -480,7 +480,7 @@ file it used to live in. The `limits` command is where it is reviewable as a
 set instead:
 
 ```bash
-npx callidescope limits --config projects/configuration/callidescope.config.ts
+npx callidescope limits
 ```
 
 A markdown table, one row per project per limit — `Project`, `Limit`, `Value`,

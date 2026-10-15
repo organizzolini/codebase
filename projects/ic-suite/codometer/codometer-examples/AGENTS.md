@@ -13,7 +13,7 @@ nx run codometer-examples:vitest       # every number and refusal message the gu
 ```
 
 One example on its own, which is what a guide's `## Run it` section names —
-`--config` is required and there is no `--directory` flag, so the directory a guide says to
+there is no `--directory` flag any more, so the directory a guide says to
 measure is the directory you `cd` into first:
 
 ```bash
@@ -41,7 +41,7 @@ codometer --config ../<name>/<file>.config.ts --check limits
 | A `custom.<Language> Comment Budget` breach in a `.py`, `.sh`, or `.toml` file you did not expect | The line scanner reads a `#` inside a string as a comment; only Python, YAML, CSS, and TypeScript/JavaScript are read by a real tokenizer. Condense the block, or give that language's own `comment` selector a looser budget. | [`documentation/comments.config.ts`](examples/documentation/comments.config.ts) |
 | A shell block reported starting one line later than you counted | A `#!` shebang is never a comment, so the block starts below it. | [`documentation/comments.config.ts`](examples/documentation/comments.config.ts) |
 | A `custom.<label>` comment counter reports 0 for a language whose JSDoc comments you expected it to catch | A `comment` selector naming `language` and no `kind` skips JSDoc comments entirely — a `kind`-based selector measures those instead. The two are enabled separately, even though they share every other field name and reach the report through one channel. | [`documentation/codometer.config.ts`](examples/documentation/codometer.config.ts) |
-| A configuration you edited had no effect | A different file was named. Nothing is searched for and nothing is merged: the file `--config` names answers alone — even a configuration file authored as a function is no longer recognized, so the same object always answers, whichever folder was measured. | [`discovery/nested/codometer.config.ts`](examples/discovery/nested/codometer.config.ts) |
+| A configuration you edited had no effect | A nearer configuration file won. The search takes the **first** file walking upward and merges nothing — even a configuration file authored as a function is no longer recognized, so the same object always answers, whichever folder reached it. | [`discovery/nested/codometer.config.ts`](examples/discovery/nested/codometer.config.ts) |
 
 ## Three things that reliably confuse
 
@@ -72,7 +72,7 @@ codometer-examples/
     ├── codometer.ts                   the command-line driver every test goes through
     ├── run-examples.ts                the `examples` target's runner
     ├── corpus.integration.test.ts     the corpus contents the guides quote
-    ├── examples.integration.test.ts   targets, compression, and the named configuration, asserted against their guides
+    ├── examples.integration.test.ts   targets, compression, and discovery, asserted against their guides
     └── <topic>.integration.test.ts    every other example, one or two guides per suite
 ```
 
@@ -151,6 +151,6 @@ in at run time.
 | File | What it is |
 | ---- | ---------- |
 | [README.md](README.md) | The guided tour, and the `## The examples` index |
-| [codometer.config.ts](codometer.config.ts) | What measures this package, and the named-configuration example |
+| [codometer.config.ts](codometer.config.ts) | What measures this package, and the discovery example |
 | [testing/codometer.ts](testing/codometer.ts) | The command-line seam every test and the runner go through |
 | [testing/run-examples.ts](testing/run-examples.ts) | The `examples` target, and the completeness checks |

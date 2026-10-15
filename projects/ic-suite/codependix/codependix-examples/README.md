@@ -56,7 +56,7 @@ renderer chains them with, declared once in
 
 | Example | What it settles |
 | ------- | --------------- |
-| [`configuration-resolution`](examples/configuration-resolution) | `defaults` versus an override, the glob lists, the named file versus its neighbor |
+| [`configuration-resolution`](examples/configuration-resolution) | `defaults` versus an override, the glob lists, file precedence, the upward search |
 | [`export-targets`](examples/export-targets) | Why `both` is a named target rather than something inferred |
 | [`markdown-modes`](examples/markdown-modes) | An anchored splice, and a standalone file |
 | [`auto-created-sections`](examples/auto-created-sections) | Exactly where a missing `## 🕸️ Codependix` section lands, in every branch |

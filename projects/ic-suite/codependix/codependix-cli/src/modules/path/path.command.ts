@@ -85,11 +85,10 @@ export class PathCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Parses the required configuration path from command-line input. */
+  /** Parses the optional configuration path from command-line input. */
   @Option({
-    description: "Path to the codependix configuration file (required)",
-    flags: "--config <config>",
-    required: true,
+    description: "Path to the codependix configuration file",
+    flags: "--config [config]",
   })
   public parseConfig(value: string | undefined): string | undefined {
     return this.configurationService.parseOptionalOption(value);

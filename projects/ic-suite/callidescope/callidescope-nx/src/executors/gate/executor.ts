@@ -47,7 +47,9 @@ export default async function gateExecutor(
 
   const pluginService = await resolvePluginService();
   const result = await pluginService.runGate({
-    configurationPath: options.configurationPath,
+    ...(options.configurationPath === undefined
+      ? {}
+      : { configurationPath: options.configurationPath }),
     directories: scope.directories,
     judgedProjectNames: scope.selectedDirectories,
     workspaceRoot: context.root,

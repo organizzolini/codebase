@@ -31,7 +31,7 @@ the reproduction that produces that exact message is in
 | `A "both" export target needs a json destination.` | [`refusals`](examples/refusals) |
 | `A "markdown" export target needs a markdown destination.` | [`refusals`](examples/refusals) |
 | `A markdown destination needs an anchor, a path, or both` | [`refusals`](examples/refusals), and [`markdown-modes`](examples/markdown-modes) for the four shapes a destination can take |
-| `ConfigurationFileNotFoundError` | [`refusals`](examples/refusals) — `--config` is required and the file it names must exist |
+| `ConfigurationFileNotFoundError` | [`refusals`](examples/refusals) — an explicitly named `--config` must exist; an unnamed one may be absent |
 | `UnknownConfigurationFileTypeError` | [`refusals`](examples/refusals) — the seven readable extensions are listed there |
 | `TypescriptProjectConfigurationError` | [`typescript-resolution`](examples/typescript-resolution) — the compiler's own diagnostics, and why a parse failure is fatal rather than skipped |
 | `💥 Failed running codependix`, naming one project | [`container-rooting`](examples/container-rooting) — one project's failure is isolated; every other project still completed |

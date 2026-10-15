@@ -19,9 +19,6 @@ import { LoggerService } from "@codebase/logging";
 
 import { ConfigurationCommand } from "./configuration.command";
 
-/** A configuration path every listing run must now name. */
-const CONFIG = "codometer.config.ts";
-
 describe(ConfigurationCommand, () => {
   let command: ConfigurationCommand;
   let configurationService: ConfigurationListingService;
@@ -95,13 +92,13 @@ describe(ConfigurationCommand, () => {
   });
 
   it("writes the rendered listing to standard output", async () => {
-    await command.run([], { config: CONFIG });
+    await command.run([], {});
 
     expect(write).toHaveBeenCalledWith("rendered\n");
   });
 
   it("passes the limits flag through to the renderer", async () => {
-    await command.run([], { config: CONFIG, limits: true });
+    await command.run([], { limits: true });
 
     expect(renderConfigurationService.render).toHaveBeenCalledWith(
       expect.objectContaining({ limitsOnly: true }),
@@ -123,17 +120,11 @@ describe(ConfigurationCommand, () => {
     });
   });
 
-  it("reads the configuration path it is given", () => {
+  it("reads the configuration path it is given, and leaves it unset otherwise", () => {
     expect(command.parseConfig("configuration/codometer.config.ts")).toBe(
       "configuration/codometer.config.ts",
     );
-  });
-
-  it("refuses a run that names no --config, naming the flag", async () => {
-    await expect(command.run([], {})).rejects.toThrow(
-      "--config <path> is required",
-    );
-    expect(configurationService.describeConfigurations).not.toHaveBeenCalled();
+    expect(command.parseConfig(undefined)).toBeUndefined();
   });
 
   it("reads the format it is given, and falls back to markdown", () => {
@@ -159,7 +150,7 @@ describe(ConfigurationCommand, () => {
       rootError: undefined,
     });
 
-    await command.run([], { config: CONFIG });
+    await command.run([], {});
 
     expect(logger.info).toHaveBeenCalledWith(
       "🔧 Listed the codometer configuration",
@@ -177,7 +168,7 @@ describe(ConfigurationCommand, () => {
     });
 
     try {
-      await command.run([], { config: CONFIG });
+      await command.run([], {});
 
       // The listing is what the command exists to produce, so it is still
       // written — but a zero exit code would claim the repository's own
@@ -190,15 +181,13 @@ describe(ConfigurationCommand, () => {
   });
 
   it("refuses a format it does not know, naming the ones it takes", async () => {
-    await expect(
-      command.run([], { config: CONFIG, format: "yaml" }),
-    ).rejects.toThrow(
+    await expect(command.run([], { format: "yaml" })).rejects.toThrow(
       '--format does not accept "yaml". It takes one of json and markdown.',
     );
   });
 
   it("defaults the format to markdown", async () => {
-    await command.run([], { config: CONFIG });
+    await command.run([], {});
 
     expect(renderConfigurationService.render).toHaveBeenCalledWith(
       expect.objectContaining({ format: "markdown" }),

@@ -19,9 +19,6 @@ import { CallidescopeService } from "./callidescope.service";
 import type { ResolvedCallidescopeConfiguration } from "@callidescope/configuration";
 import type { CallGraphResult } from "@callidescope/core";
 
-/** A workspace file no traced project sits beside, so none is skipped as the run's own. */
-const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
-
 /**
  * The depth `ApplicationCommand` measures once the closure resolves its call
  * into the library: `run` → `Repository.find` → `Repository.open`.
@@ -430,7 +427,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -451,7 +447,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // resolved service again to see its own logger calls.
     await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot: tracedWorkspaceRoot,
     });
@@ -498,7 +493,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   it("collects the same callables locate would need to resolve an address", async () => {
     const located = await service.locate({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot: tracedWorkspaceRoot,
     });
@@ -538,7 +532,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -561,7 +554,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -589,7 +581,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -610,7 +601,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     // nothing is `markdown: undefined` written in the file — not an absence.
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot: tracedWorkspaceRoot,
     });
@@ -639,7 +629,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       limitOverrides: { maximumDepth: 3 },
       workspaceRoot,
@@ -662,7 +651,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -688,7 +676,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -705,7 +692,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
     const outcome = await service.trace({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -726,7 +712,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     await expect(
       service.trace({
         configuration: buildConfiguration(),
-        configurationPath: WORKSPACE_CONFIGURATION_PATH,
         directories: [],
         workspaceRoot,
       }),
@@ -741,7 +726,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     await expect(
       service.trace({
         configuration: buildConfiguration(),
-        configurationPath: WORKSPACE_CONFIGURATION_PATH,
         directories: [],
         workspaceRoot,
       }),
@@ -762,7 +746,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
         ...buildConfiguration(),
         exclude: ["packages/broken/**"],
       },
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -791,7 +774,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
         ...buildConfiguration(),
         exclude: ["packages/broken/**"],
       },
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot,
     });
@@ -812,13 +794,11 @@ describe(`${CallidescopeService.name} (integration)`, () => {
       layeredWorkspaceRoot = await buildLayeredWorkspace();
       scoped = await service.trace({
         configuration: buildConfiguration(),
-        configurationPath: WORKSPACE_CONFIGURATION_PATH,
         directories: [path.join("packages", "application")],
         workspaceRoot: layeredWorkspaceRoot,
       });
       unscoped = await service.trace({
         configuration: buildConfiguration(),
-        configurationPath: WORKSPACE_CONFIGURATION_PATH,
         directories: [],
         workspaceRoot: layeredWorkspaceRoot,
       });
@@ -930,7 +910,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
       await expect(
         service.trace({
           configuration: buildConfiguration(),
-          configurationPath: WORKSPACE_CONFIGURATION_PATH,
           directories: [path.join("packages", "missing")],
           workspaceRoot: layeredWorkspaceRoot,
         }),
@@ -971,7 +950,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
       const outcome = await service.trace({
         configuration: buildConfiguration(),
-        configurationPath: WORKSPACE_CONFIGURATION_PATH,
         directories: [],
         workspaceRoot,
       });
@@ -996,7 +974,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
 
       const outcome = await service.trace({
         configuration: buildConfiguration(),
-        configurationPath: WORKSPACE_CONFIGURATION_PATH,
         directories: [path.join("packages", "application")],
         workspaceRoot,
       });
@@ -1017,7 +994,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
       await expect(
         service.trace({
           configuration: buildConfiguration(),
-          configurationPath: WORKSPACE_CONFIGURATION_PATH,
           directories: [],
           workspaceRoot,
         }),
@@ -1047,7 +1023,6 @@ describe(`${CallidescopeService.name} (integration)`, () => {
   it("builds the same graph a full trace would, without any analysis", async () => {
     const located = await service.locate({
       configuration: buildConfiguration(),
-      configurationPath: WORKSPACE_CONFIGURATION_PATH,
       directories: [],
       workspaceRoot: tracedWorkspaceRoot,
     });

@@ -94,7 +94,7 @@ describe(ConfigurationListingService, () => {
         codometerConfigurationService.loadConfigurationFile,
       ).mockResolvedValue({
         configuration: buildConfiguration(),
-        path: "/repository/configuration/codometer.config.ts",
+        path: undefined,
       });
       vi.mocked(discoveryService.discoverFiles).mockReturnValue(
         buildDiscovery([
@@ -109,7 +109,7 @@ describe(ConfigurationListingService, () => {
       await expect(
         service
           .findConfigurationFiles({
-            configurationPath: "configuration/codometer.config.ts",
+            configurationPath: undefined,
             workingDirectory: "/repository",
           })
           .then((discovered) => discovered.files),
@@ -128,14 +128,14 @@ describe(ConfigurationListingService, () => {
           exclude: ["templates/**"],
           excludeFrom: [".codometerignore"],
         }),
-        path: "/repository/configuration/codometer.config.ts",
+        path: undefined,
       });
       vi.mocked(discoveryService.discoverFiles).mockReturnValue(
         buildDiscovery([]),
       );
 
       await service.findConfigurationFiles({
-        configurationPath: "configuration/codometer.config.ts",
+        configurationPath: undefined,
         workingDirectory: "/repository",
       });
 
@@ -151,13 +151,14 @@ describe(ConfigurationListingService, () => {
         codometerConfigurationService.loadConfigurationFile,
       ).mockResolvedValue({
         configuration: buildConfiguration(),
-        path: "/repository/configuration/codometer.config.ts",
+        path: undefined,
       });
       vi.mocked(discoveryService.discoverFiles).mockReturnValue(
         buildDiscovery([]),
       );
 
-      // The path is required: nothing is searched for beneath the walk root.
+      // A workspace whose root carries no configuration file names the shared
+      // one instead of falling back to the built-in exclusions.
       await service.findConfigurationFiles({
         configurationPath: "configuration/codometer.config.ts",
         workingDirectory: "/repository",
@@ -167,6 +168,7 @@ describe(ConfigurationListingService, () => {
         codometerConfigurationService.loadConfigurationFile,
       ).toHaveBeenCalledWith({
         configurationPath: "configuration/codometer.config.ts",
+        searchDirectory: "/repository",
       });
     });
   });
@@ -180,11 +182,11 @@ describe(ConfigurationListingService, () => {
         .mockRejectedValueOnce(new Error("needs a format"))
         .mockResolvedValueOnce({
           configuration: buildConfiguration(),
-          path: "/repository/configuration/codometer.config.ts",
+          path: undefined,
         } satisfies LoadedConfiguration);
 
       const { described, rootError } = await service.describeConfigurations({
-        configurationPath: "configuration/codometer.config.ts",
+        configurationPath: undefined,
         workingDirectory: "/repository",
       });
 
@@ -208,12 +210,12 @@ describe(ConfigurationListingService, () => {
       vi.mocked(codometerConfigurationService.loadConfigurationFile)
         .mockResolvedValueOnce({
           configuration: buildConfiguration(),
-          path: "/repository/configuration/codometer.config.ts",
+          path: undefined,
         } satisfies LoadedConfiguration)
         .mockRejectedValueOnce(new Error("Cannot find module"));
 
       const { described, rootError } = await service.describeConfigurations({
-        configurationPath: "configuration/codometer.config.ts",
+        configurationPath: undefined,
         workingDirectory: "/repository",
       });
 
@@ -237,12 +239,12 @@ describe(ConfigurationListingService, () => {
       vi.mocked(codometerConfigurationService.loadConfigurationFile)
         .mockResolvedValueOnce({
           configuration: buildConfiguration(),
-          path: "/repository/configuration/codometer.config.ts",
+          path: undefined,
         } satisfies LoadedConfiguration)
         .mockRejectedValueOnce("exploded");
 
       const { described } = await service.describeConfigurations({
-        configurationPath: "configuration/codometer.config.ts",
+        configurationPath: undefined,
         workingDirectory: "/repository",
       });
 
@@ -258,7 +260,7 @@ describe(ConfigurationListingService, () => {
       ).mockRejectedValueOnce("exploded");
 
       const { rootError } = await service.describeConfigurations({
-        configurationPath: "configuration/codometer.config.ts",
+        configurationPath: undefined,
         workingDirectory: "/repository",
       });
 

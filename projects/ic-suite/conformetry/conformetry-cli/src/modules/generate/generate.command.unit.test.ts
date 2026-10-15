@@ -18,8 +18,6 @@ import { GenerateCommand } from "./generate.command";
 
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 
-const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
-
 const CONFIGURATION: ConformetryConfiguration = [
   {
     inputs: { name: { type: "string" } },
@@ -110,11 +108,7 @@ describe(GenerateCommand, () => {
 
   describe("run", () => {
     it("renders the named template and reports what it wrote", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(generationService.runGenerator).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -128,11 +122,7 @@ describe(GenerateCommand, () => {
     });
 
     it("writes into the directory the caller named", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(generationService.runGenerator).toHaveBeenCalledWith(
         expect.objectContaining({ instancePath: "/tmp/out" }),
@@ -140,7 +130,7 @@ describe(GenerateCommand, () => {
     });
 
     it("refuses a run that names no directory, before asking for inputs", async () => {
-      await command.run([], { config: CONFIGURATION_PATH, template: "widget" });
+      await command.run([], { template: "widget" });
 
       expect(process.exitCode).toBe(1);
       expect(generationService.runGenerator).not.toHaveBeenCalled();
@@ -161,17 +151,13 @@ describe(GenerateCommand, () => {
     });
 
     it("names the available templates when asked for an unknown one", async () => {
-      await expect(
-        command.run([], { config: CONFIGURATION_PATH, template: "nope" }),
-      ).rejects.toThrow('Unknown template "nope". Available: widget');
+      await expect(command.run([], { template: "nope" })).rejects.toThrow(
+        'Unknown template "nope". Available: widget',
+      );
     });
 
     it("logs a debug entry marker naming the template", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(commandLogger.debug).toHaveBeenCalledWith(
         "🏗 Generating a conformetry instance",
@@ -181,9 +167,9 @@ describe(GenerateCommand, () => {
     });
 
     it("logs and rejects an unknown template", async () => {
-      await expect(
-        command.run([], { config: CONFIGURATION_PATH, template: "nope" }),
-      ).rejects.toThrow('Unknown template "nope"');
+      await expect(command.run([], { template: "nope" })).rejects.toThrow(
+        'Unknown template "nope"',
+      );
 
       expect(commandLogger.error).toHaveBeenCalledWith(
         "🚫 Rejected an unknown template",
@@ -196,11 +182,7 @@ describe(GenerateCommand, () => {
     // read, no CI check. It hands over the arguments and the schema, and the
     // input service refuses on its own where nobody can be asked.
     it("asks for the generator's inputs without deciding whether to prompt", async () => {
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       // An exact object rather than `objectContaining`: the point is that
       // nothing else — no `promptWhenMissing` — is passed alongside these two.
@@ -223,11 +205,7 @@ describe(GenerateCommand, () => {
       // Reported rather than thrown: nothing was generated, and the reader's
       // next move is to pass the flag it named.
       await expect(
-        command.run([], {
-          config: CONFIGURATION_PATH,
-          directory: "/tmp/out",
-          template: "widget",
-        }),
+        command.run([], { directory: "/tmp/out", template: "widget" }),
       ).resolves.toBeUndefined();
       expect(process.exitCode).toBe(1);
       expect(commandLogger.error).toHaveBeenCalledWith(
@@ -244,11 +222,7 @@ describe(GenerateCommand, () => {
       );
 
       await expect(
-        command.run([], {
-          config: CONFIGURATION_PATH,
-          directory: "/tmp/out",
-          template: "widget",
-        }),
+        command.run([], { directory: "/tmp/out", template: "widget" }),
       ).rejects.toThrow("Rendering failed.");
     });
   });
@@ -259,11 +233,7 @@ describe(GenerateCommand, () => {
     it("never prompts when the caller named a template", async () => {
       vi.mocked(configurationService.isAtTerminal).mockReturnValue(true);
 
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(configurationService.promptForTemplate).not.toHaveBeenCalled();
       expect(generationService.runGenerator).toHaveBeenCalledWith(
@@ -279,10 +249,7 @@ describe(GenerateCommand, () => {
         "widget",
       );
 
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-      });
+      await command.run([], { directory: "/tmp/out" });
 
       // The loaded configuration itself, not a mapping of it: the picker can
       // then never disagree with what this command would actually run.
@@ -299,7 +266,7 @@ describe(GenerateCommand, () => {
     // A prompt nobody can answer is what once let this command exit 0 having
     // generated nothing, so the names go in the message instead.
     it("names the available templates when nobody can be asked", async () => {
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(process.exitCode).toBe(1);
       expect(commandLogger.error).toHaveBeenCalledWith(
@@ -317,17 +284,17 @@ describe(GenerateCommand, () => {
     it.each(["--generator", "--generator=widget"])(
       "refuses %s rather than ignoring it",
       async (argument) => {
-        await expect(
-          command.run([argument], { config: CONFIGURATION_PATH }),
-        ).rejects.toThrow("--generator was removed. Pass --template instead");
+        await expect(command.run([argument], {})).rejects.toThrow(
+          "--generator was removed. Pass --template instead",
+        );
         expect(generationService.runGenerator).not.toHaveBeenCalled();
       },
     );
 
     it("logs the removed option it refused", async () => {
-      await expect(
-        command.run(["--generator"], { config: CONFIGURATION_PATH }),
-      ).rejects.toThrow("--generator was removed");
+      await expect(command.run(["--generator"], {})).rejects.toThrow(
+        "--generator was removed",
+      );
 
       expect(commandLogger.error).toHaveBeenCalledWith(
         "🚫 Rejected a removed option",
@@ -342,7 +309,7 @@ describe(GenerateCommand, () => {
         undefined,
       );
 
-      await command.run([], { config: CONFIGURATION_PATH });
+      await command.run([], {});
 
       expect(process.exitCode).toBe(1);
       expect(generationService.runGenerator).not.toHaveBeenCalled();
@@ -376,11 +343,7 @@ describe(GenerateCommand, () => {
         },
       ]);
 
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(configurationService.resolveGeneratorInputs).toHaveBeenCalledWith({
         rawArguments: expect.any(Array) as string[],
@@ -406,11 +369,7 @@ describe(GenerateCommand, () => {
         },
       ]);
 
-      await command.run([], {
-        config: CONFIGURATION_PATH,
-        directory: "/tmp/out",
-        template: "widget",
-      });
+      await command.run([], { directory: "/tmp/out", template: "widget" });
 
       expect(configurationService.resolveGeneratorInputs).toHaveBeenCalledWith({
         rawArguments: expect.any(Array) as string[],

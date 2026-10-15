@@ -77,10 +77,7 @@ describe("path command", () => {
       }).compile();
       const command = module.get(PathCommand, { strict: false });
 
-      await command.run(args, {
-        config: "codependix.config.ts",
-        ...options,
-      });
+      await command.run(args, options);
 
       const exitCode =
         typeof process.exitCode === "number" ? process.exitCode : 0;

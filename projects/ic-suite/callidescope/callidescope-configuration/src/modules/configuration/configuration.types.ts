@@ -224,8 +224,8 @@ export interface CallidescopeWriteConfiguration {
 
 /** Arguments accepted by the configuration loader. */
 export interface LoadConfigurationArguments {
-  /** The workspace configuration file, relative to the cwd or the repository root. */
-  configurationPath: string;
+  configurationPath?: string | undefined;
+  searchDirectory?: string | undefined;
 }
 
 /**
@@ -242,7 +242,17 @@ export interface LoadedCallidescopeConfiguration {
   /** The file's own object, before a single default was applied. */
   authored: CallidescopeConfiguration;
   configuration: ResolvedCallidescopeConfiguration;
-  /** The absolute path of the file that was read. */
+  /** `undefined` when no configuration file was found at all. */
+  path: string | undefined;
+}
+
+/**
+ * What a load reports when the caller named the file, so a path is certain.
+ *
+ * The search may find nothing and legally say so; a named path either resolves
+ * or refuses, and never comes back as `undefined`.
+ */
+export interface LoadedCallidescopeConfigurationFile extends LoadedCallidescopeConfiguration {
   path: string;
 }
 
@@ -272,7 +282,7 @@ export interface LoadProjectConfigurationsArguments {
    * and treating the file as both would refuse it for the workspace-only fields
    * it legitimately sets.
    */
-  workspaceConfigurationPath: string;
+  workspaceConfigurationPath?: string | undefined;
   workspaceRoot: string;
 }
 
@@ -460,7 +470,7 @@ export interface ResolveProjectLimitsArguments {
   /** The run's own configuration, which the workspace row reads its numbers from. */
   workspaceConfiguration: ResolvedCallidescopeConfiguration;
   /** The file that configuration was read from, when one was found. */
-  workspaceConfigurationPath: string;
+  workspaceConfigurationPath: string | undefined;
 }
 
 /** What a `writeBlock` function is handed. */

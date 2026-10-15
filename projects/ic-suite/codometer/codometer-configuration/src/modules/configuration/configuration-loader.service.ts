@@ -12,6 +12,7 @@ import { createJiti } from "jiti";
 import { parse as parseJsonc } from "jsonc-parser";
 
 import {
+  CONFIGURATION_FILE_NAMES,
   REPOSITORY_ROOT_MARKERS,
   SUPPORTED_CONFIGURATION_EXTENSIONS,
 } from "./configuration.constants";
@@ -20,9 +21,9 @@ import type { LoadedConfigurationModule } from "./configuration-loader.types";
 import type { LoadConfigurationArguments } from "./configuration.types";
 
 /**
- * Reads the codometer configuration file at a given path.
+ * Finds and reads a codometer configuration file.
  *
- * Owns locating the file by its path and turning whatever it exports into a plain,
+ * Owns locating the file and turning whatever it exports into a plain,
  * unvalidated configuration object — parsing JSON/JSONC by hand, everything
  * else through `jiti`. What the object means is `ConfigurationService`'s to
  * validate and resolve, kept apart so a file finding no configuration reads
@@ -39,6 +40,35 @@ export class ConfigurationLoaderService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Walks upward from a directory looking for a configuration file.
+   *
+   * Returns `undefined` when the search reaches the filesystem root without
+   * finding one: a repository that never wrote a configuration file is
+   * measured with the defaults rather than told to write one.
+   */
+  private findConfigurationFile(searchDirectory: string): string | undefined {
+    let candidateDirectory = path.resolve(searchDirectory);
+
+    for (;;) {
+      for (const fileName of CONFIGURATION_FILE_NAMES) {
+        const candidatePath = path.join(candidateDirectory, fileName);
+
+        if (existsSync(candidatePath)) {
+          return candidatePath;
+        }
+      }
+
+      const parentDirectory = path.dirname(candidateDirectory);
+
+      if (parentDirectory === candidateDirectory) {
+        return undefined;
+      }
+
+      candidateDirectory = parentDirectory;
+    }
+  }
 
   /**
    * Walks upward from the process cwd looking for the repository root.
@@ -151,18 +181,25 @@ export class ConfigurationLoaderService {
   // 🌎 Public Methods
 
   /**
-   * Loads the configuration file at a required path, unvalidated.
+   * Loads a configuration file's raw export, or `undefined` when none exists.
    *
-   * There is no search and no default file: a path that names nothing fails
-   * with `ConfigurationFileNotFoundError` rather than measuring with defaults
-   * nobody asked for. Unvalidated on purpose: the caller runs the result
-   * through the schema before trusting any of it, so this service never has to
-   * know the shape a configuration is supposed to have.
+   * Unvalidated on purpose: the caller runs the result through the schema
+   * before trusting any of it, so this service never has to know the shape a
+   * configuration is supposed to have.
    */
   async load(
-    args: LoadConfigurationArguments,
-  ): Promise<LoadedConfigurationModule> {
-    const resolvedPath = this.resolveConfigurationPath(args.configurationPath);
+    args: LoadConfigurationArguments = {},
+  ): Promise<LoadedConfigurationModule | undefined> {
+    const searchDirectory = path.resolve(args.searchDirectory ?? process.cwd());
+    const resolvedPath =
+      args.configurationPath === undefined
+        ? this.findConfigurationFile(searchDirectory)
+        : this.resolveConfigurationPath(args.configurationPath);
+
+    if (resolvedPath === undefined) {
+      return undefined;
+    }
+
     const extension = path.extname(resolvedPath).toLowerCase();
 
     if (!SUPPORTED_CONFIGURATION_EXTENSIONS.has(extension)) {

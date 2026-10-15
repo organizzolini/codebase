@@ -54,16 +54,7 @@ const LOADER_PROJECT = path.resolve(import.meta.dirname, "..", "tsconfig.json");
  * stderr and leaves the code at zero, which no in-process test of the command
  * can see.
  */
-function runCallidescope(
-  workspaceRoot: string,
-  commandArguments: readonly string[] = [
-    "callidescope",
-    "--config",
-    path.join(workspaceRoot, "callidescope.config.json"),
-    "--check",
-    "depth",
-  ],
-): {
+function runCallidescope(workspaceRoot: string): {
   output: string;
   status: null | number;
 } {
@@ -73,7 +64,11 @@ function runCallidescope(
       "--import",
       pathToFileURL(path.join(workspaceRoot, "register.mjs")).toString(),
       ENTRY_POINT,
-      ...commandArguments,
+      "callidescope",
+      "--config",
+      path.join(workspaceRoot, "callidescope.config.json"),
+      "--check",
+      "depth",
     ],
     {
       cwd: workspaceRoot,
@@ -217,25 +212,6 @@ describe("main end-to-end suite", () => {
 
         expect(runCallidescope(workspaceRoot).status).toBe(0);
       });
-
-      // The configuration is never searched for: a workspace holding a
-      // perfectly good `callidescope.config.json` beside the cwd is still
-      // refused when the command line does not name it.
-      it.each([["callidescope"], ["depth"], ["breadth"], ["limits"]])(
-        "refuses `%s` with no --config, even beside a configuration file",
-        (command) => {
-          expect.hasAssertions();
-
-          const workspaceRoot = writeWorkspace();
-
-          writeReadableProject(workspaceRoot, "readable");
-
-          const { output, status } = runCallidescope(workspaceRoot, [command]);
-
-          expect(status).not.toBe(0);
-          expect(output).toContain("--config");
-        },
-      );
 
       it("fails a workspace whose only project cannot be read", () => {
         expect.hasAssertions();

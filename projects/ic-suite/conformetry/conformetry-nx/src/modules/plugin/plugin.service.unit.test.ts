@@ -533,19 +533,5 @@ describe(PluginService, () => {
         }),
       ).rejects.toThrow("which does not exist");
     });
-
-    it("refuses to run when neither the options nor nx.json name a configuration path", async () => {
-      const bareRoot = await mkdtemp(path.join(tmpdir(), "conformetry-bare-"));
-
-      await expect(
-        service.runValidation({
-          options: {},
-          project: WIDGETS,
-          workspaceRoot: bareRoot,
-        }),
-      ).rejects.toThrow('"configurationPath" option of the @conformetry/nx');
-
-      await rm(bareRoot, { force: true, recursive: true });
-    });
   });
 });

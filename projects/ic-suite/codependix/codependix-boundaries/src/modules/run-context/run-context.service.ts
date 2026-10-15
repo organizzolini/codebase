@@ -2,7 +2,6 @@ import path from "node:path";
 
 import {
   CODEPENDIX_GRAPH_TYPES,
-  ConfigurationPathRequiredError,
   ConfigurationService,
 } from "@codependix/configuration";
 import { NeighborhoodService } from "@codependix/nx-projects";
@@ -65,30 +64,6 @@ export class RunContextService {
         args.project.absoluteRoot,
       ),
       projectTags: args.project.tags,
-    });
-  }
-
-  /**
-   * Loads the configuration the command line named.
-   *
-   * `--config` is required: no file is searched for, so a run naming none is
-   * refused here rather than read as an empty configuration.
-   */
-  private async loadConfiguration(
-    options: MapCommandOptions,
-  ): Promise<ResolvedCodependixConfiguration> {
-    if (options.config === undefined) {
-      throw new ConfigurationPathRequiredError();
-    }
-
-    return this.configurationService.loadConfiguration({
-      configurationPath: options.config,
-      overrides: { exclude: options.exclude, include: options.include },
-      selection: {
-        dependencies: options.dependencies,
-        projects: options.projects,
-        tags: options.tags,
-      },
     });
   }
 
@@ -253,7 +228,16 @@ export class RunContextService {
     workingDirectory: string;
   }): Promise<GraphRunContext> {
     const { mode, options, workingDirectory } = args;
-    const configuration = await this.loadConfiguration(options);
+    const configuration = await this.configurationService.loadConfiguration({
+      configurationPath: options.config,
+      overrides: { exclude: options.exclude, include: options.include },
+      searchDirectory: workingDirectory,
+      selection: {
+        dependencies: options.dependencies,
+        projects: options.projects,
+        tags: options.tags,
+      },
+    });
     const graph = await this.neighborhoodService.readProjectGraph(
       this.resolveProjectGraphPath(
         configuration.projectGraph,

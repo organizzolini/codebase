@@ -36,6 +36,7 @@ export default async function syncGenerator(
     configurationPath:
       options?.configurationPath ??
       optionsService.resolveConfigurationPath({
+        exists: (candidatePath) => tree.exists(candidatePath),
         nxConfiguration: readNxConfiguration(tree),
       }),
     outputPath: options?.outputPath ?? DEFAULT_OUTPUT_PATH,

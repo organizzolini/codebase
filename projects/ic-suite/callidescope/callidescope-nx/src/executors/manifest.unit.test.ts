@@ -153,28 +153,4 @@ describe("executors.json", () => {
       ).toBe(true);
     },
   );
-
-  // Nothing searches for the workspace configuration, so Nx must refuse a
-  // target that does not name it before the executor ever runs.
-  it.each(Object.keys(executors))(
-    "requires configurationPath in the %s schema",
-    (executorName) => {
-      expect.hasAssertions();
-
-      const { schema } = readExecutor(executorName);
-      const { required } = readRecord(
-        JSON.parse(
-          readFileSync(
-            path.join(PACKAGE_DIRECTORY, path.posix.normalize(String(schema))),
-            "utf8",
-          ),
-        ) as unknown,
-        String(schema),
-      );
-
-      expect(required).toStrictEqual(
-        expect.arrayContaining(["configurationPath"]),
-      );
-    },
-  );
 });

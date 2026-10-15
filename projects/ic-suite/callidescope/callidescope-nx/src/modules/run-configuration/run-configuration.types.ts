@@ -6,18 +6,18 @@ import type { ResolvedCallidescopeConfiguration } from "@callidescope/configurat
 export interface LoadedRunConfiguration {
   readonly configuration: ResolvedCallidescopeConfiguration;
   /**
-   * Where the configuration was read from.
+   * Where the configuration was read from, or nothing when none was found.
    *
    * The path the loader settled on rather than the one it was handed, since a
-   * relative path is resolved before it is read — and a run resolves a
-   * project's own configuration relative to it.
+   * search may have answered — and a run resolves a project's own
+   * configuration relative to it.
    */
-  readonly path: string;
+  readonly path: string | undefined;
 }
 
 /** Arguments for loading the configuration one run is judged by. */
 export interface LoadRunConfigurationArguments {
-  /** The workspace configuration file, as this plugin's registration names it. */
-  readonly configurationPath: string;
+  /** Resolved from this plugin's `nx.json` registration when omitted. */
+  readonly configurationPath?: string | undefined;
   readonly workspaceRoot: string;
 }

@@ -6,19 +6,20 @@ import type {
 /**
  * What this package is measured by, and the first example it ships.
  *
- * Codometer never searches for a configuration, so this file answers only
- * where a run names it with `--config`. The workspace root's configuration
- * answers for every other project the same way, and nothing from it is folded
- * in here — which is why the conventions below are restated rather than
- * imported.
+ * Its presence is the configuration-discovery example: the workspace root
+ * already carries a configuration that answers for every project beneath it,
+ * and codometer takes the **first** file it finds walking upward — so this
+ * one replaces it outright for this folder and everything beneath it that
+ * declares no configuration of its own. Nothing from the root file is folded
+ * in, which is why the conventions below are restated rather than imported.
  *
  * A configuration file authored as a function is no longer recognized, so
  * this is one plain object rather than a factory branching on which folder
- * was measured. That means a run measuring this package itself and one
- * measuring a folder beneath it — `examples/discovery`, for instance — resolve
- * to the exact same shape, `Corpus` target included, whenever both name this
- * file. See [`examples/discovery/README.md`](examples/discovery/README.md) for
- * what that means for a folder that is not the package root.
+ * was measured. That means a run measuring this package itself and a bare run
+ * reached by walking upward from a folder beneath it — `examples/discovery`,
+ * for instance — resolve to the exact same shape, `Corpus` target included.
+ * See [`examples/discovery/README.md`](examples/discovery/README.md) for what
+ * that means for a folder that is not the package root.
  */
 
 // ♟️ Conventions

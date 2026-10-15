@@ -23,9 +23,6 @@ import type {
   ProjectLimitsLookup,
 } from "./configuration.types";
 
-/** A workspace file no staged project is ever beside, for runs that name one. */
-const WORKSPACE_CONFIGURATION_PATH = "/workspace/callidescope.config.ts";
-
 /** The spelling `writeWorkspace` stages every configuration under. */
 const CONFIGURATION_FILE_NAME = CONFIGURATION_FILE_NAMES[3];
 
@@ -194,7 +191,6 @@ describe(ProjectConfigurationService, () => {
     const loaded = await service.loadProjectConfigurations(
       {
         projects: ["packages/gated"],
-        workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
       configurationService,
@@ -223,7 +219,6 @@ describe(ProjectConfigurationService, () => {
       service.loadProjectConfigurations(
         {
           projects: ["packages/plain"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -273,7 +268,6 @@ describe(ProjectConfigurationService, () => {
     const [loaded] = await service.loadProjectConfigurations(
       {
         projects: ["packages/gated"],
-        workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
       configurationService,
@@ -380,7 +374,6 @@ describe(ProjectConfigurationService, () => {
       service.loadProjectConfigurations(
         {
           projects: ["packages/broken"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -404,7 +397,6 @@ describe(ProjectConfigurationService, () => {
       service.loadProjectConfigurations(
         {
           projects: ["packages/broken"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -429,7 +421,6 @@ describe(ProjectConfigurationService, () => {
       service.loadProjectConfigurations(
         {
           projects: ["packages/broken"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -451,7 +442,6 @@ describe(ProjectConfigurationService, () => {
       service.loadProjectConfigurations(
         {
           projects: ["packages/gated", "packages/plain"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -472,7 +462,6 @@ describe(ProjectConfigurationService, () => {
       const loading = service.loadProjectConfigurations(
         {
           projects: ["packages/partial"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -509,7 +498,6 @@ describe(ProjectConfigurationService, () => {
         service.loadProjectConfigurations(
           {
             projects: ["packages/partial"],
-            workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
             workspaceRoot,
           },
           configurationService,
@@ -540,7 +528,6 @@ describe(ProjectConfigurationService, () => {
     const loading = service.loadProjectConfigurations(
       {
         projects: ["packages/hollow"],
-        workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
       configurationService,
@@ -580,7 +567,6 @@ describe(ProjectConfigurationService, () => {
     const loaded = await service.loadProjectConfigurations(
       {
         projects: ["packages/quiet"],
-        workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
       configurationService,
@@ -606,7 +592,6 @@ describe(ProjectConfigurationService, () => {
       const loading = service.loadProjectConfigurations(
         {
           projects: ["packages/broken"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -633,7 +618,6 @@ describe(ProjectConfigurationService, () => {
       service.loadProjectConfigurations(
         {
           projects: ["packages/broken"],
-          workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
           workspaceRoot,
         },
         configurationService,
@@ -658,7 +642,6 @@ describe(ProjectConfigurationService, () => {
     const [loaded] = await service.loadProjectConfigurations(
       {
         projects: ["packages/published"],
-        workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
       configurationService,
@@ -687,7 +670,6 @@ describe(ProjectConfigurationService, () => {
     const [loaded] = await service.loadProjectConfigurations(
       {
         projects: ["packages/allowed"],
-        workspaceConfigurationPath: WORKSPACE_CONFIGURATION_PATH,
         workspaceRoot,
       },
       configurationService,

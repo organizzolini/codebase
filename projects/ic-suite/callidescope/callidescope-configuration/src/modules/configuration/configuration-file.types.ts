@@ -3,6 +3,7 @@
 import type {
   LoadConfigurationArguments,
   LoadedCallidescopeConfiguration,
+  LoadedCallidescopeConfigurationFile,
 } from "./configuration.types";
 
 /**
@@ -11,7 +12,8 @@ import type {
  *
  * Narrow on purpose, and passed in rather than injected: it is what leaves the
  * whole layer replaceable by a double at its one public surface, without the
- * classes behind that surface pointing at each other.
+ * classes behind that surface pointing at each other. The overload pair
+ * mirrors the loader's own — naming a path guarantees one back.
  *
  * `ConfigurationService` hands over itself rather than the loader it holds,
  * and it is the only class in this package that declares `implements` on this
@@ -26,6 +28,9 @@ import type {
 export interface ConfigurationFileReader {
   findConfigurationFileAt(directory: string): string | undefined;
   loadConfigurationFile(
-    args: LoadConfigurationArguments,
+    args: LoadConfigurationArguments & { configurationPath: string },
+  ): Promise<LoadedCallidescopeConfigurationFile>;
+  loadConfigurationFile(
+    args?: LoadConfigurationArguments,
   ): Promise<LoadedCallidescopeConfiguration>;
 }

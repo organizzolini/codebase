@@ -68,28 +68,43 @@ It is exported once for the repository rather than once per project, so it carri
 }
 ```
 
-## The path names the file; a neighbor is never read
+## A workspace carrying two configuration files
 
-`examples/configuration-resolution/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `--config` names exactly one, and that is the only one read — the anchor each declares differs, so loading either by name shows which file answered. Nothing is searched for: no default filename, no walk upward, and no absent file is read as an empty configuration. A project's own `codependix.config.ts` is the exception — see the next section — found beside the project root, never upward.
+`examples/configuration/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `CONFIGURATION_FILE_NAMES` is searched in order, so the TypeScript one wins — the anchor here is the one it declares.
 
 ```json
 {
-  "codependix.config.json": {
-    "nxProjects": {
-      "markdown": {
-        "anchor": "example-nx-from-json"
-      },
-      "target": "markdown"
-    }
-  },
-  "codependix.config.ts": {
-    "nxProjects": {
-      "markdown": {
-        "anchor": "example-nx"
-      },
-      "target": "markdown"
-    }
+  "nxProjects": {
+    "markdown": {
+      "anchor": "example-nx"
+    },
+    "target": "markdown"
   }
+}
+```
+
+## The upward search reaches past a nested `package.json`
+
+The search started inside `packages/atlas-service/`, which carries its own `package.json`, and still found the configuration at the workspace root — the root every path in that configuration was written relative to. A project's own `codependix.config.ts` is searched for differently — see the next section — and never walks upward this way.
+
+```json
+{
+  "nxProjects": {
+    "markdown": {
+      "anchor": "example-nx"
+    },
+    "target": "markdown"
+  }
+}
+```
+
+## No configuration file at all
+
+A workspace that never wrote one resolves every graph to `target: "none"` and produces nothing, rather than being told to write one. The absence of an unnamed configuration file is legal.
+
+```json
+{
+  "target": "none"
 }
 ```
 

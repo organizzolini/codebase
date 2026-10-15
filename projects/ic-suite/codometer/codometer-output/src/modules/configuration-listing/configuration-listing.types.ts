@@ -47,10 +47,14 @@ export interface ConfiguredTree {
 /** Which tree to describe, and which configuration answers for its root. */
 export interface DescribeConfigurationsArguments {
   /**
-   * Configuration file answering for the walk root. Required: nothing is
-   * searched for.
+   * Configuration file answering for the walk root, when one is named.
+   *
+   * `undefined` searches upward from the walk root instead. A workspace whose
+   * root carries no configuration file — because its shared object lives
+   * somewhere every project spreads it from — names that file here, exactly as
+   * the workspace-root measurement target already does.
    */
-  configurationPath: string;
+  configurationPath: string | undefined;
   /** Directory the walk starts from, absolute. */
   workingDirectory: string;
 }

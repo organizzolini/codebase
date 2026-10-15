@@ -23,11 +23,11 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
 ]);
 
 /**
- * File names a configuration may be written under.
+ * File names searched for when no configuration path is given.
  *
- * Never searched for to pick the configuration of a run — that is always named
- * with `--config`. It exists so a listing can identify configuration files
- * while walking a tree.
+ * Searched in order, so a repository carrying both a TypeScript and a JSON
+ * configuration file gets the TypeScript one — the richer format, and the one
+ * a type-checked configuration was written in.
  */
 export const CONFIGURATION_FILE_NAMES = [
   "codometer.config.ts",

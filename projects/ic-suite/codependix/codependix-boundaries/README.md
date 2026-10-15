@@ -11,7 +11,7 @@ edges, judged separately per language even though TypeScript and Python are
 exported together as one `fileImports` graph type.
 
 ```bash
-codependix map --check boundaries --config projects/configuration/codependix.config.ts
+codependix map --check boundaries
 ```
 
 ## Why not an ESLint rule

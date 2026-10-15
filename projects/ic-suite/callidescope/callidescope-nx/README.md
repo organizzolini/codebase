@@ -41,7 +41,7 @@ Register it in `nx.json`:
 
 | Option | Meaning |
 | ------ | ------- |
-| `configurationPath` | Required. Where the workspace callidescope configuration lives. Nothing is searched for: a registration that omits it is refused, naming this option |
+| `configurationPath` | Where the callidescope configuration lives. The conventional root filenames are searched when omitted |
 | `traceTargetName` | Name of the inferred trace target. `trace` when omitted |
 | `depthTargetName` | Name of the inferred depth target. `depth` when omitted |
 | `breadthTargetName` | Name of the inferred breadth target. `breadth` when omitted |
@@ -189,7 +189,7 @@ project's own boundary would measure the wrong thing.
 program for every project the directories it was given transitively import, so
 a call into a dependency resolves to a real frame whether or not Nx is
 involved. Measured on this package,
-`callidescope --config projects/configuration/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
+`callidescope --directories projects/ic-suite/callidescope/callidescope-nx` and
 `nx run callidescope-nx:trace` report the same 575 callables across 185 files
 in 7 projects.
 
@@ -230,7 +230,7 @@ All three executors take the same scoping options.
 | `tags` | Nx project tags, selecting every project carrying **any** of them |
 | `withDependencies` | Widen along the Nx dependency graph. `true` by default |
 | `format` | `markdown`, `mermaid`, or `json` |
-| `configurationPath` | Required, and written onto every inferred target from the registration. A hand-written target must name it itself |
+| `configurationPath` | Overrides the registered configuration path |
 
 `--projects` and `--tags` union rather than intersect, and a project reached
 both ways is still traced once. `--tags` matches **any** of the tags given,

@@ -12,8 +12,6 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
-import { MISSING_CONFIG_MESSAGE } from "./measure.constants";
-
 import type { ReportFindingsArguments, RunPlan } from "./measure.types";
 import type {
   MeasureCommandOptions,
@@ -103,22 +101,21 @@ export class MeasureCommand extends CommandRunner {
   /**
    * Read the configuration, or say why it could not be read.
    *
-   * `--config` is required: no file is searched for and none is assumed, so a
-   * run without it fails naming the flag, and so does a path that names no
-   * file or a configuration nothing can parse. A shared default object,
-   * spread by each project's own `codometer.config.ts`, is what states
-   * `format` once for a workspace.
+   * A configuration nothing can parse fails the run rather than being taken as
+   * an empty one, and so does a directory with no configuration file anywhere
+   * above it: `format` is required with no code-level fallback, so an absent
+   * file fails on the missing `format` exactly as a file that forgot to write
+   * one does. A shared default object, spread by each project's own
+   * `codometer.config.ts`, is what states it once for a workspace.
    */
   private async readConfiguration(
     options: MeasureCommandOptions,
+    workingDirectory: string,
   ): Promise<ResolvedCodometerConfiguration | undefined> {
     try {
-      if (options.config === undefined) {
-        throw new Error(MISSING_CONFIG_MESSAGE);
-      }
-
       const configuration = await this.configurationService.loadConfiguration({
         configurationPath: options.config,
+        searchDirectory: workingDirectory,
       });
 
       this.logger.debug("🗂️ Loaded the configuration", undefined, {
@@ -238,7 +235,10 @@ export class MeasureCommand extends CommandRunner {
       return undefined;
     }
 
-    const loadedConfiguration = await this.readConfiguration(options);
+    const loadedConfiguration = await this.readConfiguration(
+      options,
+      workingDirectory,
+    );
 
     if (loadedConfiguration === undefined) {
       return undefined;
@@ -311,17 +311,13 @@ export class MeasureCommand extends CommandRunner {
   }
 
   /**
-   * Parse the required configuration path from command-line input.
-   *
-   * Marked required so the command line itself refuses a run without it and
-   * `--help` lists it as mandatory.
+   * Parse the optional configuration path from command-line input.
    */
   @Option({
-    description: "Path to the codometer configuration file (required)",
-    flags: "--config <config>",
-    required: true,
+    description: "Path to the codometer configuration file",
+    flags: "--config [config]",
   })
-  public parseConfig(value: string): string {
+  public parseConfig(value: string | undefined): string | undefined {
     return value;
   }
 

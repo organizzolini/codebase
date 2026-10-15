@@ -2,7 +2,7 @@
 
 /** Options the trace executor accepts. */
 export interface TraceExecutorOptions {
-  readonly configurationPath: string;
+  readonly configurationPath?: string | undefined;
   readonly format?: string | undefined;
   /** Nx project names to trace, replacing the target's own project. */
   readonly projects?: string[] | undefined;

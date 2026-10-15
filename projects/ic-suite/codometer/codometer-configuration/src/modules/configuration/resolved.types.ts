@@ -22,11 +22,12 @@ import type {
 /**
  * A resolved configuration and the file it was resolved from.
  *
- * `path` is the absolute path of the file the configuration was read from.
+ * `path` stays `undefined` when the upward walk reached the filesystem root
+ * without finding a file, which is legal and leaves every default in place.
  */
 export interface LoadedConfiguration {
   configuration: ResolvedCodometerConfiguration;
-  path: string;
+  path: string | undefined;
 }
 
 /** A `comment` selector with its severity filled in. */

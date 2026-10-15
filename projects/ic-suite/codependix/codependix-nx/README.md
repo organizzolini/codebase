@@ -41,7 +41,7 @@ Register it in `nx.json`:
 
 | Option | Meaning |
 | ------ | ------- |
-| `configurationPath` | **Required.** Where the codependix configuration lives. Registering the plugin without it fails inference, naming the option; there is no default path |
+| `configurationPath` | Where the codependix configuration lives. `codependix.config.ts` at the workspace root is used when omitted |
 | `gateTargetName` | Name of the inferred gate target. `codependix-gate` when omitted |
 
 The gate runs the command line under the `@swc-node/register` hooks, which
@@ -179,12 +179,12 @@ nx run logging:codependix-gate --tags=type:package --dependencies=false
 | `projects` | Nx project names to judge, replacing the target's own project |
 | `tags` | Nx project tags, judging every project carrying **any** of them |
 | `dependencies` | Build over the judged projects' Nx dependency closure. `true` by default; `false` builds over the judged projects alone |
-| `configurationPath` | Overrides the registered configuration path. Required if the registration names none |
+| `configurationPath` | Overrides the registered configuration path |
 
 Nx hands plugin options to inference and to nothing else, so a gate given no
-`configurationPath` reads this plugin's registration back out of `nx.json`,
-so the file a gate reads is the file its cache inputs named. A gate with neither
-fails, naming the option: no path is assumed.
+`configurationPath` reads this plugin's registration back out of `nx.json` —
+and resolves it exactly as inference did, so the file a gate reads is the file
+its cache inputs named.
 
 ## Packages
 

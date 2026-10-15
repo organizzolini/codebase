@@ -47,7 +47,7 @@ describe("measure command over a fixture directory", () => {
     }).compile();
     const command = module.get(MeasureCommand, { strict: false });
 
-    await command.run([], { config: "codometer.config.json", ...options });
+    await command.run([], options);
 
     const exitCode = process.exitCode;
 

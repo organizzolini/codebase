@@ -60,8 +60,8 @@ async function writeConfigurationFile(
 /**
  * Writes a configuration file, and returns a folder two levels beneath it.
  *
- * The nested folder is where a test names a file beside an ancestor's, to
- * show that nothing is searched for or merged from above.
+ * The nested folder is what an ancestor search has to climb out of, which is
+ * the whole of what a project carrying no configuration file of its own does.
  */
 async function writeConfigurationTree(
   fileName: string,
@@ -108,6 +108,21 @@ describe(ConfigurationService, () => {
     expect(configuration.format).toBe("json");
   });
 
+  it("fails to resolve when no configuration file names a format", async () => {
+    const searchDirectory = await mkdtemp(
+      path.join(tmpdir(), "codometer-empty-"),
+    );
+
+    // Written out rather than left as the schema's own issue dump: this is the
+    // first thing a reader sees when they point codometer at a directory
+    // nothing configures.
+    await expect(
+      service.loadConfiguration({ searchDirectory }),
+    ).rejects.toThrow(
+      /must name a `format` of "json" or "markdown", and nothing supplies one/,
+    );
+  });
+
   it("fails to resolve when a configuration file names no format", async () => {
     const configurationPath = await writeConfigurationFile(
       "codometer.config.json",
@@ -148,6 +163,18 @@ describe(ConfigurationService, () => {
     expect(configuration.outputs).toStrictEqual([]);
     expect(configuration.python.command).toBe(DEFAULT_PYTHON_COMMAND);
     expect(configuration.defaultInput).toBeUndefined();
+  });
+
+  it("discovers a configuration file in the search directory", async () => {
+    const configurationPath = await writeConfiguration({
+      python: { command: "poetry run python" },
+    });
+
+    const configuration = await service.loadConfiguration({
+      searchDirectory: path.dirname(configurationPath),
+    });
+
+    expect(configuration.python.command).toBe("poetry run python");
   });
 
   it("appends configured exclusions to the defaults", async () => {
@@ -991,7 +1018,7 @@ describe(ConfigurationService, () => {
   // 🚫 Config-as-function
 
   it("no longer calls a configuration exported as a function", async () => {
-    const configurationPath = await writeConfigurationFile(
+    const { nestedDirectory } = await writeConfigurationTree(
       "codometer.config.cjs",
       `module.exports = (context) => ({
         exclude: [context.configurationDirectory, context.directory],
@@ -1003,7 +1030,7 @@ describe(ConfigurationService, () => {
     // treated the same as any other export that is not a plain object — one
     // naming no format — and fails to resolve rather than being invoked.
     await expect(
-      service.loadConfiguration({ configurationPath }),
+      service.loadConfiguration({ searchDirectory: nestedDirectory }),
     ).rejects.toBeInstanceOf(InvalidConfigurationError);
   });
 
@@ -1229,6 +1256,21 @@ describe(ConfigurationService, () => {
     expect(configuration.python.command).toBe("python3.13");
   });
 
+  it("searches the process cwd when no directory is given", async () => {
+    const configurationPath = await writeConfiguration({
+      python: { command: "cwd python" },
+    });
+    const cwdSpy = vi
+      .spyOn(process, "cwd")
+      .mockReturnValue(path.dirname(configurationPath));
+
+    const configuration = await service.loadConfiguration();
+
+    expect(configuration.python.command).toBe("cwd python");
+
+    cwdSpy.mockRestore();
+  });
+
   it("fails to resolve when the module exports no object", async () => {
     const configurationPath = await writeConfigurationFile(
       "codometer.config.ts",
@@ -1282,7 +1324,7 @@ describe(ConfigurationService, () => {
     cwdSpy.mockRestore();
   });
 
-  it("never reads an ancestor's configuration in place of a named one", async () => {
+  it("measures a folder carrying no configuration through its nearest ancestor's", async () => {
     const { nestedDirectory } = await writeConfigurationTree(
       "codometer.config.json",
       JSON.stringify({
@@ -1291,16 +1333,14 @@ describe(ConfigurationService, () => {
       }),
     );
 
-    // The ancestor carries a valid configuration, and the named path beneath
-    // it names nothing: that is an error, not a search.
-    await expect(
-      service.loadConfiguration({
-        configurationPath: path.join(nestedDirectory, "codometer.config.json"),
-      }),
-    ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
+    const configuration = await service.loadConfiguration({
+      searchDirectory: nestedDirectory,
+    });
+
+    expect(configuration.python.command).toBe("inherited python");
   });
 
-  it("lets the named configuration answer alone, merging nothing from an ancestor", async () => {
+  it("lets a folder's own configuration replace an inherited one outright", async () => {
     const { nestedDirectory } = await writeConfigurationTree(
       "codometer.config.json",
       JSON.stringify({
@@ -1309,16 +1349,15 @@ describe(ConfigurationService, () => {
         python: { command: "ancestor python" },
       }),
     );
-    const nestedPath = path.join(nestedDirectory, "codometer.config.json");
 
     await writeFile(
-      nestedPath,
+      path.join(nestedDirectory, "codometer.config.json"),
       JSON.stringify({ exclude: ["folder/**"], format: "markdown" }),
       "utf8",
     );
 
     const configuration = await service.loadConfiguration({
-      configurationPath: nestedPath,
+      searchDirectory: nestedDirectory,
     });
 
     // Nothing of the ancestor's survives: a merged configuration would leave a
@@ -1327,7 +1366,6 @@ describe(ConfigurationService, () => {
     expect(configuration.exclude).not.toContain("ancestor/**");
     expect(configuration.python.command).toBe(DEFAULT_PYTHON_COMMAND);
   });
-
   // 🚩 The command line, read through the layer's one public service
 
   // A consumer injects this service and nothing else from the package, so

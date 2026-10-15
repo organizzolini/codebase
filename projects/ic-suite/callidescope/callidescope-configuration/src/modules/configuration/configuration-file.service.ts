@@ -32,6 +32,7 @@ import type {
   CallidescopeWriteConfiguration,
   LoadConfigurationArguments,
   LoadedCallidescopeConfiguration,
+  LoadedCallidescopeConfigurationFile,
   ResolvedCallidescopeConfiguration,
   ResolvedCallidescopeEntryPoints,
   ResolvedCallidescopeJsonOutputConfiguration,
@@ -58,6 +59,33 @@ export class ConfigurationFileService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Walks upward from a directory looking for a configuration file.
+   *
+   * Returns `undefined` when the search reaches the filesystem root without
+   * finding one: a repository that never wrote a configuration file is traced
+   * with the defaults rather than told to write one.
+   */
+  private findConfigurationFile(searchDirectory: string): string | undefined {
+    let candidateDirectory = path.resolve(searchDirectory);
+
+    for (;;) {
+      const found = this.findConfigurationFileAt(candidateDirectory);
+
+      if (found !== undefined) {
+        return found;
+      }
+
+      const parentDirectory = path.dirname(candidateDirectory);
+
+      if (parentDirectory === candidateDirectory) {
+        return undefined;
+      }
+
+      candidateDirectory = parentDirectory;
+    }
+  }
 
   /**
    * Walks upward from the process cwd looking for the repository root.
@@ -262,13 +290,13 @@ export class ConfigurationFileService {
   /**
    * Loads and validates a callidescope configuration file.
    *
-   * The path is required and must exist — a typo in a task runner's arguments
-   * should fail rather than quietly trace the repository with defaults it never
-   * asked for. Nothing is searched for and nothing is defaulted: the workspace
-   * configuration is always one the caller named.
+   * A path that was named explicitly must exist — a typo in a task runner's
+   * arguments should fail rather than quietly trace the repository with defaults
+   * it never asked for. A path that was not named is searched for, and its
+   * absence is legal.
    */
   public async loadConfiguration(
-    args: LoadConfigurationArguments,
+    args: LoadConfigurationArguments = {},
   ): Promise<ResolvedCallidescopeConfiguration> {
     const { configuration } = await this.loadConfigurationFile(args);
 
@@ -285,12 +313,31 @@ export class ConfigurationFileService {
    * given two roles. The authored object is what a refusal has to name fields
    * from, since resolution manufactures the rest.
    *
-   * Naming a path is required, so one always comes back.
+   * Naming a path guarantees one back, which is why that case has an overload
+   * of its own: the alternative is every caller of the narrow case carrying a
+   * fallback that can never fire, and picking its own path when it does.
    */
+  public loadConfigurationFile(
+    args: LoadConfigurationArguments & { configurationPath: string },
+  ): Promise<LoadedCallidescopeConfigurationFile>;
+  public loadConfigurationFile(
+    args?: LoadConfigurationArguments,
+  ): Promise<LoadedCallidescopeConfiguration>;
   public async loadConfigurationFile(
-    args: LoadConfigurationArguments,
+    args: LoadConfigurationArguments = {},
   ): Promise<LoadedCallidescopeConfiguration> {
-    const resolvedPath = this.resolveConfigurationPath(args.configurationPath);
+    const resolvedPath =
+      args.configurationPath === undefined
+        ? this.findConfigurationFile(args.searchDirectory ?? process.cwd())
+        : this.resolveConfigurationPath(args.configurationPath);
+
+    if (resolvedPath === undefined) {
+      return {
+        authored: {},
+        configuration: this.resolveConfiguration({}),
+        path: undefined,
+      };
+    }
 
     const extension = path.extname(resolvedPath).toLowerCase();
 

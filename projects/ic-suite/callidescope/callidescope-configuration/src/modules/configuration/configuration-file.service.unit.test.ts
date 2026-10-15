@@ -58,8 +58,12 @@ describe(ConfigurationFileService, () => {
 
   // 🌱 Defaults
 
-  it("applies every default to an empty configuration", () => {
-    const configuration = service.resolveConfiguration({});
+  it("falls back to defaults when no configuration file exists", async () => {
+    const searchDirectory = await mkdtemp(
+      path.join(tmpdir(), "callidescope-empty-"),
+    );
+
+    const configuration = await service.loadConfiguration({ searchDirectory });
 
     expect(configuration.exclude).toStrictEqual([...DEFAULT_EXCLUDE_GLOBS]);
     expect(configuration.excludeFrom).toStrictEqual([]);
@@ -307,6 +311,18 @@ describe(ConfigurationFileService, () => {
   });
 
   // 📂 File discovery
+
+  it("discovers a configuration file in the search directory", async () => {
+    const configurationPath = await writeConfiguration({
+      limits: { maximumDepth: 9 },
+    });
+
+    const configuration = await service.loadConfiguration({
+      searchDirectory: path.dirname(configurationPath),
+    });
+
+    expect(configuration.limits.maximumDepth).toBe(9);
+  });
 
   it("loads a configuration file named explicitly", async () => {
     const configurationPath = await writeConfiguration({
@@ -616,6 +632,20 @@ describe(ConfigurationFileService, () => {
     expect(loaded.authored.limits?.maximumDepth).toBe(9);
     expect(loaded.authored.exclude).toBeUndefined();
     expect(loaded.configuration.limits.maximumDepth).toBe(9);
+  });
+
+  it("reports no file when the search found none", async () => {
+    const searchDirectory = await mkdtemp(
+      path.join(tmpdir(), "callidescope-empty-"),
+    );
+
+    const loaded = await service.loadConfigurationFile({ searchDirectory });
+
+    expect(loaded.path).toBeUndefined();
+    expect(loaded.authored).toStrictEqual({});
+    expect(loaded.configuration.limits.maximumDepth).toBe(
+      DEFAULT_MAXIMUM_DEPTH,
+    );
   });
 
   it("finds a configuration file sitting directly in a directory", async () => {

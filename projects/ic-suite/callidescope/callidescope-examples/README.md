@@ -336,9 +336,9 @@ over exactly the drift this gate exists to catch.
 Two command lines are refused outright:
 
 ```bash
-callidescope --config projects/configuration/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
-callidescope --config projects/configuration/callidescope.config.ts --check lint              # not a finding this tool has
-callidescope --config projects/configuration/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
+callidescope --write --check reports   # a report cannot be stale in the run that just wrote it
+callidescope --check lint              # not a finding this tool has
+callidescope --check                   # a gate that cannot fail is a mistake, not a shorthand
 ```
 
 ## Acting on a finding

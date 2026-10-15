@@ -31,9 +31,9 @@ which maps "codometer said X" to the example that explains X.
 Each directory under [`examples/`](examples) is one example and carries its own
 `README.md`. Read in this order for a walkthrough; jump straight in for an
 answer. Every one of them measures the same corpus, pointed at a different
-configuration — `--config` is required and nothing is searched for, and the
-command line carries no `--directory` flag, so a run always measures the
-process's own working directory, and that directory is `examples/corpus`:
+configuration — the command line carries no `--directory` flag, so a run
+always measures the process's own working directory, and that directory is
+`examples/corpus`:
 
 ```bash
 cd examples/corpus
@@ -50,7 +50,7 @@ codometer --config ../<name>/<file>.config.ts
 | [documentation](examples/documentation/README.md) | How long may a comment run, and what breaches it? |
 | [write-check](examples/write-check/README.md) | What does each `--output-*` and `--check` combination do? |
 | [output](examples/output/README.md) | Where does the report, the document, and the badge block land? |
-| [discovery](examples/discovery/README.md) | Which configuration file answers? |
+| [discovery](examples/discovery/README.md) | Which configuration file wins? |
 | [staleness](examples/staleness/README.md) | Why is `--check reports` failing when nothing changed? |
 
 ## The fixtures
@@ -90,18 +90,18 @@ yourself to watch discovery skip it — see
 Two more files sit in `examples/compiled/`, **beside** the corpus rather than
 inside it — stand-ins for build output, which is where build output really
 lives. They are what [targets](examples/targets/README.md) and
-[compression](examples/compression/README.md) measure, and a plain corpus
+[compression](examples/compression/README.md) measure, and a bare corpus
 measurement never sees them because it measures one directory and they are not
 in it.
 
 ### Every language analyzer
 
-A run measures every language it recognizes. The corpus carries one
+A bare run measures every language it recognizes. The corpus carries one
 idiomatic sample per analyzer so each group has something in it:
 
 ```bash
 cd examples/corpus
-codometer --config ../../codometer.config.ts --format json | jq '.targets[0].metrics[] | select(.value > 0)'
+codometer --format json | jq '.targets[0].metrics[] | select(.value > 0)'
 ```
 
 Two things in the output surprise people:
@@ -145,7 +145,7 @@ Two commands do that, and they are deliberately different jobs:
 
 ```bash
 # On the branch: measure, write the report, fail if a limit breached.
-codometer --config codometer.config.ts --output-json codometer-report.json --check limits
+codometer --output-json codometer-report.json --check limits
 
 # Afterwards: diff every report against the base branch's and render the result.
 codometer changes --directory . --baseline <base-reports> --markdown summary.md
@@ -234,7 +234,7 @@ codometer-examples/
 └── testing/
     ├── codometer.ts                   the command-line driver every test goes through
     ├── corpus.integration.test.ts     the corpus contents the guides quote
-    ├── examples.integration.test.ts   targets, compression, and the named configuration, asserted against their guides
+    ├── examples.integration.test.ts   targets, compression, and discovery, asserted against their guides
     └── <topic>.integration.test.ts    every other example, one or two guides per suite
 ```
 

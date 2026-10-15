@@ -31,11 +31,10 @@ nx run <project>:conformetry-validate
 nx run-many --targets=conformetry-validate
 ```
 
-Without Nx, the command-line host does the same, given `--config <path>` — the
-flag is required and no default file is assumed:
+Without Nx, the command-line host does the same:
 
 ```bash
-conformetry validate --config projects/configuration/conformetry.config.ts
+conformetry validate
 ```
 
 Both accept a language filter, and the command-line host also accepts a one-off
@@ -44,8 +43,8 @@ naming which templates to measure against. Narrowing is for iterating; let the
 full run be the gate.
 
 ```bash
-conformetry validate --config projects/configuration/conformetry.config.ts --templates nestjs-service-module
-conformetry validate --config projects/configuration/conformetry.config.ts --templates nestjs-service-module --languages typescript
+conformetry validate --templates nestjs-service-module
+conformetry validate --templates nestjs-service-module --languages typescript
 ```
 
 `--templates` and `--instances` narrow opposite halves of the pairing and the
@@ -60,7 +59,7 @@ select, so `src/modules/*` means nothing until a project root is joined to it.
 The host leaves such a group out rather than globbing it from the working
 directory, and a narrowed run tells you so instead of reporting nothing found.
 Reach for the Nx targets there, or pass `--instances` with the paths. This is
-why `conformetry validate --config projects/configuration/conformetry.config.ts --templates nestjs-service-module` can report nothing
+why `conformetry validate --templates nestjs-service-module` can report nothing
 to check while `nx run <project>:conformetry-validate` checks plenty.
 
 **An agent shell is not a terminal**, so omitting `--templates` there validates
@@ -129,7 +128,7 @@ are the hardest to act on from the report alone. Diagnose them by asking which
 templates explain the path:
 
 ```bash
-conformetry templates --config projects/configuration/conformetry.config.ts --instances packages/widgets/src/modules/orders
+conformetry templates --instances packages/widgets/src/modules/orders
 ```
 
 ```text
@@ -155,8 +154,8 @@ The complement asks the other direction — what generated code exists, and what
 each piece answers to:
 
 ```bash
-conformetry instances --config projects/configuration/conformetry.config.ts
-conformetry instances --config projects/configuration/conformetry.config.ts --templates nestjs-service-module
+conformetry instances
+conformetry instances --templates nestjs-service-module
 ```
 
 Each path it prints is usable as the `--instances` argument above, so the two
@@ -164,8 +163,8 @@ commands compose. `--templates` narrows to the instances a given template
 explains, which is how you find every instance that would be affected by
 changing that template.
 
-Both accept `--json` for parsing. `--config <path>` is required on every
-command; no default file is assumed. [references/template-matching.md](references/template-matching.md)
+Both accept `--json` for parsing, and `--config` to read a configuration
+elsewhere. [references/template-matching.md](references/template-matching.md)
 explains how attribution works and how to read the ranking.
 
 ## Three behaviors that look like bugs and are not

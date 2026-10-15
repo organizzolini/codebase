@@ -31,7 +31,12 @@ vi.mock("../plugin/plugin-context.utilities", () => ({
 
 const emitPlugin = vi.fn();
 const resolveConfigurationPath =
-  vi.fn<(args: { nxConfiguration: unknown }) => string>();
+  vi.fn<
+    (args: {
+      exists: (candidatePath: string) => boolean;
+      nxConfiguration: unknown;
+    }) => string
+  >();
 
 describe("bootstrap utilities", () => {
   let workspaceRoot: string;
@@ -202,18 +207,28 @@ describe("bootstrap utilities", () => {
       });
     });
 
-    it("refuses to emit when the workspace has no nx.json to read a path from", async () => {
-      resolveConfigurationPath.mockImplementation(() => {
-        throw new Error('The "configurationPath" option is required');
+    it("discovers a root config file when the workspace has no nx.json", async () => {
+      writeFileSync(
+        path.join(workspaceRoot, "conformetry.json"),
+        "[]\n",
+        "utf8",
+      );
+      // Stands in for the real candidate walk, so what is asserted is that the
+      // bootstrap hands over a predicate answering about its own workspace.
+      resolveConfigurationPath.mockImplementation((args) => {
+        return args.exists("conformetry.json")
+          ? "conformetry.json"
+          : "conformetry.config.ts";
       });
 
-      await expect(bootstrapPlugin(workspaceRoot)).rejects.toThrow(
-        "configurationPath",
+      await bootstrapPlugin(workspaceRoot);
+
+      expect(resolveConfigurationPath).toHaveBeenCalledWith(
+        expect.objectContaining({ nxConfiguration: undefined }),
       );
-      expect(resolveConfigurationPath).toHaveBeenCalledWith({
-        nxConfiguration: undefined,
-      });
-      expect(emitPlugin).not.toHaveBeenCalled();
+      expect(emitPlugin).toHaveBeenCalledWith(
+        expect.objectContaining({ configurationPath: "conformetry.json" }),
+      );
     });
   });
 

@@ -3,7 +3,7 @@
   "description": "Fail a project whose dependency graphs break a codependix boundary rule charged to it, built over the project and its Nx dependencies.",
   "properties": {
     "configurationPath": {
-      "description": "Path to the codependix configuration file, relative to the workspace root. The path this plugin is registered with in nx.json when omitted; required one way or the other, with no default.",
+      "description": "Path to the codependix configuration file, relative to the workspace root. The path this plugin is registered with in nx.json when omitted.",
       "type": "string"
     },
     "dependencies": {

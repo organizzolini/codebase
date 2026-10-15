@@ -5,7 +5,7 @@ import type { INestApplicationContext } from "@nestjs/common";
 
 /** Options accepted from this plugin's `nx.json` registration. */
 export interface CodependixPluginOptions {
-  /** Where the codependix configuration lives, workspace-root relative. Required. */
+  /** Where the codependix configuration lives, workspace-root relative. */
   readonly configurationPath: string;
   /** Name of the inferred per-project gate target. */
   readonly gateTargetName: string;
@@ -71,6 +71,8 @@ export type PluginContextGlobal = typeof globalThis & {
 
 /** Arguments for resolving the plugin options from an untrusted value. */
 export interface ResolvePluginOptionsArguments {
+  /** Whether a workspace-relative path exists, for the default search. */
+  readonly exists: (candidatePath: string) => boolean;
   /** Whatever the `nx.json` registration holds, unvalidated. */
   readonly options: unknown;
 }

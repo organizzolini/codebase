@@ -5,7 +5,6 @@ import {
   corpusDirectory,
   exampleConfiguration,
   measure,
-  packageConfiguration,
   packageDirectory,
   readCounters,
   readMetric,
@@ -37,7 +36,7 @@ let corpusReport: CodometerReport;
 
 describe("the sample corpus and the counts its guides quote", () => {
   beforeAll(() => {
-    corpusReport = measure(["--config", packageConfiguration], corpusDirectory);
+    corpusReport = measure([], corpusDirectory);
   });
 
   describe("the sample corpus", () => {
@@ -118,10 +117,7 @@ describe("the sample corpus and the counts its guides quote", () => {
       // This package's own configuration gates a `Corpus` target declared as
       // `corpus/**`. It holds the 27 samples and not the `.gitignore` beside
       // them, while the codebase target above counts all 28.
-      const report = measure(
-        ["--config", packageConfiguration],
-        packageDirectory,
-      );
+      const report = measure([], packageDirectory);
 
       expect(readTarget(report, "Corpus").files).toBe(27);
     });
