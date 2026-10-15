@@ -224,7 +224,7 @@ export class CallidescopeService {
   private async loadProjectDeclarations(args: {
     authoredLimits: CallidescopeLimits | undefined;
     configuration: ResolvedCallidescopeConfiguration;
-    configurationPath: string | undefined;
+    configurationPath: string;
     limitOverrides: CallidescopeLimitOverrides | undefined;
     projectNames: readonly string[];
     workspaceRoot: string;

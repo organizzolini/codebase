@@ -1,7 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import prompts from "prompts";
 
-import { missingInputError, promptCancelledError } from "./input.constants";
+import {
+  ConfigurationPathRequiredError,
+  missingInputError,
+  promptCancelledError,
+} from "./input.constants";
 
 import type { PromptRunner } from "./input.types";
 
@@ -200,5 +204,26 @@ export class InputService {
     }
 
     return matched;
+  }
+
+  /**
+   * Trims the configuration path, refusing an absent or blank one.
+   *
+   * The one place that decides a configuration path is required and what the
+   * refusal says. Each caller passes the surface it read the value from — the
+   * `--config` flag, the executor's `configuration` option, or the plugin's
+   * `configurationPath` option — so the error names the right one.
+   */
+  public requireConfigurationPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    const parsed = this.parseOptionalOption(path);
+
+    if (parsed === undefined) {
+      throw new ConfigurationPathRequiredError(surface);
+    }
+
+    return parsed;
   }
 }

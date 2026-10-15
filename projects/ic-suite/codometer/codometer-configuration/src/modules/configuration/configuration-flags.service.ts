@@ -5,6 +5,7 @@ import {
   CHECK_NAMES,
   CHECK_REPORTS,
   CHECK_SEPARATOR,
+  ConfigurationPathRequiredError,
   FORMAT_MARKDOWN,
   FORMAT_NAMES,
 } from "./configuration-flags.constants";
@@ -141,6 +142,24 @@ export class ConfigurationFlagsService {
    */
   public parseOptionalOption(value: unknown): string | undefined {
     return typeof value === "string" && value !== "" ? value : undefined;
+  }
+
+  /**
+   * Returns the configuration path a run was given, or refuses the run.
+   *
+   * Undefined and blank values are the same omission, so both throw
+   * `ConfigurationPathRequiredError` naming `surface` — the flag or argument
+   * that should have carried the path.
+   */
+  public requireConfigurationPath(
+    value: string | undefined,
+    surface: string,
+  ): string {
+    if (value === undefined || value.trim() === "") {
+      throw new ConfigurationPathRequiredError(surface);
+    }
+
+    return value;
   }
 
   /**

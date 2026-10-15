@@ -23,7 +23,7 @@ Register the plugin in `nx.json` and wire the bootstrap into `postinstall`:
     {
       "plugin": "@conformetry/nx",
       "options": {
-        "configurationPath": "configuration/conformetry.config.ts",
+        "configurationPath": "projects/configuration/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       }
     }
@@ -35,6 +35,13 @@ Register the plugin in `nx.json` and wire the bootstrap into `postinstall`:
 ```json
 { "scripts": { "postinstall": "conformetry-nx-bootstrap-generators" } }
 ```
+
+The `configurationPath` option is **required**: no default file is assumed and
+no filename is searched for. A plugin entry without it fails with a
+`ConfigurationPathRequiredError` from `@conformetry/configuration` naming the
+option, and so does the bootstrap, which reads it from `nx.json`. The executor
+and the `sync` generator take the same path as a `configuration` option, which
+wins over the registration when both are set.
 
 Then type your configuration as `ConformetryNxConfiguration` rather than
 `ConformetryConfiguration`, so instance groups are checked against what Nx can
@@ -97,7 +104,7 @@ nx affected --target=conformetry-validate --base=main
 
 | Executor option | Purpose |
 | --------------- | ------- |
-| `configurationPath` | Configuration file, workspace-root relative |
+| `configuration` | Configuration file, workspace-root relative. Taken from the `configurationPath` plugin option in `nx.json` when omitted; one of the two is required |
 | `languages` | Restrict the run to named validators; all run when omitted |
 
 ## Tag-scoped instances

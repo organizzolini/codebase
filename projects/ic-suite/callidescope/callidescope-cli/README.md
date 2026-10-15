@@ -18,7 +18,7 @@ npm install --save-dev @callidescope/cli
 ```
 
 ```bash
-callidescope --config configuration/callidescope.config.ts
+callidescope --config projects/configuration/callidescope.config.ts
 ```
 
 ```text
@@ -56,10 +56,10 @@ Tracing the workspace is the **default command**, so the flags below sit
 directly on `callidescope`:
 
 ```bash
-npx callidescope --check depth
+npx callidescope --config projects/configuration/callidescope.config.ts --check depth
 ```
 
-`callidescope callidescope --check depth` is the same run written out, which is
+`callidescope callidescope --config projects/configuration/callidescope.config.ts --check depth` is the same run written out, which is
 what a task runner that always names a command spells. `depth`, `breadth`, and
 `limits` are matched by name before anything falls through to the default, so
 they are unaffected — and a word that names none of them is refused rather than
@@ -67,7 +67,7 @@ quietly traced.
 
 | Flag | Meaning |
 | ---- | ------- |
-| `--config` | Path to a `callidescope.config.ts`. Searched for when omitted |
+| `--config` | Required. Path to the workspace `callidescope.config.ts`. Nothing is searched for, and a run without it is refused naming the flag |
 | `-d, --directories` | Comma-separated project directories to trace, each holding its own `tsconfig.json`. The projects their imports reach are traced too. Every such directory under the working directory when omitted |
 | `--entry-point-addresses` | Comma-separated `path#name` roots, overriding `entryPoints.addresses` |
 | `--entry-point-decorators` | Comma-separated decorator names, overriding `entryPoints.decorators` |
@@ -85,7 +85,8 @@ quietly traced.
 | `--check` | Fail on a comma-separated set drawn from `breadth`, `depth`, and `reports` |
 | `--write` | Write every configured destination |
 
-Every flag but `--check`, `--write`, `--format`, and `--config` is an
+Every flag but `--check`, `--write`, `--format`, and `--config` (which is
+required) is an
 **override**: it may change a value the configuration already declares and may
 not supply one it does not, so no flag can make an under-configured run legal.
 `excludeFrom` is the one configured field with no flag — it names the ignore
@@ -290,15 +291,15 @@ traceback or an ESLint rule id points at a symbol — the file path and the
 qualified name callidescope already prints in every stack, joined by `#`:
 
 ```bash
-callidescope depth --addresses src/foo.service.ts#FooService.bar
-callidescope breadth --addresses src/foo.service.ts#FooService.bar
+callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar
+callidescope breadth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar
 ```
 
 `--addresses` is comma-separated, so one run can report on several callables —
 which is what a rename spanning a handful of them actually needs:
 
 ```bash
-callidescope depth --addresses src/foo.service.ts#FooService.bar,src/bar.service.ts#BarService.baz
+callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar,src/bar.service.ts#BarService.baz
 ```
 
 **Every address has to resolve, or the run prints nothing.** A report covering
@@ -321,7 +322,8 @@ Both accept every graph-shaping flag `callidescope` itself does, since
 resolving an address still means tracing the workspace first:
 `--directories`, `--entry-point-addresses`, `--entry-point-decorators`,
 `--exclude`, `--exclude-callees`, `--include-exported-functions`,
-`--include-orphans`, and `--include-tests`, plus `--config` and `--format`.
+`--include-orphans`, and `--include-tests`, plus the required `--config` and
+`--format`.
 Each means exactly what it means above.
 
 Neither takes `--check`, `--write`, `--json`, `--markdown`, `--mermaid`,

@@ -57,6 +57,9 @@ describe(PathCommand, () => {
     pathQueryService = createMock<PathQueryService>();
     reportingService = createMock<ReportingService>();
     runContextService = createMock<RunContextService>();
+    vi.mocked(configurationService.requireConfigurationPath).mockReturnValue(
+      "codependix.config.ts",
+    );
 
     pathQueryService.resolveFormat = vi
       .fn<typeof pathQueryService.resolveFormat>()
@@ -216,12 +219,19 @@ describe(PathCommand, () => {
         },
       });
 
-      await command.run(["app", "lib"], { format: "markdown" });
+      await command.run(["app", "lib"], {
+        config: "named.config.ts",
+        format: "markdown",
+      });
 
+      expect(
+        configurationService.requireConfigurationPath,
+      ).toHaveBeenCalledWith("named.config.ts", "`--config` flag");
       expect(runContextService.build).toHaveBeenCalledWith(
         expect.objectContaining({
+          configuration: "codependix.config.ts",
           mode: "check",
-          options: { format: "markdown" },
+          options: { config: "named.config.ts", format: "markdown" },
         }),
       );
       expect(pathQueryService.query).toHaveBeenCalledWith({
@@ -235,6 +245,20 @@ describe(PathCommand, () => {
       expect(process.exitCode).toBe(0);
 
       writeSpy.mockRestore();
+    });
+
+    it("reports a refused configuration path without building a context", async () => {
+      const error = new Error("a configuration path is required");
+      vi.mocked(
+        configurationService.requireConfigurationPath,
+      ).mockImplementation(() => {
+        throw error;
+      });
+
+      await command.run(["app", "lib"]);
+
+      expect(runContextService.build).not.toHaveBeenCalled();
+      expect(reportingService.reportFailure).toHaveBeenCalledWith(error);
     });
 
     it("handles errors by delegating to reportingService.reportFailure", async () => {

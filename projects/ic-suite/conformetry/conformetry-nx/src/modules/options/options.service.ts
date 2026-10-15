@@ -1,10 +1,11 @@
+import { ConfigurationService } from "@conformetry/configuration";
 import { Injectable } from "@nestjs/common";
 
 import {
   CONFORMETRY_NX_PLUGIN_NAME,
-  DEFAULT_CONFIGURATION_PATHS,
   DEFAULT_VALIDATE_TARGET_NAME,
   PLUGIN_OPTION_NAMES,
+  PLUGIN_OPTION_SURFACE,
 } from "./options.constants";
 
 import type { ConformetryPluginOptions } from "./options.types";
@@ -21,7 +22,7 @@ import type { ConformetryPluginOptions } from "./options.types";
 export class OptionsService {
   // 🏗 Dependency Injection
 
-  constructor() {}
+  constructor(private readonly configurationService: ConfigurationService) {}
 
   // 🔐 Private Fields
 
@@ -34,8 +35,20 @@ export class OptionsService {
     return Array.isArray(value);
   }
 
+  /** Reads a string field from an untrusted record, or `undefined`. */
+  private readString(args: {
+    key: string;
+    options: Record<string, unknown>;
+  }): string | undefined {
+    const value = args.options[args.key];
+
+    return typeof value === "string" && value !== "" ? value : undefined;
+  }
+
+  // 🌎 Public Methods
+
   /** Reads this plugin's `configurationPath` out of an `nx.json`, if it names one. */
-  private readRegisteredConfigurationPath(
+  public readRegisteredConfigurationPath(
     nxConfiguration: unknown,
   ): string | undefined {
     if (typeof nxConfiguration !== "object" || nxConfiguration === null) {
@@ -69,42 +82,28 @@ export class OptionsService {
     return undefined;
   }
 
-  /** Reads a string field from an untrusted record, or `undefined`. */
-  private readString(args: {
-    key: string;
-    options: Record<string, unknown>;
-  }): string | undefined {
-    const value = args.options[args.key];
-
-    return typeof value === "string" && value !== "" ? value : undefined;
-  }
-
-  // 🌎 Public Methods
-
   /**
-   * Resolves the configuration path a workspace means, without assuming one.
+   * Reads the configuration path the run was given, or refuses.
+   *
+   * The `configuration` option, when the caller has one, wins over the
+   * workspace's registration. Whether a path is required, and what the refusal
+   * says, belongs to the configuration layer; this only says which option the
+   * person was meant to set.
    *
    * Nx passes plugin options to `createNodes` and to executors, but not to a
    * global sync generator or to anything run outside Nx entirely, such as the
-   * install-time bootstrap. Those read the registration themselves rather than
-   * assuming a path, so a workspace that keeps its configuration somewhere
-   * other than the root is not silently read from nothing.
-   *
-   * With no registration, the conventional root filenames are tried in order.
-   * `exists` is supplied by the caller rather than reached for here, because
-   * the callers do not agree on what a filesystem is: two of them read disk
-   * and the sync generator reads an Nx `Tree`.
+   * install-time bootstrap. Those read the registration themselves. No path is
+   * assumed or searched for.
    */
   public resolveConfigurationPath(args: {
-    exists: (candidatePath: string) => boolean;
+    configuration?: string | undefined;
     nxConfiguration: unknown;
+    surface?: string;
   }): string {
-    return (
-      this.readRegisteredConfigurationPath(args.nxConfiguration) ??
-      DEFAULT_CONFIGURATION_PATHS.find((candidatePath) => {
-        return args.exists(candidatePath);
-      }) ??
-      DEFAULT_CONFIGURATION_PATHS[0]
+    return this.configurationService.requireConfigurationPath(
+      args.configuration ??
+        this.readRegisteredConfigurationPath(args.nxConfiguration),
+      args.surface ?? PLUGIN_OPTION_SURFACE,
     );
   }
 
@@ -139,25 +138,22 @@ export class OptionsService {
   /**
    * Resolves the effective plugin options from an untrusted value.
    *
-   * Falls back to the most conventional configuration filename rather than
-   * discovering which one is present, which needs a filesystem; callers that
-   * have one resolve the path with `resolveConfigurationPath` first and pass
-   * the result in.
+   * `configurationPath` is required and has no default; a missing one is
+   * refused by the configuration layer, naming `surface`. `validateTargetName`
+   * falls back to its default.
    */
-  public resolvePluginOptions(options: unknown): ConformetryPluginOptions {
-    if (typeof options !== "object" || options === null) {
-      return {
-        configurationPath: DEFAULT_CONFIGURATION_PATHS[0],
-        validateTargetName: DEFAULT_VALIDATE_TARGET_NAME,
-      };
-    }
-
-    const record: Record<string, unknown> = { ...options };
+  public resolvePluginOptions(
+    options: unknown,
+    surface: string = PLUGIN_OPTION_SURFACE,
+  ): ConformetryPluginOptions {
+    const record: Record<string, unknown> =
+      typeof options === "object" && options !== null ? { ...options } : {};
 
     return {
-      configurationPath:
-        this.readString({ key: "configurationPath", options: record }) ??
-        DEFAULT_CONFIGURATION_PATHS[0],
+      configurationPath: this.configurationService.requireConfigurationPath(
+        this.readString({ key: "configurationPath", options: record }),
+        surface,
+      ),
       validateTargetName:
         this.readString({ key: "validateTargetName", options: record }) ??
         DEFAULT_VALIDATE_TARGET_NAME,

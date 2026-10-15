@@ -79,9 +79,7 @@ export class AddressService {
       }
   > {
     const workspace = await this.addressLookupService.locate({
-      ...(args.configurationPath === undefined
-        ? {}
-        : { config: args.configurationPath }),
+      config: args.configurationPath,
       directories: [...args.directories],
       ...(args.format === undefined ? {} : { format: args.format }),
     });

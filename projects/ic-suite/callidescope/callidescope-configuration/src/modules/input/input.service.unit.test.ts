@@ -10,6 +10,7 @@ import {
   vi,
 } from "vitest";
 
+import { ConfigurationPathRequiredError } from "./input.constants";
 import { InputService } from "./input.service";
 
 // Mocked at the module boundary so the service's own wiring is exercised and
@@ -261,6 +262,36 @@ describe(InputService, () => {
 
   it("reads an absent optional option as absent", () => {
     expect(service.parseOptionalOption(undefined)).toBeUndefined();
+  });
+
+  // 🔒 Required configuration path
+
+  it("passes a non-blank configuration path through trimmed", () => {
+    expect(
+      service.requireConfigurationPath(
+        "  callidescope.config.ts  ",
+        "--config",
+      ),
+    ).toBe("callidescope.config.ts");
+  });
+
+  it.each(["   ", "", undefined])(
+    "refuses a configuration path that is blank or absent: %j",
+    (value) => {
+      expect(() => service.requireConfigurationPath(value, "--config")).toThrow(
+        ConfigurationPathRequiredError,
+      );
+    },
+  );
+
+  it.each([
+    "--config",
+    "The `configuration` executor option",
+    'The `configurationPath` option in the nx.json registration of "@callidescope/nx"',
+  ])("names the surface it was asked about: %s", (surface) => {
+    expect(() => service.requireConfigurationPath(undefined, surface)).toThrow(
+      `${surface} is required and names the callidescope configuration file.`,
+    );
   });
 
   // 🗣️ Prompting

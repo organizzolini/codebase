@@ -1,3 +1,4 @@
+import { ConfigurationModule } from "@codependix/configuration";
 import { Module } from "@nestjs/common";
 
 import { PluginService } from "./plugin.service";
@@ -6,7 +7,7 @@ import { PluginService } from "./plugin.service";
 @Module({
   controllers: [],
   exports: [PluginService],
-  imports: [],
+  imports: [ConfigurationModule],
   providers: [PluginService],
 })
 export class PluginModule {}

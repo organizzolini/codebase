@@ -160,7 +160,6 @@ export class LimitsService {
       path: configurationPath,
     } = await this.configurationService.loadConfigurationFile({
       configurationPath: options.config,
-      searchDirectory: workspaceRoot,
     });
     const projects = this.discoverProjects({ configuration, workspaceRoot });
     const projectConfigurations =

@@ -20,7 +20,6 @@ import type {
   CallidescopeConfiguration,
   LoadConfigurationArguments,
   LoadedCallidescopeConfiguration,
-  LoadedCallidescopeConfigurationFile,
   LoadedProjectConfiguration,
   LoadProjectConfigurationsArguments,
   ProjectLimitsLookup,
@@ -78,14 +77,8 @@ export class ConfigurationService implements ConfigurationFileReader {
    * Loads a configuration, and says what the file itself declared and which
    * file answered.
    */
-  public loadConfigurationFile(
-    args: LoadConfigurationArguments & { configurationPath: string },
-  ): Promise<LoadedCallidescopeConfigurationFile>;
-  public loadConfigurationFile(
-    args?: LoadConfigurationArguments,
-  ): Promise<LoadedCallidescopeConfiguration>;
   public async loadConfigurationFile(
-    args: LoadConfigurationArguments = {},
+    args: LoadConfigurationArguments,
   ): Promise<LoadedCallidescopeConfiguration> {
     return await this.configurationFileService.loadConfigurationFile(args);
   }
@@ -140,6 +133,14 @@ export class ConfigurationService implements ConfigurationFileReader {
     subject: string;
   }): Promise<Choice> {
     return await this.inputService.promptForSelect(args);
+  }
+
+  /** Reads the configuration path, refusing an absent or blank one by surface. */
+  public requireConfigurationPath(
+    path: string | undefined,
+    surface: string,
+  ): string {
+    return this.inputService.requireConfigurationPath(path, surface);
   }
 
   /** Fills in every field a configuration file may leave out. */

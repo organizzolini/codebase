@@ -4,6 +4,7 @@ import * as surface from "./index.js";
 import {
   ALL_TEMPLATES_SELECTION,
   ConfigurationModule,
+  ConfigurationPathRequiredError,
   ConfigurationService,
   InputError,
   missingDirectoryError,
@@ -16,6 +17,7 @@ describe("conformetry-configuration index", () => {
   it("exports the configuration surface", () => {
     expect(ConfigurationModule).toBeDefined();
     expect(ConfigurationService).toBeDefined();
+    expect(ConfigurationPathRequiredError).toBeDefined();
     expect(UnknownConfigurationFileTypeError).toBeDefined();
     expect(MissingSubstitutionError).toBeDefined();
     expect(InputError).toBeDefined();

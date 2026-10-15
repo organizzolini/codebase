@@ -2,8 +2,8 @@
   "$schema": "http://json-schema.org/schema",
   "description": "Validate a project's conformetry instances against their templates.",
   "properties": {
-    "configurationPath": {
-      "description": "Path to the conformetry configuration file, relative to the workspace root.",
+    "configuration": {
+      "description": "Path to the conformetry configuration file, relative to the workspace root. Falls back to the configurationPath option of the @conformetry/nx plugin in nx.json.",
       "type": "string"
     },
     "languages": {

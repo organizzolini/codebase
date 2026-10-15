@@ -18,7 +18,7 @@ import {
 import type { CodependixConfiguration } from "./configuration.types";
 
 /**
- * Finds, reads, and parses codependix configuration files from disk.
+ * Reads and parses codependix configuration files from disk.
  *
  * Kept apart from `ConfigurationService`, which resolves what a loaded
  * configuration means for a project or a workspace: this service only ever
@@ -52,41 +52,12 @@ export class ConfigurationLoaderService {
   // 🌎 Public Methods
 
   /**
-   * Walks upward from a directory looking for a configuration file.
-   *
-   * Returns `undefined` when the search reaches the filesystem root without
-   * finding one: a workspace that never wrote a configuration file resolves
-   * every graph to `target: "none"` rather than being told to write one.
-   */
-  public findConfigurationFile(searchDirectory: string): string | undefined {
-    let candidateDirectory = path.resolve(searchDirectory);
-
-    for (;;) {
-      for (const fileName of CONFIGURATION_FILE_NAMES) {
-        const candidatePath = path.join(candidateDirectory, fileName);
-
-        if (existsSync(candidatePath)) {
-          return candidatePath;
-        }
-      }
-
-      const parentDirectory = path.dirname(candidateDirectory);
-
-      if (parentDirectory === candidateDirectory) {
-        return undefined;
-      }
-
-      candidateDirectory = parentDirectory;
-    }
-  }
-
-  /**
    * Looks for a project's own configuration file, exactly at its root.
    *
-   * Unlike `findConfigurationFile`, this never walks upward: a project's own
-   * file must be colocated with it, and walking upward would find the
-   * workspace root's configuration — or another project's, in a nested
-   * layout — instead of correctly reporting that this project has none.
+   * This never walks upward: a project's own file must be colocated with it,
+   * and walking upward would find the workspace root's configuration — or
+   * another project's, in a nested layout — instead of correctly reporting
+   * that this project has none.
    */
   public findProjectConfigurationFile(projectRoot: string): string | undefined {
     for (const fileName of CONFIGURATION_FILE_NAMES) {
@@ -165,22 +136,18 @@ export class ConfigurationLoaderService {
     return codependixConfigurationSchema.parse(configurationModule);
   }
 
-  /** Reads the root configuration file, or `{}` when none is found. */
+  /**
+   * Reads the main configuration file at the path it was told to.
+   *
+   * The path is required: nothing searches for a file, and no file is not a
+   * configuration that resolves every graph to `target: "none"`.
+   */
   public async readAuthoredConfiguration(args: {
-    configurationPath?: string | undefined;
-    searchDirectory?: string | undefined;
+    configurationPath: string;
   }): Promise<CodependixConfiguration> {
-    const searchDirectory = path.resolve(args.searchDirectory ?? process.cwd());
-    const resolvedPath =
-      args.configurationPath === undefined
-        ? this.findConfigurationFile(searchDirectory)
-        : this.resolveConfigurationPath(args.configurationPath);
-
-    if (resolvedPath === undefined) {
-      return {};
-    }
-
-    return this.parseConfigurationFile(resolvedPath);
+    return this.parseConfigurationFile(
+      this.resolveConfigurationPath(args.configurationPath),
+    );
   }
 
   /** Resolves a configuration path against the cwd, then the workspace root. */

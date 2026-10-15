@@ -131,7 +131,7 @@ function buildContext(args: {
  */
 function buildOptions(args: { workspaceRoot: string }): GateExecutorOptions {
   return {
-    configurationPath: path.join(args.workspaceRoot, CONFIGURATION_FILE_NAME),
+    configuration: path.join(args.workspaceRoot, CONFIGURATION_FILE_NAME),
   };
 }
 

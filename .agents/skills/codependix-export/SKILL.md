@@ -22,17 +22,18 @@ exist.
 
 The corollary is the failure mode worth learning first:
 
-> **A workspace with no configuration file resolves every graph type for every
-> project to `target: "none"` and produces nothing.** The run succeeds, exits
-> 0, logs that every configured export is current, and writes no files —
+> **A configuration that selects no project resolves every graph type for
+> every project to `target: "none"` and produces nothing.** The run succeeds,
+> exits 0, logs that every configured export is current, and writes no files —
 > because nothing was configured. That is correct behavior, not a bug.
 
 So a `--write` that wrote nothing is a configuration question, never a
 debugging one. Before looking for a defect, confirm in this order:
 
-1. A configuration file was actually found — an absent one is legal and
-   silent, while a `--config` path that was named explicitly and does not
-   exist fails loudly.
+1. The `--config` file is the one you meant. The flag is required and its
+   file must exist, so a run naming none or a missing file fails loudly rather
+   than writing nothing — but a file that is the wrong one reads exactly like
+   an empty one.
 2. The graph types you expected carry a `target` other than `"none"`, which is
    what every unset target defaults to.
 3. The projects you expected match the configured `include` globs and no
@@ -82,17 +83,17 @@ that run fails immediately, naming the flag it wanted. Reading that failure as
 a broken tool is the mistake to avoid — it is a missing flag, and the fix is
 to add `--check <set>` or `--write`.
 
-Two options qualify whichever mode was picked:
+Two options qualify whichever mode was picked, the first of them mandatory:
 
 | Option | Meaning |
 | ------ | ------- |
-| `--config [config]` | Path to a `codependix.config.ts`. Searched for upward from the directory when omitted |
+| `--config <config>` | **Required.** Path to the codependix configuration file, resolved against the working directory, then the workspace root. Omitting it fails the run; nothing is searched for |
 | `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |
 
 ```bash
-codependix map --write
-codependix map --check boundaries --directory . --config configuration/codependix.config.ts
-codependix map --check reports --directory . --config configuration/codependix.config.ts
+codependix map --write --config projects/configuration/codependix.config.ts
+codependix map --check boundaries --directory . --config projects/configuration/codependix.config.ts
+codependix map --check reports --directory . --config projects/configuration/codependix.config.ts
 ```
 
 ## Codependix reads the Nx project graph
@@ -100,8 +101,8 @@ codependix map --check reports --directory . --config configuration/codependix.c
 This is the trait that separates it from measurement tools that walk a
 directory. Nx resolves the project graph itself, from the process working
 directory — no flag points at it. What `--directory` names is the **workspace
-root every project's path is resolved against**, and the directory the
-configuration search starts from.
+root every project's path is resolved against**. It has no bearing on where
+the configuration is: that is always the `--config` path.
 
 So `--directory` is not a subtree to scan, and pointing it at a single project's
 folder does not export that project alone. It makes every project's root
@@ -169,8 +170,8 @@ no NestJS container is absent from the NestJS pass rather than failing it.
 Both take a **comma-separated** list, and both do two things at once:
 
 ```bash
-codependix map --write --projects widgets,tools/reporting
-codependix map --write --tags framework:nestjs,language:python
+codependix map --write --projects widgets,tools/reporting --config projects/configuration/codependix.config.ts
+codependix map --write --tags framework:nestjs,language:python --config projects/configuration/codependix.config.ts
 ```
 
 **They widen what gets exported.** A project participates when _anything_
@@ -289,7 +290,7 @@ the report is all it prints. Without one of those flags a boundaries-only run
 prints nothing, and a run that also exports prints its graphs as it always did.
 
 ```bash
-codependix map --check boundaries --projects lexico-entities --format json
+codependix map --check boundaries --projects lexico-entities --format json --config projects/configuration/codependix.config.ts
 ```
 
 `boundaries.judgedProjects` lists the projects whose findings fail the run.

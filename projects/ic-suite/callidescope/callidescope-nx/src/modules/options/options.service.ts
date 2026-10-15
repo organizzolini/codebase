@@ -1,13 +1,16 @@
-import { CALLIDESCOPE_OUTPUT_FORMATS } from "@callidescope/configuration";
+import {
+  CALLIDESCOPE_OUTPUT_FORMATS,
+  ConfigurationService,
+} from "@callidescope/configuration";
 import { Injectable } from "@nestjs/common";
 
 import {
-  CALLIDESCOPE_NX_PLUGIN_NAME,
   DEFAULT_BREADTH_TARGET_NAME,
-  DEFAULT_CONFIGURATION_PATHS,
   DEFAULT_DEPTH_TARGET_NAME,
   DEFAULT_GATE_TARGET_NAME,
   DEFAULT_TRACE_TARGET_NAME,
+  EXECUTOR_CONFIGURATION_SURFACE,
+  PLUGIN_CONFIGURATION_SURFACE,
 } from "./options.constants";
 
 import type { CallidescopePluginOptions } from "./options.types";
@@ -25,7 +28,7 @@ import type { CallidescopeOutputFormat } from "@callidescope/configuration";
 export class OptionsService {
   // 🏗 Dependency Injection
 
-  constructor() {}
+  constructor(private readonly configurationService: ConfigurationService) {}
 
   // 🔐 Private Fields
 
@@ -36,55 +39,6 @@ export class OptionsService {
   /** Narrows an untrusted value to an array without widening it to `any`. */
   private isUnknownArray(value: unknown): value is unknown[] {
     return Array.isArray(value);
-  }
-
-  /** Reads one `nx.json` plugin entry, if it is this plugin's registration. */
-  private readEntryConfigurationPath(entry: unknown): string | undefined {
-    if (typeof entry !== "object" || entry === null) {
-      return undefined;
-    }
-
-    const { options, plugin }: { options?: unknown; plugin?: unknown } = {
-      ...entry,
-    };
-
-    if (plugin !== CALLIDESCOPE_NX_PLUGIN_NAME) {
-      return undefined;
-    }
-
-    if (typeof options !== "object" || options === null) {
-      return undefined;
-    }
-
-    return this.readString({
-      key: "configurationPath",
-      options: { ...options },
-    });
-  }
-
-  /** Reads this plugin's `configurationPath` out of an `nx.json`, if it names one. */
-  private readRegisteredConfigurationPath(
-    nxConfiguration: unknown,
-  ): string | undefined {
-    if (typeof nxConfiguration !== "object" || nxConfiguration === null) {
-      return undefined;
-    }
-
-    const { plugins }: { plugins?: unknown } = { ...nxConfiguration };
-
-    if (!this.isUnknownArray(plugins)) {
-      return undefined;
-    }
-
-    for (const entry of plugins) {
-      const configurationPath = this.readEntryConfigurationPath(entry);
-
-      if (configurationPath !== undefined) {
-        return configurationPath;
-      }
-    }
-
-    return undefined;
   }
 
   /** Reads a string field from an untrusted record, or `undefined`. */
@@ -100,6 +54,20 @@ export class OptionsService {
   // 🌎 Public Methods
 
   /**
+   * Reads the `configuration` option of an executor, refusing a missing one.
+   *
+   * Nx validates the option against `schema.json`, but a target written by hand
+   * reaches an executor unchecked, so the same refusal the plugin option gets —
+   * decided by the configuration layer — is applied here.
+   */
+  public readConfiguration(value: unknown): string {
+    return this.configurationService.requireConfigurationPath(
+      typeof value === "string" ? value : undefined,
+      EXECUTOR_CONFIGURATION_SURFACE,
+    );
+  }
+
+  /**
    * Narrows an untrusted output format to one callidescope renders.
    *
    * A target written by hand in a `project.json` bypasses the executor's
@@ -110,6 +78,23 @@ export class OptionsService {
     return CALLIDESCOPE_OUTPUT_FORMATS.find(
       (format): boolean => format === value,
     );
+  }
+
+  /**
+   * Reads the two options every lookup executor shares, the configuration
+   * path refused when missing and the format narrowed.
+   */
+  public readLookupOptions(options: {
+    configuration: unknown;
+    format?: unknown;
+  }): {
+    configurationPath: string;
+    format: CallidescopeOutputFormat | undefined;
+  } {
+    return {
+      configurationPath: this.readConfiguration(options.configuration),
+      format: this.readFormat(options.format),
+    };
   }
 
   /**
@@ -134,39 +119,26 @@ export class OptionsService {
   }
 
   /**
-   * Resolves the configuration path a workspace means, without assuming one.
+   * Resolves the effective plugin options from an untrusted value.
    *
-   * Nx passes plugin options to `createNodes` and to executors, but not to
-   * anything run outside Nx, so a caller that has a filesystem resolves the
-   * path itself rather than assuming a workspace keeps its configuration at
-   * the root. `exists` is supplied by the caller because the callers do not
-   * agree on what a filesystem is.
+   * Every field has a default except `configurationPath`: the workspace
+   * configuration is never searched for, so a registration that does not name
+   * it is refused rather than guessed at.
    */
-  public resolveConfigurationPath(args: {
-    exists: (candidatePath: string) => boolean;
-    nxConfiguration: unknown;
-  }): string {
-    return (
-      this.readRegisteredConfigurationPath(args.nxConfiguration) ??
-      DEFAULT_CONFIGURATION_PATHS.find((candidatePath) =>
-        args.exists(candidatePath),
-      ) ??
-      DEFAULT_CONFIGURATION_PATHS[0]
-    );
-  }
-
-  /** Resolves the effective plugin options from an untrusted value. */
   public resolvePluginOptions(options: unknown): CallidescopePluginOptions {
     const record: Record<string, unknown> =
       typeof options === "object" && options !== null ? { ...options } : {};
+    const configurationPath =
+      this.configurationService.requireConfigurationPath(
+        this.readString({ key: "configurationPath", options: record }),
+        PLUGIN_CONFIGURATION_SURFACE,
+      );
 
     return {
       breadthTargetName:
         this.readString({ key: "breadthTargetName", options: record }) ??
         DEFAULT_BREADTH_TARGET_NAME,
-      configurationPath:
-        this.readString({ key: "configurationPath", options: record }) ??
-        DEFAULT_CONFIGURATION_PATHS[0],
+      configurationPath,
       depthTargetName:
         this.readString({ key: "depthTargetName", options: record }) ??
         DEFAULT_DEPTH_TARGET_NAME,

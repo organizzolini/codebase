@@ -55,18 +55,13 @@ export class ConfigurationService {
   /**
    * Loads and validates a codometer configuration file.
    *
-   * A path that was named explicitly must exist — a typo in a task runner's
-   * arguments should fail rather than quietly measure the repository with
-   * defaults it never asked for. A path that was not named is searched for
-   * from the measured directory upward, and its absence is legal.
-   *
-   * The nearest configuration file wins outright: nothing from a further
-   * ancestor is folded into it. Merging the two would leave a limit that never
-   * applied looking exactly like one that did, and the only way to tell them
-   * apart would be to know which of several files each field came from.
+   * The path is required and must exist — a typo in a task runner's
+   * arguments fails rather than quietly measuring the repository with
+   * defaults it never asked for. No ancestor directory is searched, and no
+   * file is assumed.
    */
   public async loadConfiguration(
-    args: LoadConfigurationArguments = {},
+    args: LoadConfigurationArguments,
   ): Promise<ResolvedCodometerConfiguration> {
     const { configuration } = await this.loadConfigurationFile(args);
 
@@ -76,27 +71,14 @@ export class ConfigurationService {
   /**
    * Loads a configuration and says which file answered.
    *
-   * The same work as `loadConfiguration`, keeping the path the upward walk
-   * settled on. A caller measuring one directory has no use for it — the
-   * configuration is the whole answer — but one listing what a repository
-   * configures has to attribute each answer to the file that gave it, and
-   * nothing downstream of the walk can still tell.
+   * The same work as `loadConfiguration`, keeping the absolute path the file
+   * resolved to, so a caller listing what a repository configures can
+   * attribute each answer to the file that gave it.
    */
   public async loadConfigurationFile(
-    args: LoadConfigurationArguments = {},
+    args: LoadConfigurationArguments,
   ): Promise<LoadedConfiguration> {
     const loaded = await this.configurationLoaderService.load(args);
-
-    if (loaded === undefined) {
-      // Validated through the same schema as a file's contents rather than
-      // resolved directly, so a repository with no configuration file at all
-      // fails on a missing `format` exactly like one whose file forgot it —
-      // there is no code-level fallback for either.
-      return {
-        configuration: this.resolveConfiguration(this.parseConfiguration({})),
-        path: undefined,
-      };
-    }
 
     return {
       configuration: this.resolveConfiguration(
@@ -124,6 +106,17 @@ export class ConfigurationService {
   /** Reads an option that carries text, or nothing at all. */
   public parseOptionalOption(value: unknown): string | undefined {
     return this.configurationFlagsService.parseOptionalOption(value);
+  }
+
+  /** Returns the configuration path a run named, or refuses a run naming none. */
+  public requireConfigurationPath(
+    value: string | undefined,
+    surface: string,
+  ): string {
+    return this.configurationFlagsService.requireConfigurationPath(
+      value,
+      surface,
+    );
   }
 
   /** Fills in every field a configuration file may leave out. */

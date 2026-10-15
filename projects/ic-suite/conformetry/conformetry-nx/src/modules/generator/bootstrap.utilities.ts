@@ -46,9 +46,6 @@ export async function bootstrapPlugin(
     // Taken from the workspace's own plugin registration rather than assumed:
     // this runs from a `postinstall`, where Nx passes nothing.
     configurationPath: optionsService.resolveConfigurationPath({
-      exists: (candidatePath) => {
-        return existsSync(path.resolve(workspaceRoot, candidatePath));
-      },
       nxConfiguration: readNxConfiguration(workspaceRoot),
     }),
     outputPath: DEFAULT_OUTPUT_PATH,
@@ -152,9 +149,8 @@ function linkPlugin(workspaceRoot: string): void {
 /**
  * Reads the workspace's `nx.json`, or nothing when there is none.
  *
- * A missing or unreadable file is not an error here — every field it would
- * supply has a default, and failing the install over it would be worse than
- * emitting from the conventional path.
+ * A missing file yields nothing, which `resolveConfigurationPath` then refuses
+ * for want of a registered path.
  */
 function readNxConfiguration(workspaceRoot: string): unknown {
   const nxConfigurationPath = path.resolve(

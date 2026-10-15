@@ -2,8 +2,12 @@
 
 /** Options accepted by the conformetry validate executor. */
 export interface ValidateExecutorOptions {
-  /** Where the conformetry configuration lives, workspace-root relative. */
-  readonly configurationPath?: string;
+  /**
+   * Where the conformetry configuration lives, workspace-root relative.
+   *
+   * Falls back to the plugin registration in `nx.json`.
+   */
+  readonly configuration?: string;
   /** Language names to restrict the run to; every language when absent. */
   readonly languages?: string[];
   /**

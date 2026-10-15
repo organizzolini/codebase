@@ -1,6 +1,9 @@
 import path from "node:path";
 
-import { codependixConfigurationSchema } from "@codependix/configuration";
+import {
+  codependixConfigurationSchema,
+  ConfigurationPathRequiredError,
+} from "@codependix/configuration";
 import { z } from "zod";
 
 import { getConfigurationService } from "./builders";
@@ -26,20 +29,17 @@ const REFUSALS_SEGMENT = "refusals";
 /** Workspace carrying both a TypeScript and a JSON configuration file. */
 const PRECEDENCE = "precedence";
 
-/** Workspace whose configuration sits above a nested project's `package.json`. */
-const NESTED = "nested";
-
 /** Workspace whose configuration carries a field codependix does not know. */
 const UNKNOWN_FIELDS = "unknown-fields";
 
-/** Directory holding no configuration file at all. */
-const ABSENT = "absent";
+/** File name every configuration example is loaded by, named explicitly. */
+const CONFIGURATION_FILE = "codependix.config.ts";
+
+/** The JSON configuration file sitting beside the TypeScript one. */
+const NEIGHBOR_CONFIGURATION_FILE = "codependix.config.json";
 
 /** Configuration file with an extension the loader cannot read. */
 const UNSUPPORTED_TYPE = "unsupported-type";
-
-/** Nested project the upward search has to reach past. */
-const NESTED_PROJECT_SEGMENT = "packages/atlas-service";
 
 /** Configuration file name that does not exist, for the explicit-path refusal. */
 const MISSING_CONFIGURATION_FILE = "codependix.config.missing.ts";
@@ -189,14 +189,19 @@ export function describeParseRefusal(configuration: unknown): string {
 
 // 📄 Documents
 
-/** Loads one configuration example by searching upward from its directory. */
+/**
+ * Loads one configuration example from the file it is named by.
+ *
+ * The path is always named: nothing searches a directory for a file.
+ */
 export async function loadConfiguration(
   name: string,
+  fileName: string = CONFIGURATION_FILE,
 ): Promise<ResolvedCodependixConfiguration> {
   const configurationService = await getConfigurationService();
 
   return configurationService.loadConfiguration({
-    searchDirectory: resolveExample(CONFIGURATION_SEGMENT, name),
+    configurationPath: resolveExample(CONFIGURATION_SEGMENT, name, fileName),
   });
 }
 
@@ -215,40 +220,21 @@ export function redactPath(message: string): string {
 
 /** Builds the sections covering how a configuration file is found and read. */
 async function buildDiscoverySections(): Promise<ExampleSection[]> {
-  const configurationService = await getConfigurationService();
-  const precedence = await loadConfiguration(PRECEDENCE);
-  const nested = await configurationService.loadConfiguration({
-    searchDirectory: resolveExample(
-      CONFIGURATION_SEGMENT,
-      NESTED,
-      NESTED_PROJECT_SEGMENT,
-    ),
-  });
-  const absent = await loadConfiguration(ABSENT);
+  const named = await loadConfiguration(PRECEDENCE);
+  const neighbor = await loadConfiguration(
+    PRECEDENCE,
+    NEIGHBOR_CONFIGURATION_FILE,
+  );
   const unknownFields = await loadConfiguration(UNKNOWN_FIELDS);
 
   return [
     {
-      body: fenceJson(precedence.workspace),
-      heading: "A workspace carrying two configuration files",
-      note: "`examples/configuration/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `CONFIGURATION_FILE_NAMES` is searched in order, so the TypeScript one wins — the anchor here is the one it declares.",
-    },
-    {
-      body: fenceJson(nested.workspace),
-      heading: "The upward search reaches past a nested `package.json`",
-      note: "The search started inside `packages/atlas-service/`, which carries its own `package.json`, and still found the configuration at the workspace root — the root every path in that configuration was written relative to. A project's own `codependix.config.ts` is searched for differently — see the next section — and never walks upward this way.",
-    },
-    {
-      body: fenceJson(
-        configurationService.resolveForProject({
-          configuration: absent,
-          graphType: "nxProjects",
-          projectConfiguration: undefined,
-          projectName: "atlas-service",
-        }),
-      ),
-      heading: "No configuration file at all",
-      note: 'A workspace that never wrote one resolves every graph to `target: "none"` and produces nothing, rather than being told to write one. The absence of an unnamed configuration file is legal.',
+      body: fenceJson({
+        "codependix.config.json": neighbor.workspace,
+        "codependix.config.ts": named.workspace,
+      }),
+      heading: "The path names the file; a neighbor is never read",
+      note: "`examples/configuration-resolution/precedence/` holds both a `codependix.config.ts` and a `codependix.config.json`. `--config` names exactly one, and that is the only one read — the anchor each declares differs, so loading either by name shows which file answered. Nothing is searched for: no default filename, no walk upward, and no absent file is read as an empty configuration. A project's own `codependix.config.ts` is the exception — see the next section — found beside the project root, never upward.",
     },
     {
       body: fenceJson(unknownFields.workspace),
@@ -258,13 +244,20 @@ async function buildDiscoverySections(): Promise<ExampleSection[]> {
   ];
 }
 
-/** Builds the two refusals that come from the configuration path itself. */
+/** Builds the refusals that come from the configuration path itself. */
 async function buildPathRefusalSections(): Promise<ExampleSection[]> {
   return [
     {
+      body: fence(
+        describeError(new ConfigurationPathRequiredError("`--config` flag")),
+      ),
+      heading: "A run naming no configuration path",
+      note: "Reproduced by running `codependix map` or `codependix path` without `--config`: the flag is required, and nothing falls back to a default filename or searches for one. The same refusal names the `configuration` executor option of the Nx gate, or the `configurationPath` option of the `@codependix/nx` registration, when one of those is the setting left out.",
+    },
+    {
       body: fence(await describeLoadRefusal(MISSING_CONFIGURATION_FILE)),
       heading: "An explicitly named configuration file that does not exist",
-      note: "A path named on the command line must exist: a typo in a task runner's arguments should fail rather than quietly resolving every graph to `none`. A path that was _not_ named is searched for, and its absence is legal — see [configuration-resolution](../configuration-resolution).",
+      note: "`--config` is required and the file it names must exist: a typo in a task runner's arguments should fail rather than quietly resolving every graph to `none`. A run naming no path is refused outright — see [configuration-resolution](../configuration-resolution).",
     },
     {
       body: fence(

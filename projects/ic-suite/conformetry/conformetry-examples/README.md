@@ -100,7 +100,7 @@ Full reference: [`@conformetry/configuration`](../conformetry-configuration/READ
 ### 3. Scaffold from it
 
 ```bash
-conformetry generate --template hello --name world
+conformetry generate --config projects/configuration/conformetry.config.ts --template hello --name world
 ```
 
 A template's own inputs are passed as flags. Unknown flags are accepted
@@ -118,7 +118,7 @@ then [case-variants](examples/case-variants/README.md).
 ### 4. Validate
 
 ```bash
-conformetry validate
+conformetry validate --config projects/configuration/conformetry.config.ts
 ```
 
 ```text

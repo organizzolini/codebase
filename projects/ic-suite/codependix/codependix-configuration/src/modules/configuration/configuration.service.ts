@@ -8,6 +8,7 @@ import { OverrideResolutionService } from "../override-resolution/override-resol
 import { ConfigurationLoaderService } from "./configuration-loader.service";
 import {
   codependixProjectConfigurationSchema,
+  ConfigurationPathRequiredError,
   DEFAULT_EXPORT_TARGET,
   DEFAULT_INCLUDE_GLOBS,
   DEFAULT_MARKDOWN_PATH,
@@ -216,13 +217,12 @@ export class ConfigurationService {
   /**
    * Loads and validates a codependix configuration file.
    *
-   * A path that was named explicitly must exist — a typo in a task runner's
+   * The path is required and must exist — a typo in a task runner's
    * arguments should fail rather than quietly resolving every graph to
-   * `target: "none"`. A path that was not named is searched for from the
-   * search directory upward, and its absence is legal.
+   * `target: "none"`. Nothing is searched for.
    */
   public async loadConfiguration(
-    args: LoadConfigurationArguments = {},
+    args: LoadConfigurationArguments,
   ): Promise<ResolvedCodependixConfiguration> {
     const authored =
       await this.configurationLoaderService.readAuthoredConfiguration(args);
@@ -240,8 +240,7 @@ export class ConfigurationService {
    *
    * Searched for exactly at `projectRoot` — see
    * `ConfigurationLoaderService.findProjectConfigurationFile` — rather than
-   * the upward search `loadConfiguration` performs for the workspace root's
-   * own file: a project's file is either colocated with it or it does not
+   * named by a path the way `loadConfiguration`'s file is: a project's file is either colocated with it or it does not
    * exist, and a project with none produces no per-project output rather than
    * inheriting one from a parent directory.
    */
@@ -297,6 +296,25 @@ export class ConfigurationService {
   /** Parses a path option that falls back to the working directory. */
   public parsePathOption(value: string | undefined): string {
     return this.inputService.parsePathOption(value);
+  }
+
+  /**
+   * Returns the main configuration path, refusing one that is missing.
+   *
+   * No file is searched for, so every host — the command line, the Nx
+   * executor, the Nx plugin — must be handed a path. `surface` names the
+   * setting the caller took it from (for example "`--config` flag"), which is
+   * what the refusal tells the user to fix. Absent and blank are the same.
+   */
+  public requireConfigurationPath(
+    configurationPath: string | undefined,
+    surface: string,
+  ): string {
+    if (configurationPath === undefined || configurationPath.trim() === "") {
+      throw new ConfigurationPathRequiredError(surface);
+    }
+
+    return configurationPath;
   }
 
   /**

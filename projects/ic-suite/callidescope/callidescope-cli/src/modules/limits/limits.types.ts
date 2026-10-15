@@ -5,7 +5,7 @@ export type LimitName = "maximumBreadth" | "maximumDepth";
 
 /** Options the `limits` command accepts. */
 export interface LimitsCommandOptions {
-  readonly config?: string | undefined;
+  readonly config: string;
 }
 
 /** One project's resolution of one limit, and the file the number came from. */
