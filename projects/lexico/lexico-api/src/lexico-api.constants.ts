@@ -9,7 +9,7 @@ export const environmentSchema = z.object({
   ...postgresEnvironmentSchema({ project: "lexico" }),
   LEXICO_API_CORS_ORIGINS: z
     .string()
-    .default("http://localhost:3000")
+    .default("http://localhost:7797")
     .describe("Comma-separated origins allowed to call the API from a browser")
     .transform((origins) =>
       origins
@@ -18,7 +18,7 @@ export const environmentSchema = z.object({
         .filter((origin) => origin.length > 0),
     ),
   LEXICO_API_LIGHTSHIP_PORT: z.coerce.number().default(9000),
-  LEXICO_API_PORT: z.coerce.number().default(8398),
+  LEXICO_API_PORT: z.coerce.number().default(5003),
 });
 
 /**

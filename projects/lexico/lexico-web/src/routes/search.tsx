@@ -27,7 +27,7 @@ import type { ReactNode } from "react";
 /**
  * Where the lexico API serves GraphQL when `LEXICO_API_URL` is not set.
  */
-const DEFAULT_LEXICO_API_URL = "http://localhost:8398/graphql";
+const DEFAULT_LEXICO_API_URL = "http://localhost:5003/graphql";
 
 /**
  * The most lexemes one language's search is asked for.

@@ -27,7 +27,7 @@ from [components-web](../../components-web/README.md).
 
 ```bash
 pnpm install
-nx run lexico-web:develop     # http://localhost:3000
+nx run lexico-web:develop     # http://localhost:7797
 ```
 
 | Target | Does |
@@ -61,7 +61,7 @@ Data access goes through a TanStack Start **server function** — type-safe RPC
 from client to server — defined beside the route that uses it and called from
 its loader, so the first render is already populated. `/search` asks the API
 for Latin and English matches at once and merges them, best first; set
-`LEXICO_API_URL` to point it somewhere other than `http://localhost:8398/graphql`.
+`LEXICO_API_URL` to point it somewhere other than `http://localhost:5003/graphql`.
 
 ## Technology
 

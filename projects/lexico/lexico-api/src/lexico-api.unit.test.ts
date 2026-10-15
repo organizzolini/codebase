@@ -80,13 +80,13 @@ describe("lexico api bootstrap suite", () => {
       expect.anything(),
       expect.any(ExpressAdapter),
       expect.objectContaining({
-        cors: { credentials: true, origin: ["http://localhost:3000"] },
+        cors: { credentials: true, origin: ["http://localhost:7797"] },
       }),
     );
     expect(createLightshipMock).toHaveBeenCalledWith({ port: 9000 });
     expect(loggerConstructorMock).toHaveBeenCalledTimes(1);
     expect(setContextMock).toHaveBeenCalledWith("NestApplication");
-    expect(listenMock).toHaveBeenCalledWith(8398);
+    expect(listenMock).toHaveBeenCalledWith(5003);
     expect(signalReadyMock).toHaveBeenCalledTimes(1);
     expect(registerShutdownHandlerMock).toHaveBeenCalledTimes(1);
 
