@@ -16,6 +16,15 @@ import type {
 
 // 🌎 Utilities
 
+/** Names `content` for a log line: `data`, `schema`, or `data and schema`. */
+export function describePostgresContent({
+  data,
+  schema,
+}: PostgresContent): string {
+  if (data && schema) return "data and schema";
+  return data ? "data" : "schema";
+}
+
 /**
  * Replaces the password of every connection URI in `text`, and `password`
  * itself wherever else it appears, with `****`. Everything logged or
@@ -93,10 +102,11 @@ export function postgresContentFlags({
 /**
  * The environment a client tool runs with: `environment` with every
  * inherited `PG*` variable removed, so nothing is implied from the shell,
- * and the connection laid over it as libpq's own variables.
+ * and the connection, when there is one, laid over it as libpq's own
+ * variables.
  */
 export function postgresProcessEnvironment(
-  { database, host, password, port, username }: PostgresUriConnection,
+  connection: PostgresUriConnection | undefined,
   environment: NodeJS.ProcessEnv = process.env,
 ): NodeJS.ProcessEnv {
   const inherited = Object.fromEntries(
@@ -104,7 +114,9 @@ export function postgresProcessEnvironment(
       ([key]) => !key.startsWith(POSTGRES_ENVIRONMENT_PREFIX),
     ),
   );
+  if (connection === undefined) return inherited;
 
+  const { database, host, password, port, username } = connection;
   return {
     ...inherited,
     PGDATABASE: database,

@@ -3,6 +3,8 @@
  * Includes mocks for TypeORM repositories and helpers for Cheerio setup.
  */
 
+import fs from "node:fs";
+
 import { createMock } from "@golevelup/ts-vitest";
 import * as cheerio from "cheerio";
 import { afterEach, beforeEach, onTestFinished, vi } from "vitest";
@@ -38,10 +40,13 @@ export const childProcessMock = {
         error = null,
         stderr = "",
         stdout = "",
-      } = isVersionCheck(args)
-        ? versionOutcome(file, processes.outcome)
-        : processes.outcome;
-      processes.spawned.push({ args, environment: options.env, file });
+      } = outcomeFor(file, args, processes.outcome);
+      processes.spawned.push({
+        args,
+        environment: options.env,
+        file,
+        useList: useListOf(args),
+      });
       callback(error, stdout, stderr);
     },
   ),
@@ -64,6 +69,12 @@ export interface SpawnedProcess {
   readonly args: readonly string[];
   readonly environment: NodeJS.ProcessEnv | undefined;
   readonly file: string;
+
+  /**
+   * What the `--use-list=<path>` file it was handed held when it started;
+   * the caller may remove the file once the process exits.
+   */
+  readonly useList: string | undefined;
 }
 
 /** The callback `execFile` reports a process's exit to. */
@@ -78,6 +89,13 @@ type ExecFileCallback = (
  */
 interface ProcessOutcome {
   readonly error?: ExecException;
+
+  /**
+   * How a `pg_restore --list` of a dump's contents exits; by default as
+   * the rest of the outcome.
+   */
+  readonly list?: StepOutcome;
+
   readonly stderr?: string;
   readonly stdout?: string;
 
@@ -85,11 +103,11 @@ interface ProcessOutcome {
    * How a `--version` check exits, which never follows the rest of the
    * outcome; by default the tool reports version 18.
    */
-  readonly version?: VersionOutcome;
+  readonly version?: StepOutcome;
 }
 
-/** How a `--version` check exits. */
-type VersionOutcome = Pick<ProcessOutcome, "error" | "stderr" | "stdout">;
+/** How one kind of process, such as a `--version` check, exits. */
+type StepOutcome = Pick<ProcessOutcome, "error" | "stderr" | "stdout">;
 
 /**
  * Sets up fake timers with a fixed system time before each test
@@ -199,14 +217,29 @@ export function setPromptsMockResponseOnce<
   promptsMock.mockResolvedValueOnce(response);
 }
 
-/** Whether `args` ask a client tool only for its version. */
-function isVersionCheck(args: readonly string[]): boolean {
-  return args.length === 1 && args[0] === "--version";
+/**
+ * How `file` run with `args` exits: a `--version` check as
+ * `outcome.version` says, else as version 18; a `--list` as `outcome.list`
+ * says, else as the rest of the outcome; anything else as the outcome.
+ */
+function outcomeFor(
+  file: string,
+  args: readonly string[],
+  outcome: ProcessOutcome,
+): StepOutcome {
+  if (args.length === 1 && args[0] === "--version") {
+    return outcome.version ?? { stdout: `${file} (PostgreSQL) 18.6\n` };
+  }
+  if (args.includes("--list")) return outcome.list ?? outcome;
+  return outcome;
 }
 
-/** How `file --version` exits: as `outcome.version` says, else as version 18. */
-function versionOutcome(file: string, outcome: ProcessOutcome): VersionOutcome {
-  return outcome.version ?? { stdout: `${file} (PostgreSQL) 18.6\n` };
+/** The contents of the `--use-list` file named in `args`, if any. */
+function useListOf(args: readonly string[]): string | undefined {
+  const option = args.find((argument) => argument.startsWith("--use-list="));
+  return option === undefined
+    ? undefined
+    : fs.readFileSync(option.slice("--use-list=".length), "utf8");
 }
 
 /**

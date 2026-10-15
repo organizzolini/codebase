@@ -34,6 +34,30 @@ export interface PostgresContent {
 }
 
 /**
+ * One entry of a dump's table of contents, as `pg_restore --list --verbose`
+ * prints it.
+ */
+export interface PostgresDumpEntry {
+  /** The ids of the entries it depends on, some possibly not in the dump. */
+  readonly dependencies: readonly number[];
+
+  /** The dump id `pg_restore --use-list` selects it by. */
+  readonly id: number;
+
+  /**
+   * `table` for a table's definition, `data` for its rows, `header` for
+   * the session settings every restore needs, and `other` for the rest.
+   */
+  readonly kind: PostgresDumpEntryKind;
+
+  /** The schema-qualified table, for a `table` or `data` entry. */
+  readonly table?: string;
+}
+
+/** What a dump entry holds; see `PostgresDumpEntry.kind`. */
+export type PostgresDumpEntryKind = "data" | "header" | "other" | "table";
+
+/**
  * What `PostgresClientService.dump` is given.
  */
 export interface PostgresDumpOptions {
@@ -44,6 +68,26 @@ export interface PostgresDumpOptions {
   readonly content: PostgresContent;
 
   /** The custom-format dump file to write, relative to the working directory. */
+  readonly file: string;
+
+  /** Schema-qualified table names; see `qualifyTableName`. */
+  readonly tables: readonly string[];
+}
+
+/**
+ * What `PostgresClientService.restore` is given.
+ */
+export interface PostgresRestoreOptions {
+  /** The database to restore into. */
+  readonly connection: PostgresUriConnection;
+
+  /** Whether to restore rows, definitions, or both. */
+  readonly content: PostgresContent;
+
+  /** The dump's table of contents, from `PostgresClientService.list`. */
+  readonly contents: readonly PostgresDumpEntry[];
+
+  /** The dump file or directory to restore from. */
   readonly file: string;
 
   /** Schema-qualified table names; see `qualifyTableName`. */

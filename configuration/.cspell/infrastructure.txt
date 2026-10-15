@@ -8,6 +8,8 @@ buildkit
 buildx
 bullmq
 burstable
+conrelid
+contype
 cves
 datname
 dbeaver
@@ -72,11 +74,14 @@ projectcalico
 psql
 raspberrypi
 readyz
+regclass
 regconfig
 resolv
 retag
+SEARCHPATH
 sendgrid
 signups
+STDSTRINGS
 storageclasses
 supabase
 superkey

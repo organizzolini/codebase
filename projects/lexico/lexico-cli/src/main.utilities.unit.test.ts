@@ -5,12 +5,13 @@ import { rootModule } from "./main.utilities";
 import { StandaloneModule } from "./standalone.module";
 
 describe(rootModule, () => {
-  it.each([[["export", "--table", "words"]], [["--no-color", "export"]]])(
-    "boots %o without the Lexico database",
-    (argv) => {
-      expect(rootModule(argv)).toBe(StandaloneModule);
-    },
-  );
+  it.each([
+    [["export", "--table", "words"]],
+    [["--no-color", "export"]],
+    [["import", "--table", "words"]],
+  ])("boots %o without the Lexico database", (argv) => {
+    expect(rootModule(argv)).toBe(StandaloneModule);
+  });
 
   it.each([[[]], [["--help"]], [["dictionary", "--startLemma=amo"]]])(
     "boots %o with the whole application",

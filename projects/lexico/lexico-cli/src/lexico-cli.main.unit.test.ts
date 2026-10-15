@@ -14,7 +14,9 @@ vi.mock("./lexico-cli.module", () => ({
   },
 }));
 
-vi.mock("./main.constants", () => ({ STANDALONE_COMMANDS: ["export"] }));
+vi.mock("./main.constants", () => ({
+  STANDALONE_COMMANDS: ["export", "import"],
+}));
 
 vi.mock("./standalone.module", () => ({
   StandaloneModule: function StandaloneModule() {

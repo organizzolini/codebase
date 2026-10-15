@@ -43,6 +43,12 @@ export const INTEGRATION_TEST_TIMEOUT_MILLISECONDS = 60_000;
 /** Starting Postgres and running every migration takes longer than a test. */
 export const LEXICO_DATABASE_TIMEOUT_MILLISECONDS = 120_000;
 
+/** The connection as a URI, its credentials percent-encoded. */
+export function postgresUri(connection: PostgresConnection): string {
+  const { database, host, password, port, username } = connection;
+  return `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}/${encodeURIComponent(database)}`;
+}
+
 /**
  * Starts a throwaway Postgres 18 container and builds the Lexico schema by
  * running the real migrations, so a test seeds and reads real tables.
@@ -98,10 +104,4 @@ export async function startLexicoDatabase(): Promise<LexicoDatabase> {
     },
     uri: postgresUri(connection),
   };
-}
-
-/** The connection as a URI, its credentials percent-encoded. */
-function postgresUri(connection: PostgresConnection): string {
-  const { database, host, password, port, username } = connection;
-  return `postgresql://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}/${encodeURIComponent(database)}`;
 }

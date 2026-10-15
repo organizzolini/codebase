@@ -1,4 +1,7 @@
 import { execFile } from "node:child_process";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
@@ -14,11 +17,17 @@ import {
   postgresContentFlags,
   postgresProcessEnvironment,
 } from "./postgres-client.utilities";
+import {
+  parsePostgresDumpContents,
+  selectPostgresDumpEntries,
+} from "./postgres-dump.utilities";
 
 import type {
   PostgresClientOutput,
   PostgresClientTool,
+  PostgresDumpEntry,
   PostgresDumpOptions,
+  PostgresRestoreOptions,
   PostgresUriConnection,
 } from "./postgres-client.types";
 
@@ -42,14 +51,15 @@ export class PostgresClientService {
 
   /**
    * Runs `tool` with `args`, connected to `connection` through its
-   * environment, and resolves what it printed once it exits zero.
+   * environment, or to nothing when there is none, and resolves what it
+   * printed once it exits zero.
    *
    * @throws PostgresClientError when it exits non-zero or cannot start.
    */
   private async run(
     tool: PostgresClientTool,
     args: readonly string[],
-    connection: PostgresUriConnection,
+    connection?: PostgresUriConnection,
   ): Promise<PostgresClientOutput> {
     return new Promise((resolve, reject) => {
       execFile(
@@ -69,7 +79,7 @@ export class PostgresClientService {
           reject(
             new PostgresClientError({
               code: error.code,
-              detail: maskPostgresCredentials(detail, connection.password),
+              detail: maskPostgresCredentials(detail, connection?.password),
               tool,
             }),
           );
@@ -153,6 +163,71 @@ export class PostgresClientService {
         tool,
         `is major version ${String(major)}, but ${String(POSTGRES_CLIENT_MAJOR_VERSION)} is required`,
       );
+    }
+  }
+
+  /**
+   * Reads the table of contents of the dump at `file` with
+   * `pg_restore --list`, which connects to no database, so an unreadable
+   * file fails before any connection opens.
+   *
+   * @throws PostgresClientError when pg_restore cannot read it.
+   */
+  async list(file: string): Promise<PostgresDumpEntry[]> {
+    const { stdout } = await this.run("pg_restore", [
+      "--list",
+      "--verbose",
+      file,
+    ]);
+    return parsePostgresDumpContents(stdout);
+  }
+
+  /**
+   * Restores exactly `tables` from `file` into `connection`, as one
+   * transaction that stops at the first error, so a failed restore leaves
+   * the target as it was. The entries come from a `--use-list` written
+   * from `contents`, because `pg_restore --table` would leave out each
+   * table's indexes and constraints. Ownership and grants are left to the
+   * target's own role, which the source's roles need not exist beside.
+   *
+   * @throws PostgresClientError when pg_restore fails.
+   */
+  async restore({
+    connection,
+    content,
+    contents,
+    file,
+    tables,
+  }: PostgresRestoreOptions): Promise<void> {
+    const directory = await fs.mkdtemp(
+      path.join(os.tmpdir(), "lexico-import-"),
+    );
+    const list = path.join(directory, "restore.list");
+
+    try {
+      await fs.writeFile(
+        list,
+        selectPostgresDumpEntries(contents, tables)
+          .map((id) => `${String(id)};\n`)
+          .join(""),
+      );
+      await this.run(
+        "pg_restore",
+        [
+          `--dbname=${connection.database}`,
+          "--no-password",
+          "--single-transaction",
+          "--exit-on-error",
+          "--no-owner",
+          "--no-privileges",
+          ...postgresContentFlags(content),
+          `--use-list=${list}`,
+          file,
+        ],
+        connection,
+      );
+    } finally {
+      await fs.rm(directory, { force: true, recursive: true });
     }
   }
 }

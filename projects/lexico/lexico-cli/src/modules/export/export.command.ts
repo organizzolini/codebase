@@ -9,6 +9,7 @@ import { LoggerService } from "@codebase/logging";
 
 import { PostgresClientService } from "../postgres-client/postgres-client.service";
 import {
+  describePostgresContent,
   maskPostgresCredentials,
   parsePostgresUri,
   qualifyTableName,
@@ -52,12 +53,6 @@ export class ExportCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /** Names `content` for a log line: `data`, `schema`, or both. */
-  private describeContent({ data, schema }: PostgresContent): string {
-    if (data && schema) return "data and schema";
-    return data ? "data" : "schema";
-  }
 
   /**
    * Validates every option and resolves the tables, so nothing runs
@@ -195,7 +190,7 @@ export class ExportCommand extends CommandRunner {
   ): Promise<void> {
     const plan = this.plan(options);
     await this.postgresClient.ensureTool("pg_dump");
-    const content = this.describeContent(plan.content);
+    const content = describePostgresContent(plan.content);
     this.logger.log(
       `📦 Exporting ${content} of ${plan.tables.join(", ")} from ${plan.source} to ${plan.file}`,
     );

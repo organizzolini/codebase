@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { PostgresUriError } from "./postgres-client.constants";
 import {
+  describePostgresContent,
   maskPostgresCredentials,
   parsePostgresMajorVersion,
   parsePostgresUri,
@@ -138,6 +139,15 @@ describe("postgres-client utilities", () => {
       expect(environment).not.toHaveProperty("PGPASSWORD");
     });
 
+    it("hands over no connection at all when there is none", () => {
+      expect(
+        postgresProcessEnvironment(undefined, {
+          HOME: "/home/lexico",
+          PGPASSWORD: "inherited",
+        }),
+      ).toStrictEqual({ HOME: "/home/lexico" });
+    });
+
     it("reads the current process environment by default", () => {
       expect(postgresProcessEnvironment(CONNECTION)).toMatchObject({
         PGHOST: "database.example.com",
@@ -179,6 +189,16 @@ describe("postgres-client utilities", () => {
 
     it("uses a schema-qualified name as written", () => {
       expect(qualifyTableName("archive.words", "lexico")).toBe("archive.words");
+    });
+  });
+
+  describe(describePostgresContent, () => {
+    it.each([
+      [{ data: true, schema: false }, "data"],
+      [{ data: false, schema: true }, "schema"],
+      [{ data: true, schema: true }, "data and schema"],
+    ])("names %o as %j", (content, name) => {
+      expect(describePostgresContent(content)).toBe(name);
     });
   });
 

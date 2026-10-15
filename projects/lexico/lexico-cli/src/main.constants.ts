@@ -7,6 +7,7 @@ import { LoggerModule } from "@codebase/logging";
 
 import { environmentSchema } from "./lexico-cli.constants";
 import { ExportModule } from "./modules/export/export.module";
+import { ImportModule } from "./modules/import/import.module";
 
 /**
  * What every root module holds: validated configuration, discovery, the
@@ -22,10 +23,11 @@ export const ROOT_IMPORTS = [
   DiscoveryModule,
   LoggerModule,
   ExportModule,
+  ImportModule,
 ];
 
 /**
  * Commands that name their database by URI and so boot on
  * `StandaloneModule`, without the Lexico database connection.
  */
-export const STANDALONE_COMMANDS: readonly string[] = ["export"];
+export const STANDALONE_COMMANDS: readonly string[] = ["export", "import"];

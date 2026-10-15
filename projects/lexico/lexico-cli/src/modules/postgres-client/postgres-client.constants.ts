@@ -84,3 +84,19 @@ export class PostgresUriError extends Error {
     this.name = PostgresUriError.name;
   }
 }
+
+/** Reads a `pg_restore --list` entry line: its dump id, then what it is. */
+export const POSTGRES_DUMP_ENTRY_PATTERN = /^(\d+);\s+\d+\s+\d+\s+(.*)$/u;
+
+/** Reads the ids a `pg_restore --list --verbose` entry depends on. */
+export const POSTGRES_DUMP_DEPENDENCIES_PATTERN = /^;\s+depends on:\s*(.*)$/u;
+
+/** The entries every restore runs, which set up the session. */
+export const POSTGRES_DUMP_HEADER_PATTERN =
+  /^(ENCODING|SEARCHPATH|STDSTRINGS) /u;
+
+/** A table's definition, but not a partition's `TABLE ATTACH`. */
+export const POSTGRES_DUMP_TABLE_PATTERN = /^TABLE (?!ATTACH )(.*)$/u;
+
+/** A table's rows. */
+export const POSTGRES_DUMP_TABLE_DATA_PATTERN = /^TABLE DATA (.*)$/u;
