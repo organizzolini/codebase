@@ -33,7 +33,7 @@
         }
       ],
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts catalog-manifests",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts catalog-manifests",
         "cwd": "{workspaceRoot}"
       },
       "outputs": []
@@ -70,7 +70,7 @@
         }
       ],
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts lockfile",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts lockfile",
         "cwd": "{workspaceRoot}"
       },
       "outputs": []
@@ -102,7 +102,7 @@
         }
       ],
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts readme-projects",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts readme-projects",
         "cwd": "{workspaceRoot}"
       },
       "outputs": []
@@ -113,37 +113,37 @@
       "cache": false,
       "configurations": {
         "audit-governance": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts audit-governance"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts audit-governance"
         },
         "audit-issues": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts issue-metadata --all"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts issue-metadata --all"
         },
         "catalog-manifests": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts catalog-manifests"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts catalog-manifests"
         },
         "issue-metadata": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts issue-metadata"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts issue-metadata"
         },
         "lockfile": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts lockfile"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts lockfile"
         },
         "publishable-packages": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts publishable-packages"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts publishable-packages"
         },
         "pull-request-body": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts pull-request-body"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts pull-request-body"
         },
         "pull-request-metadata": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts pull-request-metadata"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts pull-request-metadata"
         },
         "readme-projects": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts readme-projects"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts readme-projects"
         }
       },
       "description": "Run one validation check by name.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/main.ts",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts",
         "cwd": "{workspaceRoot}"
       }
     },

@@ -7,17 +7,6 @@ export const NESTJS_PROJECT_TAG = "framework:nestjs";
 export const NESTJS_PROJECT_MODULE_FILE_SUFFIX = ".module.ts";
 
 /**
- * Path, relative to a project root, of the module a project bootstraps.
- *
- * A project without one is a library rather than an application, and gets a
- * synthetic root built from every module it defines instead.
- */
-export const NESTJS_PROJECT_ROOT_MODULE_FILE = "src/main.module.ts";
-
-/** Export a root module file is expected to provide. */
-export const NESTJS_PROJECT_ROOT_MODULE_EXPORT = "MainModule";
-
-/**
  * Modules NestJS creates to host a dynamic module's providers.
  *
  * These are implementation details of `forRoot`/`forRootAsync` rather than

@@ -145,7 +145,7 @@ Two things that look like defects and are not:
 ### Execution Flow
 
 ```text
-src/main.ts
+src/meanderaw-cli.main.ts
   └─ CommandFactory.run(MainModule)
        └─ domain command modules            ← add under src/modules/
 ```
@@ -154,9 +154,9 @@ src/main.ts
 
 ```text
 src/
-  main.ts                           # Bootstrap — do not modify
-  main.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
-  constants.ts                      # Zod environmentSchema for env validation
+  meanderaw-cli.main.ts  # Bootstrap — do not modify
+  meanderaw-cli.module.ts  # Root NestJS module (imports ConfigModule, LoggerModule)
+  meanderaw-cli.constants.ts  # Zod environmentSchema for env validation
   modules/
     <domain>/                       # Add feature modules here
       <domain>.module.ts
@@ -185,8 +185,8 @@ nx run configuration:codependix:write
 ### Adding Business Logic
 
 1. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
-2. **Register in root module** — import the new module in `main.module.ts`.
-3. **Validate env vars** — extend `environmentSchema` in `constants.ts` with all required environment variables.
+2. **Register in root module** — import the new module in `meanderaw-cli.module.ts`.
+3. **Validate env vars** — extend `environmentSchema` in `meanderaw-cli.constants.ts` with all required environment variables.
 
 ### Logging
 
@@ -208,7 +208,7 @@ Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed
 Always prefer running tasks through Nx rather than calling the underlying tools directly.
 
 ```bash
-nx run codebase:postgres-container:up     # The local Postgres the database lives in
+nx run infrastructure:postgres:up     # The local Postgres the database lives in
 nx run meanderaw-cli:migration:run            # Build or update the meanders table
 nx run meanderaw-cli:start                    # Clear the meander rows, then draw every meander back into them
 nx run meanderaw-cli:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
@@ -368,7 +368,7 @@ Do not re-export types from `index.ts` unless they are part of the public API co
 
 ### Registering in the root module
 
-After generating a module, import it in `main.module.ts`:
+After generating a module, import it in `meanderaw-cli.module.ts`:
 
 ```ts
 @Module({
@@ -392,7 +392,7 @@ pnpm nx run-many --targets=conformetry-validate
 
 ## Best Practices
 
-- **Never** put business logic in `main.ts` — it bootstraps `CommandFactory` only.
+- **Never** put business logic in `meanderaw-cli.main.ts` — it bootstraps `CommandFactory` only.
 - **One command per class** — split sub-commands into separate `CommandRunner` subclasses.
 - **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
 - **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
@@ -405,15 +405,15 @@ See the [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.
 - **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
 - **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/meanderaw-cli.constants.ts` and to `.env.default`.
 
 See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
-- [src/main.module.ts](src/main.module.ts): Root NestJS module
-- [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
+- [src/meanderaw-cli.main.ts](src/meanderaw-cli.main.ts): Application bootstrap
+- [src/meanderaw-cli.module.ts](src/meanderaw-cli.module.ts): Root NestJS module
+- [src/meanderaw-cli.constants.ts](src/meanderaw-cli.constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
 - [.env.default](.env.default): Environment variable template

@@ -1,3 +1,49 @@
+## 0.0.12 (2026-10-15)
+
+### 🚀 Features
+
+- **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/pull/1588), [#1480](https://github.com/organizzolini/codebase/issues/1480))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.27
+
+## 0.0.11 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.26
+
+## 0.0.10 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.25
+
+## 0.0.9 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.24
+
+## 0.0.8 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.23
+
+## 0.0.7 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.22
+
+## 0.0.6 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.21
+
 ## 0.0.5 (2026-10-13)
 
 ### 🧱 Updated Dependencies

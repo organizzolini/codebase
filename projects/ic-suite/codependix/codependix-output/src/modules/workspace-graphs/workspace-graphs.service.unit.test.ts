@@ -61,6 +61,7 @@ describe(WorkspaceGraphsService, () => {
         },
         exclude: [],
         include: ["**"],
+        nestjsRootModules: {},
         projectGraph: undefined,
         selection: { dependencies: true, projects: [], tags: [] },
         workspace: {},
@@ -337,6 +338,7 @@ describe(WorkspaceGraphsService, () => {
 
       expect(nestjsProjectService.discoverProjects).toHaveBeenCalledWith(
         selected,
+        {},
       );
     });
 
@@ -350,6 +352,7 @@ describe(WorkspaceGraphsService, () => {
         {
           absoluteRoot: projectRoot,
           name: "codependix-cli",
+          rootModuleExport: undefined,
           rootModuleFile: undefined,
         },
       ]);
@@ -360,6 +363,7 @@ describe(WorkspaceGraphsService, () => {
       expect(nestjsProjectService.exploreProject).toHaveBeenCalledWith({
         absoluteRoot: projectRoot,
         name: "codependix-cli",
+        rootModuleExport: undefined,
         rootModuleFile: undefined,
       });
       expect(moduleGraphService.buildGraph).toHaveBeenCalledWith(

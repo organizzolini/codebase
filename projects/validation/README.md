@@ -539,11 +539,6 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
   file_src_modules_audit_governance_audit_governance_command_ts["src/modules/audit-governance/audit-governance.command.ts"]
   file_src_modules_audit_governance_audit_governance_command_unit_test_ts["src/modules/audit-governance/audit-governance.command.unit.test.ts"]
   file_src_modules_audit_governance_audit_governance_constants_ts["src/modules/audit-governance/audit-governance.constants.ts"]
@@ -630,32 +625,16 @@ graph LR
   file_src_modules_readme_projects_readme_projects_service_ts["src/modules/readme-projects/readme-projects.service.ts"]
   file_src_modules_readme_projects_readme_projects_service_unit_test_ts["src/modules/readme-projects/readme-projects.service.unit.test.ts"]
   file_src_modules_readme_projects_readme_projects_types_ts["src/modules/readme-projects/readme-projects.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
+  file_src_validation_constants_ts["src/validation.constants.ts"]
+  file_src_validation_main_end_to_end_test_ts["src/validation.main.end-to-end.test.ts"]
+  file_src_validation_main_ts["src/validation.main.ts"]
+  file_src_validation_main_unit_test_ts["src/validation.main.unit.test.ts"]
+  file_src_validation_module_ts["src/validation.module.ts"]
+  file_src_validation_repl_ts["src/validation.repl.ts"]
+  file_src_validation_repl_unit_test_ts["src/validation.repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_audit_governance_audit_governance_module_ts
-  file_src_main_module_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
-  file_src_main_module_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
-  file_src_main_module_ts --> file_src_modules_lockfile_lockfile_module_ts
-  file_src_main_module_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
-  file_src_main_module_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
-  file_src_main_module_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_src_main_module_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
-  file_src_main_module_ts --> file_src_modules_readme_projects_readme_projects_module_ts
-  file_src_main_ts --> file_src_main_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_audit_governance_audit_governance_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_lockfile_lockfile_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
-  file_src_main_unit_test_ts --> file_src_modules_readme_projects_readme_projects_module_ts
   file_src_modules_audit_governance_audit_governance_command_ts --> file_src_modules_audit_governance_audit_governance_service_ts
   file_src_modules_audit_governance_audit_governance_command_ts --> file_src_modules_audit_governance_audit_governance_types_ts
   file_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_src_modules_audit_governance_audit_governance_command_ts
@@ -842,7 +821,28 @@ graph LR
   file_src_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_readme_projects_readme_projects_service_ts
   file_src_modules_readme_projects_readme_projects_service_ts --> file_src_modules_readme_projects_readme_projects_constants_ts
   file_src_modules_readme_projects_readme_projects_service_unit_test_ts --> file_src_modules_readme_projects_readme_projects_service_ts
-  file_src_repl_ts --> file_src_main_module_ts
+  file_src_validation_main_end_to_end_test_ts --> file_src_validation_constants_ts
+  file_src_validation_main_ts --> file_src_validation_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_audit_governance_audit_governance_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_lockfile_lockfile_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_readme_projects_readme_projects_module_ts
+  file_src_validation_module_ts --> file_src_modules_audit_governance_audit_governance_module_ts
+  file_src_validation_module_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_validation_module_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
+  file_src_validation_module_ts --> file_src_modules_lockfile_lockfile_module_ts
+  file_src_validation_module_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
+  file_src_validation_module_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
+  file_src_validation_module_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_src_validation_module_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_src_validation_module_ts --> file_src_modules_readme_projects_readme_projects_module_ts
+  file_src_validation_module_ts --> file_src_validation_constants_ts
+  file_src_validation_repl_ts --> file_src_validation_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -852,8 +852,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14015-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-442.29_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14012-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-442.37_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-100-3178c6?style=flat-square)
 
@@ -880,8 +880,8 @@ graph LR
 ![Constants](https://img.shields.io/badge/Constants-610-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-441-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-183-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-456-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-988-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-453-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-985-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -995,7 +995,7 @@ graph LR
 ![Module Files](https://img.shields.io/badge/Module_Files-10-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-15-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-9-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-11-ea580c?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-12-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-9-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)

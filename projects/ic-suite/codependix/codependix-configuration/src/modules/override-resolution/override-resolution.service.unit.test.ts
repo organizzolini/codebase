@@ -15,6 +15,7 @@ function buildResolved(): ResolvedCodependixConfiguration {
     },
     exclude: [],
     include: ["packages/**"],
+    nestjsRootModules: {},
     projectGraph: undefined,
     selection: { dependencies: true, projects: [], tags: [] },
     workspace: {},

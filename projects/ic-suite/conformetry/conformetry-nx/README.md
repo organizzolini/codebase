@@ -70,6 +70,10 @@ one.
 `nx g @conformetry/nx:anything` resolves nothing by design — which generators
 exist is a property of your configuration, not of this package.
 
+`sync` runs both ways: `nx sync` and `nx sync:check` use it as the global sync
+generator, and `nx g @conformetry/nx:sync` runs it directly, writing the
+emitted plugin.
+
 ## Generating
 
 ```bash

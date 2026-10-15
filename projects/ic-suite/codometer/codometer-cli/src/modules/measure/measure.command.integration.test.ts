@@ -8,7 +8,7 @@ import {
   createFixtureTree,
   removeFixtureTree,
 } from "../../../testing/fixture-tree";
-import { MainModule } from "../../main.module";
+import { MainModule } from "../../codometer-cli.module";
 
 import { MeasureCommand } from "./measure.command";
 

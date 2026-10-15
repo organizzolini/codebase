@@ -1,5 +1,5 @@
 // 📤 Exports
-export { MainModule } from "./main.module";
+export { MainModule } from "./conformetry-cli.module";
 export { GenerateCommand } from "./modules/generate/generate.command";
 export { GenerateModule } from "./modules/generate/generate.module";
 export type { GenerateCommandOptions } from "./modules/generate/generate.types";

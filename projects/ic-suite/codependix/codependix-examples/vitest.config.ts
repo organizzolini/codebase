@@ -8,7 +8,7 @@ export default mergeConfig(
     test: {
       coverage: {
         exclude: [
-          // The bootstrap, like every other project's `src/main.ts`: it reads
+          // The bootstrap, like every other project's `src/*.main.ts`: it reads
           // `process.argv` and sets `process.exitCode`, and the run it delegates
           // to is covered directly.
           "testing/render-examples.ts",

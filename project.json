@@ -57,25 +57,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "postgres-container": {
-      "configurations": {
-        "down": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.yml down postgres"
-        },
-        "recreate": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.yml down -v postgres && docker compose -f infrastructure/docker/docker-compose.yml up -d postgres"
-        },
-        "up": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.yml up -d postgres"
-        }
-      },
-      "defaultConfiguration": "up",
-      "description": "Start, stop, or recreate the local PostgreSQL container (recreate removes the volume)",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "postgres-data": {
       "configurations": {
         "dump-complete": {
@@ -185,24 +166,6 @@
       "options": {
         "command": "uv run sqlfluff {args} --config pyproject.toml notepads",
         "cwd": "{workspaceRoot}"
-      }
-    },
-    "terraform": {
-      "cache": false,
-      "configurations": {
-        "import": {
-          "command": "terraform import -input=false linode_lke_cluster.my_cluster $TF_VAR_linode_kubernetes_engine_cluster_id"
-        },
-        "plan": {
-          "command": "terraform plan"
-        }
-      },
-      "defaultConfiguration": "plan",
-      "description": "Run Terraform commands (plan, import)",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "terraform plan",
-        "cwd": "infrastructure/terraform"
       }
     },
     "type-coverage": {

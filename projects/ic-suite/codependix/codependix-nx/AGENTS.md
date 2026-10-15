@@ -19,13 +19,13 @@ metadata only `@swc-node/register` emits — `tsx` and esbuild silently break
 it. `src/executors/gate/loader.mjs` registers those hooks resolved from this
 package's own dependencies, never the consumer's root. The command line's
 entry is resolved through `@codependix/cli`'s `./main` package export, so an
-installed copy runs `dist/src/main.js`.
+installed copy runs `dist/src/codependix-cli.main.js`.
 
 The command line builds over the project's Nx dependency closure and fails
 only on a finding charged to the project; this plugin adds selection and
 caching, not judgment. It deliberately ships **no CLI of its own**, and it
 depends on `@codependix/cli` alone — the `codependix-nx-layer` rule in
-`configuration/codependix.config.ts` holds it to that.
+`projects/configuration/codependix.config.ts` holds it to that.
 
 ## Architecture Overview
 
@@ -38,7 +38,7 @@ depends on `@codependix/cli` alone — the `codependix-nx-layer` rule in
 - **Loader**: `@swc-node/register`, registered by this package's own shim
 - **Language**: Strict TypeScript
 
-There is no environment schema, no `main.ts`, and no logger module: Nx calls
+There is no environment schema, no `codependix-nx.ts`, and no logger module: Nx calls
 plugins from bare module-level functions, which bootstrap the context and
 hand back a service.
 
@@ -61,7 +61,7 @@ src/executors/gate/executor.ts → GateService.run
 ```text
 src/
   index.ts                          # Plugin entry: createNodes, public exports
-  main.module.ts                    # Root module: GateModule, PluginModule
+  codependix-nx.module.ts  # Root module: GateModule, PluginModule
   executors/gate/
     executor.ts                     # Nx executor → GateService.run
     hasher.ts                       # Nx hasher → GateService.hashTask

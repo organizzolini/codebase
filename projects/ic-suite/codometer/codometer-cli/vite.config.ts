@@ -5,13 +5,13 @@ import { createViteLibraryConfig } from "../../../../projects/configuration/vite
 
 export default createViteLibraryConfig({
   entry: {
+    "src/codometer-cli.main": path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      "src/codometer-cli.main.ts",
+    ),
     "src/index": path.resolve(
       path.dirname(fileURLToPath(import.meta.url)),
       "src/index.ts",
-    ),
-    "src/main": path.resolve(
-      path.dirname(fileURLToPath(import.meta.url)),
-      "src/main.ts",
     ),
   },
   packageDirectory: path.dirname(fileURLToPath(import.meta.url)),

@@ -7,6 +7,10 @@ const packageDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export default createViteLibraryConfig({
   entry: {
+    "src/conformetry-nx.main": path.resolve(
+      packageDirectory,
+      "src/conformetry-nx.main.ts",
+    ),
     "src/executors/validate/executor": path.resolve(
       packageDirectory,
       "src/executors/validate/executor.ts",
@@ -16,7 +20,6 @@ export default createViteLibraryConfig({
       "src/generators/sync/generator.ts",
     ),
     "src/index": path.resolve(packageDirectory, "src/index.ts"),
-    "src/main": path.resolve(packageDirectory, "src/main.ts"),
   },
   packageDirectory,
 });

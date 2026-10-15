@@ -24,7 +24,7 @@ export default {
    * is not actionable — moved from `projects/configuration/.callidescopeignore`, the
    * only project this pattern ever matched.
    */
-  exclude: ["src/lib/routeTree.gen.ts"],
+  exclude: ["src/routes/routeTree.gen.ts"],
   limits: {
     maximumBreadth: 9,
     maximumDepth: 9,

@@ -91,9 +91,12 @@ export class WorkspaceGraphsService {
    */
   private async buildNestjsModuleGraphs(
     selectedProjects: GraphRunContext["selectedProjects"],
+    rootModules: GraphRunContext["configuration"]["nestjsRootModules"],
   ): Promise<NestjsModuleGraph[]> {
-    const nestjsProjects =
-      this.nestjsProjectService.discoverProjects(selectedProjects);
+    const nestjsProjects = this.nestjsProjectService.discoverProjects(
+      selectedProjects,
+      rootModules,
+    );
     const moduleGraphs: NestjsModuleGraph[] = [];
 
     for (const project of nestjsProjects) {
@@ -243,6 +246,7 @@ export class WorkspaceGraphsService {
 
     const moduleGraphs = await this.buildNestjsModuleGraphs(
       context.selectedProjects,
+      context.configuration.nestjsRootModules,
     );
     const workspaceGraph =
       this.nestjsModulesWorkspaceGraphService.buildWorkspaceGraph(moduleGraphs);

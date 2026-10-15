@@ -47,6 +47,10 @@ export class WiktionaryCommand extends CommandRunner {
   private readonly maximumRetries = 5;
   private readonly maximumRetryDelayMilliseconds = 60_000;
   private readonly requestDelayMilliseconds = 500;
+  private readonly requestHeaders = {
+    "User-Agent":
+      "lexico-cli/0.0.1 (https://github.com/organizzolini/codebase; Latin dictionary ingestion)",
+  };
 
   // 🔑 Public Fields
 
@@ -84,7 +88,7 @@ export class WiktionaryCommand extends CommandRunner {
     retries = this.maximumRetries,
   ): Promise<Response> {
     for (let attempt = 0; attempt <= retries; attempt++) {
-      const response = await fetch(url);
+      const response = await fetch(url, { headers: this.requestHeaders });
 
       if (response.status !== 429) return response;
 
@@ -110,7 +114,14 @@ export class WiktionaryCommand extends CommandRunner {
     });
 
     // Final attempt — let caller handle non-ok response
-    return fetch(url);
+    return fetch(url, { headers: this.requestHeaders });
+  }
+
+  /**
+   * Resolves the cached JSON path for a word so a resumed crawl can skip it.
+   */
+  private getEntryFilePath(word: string): string {
+    return path.join(this.directory, `${this.escapeCapitals(word)}.json`);
   }
 
   /**
@@ -186,6 +197,8 @@ export class WiktionaryCommand extends CommandRunner {
       word,
     };
 
+    if (fs.existsSync(this.getEntryFilePath(word))) return;
+
     this.logger.info("💬 Ingesting word", undefined, { word: entry.word });
 
     if (entry.href.includes("/w/index.php")) {
@@ -240,10 +253,13 @@ export class WiktionaryCommand extends CommandRunner {
     if (/(Reconstruction:)|(Appendix:)/gi.test(word)) return;
     if (word.includes("/")) return;
     try {
+      const isCached = fs.existsSync(this.getEntryFilePath(word));
       await this.ingestWord(word, href, category);
-      await new Promise((resolve) => {
-        setTimeout(resolve, this.requestDelayMilliseconds);
-      });
+      if (!isCached) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, this.requestDelayMilliseconds);
+        });
+      }
     } catch (wordError: unknown) {
       const errorMessage =
         wordError instanceof Error
@@ -271,11 +287,10 @@ export class WiktionaryCommand extends CommandRunner {
       ...entry,
       html: `<div class="${entry.word}">${$.html(section)}</div>`,
     };
-    const filePath = path.join(
-      this.directory,
-      `${this.escapeCapitals(entry.word)}.json`,
+    fs.writeFileSync(
+      this.getEntryFilePath(entry.word),
+      JSON.stringify(entryWithHtml),
     );
-    fs.writeFileSync(filePath, JSON.stringify(entryWithHtml));
     this.logger.info("💬 Ingested word", undefined, { word: entry.word });
   }
 

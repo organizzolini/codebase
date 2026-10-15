@@ -1,7 +1,7 @@
 {
   "author": "Jimmy Paolini",
   "bin": {
-    "conformetry": "./dist/src/main.js"
+    "conformetry": "./dist/src/conformetry-cli.main.js"
   },
   "bugs": {
     "url": "https://github.com/organizzolini/codebase/issues"
@@ -81,5 +81,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.20"
+  "version": "0.0.27"
 }

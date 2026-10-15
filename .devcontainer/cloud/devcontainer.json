@@ -179,7 +179,7 @@
     }
   },
   "dockerComposeFile": [
-    "../../infrastructure/docker/docker-compose.yml",
+    "../../projects/infrastructure/docker/docker-compose.yml",
     "docker-compose.yml"
   ],
   "features": {

@@ -281,7 +281,8 @@ describe(EntriesService, () => {
   it("roots a bootstrap function in a project's main file", () => {
     const entryPoints = resolveEntryPoints({
       files: {
-        "packages/example/src/main.ts": "export function main(): void {}",
+        "packages/example/src/example.main.ts":
+          "export function main(): void {}",
       },
     });
 
@@ -349,7 +350,7 @@ describe(EntriesService, () => {
   it("does not promote a callable that already has a caller", () => {
     const entryPoints = resolveEntryPoints({
       files: {
-        "packages/example/src/main.ts": `
+        "packages/example/src/example.main.ts": `
           function helper(): void {}
           export function main(): void { helper(); }
         `,

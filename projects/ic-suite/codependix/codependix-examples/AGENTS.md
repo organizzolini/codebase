@@ -85,8 +85,8 @@ beside the tests that assert what it produced, which is where
 render through, and everything else in `testing/render/` is a plain function.
 
 `callidescope-examples` does have a `src/`, and it holds **subject** code rather
-than machinery: two fixtures that must sit at `src/main.ts` and `src/index.ts`
-because callidescope's entry-point rules key on those literal paths. Nothing
+than machinery: two fixtures that must sit at `src/*.main.ts` and `src/index.ts`
+because callidescope's entry-point rules key on those file names. Nothing
 here needs that, so nothing here has one.
 
 **The nesting depth is load-bearing.** One level under `examples/` is the

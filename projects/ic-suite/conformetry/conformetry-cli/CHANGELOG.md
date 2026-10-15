@@ -1,3 +1,81 @@
+## 0.0.27 (2026-10-15)
+
+### 🚀 Features
+
+- **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/pull/1588), [#1480](https://github.com/organizzolini/codebase/issues/1480))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.27
+- Updated conformetry-generation to 0.0.27
+- Updated conformetry-validation to 0.0.26
+- Updated conformetry-output to 0.0.26
+- Updated conformetry-core to 0.0.26
+
+## 0.0.26 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.26
+- Updated conformetry-generation to 0.0.26
+- Updated conformetry-validation to 0.0.25
+- Updated conformetry-output to 0.0.25
+- Updated conformetry-core to 0.0.25
+
+## 0.0.25 (2026-10-15)
+
+### 🩹 Fixes
+
+- **configuration:** 🐛 exit non-zero when a template-generated cli command throws ([#1591](https://github.com/organizzolini/codebase/pull/1591))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.25
+- Updated conformetry-generation to 0.0.25
+- Updated conformetry-validation to 0.0.24
+- Updated conformetry-output to 0.0.24
+- Updated conformetry-core to 0.0.24
+
+## 0.0.24 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.24
+- Updated conformetry-generation to 0.0.24
+- Updated conformetry-validation to 0.0.23
+- Updated conformetry-output to 0.0.23
+- Updated conformetry-core to 0.0.23
+
+## 0.0.23 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.23
+- Updated conformetry-generation to 0.0.23
+- Updated conformetry-validation to 0.0.22
+- Updated conformetry-output to 0.0.22
+- Updated conformetry-core to 0.0.22
+
+## 0.0.22 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.22
+- Updated conformetry-generation to 0.0.22
+- Updated conformetry-validation to 0.0.21
+- Updated conformetry-output to 0.0.21
+- Updated conformetry-core to 0.0.21
+
+## 0.0.21 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.21
+- Updated conformetry-generation to 0.0.21
+- Updated conformetry-validation to 0.0.20
+- Updated conformetry-output to 0.0.20
+- Updated conformetry-core to 0.0.20
+
 ## 0.0.20 (2026-10-13)
 
 ### 🧱 Updated Dependencies

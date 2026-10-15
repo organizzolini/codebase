@@ -70,7 +70,7 @@ number was never something anybody could pick for a whole workspace — so
 project is one of the several that now do:
 
 ```bash
-node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/main.ts \
+node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts \
   callidescope --check breadth \
   --config projects/ic-suite/callidescope/callidescope-examples/callidescope.workspace.config.ts \
   --directories projects/ic-suite/callidescope/callidescope-examples,projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf

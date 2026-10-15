@@ -5,7 +5,10 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
-import { DEFAULT_CONFIGURATION_PATH, JSON_INDENT } from "../../constants.js";
+import {
+  DEFAULT_CONFIGURATION_PATH,
+  JSON_INDENT,
+} from "../../conformetry-cli.constants.js";
 
 import {
   NO_INSTANCES_MESSAGE,

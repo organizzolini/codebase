@@ -49,7 +49,7 @@ const commandLineEntry = path.resolve(
   createRequire(import.meta.url).resolve("@codometer/cli/package.json"),
   "..",
   "src",
-  "main.ts",
+  "codometer-cli.main.ts",
 );
 
 /**

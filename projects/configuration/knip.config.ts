@@ -168,19 +168,13 @@ const config: KnipConfig = {
     },
 
     // lexico: TanStack Start SSR web application with Supabase backend.
-    // The client entry and the generated route tree are named in
-    // `vite.config.mts` rather than imported, so knip is told where they are;
-    // both sit under `src/lib/` because `codebase-structure.json` restricts a
-    // `src/` root to entry-point names.
+    // The client entry and the generated route tree are named by the TanStack
+    // Start plugin rather than imported, so knip is told where they are.
     "projects/lexico/lexico-web": {
       entry: [
-        "src/lib/client.tsx",
-        "src/lib/routeTree.gen.ts",
+        "src/client.tsx",
         "src/router.tsx",
-      ],
-      ignore: [
-        "src/lib/auth.ts", // Supabase auth utilities (used at runtime)
-        "src/lib/bookmarks.ts", // Bookmark feature module (used at runtime)
+        "src/routes/routeTree.gen.ts",
       ],
       ignoreDependencies: [
         "vitest", // Used by tests and Vitest config; Knip may miss it when test sources are excluded
@@ -220,8 +214,17 @@ const config: KnipConfig = {
     },
 
     // components-web: Shared React component library (shadcn/ui)
+    //
+    // The shadcn and ReUI source is vendored: `shadcn add` writes it, and most
+    // of it nothing here imports yet. Every file under it is an entry point, so
+    // none reads as unused and the packages it imports still count as used.
     "projects/components-web": {
-      entry: ["src/components/**/*.tsx"],
+      entry: [
+        "src/components/**/*.{ts,tsx}",
+        "src/hooks/**/*.{ts,tsx}",
+        "src/lib/**/*.ts",
+      ],
+      ignore: ["src/components/**", "src/hooks/**", "src/lib/**"],
       project: ["src/**/*.ts", "src/**/*.tsx"],
     },
 
@@ -265,8 +268,8 @@ const config: KnipConfig = {
       // the migrations are read by the TypeORM command line the `migration`
       // target runs, by path rather than by import.
       entry: [
-        "src/main.ts",
-        "src/repl.ts",
+        "src/meanderaw-cli.main.ts",
+        "src/meanderaw-cli.repl.ts",
         "src/worker.ts",
         "src/modules/meanderaw-database/data-source.constants.ts",
         "src/modules/meanderaw-database/migrations/**/*.ts",
@@ -283,7 +286,7 @@ const config: KnipConfig = {
 
     // synchronization: NestJS CLI tool for codebase config synchronization commands
     "projects/synchronization": {
-      entry: ["src/main.ts", "src/files.ts"], // Main CLI entry + public file-list constant exports
+      entry: ["src/synchronization.main.ts", "src/files.ts"], // Main CLI entry + public file-list constant exports
       ignore: [
         "testing/**", // Test fixtures and setup
       ],
@@ -292,7 +295,7 @@ const config: KnipConfig = {
 
     // validation: NestJS CLI tool for the repository's one-sided checks
     "projects/validation": {
-      entry: ["src/main.ts", "src/repl.ts"], // Main CLI entry + the REPL its own target runs
+      entry: ["src/validation.main.ts", "src/validation.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],
@@ -302,7 +305,7 @@ const config: KnipConfig = {
     // callidescope packages: the call-stack linting CLI and the configuration
     // it reads.
     "projects/ic-suite/callidescope/callidescope-cli": {
-      entry: ["src/main.ts", "src/repl.ts"],
+      entry: ["src/callidescope-cli.main.ts", "src/callidescope-cli.repl.ts"],
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
@@ -354,7 +357,7 @@ const config: KnipConfig = {
     },
     // codometer packages: the measurement CLI and the configuration it reads
     "projects/ic-suite/codometer/codometer-cli": {
-      entry: ["src/main.ts", "src/repl.ts"],
+      entry: ["src/codometer-cli.main.ts", "src/codometer-cli.repl.ts"],
       ignore: ["src/**/*.test.ts", "testing/**"],
       project: "src/**/*.ts",
     },
@@ -395,7 +398,7 @@ const config: KnipConfig = {
 
     // conformetry packages: NestJS service/command application scaffolds
     "projects/ic-suite/conformetry/conformetry-cli": {
-      entry: ["src/main.ts", "src/repl.ts"],
+      entry: ["src/conformetry-cli.main.ts", "src/conformetry-cli.repl.ts"],
       project: "src/**/*.ts",
     },
     "projects/ic-suite/conformetry/conformetry-core": {

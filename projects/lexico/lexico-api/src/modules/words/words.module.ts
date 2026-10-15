@@ -7,6 +7,8 @@ import {
   WordLexeme,
 } from "@codebase/lexico-entities";
 
+import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
+import { LexemeWordFormResolver } from "./lexeme-word-form.resolver";
 import { WordFormResolver } from "./word-form.resolver";
 import { WordLexemeResolver } from "./word-lexeme.resolver";
 import { WordLinkLoader } from "./word-link.loader";
@@ -21,6 +23,8 @@ import { WordsService } from "./words.service";
   exports: [WordsService],
   imports: [TypeOrmModule.forFeature([Word, WordForm, WordLexeme])],
   providers: [
+    LexemeWordFormLoader,
+    LexemeWordFormResolver,
     WordFormResolver,
     WordLexemeResolver,
     WordLinkLoader,

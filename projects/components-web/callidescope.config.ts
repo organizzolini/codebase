@@ -16,6 +16,9 @@ import { projectDefaults } from "../../projects/configuration/callidescope.confi
  */
 export default {
   ...projectDefaults,
+  // Vendored shadcn and ReUI source, refreshed by `shadcn add` rather than
+  // authored here, so its call stacks are not this project's to gate.
+  exclude: ["src/components/**", "src/hooks/**", "src/lib/**"],
   limits: {
     maximumBreadth: 7,
     maximumDepth: 3,

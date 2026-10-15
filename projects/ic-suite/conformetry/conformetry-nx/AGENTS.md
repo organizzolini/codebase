@@ -19,7 +19,7 @@
 ### Execution Flow
 
 ```text
-src/main.ts
+src/conformetry-nx.main.ts
   └─ NestFactory.create(MainModule)
        └─ domain service modules            ← add under src/modules/
 ```
@@ -28,9 +28,9 @@ src/main.ts
 
 ```text
 src/
-  main.ts                           # Bootstrap — do not modify
-  main.module.ts                    # Root NestJS module (imports ConfigModule, LoggerModule)
-  constants.ts                      # Zod environmentSchema for env validation
+  conformetry-nx.main.ts  # Bootstrap — do not modify
+  conformetry-nx.module.ts  # Root NestJS module (imports ConfigModule, LoggerModule)
+  conformetry-nx.constants.ts  # Zod environmentSchema for env validation
   modules/
     <domain>/                       # Add feature modules here
       <domain>.module.ts
@@ -46,8 +46,8 @@ testing/                            # Shared test utilities
 ### Adding Business Logic
 
 1. **Add domain service modules** — create `src/modules/<domain>/` with a NestJS module, service, types, and constants.
-2. **Register in root module** — import the new module in `main.module.ts`.
-3. **Validate env vars** — extend `environmentSchema` in `constants.ts` with all required environment variables.
+2. **Register in root module** — import the new module in `conformetry-nx.module.ts`.
+3. **Validate env vars** — extend `environmentSchema` in `conformetry-nx.constants.ts` with all required environment variables.
 
 ### Logging
 
@@ -181,7 +181,7 @@ Do not re-export types from `index.ts` unless they are part of the public API co
 
 ### Registering in the root module
 
-After generating a module, import it in `main.module.ts`:
+After generating a module, import it in `conformetry-nx.module.ts`:
 
 ```ts
 @Module({
@@ -197,7 +197,7 @@ export class MainModule {}
 
 ## Best Practices
 
-- **Never** put business logic in `main.ts` — it bootstraps `NestFactory` only.
+- **Never** put business logic in `conformetry-nx.main.ts` — it bootstraps `NestFactory` only.
 - **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
 - **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
 - **No `any` types** — use `unknown` or proper typing; strict mode is enabled.
@@ -207,15 +207,15 @@ See the [write-typescript skill](../../../../.agents/skills/write-typescript/SKI
 ## Troubleshooting
 
 - **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/constants.ts` and to `.env.default`.
+- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/conformetry-nx.constants.ts` and to `.env.default`.
 
 See the [triage-integration skill](../../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 
-- [src/main.ts](src/main.ts): Application bootstrap
-- [src/main.module.ts](src/main.module.ts): Root NestJS module
-- [src/constants.ts](src/constants.ts): `environmentSchema` (Zod)
+- [src/conformetry-nx.main.ts](src/conformetry-nx.main.ts): Application bootstrap
+- [src/conformetry-nx.module.ts](src/conformetry-nx.module.ts): Root NestJS module
+- [src/conformetry-nx.constants.ts](src/conformetry-nx.constants.ts): `environmentSchema` (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
 - [.env.default](.env.default): Environment variable template

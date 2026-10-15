@@ -221,6 +221,13 @@ const workspaceConfigurationSchema = z.object({
   nxProjects: graphOutputSchema.optional(),
 });
 
+/** Validates how the NestJS module graph finds each application's root module. */
+const nestjsModulesConfigurationSchema = z.object({
+  rootModules: z
+    .record(z.string(), z.object({ export: z.string(), file: z.string() }))
+    .optional(),
+});
+
 /**
  * Validates a codependix configuration file's contents.
  *
@@ -232,6 +239,7 @@ export const codependixConfigurationSchema = z.object({
   boundaries: boundariesConfigurationSchema.optional(),
   exclude: z.array(z.string()).optional(),
   include: z.array(z.string()).optional(),
+  nestjsModules: nestjsModulesConfigurationSchema.optional(),
   projectGraph: z.string().optional(),
   workspace: workspaceConfigurationSchema.optional(),
 });

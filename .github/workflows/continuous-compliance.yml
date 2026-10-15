@@ -97,7 +97,7 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/synchronization/src/main.ts issue-labels
+            projects/synchronization/src/synchronization.main.ts issue-labels
 
       # Issue events can arrive with no assignees. Default those to the
       # repository owner while leaving already-owned issues unchanged.
@@ -134,7 +134,7 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/main.ts issue-metadata "$ISSUE_NUMBER"
+            projects/validation/src/validation.main.ts issue-metadata "$ISSUE_NUMBER"
 
       # Sweeps and audits all open issues and hierarchy relationships on
       # scheduled runs and manual dispatches.
@@ -144,7 +144,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/main.ts issue-metadata --all
+            projects/validation/src/validation.main.ts issue-metadata --all
 
   enforce:
     name: 👮 Enforce
@@ -186,15 +186,17 @@ jobs:
       - name: 👮 Audit Repository Governance
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/main.ts audit-governance
+            projects/validation/src/validation.main.ts audit-governance
 
   comply:
     name: 🧑‍⚖️ Comply
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Runs on Dependabot's pull requests too, so a title, label, or release
-    # significance failure shows on the pull request rather than first in the
-    # merge queue. Only the body check below exempts them.
+    # Runs on Dependabot's pull requests too, so a label or release significance
+    # failure shows on the pull request rather than first in the merge queue.
+    # The title, body, and commit subject checks below exempt them: Dependabot
+    # writes both, and appends a directory and group tail to the title that no
+    # `dependabot.yml` field shortens past the 128-character header limit.
     if: >-
       (github.event_name == 'push' ||
       github.event_name == 'merge_group' ||
@@ -252,7 +254,7 @@ jobs:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/synchronization/src/main.ts pull-request-labels write
+            projects/synchronization/src/synchronization.main.ts pull-request-labels write
 
       # Validates that the pull request branch name conforms to Conventional
       # Commits. A merge group's branch is the queue's own, so it is not checked.
@@ -266,8 +268,13 @@ jobs:
       # Validates that the pull request title follows Conventional Commits
       # format. A merge group reads the title live, since the squash commit's
       # subject is that title and it may have been edited after queueing.
+      # Skipped for a pull request Dependabot authored, whose title it writes
+      # itself; keyed off the author, as the body check below is.
       - name: 🏷️ Validate Pull Request Title
-        if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
+        if: >-
+          (github.event_name == 'pull_request' || github.event_name == 'merge_group') &&
+          (github.event.pull_request.user.login ||
+          steps.merge-group.outputs.pull-request-author) != 'dependabot[bot]'
         env:
           GH_TOKEN: ${{ github.token }}
           PULL_REQUEST_NUMBER: >-
@@ -296,7 +303,7 @@ jobs:
         run: |
           gh pr view "$PULL_REQUEST_NUMBER" --json body -q .body > pull_request_body.md
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/main.ts pull-request-body pull_request_body.md
+            projects/validation/src/validation.main.ts pull-request-body pull_request_body.md
           rm pull_request_body.md
 
       # Validates that PR title release significance matches or exceeds commits.
@@ -308,12 +315,14 @@ jobs:
             ${{ github.event.pull_request.number || steps.merge-group.outputs.pull-request-number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/main.ts pull-request-release-significance \
+            projects/validation/src/validation.main.ts pull-request-release-significance \
             "$PULL_REQUEST_NUMBER"
 
       # Validates that the latest commit on main follows Conventional Commits.
+      # Skipped for a squash commit authored by Dependabot, whose subject is the
+      # title the pull request check above exempts.
       - name: 🏷️ Validate Commit Message
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.event.head_commit.author.name != 'dependabot[bot]'
         run: |
           git log -1 --pretty=%s | \
             npx commitlint --config projects/configuration/commitlint.config.ts
@@ -321,9 +330,12 @@ jobs:
       # Validates the merge group's head commit, which is exactly what lands on
       # main. GitHub does not document the subject a queued squash commit
       # carries, so a generic "Merge pull request #…" subject is logged and
-      # passed; the live title check above is the guard in that case.
+      # passed; the live title check above is the guard in that case. Skipped
+      # for a pull request Dependabot authored, like that title check.
       - name: 🏷️ Validate Merge Group Commit Message
-        if: github.event_name == 'merge_group'
+        if: >-
+          github.event_name == 'merge_group' &&
+          steps.merge-group.outputs.pull-request-author != 'dependabot[bot]'
         env:
           HEAD_SHA: ${{ github.event.merge_group.head_sha }}
         run: |

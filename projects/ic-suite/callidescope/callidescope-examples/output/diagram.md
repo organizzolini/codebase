@@ -4,10 +4,10 @@
 
 | Measure | Value |
 | --- | --- |
-| Callables | 365 |
-| Files | 143 |
-| Calls traced | 322 |
-| Call stacks | 107 |
+| Callables | 370 |
+| Files | 154 |
+| Calls traced | 324 |
+| Call stacks | 110 |
 | Deepest stack | 9 |
 | Stacks through recursion | 1 |
 | Unfollowable calls | 21 |
@@ -17,8 +17,8 @@
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `projects/ic-suite/callidescope/callidescope-examples` | 8 | 5 | -3 | 2 |
+| `projects/logging` | 6 | 4 | -2 | 2 |
 | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf` | 4 | 3 | -1 | 3 |
-| `projects/logging` | 5 | 4 | -1 | 2 |
 | `projects/ic-suite/codependix/codependix-configuration` | 7 | 7 | 0 | 4 |
 | `projects/ic-suite/codometer/codometer-configuration` | 9 | 9 | 0 | 4 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 7 | 8 | 1 | 7 |
@@ -37,7 +37,7 @@
 | 4+ | 0 |
 | no stacks | 3 |
 
-## Call stacks over the depth limit (7)
+## Call stacks over the depth limit (11)
 
 ```mermaid
 flowchart LR
@@ -81,11 +81,16 @@ flowchart LR
   n37["LoggerService.info"]
   n38["LoggerService.buildBindings"]
   n39["LoggerService.assertConventionalMessage"]
-  n40["LoggerService.isConventionalVerb"]
-  n41(["GatedLeafService.read"])
-  n42["GatedLeafService.parse"]
-  n43["GatedLeafService.normalize"]
-  n44["GatedLeafService.finish"]
+  n40["LoggerService.getConventionalMessageViolation"]
+  n41["LoggerService.isConventionalVerb"]
+  n42(["LoggerService.debug"])
+  n43(["LoggerService.error"])
+  n44(["LoggerService.verbose"])
+  n45(["LoggerService.warn"])
+  n46(["GatedLeafService.read"])
+  n47["GatedLeafService.parse"]
+  n48["GatedLeafService.normalize"]
+  n49["GatedLeafService.finish"]
   n0 --> n1
   n1 --> n2
   n2 --> n3
@@ -122,9 +127,14 @@ flowchart LR
   n37 --> n38
   n38 --> n39
   n39 --> n40
-  n41 --> n42
-  n42 --> n43
-  n43 --> n44
+  n40 --> n41
+  n42 --> n38
+  n43 --> n38
+  n44 --> n38
+  n45 --> n38
+  n46 --> n47
+  n47 --> n48
+  n48 --> n49
 ```
 
 ## Callables over the breadth limit (1)

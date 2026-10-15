@@ -125,6 +125,30 @@ export class WordsService {
   }
 
   /**
+   * Finds every word-form link of the given lexemes in one query, each with
+   * its form and word joined and the form's lexeme reduced to its id, which is
+   * what groups the links back onto their lexemes. Links to a soft-deleted
+   * word or form are left out.
+   */
+  public async findWordFormsByLexemeIds(
+    lexemeIds: readonly string[],
+  ): Promise<WordForm[]> {
+    if (lexemeIds.length === 0) {
+      return [];
+    }
+
+    return this.wordFormRepository
+      .createQueryBuilder("wordForm")
+      .innerJoinAndSelect("wordForm.form", "form")
+      .innerJoin("form.lexeme", "lexeme")
+      .addSelect("lexeme.id")
+      .innerJoinAndSelect("wordForm.word", "word")
+      .where("lexeme.id IN (:...lexemeIds)", { lexemeIds: [...lexemeIds] })
+      .orderBy("word.data", "ASC")
+      .getMany();
+  }
+
+  /**
    * Finds word-lexeme links by their identifiers, each with its word joined
    * the way a word lookup joins it.
    */

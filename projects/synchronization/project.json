@@ -17,10 +17,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts conformetry-generators check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts conformetry-generators check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts conformetry-generators write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts conformetry-generators write"
         }
       },
       "defaultConfiguration": "check",
@@ -40,10 +40,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts conventional-config check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts conventional-config check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts conventional-config write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts conventional-config write"
         }
       },
       "defaultConfiguration": "check",
@@ -73,10 +73,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts devcontainer-configuration check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts devcontainer-configuration check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts devcontainer-configuration write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts devcontainer-configuration write"
         }
       },
       "defaultConfiguration": "check",
@@ -95,7 +95,7 @@
     "format-code": {},
     "guard-code": {},
     "issue-labels": {
-      "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts issue-labels",
+      "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts issue-labels",
       "description": "Adds the type and scope labels a submitted `issue.yml` body implies. Its destination is GitHub itself rather than a file, so reaching it needs a token that neither a fork nor a developer's `lint-code` run has: the 🦹 Continuous Compliance workflow runs it directly through node rather than through this Nx target on an issue's `opened` event, and nothing else names it. This target exists for a human running it locally with their own credentials.",
       "options": {
         "cwd": "{workspaceRoot}"
@@ -110,10 +110,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts package-manifests check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts package-manifests check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts package-manifests write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts package-manifests write"
         }
       },
       "defaultConfiguration": "check",
@@ -133,10 +133,10 @@
     "pull-request-labels": {
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts pull-request-labels check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts pull-request-labels check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts pull-request-labels write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts pull-request-labels write"
         }
       },
       "defaultConfiguration": "check",
@@ -150,10 +150,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts pull-request-template check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts pull-request-template check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts pull-request-template write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts pull-request-template write"
         }
       },
       "defaultConfiguration": "check",
@@ -174,10 +174,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts skill-exclusions check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts skill-exclusions check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts skill-exclusions write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts skill-exclusions write"
         }
       },
       "defaultConfiguration": "check",
@@ -198,10 +198,10 @@
       "cache": false,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts synchronization check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts synchronization check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts synchronization write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts synchronization write"
         }
       },
       "defaultConfiguration": "check",
@@ -219,10 +219,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-extensions check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts vscode-extensions check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-extensions write && pnpm exec nx run configuration:oxfmt:write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts vscode-extensions write && pnpm exec nx run configuration:oxfmt:write"
         }
       },
       "defaultConfiguration": "check",
@@ -243,10 +243,10 @@
       "cache": false,
       "configurations": {
         "check": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-settings check"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts vscode-settings check"
         },
         "write": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/main.ts vscode-settings write"
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts vscode-settings write"
         }
       },
       "defaultConfiguration": "check",

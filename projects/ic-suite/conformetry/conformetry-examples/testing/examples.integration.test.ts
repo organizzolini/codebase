@@ -18,7 +18,7 @@ const examplesDirectory = path.join(packageDirectory, "examples");
 const CONFORMETRY_COMMAND = [
   "--import",
   "@swc-node/register/esm-register",
-  "projects/ic-suite/conformetry/conformetry-cli/src/main.ts",
+  "projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts",
 ];
 
 /** The environment every documented command needs, and nothing more. */

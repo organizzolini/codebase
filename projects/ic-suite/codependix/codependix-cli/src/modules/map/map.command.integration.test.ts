@@ -23,7 +23,7 @@ import {
 
 import { LoggerService } from "@codebase/logging";
 
-import { MainModule } from "../../main.module";
+import { MainModule } from "../../codependix-cli.module";
 
 import { MapCommand } from "./map.command";
 

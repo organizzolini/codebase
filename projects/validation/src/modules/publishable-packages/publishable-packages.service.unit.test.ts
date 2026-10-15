@@ -109,7 +109,7 @@ describe(PublishablePackagesService, () => {
     }
     existingPaths.add(`${WORKSPACE}/projects/ic-suite`);
     mockManifestJson = JSON.stringify({
-      bin: { conformetry: "dist/src/main.js" },
+      bin: { conformetry: "dist/src/conformetry-cli.js" },
       name: "@conformetry/cli",
       publishConfig: { access: "public" },
       version: "0.0.7",
@@ -169,7 +169,7 @@ describe(PublishablePackagesService, () => {
       ).toBeUndefined();
 
       mockManifestJson = JSON.stringify({
-        bin: "dist/src/main.js",
+        bin: "dist/src/validation.main.js",
         name: "@conformetry/cli",
         publishConfig: { access: "public" },
       });

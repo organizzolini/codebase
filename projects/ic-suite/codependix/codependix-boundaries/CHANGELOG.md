@@ -1,3 +1,77 @@
+## 0.0.26 (2026-10-15)
+
+### 🚀 Features
+
+- **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/pull/1588), [#1480](https://github.com/organizzolini/codebase/issues/1480))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.25
+- Updated codependix-configuration to 0.0.27
+- Updated codependix-file-imports to 0.0.25
+- Updated codependix-nx-projects to 0.0.26
+- Updated codependix-core to 0.0.25
+
+## 0.0.25 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.24
+- Updated codependix-configuration to 0.0.26
+- Updated codependix-file-imports to 0.0.24
+- Updated codependix-nx-projects to 0.0.25
+- Updated codependix-core to 0.0.24
+
+## 0.0.24 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.23
+- Updated codependix-configuration to 0.0.25
+- Updated codependix-file-imports to 0.0.23
+- Updated codependix-nx-projects to 0.0.24
+- Updated codependix-core to 0.0.23
+
+## 0.0.23 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.22
+- Updated codependix-configuration to 0.0.24
+- Updated codependix-file-imports to 0.0.22
+- Updated codependix-nx-projects to 0.0.23
+- Updated codependix-core to 0.0.22
+
+## 0.0.22 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.21
+- Updated codependix-configuration to 0.0.23
+- Updated codependix-file-imports to 0.0.21
+- Updated codependix-nx-projects to 0.0.22
+- Updated codependix-core to 0.0.21
+
+## 0.0.21 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.20
+- Updated codependix-configuration to 0.0.22
+- Updated codependix-file-imports to 0.0.20
+- Updated codependix-nx-projects to 0.0.21
+- Updated codependix-core to 0.0.20
+
+## 0.0.20 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.19
+- Updated codependix-configuration to 0.0.21
+- Updated codependix-file-imports to 0.0.19
+- Updated codependix-nx-projects to 0.0.20
+- Updated codependix-core to 0.0.19
+
 ## 0.0.19 (2026-10-13)
 
 ### 🧱 Updated Dependencies

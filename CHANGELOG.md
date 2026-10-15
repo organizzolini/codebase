@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.0](https://github.com/organizzolini/codebase/compare/v3.6.0...v3.7.0) (2026-10-15)
+
+### ✨ Features
+
+* **lexico,scripts:** ✨ derive default ports from project names ([#1597](https://github.com/organizzolini/codebase/issues/1597)) ([b07b779](https://github.com/organizzolini/codebase/commit/b07b7795d4aa60da410e28c95743c5d0f87b3617))
+
+## [3.6.0](https://github.com/organizzolini/codebase/compare/v3.5.0...v3.6.0) (2026-10-15)
+
+### ✨ Features
+
+* **ic-suite,configuration:** ✨ name root files after their project and declare root modules ([#1588](https://github.com/organizzolini/codebase/issues/1588)) ([e503714](https://github.com/organizzolini/codebase/commit/e503714d3bbca9ff3a7f2121bb3575f7a9d97dc7)), closes [#1480](https://github.com/organizzolini/codebase/issues/1480) [#1480](https://github.com/organizzolini/codebase/issues/1480)
+
+## [3.5.0](https://github.com/organizzolini/codebase/compare/v3.4.1...v3.5.0) (2026-10-15)
+
+### ✨ Features
+
+* **lexico,configuration:** ✨ rebuild search page and remove legacy code ([#1513](https://github.com/organizzolini/codebase/issues/1513)) ([4d97785](https://github.com/organizzolini/codebase/commit/4d97785f7603876db1d8c2e62ee5e450c59ad1f7))
+* **lexico:** ✨ expose the words behind each form of a lexeme ([#1586](https://github.com/organizzolini/codebase/issues/1586)) ([41285d5](https://github.com/organizzolini/codebase/commit/41285d530366a261e4a06171899ce236545997c7))
+* **lexico:** ✨ rebuild the lexeme card with etymology, pronunciation, and forms ([#1587](https://github.com/organizzolini/codebase/issues/1587)) ([431c13e](https://github.com/organizzolini/codebase/commit/431c13e5334240ba31a12119f12fbf1c67010f7b))
+
+## [3.4.1](https://github.com/organizzolini/codebase/compare/v3.4.0...v3.4.1) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 exit non-zero when a template-generated cli command throws ([#1591](https://github.com/organizzolini/codebase/issues/1591)) ([5b02e7a](https://github.com/organizzolini/codebase/commit/5b02e7abe3daece5eeb20e384d63004580a8a69e))
+
+## [3.4.0](https://github.com/organizzolini/codebase/compare/v3.3.2...v3.4.0) (2026-10-15)
+
+### ✨ Features
+
+* **infrastructure,affirmancy,validation,documentation:** ✨ make infrastructure an Nx project and check searxng ([#1512](https://github.com/organizzolini/codebase/issues/1512)) ([d229cf9](https://github.com/organizzolini/codebase/commit/d229cf99c869c003145635b844d3a5a40f6e3b50)), closes [.github/CONTRIBUTING.md#release-significance](https://github.com/.github/CONTRIBUTING.md/issues/release-significance)
+
+## [3.3.2](https://github.com/organizzolini/codebase/compare/v3.3.1...v3.3.2) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 make squawk.toml settings actually apply ([#1559](https://github.com/organizzolini/codebase/issues/1559)) ([7bcdccb](https://github.com/organizzolini/codebase/commit/7bcdccb9a428823a747eb77c3cabfcf5d36ded24))
+
+## [3.3.1](https://github.com/organizzolini/codebase/compare/v3.3.0...v3.3.1) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🐛 ignore vendored component paths in spell-check ([#1585](https://github.com/organizzolini/codebase/issues/1585)) ([7d46cd4](https://github.com/organizzolini/codebase/commit/7d46cd4709c66c00989e34c649bd261edff5354e)), closes [#1510](https://github.com/organizzolini/codebase/issues/1510)
+
+## [3.3.0](https://github.com/organizzolini/codebase/compare/v3.2.9...v3.3.0) (2026-10-15)
+
+### ✨ Features
+
+* **components-web,lexico,configuration:** ✨ switch to Base UI and vendor ReUI components ([#1510](https://github.com/organizzolini/codebase/issues/1510)) ([62dde69](https://github.com/organizzolini/codebase/commit/62dde69df4f705a268820586aeb3604ebad90890))
+
+## [3.2.9](https://github.com/organizzolini/codebase/compare/v3.2.8...v3.2.9) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **lexico-cli:** 🐛 send user agent and skip cached wiktionary pages ([#1570](https://github.com/organizzolini/codebase/issues/1570)) ([9ba0ce9](https://github.com/organizzolini/codebase/commit/9ba0ce9a6964caaef714d6f20e91dddb03d8350e))
+
+## [3.2.8](https://github.com/organizzolini/codebase/compare/v3.2.7...v3.2.8) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **conformetry:** 🐛 let the sync generator run under nx g ([#1560](https://github.com/organizzolini/codebase/issues/1560)) ([570279e](https://github.com/organizzolini/codebase/commit/570279e7d74b1bce517a78611e4754e2c01e211f))
+
+## [3.2.7](https://github.com/organizzolini/codebase/compare/v3.2.6...v3.2.7) (2026-10-14)
+
+### 📝 Documentation
+
+* **documentation,configuration,deployments:** 📝 consolidate docs and openwiki into documentation behind symlinks ([#1507](https://github.com/organizzolini/codebase/issues/1507)) ([af71371](https://github.com/organizzolini/codebase/commit/af713719da5c29a3103eb58c5fd53998a6fbcfc1))
+
 ## [3.2.6](https://github.com/organizzolini/codebase/compare/v3.2.5...v3.2.6) (2026-10-13)
 
 ### ♻️ Code Refactoring

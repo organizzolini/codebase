@@ -14,7 +14,7 @@ import type {
   CreateNodesResultArray,
 } from "@nx/devkit";
 
-export { MainModule } from "./main.module";
+export { MainModule } from "./codependix-nx.module";
 export { GateModule } from "./modules/gate/gate.module";
 export { GateService } from "./modules/gate/gate.service";
 export type { GateOptions, GateSelection } from "./modules/gate/gate.types";

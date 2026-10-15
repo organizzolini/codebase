@@ -212,7 +212,7 @@ Adds a user profile page where users can view and edit their information.
 EOF
 
 NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-  projects/validation/src/main.ts pull-request-body /tmp/pr_body.md
+  projects/validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
 ````
 
 #### Using GitHub CLI (preferred)

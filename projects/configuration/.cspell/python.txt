@@ -12,6 +12,8 @@ finditer
 frozenset
 functools
 getattr
+getresponse
+getsockname
 hasattr
 ipykernel
 ipynb
@@ -40,4 +42,5 @@ setattr
 staticmethod
 testpaths
 tomllib
+urlsplit
 venv

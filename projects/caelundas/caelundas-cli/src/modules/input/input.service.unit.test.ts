@@ -7,7 +7,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { LoggerService } from "@codebase/logging";
 
 import { mockDates } from "../../../testing/mocks";
-import { environmentSchema } from "../../constants";
+import { environmentSchema } from "../../caelundas-cli.constants";
 
 import { inputSchema } from "./input.constants";
 import { InputService } from "./input.service";
