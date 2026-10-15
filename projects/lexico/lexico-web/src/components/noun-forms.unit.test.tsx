@@ -30,8 +30,10 @@ describe(NounForms, () => {
 
     expect(screen.getByText("rosarum")).toBeDefined();
     expect(
-      screen.getAllByRole("rowheader").map((header) => header.textContent),
-    ).toStrictEqual(["nominative", "genitive"]);
+      screen
+        .getAllByRole("cell")
+        .map((cell) => /(nominative|genitive)/u.exec(cell.textContent)?.[0]),
+    ).toStrictEqual(["nominative", "nominative", "genitive", "genitive"]);
   });
 
   it("leaves out a case the noun has no form for", () => {

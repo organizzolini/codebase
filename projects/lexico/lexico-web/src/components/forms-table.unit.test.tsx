@@ -33,7 +33,7 @@ describe(FormsTable, () => {
     expect(screen.getByTestId("forms-table").className).toBe("forms-table");
   });
 
-  it("lays each looked-up word under its row and column", () => {
+  it("lays each looked-up word in the cell for its row and column", () => {
     render(
       <FormsTable
         columns={columns}
@@ -42,10 +42,33 @@ describe(FormsTable, () => {
       />,
     );
 
-    expect(screen.getByText("rosa, rosae")).toBeDefined();
-    expect(screen.getByText("rosarum")).toBeDefined();
-    expect(screen.getByText("singular")).toBeDefined();
-    expect(screen.getByText("genitive")).toBeDefined();
+    const cells = screen.getAllByRole("cell").map((cell) => cell.textContent);
+
+    expect(cells[0]).toContain("rosa");
+    expect(cells[0]).toContain("rosae");
+    expect(cells[1]).toContain("rosae");
+    expect(cells[3]).toContain("rosarum");
+  });
+
+  it("names the rows and columns in the corners of the cells, and in full to screen readers", () => {
+    render(
+      <FormsTable
+        columns={columns}
+        lookup={() => []}
+        rows={rows}
+      />,
+    );
+
+    expect(screen.getAllByText("NOM")).toHaveLength(1);
+    expect(screen.getAllByText("SG")).toHaveLength(1);
+    expect(screen.getAllByText("PL")).toHaveLength(1);
+
+    const cells = screen.getAllByRole("cell").map((cell) => cell.textContent);
+
+    expect(cells[0]).toContain("nominative singular:");
+    expect(cells[1]).toContain("nominative plural:");
+    expect(cells[2]).toContain("genitive singular:");
+    expect(cells[3]).toContain("genitive plural:");
   });
 
   it("marks a form that has no word", () => {

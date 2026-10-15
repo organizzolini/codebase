@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@codebase/components-web";
 
 import { FormsTable } from "./forms-table";
+import { ABBREVIATIONS } from "./lexeme-identifiers";
 
 import type { ReactNode } from "react";
 
@@ -11,6 +12,8 @@ import type { ReactNode } from "react";
 const FINITE_KIND = "FiniteVerbForm";
 
 const MOODS = ["indicative", "subjunctive", "imperative"];
+
+const NON_FINITE_ABBREVIATION = "NONF";
 
 const NON_FINITE_TAB = "non-finite";
 
@@ -141,7 +144,7 @@ export function VerbForms(
       className={className}
       data-testid="verb-forms"
     >
-      <div className="space-y-2">
+      <div>
         <AxisTabs
           onChange={(next) => {
             setSelection({ ...selection, voice: next });
@@ -188,7 +191,11 @@ export function VerbForms(
 // 🔏 Private Functions
 
 /**
- * One row of tabs for a single axis of the conjugation, such as its moods.
+ * One row of tabs for a single axis of the conjugation, such as its moods. A row
+ * runs the full width of the card, out through its padding, and the rows and the
+ * table below them are joined into one block.
+ * Each tab is the usual abbreviation, such as IND or PRES, so that all of them
+ * share one row and fill it, and carries its full name for readers and hover.
  */
 function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
   const { onChange, options, value } = properties;
@@ -199,21 +206,28 @@ function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
 
   return (
     <Tabs
+      className="-mx-4 gap-0"
       onValueChange={(next) => {
         onChange(String(next));
       }}
       value={value}
     >
-      <TabsList className="h-auto max-w-full flex-wrap justify-start gap-0.5 group-data-horizontal/tabs:h-auto">
-        {options.map((option) => (
-          <TabsTrigger
-            key={option}
-            className="flex-none px-1.5 text-xs capitalize"
-            value={option}
-          >
-            {option.replaceAll(/([A-Z])/gu, " $1").toLowerCase()}
-          </TabsTrigger>
-        ))}
+      <TabsList className="h-9 w-full gap-0 rounded-none border-t bg-muted p-0 group-data-horizontal/tabs:h-9">
+        {options.map((option) => {
+          const name = option.replaceAll(/([A-Z])/gu, " $1").toLowerCase();
+
+          return (
+            <TabsTrigger
+              key={option}
+              aria-label={name}
+              className="h-full flex-1 rounded-none px-0.5 text-xs"
+              title={name}
+              value={option}
+            >
+              {ABBREVIATIONS[option] ?? NON_FINITE_ABBREVIATION}
+            </TabsTrigger>
+          );
+        })}
       </TabsList>
     </Tabs>
   );
@@ -264,7 +278,7 @@ function NonFiniteForms(
   const nonFinite = properties.rows.filter((row) => row.kind !== FINITE_KIND);
 
   return (
-    <dl className="space-y-1 text-sm">
+    <dl className="space-y-1 pt-3 text-sm">
       {nonFinite.map((row) => (
         <div
           key={`${row.kind}${row.tense}${row.voice}${row.case}${row.word}`}

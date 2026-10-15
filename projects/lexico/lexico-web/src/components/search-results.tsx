@@ -32,12 +32,13 @@ export function SearchResults(
   const { className, loadForms, query, results } = properties;
 
   // 🪝 Hooks
-  const { isLg, isMd, isXl } = useBreakpoint();
+  const { is2xl, isLg, isMd } = useBreakpoint();
 
   // 🏗 Setup
-  // One column on a phone, then a column more at each of the md, lg, and xl
-  // breakpoints.
-  const columnCount = [true, isMd, isLg, isXl].filter(Boolean).length;
+  // One column on a phone, then a column more at the md, lg, and 2xl
+  // breakpoints. The fourth waits for 2xl (1536px) so that a 14-inch laptop,
+  // which is 1512px wide, gets three columns wide enough for a forms table.
+  const columnCount = [true, isMd, isLg, is2xl].filter(Boolean).length;
   const columns = Array.from({ length: columnCount }, (_, column) =>
     results.filter((_result, index) => index % columnCount === column),
   );

@@ -52,6 +52,18 @@ describe(VerbForms, () => {
     expect(screen.queryByText("amabam")).toBeNull();
   });
 
+  it("names each tab by its abbreviation and gives the full name on hover", () => {
+    render(<VerbForms rows={rows} />);
+
+    expect(screen.getByText("ACT")).toBeDefined();
+    expect(screen.getByText("IND")).toBeDefined();
+    expect(screen.getByText("PRES")).toBeDefined();
+    expect(screen.getByText("NONF")).toBeDefined();
+    expect(
+      screen.getByRole("tab", { name: "imperfect" }).getAttribute("title"),
+    ).toBe("imperfect");
+  });
+
   it("switches mood and tense by tab", () => {
     render(<VerbForms rows={rows} />);
 

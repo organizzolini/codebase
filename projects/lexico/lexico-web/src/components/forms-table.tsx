@@ -1,11 +1,12 @@
 import {
+  cn,
   Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@codebase/components-web";
+
+import { ABBREVIATIONS } from "./lexeme-identifiers";
 
 import type { ReactNode } from "react";
 
@@ -35,7 +36,12 @@ export interface FormsTableProperties {
 
 /**
  * A grid of the words a lexeme's forms are written as, such as a noun's cases
- * down the side and its numbers across the top.
+ * down the side and its numbers across the top. It runs the full width of the
+ * card it sits in, out through the card's padding. Every cell is the same size and
+ * holds its word, and the grid is named in small captions in the cells' corners:
+ * each row's first cell carries the row, such as NOM or 1ST, and the first
+ * row's cells carry the columns, such as SG and PL. Every cell also carries its
+ * full row and column names, hidden, for screen readers.
  */
 export function FormsTable(
   properties: Readonly<FormsTableProperties>,
@@ -58,42 +64,65 @@ export function FormsTable(
       className={className}
       data-testid="forms-table"
     >
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead />
-            {columns.map((column) => (
-              <TableHead
-                key={column.key}
-                className="capitalize"
+      <div className="-mx-4 overflow-hidden border-y">
+        <Table className="table-fixed">
+          <TableBody>
+            {rows.map((row, rowIndex) => (
+              <TableRow
+                key={row.key}
+                className="border-b-0 hover:bg-transparent"
               >
-                {column.label}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.key}>
-              <TableHead
-                className="text-xs font-normal text-muted-foreground capitalize"
-                scope="row"
-              >
-                {row.label}
-              </TableHead>
-              {columns.map((column) => {
-                const words = lookup(row.key, column.key);
+                {columns.map((column, columnIndex) => {
+                  const words = lookup(row.key, column.key);
 
-                return (
-                  <TableCell key={column.key}>
-                    {words.length === 0 ? "–" : words.join(", ")}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  return (
+                    <TableCell
+                      key={column.key}
+                      className={cn(
+                        "relative h-14 px-2 py-2 text-center whitespace-normal",
+                        rowIndex > 0 && "border-t",
+                        columnIndex > 0 && "border-l",
+                      )}
+                    >
+                      {columnIndex === 0 && (
+                        <span
+                          className="pointer-events-none absolute top-1 left-1.5 text-[10px] leading-none text-muted-foreground"
+                          aria-hidden
+                        >
+                          {ABBREVIATIONS[row.key] ?? row.label}
+                        </span>
+                      )}
+                      {rowIndex === 0 && (
+                        <span
+                          className="pointer-events-none absolute top-1 right-1.5 text-[10px] leading-none text-muted-foreground"
+                          aria-hidden
+                        >
+                          {ABBREVIATIONS[column.key] ?? column.label}
+                        </span>
+                      )}
+                      <span className="sr-only">
+                        {row.label} {column.label}:{" "}
+                      </span>
+                      {words.length === 0 ? (
+                        <span className="text-muted-foreground">–</span>
+                      ) : (
+                        words.map((word) => (
+                          <div
+                            key={word}
+                            className="break-words"
+                          >
+                            {word}
+                          </div>
+                        ))
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

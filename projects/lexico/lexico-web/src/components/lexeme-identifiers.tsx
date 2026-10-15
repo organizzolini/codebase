@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
  * The short forms grammar books use for the words the API names forms with.
  * Words with no short form, such as "person", are left out of an identifier.
  */
-const ABBREVIATIONS: Readonly<Record<string, string>> = {
+export const ABBREVIATIONS: Readonly<Record<string, string>> = {
   ablative: "ABL",
   accusative: "ACC",
   active: "ACT",
