@@ -1,5 +1,9 @@
 // ♟️ Constants
 
+import { describePostgresContent } from "../postgres-client/postgres-client.utilities";
+
+import type { ExportPlan } from "./export.types";
+
 /**
  * What `export` says when an option it requires is missing, keyed by the
  * option. Each names the option and shows it in use.
@@ -51,3 +55,25 @@ export class ExportTableError extends Error {
     this.name = ExportTableError.name;
   }
 }
+
+/**
+ * What `export --dry-run` prints, one line each: where it would export
+ * from and to, what it would export of each selected table, in the plan's
+ * order, and whether `file` (`exists`) would be created or overwritten.
+ * Never carries the password.
+ */
+export const dryRunMessages = (
+  {
+    connection: { database, host },
+    content,
+    file,
+    tables,
+  }: Pick<ExportPlan, "connection" | "content" | "file" | "tables">,
+  exists: boolean,
+): string[] => [
+  `🔍 Dry run: would export ${describePostgresContent(content)} from database "${database}" on ${host} to ${file}; nothing was connected to or changed`,
+  ...tables.map(
+    (table) => `  ${table}: would export ${describePostgresContent(content)}`,
+  ),
+  `  ${file} would be ${exists ? "overwritten" : "created"}`,
+];

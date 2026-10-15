@@ -104,6 +104,22 @@ describe("export --namespace", () => {
     ]);
   });
 
+  it("dumps a table given twice once, qualified or resolved in --namespace", async () => {
+    const spawned = mockProcesses();
+
+    const result = await runExport(
+      ["fixture.widgets", "widgets", "parts", "parts"],
+      "--namespace",
+      "fixture",
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(dumpedTables(spawned)).toStrictEqual([
+      "--table=fixture.widgets",
+      "--table=fixture.parts",
+    ]);
+  });
+
   it("documents --namespace in its help", async () => {
     const result = await runCliCommandLine({ argv: ["export", "--help"] });
 

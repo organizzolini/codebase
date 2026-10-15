@@ -11,6 +11,7 @@ import type {
  */
 export interface ExportCommandOptions {
   data?: boolean;
+  dryRun?: boolean;
   file?: string;
   namespace?: string;
   overwrite?: boolean;

@@ -17,6 +17,7 @@ import {
 import { missingDumpTables } from "../postgres-client/postgres-dump.utilities";
 
 import {
+  dryRunMessages,
   existingFileMessage,
   EXPORT_OPTION_MESSAGES,
   ExportOptionsError,
@@ -69,6 +70,16 @@ export class ExportCommand extends CommandRunner {
   }
 
   /**
+   * Logs what the export would do, the `--dry-run` plan: the source, the
+   * tables, what is exported of them, and what happens to the file.
+   */
+  private logDryRun(plan: ExportPlan): void {
+    for (const line of dryRunMessages(plan, fs.existsSync(plan.file))) {
+      this.logger.log(line);
+    }
+  }
+
+  /**
    * Validates every option and resolves the tables, so nothing runs
    * against a half-specified command line.
    *
@@ -100,7 +111,8 @@ export class ExportCommand extends CommandRunner {
       content,
       file,
       source: maskPostgresCredentials(sourceUri, connection.password),
-      tables: qualifyTableNames(tables, options.namespace),
+      // One table named twice, once resolved in --namespace, is dumped once.
+      tables: [...new Set(qualifyTableNames(tables, options.namespace))],
     };
   }
 
@@ -142,6 +154,16 @@ export class ExportCommand extends CommandRunner {
     flags: "--data",
   })
   parseData(): boolean {
+    return true;
+  }
+
+  /** Parses the boolean `--dry-run` flag. */
+  @Option({
+    description:
+      "Check the options, print what would be exported, and connect to no database and write no file",
+    flags: "--dry-run",
+  })
+  parseDryRun(): boolean {
     return true;
   }
 
@@ -204,7 +226,8 @@ export class ExportCommand extends CommandRunner {
   /**
    * Validates the options, then dumps the selected tables to the file. An
    * existing file is refused without `--overwrite`, before any process
-   * starts; a dump that fails leaves --file exactly as it was.
+   * starts; a dump that fails leaves --file exactly as it was. `--dry-run`
+   * stops once `pg_dump` is checked, printing the plan instead of dumping.
    */
   async run(
     _passedParameters: string[],
@@ -212,6 +235,10 @@ export class ExportCommand extends CommandRunner {
   ): Promise<void> {
     const plan = this.plan(options);
     await this.postgresClient.ensureTool("pg_dump");
+    if (options.dryRun === true) {
+      this.logDryRun(plan);
+      return;
+    }
     const content = describePostgresContent(plan.content);
     this.logger.log(
       `📦 Exporting ${content} of ${plan.tables.join(", ")} from ${plan.source} to ${plan.file}`,
