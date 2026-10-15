@@ -124,11 +124,9 @@ function LibraryCreateDialog({
       onOpenChange={onOpenChange}
       open={isCreateOpen}
     >
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Text
-        </Button>
+      <DialogTrigger render={<Button />}>
+        <Plus className="mr-2 h-4 w-4" />
+        Add Text
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>

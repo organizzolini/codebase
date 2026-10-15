@@ -1,7 +1,7 @@
 ## Start
 
 ```bash
-nx run codebase:postgres-container:up
+nx run infrastructure:postgres:up
 nx run meanderaw-cli:migration:run
 nx run meanderaw-cli:start
 ```
@@ -5514,7 +5514,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-242.92_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-242.99_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 

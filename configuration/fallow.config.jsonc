@@ -34,6 +34,13 @@
     "projects/**/src/index.ts",
     // The one file each application bootstraps from, named for its project.
     "projects/**/src/*.main.ts",
+    // Vendored shadcn and ReUI source in components-web, written by `shadcn add`
+    // and mostly not imported by anything yet. Each file is an entry point so
+    // none reads as unused, and the packages it imports still count as used —
+    // excluding it outright would hide those imports. knip does the same.
+    "projects/components-web/src/components/**/*.{ts,tsx}",
+    "projects/components-web/src/hooks/**/*.{ts,tsx}",
+    "projects/components-web/src/lib/**/*.ts",
     "projects/**/src/modules/**/*.module.ts",
     // Nx resolves these from executors.json and generators.json, which is not
     // an import, so nothing reaches them through the module graph.

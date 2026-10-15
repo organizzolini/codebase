@@ -61,10 +61,11 @@ export function Translations(properties: TranslationsProperties): ReactElement {
 
   return (
     <Collapsible defaultOpen={defaultOpen}>
-      <CollapsibleTrigger asChild>
-        <ul className={unorderedListClassName}>
-          {translations.slice(0, 2).map((t) => renderTranslation(t))}
-        </ul>
+      <CollapsibleTrigger
+        nativeButton={false}
+        render={<ul className={unorderedListClassName} />}
+      >
+        {translations.slice(0, 2).map((t) => renderTranslation(t))}
       </CollapsibleTrigger>
       <CollapsibleContent>
         <ul className={unorderedListClassName}>

@@ -209,8 +209,17 @@ const config: KnipConfig = {
     },
 
     // components-web: Shared React component library (shadcn/ui)
+    //
+    // The shadcn and ReUI source is vendored: `shadcn add` writes it, and most
+    // of it nothing here imports yet. Every file under it is an entry point, so
+    // none reads as unused and the packages it imports still count as used.
     "projects/components-web": {
-      entry: ["src/components/**/*.tsx"],
+      entry: [
+        "src/components/**/*.{ts,tsx}",
+        "src/hooks/**/*.{ts,tsx}",
+        "src/lib/**/*.ts",
+      ],
+      ignore: ["src/components/**", "src/hooks/**", "src/lib/**"],
       project: ["src/**/*.ts", "src/**/*.tsx"],
     },
 

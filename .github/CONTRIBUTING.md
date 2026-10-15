@@ -180,7 +180,6 @@ codebase/
 │   └── openwiki/       # Generated code documentation — do not hand-edit
 ├── docs -> documentation          # Symlink: vendored skills hard-code docs/adr and docs/agents
 ├── openwiki -> documentation/openwiki   # Symlink: the OpenWiki CLI hard-codes its output directory
-├── infrastructure/     # Docker, Helm charts, Terraform
 ├── scripts/            # Setup, git, and utility scripts
 └── .agents/skills/     # Agent skills; every other agent entrypoint symlinks here
 ```
@@ -355,6 +354,8 @@ Three Husky hooks enforce quality gates locally, from [configuration/.husky/](..
 | `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                    | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs) |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
+
+A commit that touches the `infrastructure` project also runs its `helm-lint` and `compose-config` targets through `lint-code`, so `helm` and `docker compose` must be on your `PATH` (both dev containers install them). `compose-config` creates the gitignored root `.env` from `.env.default` when it is missing and never overwrites an existing one.
 
 Both signing checks are run by Husky already — do not invoke `scripts/git/` signing scripts by hand in a normal commit or push.
 

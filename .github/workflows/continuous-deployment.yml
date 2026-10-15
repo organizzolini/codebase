@@ -12,7 +12,7 @@ on:
       - .devcontainer/**
       - .env.default
       - .github/workflows/continuous-deployment.yml
-      - infrastructure/docker/docker-compose.yml
+      - projects/infrastructure/docker/docker-compose.yml
       - package.json
   workflow_dispatch:
 
@@ -98,7 +98,7 @@ jobs:
             else
               COMPARISON="$(gh api "repos/$REPOSITORY/compare/${BASE}...${HEAD}")"
               FILE_COUNT="$(jq '.files | length' <<< "$COMPARISON")"
-              MATCH_PATTERN='^(\.devcontainer/|\.env\.default$|\.github/workflows/continuous-deployment\.yml$|infrastructure/docker/docker-compose\.yml$)'
+              MATCH_PATTERN='^(\.devcontainer/|\.env\.default$|\.github/workflows/continuous-deployment\.yml$|projects/infrastructure/docker/docker-compose\.yml$)'
               PACKAGE_MANAGER_PATTERN='^[-+][[:space:]]*"packageManager"'
 
               if [ "$FILE_COUNT" -ge 300 ]; then

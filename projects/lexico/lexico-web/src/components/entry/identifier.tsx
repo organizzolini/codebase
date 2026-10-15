@@ -181,19 +181,21 @@ export function Identifier(properties: IdentifierProperties): ReactElement {
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Badge
-          className={cn(
-            "cursor-default px-1 justify-center",
-            styles.background,
-            styles.text,
-            styles.border,
-            className,
-          )}
-          variant="outline"
-        >
-          {abbreviation}
-        </Badge>
+      <TooltipTrigger
+        render={
+          <Badge
+            className={cn(
+              "cursor-default px-1 justify-center",
+              styles.background,
+              styles.text,
+              styles.border,
+              className,
+            )}
+            variant="outline"
+          />
+        }
+      >
+        {abbreviation}
       </TooltipTrigger>
       <TooltipContent side="right">{startCase(identifier)}</TooltipContent>
     </Tooltip>

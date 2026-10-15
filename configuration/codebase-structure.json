@@ -246,6 +246,55 @@
       ],
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
+    "infrastructure-project": {
+      "children": [
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "docker"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "helm"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "terraform"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "infrastructure"
+    },
     "kebab-case-folder": {
       "children": [
         {
@@ -459,17 +508,6 @@
             "ruleId": "any-file"
           }
         ],
-        "name": "infrastructure"
-      },
-      {
-        "children": [
-          {
-            "ruleId": "kebab-case-folder"
-          },
-          {
-            "ruleId": "any-file"
-          }
-        ],
         "name": "notepads"
       },
       {
@@ -544,6 +582,9 @@
               }
             ],
             "name": "ic-suite"
+          },
+          {
+            "ruleId": "infrastructure-project"
           },
           {
             "children": [

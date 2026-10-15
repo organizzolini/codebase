@@ -8,9 +8,11 @@
     "utils": "@/lib/utils"
   },
   "iconLibrary": "lucide",
-  "registries": {},
+  "registries": {
+    "@reui": "https://reui.io/r/{style}/{name}.json"
+  },
   "rsc": false,
-  "style": "new-york",
+  "style": "base-nova",
   "tailwind": {
     "baseColor": "gray",
     "config": "tailwind.config.cjs",
