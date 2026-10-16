@@ -1,3 +1,9 @@
+## 0.0.32 (2026-10-16)
+
+### 🔥 Performance
+
+- **configuration,conformetry,scripts:** ⚡️ raise local pre-commit parallelism and overlap conformetry ([#1663](https://github.com/organizzolini/codebase/pull/1663))
+
 ## 0.0.31 (2026-10-16)
 
 ### 🧱 Updated Dependencies

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.2](https://github.com/organizzolini/codebase/compare/v3.9.1...v3.9.2) (2026-10-16)
+
+### ⚡ Performance Improvements
+
+* **configuration,conformetry,scripts:** ⚡️ raise local pre-commit parallelism and overlap conformetry ([#1663](https://github.com/organizzolini/codebase/issues/1663)) ([b64cef5](https://github.com/organizzolini/codebase/commit/b64cef53be9cc83137c823c1227c2f13ca5395de))
+
 ## [3.9.1](https://github.com/organizzolini/codebase/compare/v3.9.0...v3.9.1) (2026-10-16)
 
 ### 🐛 Bug Fixes
