@@ -161,12 +161,9 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     // instance during validation, so no group has to state it.
     instances: [
       {
-        // `components-web` is not an application and is being renamed.
-        exclude: [
-          "projects/**/node_modules/**",
-          "projects/components-web",
-          "projects/lexico/lexico-web",
-        ],
+        // The `node_modules` links would otherwise be followed back to the
+        // packages they point at.
+        exclude: ["projects/**/node_modules/**", "projects/lexico/lexico-web"],
         patterns: ["projects/**/*-web"],
       },
       {
