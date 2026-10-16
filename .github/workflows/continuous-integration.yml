@@ -52,9 +52,17 @@ jobs:
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
+          # Guard and Test run cold whenever a change reaches the shared
+          # configuration project, and cold they sit at the 12-minute limit:
+          # Test took 11m53s on a push to `main` that passed by seven seconds,
+          # and merge groups and a pull request run were cancelled at the
+          # limit, with every finished task passing. Warm they take about
+          # three. 20 minutes covers a cold run with the setup and cleanup
+          # around it.
           - target: guard-code
             name: Guard
             emoji: 💂
+            timeout-minutes: 20
           # Tests run in three legs that together cover every project once.
           # Meanderaw alone: uncached, it took over seven minutes beside every
           # other project's tests and waited for a free `--parallel` slot, so a
@@ -67,6 +75,7 @@ jobs:
             name: Test
             emoji: 🧑‍🔬
             exclude: meanderaw-cli,projects/ic-suite/**
+            timeout-minutes: 20
           - target: test-code
             name: Test Meanderaw
             emoji: 🧑‍🔬
