@@ -66,22 +66,23 @@ jobs:
           # other project's tests and waited for a free `--parallel` slot, so a
           # run that affects everything (an `nx.json` change) outlasted the
           # 12-minute limit; alone it takes about three. ic-suite's 37 packages
-          # were most of what remained. Caelundas's command line is the last
-          # of these: it cannot start until its ephemeris download finishes,
+          # were most of what remained. Caelundas is the last of these: its
+          # command line cannot start until its ephemeris download finishes,
           # so beside the rest it ran last, alone, for another four minutes
           # (cold, 4m12s of a 7m02s run), and at times ran past the limit.
+          # Its leg takes the whole folder, so a project added there joins it.
           # The fourth leg, everything else, keeps the `Test` name branch
           # protection has always required. A leg whose projects are
           # unaffected runs nothing.
           - target: test-code
             name: Test
             emoji: 🧑‍🔬
-            exclude: caelundas-cli,meanderaw-cli,projects/ic-suite/**
+            exclude: meanderaw-cli,projects/caelundas/**,projects/ic-suite/**
           - target: test-code
             name: Test Caelundas
             emoji: 🧑‍🔬
-            exclude: "*,!caelundas-cli"
-            shard: caelundas-cli
+            exclude: "*,!projects/caelundas/**"
+            shard: caelundas
           - target: test-code
             name: Test Meanderaw
             emoji: 🧑‍🔬
