@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -384,6 +385,36 @@ describe(ConfigurationService, () => {
     expect(configuration.map((generator) => generator.name)).toContain(
       "react-component",
     );
+  });
+
+  describe("resolveConfigurationPath", () => {
+    it("returns an existing absolute path unchanged", async () => {
+      const configurationPath = await writeConfiguration([]);
+
+      await expect(
+        service.resolveConfigurationPath(configurationPath),
+      ).resolves.toBe(configurationPath);
+    });
+
+    it("falls back to the workspace root for a path the cwd lacks", async () => {
+      const resolvedPath = await service.resolveConfigurationPath(
+        "projects/configuration/conformetry.config.ts",
+      );
+
+      expect(path.isAbsolute(resolvedPath)).toBe(true);
+      expect(
+        resolvedPath.endsWith(
+          path.join("projects", "configuration", "conformetry.config.ts"),
+        ),
+      ).toBe(true);
+      expect(existsSync(resolvedPath)).toBe(true);
+    });
+
+    it("resolves a path that exists nowhere against the cwd", async () => {
+      await expect(
+        service.resolveConfigurationPath("nowhere/conformetry.config.json"),
+      ).resolves.toBe(path.resolve("nowhere/conformetry.config.json"));
+    });
   });
 
   it("throws a typed error for an unsupported extension", async () => {

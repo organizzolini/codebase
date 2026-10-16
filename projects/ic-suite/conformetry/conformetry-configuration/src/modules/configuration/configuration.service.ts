@@ -190,34 +190,6 @@ export class ConfigurationService {
       : JSON.parse(configurationContent);
   }
 
-  /**
-   * Resolves a config path against the cwd, falling back to the workspace root.
-   */
-  private async resolveConfigurationPath(
-    configurationPath: string,
-  ): Promise<string> {
-    const absolutePath = path.resolve(configurationPath);
-
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const workspaceRoot = await this.findWorkspaceRoot();
-
-    if (workspaceRoot === undefined) {
-      return absolutePath;
-    }
-
-    const workspaceRelativePath = path.resolve(
-      workspaceRoot,
-      configurationPath,
-    );
-
-    return existsSync(workspaceRelativePath)
-      ? workspaceRelativePath
-      : absolutePath;
-  }
-
   // 🌎 Public Methods
 
   /** Derives the case variants every template can reference from one name. */
@@ -371,6 +343,39 @@ export class ConfigurationService {
     }
 
     return trimmed;
+  }
+
+  /**
+   * Resolves a config path to the absolute file `loadConformetryConfiguration`
+   * reads: against the cwd first, then the workspace root.
+   *
+   * Public because the directory a hook builds its paths from is that file's
+   * parent, and only this resolution knows which file was read. A host that
+   * worked it out from the flag alone would miss the workspace-root fallback.
+   */
+  public async resolveConfigurationPath(
+    configurationPath: string,
+  ): Promise<string> {
+    const absolutePath = path.resolve(configurationPath);
+
+    if (existsSync(absolutePath)) {
+      return absolutePath;
+    }
+
+    const workspaceRoot = await this.findWorkspaceRoot();
+
+    if (workspaceRoot === undefined) {
+      return absolutePath;
+    }
+
+    const workspaceRelativePath = path.resolve(
+      workspaceRoot,
+      configurationPath,
+    );
+
+    return existsSync(workspaceRelativePath)
+      ? workspaceRelativePath
+      : absolutePath;
   }
 
   /** Resolves generator inputs from raw command-line arguments. */
