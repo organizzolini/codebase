@@ -10,7 +10,8 @@ export const SKILLS_DIRECTORY = ".agents/skills";
 export const SKILL_FILE = "SKILL.md";
 
 /** The Nx target an agent or a person restores skills through. */
-export const RESTORE_COMMAND = "pnpm exec nx run codebase:install-skills";
+export const RESTORE_COMMAND =
+  "pnpm exec nx run synchronization:installed-skills:write";
 
 /** The session hook that reports missing skills, for re-running it. */
 export const SESSION_HOOK_COMMAND =

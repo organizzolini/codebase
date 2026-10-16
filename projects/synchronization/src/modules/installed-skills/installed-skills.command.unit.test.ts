@@ -40,7 +40,8 @@ import type { MockInstance } from "vitest";
  */
 const FIXTURE_PARENT = path.resolve(import.meta.dirname, "../../../tmp");
 
-const RETRY_HINT = "Retry with 'pnpm exec nx run codebase:install-skills'";
+const RETRY_HINT =
+  "Retry with 'pnpm exec nx run synchronization:installed-skills:write'";
 
 describe(InstalledSkillsCommand, () => {
   let command: InstalledSkillsCommand;
@@ -190,7 +191,7 @@ describe(InstalledSkillsCommand, () => {
           '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-with-docs" are unavailable.',
           "",
           "Action required:",
-          '1. Restore them with "pnpm exec nx run codebase:install-skills".',
+          '1. Restore them with "pnpm exec nx run synchronization:installed-skills:write".',
           "2. Ask the user to start a new session afterwards. Skills register when a session starts, so restoring them does not add them to this one.",
           '3. Re-run "bash scripts/git/validate-session-skills.sh" to confirm.',
         ].join("\n"),
@@ -208,7 +209,7 @@ describe(InstalledSkillsCommand, () => {
         expect(printed()).toContain(
           [
             "Action required:",
-            '1. Restore them with "pnpm exec nx run codebase:install-skills".',
+            '1. Restore them with "pnpm exec nx run synchronization:installed-skills:write".',
             '2. If restoration fails, confirm ".github/workflows/copilot-setup-steps.yml" completed its dependency install, which restores skills through postinstall.',
             "3. Start a fresh cloud agent session so the restored skills register.",
             '4. Re-run "bash scripts/git/validate-session-skills.sh" to confirm.',
