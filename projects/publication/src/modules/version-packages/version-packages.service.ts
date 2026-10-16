@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
@@ -9,7 +12,12 @@ import {
 } from "../process-runner/process-runner.utilities";
 import { TagPackagesService } from "../tag-packages/tag-packages.service";
 
-import { authenticatedRemote, NX_RELEASE } from "./version-packages.constants";
+import {
+  authenticatedRemote,
+  NX_RELEASE,
+  NXIGNORE_FILE,
+  RELEASE_NXIGNORE_ADDITION,
+} from "./version-packages.constants";
 
 import type { Environment } from "../../publication.types";
 
@@ -23,6 +31,14 @@ import type { Environment } from "../../publication.types";
  * `release.git` turns off Nx's own commit and tags: semantic-release commits
  * these files with the codebase's version, so a release lands on `main` as one
  * commit, and `tag-packages` tags that commit afterwards.
+ *
+ * `configuration` is in the Nx project graph, so a change to it reaches every
+ * project, which is right for CI and wrong here: tooling configuration is not a
+ * reason to release a package. Nx drops files matching `.nxignore` from the
+ * changes it reads for a commit and from the graph, so for this one command the
+ * configuration project is ignored, and a commit that edits only it releases
+ * nothing. A commit that also edits a package still releases that package.
+ * The ignore file is restored afterwards, before anything commits.
  *
  * Checkout persists no credentials, so the remote is pointed at the release
  * token first. It stays that way for the rest of the job, which is what lets
@@ -67,6 +83,23 @@ export class VersionPackagesService {
     );
   }
 
+  /**
+   * Runs `nx release` with the configuration project ignored, restoring
+   * `.nxignore` however the run ends.
+   */
+  private releaseWithoutConfiguration(): number {
+    const ignoreFile = path.join(process.cwd(), NXIGNORE_FILE);
+    const original = fs.readFileSync(ignoreFile, "utf8");
+
+    fs.writeFileSync(ignoreFile, `${original}${RELEASE_NXIGNORE_ADDITION}`);
+
+    try {
+      return this.processRunner.stream("env", NX_RELEASE);
+    } finally {
+      fs.writeFileSync(ignoreFile, original);
+    }
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -98,6 +131,6 @@ export class VersionPackagesService {
       return tagged;
     }
 
-    return this.processRunner.stream("pnpm", NX_RELEASE);
+    return this.releaseWithoutConfiguration();
   }
 }

@@ -37,7 +37,9 @@ import type { CapturedProcess } from "../process-runner/process-runner.types";
 const SET_URL =
   "git remote set-url origin https://x-access-token:secret@github.com/owner/codebase.git";
 
-const NX_RELEASE = "pnpm exec nx release --skip-publish";
+const NX_RELEASE = "env NX_DAEMON=false pnpm exec nx release --skip-publish";
+
+const NXIGNORE = "node_modules\n";
 
 const ROOT = "projects/ic-suite/tool/bumped";
 
@@ -125,6 +127,7 @@ describe(VersionPackagesCommand, () => {
       `${ROOT}/package.json`,
       JSON.stringify({ name: "@tool/bumped", version: "1.0.0" }),
     );
+    writeFile(workspace, ".nxignore", NXIGNORE);
     environmentFile = path.join(workspace, "github-env");
     fs.writeFileSync(environmentFile, "");
     vi.stubEnv("GITHUB_ENV", environmentFile);
@@ -180,10 +183,34 @@ describe(VersionPackagesCommand, () => {
       runner.lines.filter(
         (line) =>
           line.startsWith("git push") ||
-          line.startsWith("pnpm exec nx release"),
+          line.startsWith("env NX_DAEMON=false pnpm exec nx release"),
       ),
     ).toStrictEqual(["git push origin refs/tags/bumped@1.0.0", NX_RELEASE]);
     expect(process.exitCode).toBe(3);
+  });
+
+  it("ignores the configuration project for the release, then restores .nxignore", async () => {
+    expect.hasAssertions();
+
+    const runner = new FakeProcessRunner(script("base"), 0, {
+      [NX_RELEASE]: 2,
+    });
+    let duringRelease = "";
+    runner.effects[NX_RELEASE] = (): void => {
+      duringRelease = fs.readFileSync(
+        path.join(workspace, ".nxignore"),
+        "utf8",
+      );
+    };
+    await runCommand(runner);
+
+    expect(duringRelease).toBe(
+      `${NXIGNORE}\n# Added by the publication version-packages command for the release only.\nprojects/configuration/\n`,
+    );
+    expect(fs.readFileSync(path.join(workspace, ".nxignore"), "utf8")).toBe(
+      NXIGNORE,
+    );
+    expect(process.exitCode).toBe(2);
   });
 
   it("steps aside before tagging or versioning when main has moved", async () => {
