@@ -1,47 +1,30 @@
 #!/usr/bin/env bash
 # Runs one Nx target on the projects a CI change affects, after correcting the
-# list of changed files Nx selects projects from.
+# changed-file list Nx selects them from.
 #
-# Fits in as: CI matrix leg -> `run-affected` action -> this script ->
-# `nx affected --target=$TARGET`. The caller picks the target and the revisions;
-# Nx picks the projects. This script only decides which changed files Nx is
-# told about. The pre-commit hook does not use it (see
-# `projects/configuration/lint-staged.config.ts`).
+# CI matrix leg -> `run-affected` action -> this script -> `nx affected`. The
+# caller picks the target and revisions; Nx picks the projects; this script
+# picks which changed files Nx hears about. The pre-commit hook does not use it.
 #
 # 1. List the files changed between NX_BASE and NX_HEAD.
-# 2. Find the files that would mislead Nx for this target:
-#    - Spelling files over-select. Nx decides affected per project, not per
-#      target, and `spell-check` lists the dictionaries as inputs, so one new
-#      word selected every project for every target. Dropped unless
-#      INCLUDE_SPELLING is "true".
-#    - Conformetry templates under-select. `.nxignore` hides some of them from
-#      Nx, so editing one selected nothing. With INCLUDE_TEMPLATES, a changed
-#      template adds `projects/configuration/conformetry.config.ts`, an input of every
-#      instance project, to the list. The edit still reaches the project's
-#      cache key through the template hash input, so each selected project
-#      re-validates. Set it only for the target that runs
-#      `conformetry-validate`, since selection is per project.
-# 3. With nothing to correct, run `nx affected --base --head`. Otherwise give
-#    Nx the corrected list over `--stdin`.
+# 2. Correct the files that mislead Nx for this target:
+#    - Spelling files over-select: Nx decides affected per project, so one new
+#      dictionary word selected every project. Dropped unless INCLUDE_SPELLING.
+#    - Conformetry templates under-select: `.nxignore` hides some from Nx. With
+#      INCLUDE_TEMPLATES, a changed template adds the conformetry config, an
+#      input of every instance project; the template hash input then busts
+#      their caches. Set it only for the target running `conformetry-validate`.
+# 3. Nothing to correct: `nx affected --base --head`. Otherwise `--stdin`.
 #
-# `--stdin` is the fallback because Nx reads every file it is handed as changed
-# in full: a lockfile then touches every project, and a one-line version bump
-# selected 47 projects instead of 3. Only `--base`/`--head` diff such files
-# field by field.
+# `--stdin` is the fallback because Nx counts every file it is handed as changed
+# in full, so a lockfile touches every project. Only `--base`/`--head` diff
+# `package.json` and the lockfile field by field.
 #
-# The list is built the way Nx builds its own: merge base of the revisions,
-# falling back to NX_BASE. An empty list affects nothing; it never falls back
-# to everything.
+# An empty list affects nothing; it never falls back to everything.
 #
-# Environment:
-#   TARGET            the Nx target to run (required)
-#   ARGUMENTS         extra `nx affected` flags, space separated
-#   NX_BASE, NX_HEAD  the revisions, as `nrwl/nx-set-shas` exports them
-#   INCLUDE_SPELLING  "true" to keep spelling files in the list
-#   INCLUDE_TEMPLATES "true" to select every conformetry instance on a
-#                     template change
-#   SPELLING_PATHS    extended regex overriding which files are spelling
-#   TEMPLATE_PATHS    extended regex overriding which files are templates
+# Environment: TARGET (required), ARGUMENTS (extra `nx affected` flags),
+# NX_BASE and NX_HEAD, INCLUDE_SPELLING, INCLUDE_TEMPLATES, and the regex
+# overrides SPELLING_PATHS and TEMPLATE_PATHS.
 
 set -euo pipefail
 
