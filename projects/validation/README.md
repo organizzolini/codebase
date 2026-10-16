@@ -158,13 +158,13 @@ Call stacks traced through `projects/validation`, deepest first. Each frame show
 
 | Measure | Value |
 | --- | --- |
-| Callables | 279 |
-| Files | 62 |
-| Calls traced | 345 |
+| Callables | 288 |
+| Files | 63 |
+| Calls traced | 355 |
 | Call stacks | 9 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 19 |
+| Unfollowable calls | 21 |
 
 ### Limits
 
@@ -204,17 +204,17 @@ What this project is judged against, as declared in its own `callidescope.config
    ↳ Checks the issue's metadata and exits 0 or 1 on the verdict.
   └─> IssueMetadataCommand.runBulkAudit(reportLines: string[]): never | void [projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:257]
      ↳ Sweeps and validates all open issues and their hierarchy relationships.
-    └─> IssueMetadataService.checkBulkIssues(issues: readonly IssueSummary[]): BulkIssuesVerdict [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:279]
+    └─> IssueMetadataService.checkBulkIssues(issues: readonly IssueSummary[]): BulkIssuesVerdict [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:282]
        ↳ Validates metadata and hierarchy across a batch of open issues.
-      └─> IssueMetadataService.checkHierarchy(issues: readonly IssueSummary[]): readonly HierarchyViolation[] [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:321]
+      └─> IssueMetadataService.checkHierarchy(issues: readonly IssueSummary[]): readonly HierarchyViolation[] [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:325]
          ↳ Checks issue hierarchy rules (release significance and max depth 3).
-        └─> IssueMetadataService.checkReleaseSignificanceViolation(…): void [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:44]
+        └─> IssueMetadataService.checkReleaseSignificanceViolation(…): void [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:47]
            ↳ Checks if a sub-issue exceeds its parent's release level.
-          └─> IssueMetadataService.resolveIssueReleaseLevel(…): { readonly level: string; readonly rank: number; readonly type: string; } [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:485]
+          └─> IssueMetadataService.resolveIssueReleaseLevel(…): { readonly level: string; readonly rank: number; readonly type: string; } [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:495]
              ↳ Resolves release level and rank from title, body, and labels.
-            └─> IssueMetadataService.resolveStandardReleaseLevel(…): { readonly level: string; readonly rank: number; readonly type: string; } [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:257]
+            └─> IssueMetadataService.resolveStandardReleaseLevel(…): { readonly level: string; readonly rank: number; readonly type: string; } [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:260]
                ↳ Resolves non-breaking release level from type labels or title match.
-              └─> IssueMetadataService.find(…)(name: string): boolean [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:261]
+              └─> IssueMetadataService.find(…)(name: string): boolean [projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:264]
 ```
 
 **3. `PublishablePackagesCommand.run`** — depth 8 · decorated-method
@@ -342,12 +342,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PublishablePackagesService.verifyPublishablePackages` | 8 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.findMissingTarballs`, `formatMissingTarballsMessage`, `PublishablePackagesConsumerService.createConsumer`, `PublishablePackagesConsumerService.installConsumer`, `PublishablePackagesChecksService.verifyConsumer`, `PublishablePackagesConsumerService.removeConsumer` | `projects/validation/src/modules/publishable-packages/publishable-packages.service.ts:178` |
 
 <details>
-<summary>130 more callables</summary>
+<summary>134 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `PullRequestMetadataCommand.run` | 8 | `PullRequestMetadataCommand.resolveMetadata`, `PullRequestMetadataCommand.failWithMessage`, `PullRequestMetadataService.parseTitle`, `PullRequestMetadataService.checkMetadata`, `PullRequestMetadataCommand.resolvePullRequestNumber`, `PullRequestMetadataCommand.reportFailures`, `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `projects/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264` |
 | `IssueMetadataCommand.runBulkAudit` | 7 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.listOpenIssues`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.checkBulkIssues`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:257` |
+| `IssueMetadataService.checkBulkIssues` | 5 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataTypeService.readFromSummary`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:282` |
+| `IssueMetadataService.checkMetadata` | 5 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel`, `IssueMetadataTypeService.check` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:366` |
 | `IssueMetadataCommand.readLiveMetadata` | 5 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure`, `IssueMetadataService.resolveFromDocument` | `projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:153` |
 | `PublishablePackagesChecksService.verifyConsumer` | 5 | `PublishablePackagesChecksService.verifyTypecheck`, `PublishablePackagesChecksService.verifyBinaries`, `PublishablePackagesChecksService.verifyProjectGraph`, `PublishablePackagesChecksService.verifyGenerator`, `PublishablePackagesChecksService.verifyPluginTarget` | `projects/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238` |
 | `PullRequestBodyService.checkBody` | 5 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMalformedSections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findOversizedSections`, `PullRequestBodyService.findUnfilledComments` | `projects/validation/src/modules/pull-request-body/pull-request-body.service.ts:204` |
@@ -356,16 +358,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestMetadataCommand.readLiveMetadata` | 5 | `PullRequestMetadataGithubService.isAvailable`, `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataGithubService.run`, `PullRequestMetadataGithubService.describeFailure`, `PullRequestMetadataService.resolveFromDocument` | `projects/validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:154` |
 | `PullRequestReleaseSignificanceService.checkSignificance` | 5 | `PullRequestReleaseSignificanceService.significanceRank`, `PullRequestReleaseSignificanceService.findMostSignificantCommit`, `PullRequestReleaseSignificanceService.findMissingScopes`, `PullRequestReleaseSignificanceService.describeSignificanceFailure`, `PullRequestReleaseSignificanceService.describeMissingScopeFailures` | `projects/validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:215` |
 | `PullRequestReleaseSignificanceCommand.readLivePullRequest` | 5 | `PullRequestReleaseSignificanceGithubService.isAvailable`, `PullRequestReleaseSignificanceCommand.failWithUsageError`, `PullRequestReleaseSignificanceGithubService.run`, `PullRequestReleaseSignificanceGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromDocument` | `projects/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:114` |
-| `IssueMetadataService.checkBulkIssues` | 4 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:279` |
-| `IssueMetadataService.checkMetadata` | 4 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:362` |
+| `IssueMetadataService.resolveFromDocument` | 4 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataTypeService.readFromDocument`, `IssueMetadataService.readLabelNames` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:435` |
 | `PublishablePackagesConsumerService.createConsumer` | 4 | `PublishablePackagesConsumerService.createTypecheckFiles`, `PublishablePackagesConsumerService.createManifest`, `PublishablePackagesConsumerService.createWorkspaceConfiguration`, `PublishablePackagesConsumerService.writeFiles` | `projects/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:187` |
 | `AuditGovernanceService.auditWorkflowContent` | 3 | `AuditGovernanceService.some(…)`, `AuditGovernanceService.some(…)`, `AuditGovernanceService.collectWorkflowJobViolations` | `projects/validation/src/modules/audit-governance/audit-governance.service.ts:57` |
 | `AuditGovernanceCommand.run` | 3 | `AuditGovernanceService.checkGovernance`, `AuditGovernanceCommand.reportCodeownersVerdict`, `AuditGovernanceCommand.reportWorkflowsVerdict` | `projects/validation/src/modules/audit-governance/audit-governance.command.ts:77` |
-| `IssueMetadataService.checkReleaseSignificanceViolation` | 3 | `IssueMetadataService.resolveIssueReleaseLevel`, `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:44` |
-| `IssueMetadataService.checkTypeLabel` | 3 | `IssueMetadataService.checkTypeLabelPresence`, `IssueMetadataService.map(…)`, `IssueMetadataService.filter(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:128` |
-| `IssueMetadataService.checkHierarchy` | 3 | `IssueMetadataService.extractParentIssueNumber`, `IssueMetadataService.checkReleaseSignificanceViolation`, `IssueMetadataService.computeHierarchyDepth` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:321` |
-| `IssueMetadataService.groupLabels` | 3 | `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:401` |
-| `IssueMetadataService.resolveFromDocument` | 3 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataService.readLabelNames` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:427` |
+| `IssueMetadataService.checkReleaseSignificanceViolation` | 3 | `IssueMetadataService.resolveIssueReleaseLevel`, `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:47` |
+| `IssueMetadataService.checkTypeLabel` | 3 | `IssueMetadataService.checkTypeLabelPresence`, `IssueMetadataService.map(…)`, `IssueMetadataService.filter(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:131` |
+| `IssueMetadataService.checkHierarchy` | 3 | `IssueMetadataService.extractParentIssueNumber`, `IssueMetadataService.checkReleaseSignificanceViolation`, `IssueMetadataService.computeHierarchyDepth` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:325` |
+| `IssueMetadataService.groupLabels` | 3 | `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:409` |
 | `IssueMetadataCommand.resolveMetadata` | 3 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataCommand.readEnvironmentMetadata`, `IssueMetadataCommand.readLiveMetadata` | `projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:229` |
 | `PublishablePackagesChecksService.verifyProjectGraph` | 3 | `PublishablePackagesChecksService.runBinary`, `PublishablePackagesChecksService.every(…)`, `formatCommandFailure` | `projects/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:179` |
 | `PublishablePackagesConsumerService.createManifest` | 3 | `PublishablePackagesConsumerService.resolveTarballs`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.readManifest` | `projects/validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:61` |
@@ -387,10 +387,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `CatalogManifestsCommand.run` | 2 | `CatalogManifestsService.resolveWorkspaceManifestPaths`, `CatalogManifestsCommand.flatMap(…)` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44` |
 | `CatalogManifestsCommand.flatMap(…)` | 2 | `CatalogManifestsService.validateManifestDependencies`, `CatalogManifestsService.readManifest` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.command.ts:50` |
 | `IssueMetadataGithubService.listOpenIssues` | 2 | `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure` | `projects/validation/src/modules/issue-metadata/issue-metadata-github.service.ts:65` |
-| `IssueMetadataService.checkSourceLabel` | 2 | `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:97` |
-| `IssueMetadataService.readLabelNames` | 2 | `IssueMetadataService.filter(…)`, `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:241` |
-| `IssueMetadataService.resolveFromEnvironment` | 2 | `IssueMetadataService.describeError`, `IssueMetadataService.readLabelNames` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:453` |
-| `IssueMetadataService.resolveIssueReleaseLevel` | 2 | `IssueMetadataService.hasBreakingMarker`, `IssueMetadataService.resolveStandardReleaseLevel` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:485` |
+| `IssueMetadataTypeService.check` | 2 | `IssueMetadataTypeService.checkSubIssue`, `IssueMetadataTypeService.checkRoot` | `projects/validation/src/modules/issue-metadata/issue-metadata-type.service.ts:82` |
+| `IssueMetadataTypeService.readFromDocument` | 2 | `IssueMetadataTypeService.isRecord`, `IssueMetadataTypeService.hasBodyParent` | `projects/validation/src/modules/issue-metadata/issue-metadata-type.service.ts:101` |
+| `IssueMetadataService.checkSourceLabel` | 2 | `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:100` |
+| `IssueMetadataService.readLabelNames` | 2 | `IssueMetadataService.filter(…)`, `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:244` |
+| `IssueMetadataService.resolveFromEnvironment` | 2 | `IssueMetadataService.describeError`, `IssueMetadataService.readLabelNames` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:463` |
+| `IssueMetadataService.resolveIssueReleaseLevel` | 2 | `IssueMetadataService.hasBreakingMarker`, `IssueMetadataService.resolveStandardReleaseLevel` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:495` |
 | `IssueMetadataCommand.failWithMessage` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:79` |
 | `IssueMetadataCommand.failWithUsageError` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:87` |
 | `IssueMetadataCommand.readEnvironmentMetadata` | 2 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataService.resolveFromEnvironment` | `projects/validation/src/modules/issue-metadata/issue-metadata.command.ts:133` |
@@ -433,11 +435,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `CatalogManifestsService.validateManifestDependencies` | 1 | `CatalogManifestsService.isInternalWorkspaceDependency` | `projects/validation/src/modules/catalog-manifests/catalog-manifests.service.ts:98` |
 | `IssueMetadataGithubService.describeFailure` | 1 | `IssueMetadataGithubService.filter(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata-github.service.ts:51` |
 | `IssueMetadataGithubService.isAvailable` | 1 | `IssueMetadataGithubService.run` | `projects/validation/src/modules/issue-metadata/issue-metadata-github.service.ts:60` |
-| `IssueMetadataService.checkTypeLabelPresence` | 1 | `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:163` |
-| `IssueMetadataService.computeHierarchyDepth` | 1 | `IssueMetadataService.extractParentIssueNumber` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:183` |
-| `IssueMetadataService.map(…)` | 1 | `IssueMetadataService.isRecord` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:243` |
-| `IssueMetadataService.resolveStandardReleaseLevel` | 1 | `IssueMetadataService.find(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:257` |
-| `IssueMetadataService.parseFormAnswers` | 1 | `IssueMetadataService.extractFormField` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:416` |
+| `IssueMetadataTypeService.checkRoot` | 1 | `IssueMetadataTypeService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata-type.service.ts:32` |
+| `IssueMetadataTypeService.readFromSummary` | 1 | `IssueMetadataTypeService.hasBodyParent` | `projects/validation/src/modules/issue-metadata/issue-metadata-type.service.ts:121` |
+| `IssueMetadataService.checkTypeLabelPresence` | 1 | `IssueMetadataService.map(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:166` |
+| `IssueMetadataService.computeHierarchyDepth` | 1 | `IssueMetadataService.extractParentIssueNumber` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:186` |
+| `IssueMetadataService.map(…)` | 1 | `IssueMetadataService.isRecord` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:246` |
+| `IssueMetadataService.resolveStandardReleaseLevel` | 1 | `IssueMetadataService.find(…)` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:260` |
+| `IssueMetadataService.parseFormAnswers` | 1 | `IssueMetadataService.extractFormField` | `projects/validation/src/modules/issue-metadata/issue-metadata.service.ts:424` |
 | `LockfileService.checkLockfile` | 1 | `LockfileService.runFrozenInstall` | `projects/validation/src/modules/lockfile/lockfile.service.ts:60` |
 | `LockfileCommand.run` | 1 | `LockfileService.checkLockfile` | `projects/validation/src/modules/lockfile/lockfile.command.ts:50` |
 | `PublishablePackagesChecksService.runBinary` | 1 | `PublishablePackagesProcessService.run` | `projects/validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49` |
@@ -557,6 +561,8 @@ graph LR
   file_src_modules_catalog_manifests_catalog_manifests_types_ts["src/modules/catalog-manifests/catalog-manifests.types.ts"]
   file_src_modules_issue_metadata_issue_metadata_github_service_ts["src/modules/issue-metadata/issue-metadata-github.service.ts"]
   file_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts["src/modules/issue-metadata/issue-metadata-github.service.unit.test.ts"]
+  file_src_modules_issue_metadata_issue_metadata_type_service_ts["src/modules/issue-metadata/issue-metadata-type.service.ts"]
+  file_src_modules_issue_metadata_issue_metadata_type_service_unit_test_ts["src/modules/issue-metadata/issue-metadata-type.service.unit.test.ts"]
   file_src_modules_issue_metadata_issue_metadata_command_ts["src/modules/issue-metadata/issue-metadata.command.ts"]
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts["src/modules/issue-metadata/issue-metadata.command.unit.test.ts"]
   file_src_modules_issue_metadata_issue_metadata_constants_ts["src/modules/issue-metadata/issue-metadata.constants.ts"]
@@ -666,25 +672,33 @@ graph LR
   file_src_modules_issue_metadata_issue_metadata_github_service_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
   file_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
   file_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_type_service_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_type_service_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_type_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
   file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
   file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
   file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
   file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_command_ts
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
   file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
   file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_command_ts
   file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
   file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
   file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_command_ts
   file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
   file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
+  file_src_modules_issue_metadata_issue_metadata_service_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
   file_src_modules_issue_metadata_issue_metadata_service_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
   file_src_modules_issue_metadata_issue_metadata_service_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
   file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
   file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
   file_src_modules_lockfile_lockfile_command_ts --> file_src_modules_lockfile_lockfile_constants_ts
@@ -852,36 +866,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14046-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-443.64_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-14487-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-456.88_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-100-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-102-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-100-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-102-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-40-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-44-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-315-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-45-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-322-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-36-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-37-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-720-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-246-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-829-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-137-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-611-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-441-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-184-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-454-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-990-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-36-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-747-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-254-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-863-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-138-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-627-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-452-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-188-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-465-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1012-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -993,13 +1007,13 @@ graph LR
 ### Conventions
 
 ![Module Files](https://img.shields.io/badge/Module_Files-10-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-15-0284c7?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-16-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-9-16a34a?style=flat-square)
 ![Constants Files](https://img.shields.io/badge/Constants_Files-12-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-9-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-35-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-36-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)

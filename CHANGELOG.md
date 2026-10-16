@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.0](https://github.com/organizzolini/codebase/compare/v3.8.3...v3.9.0) (2026-10-16)
+
+### ✨ Features
+
+* **validation,documentation:** ✨ enforce issue types on issue hierarchy ([#1665](https://github.com/organizzolini/codebase/issues/1665)) ([fefd4ef](https://github.com/organizzolini/codebase/commit/fefd4ef5b759b3746bae40190af61b9e53cf1621))
+
+### 🐛 Bug Fixes
+
+* **documentation:** 🐛 drop the dead source .env from the openwiki target ([#1667](https://github.com/organizzolini/codebase/issues/1667)) ([0618c63](https://github.com/organizzolini/codebase/commit/0618c6387a08db82dc9a4083aa6027e5dad7e4b1))
+
 ## [3.8.3](https://github.com/organizzolini/codebase/compare/v3.8.2...v3.8.3) (2026-10-16)
 
 ### 🐛 Bug Fixes
