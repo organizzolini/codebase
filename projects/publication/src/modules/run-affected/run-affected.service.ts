@@ -5,13 +5,17 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
   DEFAULT_SPELLING_PATHS,
+  DEFAULT_TEMPLATE_PATHS,
   INCLUDE_SPELLING_VALUE,
+  INCLUDE_TEMPLATES_VALUE,
   REVISIONS_UNSET_MESSAGE,
   TARGET_UNSET_MESSAGE,
+  TEMPLATE_SELECTOR,
 } from "./run-affected.constants";
 
 import type { Environment } from "../../publication.types";
 import type {
+  RunAffectedCorrections,
   RunAffectedFailure,
   RunAffectedInputs,
   RunAffectedOutcome,
@@ -19,20 +23,22 @@ import type {
 } from "./run-affected.types";
 
 /**
- * Decides how `nx affected` runs for one target between `NX_BASE` and
- * `NX_HEAD`, and runs it.
+ * Runs one Nx target on the projects a CI change affects, after correcting the
+ * changed-file list Nx selects them from.
  *
- * Handing Nx its list over `--stdin` is the fallback, not the default, because
- * Nx reads every file it names as changed in full. A lockfile then touches
- * every project, defeating `projectsAffectedByDependencyUpdates: "auto"`, and a
- * release commit's one-line `package.json` version bump affected 47 projects
- * instead of 3. Only `--base`/`--head` let Nx diff those files field by field,
- * so any change set with nothing to drop goes through them unchanged.
+ * Two kinds of file mislead Nx. Spelling files over-select: Nx decides affected
+ * per project, so one new dictionary word selected every project; they are
+ * dropped unless `INCLUDE_SPELLING`. Conformetry templates under-select:
+ * `.nxignore` hides some from Nx, so with `INCLUDE_TEMPLATES` a changed
+ * template adds the conformetry config, an input of every instance project.
  *
- * The change set is listed the way Nx lists its own: the merge base of the two
- * revisions, falling back to `NX_BASE` itself, then
- * `git diff --name-only --no-renames --relative`. An empty list affects nothing
- * and exits cleanly; it never falls back to everything.
+ * With nothing to correct, Nx gets `--base`/`--head`; otherwise `--stdin`.
+ * `--stdin` is the fallback because Nx counts every file it is handed as
+ * changed in full, so a lockfile touches every project. Only `--base`/`--head`
+ * diff `package.json` and the lockfile field by field. The list is built the
+ * way Nx builds its own, from the merge base of the two revisions, falling back
+ * to `NX_BASE`. An empty list affects nothing; it never falls back to
+ * everything.
  */
 @Injectable()
 export class RunAffectedService {
@@ -48,6 +54,78 @@ export class RunAffectedService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /** Builds the run that hands Nx the corrected change set over `--stdin`. */
+  private correctedPlan(
+    inputs: RunAffectedInputs,
+    corrections: RunAffectedCorrections,
+  ): RunAffectedPlan {
+    const { extra, target } = inputs;
+    const { changed, spellingFiles, templateFiles } = corrections;
+    const kept = changed.filter((file) => !spellingFiles.includes(file));
+    const corrected =
+      templateFiles.length > 0 ? [...kept, TEMPLATE_SELECTOR] : kept;
+
+    return {
+      arguments: [
+        "exec",
+        "nx",
+        "affected",
+        "--stdin",
+        `--target=${target}`,
+        ...extra,
+      ],
+      input: `${corrected.join("\n")}\n`,
+      kind: "run",
+      spellingFiles,
+      target,
+      templateFiles,
+    };
+  }
+
+  /**
+   * Picks out the files that mislead Nx for this target, listing the change
+   * set only when the target asks for a correction.
+   */
+  private findCorrections(
+    inputs: RunAffectedInputs,
+  ): RunAffectedCorrections | RunAffectedFailure {
+    const dropSpelling =
+      this.configService.get("INCLUDE_SPELLING", { infer: true }) !==
+      INCLUDE_SPELLING_VALUE;
+    const addTemplates =
+      this.configService.get("INCLUDE_TEMPLATES", { infer: true }) ===
+      INCLUDE_TEMPLATES_VALUE;
+
+    if (!dropSpelling && !addTemplates) {
+      return {
+        changed: [],
+        kind: "corrections",
+        spellingFiles: [],
+        templateFiles: [],
+      };
+    }
+
+    const changed = this.listChangedFiles(inputs.base, inputs.head);
+
+    if (!Array.isArray(changed)) {
+      return changed;
+    }
+
+    const spelling = this.pattern("SPELLING_PATHS", DEFAULT_SPELLING_PATHS);
+    const templates = this.pattern("TEMPLATE_PATHS", DEFAULT_TEMPLATE_PATHS);
+
+    return {
+      changed,
+      kind: "corrections",
+      spellingFiles: dropSpelling
+        ? changed.filter((file) => spelling.test(file))
+        : [],
+      templateFiles: addTemplates
+        ? changed.filter((file) => templates.test(file))
+        : [],
+    };
+  }
 
   /** Lists the files changed between two revisions, or why that failed. */
   private listChangedFiles(
@@ -80,28 +158,16 @@ export class RunAffectedService {
     return diff.stdout.split("\n").filter((line) => line !== "");
   }
 
-  /** Builds the run that hands Nx a change set with the spelling files gone. */
-  private narrowedPlan(
-    inputs: RunAffectedInputs,
-    changed: readonly string[],
-  ): RunAffectedPlan {
-    const pattern = this.spellingPattern();
-    const { extra, target } = inputs;
+  /** Builds the pattern a variable names, or its default when unset. */
+  private pattern(
+    variable: "SPELLING_PATHS" | "TEMPLATE_PATHS",
+    fallback: string,
+  ): RegExp {
+    const configured = this.configService.get(variable, { infer: true });
 
-    return {
-      arguments: [
-        "exec",
-        "nx",
-        "affected",
-        "--stdin",
-        `--target=${target}`,
-        ...extra,
-      ],
-      input: `${changed.filter((file) => !pattern.test(file)).join("\n")}\n`,
-      kind: "run",
-      spellingFiles: changed.filter((file) => pattern.test(file)),
-      target,
-    };
+    return new RegExp(
+      configured === undefined || configured === "" ? fallback : configured,
+    );
   }
 
   /** Reads the target, the revisions, and the extra flags, or what is unset. */
@@ -147,20 +213,8 @@ export class RunAffectedService {
       kind: "run",
       spellingFiles: [],
       target,
+      templateFiles: [],
     };
-  }
-
-  /** Builds the pattern that picks the spelling files out of a change set. */
-  private spellingPattern(): RegExp {
-    const configured = this.configService.get("SPELLING_PATHS", {
-      infer: true,
-    });
-
-    return new RegExp(
-      configured === undefined || configured === ""
-        ? DEFAULT_SPELLING_PATHS
-        : configured,
-    );
   }
 
   // 🌎 Public Methods
@@ -187,23 +241,15 @@ export class RunAffectedService {
       return inputs;
     }
 
-    if (
-      this.configService.get("INCLUDE_SPELLING", { infer: true }) ===
-      INCLUDE_SPELLING_VALUE
-    ) {
-      return this.revisionsPlan(inputs);
+    const corrections = this.findCorrections(inputs);
+
+    if (corrections.kind === "failure") {
+      return corrections;
     }
 
-    const changed = this.listChangedFiles(inputs.base, inputs.head);
-
-    if (!Array.isArray(changed)) {
-      return changed;
-    }
-
-    const pattern = this.spellingPattern();
-
-    return changed.some((file) => pattern.test(file))
-      ? this.narrowedPlan(inputs, changed)
+    return corrections.spellingFiles.length > 0 ||
+      corrections.templateFiles.length > 0
+      ? this.correctedPlan(inputs, corrections)
       : this.revisionsPlan(inputs);
   }
 }

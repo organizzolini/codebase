@@ -50,13 +50,15 @@ describe(RunAffectedCommand, () => {
     for (const name of [
       "ARGUMENTS",
       "INCLUDE_SPELLING",
+      "INCLUDE_TEMPLATES",
       "NX_BASE",
       "NX_HEAD",
+      "SPELLING_PATHS",
+      "TARGET",
+      "TEMPLATE_PATHS",
     ]) {
       vi.stubEnv(name, undefined);
     }
-    vi.stubEnv("SPELLING_PATHS", undefined);
-    vi.stubEnv("TARGET", undefined);
     for (const [name, value] of Object.entries(environment)) {
       vi.stubEnv(name, value);
     }
@@ -250,7 +252,7 @@ describe(RunAffectedCommand, () => {
 
       const runner = new FakeProcessRunner(
         changing(
-          "configuration/.cspell/words.txt",
+          "projects/configuration/.cspell/words.txt",
           "projects/validation/src/main.ts",
           "projects/lexico/lexico-web/cspell.config.yaml",
           "projects/validation/package.json",
@@ -260,7 +262,7 @@ describe(RunAffectedCommand, () => {
 
       expect(reportLines).toStrictEqual([
         "✂️ Not affecting test-code with spelling files:",
-        "  configuration/.cspell/words.txt",
+        "  projects/configuration/.cspell/words.txt",
         "  projects/lexico/lexico-web/cspell.config.yaml",
       ]);
       expect(runner.streamed).toStrictEqual([
@@ -284,7 +286,7 @@ describe(RunAffectedCommand, () => {
       expect.hasAssertions();
 
       const runner = new FakeProcessRunner(
-        changing("configuration/.cspell/words.txt"),
+        changing("projects/configuration/.cspell/words.txt"),
       );
       await runCommand(runner, base);
 
@@ -305,7 +307,7 @@ describe(RunAffectedCommand, () => {
       expect.hasAssertions();
 
       const runner = new FakeProcessRunner(
-        changing("configuration/.cspell/words.txt", "main.ts"),
+        changing("projects/configuration/.cspell/words.txt", "main.ts"),
       );
       await runCommand(runner, { ...base, SPELLING_PATHS: "" });
 
@@ -322,6 +324,103 @@ describe(RunAffectedCommand, () => {
       });
 
       expect(runner.streamed[0]?.input).toBe("main.ts\n");
+    });
+  });
+
+  describe("a change set with templates", () => {
+    const TEMPLATE =
+      "projects/configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/AGENTS.md";
+
+    it("adds the conformetry config when INCLUDE_TEMPLATES is true", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(
+        changing(TEMPLATE, "projects/validation/package.json"),
+      );
+      await runCommand(runner, { ...base, INCLUDE_TEMPLATES: "true" });
+
+      expect(reportLines).toStrictEqual([
+        "🧬 Selecting every conformetry instance for test-code, templates changed:",
+        `  ${TEMPLATE}`,
+      ]);
+      expect(runner.streamed[0]?.args).toContain("--stdin");
+      expect(runner.streamed[0]?.input).toBe(
+        `${TEMPLATE}\nprojects/validation/package.json\nprojects/configuration/conformetry.config.ts\n`,
+      );
+    });
+
+    it("leaves templates alone without INCLUDE_TEMPLATES", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(changing(TEMPLATE));
+      await runCommand(runner, base);
+
+      expect(runner.streamed[0]?.args).toContain("--base=base");
+      expect(reportLines).toStrictEqual([]);
+    });
+
+    it("lists the change set for templates even when spelling stays in", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(
+        changing("projects/configuration/.cspell/words.txt", TEMPLATE),
+      );
+      await runCommand(runner, {
+        ...base,
+        INCLUDE_SPELLING: "true",
+        INCLUDE_TEMPLATES: "true",
+      });
+
+      expect(runner.streamed[0]?.input).toBe(
+        `projects/configuration/.cspell/words.txt\n${TEMPLATE}\nprojects/configuration/conformetry.config.ts\n`,
+      );
+    });
+
+    it("drops spelling files and adds the config together", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(
+        changing("projects/configuration/.cspell/words.txt", TEMPLATE),
+      );
+      await runCommand(runner, { ...base, INCLUDE_TEMPLATES: "true" });
+
+      expect(reportLines).toStrictEqual([
+        "✂️ Not affecting test-code with spelling files:",
+        "  projects/configuration/.cspell/words.txt",
+        "🧬 Selecting every conformetry instance for test-code, templates changed:",
+        `  ${TEMPLATE}`,
+      ]);
+      expect(runner.streamed[0]?.input).toBe(
+        `${TEMPLATE}\nprojects/configuration/conformetry.config.ts\n`,
+      );
+    });
+
+    it("hands Nx the revisions when no template changed", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(changing("README.md"));
+      await runCommand(runner, {
+        ...base,
+        INCLUDE_SPELLING: "true",
+        INCLUDE_TEMPLATES: "true",
+      });
+
+      expect(runner.streamed[0]?.args).toContain("--base=base");
+    });
+
+    it("honours TEMPLATE_PATHS", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(changing("templates/a.ts"));
+      await runCommand(runner, {
+        ...base,
+        INCLUDE_TEMPLATES: "true",
+        TEMPLATE_PATHS: "^templates/",
+      });
+
+      expect(runner.streamed[0]?.input).toBe(
+        "templates/a.ts\nprojects/configuration/conformetry.config.ts\n",
+      );
     });
   });
 

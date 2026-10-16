@@ -10,8 +10,10 @@ import { z } from "zod";
 export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),
   INCLUDE_SPELLING: z.string().optional(),
+  INCLUDE_TEMPLATES: z.string().optional(),
   NX_BASE: z.string().optional(),
   NX_HEAD: z.string().optional(),
   SPELLING_PATHS: z.string().optional(),
   TARGET: z.string().optional(),
+  TEMPLATE_PATHS: z.string().optional(),
 });

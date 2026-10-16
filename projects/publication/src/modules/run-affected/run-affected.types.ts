@@ -1,5 +1,14 @@
 // 🏷️ Types
 
+/** The corrections a change set needs before Nx hears about it. */
+export interface RunAffectedCorrections {
+  /** The full change set the corrections were picked from. */
+  changed: readonly string[];
+  kind: "corrections";
+  spellingFiles: readonly string[];
+  templateFiles: readonly string[];
+}
+
 /** Nothing can run: why, and the exit code to end with. */
 export interface RunAffectedFailure {
   exitCode: number;
@@ -30,4 +39,6 @@ export interface RunAffectedPlan {
   /** The changed files dropped from the change set as spelling files. */
   spellingFiles: readonly string[];
   target: string;
+  /** The changed templates that added the conformetry config to the set. */
+  templateFiles: readonly string[];
 }
