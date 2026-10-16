@@ -382,6 +382,65 @@ describe(UpdateReuiSkillCommand, () => {
     );
   });
 
+  it("installs a missing skill folder even when the pin is current", async () => {
+    expect.hasAssertions();
+
+    fs.writeFileSync(lockfile(), lockfileText(BUNDLE_HASH));
+    serve(BUNDLE_FILES);
+
+    await runCommand();
+
+    expect(readSkill("rules/one.md")).toBe("rule one\n");
+    expect(report).toStrictEqual([
+      "🤹 Updated the reui skill to version 1.2.3 (2 files)",
+    ]);
+  });
+
+  it("reports a lockfile with no reui entry and writes nothing", async () => {
+    expect.hasAssertions();
+
+    const text = `${JSON.stringify({ skills: {}, version: 1 }, null, 2)}\n`;
+
+    fs.writeFileSync(lockfile(), text);
+    serve(BUNDLE_FILES);
+
+    await runCommand();
+
+    expect(report[0]).toBe(
+      "⚠️  The reui skill was not updated: skills-lock.json has no reui entry",
+    );
+    expect(fs.existsSync(path.join(workspace.root, SKILL_FOLDER))).toBe(false);
+    expect(fs.readFileSync(lockfile(), "utf8")).toBe(text);
+  });
+
+  it("reports an unknown version when the bundle names none", async () => {
+    expect.hasAssertions();
+
+    fs.writeFileSync(lockfile(), lockfileText(BUNDLE_HASH));
+    writeSkill(BUNDLE_FILES);
+    fetchMock.mockResolvedValue(Response.json({ files: BUNDLE_FILES }));
+
+    await runCommand();
+
+    expect(report).toStrictEqual([
+      "🤹 The reui skill is current (version unknown)",
+    ]);
+  });
+
+  it("exits cleanly when something other than an Error is thrown", async () => {
+    expect.hasAssertions();
+
+    fs.writeFileSync(lockfile(), lockfileText("stale"));
+    fetchMock.mockRejectedValue("offline");
+
+    await expect(runCommand()).resolves.toBeUndefined();
+
+    expect(report).toStrictEqual([
+      "⚠️  The reui skill was not updated: offline",
+      RETRY_HINT,
+    ]);
+  });
+
   it("does nothing in a workspace with no skills-lock.json", async () => {
     expect.hasAssertions();
 
