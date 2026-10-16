@@ -8,6 +8,7 @@ import { expectProcessExitOne } from "../../../testing/mocks";
 import { ConformetryGeneratorsCommand } from "../conformetry-generators/conformetry-generators.command";
 import { ConventionalConfigCommand } from "../conventional-config/conventional-config.command";
 import { DevcontainerConfigurationCommand } from "../devcontainer-configuration/devcontainer-configuration.command";
+import { InstalledSkillsCommand } from "../installed-skills/installed-skills.command";
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
 import { PullRequestLabelsCommand } from "../pull-request-labels/pull-request-labels.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
@@ -24,6 +25,7 @@ describe(SynchronizationCommand, () => {
   let conformetryGenerators: ConformetryGeneratorsCommand;
   let conventionalConfig: ConventionalConfigCommand;
   let devcontainerConfiguration: DevcontainerConfigurationCommand;
+  let installedSkills: InstalledSkillsCommand;
   let logger: LoggerService;
   let pullRequestLabels: PullRequestLabelsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;
@@ -36,6 +38,7 @@ describe(SynchronizationCommand, () => {
       conformetryGenerators,
       conventionalConfig,
       devcontainerConfiguration,
+      installedSkills,
       pullRequestLabels,
       pullRequestTemplate,
       skillExclusions,
@@ -71,6 +74,12 @@ describe(SynchronizationCommand, () => {
           provide: DevcontainerConfigurationCommand,
           useValue: createMock<DevcontainerConfigurationCommand>({
             synchronizationLabel: "devcontainer-configuration",
+          }),
+        },
+        {
+          provide: InstalledSkillsCommand,
+          useValue: createMock<InstalledSkillsCommand>({
+            synchronizationLabel: "installed-skills",
           }),
         },
         {
@@ -116,6 +125,7 @@ describe(SynchronizationCommand, () => {
     devcontainerConfiguration = await module.resolve(
       DevcontainerConfigurationCommand,
     );
+    installedSkills = await module.resolve(InstalledSkillsCommand);
     logger = await module.resolve(LoggerService);
     pullRequestLabels = await module.resolve(PullRequestLabelsCommand);
     pullRequestTemplate = await module.resolve(PullRequestTemplateCommand);
@@ -147,6 +157,10 @@ describe(SynchronizationCommand, () => {
         {
           provide: DevcontainerConfigurationCommand,
           useValue: createMock<DevcontainerConfigurationCommand>(),
+        },
+        {
+          provide: InstalledSkillsCommand,
+          useValue: createMock<InstalledSkillsCommand>(),
         },
         {
           provide: LoggerService,
@@ -259,6 +273,7 @@ describe(SynchronizationCommand, () => {
 
     await command.run(["check"]);
 
+    expect(installedSkills.synchronize).toHaveBeenCalledWith("check");
     expect(skillExclusions.synchronize).toHaveBeenCalledWith("check");
     expect(vscodeExtensions.synchronize).toHaveBeenCalledWith("check");
   });

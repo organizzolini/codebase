@@ -329,9 +329,10 @@ runs:
           || echo "No bundled gyp_main.py found; nothing to repair."
       shell: bash
 
-    # The root `postinstall` script already runs `scripts/install-skills.sh`
-    # after this, which is idempotent and returns in milliseconds when every
-    # locked skill is already on disk (true here since skills are committed).
+    # The root `postinstall` script already runs `installed-skills write`
+    # after this, which is idempotent and only boots its command, restoring
+    # nothing, when every locked skill is already on disk (true here since
+    # skills are committed).
     # A separate `skills experimental_install` step used to run redundantly
     # afterward, bypassing that guard and re-cloning every upstream skill
     # source on every job — that duplicate work is why this step is gone.

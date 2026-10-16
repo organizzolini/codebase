@@ -16,6 +16,7 @@ type CommandFactoryRun = (
 
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
+const logToStandardError = vi.fn<() => void>();
 const issueLabelsModuleMock = createMock<IssueLabelsModule>();
 const synchronizationModuleMock = createMock<SynchronizationModule>();
 
@@ -29,8 +30,20 @@ vi.mock("@codebase/logging", () => ({
   // `synchronization.module` imports `LoggerModule` from the same specifier, so the mock
   // has to stand in for the whole package, not just the service.
   LoggerModule: function LoggerModule() {},
-  LoggerService: function LoggerService() {
-    return loggerServiceMock;
+  // A class rather than a function returning the mock: `main` both
+  // constructs it and calls its static `logToStandardError`.
+  LoggerService: class MockLoggerService {
+    static logToStandardError(): void {
+      logToStandardError();
+    }
+
+    error(message: string, stack?: string): void {
+      loggerServiceMock.error(message, stack);
+    }
+
+    setContext(context: string): void {
+      loggerServiceMock.setContext(context);
+    }
   },
 }));
 
@@ -72,6 +85,19 @@ describe("main bootstrap", () => {
     expect(firstCall).toBeDefined();
     expect(firstCall?.[1]).toStrictEqual(
       expect.objectContaining({ bufferLogs: true }),
+    );
+  });
+
+  // `installed-skills check` prints the skills session hook's context, so a
+  // log line on standard output would become part of what an agent reads.
+  it("sends every log line to standard error before anything logs", async () => {
+    logToStandardError.mockClear();
+
+    await import("./synchronization.main");
+
+    expect(logToStandardError).toHaveBeenCalledTimes(1);
+    expect(logToStandardError.mock.invocationCallOrder[0]).toBeLessThan(
+      run.mock.invocationCallOrder[0] ?? 0,
     );
   });
 

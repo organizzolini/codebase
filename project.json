@@ -7,13 +7,13 @@
       "cache": false,
       "configurations": {
         "force": {
-          "command": "SKILLS_INSTALL_FORCE=1 bash scripts/install-skills.sh"
+          "command": "SKILLS_INSTALL_FORCE=1 NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write"
         }
       },
-      "description": "Restore the skills listed in skills-lock.json from their source repositories into the gitignored .agents/skills/<name>/ folders. Also runs from postinstall; the force configuration re-restores skills that are already present.",
+      "description": "Restore the skills listed in skills-lock.json from their source repositories into .agents/skills/<name>/, through the synchronization project's installed-skills command in write mode. Also runs from postinstall; the force configuration re-restores skills that are already present.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "bash scripts/install-skills.sh",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write",
         "cwd": "{workspaceRoot}"
       }
     }
