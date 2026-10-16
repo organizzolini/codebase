@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -339,9 +339,13 @@ describe(GenerationService, () => {
         instancePath: "/output",
       });
 
-      await expect(
-        hookContext?.filesystem.listDirectory(templateDirectoryPath),
-      ).resolves.toStrictEqual([]);
+      try {
+        await expect(
+          hookContext?.filesystem.listDirectory(templateDirectoryPath),
+        ).resolves.toStrictEqual([]);
+      } finally {
+        await rm(templateDirectoryPath, { force: true, recursive: true });
+      }
     });
 
     it("writes nothing and formats nothing when preGenerate throws", async () => {
