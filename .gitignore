@@ -39,6 +39,7 @@ crash.log
 
 # Conformetry 👔
 .conformetry
+projects/ic-suite/conformetry/conformetry-examples/examples/hooks/receipts
 
 # Output 🛢️
 *.db
