@@ -11,7 +11,7 @@ This directory contains shell scripts for:
 - **Nx** - The CI steps around Nx: its affected runs and the task-result database CI caches (in `nx/`)
 
 > **The shell floor.** Which scripts stay shell, and why, is decided in
-> [ADR 0026](../documentation/adr/0026-keep-a-small-shell-floor-under-the-scripts.md).
+> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md).
 > A script that is not on that floor belongs in a NestJS command.
 
 ## Quick Start
