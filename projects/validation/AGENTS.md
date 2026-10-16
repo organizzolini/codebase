@@ -41,6 +41,10 @@ discriminator is not startup cost: the CLI boots in about 0.83s and the shell
 session hook takes about 0.77s, because the shell hook shells out to Node
 anyway. It is whether the check still works when the install is broken.
 
+The full shell floor, the rule behind it, and the bootstrap it extends to are
+decided in
+[ADR 0026](../../documentation/adr/0026-keep-a-small-shell-floor-under-the-scripts.md).
+
 ## Architecture Overview
 
 ### Tech Stack
