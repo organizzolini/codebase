@@ -72,8 +72,8 @@ describe("export --dry-run", () => {
     expect(result.exitCode).toBe(0);
     expect(output).toContain('database "fixture_development" on 127.0.0.1');
     expect(output).toContain(file);
-    expect(output).toContain("fixture.widgets: would export data");
-    expect(output).toContain(`${file} would be created`);
+    expect(output).toContain("Planning to export data of fixture.widgets");
+    expect(output).toContain(`Planning to create ${file}`);
     expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
     expect(spawned.map(({ args }) => args)).toStrictEqual([["--version"]]);
     expect(initialize).not.toHaveBeenCalled();
@@ -91,7 +91,7 @@ describe("export --dry-run", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.logs.join("\n")).toContain(
-      `fixture.widgets: would export ${content}`,
+      `Planning to export ${content} of fixture.widgets`,
     );
   });
 
@@ -111,8 +111,8 @@ describe("export --dry-run", () => {
     const output = result.logs.join("\n");
 
     expect(result.exitCode).toBe(0);
-    expect(output.match(/fixture\.widgets: would export/gu)).toHaveLength(1);
-    expect(output).toContain("sample.parts: would export data");
+    expect(output.match(/export data of fixture\.widgets/gu)).toHaveLength(1);
+    expect(output).toContain("Planning to export data of sample.parts");
   });
 
   it("with --overwrite says an existing file would be overwritten, leaving it as it was", async () => {
@@ -123,7 +123,7 @@ describe("export --dry-run", () => {
     const result = await run("--data", "--overwrite");
 
     expect(result.exitCode).toBe(0);
-    expect(result.logs.join("\n")).toContain(`${file} would be overwritten`);
+    expect(result.logs.join("\n")).toContain(`Planning to overwrite ${file}`);
     expect(fs.readFileSync(file, "utf8")).toBe("an earlier dump");
     expect(fs.statSync(file).mtimeMs).toBe(before);
     expect(fs.readdirSync(directory)).toStrictEqual(["fixture.dump"]);
@@ -138,7 +138,7 @@ describe("export --dry-run", () => {
 
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain(`${file} already exists`);
-    expect(result.logs.join("\n")).not.toContain("Dry run");
+    expect(result.logs.join("\n")).not.toContain("Planning");
     expect(spawned).toStrictEqual([]);
     expect(fs.readFileSync(file, "utf8")).toBe("an earlier dump");
   });

@@ -75,7 +75,9 @@ describe("import --dry-run", () => {
     expect(result.exitCode).toBe(0);
     expect(output).toContain('database "fixture_development" on 127.0.0.1');
     expect(output).toContain(file);
-    expect(output).toContain("fixture.widgets: the dump holds data and DDL");
+    expect(output).toContain(
+      "Found data and DDL of fixture.widgets in the dump",
+    );
     expect(output).not.toContain("--clean");
     expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
     expect(spawned.map(({ args }) => args[0])).toStrictEqual([
@@ -95,24 +97,24 @@ describe("import --dry-run", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.logs.join("\n")).toContain(
-      `fixture.widgets: the dump holds ${holds}`,
+      `Found ${holds} of fixture.widgets in the dump`,
     );
   });
 
   it.each([
     [
       ["--data"],
-      "with --data would truncate fixture.widgets, deleting every row it holds, then restore the dump's rows",
+      "Planning to truncate fixture.widgets for --clean with --data, deleting every row it holds, then restore the dump's rows",
     ],
     [
       ["--ddl"],
-      "with --ddl would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
+      "Planning to drop and recreate fixture.widgets for --clean with --ddl, deleting every row it holds, then restore them from the dump",
     ],
     [
       ["--data", "--ddl"],
-      "with --ddl would drop and recreate fixture.widgets, deleting every row it holds, then restore them from the dump",
+      "Planning to drop and recreate fixture.widgets for --clean with --ddl, deleting every row it holds, then restore them from the dump",
     ],
-  ])("with --clean %j says it %s", async (options, says) => {
+  ])("with --clean %j says %s", async (options, says) => {
     const spawned = mockProcesses({
       list: { stdout: listing(DEFINITION, ROWS) },
     });
@@ -122,7 +124,7 @@ describe("import --dry-run", () => {
     const output = result.logs.join("\n");
 
     expect(result.exitCode).toBe(0);
-    expect(output).toContain(`--clean ${says}`);
+    expect(output).toContain(says);
     expect(spawned.map(({ args }) => args[0])).toStrictEqual([
       "--version",
       "--list",
@@ -138,7 +140,7 @@ describe("import --dry-run", () => {
 
     expect(result.exitCode).toBe(0);
     expect(output).toContain(
-      "--clean with --ddl would drop and recreate fixture.widgets",
+      "Planning to drop and recreate fixture.widgets for --clean with --ddl",
     );
     expect(output).not.toContain("truncate");
   });
@@ -158,9 +160,9 @@ describe("import --dry-run", () => {
     const output = result.logs.join("\n");
 
     expect(result.exitCode).toBe(0);
-    expect(output.match(/fixture\.widgets: the dump holds/gu)).toHaveLength(1);
+    expect(output.match(/of fixture\.widgets in the dump/gu)).toHaveLength(1);
     expect(output).toContain(
-      "--clean with --data would truncate fixture.widgets",
+      "Planning to truncate fixture.widgets for --clean with --data",
     );
     expect(output).not.toContain("fixture.widgets, fixture.widgets");
   });
@@ -183,6 +185,6 @@ describe("import --dry-run", () => {
     expect(result.stderr).toContain(
       `${file} holds no rows for fixture.widgets`,
     );
-    expect(result.logs.join("\n")).not.toContain("Dry run");
+    expect(result.logs.join("\n")).not.toContain("Planning");
   });
 });

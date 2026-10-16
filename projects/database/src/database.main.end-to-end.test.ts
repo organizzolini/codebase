@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
@@ -11,7 +13,9 @@ const SPAWN_TIMEOUT_MILLISECONDS = 60_000;
 
 /**
  * Runs `src/database.main.ts` with `argv` as `start` does, in a process of
- * its own and with no Postgres variable in its environment.
+ * its own and with no Postgres variable in its environment. Nor does it
+ * inherit the `LOG_LEVEL` the vitest configuration silences in-process
+ * logging with, so it logs at its own default level, as a terminal sees it.
  */
 function runMain(argv: readonly string[]): {
   readonly output: string;
@@ -19,7 +23,10 @@ function runMain(argv: readonly string[]): {
 } {
   const environment = Object.fromEntries(
     Object.entries(process.env).filter(
-      ([key]) => !key.includes("POSTGRES") && !key.startsWith("PG"),
+      ([key]) =>
+        !key.includes("POSTGRES") &&
+        !key.startsWith("PG") &&
+        key !== "LOG_LEVEL",
     ),
   );
   const result = spawnSync(
@@ -70,6 +77,39 @@ describe("main end-to-end suite", () => {
         "--table widgets names no schema: qualify it as schema.table, or pass --schema <name>",
       );
       expect(output).not.toContain("hunter2-secret");
+    },
+    SPAWN_TIMEOUT_MILLISECONDS,
+  );
+
+  it(
+    "prints a dry run's plan and exits zero, writing no file",
+    () => {
+      const directory = fs.mkdtempSync(
+        path.join(os.tmpdir(), "database-main-dry-run-"),
+      );
+      const file = path.join(directory, "never.dump");
+
+      try {
+        const { output, status } = runMain([
+          "export",
+          "--source-uri",
+          "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",
+          "--table",
+          "fixture.widgets",
+          "--data",
+          "--file",
+          file,
+          "--dry-run",
+        ]);
+
+        expect(status).toBe(0);
+        expect(output).toContain("Planning to export data of fixture.widgets");
+        expect(output).toContain(`Planning to create ${file}`);
+        expect(output).not.toContain("hunter2-secret");
+        expect(fs.readdirSync(directory)).toStrictEqual([]);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
     },
     SPAWN_TIMEOUT_MILLISECONDS,
   );

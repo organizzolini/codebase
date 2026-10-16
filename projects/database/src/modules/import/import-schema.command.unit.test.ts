@@ -156,7 +156,9 @@ describe("import --schema", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.logs).toContainEqual(
-      expect.stringContaining("fixture.widgets: the dump holds data"),
+      expect.stringContaining(
+        "Found data and DDL of fixture.widgets in the dump",
+      ),
     );
   });
 

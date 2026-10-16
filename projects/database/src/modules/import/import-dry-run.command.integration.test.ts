@@ -124,9 +124,9 @@ describe("import --dry-run", () => {
       const output = result.logs.join("\n");
 
       expect(result.exitCode).toBe(0);
-      expect(output).toContain("archive.notes: the dump holds data");
+      expect(output).toContain("Found data of archive.notes in the dump");
       expect(output).toContain(
-        "--clean with --data would truncate archive.notes",
+        "Planning to truncate archive.notes for --clean with --data",
       );
       expect(output).not.toContain(target.connection.password);
       await expect(
