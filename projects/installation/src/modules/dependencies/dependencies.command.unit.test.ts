@@ -159,7 +159,7 @@ describe(DependenciesCommand, () => {
       "terraform output -raw kubeconfig",
     ]);
     expect(report).toContain(
-      "📥 Importing cluster 12345 into Terraform state...",
+      "📥 Importing the cluster into Terraform state...",
     );
     expect(report.at(-1)).toBe("✅ kubeconfig saved to ~/.kube/config");
     expect(

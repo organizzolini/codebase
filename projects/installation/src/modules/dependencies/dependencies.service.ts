@@ -64,9 +64,9 @@ export class DependenciesService {
       return;
     }
 
-    this.reporter.print(
-      `📥 Importing cluster ${clusterId} into Terraform state...`,
-    );
+    // The cluster id comes from the `.env` file, so it is passed to Terraform
+    // and never printed.
+    this.reporter.print("📥 Importing the cluster into Terraform state...");
     this.processRunner.runOrThrow(
       "terraform",
       ["import", CLUSTER_RESOURCE_ADDRESS, clusterId],
