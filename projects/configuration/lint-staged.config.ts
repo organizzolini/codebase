@@ -119,30 +119,36 @@ function runGit(gitArguments: string[]): string {
 }
 
 /**
- * Hands `nx affected` the staged changes, correcting the one change it cannot
- * see: a conformetry template.
+ * Flags selecting every conformetry instance, when a conformetry template is
+ * staged, and `undefined` when none is.
  *
  * `.nxignore` hides some template files from Nx, so editing one selects no
- * project. With a template staged, this passes the staged files plus the
- * conformetry configuration, an input of every instance project, so all of
- * them are selected. The edit still reaches each project's cache key through
- * the template hash input the plugin declares, so each one re-validates.
- *
- * Staged files are counted in full, as with `--files`, so a commit that stages
- * a template loses the field-level diff of `package.json` and the lockfile.
+ * project. This passes the staged files plus the conformetry configuration,
+ * an input of every instance project, so all of them are selected. The edit
+ * still reaches each project's cache key through the template hash input the
+ * plugin declares, so each one re-validates.
  */
-function getStagedChangeFlags(files: string[]): string {
+function getStagedTemplateFlags(files: string[]): string | undefined {
   const stagedTemplates = files.some((file) =>
     path
       .relative(process.cwd(), file)
       .startsWith("projects/configuration/conformetry-templates/"),
   );
 
-  if (!stagedTemplates) {
-    return getStagedRevisionFlags(files);
-  }
+  return stagedTemplates
+    ? `${getStagedFilesFlags(files)} --files=projects/configuration/conformetry.config.ts`
+    : undefined;
+}
 
-  return `${getStagedFilesFlags(files)} --files=projects/configuration/conformetry.config.ts`;
+/**
+ * Hands `nx affected` the staged changes: the template flags when a template
+ * is staged, otherwise two revisions.
+ *
+ * Staged files are counted in full, as with `--files`, so a commit that stages
+ * a template loses the field-level diff of `package.json` and the lockfile.
+ */
+function getStagedChangeFlags(files: string[]): string {
+  return getStagedTemplateFlags(files) ?? getStagedRevisionFlags(files);
 }
 
 const config = {
