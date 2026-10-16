@@ -46,9 +46,11 @@ async function main(): Promise<void> {
     { abortOnError: false, logger: false },
   );
   const configurationService = context.get(ConfigurationService);
-  const configuration = await configurationService.loadConformetryConfiguration(
+  const configurationPath = path.resolve(
     "projects/ic-suite/conformetry/conformetry-examples/examples/embedding/conformetry.config.ts",
   );
+  const configuration =
+    await configurationService.loadConformetryConfiguration(configurationPath);
   const [definition] = configuration;
 
   if (definition === undefined) {
@@ -61,6 +63,7 @@ async function main(): Promise<void> {
     path.join(os.tmpdir(), "conformetry-embedding-"),
   );
   const generated = await context.get(GenerationService).runGenerator({
+    configurationDirectoryPath: path.dirname(configurationPath),
     definition: {
       name: definition.name,
       templateDirectoryPath: definition.templatePath,

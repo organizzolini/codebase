@@ -199,7 +199,9 @@ export class GenerationService {
       inputs,
     });
     const context: GeneratorHookContext = {
+      configurationDirectoryPath: args.configurationDirectoryPath,
       definition: args.definition,
+      filesystem,
       generatedFilePaths: [],
       input: inputs,
       outputDirectoryPath: args.instancePath,

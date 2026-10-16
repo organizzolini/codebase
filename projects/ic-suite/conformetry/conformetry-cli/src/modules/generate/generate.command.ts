@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import {
   ConfigurationService,
   InputError,
@@ -103,6 +105,7 @@ export class GenerateCommand extends CommandRunner {
     });
 
     const result = await this.generationService.runGenerator({
+      configurationDirectoryPath: path.dirname(path.resolve(options.config)),
       definition: {
         // Forwarded only when declared, so a generator with none reaches the
         // runtime exactly as it did before hooks existed.

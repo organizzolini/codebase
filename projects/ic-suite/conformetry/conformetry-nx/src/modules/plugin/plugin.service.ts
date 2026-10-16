@@ -378,6 +378,9 @@ export class PluginService {
     });
     const inputs = this.optionsService.resolveGeneratorInputs(args.options);
     const { generatedFilePaths } = await this.generationService.runGenerator({
+      configurationDirectoryPath: path.dirname(
+        path.resolve(args.workspaceRoot, pluginOptions.configurationPath),
+      ),
       definition: {
         name: definition.name,
         templateDirectoryPath: path.resolve(
