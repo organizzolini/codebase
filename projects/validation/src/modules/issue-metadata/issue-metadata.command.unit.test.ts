@@ -17,6 +17,7 @@ import { LoggerService } from "@codebase/logging";
 import { mockProcessExit } from "../../../testing/mocks";
 
 import { IssueMetadataGithubService } from "./issue-metadata-github.service";
+import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataCommand } from "./issue-metadata.command";
 import { STEP_SUMMARY_VARIABLE } from "./issue-metadata.constants";
 import { IssueMetadataService } from "./issue-metadata.service";
@@ -53,6 +54,7 @@ describe(IssueMetadataCommand, () => {
       providers: [
         IssueMetadataCommand,
         IssueMetadataService,
+        IssueMetadataTypeService,
         {
           provide: IssueMetadataGithubService,
           useValue: createMock<IssueMetadataGithubService>(),
@@ -146,6 +148,7 @@ describe(IssueMetadataCommand, () => {
       providers: [
         IssueMetadataCommand,
         IssueMetadataService,
+        IssueMetadataTypeService,
         {
           provide: IssueMetadataGithubService,
           useValue: createMock<IssueMetadataGithubService>(),
@@ -253,7 +256,7 @@ describe(IssueMetadataCommand, () => {
         "view",
         "7",
         "--json",
-        "body,labels",
+        "body,labels,issueType,parent",
       ]);
     });
 

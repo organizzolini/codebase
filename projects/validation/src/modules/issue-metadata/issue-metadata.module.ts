@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { LoggerModule } from "@codebase/logging";
 
 import { IssueMetadataGithubService } from "./issue-metadata-github.service";
+import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataCommand } from "./issue-metadata.command";
 import { IssueMetadataService } from "./issue-metadata.service";
 
@@ -15,6 +16,7 @@ import { IssueMetadataService } from "./issue-metadata.service";
     IssueMetadataCommand,
     IssueMetadataGithubService,
     IssueMetadataService,
+    IssueMetadataTypeService,
   ],
 })
 export class IssueMetadataModule {}

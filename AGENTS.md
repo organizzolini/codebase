@@ -38,9 +38,10 @@ sub-issues without asking.
    with recommendations; ask [ask-matt](.agents/skills/ask-matt/SKILL.md) if
    unsure). When done, summarize understanding and **stop**.
 2. **Specify**: Run [to-spec](.agents/skills/to-spec/SKILL.md) only on manual
-   request. Publish the spec issue, link it, and **stop**.
+   request. Publish the spec issue as a Feature (or Bug) with `--type`, link it,
+   and **stop**.
 3. **Decompose**: Run [to-tickets](.agents/skills/to-tickets/SKILL.md) only on
-   manual request. Confirm breakdown, publish tickets/sub-issues, and **stop**.
+   manual request. Confirm breakdown, publish tickets/sub-issues with `--type Task`, and **stop**.
    Reach for [wayfinder](.agents/skills/wayfinder/SKILL.md) if work exceeds one
    session. (Ignore `writing-plans` / `docs/superpowers/specs/` hand-offs; see
    [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md)).

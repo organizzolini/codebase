@@ -71,7 +71,7 @@ export class IssueMetadataGithubService {
       "--limit",
       "500",
       "--json",
-      "number,title,body,labels",
+      "number,title,body,labels,issueType,parent",
     ]);
 
     if (!result.succeeded) {

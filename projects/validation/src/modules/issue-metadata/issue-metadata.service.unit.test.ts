@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataService } from "./issue-metadata.service";
 
 import type {
@@ -37,7 +38,7 @@ describe(IssueMetadataService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [IssueMetadataService],
+      providers: [IssueMetadataService, IssueMetadataTypeService],
     }).compile();
 
     service = await module.resolve(IssueMetadataService);
@@ -55,6 +56,131 @@ describe(IssueMetadataService, () => {
       issueNumber,
       metadata,
     });
+
+  describe("issue types", () => {
+    const typed = (
+      issueType: null | string,
+      hasParent: boolean,
+    ): MetadataVerdict => check({ ...validMetadata, hasParent, issueType });
+
+    it.each(["Feature", "Bug"])("accepts a %s root", (type) => {
+      expect.hasAssertions();
+      expect(typed(type, false).failures).toStrictEqual([]);
+    });
+
+    it("accepts a Task sub-issue", () => {
+      expect.hasAssertions();
+      expect(typed("Task", true).failures).toStrictEqual([]);
+    });
+
+    it.each(["Task", null])("rejects a root typed %s", (type) => {
+      expect.hasAssertions();
+      expect(typed(type, false)).toStrictEqual({
+        failures: [
+          `❌ A root issue must have the Bug or Feature issue type (found: ${type ?? "none"})`,
+        ],
+        remediationCommands: [
+          "gh issue edit 7 --type Bug",
+          "gh issue edit 7 --type Feature",
+        ],
+      });
+    });
+
+    it.each(["Feature", "Bug", null])(
+      "rejects a sub-issue typed %s",
+      (type) => {
+        expect.hasAssertions();
+        expect(typed(type, true)).toStrictEqual({
+          failures: [
+            `❌ A sub-issue must have the Task issue type (found: ${type ?? "none"})`,
+          ],
+          remediationCommands: ["gh issue edit 7 --type Task"],
+        });
+      },
+    );
+
+    it("skips the check when the source could not read the type", () => {
+      expect.hasAssertions();
+      expect(check(validMetadata).failures).toStrictEqual([]);
+    });
+
+    it("reads type and native parent from a gh issue view document", () => {
+      expect.hasAssertions();
+      expect(
+        service.resolveFromDocument(
+          JSON.stringify({
+            body: "",
+            issueType: { name: "Task" },
+            labels: [],
+            parent: { number: 3 },
+          }),
+        ),
+      ).toStrictEqual({
+        metadata: {
+          body: "",
+          hasParent: true,
+          issueType: "Task",
+          labelNames: [],
+        },
+        resolved: true,
+      });
+    });
+
+    it("reads an unset type and a body-linked parent", () => {
+      expect.hasAssertions();
+      expect(
+        service.resolveFromDocument(
+          JSON.stringify({
+            body: "Part of #3",
+            issueType: null,
+            labels: [],
+            parent: null,
+          }),
+        ),
+      ).toStrictEqual({
+        metadata: {
+          body: "Part of #3",
+          hasParent: true,
+          issueType: null,
+          labelNames: [],
+        },
+        resolved: true,
+      });
+    });
+
+    it("flags a mistyped issue in a bulk sweep", () => {
+      expect.hasAssertions();
+
+      const labels = [
+        { name: "type:feat" },
+        { name: "scope:ci" },
+        { name: "source:agent" },
+      ];
+      const verdict = service.checkBulkIssues([
+        {
+          body: "",
+          issueType: { name: "Task" },
+          labels,
+          number: 1,
+          parent: null,
+          title: "feat(ci): a",
+        },
+        {
+          body: "",
+          issueType: { name: "Feature" },
+          labels,
+          number: 2,
+          parent: { number: 1 },
+          title: "feat(ci): b",
+        },
+      ]);
+
+      expect(verdict.failures).toStrictEqual([
+        "Issue #1: ❌ A root issue must have the Bug or Feature issue type (found: Task)",
+        "Issue #2: ❌ A sub-issue must have the Task issue type (found: Feature)",
+      ]);
+    });
+  });
 
   describe("parseFormAnswers", () => {
     it("reads both answers from a rendered submission", () => {

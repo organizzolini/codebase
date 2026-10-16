@@ -1,7 +1,8 @@
 name: 🦹 Continuous Compliance
 
 # External and repository compliance checks:
-# 1. 🧑‍💼 Issue: Issue metadata, hierarchy, and release significance.
+# 1. 🧑‍💼 Issue: Issue metadata, Issue Types (roots are Feature or Bug,
+#    sub-issues are Task), hierarchy, and release significance.
 # 2. 👮 Enforce: Repository governance and workflow security, on pull requests,
 #    the merge queue, and main.
 # 3. 🧑‍⚖️ Comply: Pull request metadata and commit message conventions, on
