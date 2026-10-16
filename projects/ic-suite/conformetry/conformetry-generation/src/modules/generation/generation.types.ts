@@ -16,6 +16,13 @@ export interface FormatterAdapter {
  * Arguments accepted by the runtime runner.
  */
 export interface RunGeneratorArguments {
+  /**
+   * Absolute directory of the configuration file that declared the generator.
+   *
+   * Handed to the hooks unchanged: the runtime derives nothing from it, since
+   * which file declared the generator is the host's knowledge.
+   */
+  configurationDirectoryPath: string;
   definition: GeneratorDefinition;
   filesystem?: FileSystemAdapter;
   formatter?: FormatterAdapter;
