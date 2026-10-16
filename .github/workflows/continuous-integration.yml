@@ -61,19 +61,16 @@ jobs:
             name: Guard
             emoji: 💂
             timeout-minutes: 20
-          # Tests run in four legs that together cover every project once.
-          # Meanderaw alone: uncached, it took over seven minutes beside every
-          # other project's tests and waited for a free `--parallel` slot, so a
-          # run that affects everything (an `nx.json` change) outlasted the
-          # 12-minute limit; alone it takes about three. ic-suite's 37 packages
-          # were most of what remained. Caelundas is the last of these: its
-          # command line cannot start until its ephemeris download finishes,
-          # so beside the rest it ran last, alone, for another four minutes
-          # (cold, 4m12s of a 7m02s run), and at times ran past the limit.
-          # Its leg takes the whole folder, so a project added there joins it.
+          # Tests run in four legs that together cover every project once, so
+          # none waits for a free `--parallel` slot behind the slow ones.
+          # Meanderaw alone took over seven minutes uncached beside the rest,
+          # and about three alone. ic-suite's 37 packages were most of what
+          # remained. Caelundas's command line cannot start until its
+          # ephemeris download finishes, so it ran last and alone for four more
+          # minutes. Its leg takes the whole folder, so a new project joins it.
           # The fourth leg, everything else, keeps the `Test` name branch
-          # protection has always required. A leg whose projects are
-          # unaffected runs nothing.
+          # protection has always required. A leg with nothing affected runs
+          # nothing.
           - target: test-code
             name: Test
             emoji: 🧑‍🔬
