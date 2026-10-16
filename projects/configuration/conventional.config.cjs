@@ -141,6 +141,11 @@ const scopes = [
     name: "infrastructure",
   },
   {
+    description:
+      "Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software)",
+    name: "installation",
+  },
+  {
     description: "Static GitHub profile README project (markdown and assets)",
     name: "JimmyPaolini",
   },

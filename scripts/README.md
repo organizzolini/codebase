@@ -27,9 +27,9 @@ Run the main setup script to configure your local development environment:
 
 This runs the following in sequence:
 
-1. `software.sh` - Installs required software (Homebrew, nvm, Node.js, pnpm, uv, Python, Ollama, Terraform, and more)
-2. `environment.sh` - Creates `.env` files and configures environment variables
-3. `dependencies.sh` - Installs npm and Python dependencies
+1. `software/brew.sh` and `software/node.sh` - Check Homebrew, then install nvm, Node.js, pnpm, and nx
+2. `pnpm install` - Installs the packages the next step is written in
+3. `projects/installation/src/installation.main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
 
 > **Note:** If using a devcontainer, these scripts are not needed — the devcontainer handles setup automatically via `.devcontainer/scripts/post-create-command.sh`.
 
@@ -40,7 +40,7 @@ The devcontainer handles equivalent setup automatically.
 
 ### setup.sh
 
-**Purpose:** Complete codebase setup in one command
+**Purpose:** Bootstrap a machine, then run the installation project's `setup` command
 
 **Usage:**
 
@@ -51,81 +51,35 @@ The devcontainer handles equivalent setup automatically.
 **What it does:**
 
 - Validates codebase root directory
-- Sources utilities for common functions
-- Installs required software (Homebrew, nvm, Node.js, pnpm, uv, Python, Ollama, etc.)
-- Configures environment from `.env`
-- Installs all npm and Python dependencies
+- Sources `utilities.sh` for common functions
+- Sources `software/brew.sh` and `software/node.sh` to install nvm, Node.js (from `.nvmrc`), pnpm, and nx
+- Runs `pnpm install`, so the command can start
+- Runs `projects/installation/src/installation.main.ts setup`, which does everything else
 
 **Prerequisites:**
 
 - Must be run from codebase root directory
-- Requires `.env` file with environment variables
+- Homebrew installed
 
-### software.sh
+### software/brew.sh and software/node.sh
 
-**Purpose:** Install and update required development tools
+**Purpose:** The part of the software step that cannot be TypeScript, because it installs the Node the TypeScript runs on
 
-**Usage:**
+- **Homebrew** - Checked, never installed; exits with an error if it is missing
+- **nvm, Node.js, pnpm, nx** - Installed or checked; Husky's init file is written
+- `brew_install_or_check` is defined here for `node.sh`
 
-```bash
-./scripts/local/software.sh
-```
+### The installation project
 
-**Checks/Installs:**
+Everything after Node exists lives in [`projects/installation`](../projects/installation/AGENTS.md), one command each. Run any of them on its own with `nx run installation:start:<command>`.
 
-- **Homebrew** - Package manager for macOS/Linux
-- **nvm** - Node Version Manager
-- **Node.js** - Runtime (version from `.nvmrc`)
-- **pnpm** - Fast, disk space efficient package manager
-- **uv** - Python package manager
-- **Python** - 3.11+ (via Homebrew)
-- **Ollama** - Local LLM server (starts service, pulls `gemma4:e2b`)
-- **Terraform** - Infrastructure as code
-- **yamllint** - YAML linting
-- **Supabase CLI** - Supabase local development
-- **jq** - JSON processor
-- **GitHub CLI** - GitHub operations from terminal
-- **Helm** - Kubernetes package manager
-- **kubectl** - Kubernetes CLI
-
-**Behavior:**
-
-- Skips installation if tool already exists
-- Checks for updates and prompts to upgrade
-- Exits with error if Homebrew is missing
-
-### dependencies.sh
-
-**Purpose:** Install all project dependencies (Node.js and Python)
-
-**Usage:**
-
-```bash
-./scripts/local/dependencies.sh
-```
-
-**What it does:**
-
-- Runs `pnpm install` in codebase root
-- Installs dependencies for all workspace packages
-- Runs `uv sync` in codebase root for the uv workspace Python dependencies
-- Respects lockfiles for reproducible builds
-
-### environment.sh
-
-**Purpose:** Configure environment variables and create `.env` files
-
-**Usage:**
-
-```bash
-./scripts/local/environment.sh
-```
-
-**What it does:**
-
-- Creates `.env` from every `.env.default` in the repository (excluding `projects/configuration/conformetry-templates/`), skipping any `.env` that already exists
-- Appends `LOCAL_WORKSPACE_FOLDER=$(pwd)` to root `.env` for docker-compose volume mounts
-- Sources `.env` file and exports environment variables
+| Command               | What it does                                                                                                     |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
+| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion, and shell-helper blocks to `~/.zshrc` or `~/.bashrc`             |
+| `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
+| `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
+| `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
 
 ### VS Code extensions and settings
 
@@ -533,7 +487,7 @@ Update npm packages:
 pnpm update
 
 # Or run dependencies script
-./scripts/local/dependencies.sh
+pnpm exec nx run installation:start:dependencies
 ```
 
 ### Clean Install
@@ -545,7 +499,7 @@ Remove node_modules and reinstall:
 pnpm clean
 
 # Reinstall
-./scripts/local/dependencies.sh
+pnpm exec nx run installation:start:dependencies
 ```
 
 ### Validate Lockfile
@@ -660,7 +614,7 @@ brew install pnpm
 Or run software setup:
 
 ```bash
-./scripts/local/software.sh
+pnpm exec nx run installation:start:software
 ```
 
 ### Lockfile out of sync
@@ -684,15 +638,15 @@ These scripts live in `scripts/release/`, and the release job of
 runs between the first two: its release commit carries both the codebase's
 version and the packages' versions, so a release adds one commit to `main`.
 
-| Script | Step | What it does |
-| ------ | ---- | ------------ |
-| `version-packages.sh` | 🏷️ Version Packages | Runs `tag-packages.sh` to push any tags an earlier run left missing, then runs `nx release --skip-publish`, which versions each package and writes its `CHANGELOG.md` without committing, for semantic-release's release commit to carry |
-| `tag-packages.sh` | 🔖 Tag Packages | Commits any package versions semantic-release left uncommitted because the codebase had no release, then tags each newly versioned package `<project>@<version>` on `HEAD` and pushes the tags 6 at a time, since GitHub rejects a push that updates more than 6 refs, retrying a rejected push |
-| `publish-packages.sh` | 📦 Publish Packages | Publishes every release-group package not yet on npm, with provenance, then mirrors each package to GitHub Packages as `@<owner>/<project>` |
-| `link-packages.sh` | 🔗 Link Packages | Creates a storage record on the organization's Linked artifacts page for every published npm version that has none, and lists the versions this run published for 🔏 Attest Packages |
-| `tag-codebase.sh` | 🔖 Tag Codebase | Runs semantic-release, stepping aside instead when `main` moved before it started or while its release commit was being made |
-| `release-group.sh` | sourced by the above | Lists the release group's projects and their directories from `nx.json` in two Nx calls, names and checks a package's npm version, and runs a step's registry calls six at a time |
-| `main-tip.sh` | sourced by the version, codebase and tag scripts | Reports whether `main` moved during the run, and sets the `RELEASE_SUPERSEDED` variable the later release steps skip on |
+| Script                | Step                                             | What it does                                                                                                                                                                                                                                                                                    |
+| --------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `version-packages.sh` | 🏷️ Version Packages                              | Runs `tag-packages.sh` to push any tags an earlier run left missing, then runs `nx release --skip-publish`, which versions each package and writes its `CHANGELOG.md` without committing, for semantic-release's release commit to carry                                                        |
+| `tag-packages.sh`     | 🔖 Tag Packages                                  | Commits any package versions semantic-release left uncommitted because the codebase had no release, then tags each newly versioned package `<project>@<version>` on `HEAD` and pushes the tags 6 at a time, since GitHub rejects a push that updates more than 6 refs, retrying a rejected push |
+| `publish-packages.sh` | 📦 Publish Packages                              | Publishes every release-group package not yet on npm, with provenance, then mirrors each package to GitHub Packages as `@<owner>/<project>`                                                                                                                                                     |
+| `link-packages.sh`    | 🔗 Link Packages                                 | Creates a storage record on the organization's Linked artifacts page for every published npm version that has none, and lists the versions this run published for 🔏 Attest Packages                                                                                                            |
+| `tag-codebase.sh`     | 🔖 Tag Codebase                                  | Runs semantic-release, stepping aside instead when `main` moved before it started or while its release commit was being made                                                                                                                                                                    |
+| `release-group.sh`    | sourced by the above                             | Lists the release group's projects and their directories from `nx.json` in two Nx calls, names and checks a package's npm version, and runs a step's registry calls six at a time                                                                                                               |
+| `main-tip.sh`         | sourced by the version, codebase and tag scripts | Reports whether `main` moved during the run, and sets the `RELEASE_SUPERSEDED` variable the later release steps skip on                                                                                                                                                                         |
 
 They read everything from the environment, and all are safe to re-run: Nx
 versions only what has changed since each package's last tag, tagging skips a
