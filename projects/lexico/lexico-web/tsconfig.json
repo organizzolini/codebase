@@ -10,8 +10,8 @@
     "noEmit": true,
     "outDir": "../../../dist/out-tsc",
     "paths": {
-      "@/*": ["../../components-web/src/*"],
-      "@codebase/components-web": ["../../components-web/src/index.ts"],
+      "@/*": ["../../components/src/*"],
+      "@codebase/components": ["../../components/src/index.ts"],
       "codebase/configuration/*": ["../../../projects/configuration/*"],
       "eslint-plugin-better-max-params": [
         "../../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"

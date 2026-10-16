@@ -438,7 +438,7 @@ Read `projects/configuration/commitlint.config.ts` for the full rule set before 
 | `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
 | `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
-| `components-web` | Shared React/shadcn component library |
+| `components` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |
 | `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |

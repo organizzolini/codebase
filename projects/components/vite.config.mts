@@ -17,9 +17,9 @@ export default defineConfig(() => ({
       entry: "src/index.ts",
       fileName: "index",
       formats: ["es" as const],
-      name: "components-web",
+      name: "components",
     },
-    outDir: "../../dist/packages/components-web",
+    outDir: "../../dist/packages/components",
     reportCompressedSize: true,
     rolldownOptions: {
       external: ["react", "react-dom", "react/jsx-runtime", /^@radix-ui\/.*/],
@@ -31,7 +31,7 @@ export default defineConfig(() => ({
       },
     },
   },
-  cacheDir: "../../node_modules/.vite/projects/components-web",
+  cacheDir: "../../node_modules/.vite/projects/components",
   plugins: [
     react(),
     tsconfigPaths(),

@@ -9,7 +9,7 @@
 ### Add a shadcn Component
 
 ```bash
-cd projects/components-web
+cd projects/components
 pnpx shadcn@latest add <component-name>
 ```
 
@@ -97,7 +97,7 @@ See the [write-react skill](../../.agents/skills/write-react/SKILL.md) for themi
 ## Usage in Apps
 
 ```tsx
-import { Button, Card, Input } from "@codebase/components-web";
+import { Button, Card, Input } from "@codebase/components";
 ```
 
 Never duplicate UI code in apps. Always import from this package.
@@ -107,7 +107,7 @@ Never duplicate UI code in apps. Always import from this package.
 ### Add Custom Components
 
 ```bash
-cd projects/components-web/src/components
+cd projects/components/src/components
 touch word-card.tsx
 ```
 
