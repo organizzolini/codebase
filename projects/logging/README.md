@@ -156,6 +156,7 @@ graph LR
   lexico_cli["lexico-cli"]
   logging["logging"]
   meanderaw_cli["meanderaw-cli"]
+  publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
   caelundas_cli --> logging
@@ -178,6 +179,7 @@ graph LR
   lexico_api --> logging
   lexico_cli --> logging
   meanderaw_cli --> logging
+  publication --> logging
   synchronization --> logging
   validation --> logging
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

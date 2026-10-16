@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.6](https://github.com/organizzolini/codebase/compare/v3.9.5...v3.9.6) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,publication:** ♻️ create the publication project with the Nx plumbing ([#1562](https://github.com/organizzolini/codebase/issues/1562)) ([f6dffc8](https://github.com/organizzolini/codebase/commit/f6dffc82080f8df266957fcae136551f4c38d973)), closes [#1663](https://github.com/organizzolini/codebase/issues/1663) [#1588](https://github.com/organizzolini/codebase/issues/1588) [#1663](https://github.com/organizzolini/codebase/issues/1663) [#1530](https://github.com/organizzolini/codebase/issues/1530) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1531](https://github.com/organizzolini/codebase/issues/1531) [#1532](https://github.com/organizzolini/codebase/issues/1532) [#1533](https://github.com/organizzolini/codebase/issues/1533) [#1534](https://github.com/organizzolini/codebase/issues/1534) [#1535](https://github.com/organizzolini/codebase/issues/1535) [#1536](https://github.com/organizzolini/codebase/issues/1536)
+* **publication:** ♻️ move the Nx task-database steps into publication commands ([#1565](https://github.com/organizzolini/codebase/issues/1565)) ([06f449b](https://github.com/organizzolini/codebase/commit/06f449bec78525c7c70651cbf612787585dee2c4)), closes [#1546](https://github.com/organizzolini/codebase/issues/1546) [#1663](https://github.com/organizzolini/codebase/issues/1663) [#1544](https://github.com/organizzolini/codebase/issues/1544) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1545](https://github.com/organizzolini/codebase/issues/1545) [#1546](https://github.com/organizzolini/codebase/issues/1546) [#1548](https://github.com/organizzolini/codebase/issues/1548) [#1547](https://github.com/organizzolini/codebase/issues/1547) [#1562](https://github.com/organizzolini/codebase/issues/1562)
+
 ## [3.9.5](https://github.com/organizzolini/codebase/compare/v3.9.4...v3.9.5) (2026-10-16)
 
 ### ♻️ Code Refactoring
