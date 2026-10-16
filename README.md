@@ -926,6 +926,7 @@ graph LR
   module_synchronization_DevcontainerConfigurationModule["synchronization/DevcontainerConfigurationModule"]
   module_synchronization_DiscoveryModule["synchronization/DiscoveryModule"]
   module_synchronization_InputModule["synchronization/InputModule"]
+  module_synchronization_InstalledSkillsModule["synchronization/InstalledSkillsModule"]
   module_synchronization_InstanceDiscoveryModule["synchronization/InstanceDiscoveryModule"]
   module_synchronization_InstanceGroupModule["synchronization/InstanceGroupModule"]
   module_synchronization_IssueLabelsModule["synchronization/IssueLabelsModule"]
@@ -1738,6 +1739,7 @@ graph LR
   module_synchronization_SynchronizationModule --> module_synchronization_ConformetryGeneratorsModule
   module_synchronization_SynchronizationModule --> module_synchronization_ConventionalConfigModule
   module_synchronization_SynchronizationModule --> module_synchronization_DevcontainerConfigurationModule
+  module_synchronization_SynchronizationModule --> module_synchronization_InstalledSkillsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PackageManifestsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestLabelsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestTemplateModule
@@ -4743,6 +4745,16 @@ graph LR
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_constants_ts["synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.constants.ts"]
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts["synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.module.ts"]
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_types_ts["synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.types.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_fixtures_utilities_ts["synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts["synchronization/src/modules/installed-skills/installed-skills-process.service.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills-process.service.unit.test.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts["synchronization/src/modules/installed-skills/installed-skills.command.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills.command.unit.test.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_constants_ts["synchronization/src/modules/installed-skills/installed-skills.constants.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts["synchronization/src/modules/installed-skills/installed-skills.module.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts["synchronization/src/modules/installed-skills/installed-skills.service.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills.service.unit.test.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_types_ts["synchronization/src/modules/installed-skills/installed-skills.types.ts"]
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts["synchronization/src/modules/issue-labels/issue-labels-github.service.ts"]
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts["synchronization/src/modules/issue-labels/issue-labels-github.service.unit.test.ts"]
   file_synchronization_src_modules_issue_labels_issue_labels_command_ts["synchronization/src/modules/issue-labels/issue-labels.command.ts"]
@@ -11728,6 +11740,29 @@ graph LR
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_unit_test_ts --> file_synchronization_testing_mocks_ts
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_fixtures_utilities_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_constants_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_fixtures_utilities_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_testing_mocks_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_constants_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_constants_ts
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_types_ts
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
@@ -11816,6 +11851,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_conventional_config_conventional_config_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_package_manifests_package_manifests_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts
@@ -11826,6 +11862,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_package_manifests_package_manifests_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts
@@ -11838,6 +11875,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_package_manifests_package_manifests_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
@@ -11849,6 +11887,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
@@ -12179,7 +12218,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2655-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2656-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-375-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
@@ -12187,7 +12226,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2512-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-413-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-414-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -12202,17 +12241,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-56-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-4100-4eaa25?style=flat-square)
-![Shell Functions](https://img.shields.io/badge/Shell_Functions-60-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-374-0284c7?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-55-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-3941-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-59-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-362-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-257-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-243-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-51-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-125-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-56-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-1028-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-1028-475569?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-123-059669?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-55-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-990-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-990-475569?style=flat-square)
 
 ### SQL
 
@@ -12298,25 +12337,25 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-116-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19178-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-115-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-672-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-521-a78bfa?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-117-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19194-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-116-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-675-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-520-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5479-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-857-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4162-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5478-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-854-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4157-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-232-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1978-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-708-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-233-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-1989-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-709-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-387-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11087-ef4444?style=flat-square)
-![Block Quotes](https://img.shields.io/badge/Block_Quotes-20-ca8a04?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11124-ef4444?style=flat-square)
+![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
 
@@ -12328,13 +12367,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6166 |
-| Files | 1768 |
-| Calls traced | 6629 |
-| Call stacks | 1693 |
+| Callables | 6199 |
+| Files | 1775 |
+| Calls traced | 6669 |
+| Call stacks | 1700 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 331 |
+| Unfollowable calls | 332 |
 
 ### Projects
 

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.4](https://github.com/organizzolini/codebase/compare/v3.9.3...v3.9.4) (2026-10-16)
+
+### 📝 Documentation
+
+* **scripts:** 📝 record the shell floor as an ADR ([#1561](https://github.com/organizzolini/codebase/issues/1561)) ([fec37d0](https://github.com/organizzolini/codebase/commit/fec37d0ddbbc760ca0cb80e7694ccf8bbe1ad131)), closes [#1509](https://github.com/organizzolini/codebase/issues/1509) [#1514](https://github.com/organizzolini/codebase/issues/1514) [#1515](https://github.com/organizzolini/codebase/issues/1515) [#1516](https://github.com/organizzolini/codebase/issues/1516) [#1511](https://github.com/organizzolini/codebase/issues/1511)
+
+### ♻️ Code Refactoring
+
+* **synchronization:** ♻️ move skill restoration into an installed-skills command ([#1563](https://github.com/organizzolini/codebase/issues/1563)) ([d8597a7](https://github.com/organizzolini/codebase/commit/d8597a77b0a8957f3811b09e1dfeccd99b31b028)), closes [#1524](https://github.com/organizzolini/codebase/issues/1524) [#1517](https://github.com/organizzolini/codebase/issues/1517) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1518](https://github.com/organizzolini/codebase/issues/1518) [#1519](https://github.com/organizzolini/codebase/issues/1519) [#1520](https://github.com/organizzolini/codebase/issues/1520) [#1521](https://github.com/organizzolini/codebase/issues/1521) [#1522](https://github.com/organizzolini/codebase/issues/1522) [#1523](https://github.com/organizzolini/codebase/issues/1523) [#1524](https://github.com/organizzolini/codebase/issues/1524)
+
 ## [3.9.3](https://github.com/organizzolini/codebase/compare/v3.9.2...v3.9.3) (2026-10-16)
 
 ### ♻️ Code Refactoring
