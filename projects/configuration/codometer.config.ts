@@ -63,11 +63,11 @@ const generalCommentBudgets: CodometerCustomStatistic[] =
   );
 
 /**
- * Shell is loosened rather than held to the shared budget: `scripts/shell/`
- * holds command references — grep, netstat — whose whole body is one comment
- * block documenting flags. That is a manual page, not a sprawling
- * explanation, and condensing it would delete the thing the file exists for.
- * 256 still catches real sprawl; the longest reference here runs to 190.
+ * Shell is loosened rather than held to the shared budget: a shell
+ * script's header, such as `scripts/installation.sh`'s, documents usage and
+ * execution order in one comment block. That is a manual page, not a
+ * sprawling explanation, and condensing it would delete the thing the file
+ * exists for. 256 still catches real sprawl.
  */
 const shellCommentBudget: CodometerCustomStatistic = {
   comment: { language: "shell", maximumWords: 256 },
