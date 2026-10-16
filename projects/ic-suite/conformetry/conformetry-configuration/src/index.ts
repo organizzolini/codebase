@@ -1,3 +1,4 @@
+// 📤 Exports
 export {
   ConfigurationPathRequiredError,
   UnknownConfigurationFileTypeError,
@@ -41,7 +42,6 @@ export {
   createPlaceholderValue,
 } from "./modules/rendering/rendering.utilities";
 export type { TemplateDefinition } from "./modules/template-discovery/template-discovery.types";
-// 📤 Exports
 export type {
   GeneratorHook,
   GeneratorHookContext,
