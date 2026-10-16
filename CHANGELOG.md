@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.3](https://github.com/organizzolini/codebase/compare/v3.9.2...v3.9.3) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration:** ♻️ move the root project's code gates and CI targets into configuration ([#1669](https://github.com/organizzolini/codebase/issues/1669)) ([31fac6a](https://github.com/organizzolini/codebase/commit/31fac6a08fff7846896fc3a2765b9bbecfd2dc26))
+
 ## [3.9.2](https://github.com/organizzolini/codebase/compare/v3.9.1...v3.9.2) (2026-10-16)
 
 ### ⚡ Performance Improvements
