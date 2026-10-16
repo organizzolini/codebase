@@ -203,10 +203,18 @@ jobs:
           target: ${{ matrix.check.target }}
           shard: ${{ matrix.check.shard }}
 
+      # A merge group runs on its own `gh-readonly-queue/...` ref, new for every
+      # group, and a cache saved there is readable by no later run: later
+      # groups and pull requests see their own refs and `main`'s. Saving only
+      # filled the repository's 10 GB quota (a third of it, measured) and
+      # pushed out the entries `main` saves for everyone else, so a merge
+      # group still restores `main`'s caches but saves none of its own.
       - name: 🧹 Cleanup Codebase
         if: always() && steps.check-skip.outputs.skip != 'true'
         uses: ./.github/actions/cleanup-codebase
         with:
-          nx-cache: "true"
+          nx-cache: ${{ github.event_name == 'merge_group' && 'false' || 'true' }}
           nx-cache-primary-key: ${{ steps.setup.outputs.nx-cache-primary-key }}
-          eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
+          eslint-cache: >-
+            ${{ matrix.check.target == 'lint-code' &&
+            github.event_name != 'merge_group' && 'true' || 'false' }}
