@@ -16,6 +16,7 @@ The surviving floor is:
 | ------ | ------------------ |
 | `scripts/git/check-commit-signing-configuration.sh`, `scripts/git/check-push-commit-signatures.sh` | They run from the pre-commit and pre-push hooks. |
 | `scripts/git/check-gh-authentication.sh`, `scripts/git/validate-session-commit-signing.sh`, `scripts/git/validate-session-gh-authentication.sh` | They use only `git`, `gpg`, and `gh`, and run from a terminal or a session start. |
+| `scripts/git/validate-session-hooks-path.sh` | It reports a `core.hooksPath` that holds no pre-commit hook, which is a check that must work when the install is broken. |
 | `scripts/git/emit-session-hook-context.sh` | It is the one place the Claude and Copilot hook output formats are defined. The commands that replace the other session hooks only print text and set an exit code. |
 | `scripts/nx/bound-base-to-push.sh` | It runs before `pnpm install` in `setup-codebase`, so it cannot depend on a working install. |
 | `scripts/utilities.sh`, sourced by setup | The setup stub needs it before any dependency exists. |
