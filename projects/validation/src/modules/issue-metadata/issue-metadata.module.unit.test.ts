@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LoggerModule } from "@codebase/logging";
 
 import { IssueMetadataGithubService } from "./issue-metadata-github.service";
+import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import { IssueMetadataCommand } from "./issue-metadata.command";
 import { IssueMetadataModule } from "./issue-metadata.module";
 import { IssueMetadataService } from "./issue-metadata.service";
@@ -22,5 +23,6 @@ describe(IssueMetadataModule, () => {
     expect(providers).toContain(IssueMetadataCommand);
     expect(providers).toContain(IssueMetadataGithubService);
     expect(providers).toContain(IssueMetadataService);
+    expect(providers).toContain(IssueMetadataTypeService);
   });
 });

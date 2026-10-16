@@ -61,6 +61,13 @@ export interface IssueFormAnswers {
 /** The metadata one issue carries, whatever it was read from. */
 export interface IssueMetadata {
   readonly body: string;
+  /**
+   * Whether the issue has a native parent. Left out when the source cannot
+   * say, such as the workflow's environment mode, which skips the type check.
+   */
+  readonly hasParent?: boolean;
+  /** The GitHub Issue Type's name, or `null` when none is set. */
+  readonly issueType?: null | string;
   readonly labelNames: readonly string[];
 }
 
@@ -77,10 +84,15 @@ export type IssueMetadataResolution =
 /** Summary representation of a GitHub issue from list API. */
 export interface IssueSummary {
   readonly body: string;
+  readonly issueType?: null | { readonly name: string };
   readonly labels: readonly { readonly name: string }[];
   readonly number: number;
+  readonly parent?: null | { readonly number: number };
   readonly title: string;
 }
+
+/** An issue's type and parentage, where the source could say. */
+export type IssueTypeFacts = Pick<IssueMetadata, "hasParent" | "issueType">;
 
 /** Result of listing open issues through gh CLI. */
 export interface ListIssuesResult {

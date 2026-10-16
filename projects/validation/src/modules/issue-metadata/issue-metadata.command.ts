@@ -166,7 +166,7 @@ export class IssueMetadataCommand extends CommandRunner {
       "view",
       issueNumber,
       "--json",
-      "body,labels",
+      "body,labels,issueType,parent",
     ]);
 
     if (!view.succeeded) {

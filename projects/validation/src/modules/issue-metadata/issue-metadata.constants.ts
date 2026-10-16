@@ -55,6 +55,16 @@ export const CONVENTIONAL_ISSUE_TITLE_PATTERN =
 /** Maximum allowed nesting depth in the issue hierarchy (Spec -\> PR -\> Commit). */
 export const MAX_HIERARCHY_DEPTH = 3;
 
+/**
+ * The GitHub Issue Types a root issue (one with no parent) may carry.
+ *
+ * A root is a spec or a standalone report, so it is a Feature or a Bug.
+ */
+export const ROOT_ISSUE_TYPES = ["Bug", "Feature"];
+
+/** The GitHub Issue Type every sub-issue carries, at any depth. */
+export const SUB_ISSUE_TYPE = "Task";
+
 /** Relative rank of release levels. */
 export const RELEASE_LEVEL_RANK: Record<string, number> = {
   major: 3,

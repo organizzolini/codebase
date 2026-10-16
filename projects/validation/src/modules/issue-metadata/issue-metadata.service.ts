@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { IssueMetadataTypeService } from "./issue-metadata-type.service";
 import {
   CONVENTIONAL_ISSUE_TITLE_PATTERN,
   MAX_HIERARCHY_DEPTH,
@@ -32,7 +33,9 @@ import type {
 export class IssueMetadataService {
   // 🏗 Dependency Injection
 
-  constructor() {}
+  constructor(
+    private readonly issueMetadataTypeService: IssueMetadataTypeService,
+  ) {}
 
   // 🔐 Private Fields
 
@@ -287,6 +290,7 @@ export class IssueMetadataService {
         issueNumber: String(issue.number),
         metadata: {
           body: issue.body,
+          ...this.issueMetadataTypeService.readFromSummary(issue),
           labelNames: issue.labels.map((label) => label.name),
         },
       });
@@ -375,7 +379,11 @@ export class IssueMetadataService {
     this.checkTypeLabel(options, labels, record);
     this.checkScopeLabels(options, labels, record);
     this.checkSourceLabel(options.issueNumber, labels, record);
-
+    this.issueMetadataTypeService.check(
+      options.issueNumber,
+      options.metadata,
+      record,
+    );
     return { failures, remediationCommands };
   }
 
@@ -438,9 +446,11 @@ export class IssueMetadataService {
 
     const document: Record<string, unknown> = this.isRecord(issue) ? issue : {};
 
+    const body = typeof document["body"] === "string" ? document["body"] : "";
     return {
       metadata: {
-        body: typeof document["body"] === "string" ? document["body"] : "",
+        body,
+        ...this.issueMetadataTypeService.readFromDocument(document, body),
         labelNames: this.readLabelNames(
           Array.isArray(document["labels"]) ? document["labels"] : [],
         ),

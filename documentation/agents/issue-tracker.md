@@ -11,7 +11,9 @@ Two repository rules override the generic guidance below.
 
 The single issue template lives at `.github/ISSUE_TEMPLATE/issue.yml`, with required Type and Scope dropdowns kept in sync with `configuration/conventional.config.cjs` by `nx run synchronization:synchronize:write`. `blank_issues_enabled: false` in `.github/ISSUE_TEMPLATE/config.yml` means every human-filed issue goes through it — `gh issue create --template issue.yml` fills it in from the terminal. An agent creating an issue directly through `gh issue create --title ... --body ...` bypasses the form entirely, which is expected: this is the human path, and an agent applies its own `source:agent`, `type:*`, and `scope:*` labels by hand as described above.
 
-This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): an `issue-metadata` check (`projects/validation`) validates issue labels, parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-governance` (`projects/validation`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. On `opened` an `issue-labels` command (`projects/synchronization`) reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
+- **Set the GitHub Issue Type by position in the hierarchy.** A root issue — one with no parent, whether a spec or a standalone report — is a **Feature** or a **Bug**. Every sub-issue, at any depth, is a **Task**. So a spec is a Feature, and the pull request issues and commit sub-issues beneath it are Tasks. Set it when creating (`gh issue create --type Feature`) or afterwards (`gh issue edit <n> --type Task`). The `issue-metadata` check below enforces it, and it is independent of the `type:*` label, which still names the commit type.
+
+This is enforced two ways. First, the template's required dropdowns and disabled blank issues stop most drift at the source. Second, the 🦹 Continuous Compliance GitHub Actions workflow runs on an issue's `opened`/`edited`/`labeled`/`unlabeled` events as well as on a weekly scheduled cron (every Friday at 8:18 AM NYC time): an `issue-metadata` check (`projects/validation`) validates issue labels, GitHub Issue Types (roots are Feature or Bug, sub-issues are Task), parent-child hierarchy depths (maximum 3 tiers: Spec → PR → Commit), and release significance constraints across open issues. In addition, the scheduled matrix job runs `audit-governance` (`projects/validation`) to enforce `.github/CODEOWNERS` validity and GitHub Actions workflow security policies. On `opened` an `issue-labels` command (`projects/synchronization`) reconciles the labels a submitted form implies onto the issue first, so a freshly filed template issue already carries them before the check runs.
 
 The README's Continuous Compliance badge is this workflow's own status badge. It validates both issue metadata and repository governance policies across open issues and workflow configurations.
 
@@ -31,9 +33,9 @@ per commit** that pull request is expected to contain. Where the breakdown came
 from a spec, that spec is the third layer above both:
 
 ```text
-spec issue                  the output of /to-spec
-└── parent issue            one per pull request
-    └── sub-issue           one per planned commit
+spec issue                  the output of /to-spec      (Issue Type: Feature or Bug)
+└── parent issue            one per pull request        (Issue Type: Task)
+    └── sub-issue           one per planned commit      (Issue Type: Task)
 ```
 
 - **The parent issue is the pull request.** Its title is the title that pull
@@ -74,10 +76,11 @@ force the implementation to match a plan the code has already disagreed with.
 
 ```bash
 # Parent issue — one per pull request
-gh issue create --title "feat(lexico): ✨ add user profile page" --body "..."
+# (a spec is the root: --type Feature or --type Bug; everything beneath it is a Task)
+gh issue create --type Task --title "feat(lexico): ✨ add user profile page" --body "..."
 
 # Child issue — one per planned commit, then linked as a native sub-issue
-gh issue create --title "feat(lexico): ✨ add profile route" --body "..."
+gh issue create --type Task --title "feat(lexico): ✨ add profile route" --body "..."
 gh api repos/Organizzolini/codebase/issues/<parent>/sub_issues \
   --method POST -F sub_issue_id="$(gh api repos/Organizzolini/codebase/issues/<child> --jq .id)"
 ```
@@ -134,7 +137,8 @@ families, so a `status:*` label neither satisfies nor fails it.
 
 ## Conventions
 
-- **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
+- **Create an issue**: `gh issue create --type <Feature|Bug|Task> --title "..." --body "..."`. Use a heredoc for multi-line bodies. **Always pass `--type`**: a root issue (a spec or a standalone report) is a `Feature` or `Bug`, and an issue about to be linked as a sub-issue is a `Task`. The `github-issues` skill says `gh issue create` has no type flag; that is out of date, since `--type` and `gh issue edit --type` both exist.
+- **Change an issue's type**: `gh issue edit <number> --type <Feature|Bug|Task>`. Re-check the type whenever an issue is linked as a sub-issue (it becomes a `Task`) or unlinked from its parent (it becomes a `Feature` or `Bug`).
 - **Read an issue**: `gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels.
 - **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'` with appropriate `--label` and `--state` filters.
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
@@ -157,7 +161,7 @@ GitHub shares one number space across issues and PRs, so a bare `#42` may be eit
 
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue.
+Create a GitHub issue, with its Issue Type set: a spec from `/to-spec` is a `Feature` (or a `Bug` for a defect), and every ticket from `/to-tickets` is a `Task` once linked beneath it. Set `--type` at creation rather than correcting it later.
 
 ## When a skill says "fetch the relevant ticket"
 
@@ -167,8 +171,8 @@ Run `gh issue view <number> --comments`.
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
 
-- **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --label wayfinder:map`.
-- **Child ticket**: an issue linked to the map as a GitHub sub-issue (`gh api` on the sub-issues endpoint). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
+- **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --type Feature --label wayfinder:map`.
+- **Child ticket**: an issue linked to the map as a GitHub sub-issue (`gh api` on the sub-issues endpoint). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Issue Type: `Task`. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
 - **Blocking**: GitHub's **native issue dependencies** — the canonical, UI-visible representation. Add an edge with `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-database-id>`, where `<blocker-database-id>` is the blocker's numeric **database id** (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`, _not_ the `#number` or `node_id`). GitHub reports `issue_dependencies_summary.blocked_by` (open blockers only — the live gate). Where dependencies aren't available, fall back to a `Blocked by: #<n>, #<n>` line at the top of the child body. A ticket is unblocked when every blocker is closed.
 - **Frontier query**: list the map's open children (`gh issue list --state open`, scoped to the map's sub-issues / task list), drop any with an open blocker (`issue_dependencies_summary.blocked_by > 0`, or an open issue in the `Blocked by` line) or an assignee; first in map order wins.
 - **Claim**: `gh issue edit <n> --add-assignee @me` — the session's first write.
