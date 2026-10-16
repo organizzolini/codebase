@@ -16,7 +16,7 @@ describe(buildTemplateHashCommand, () => {
       recursive: true,
     });
     writeFileSync(path.join(root, "templates/widget/{{name}}/a.ts"), "a");
-    writeFileSync(path.join(root, "templates/widget/project.json"), "{}");
+    writeFileSync(path.join(root, "templates/widget/settings.json"), "{}");
   });
 
   afterEach(() => {
@@ -35,10 +35,10 @@ describe(buildTemplateHashCommand, () => {
     expect(hash()).toBe(hash());
   });
 
-  it("changes when a file is edited, including one Nx would ignore", () => {
+  it("changes when a file is edited", () => {
     const before = hash();
 
-    writeFileSync(path.join(root, "templates/widget/project.json"), '{"a":1}');
+    writeFileSync(path.join(root, "templates/widget/settings.json"), '{"a":1}');
 
     expect(hash()).not.toBe(before);
   });

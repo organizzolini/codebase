@@ -219,10 +219,9 @@ export class PluginService {
    * which is exactly how a broken template placeholder once reached every
    * matched instance's `package.json` unnoticed.
    *
-   * The globs read Nx's file map, which leaves out whatever `.nxignore`
-   * hides, and a workspace may hide template files there: a template holding
-   * a `project.json` would otherwise register as a project. The command reads
-   * the disk instead, so no template file escapes the cache key.
+   * The globs read Nx's file map, which leaves out any file the workspace
+   * excludes from it, whether through an ignore file or a plugin. The command
+   * reads the disk instead, so no template file escapes the cache key.
    */
   private async resolveTemplateInputs(args: {
     configurationPath: string;
