@@ -34,7 +34,6 @@
       "configurations": {
         "write": {
           "commands": [
-            "source .env",
             "pnpm exec openwiki code --update --print",
             "rm -f CLAUDE.md"
           ],
