@@ -605,6 +605,65 @@ describe(ConfigurationService, () => {
     });
   });
 
+  describe("generator hooks", () => {
+    /** Loads a TypeScript config whose one generator carries the given hooks. */
+    async function loadWithHooks(
+      hooks: string,
+    ): Promise<ConformetryConfiguration> {
+      const configurationPath = await writeTypescriptConfiguration(
+        `export default [
+          {
+            hooks: ${hooks},
+            name: "widget",
+            templatePath: "configuration/templates/widget",
+          },
+        ];
+`,
+      );
+
+      return service.loadConformetryConfiguration(configurationPath);
+    }
+
+    it("keeps both hooks a generator declares as functions", async () => {
+      const configuration = await loadWithHooks(
+        "{ postGenerate: () => undefined, preGenerate: async () => undefined }",
+      );
+
+      expect(configuration[0]?.hooks?.postGenerate).toBeTypeOf("function");
+      expect(configuration[0]?.hooks?.preGenerate).toBeTypeOf("function");
+    });
+
+    it("keeps a single hook without inventing the other", async () => {
+      const configuration = await loadWithHooks("{ preGenerate: () => {} }");
+
+      expect(configuration[0]?.hooks?.preGenerate).toBeTypeOf("function");
+      expect(configuration[0]?.hooks?.postGenerate).toBeUndefined();
+    });
+
+    it("refuses a hook that is not a function, naming the hook", async () => {
+      await expect(loadWithHooks('{ preGenerate: "rm -rf" }')).rejects.toThrow(
+        /preGenerate.*must be a function/s,
+      );
+    });
+
+    it("refuses a key under hooks that the schema does not know", async () => {
+      await expect(
+        loadWithHooks("{ afterGenerate: () => undefined }"),
+      ).rejects.toThrow("afterGenerate");
+    });
+
+    it("leaves a generator with no hooks without a hooks entry", async () => {
+      const configurationPath = await writeConfiguration([
+        { name: "example", templatePath: "templates/example" },
+      ]);
+
+      const configuration =
+        await service.loadConformetryConfiguration(configurationPath);
+
+      expect(configuration[0]).not.toHaveProperty("hooks");
+    });
+  });
+
   describe("requireConfigurationPath", () => {
     const surface = "the --config flag";
 
