@@ -11,7 +11,7 @@ module.exports = {
   // The stylesheet `shadcn add` rewrites (`components.json` names it), so it is
   // vendored like the components beside it and not ours to lint. Globs resolve
   // from this file's directory, not the workspace root.
-  ignoreFiles: ["../components-web/src/styles/globals.css"],
+  ignoreFiles: ["../components/src/styles/globals.css"],
   extends: [
     "stylelint-config-standard", // Standard CSS rules
     "stylelint-config-tailwindcss", // Tailwind CSS support

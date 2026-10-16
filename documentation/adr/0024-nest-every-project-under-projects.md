@@ -10,13 +10,13 @@ The folders also split each domain apart. Lexico's web application, API, and com
 
 **Every project lives at `projects/<project>/`.** A domain with several projects, or one that expects more, groups them one level deeper, and the IC suite keeps its own two levels.
 
-| Folder                           | Projects                                                                                                                               |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `projects/`                      | `affirmancy`, `components-web`, `database`, `logging`, `synchronization`, `validation`, and the uninitialized `JimmyPaolini` submodule |
-| `projects/caelundas/`            | `caelundas-cli`, `caelundas-web`                                                                                                       |
-| `projects/lexico/`               | `lexico-api`, `lexico-cli`, `lexico-entities`, `lexico-web`                                                                            |
-| `projects/meanderaw/`            | `meanderaw-cli`, `meanderaw-web`                                                                                                       |
-| `projects/ic-suite/<toolchain>/` | the callidescope, codependix, codometer, and conformetry packages                                                                      |
+| Folder                           | Projects                                                                                                                           |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `projects/`                      | `affirmancy`, `components`, `database`, `logging`, `synchronization`, `validation`, and the uninitialized `JimmyPaolini` submodule |
+| `projects/caelundas/`            | `caelundas-cli`, `caelundas-web`                                                                                                   |
+| `projects/lexico/`               | `lexico-api`, `lexico-cli`, `lexico-entities`, `lexico-web`                                                                        |
+| `projects/meanderaw/`            | `meanderaw-cli`, `meanderaw-web`                                                                                                   |
+| `projects/ic-suite/<toolchain>/` | the callidescope, codependix, codometer, and conformetry packages                                                                  |
 
 **A project's tag, not its folder, says whether it is an application or a package.** `type:application` and `type:package` are already what the boundary rules read.
 

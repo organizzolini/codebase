@@ -73,9 +73,9 @@ function getStagedFilesFlags(files: string[]): string {
 
 /**
  * Hands `nx affected` the staged changes as two revisions, so it selects
- * projects the way CI's `scripts/nx/run-affected.sh` does when it has no
- * change set to correct. The hook does not call that script: its spelling files
- * stay in.
+ * projects the way CI's `run-affected` command in `projects/publication` does
+ * when it has no change set to correct. The hook does not call that command:
+ * its spelling files stay in.
  *
  * Given `--files`, Nx counts a file as changed in full. Given a base and a
  * head, it diffs `package.json` and `pnpm-lock.yaml` field by field. The
@@ -169,9 +169,9 @@ const config = {
 
   // 📦 Manifest consistency
   // A manifest under a project makes only that project affected, but syncpack
-  // and sherif compare every manifest against every other, so the root project
-  // and the `configuration` project, which owns those two, have to run whether
-  // or not `affected` selected them.
+  // and sherif compare every manifest against every other, so
+  // `configuration`, which owns those two, has to run whether or not
+  // `affected` selected it.
   "**/package.json": (): string[] => [
     "pnpm exec nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
     "pnpm exec nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",

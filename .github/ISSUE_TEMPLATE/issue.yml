@@ -51,9 +51,10 @@ body:
         - deployments
         - documentation
         - infrastructure
+        - installation
         - JimmyPaolini
         - lexico
-        - components-web
+        - components
         - lexico-entities
         - lexico-cli
         - meanderaw
@@ -62,6 +63,7 @@ body:
         - codependix
         - codometer
         - no-release
+        - publication
         - release
         - reporting
         - scripts

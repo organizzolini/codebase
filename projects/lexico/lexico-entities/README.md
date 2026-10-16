@@ -219,7 +219,7 @@ and migrations are verified against the database rather than against a mock.
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
 - 🚰 [lexico-cli](../lexico-cli/README.md) — fills these tables
-- 🎨 [components-web](../../components-web/README.md) — the interface
+- 🎨 [components](../../components/README.md) — the interface
 
 ## License
 

@@ -1,6 +1,6 @@
 ---
 name: write-react
-description: React coding conventions for this codebase. Use when writing or reviewing React components, when asked about component structure, section ordering, Tailwind CSS usage, state management patterns, conditional rendering, list rendering, or React 19 conventions. Covers the conformetry generators for components, hooks, routes, and server functions, component section layout (🔖🧩🪝🏗💪♻️🏁🎨), Tailwind CSS with theme tokens, TanStack Start routes, loaders, and server functions, components-web usage, and testing with Vitest + RTL.
+description: React coding conventions for this codebase. Use when writing or reviewing React components, when asked about component structure, section ordering, Tailwind CSS usage, state management patterns, conditional rendering, list rendering, or React 19 conventions. Covers the conformetry generators for components, hooks, routes, and server functions, component section layout (🔖🧩🪝🏗💪♻️🏁🎨), Tailwind CSS with theme tokens, TanStack Start routes, loaders, and server functions, components usage, and testing with Vitest + RTL.
 license: MIT
 ---
 
@@ -109,18 +109,18 @@ A hook follows the same layout under a `// 🧩 Hook` marker, with 🪝 Hooks,
 🏗 Setup, 💪 Handlers, ♻️ Lifecycle, and 🎁 Result inside it, its state held in `value`.
 Its name carries the `use-` prefix, so `use-user.ts` exports `useUser`.
 
-## components-web
+## components
 
 All UI components come from the shared component library. **Never duplicate UI code.**
 
 ```typescript
 // ✅ CORRECT
-import { Button, Card, Input, Label, cn } from "@codebase/components-web";
+import { Button, Card, Input, Label, cn } from "@codebase/components";
 
 // ❌ WRONG: Copying component code into lexico
 ```
 
-Never modify files in `projects/components-web/src/components/ui/` (shadcn-generated). Compose custom components in `projects/components-web/src/components/` instead.
+Never modify files in `projects/components/src/components/ui/` (shadcn-generated). Compose custom components in `projects/components/src/components/` instead.
 
 ## Styling with Tailwind CSS
 
@@ -149,7 +149,7 @@ Use CSS variables for themed colors to support dark mode:
 ### Conditional Classes with `cn()`
 
 ```typescript
-import { cn } from "@codebase/components-web";
+import { cn } from "@codebase/components";
 
 <button
   className={cn(

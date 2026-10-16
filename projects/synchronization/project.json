@@ -94,6 +94,26 @@
     },
     "format-code": {},
     "guard-code": {},
+    "installed-skills": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills check"
+        },
+        "force": {
+          "command": "SKILLS_INSTALL_FORCE=1 NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Checks or restores the skills `skills-lock.json` declares. `check` lists the locked skills whose `SKILL.md` is absent, and is what `scripts/git/validate-session-skills.sh` runs; `write` restores them, and is what the root `postinstall` runs. Never cached: its result depends on what is on disk and, in `write`, on the network.",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "issue-labels": {
       "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts issue-labels",
       "description": "Adds the type and scope labels a submitted `issue.yml` body implies. Its destination is GitHub itself rather than a file, so reaching it needs a token that neither a fork nor a developer's `lint-code` run has: the 🦹 Continuous Compliance workflow runs it directly through node rather than through this Nx target on an issue's `opened` event, and nothing else names it. This target exists for a human running it locally with their own credentials.",

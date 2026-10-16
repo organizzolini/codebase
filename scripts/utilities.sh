@@ -23,7 +23,7 @@ if [[ -f ".env" ]]; then
   source .env
   set +a
 else
-  echo "⚠️  .env file not found (will be created by environment.sh)"
+  echo "⚠️  .env file not found (will be created by the installation setup command)"
 fi
 
 echo "👟 Making all codebase workspace scripts executable..."

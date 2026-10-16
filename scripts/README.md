@@ -9,7 +9,10 @@ This directory contains shell scripts for:
 - **Local setup** - macOS-specific initial codebase configuration (in `local/`)
 - **Shell utilities** - Common terminal operations
 - **Nx** - The CI steps around Nx: its affected runs and the task-result database CI caches (in `nx/`)
-- **Release** - The CI steps that version and publish the ic-suite packages (in `release/`)
+
+> **The shell floor.** Which scripts stay shell, and why, is decided in
+> [ADR 0026](../documentation/adr/0026-keep-a-small-shell-floor-under-the-scripts.md).
+> A script that is not on that floor belongs in a NestJS command.
 
 ## Quick Start
 
@@ -23,9 +26,9 @@ Run the main setup script to configure your local development environment:
 
 This runs the following in sequence:
 
-1. `software.sh` - Installs required software (Homebrew, nvm, Node.js, pnpm, uv, Python, Ollama, Terraform, and more)
-2. `environment.sh` - Creates `.env` files and configures environment variables
-3. `dependencies.sh` - Installs npm and Python dependencies
+1. `software/brew.sh` and `software/node.sh` - Check Homebrew, then install nvm, Node.js, pnpm, and nx
+2. `pnpm install` - Installs the packages the next step is written in
+3. `projects/installation/src/installation.main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
 
 > **Note:** If using a devcontainer, these scripts are not needed — the devcontainer handles setup automatically via `.devcontainer/scripts/post-create-command.sh`.
 
@@ -36,7 +39,7 @@ The devcontainer handles equivalent setup automatically.
 
 ### setup.sh
 
-**Purpose:** Complete codebase setup in one command
+**Purpose:** Bootstrap a machine, then run the installation project's `setup` command
 
 **Usage:**
 
@@ -47,119 +50,35 @@ The devcontainer handles equivalent setup automatically.
 **What it does:**
 
 - Validates codebase root directory
-- Sources utilities for common functions
-- Installs required software (Homebrew, nvm, Node.js, pnpm, uv, Python, Ollama, etc.)
-- Configures environment from `.env`
-- Installs all npm and Python dependencies
+- Sources `utilities.sh` for common functions
+- Sources `software/brew.sh` and `software/node.sh` to install nvm, Node.js (from `.nvmrc`), pnpm, and nx
+- Runs `pnpm install`, so the command can start
+- Runs `projects/installation/src/installation.main.ts setup`, which does everything else
 
 **Prerequisites:**
 
 - Must be run from codebase root directory
-- Requires `.env` file with environment variables
+- Homebrew installed
 
-### software.sh
+### software/brew.sh and software/node.sh
 
-**Purpose:** Install and update required development tools
+**Purpose:** The part of the software step that cannot be TypeScript, because it installs the Node the TypeScript runs on
 
-**Usage:**
+- **Homebrew** - Checked, never installed; exits with an error if it is missing
+- **nvm, Node.js, pnpm, nx** - Installed or checked; Husky's init file is written
+- `brew_install_or_check` is defined here for `node.sh`
 
-```bash
-./scripts/local/software.sh
-```
+### The installation project
 
-**Checks/Installs:**
+Everything after Node exists lives in [`projects/installation`](../projects/installation/AGENTS.md), one command each. Run any of them on its own with `nx run installation:start:<command>`.
 
-- **Homebrew** - Package manager for macOS/Linux
-- **nvm** - Node Version Manager
-- **Node.js** - Runtime (version from `.nvmrc`)
-- **pnpm** - Fast, disk space efficient package manager
-- **uv** - Python package manager
-- **Python** - 3.11+ (via Homebrew)
-- **Ollama** - Local LLM server (starts service, pulls `gemma4:e2b`)
-- **Terraform** - Infrastructure as code
-- **yamllint** - YAML linting
-- **Supabase CLI** - Supabase local development
-- **jq** - JSON processor
-- **GitHub CLI** - GitHub operations from terminal
-- **Helm** - Kubernetes package manager
-- **kubectl** - Kubernetes CLI
-
-**Behavior:**
-
-- Skips installation if tool already exists
-- Checks for updates and prompts to upgrade
-- Exits with error if Homebrew is missing
-
-### dependencies.sh
-
-**Purpose:** Install all project dependencies (Node.js and Python)
-
-**Usage:**
-
-```bash
-./scripts/local/dependencies.sh
-```
-
-**What it does:**
-
-- Runs `pnpm install` in codebase root
-- Installs dependencies for all workspace packages
-- Runs `uv sync` in codebase root for the uv workspace Python dependencies
-- Respects lockfiles for reproducible builds
-
-### environment.sh
-
-**Purpose:** Configure environment variables and create `.env` files
-
-**Usage:**
-
-```bash
-./scripts/local/environment.sh
-```
-
-**What it does:**
-
-- Creates `.env` from every `.env.default` in the repository (excluding `projects/configuration/conformetry-templates/`), skipping any `.env` that already exists
-- Appends `LOCAL_WORKSPACE_FOLDER=$(pwd)` to root `.env` for docker-compose volume mounts
-- Sources `.env` file and exports environment variables
-
-### install-skills.sh
-
-**Purpose:** Restore the skills declared in `skills-lock.json` into their gitignored `.agents/skills/<name>/` folders, so every environment that installs node dependencies holds the skills that `AGENTS.md` links to
-
-**Usage:**
-
-```bash
-# Via Nx (recommended)
-pnpm exec nx run codebase:install-skills
-
-# Re-restore skills that are present but damaged
-pnpm exec nx run codebase:install-skills --configuration=force
-
-# Direct
-./scripts/install-skills.sh
-```
-
-**Use cases:**
-
-- Root `postinstall` (automatically run by every `pnpm install`)
-- Fresh clones, devcontainers, CI jobs, and Claude Code worktrees
-- Manual repair when a skill named in `AGENTS.md` is missing
-
-**Behavior:**
-
-- Idempotent — returns in milliseconds when every locked skill is already present
-- Reverts the hashes that `skills experimental_install` rewrites into `skills-lock.json`, so an install never dirties the tree. Pins move via `pnpm exec skills update`, which `upgrade-dependencies.yml` runs weekly
-- Non-fatal — a GitHub outage warns and prints the retry command rather than failing the install
-
-**Environment variables:**
-
-- `SKIP_SKILLS_INSTALL=1` - Skip restoration entirely
-- `SKILLS_INSTALL_FORCE=1` - Re-restore even when every skill is present
-
-**Exit codes:**
-
-- `0` - Always, by design; skills are agent context, not a build input
+| Command               | What it does                                                                                                     |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
+| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion, and shell-helper blocks to `~/.zshrc` or `~/.bashrc`             |
+| `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
+| `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
+| `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
 
 ### VS Code extensions and settings
 
@@ -397,21 +316,23 @@ between commands live in a sourced file beside them.
 
 ### Task-Result Database
 
-The `setup-codebase` and `cleanup-codebase` actions run these around CI's Nx
-cache restore and save, and all of them source `task-database.sh` for the
-shared helpers.
-
 Nx decides a cache hit only from its task-result database,
 `.nx/workspace-data/<machine-id>-v<schema>.db`. That file is named after the
 machine, and every hosted runner is a fresh VM, so a restored database goes
 unread unless it is adopted under the current machine's id.
 
+The `setup-codebase` action restores the cache, imports the pull request's in a
+merge group, then verifies and adopts the database, all before `pnpm install`,
+so those steps are still shell: a NestJS command cannot run before the install.
+Moving verify and adopt after it was measured without the import, never in a
+merge group, so it waits on a new measurement. `merge-task-cache.sh` sources
+`task-database.sh`, which stays with them.
+
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
-| `verify-task-database.sh` | setup and cleanup | Discards any database that fails `PRAGMA integrity_check` |
+| `verify-task-database.sh` | setup, after the restore | Discards any database that fails `PRAGMA integrity_check` |
 | `adopt-task-database.sh` | setup, after the restore | Renames the newest restored database to this machine's id and discards the rest |
-| `keep-task-database.sh` | cleanup, before the save | Keeps only the newest database, and warns if there was more than one |
-| `import-pr-task-cache.sh` | setup, in a merge group | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
+| `import-pr-task-cache.sh` | setup, in a merge group, before the verify | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
 | `merge-task-cache.sh` | called by the import | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
 | `task-database.sh` | sourced by the above | Lists, picks, and discards databases along with their `-wal`, `-shm`, and `-journal` files |
 
@@ -421,15 +342,22 @@ finished. The pull request's run uploads its cache as an artifact in
 `cleanup-codebase`, which any run can read, and only for a pull request from
 this repository.
 
+The `cleanup-codebase` action runs after the install, so its two steps are
+commands (which open the databases with the built-in `node:sqlite`, not the
+`sqlite3` binary) of the [publication](../projects/publication) project:
+`verify-task-database` and `keep-task-database` (which keeps only the newest
+database, and warns if there was more than one). The `adopt-task-database`
+command is the same as the script and is tested, ready for the move.
+
 All of them honour `NX_WORKSPACE_DATA_DIRECTORY`, and the two that touch task
-outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database.sh`
-also reads `MACHINE_ID_FILES`, a space-separated list of files to take the id
-from, in priority order. So the scripts can be exercised locally against a
-scratch directory and a fake id:
+outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database` also reads
+`MACHINE_ID_FILES`, a space-separated list of files to take the id from, in
+priority order. So they can be exercised locally against a scratch directory
+and a fake id:
 
 ```bash
 NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
-  bash scripts/nx/adopt-task-database.sh
+  nx run publication:start:adopt-task-database
 ```
 
 ### Affected Runs
@@ -437,19 +365,27 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
 | `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-| `run-affected.sh` | `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
-| `verify-publishable-packages.sh` | the 📦 Publishable Packages leg | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
-All three read everything from the environment, so any of them can be run locally. With
-`pnpm` stubbed to print what it would have run:
+This one stays shell. `setup-codebase` runs it before `pnpm install`, and a job
+may skip the install altogether, so no NestJS command can run in its place.
+
+The other two affected-run steps are commands of the
+[publication](../projects/publication) project, called from the `run-affected`
+composite action and the 📦 Publishable Packages leg:
+
+| Command | What it does |
+| ------- | ------------ |
+| `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
+| `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
+
+All three read everything from the environment, so any of them can be run
+locally:
 
 ```bash
-mkdir -p /tmp/stub && printf '#!/bin/sh\necho "pnpm $*"; [ -t 0 ] || cat\n' >/tmp/stub/pnpm
-chmod +x /tmp/stub/pnpm
-PATH="/tmp/stub:$PATH" TARGET=test-code ARGUMENTS="--parallel=4" \
-  NX_BASE=004d1f58c^ NX_HEAD=004d1f58c bash scripts/nx/run-affected.sh
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
   bash scripts/nx/bound-base-to-push.sh
+TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
+  nx run publication:start:run-affected
 ```
 
 ## Notepads
@@ -567,7 +503,7 @@ Update npm packages:
 pnpm update
 
 # Or run dependencies script
-./scripts/local/dependencies.sh
+pnpm exec nx run installation:start:dependencies
 ```
 
 ### Clean Install
@@ -579,7 +515,7 @@ Remove node_modules and reinstall:
 pnpm clean
 
 # Reinstall
-./scripts/local/dependencies.sh
+pnpm exec nx run installation:start:dependencies
 ```
 
 ### Validate Lockfile
@@ -694,7 +630,7 @@ brew install pnpm
 Or run software setup:
 
 ```bash
-./scripts/local/software.sh
+pnpm exec nx run installation:start:software
 ```
 
 ### Lockfile out of sync
@@ -710,31 +646,6 @@ Verify sync:
 ```bash
 pnpm exec nx run validation:lockfile
 ```
-
-## Release Scripts
-
-These scripts live in `scripts/release/`, and the release job of
-`.github/workflows/continuous-deployment.yml` runs them in order. semantic-release
-runs between the first two: its release commit carries both the codebase's
-version and the packages' versions, so a release adds one commit to `main`.
-
-| Script | Step | What it does |
-| ------ | ---- | ------------ |
-| `version-packages.sh` | 🏷️ Version Packages | Runs `tag-packages.sh` to push any tags an earlier run left missing, then runs `nx release --skip-publish`, which versions each package and writes its `CHANGELOG.md` without committing, for semantic-release's release commit to carry |
-| `tag-packages.sh` | 🔖 Tag Packages | Commits any package versions semantic-release left uncommitted because the codebase had no release, then tags each newly versioned package `<project>@<version>` on `HEAD` and pushes the tags 6 at a time, since GitHub rejects a push that updates more than 6 refs, retrying a rejected push |
-| `publish-packages.sh` | 📦 Publish Packages | Publishes every release-group package not yet on npm, with provenance, then mirrors each package to GitHub Packages as `@<owner>/<project>` |
-| `link-packages.sh` | 🔗 Link Packages | Creates a storage record on the organization's Linked artifacts page for every published npm version that has none, and lists the versions this run published for 🔏 Attest Packages |
-| `tag-codebase.sh` | 🔖 Tag Codebase | Runs semantic-release, stepping aside instead when `main` moved before it started or while its release commit was being made |
-| `release-group.sh` | sourced by the above | Lists the release group's projects and their directories from `nx.json` in two Nx calls, names and checks a package's npm version, and runs a step's registry calls six at a time |
-| `main-tip.sh` | sourced by the version, codebase and tag scripts | Reports whether `main` moved during the run, and sets the `RELEASE_SUPERSEDED` variable the later release steps skip on |
-
-They read everything from the environment, and all are safe to re-run: Nx
-versions only what has changed since each package's last tag, tagging skips a
-tag that already exists, pnpm skips a version npm already has, and so is a
-version GitHub Packages already has or a tarball that already has a storage
-record. `GITHUB_PACKAGES_REGISTRY` points the
-mirror at another registry, such as `configuration:local-registry`, to try it
-without touching GitHub.
 
 ## Contributing
 
@@ -776,7 +687,7 @@ without touching GitHub.
 
 **File naming:**
 
-- Use kebab-case: `install-skills.sh`
+- Use kebab-case: `validate-session-skills.sh`
 - Add `.sh` extension
 - Descriptive names
 

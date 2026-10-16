@@ -41,6 +41,17 @@ discriminator is not startup cost: the CLI boots in about 0.83s and the shell
 session hook takes about 0.77s, because the shell hook shells out to Node
 anyway. It is whether the check still works when the install is broken.
 
+The full shell floor, the rule behind it, and the bootstrap it extends to are
+decided in
+[ADR 0026](../../documentation/adr/0026-keep-a-small-shell-floor-under-the-scripts.md).
+
+The branch-name and worktree-name session hooks are the opposite case: they
+already needed Node, or are accepted as needing it, so their logic lives here as
+`session-branch-name` and `session-worktree-name`, with each hook reduced to a
+shim. Those commands print only the hook's context on standard output, which is
+why `validation.main.ts` sends every log line to standard error — keep it that way. See
+the [agent-session-hooks skill](../../.agents/skills/agent-session-hooks/SKILL.md).
+
 ## Architecture Overview
 
 ### Tech Stack

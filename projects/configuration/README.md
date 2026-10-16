@@ -48,7 +48,7 @@ codependix rules name the `name:configuration` tag as a permitted target for
 every layer, so nothing there fails on it.
 
 A release is the one place a change here must not spread.
-`scripts/release/version-packages.sh` adds this folder to `.nxignore` for the
+the `publication` project's `version-packages` command adds this folder to `.nxignore` for the
 single `nx release` command, so a commit that edits only configuration releases
 no package, while a commit that edits a package still does.
 

@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.8](https://github.com/organizzolini/codebase/compare/v3.9.7...v3.9.8) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,synchronization:** ♻️ remove the root project ([#1690](https://github.com/organizzolini/codebase/issues/1690)) ([766efff](https://github.com/organizzolini/codebase/commit/766efff8b6f15f6541ccbc466e90629c543af8d7)), closes [#1669](https://github.com/organizzolini/codebase/issues/1669)
+
+## [3.9.7](https://github.com/organizzolini/codebase/compare/v3.9.6...v3.9.7) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **publication:** ♻️ move the release steps into publication commands ([#1569](https://github.com/organizzolini/codebase/issues/1569)) ([de0da35](https://github.com/organizzolini/codebase/commit/de0da3510d5cf443f086eaa970607ec254595e7e)), closes [#1537](https://github.com/organizzolini/codebase/issues/1537) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1538](https://github.com/organizzolini/codebase/issues/1538) [#1539](https://github.com/organizzolini/codebase/issues/1539) [#1540](https://github.com/organizzolini/codebase/issues/1540) [#1541](https://github.com/organizzolini/codebase/issues/1541) [#1542](https://github.com/organizzolini/codebase/issues/1542) [#1562](https://github.com/organizzolini/codebase/issues/1562)
+
+## [3.9.6](https://github.com/organizzolini/codebase/compare/v3.9.5...v3.9.6) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,publication:** ♻️ create the publication project with the Nx plumbing ([#1562](https://github.com/organizzolini/codebase/issues/1562)) ([f6dffc8](https://github.com/organizzolini/codebase/commit/f6dffc82080f8df266957fcae136551f4c38d973)), closes [#1663](https://github.com/organizzolini/codebase/issues/1663) [#1588](https://github.com/organizzolini/codebase/issues/1588) [#1663](https://github.com/organizzolini/codebase/issues/1663) [#1530](https://github.com/organizzolini/codebase/issues/1530) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1531](https://github.com/organizzolini/codebase/issues/1531) [#1532](https://github.com/organizzolini/codebase/issues/1532) [#1533](https://github.com/organizzolini/codebase/issues/1533) [#1534](https://github.com/organizzolini/codebase/issues/1534) [#1535](https://github.com/organizzolini/codebase/issues/1535) [#1536](https://github.com/organizzolini/codebase/issues/1536)
+* **publication:** ♻️ move the Nx task-database steps into publication commands ([#1565](https://github.com/organizzolini/codebase/issues/1565)) ([06f449b](https://github.com/organizzolini/codebase/commit/06f449bec78525c7c70651cbf612787585dee2c4)), closes [#1546](https://github.com/organizzolini/codebase/issues/1546) [#1663](https://github.com/organizzolini/codebase/issues/1663) [#1544](https://github.com/organizzolini/codebase/issues/1544) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1545](https://github.com/organizzolini/codebase/issues/1545) [#1546](https://github.com/organizzolini/codebase/issues/1546) [#1548](https://github.com/organizzolini/codebase/issues/1548) [#1547](https://github.com/organizzolini/codebase/issues/1547) [#1562](https://github.com/organizzolini/codebase/issues/1562)
+
+## [3.9.5](https://github.com/organizzolini/codebase/compare/v3.9.4...v3.9.5) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,installation,scripts:** ♻️ create the installation project from the local setup scripts ([#1564](https://github.com/organizzolini/codebase/issues/1564)) ([91df9a1](https://github.com/organizzolini/codebase/commit/91df9a1010b6fe78ecc2cd17eab9da57fd98ff3c)), closes [#1550](https://github.com/organizzolini/codebase/issues/1550) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1551](https://github.com/organizzolini/codebase/issues/1551) [#1552](https://github.com/organizzolini/codebase/issues/1552) [#1553](https://github.com/organizzolini/codebase/issues/1553) [#1554](https://github.com/organizzolini/codebase/issues/1554) [#1555](https://github.com/organizzolini/codebase/issues/1555) [#1556](https://github.com/organizzolini/codebase/issues/1556) [#1557](https://github.com/organizzolini/codebase/issues/1557)
+* **validation:** ♻️ move session branch and worktree checks into commands ([#1567](https://github.com/organizzolini/codebase/issues/1567)) ([9cab275](https://github.com/organizzolini/codebase/commit/9cab275d281769911850de07d11bc35aa77bb651)), closes [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1524](https://github.com/organizzolini/codebase/issues/1524) [#1525](https://github.com/organizzolini/codebase/issues/1525) [#1526](https://github.com/organizzolini/codebase/issues/1526) [#1527](https://github.com/organizzolini/codebase/issues/1527) [#1528](https://github.com/organizzolini/codebase/issues/1528) [#1529](https://github.com/organizzolini/codebase/issues/1529) [#1563](https://github.com/organizzolini/codebase/issues/1563)
+
+## [3.9.4](https://github.com/organizzolini/codebase/compare/v3.9.3...v3.9.4) (2026-10-16)
+
+### 📝 Documentation
+
+* **scripts:** 📝 record the shell floor as an ADR ([#1561](https://github.com/organizzolini/codebase/issues/1561)) ([fec37d0](https://github.com/organizzolini/codebase/commit/fec37d0ddbbc760ca0cb80e7694ccf8bbe1ad131)), closes [#1509](https://github.com/organizzolini/codebase/issues/1509) [#1514](https://github.com/organizzolini/codebase/issues/1514) [#1515](https://github.com/organizzolini/codebase/issues/1515) [#1516](https://github.com/organizzolini/codebase/issues/1516) [#1511](https://github.com/organizzolini/codebase/issues/1511)
+
+### ♻️ Code Refactoring
+
+* **synchronization:** ♻️ move skill restoration into an installed-skills command ([#1563](https://github.com/organizzolini/codebase/issues/1563)) ([d8597a7](https://github.com/organizzolini/codebase/commit/d8597a77b0a8957f3811b09e1dfeccd99b31b028)), closes [#1524](https://github.com/organizzolini/codebase/issues/1524) [#1517](https://github.com/organizzolini/codebase/issues/1517) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1518](https://github.com/organizzolini/codebase/issues/1518) [#1519](https://github.com/organizzolini/codebase/issues/1519) [#1520](https://github.com/organizzolini/codebase/issues/1520) [#1521](https://github.com/organizzolini/codebase/issues/1521) [#1522](https://github.com/organizzolini/codebase/issues/1522) [#1523](https://github.com/organizzolini/codebase/issues/1523) [#1524](https://github.com/organizzolini/codebase/issues/1524)
+
 ## [3.9.3](https://github.com/organizzolini/codebase/compare/v3.9.2...v3.9.3) (2026-10-16)
 
 ### ♻️ Code Refactoring

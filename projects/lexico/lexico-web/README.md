@@ -12,14 +12,14 @@ React 19. It is the front end of a small suite: the dictionary's shape lives in
 [lexico-entities](../lexico-entities/README.md), the data that
 fills it is gathered by
 [lexico-cli](../lexico-cli/README.md), and the interface is built
-from [components-web](../../components-web/README.md).
+from [components](../../components/README.md).
 
 ## Projects
 
 | Project | Role |
 | ------- | ---- |
 | 🐺 [lexico-web](README.md) | The SSR web application — routes, server functions, pages |
-| 🎨 [components-web](../../components-web/README.md) | Shared React component library on shadcn/ui and Base UI primitives |
+| 🎨 [components](../../components/README.md) | Shared React component library on shadcn/ui and Base UI primitives |
 | 📖 [lexico-entities](../lexico-entities/README.md) | TypeORM entities and migrations for the dictionary and literature schema |
 | 🚰 [lexico-cli](../lexico-cli/README.md) | CLI that scrapes and loads dictionary, literature, and etymology sources |
 
@@ -68,7 +68,7 @@ for Latin and English matches at once and merges them, best first; set
 - **React 19** with TanStack Router for file-based routing
 - **TanStack Start** for SSR and server functions
 - **Tailwind CSS** with shadcn/ui components from
-  [components-web](../../components-web/README.md)
+  [components](../../components/README.md)
 - **Vite 7** with Nitro for the SSR bundle
 - **TypeScript 5.9**, strict mode throughout
 
@@ -354,7 +354,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  components_web["components-web"]
+  components_web["components"]
   lexico_web["lexico-web"]
   lexico_web --> components_web
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

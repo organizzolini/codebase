@@ -40,11 +40,11 @@ function defineInputs(
  * overwrites, so every frontend instance group leaves it out of validation.
  */
 const SHADCN_GENERATED_PATTERNS = [
-  "projects/components-web/src/components/examples/**",
-  "projects/components-web/src/components/reui/**",
-  "projects/components-web/src/components/ui/**",
-  "projects/components-web/src/hooks/**",
-  "projects/components-web/src/lib/**",
+  "projects/components/src/components/examples/**",
+  "projects/components/src/components/reui/**",
+  "projects/components/src/components/ui/**",
+  "projects/components/src/hooks/**",
+  "projects/components/src/lib/**",
 ];
 
 const conformetryConfiguration: ConformetryNxConfiguration = [

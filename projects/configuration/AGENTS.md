@@ -54,7 +54,7 @@ name its tool does not auto-discover, and pass the path.
 
 Only files a tool insists on finding there: `nx.json`, `package.json`,
 `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `pyproject.toml` and `uv.lock` (the uv
-workspace root), `tsconfig.json` (the root project's typecheck scope),
+workspace root), `tsconfig.json` (the typecheck scope `configuration` runs),
 `.gitignore`, `.gitattributes`, `.gitmodules`, `.editorconfig`, `.nxignore`,
 `.openwikiignore`, `.node-version`, `.nvmrc`, `skills-lock.json`, and
 `validate-branch-name.config.cjs`, whose tool takes no config path.
@@ -73,7 +73,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
   target, and the `*-is-a-leaf` rules reach every project but it. A new rule
   must do the same, or every project's `codependix-gate` fails.
 - **Releases ignore it.** A change here would otherwise patch-bump every
-  package. `scripts/release/version-packages.sh` appends this folder to
+  package. the `publication` project's `version-packages` command appends this folder to
   `.nxignore` for the `nx release` command and restores the file on exit. Do not
   run `nx release` by hand without the same ignore, or it will version every
   package.

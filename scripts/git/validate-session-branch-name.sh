@@ -1,39 +1,17 @@
 #!/bin/bash
 #
-# sessionStart hook — validates the current git branch name.
+# sessionStart hook — validates the current git branch name, through
+# `session-branch-name` in the validation project.
 #
-#   - Silent when the branch follows <type>/<scope>-<description>
+#   - Silent when the branch follows <type>/<scope>-<description>, or when
+#     there is no branch at all (detached HEAD, no repository, no git)
 #   - Injects the validate-branch-name errorMsg + rename-branch skill directive
-#     as additionalContext when non-compliant
-#
+#     as additionalContext otherwise: the command's standard output is that
+#     context, word for word
+#   - Injects a "run pnpm install" directive when the command cannot even boot
+#     for want of dependencies, or the command to rerun it when it crashed —
+#     what an empty context means to emit-session-hook-context.sh
 
-SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# 🔎 Current branch
-
-BRANCH=$(git branch --show-current 2>/dev/null)
-# Detached HEAD or non-git directory — nothing to validate
-[[ -z "${BRANCH}" ]] && exit 0
-
-# validate-branch-name resolves its config from the working directory, which is
-# not guaranteed to be the repository root when an agent harness invokes a hook.
-REPOSITORY_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
-if [[ -n "${REPOSITORY_ROOT}" ]]; then
-  cd "${REPOSITORY_ROOT}" || exit 1
-fi
-
-# ✅ Validation
-
-# Extract just the errorMsg block from validate-branch-name output, stripping
-# ANSI codes. Empty output means the branch is compliant — exit silently.
-ERROR=$(pnpm exec validate-branch-name 2>&1 | awk '/^Error Msg:/{found=1; next} found && /^Branch Name:/{exit} found{print}' | sed 's/\x1b\[[0-9;]*m//g')
-[[ -z "${ERROR}" ]] && exit 0
-
-# 📋 Context
-
-# Combine the human-readable error (types, scopes, format) with a directive so
-# the agent invokes the rename-branch skill before responding to the user.
-CONTEXT="${ERROR}
-🚨 Invoke the rename-branch skill to rename this branch before doing anything else."
-
-printf '%s' "${CONTEXT}" | bash "${SCRIPT_DIRECTORY}/emit-session-hook-context.sh"
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 0
+CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/validation/src/validation.main.ts session-branch-name 2>/dev/null)" && exit 0
+printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "pnpm exec nx run validation:start:session-branch-name"

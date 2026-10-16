@@ -1,3 +1,21 @@
+## 0.0.34 (2026-10-16)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.33
+
+## 0.0.33 (2026-10-16)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.32
+
+## 0.0.32 (2026-10-16)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.31
+
 ## 0.0.31 (2026-10-16)
 
 ### 🧱 Updated Dependencies

@@ -117,9 +117,9 @@ ignorePaths:
   - "**/.agents/skills/writing-skills/**"
   # installed-skills-end
   - "**/node_modules"
-  - "**/projects/components-web/src/components/**"
-  - "**/projects/components-web/src/hooks/**"
-  - "**/projects/components-web/src/lib/**"
+  - "**/projects/components/src/components/**"
+  - "**/projects/components/src/hooks/**"
+  - "**/projects/components/src/lib/**"
   - "**/pnpm-lock.yaml"
   - "**/routeTree.gen.ts"
   - "**/terraform.tfstate*"
@@ -287,7 +287,7 @@ patterns:
   - name: ipa-transcription
     pattern: /\/[^\/\s]*[ɪʊəɜɑɔæʌθðʃʒŋɹˈˌː][^\/\s]*\//gu
   # Vendored component paths in a generated dependency graph: node ids
-  # (`file_components_web_src_components_reui_cascader_cascader_nav_tsx`) and their
+  # (`file_components_src_components_reui_cascader_cascader_nav_tsx`) and their
   # quoted file paths. The vendored sources are excluded from spell-check, but codependix quotes
   # their names into every README that embeds the file graph.
   - name: vendored-component-path
@@ -335,6 +335,8 @@ overrides:
       - /\(\?![^)]*\)/g
 # cspell:enable
 words:
+  # The zsh function that loads bash-style completion, written into shell startup files.
+  - bashcompinit
   # The rc-style conformetry config filenames the Nx plugin looks for.
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.

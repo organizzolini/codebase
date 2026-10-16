@@ -1,5 +1,5 @@
 # shellcheck shell=bash
-# Sourced into an interactive zsh or bash by shell-config.sh, never executed.
+# Sourced into an interactive zsh or bash by the installation shell-configuration command, never executed.
 
 function killport() {
   port="$1"

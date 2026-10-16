@@ -141,6 +141,11 @@ const scopes = [
     name: "infrastructure",
   },
   {
+    description:
+      "Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software)",
+    name: "installation",
+  },
+  {
     description: "Static GitHub profile README project (markdown and assets)",
     name: "JimmyPaolini",
   },
@@ -151,7 +156,7 @@ const scopes = [
   },
   {
     description: "Shared React/shadcn component library",
-    name: "components-web",
+    name: "components",
   },
   {
     description: "Shared TypeORM entities and GraphQL types",
@@ -189,6 +194,11 @@ const scopes = [
   {
     description: "Escape hatch: suppress semantic-release for any commit type",
     name: "no-release",
+  },
+  {
+    description:
+      "Publication CLI: the CI release steps and the Nx affected and publishable-package plumbing",
+    name: "publication",
   },
   {
     description:

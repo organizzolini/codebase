@@ -31,10 +31,10 @@ pnpm exec skills update
 
 ## Restoring Missing Skills
 
-`scripts/install-skills.sh` restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. It is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build:
+The `installed-skills` command in the `synchronization` project restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. Its `write` mode runs from the root `postinstall` and the `synchronization:installed-skills:write` target: it is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build. `SKIP_SKILLS_INSTALL=1` leaves skills alone, and `SKILLS_INSTALL_FORCE=1` (the `force` configuration) restores even when every skill is present. Its `check` mode lists the locked skills whose `SKILL.md` is absent, and is what the `validate-session-skills.sh` session hook runs:
 
 ```bash
-pnpm exec nx run codebase:install-skills
+pnpm exec nx run synchronization:installed-skills:write
 ```
 
 ## Tool Exclusions

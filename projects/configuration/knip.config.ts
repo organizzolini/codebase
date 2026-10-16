@@ -209,12 +209,12 @@ const config: KnipConfig = {
       project: ["codometer.config.ts", "examples/**/*.ts", "testing/**/*.ts"],
     },
 
-    // components-web: Shared React component library (shadcn/ui)
+    // components: Shared React component library (shadcn/ui)
     //
     // The shadcn and ReUI source is vendored: `shadcn add` writes it, and most
     // of it nothing here imports yet. Every file under it is an entry point, so
     // none reads as unused and the packages it imports still count as used.
-    "projects/components-web": {
+    "projects/components": {
       entry: [
         "src/components/**/*.{ts,tsx}",
         "src/hooks/**/*.{ts,tsx}",
@@ -286,9 +286,27 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
+    // publication: NestJS CLI tool for the CI release and Nx plumbing steps
+    "projects/publication": {
+      entry: ["src/publication.main.ts", "src/publication.repl.ts"], // Main CLI entry + the REPL its own target runs
+      ignore: [
+        "testing/**", // Test fixtures and setup
+      ],
+      project: "src/**/*.ts",
+    },
+
     // synchronization: NestJS CLI tool for codebase config synchronization commands
     "projects/synchronization": {
       entry: ["src/synchronization.main.ts", "src/files.ts"], // Main CLI entry + public file-list constant exports
+      ignore: [
+        "testing/**", // Test fixtures and setup
+      ],
+      project: "src/**/*.ts",
+    },
+
+    // installation: NestJS CLI tool for developer-machine setup after Node exists
+    "projects/installation": {
+      entry: ["src/installation.main.ts", "src/installation.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],

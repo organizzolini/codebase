@@ -151,10 +151,12 @@ graph LR
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
   database["database"]
+  installation["installation"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   logging["logging"]
   meanderaw_cli["meanderaw-cli"]
+  publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
   caelundas_cli --> logging
@@ -173,9 +175,11 @@ graph LR
   conformetry_cli --> logging
   conformetry_nx --> logging
   database --> logging
+  installation --> logging
   lexico_api --> logging
   lexico_cli --> logging
   meanderaw_cli --> logging
+  publication --> logging
   synchronization --> logging
   validation --> logging
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

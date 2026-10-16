@@ -172,7 +172,6 @@ Latin-English dictionary suite: the web application, its components, its schema,
 
 **[lexico-web](projects/lexico/lexico-web)** - TanStack Start SSR dictionary web application\
 **[lexico-api](projects/lexico/lexico-api)** - NestJS GraphQL API exposing Latin dictionary, literature, and Relay cursor-based search\
-**[components-web](projects/components-web)** - Shared React component library using shadcn/ui and Base UI primitives\
 **[lexico-entities](projects/lexico/lexico-entities)** - TypeORM entities, migrations, and grammatical enumerations for the dictionary and literature schema\
 **[lexico-cli](projects/lexico/lexico-cli)** - NestJS CLI that scrapes and loads dictionary, literature, and etymology sources
 
@@ -184,9 +183,12 @@ Enumerate, measure, and classify greek meander patterns
 **[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
 **🛠️ [configuration](projects/configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
+**🎨 [components](projects/components)** - Shared React component library using shadcn/ui and Base UI primitives\
 **🐘 [database](projects/database)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
 **🏗️ [infrastructure](projects/infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
+**🛠️ [installation](projects/installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🪵 [logging](projects/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
+**📤 [publication](projects/publication)** - NestJS CLI for the CI Nx plumbing steps: the affected run and the publishable-packages gate\
 **↔️ [synchronization](projects/synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
 **✅ [validation](projects/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
 **🧑‍💻 [JimmyPaolini](projects/JimmyPaolini)** - GitHub profile site
@@ -283,7 +285,7 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
-  components_web["components-web"]
+  components["components"]
   configuration["configuration"]
   conformetry_agents["conformetry-agents"]
   conformetry_cli["conformetry-cli"]
@@ -297,6 +299,7 @@ graph LR
   conformetry_validation["conformetry-validation"]
   database["database"]
   infrastructure["infrastructure"]
+  installation["installation"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
@@ -304,6 +307,7 @@ graph LR
   logging["logging"]
   meanderaw_cli["meanderaw-cli"]
   meanderaw_web["meanderaw-web"]
+  publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
   caelundas_cli --> database
@@ -407,6 +411,7 @@ graph LR
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
   database --> logging
+  installation --> logging
   lexico_api --> database
   lexico_api --> lexico_entities
   lexico_api --> logging
@@ -414,9 +419,10 @@ graph LR
   lexico_cli --> lexico_entities
   lexico_cli --> logging
   lexico_entities --> database
-  lexico_web --> components_web
+  lexico_web --> components
   meanderaw_cli --> database
   meanderaw_cli --> logging
+  publication --> logging
   synchronization --> conformetry_configuration
   synchronization --> logging
   validation --> logging
@@ -837,6 +843,16 @@ graph LR
   module_database_LoggerModule["database/LoggerModule"]
   module_database_MainModule["database/MainModule"]
   module_database_PostgresClientModule["database/PostgresClientModule"]
+  module_installation_DependenciesModule["installation/DependenciesModule"]
+  module_installation_DiscoveryModule["installation/DiscoveryModule"]
+  module_installation_EnvironmentFilesModule["installation/EnvironmentFilesModule"]
+  module_installation_LoggerModule["installation/LoggerModule"]
+  module_installation_MainModule["installation/MainModule"]
+  module_installation_ProcessRunnerModule["installation/ProcessRunnerModule"]
+  module_installation_ReporterModule["installation/ReporterModule"]
+  module_installation_SetupModule["installation/SetupModule"]
+  module_installation_ShellConfigurationModule["installation/ShellConfigurationModule"]
+  module_installation_SoftwareModule["installation/SoftwareModule"]
   module_lexico_api_DatabaseModule["lexico-api/DatabaseModule"]
   module_lexico_api_GraphQLModule["lexico-api/GraphQLModule"]
   module_lexico_api_GraphQLSchemaBuilderModule["lexico-api/GraphQLSchemaBuilderModule"]
@@ -919,6 +935,23 @@ graph LR
   module_meanderaw_cli_TopologyCharacteristicsModule["meanderaw-cli/TopologyCharacteristicsModule"]
   module_meanderaw_cli_TurnCharacteristicsModule["meanderaw-cli/TurnCharacteristicsModule"]
   module_meanderaw_cli_TypeOrmModule["meanderaw-cli/TypeOrmModule"]
+  module_publication_AdoptTaskDatabaseModule["publication/AdoptTaskDatabaseModule"]
+  module_publication_DiscoveryModule["publication/DiscoveryModule"]
+  module_publication_KeepTaskDatabaseModule["publication/KeepTaskDatabaseModule"]
+  module_publication_LinkPackagesModule["publication/LinkPackagesModule"]
+  module_publication_LoggerModule["publication/LoggerModule"]
+  module_publication_MainModule["publication/MainModule"]
+  module_publication_MainTipModule["publication/MainTipModule"]
+  module_publication_ProcessRunnerModule["publication/ProcessRunnerModule"]
+  module_publication_PublishablePackagesGateModule["publication/PublishablePackagesGateModule"]
+  module_publication_PublishPackagesModule["publication/PublishPackagesModule"]
+  module_publication_ReleaseGroupModule["publication/ReleaseGroupModule"]
+  module_publication_RunAffectedModule["publication/RunAffectedModule"]
+  module_publication_TagCodebaseModule["publication/TagCodebaseModule"]
+  module_publication_TagPackagesModule["publication/TagPackagesModule"]
+  module_publication_TaskDatabaseModule["publication/TaskDatabaseModule"]
+  module_publication_VerifyTaskDatabaseModule["publication/VerifyTaskDatabaseModule"]
+  module_publication_VersionPackagesModule["publication/VersionPackagesModule"]
   module_synchronization_ConfigModule["synchronization/ConfigModule"]
   module_synchronization_ConfigurationModule["synchronization/ConfigurationModule"]
   module_synchronization_ConformetryGeneratorsModule["synchronization/ConformetryGeneratorsModule"]
@@ -926,6 +959,7 @@ graph LR
   module_synchronization_DevcontainerConfigurationModule["synchronization/DevcontainerConfigurationModule"]
   module_synchronization_DiscoveryModule["synchronization/DiscoveryModule"]
   module_synchronization_InputModule["synchronization/InputModule"]
+  module_synchronization_InstalledSkillsModule["synchronization/InstalledSkillsModule"]
   module_synchronization_InstanceDiscoveryModule["synchronization/InstanceDiscoveryModule"]
   module_synchronization_InstanceGroupModule["synchronization/InstanceGroupModule"]
   module_synchronization_IssueLabelsModule["synchronization/IssueLabelsModule"]
@@ -953,6 +987,8 @@ graph LR
   module_validation_PullRequestMetadataModule["validation/PullRequestMetadataModule"]
   module_validation_PullRequestReleaseSignificanceModule["validation/PullRequestReleaseSignificanceModule"]
   module_validation_ReadmeProjectsModule["validation/ReadmeProjectsModule"]
+  module_validation_SessionBranchNameModule["validation/SessionBranchNameModule"]
+  module_validation_SessionWorktreeNameModule["validation/SessionWorktreeNameModule"]
   module_caelundas_cli_AnnualSolarCycleModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_AnnualSolarCycleModule --> module_caelundas_cli_ProgressiveUtilitiesModule
   module_caelundas_cli_AspectsModule --> module_caelundas_cli_MajorAspectsModule
@@ -1585,6 +1621,26 @@ graph LR
   module_database_MainModule --> module_database_DiscoveryModule
   module_database_MainModule --> module_database_ExportModule
   module_database_MainModule --> module_database_ImportModule
+  module_installation_DependenciesModule --> module_installation_ProcessRunnerModule
+  module_installation_DependenciesModule --> module_installation_ReporterModule
+  module_installation_EnvironmentFilesModule --> module_installation_ProcessRunnerModule
+  module_installation_EnvironmentFilesModule --> module_installation_ReporterModule
+  module_installation_MainModule --> module_installation_DependenciesModule
+  module_installation_MainModule --> module_installation_DiscoveryModule
+  module_installation_MainModule --> module_installation_EnvironmentFilesModule
+  module_installation_MainModule --> module_installation_ReporterModule
+  module_installation_MainModule --> module_installation_SetupModule
+  module_installation_MainModule --> module_installation_ShellConfigurationModule
+  module_installation_MainModule --> module_installation_SoftwareModule
+  module_installation_SetupModule --> module_installation_DependenciesModule
+  module_installation_SetupModule --> module_installation_EnvironmentFilesModule
+  module_installation_SetupModule --> module_installation_ReporterModule
+  module_installation_SetupModule --> module_installation_ShellConfigurationModule
+  module_installation_SetupModule --> module_installation_SoftwareModule
+  module_installation_ShellConfigurationModule --> module_installation_ProcessRunnerModule
+  module_installation_ShellConfigurationModule --> module_installation_ReporterModule
+  module_installation_SoftwareModule --> module_installation_ProcessRunnerModule
+  module_installation_SoftwareModule --> module_installation_ReporterModule
   module_lexico_api_DatabaseModule --> module_lexico_api_TypeOrmModule
   module_lexico_api_GraphQLModule --> module_lexico_api_GraphQLSchemaBuilderModule
   module_lexico_api_LexemesModule --> module_lexico_api_TypeOrmModule
@@ -1723,6 +1779,36 @@ graph LR
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_ConnectivityModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PathUtilitiesModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PointCharacteristicsModule
+  module_publication_AdoptTaskDatabaseModule --> module_publication_TaskDatabaseModule
+  module_publication_KeepTaskDatabaseModule --> module_publication_TaskDatabaseModule
+  module_publication_LinkPackagesModule --> module_publication_ProcessRunnerModule
+  module_publication_LinkPackagesModule --> module_publication_ReleaseGroupModule
+  module_publication_MainModule --> module_publication_AdoptTaskDatabaseModule
+  module_publication_MainModule --> module_publication_DiscoveryModule
+  module_publication_MainModule --> module_publication_KeepTaskDatabaseModule
+  module_publication_MainModule --> module_publication_LinkPackagesModule
+  module_publication_MainModule --> module_publication_PublishablePackagesGateModule
+  module_publication_MainModule --> module_publication_PublishPackagesModule
+  module_publication_MainModule --> module_publication_RunAffectedModule
+  module_publication_MainModule --> module_publication_TagCodebaseModule
+  module_publication_MainModule --> module_publication_TagPackagesModule
+  module_publication_MainModule --> module_publication_VerifyTaskDatabaseModule
+  module_publication_MainModule --> module_publication_VersionPackagesModule
+  module_publication_MainTipModule --> module_publication_ProcessRunnerModule
+  module_publication_PublishablePackagesGateModule --> module_publication_ProcessRunnerModule
+  module_publication_PublishPackagesModule --> module_publication_ProcessRunnerModule
+  module_publication_PublishPackagesModule --> module_publication_ReleaseGroupModule
+  module_publication_ReleaseGroupModule --> module_publication_ProcessRunnerModule
+  module_publication_RunAffectedModule --> module_publication_ProcessRunnerModule
+  module_publication_TagCodebaseModule --> module_publication_MainTipModule
+  module_publication_TagCodebaseModule --> module_publication_ProcessRunnerModule
+  module_publication_TagPackagesModule --> module_publication_MainTipModule
+  module_publication_TagPackagesModule --> module_publication_ProcessRunnerModule
+  module_publication_TagPackagesModule --> module_publication_ReleaseGroupModule
+  module_publication_VerifyTaskDatabaseModule --> module_publication_TaskDatabaseModule
+  module_publication_VersionPackagesModule --> module_publication_MainTipModule
+  module_publication_VersionPackagesModule --> module_publication_ProcessRunnerModule
+  module_publication_VersionPackagesModule --> module_publication_TagPackagesModule
   module_synchronization_ConfigurationModule --> module_synchronization_InputModule
   module_synchronization_ConfigurationModule --> module_synchronization_InstanceDiscoveryModule
   module_synchronization_ConfigurationModule --> module_synchronization_InstanceGroupModule
@@ -1738,6 +1824,7 @@ graph LR
   module_synchronization_SynchronizationModule --> module_synchronization_ConformetryGeneratorsModule
   module_synchronization_SynchronizationModule --> module_synchronization_ConventionalConfigModule
   module_synchronization_SynchronizationModule --> module_synchronization_DevcontainerConfigurationModule
+  module_synchronization_SynchronizationModule --> module_synchronization_InstalledSkillsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PackageManifestsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestLabelsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestTemplateModule
@@ -1755,6 +1842,8 @@ graph LR
   module_validation_MainModule --> module_validation_PullRequestMetadataModule
   module_validation_MainModule --> module_validation_PullRequestReleaseSignificanceModule
   module_validation_MainModule --> module_validation_ReadmeProjectsModule
+  module_validation_MainModule --> module_validation_SessionBranchNameModule
+  module_validation_MainModule --> module_validation_SessionWorktreeNameModule
 ```
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
@@ -3134,155 +3223,155 @@ graph LR
   file_codometer_output_testing_setup_ts["codometer-output/testing/setup.ts"]
   file_codometer_output_vite_config_ts["codometer-output/vite.config.ts"]
   file_codometer_output_vitest_config_ts["codometer-output/vitest.config.ts"]
-  file_components_web_callidescope_config_ts["components-web/callidescope.config.ts"]
-  file_components_web_codependix_config_ts["components-web/codependix.config.ts"]
-  file_components_web_codometer_config_ts["components-web/codometer.config.ts"]
-  file_components_web_eslint_config_ts["components-web/eslint.config.ts"]
-  file_components_web_src_components_examples_c_sidebar_1_tsx["components-web/src/components/examples/c-sidebar-1.tsx"]
-  file_components_web_src_components_reui_alert_tsx["components-web/src/components/reui/alert.tsx"]
-  file_components_web_src_components_reui_autocomplete_tsx["components-web/src/components/reui/autocomplete.tsx"]
-  file_components_web_src_components_reui_badge_tsx["components-web/src/components/reui/badge.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_async_tsx["components-web/src/components/reui/cascader/cascader-async.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_columns_tsx["components-web/src/components/reui/cascader/cascader-columns.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_context_tsx["components-web/src/components/reui/cascader/cascader-context.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_footer_tsx["components-web/src/components/reui/cascader/cascader-footer.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_i18n_tsx["components-web/src/components/reui/cascader/cascader-i18n.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_item_tsx["components-web/src/components/reui/cascader/cascader-item.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_lib_tsx["components-web/src/components/reui/cascader/cascader-lib.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_nav_tsx["components-web/src/components/reui/cascader/cascader-nav.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_types_tsx["components-web/src/components/reui/cascader/cascader-types.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_virtual_tsx["components-web/src/components/reui/cascader/cascader-virtual.tsx"]
-  file_components_web_src_components_reui_cascader_cascader_tsx["components-web/src/components/reui/cascader/cascader.tsx"]
-  file_components_web_src_components_reui_code_block_code_block_highlight_tsx["components-web/src/components/reui/code-block/code-block-highlight.tsx"]
-  file_components_web_src_components_reui_code_block_code_block_tsx["components-web/src/components/reui/code-block/code-block.tsx"]
-  file_components_web_src_components_reui_color_picker_tsx["components-web/src/components/reui/color-picker.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_cell_selection_tsx["components-web/src/components/reui/data-grid/data-grid-cell-selection.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx["components-web/src/components/reui/data-grid/data-grid-column-filter.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_column_header_tsx["components-web/src/components/reui/data-grid/data-grid-column-header.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_column_visibility_tsx["components-web/src/components/reui/data-grid/data-grid-column-visibility.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_i18n_tsx["components-web/src/components/reui/data-grid/data-grid-i18n.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_pagination_tsx["components-web/src/components/reui/data-grid/data-grid-pagination.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_scroll_area_tsx["components-web/src/components/reui/data-grid/data-grid-scroll-area.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx["components-web/src/components/reui/data-grid/data-grid-table-dnd-rows.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_tsx["components-web/src/components/reui/data-grid/data-grid-table-dnd.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_table_virtual_tsx["components-web/src/components/reui/data-grid/data-grid-table-virtual.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_table_tsx["components-web/src/components/reui/data-grid/data-grid-table.tsx"]
-  file_components_web_src_components_reui_data_grid_data_grid_tsx["components-web/src/components/reui/data-grid/data-grid.tsx"]
-  file_components_web_src_components_reui_date_selector_tsx["components-web/src/components/reui/date-selector.tsx"]
-  file_components_web_src_components_reui_emoji_picker_tsx["components-web/src/components/reui/emoji-picker.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx["components-web/src/components/reui/event-calendar/event-calendar-agenda-view.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx["components-web/src/components/reui/event-calendar/event-calendar-content.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx["components-web/src/components/reui/event-calendar/event-calendar-dnd.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx["components-web/src/components/reui/event-calendar/event-calendar-event.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_i18n_tsx["components-web/src/components/reui/event-calendar/event-calendar-i18n.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx["components-web/src/components/reui/event-calendar/event-calendar-lib.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx["components-web/src/components/reui/event-calendar/event-calendar-month-view.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx["components-web/src/components/reui/event-calendar/event-calendar-nav.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_recurrence_tsx["components-web/src/components/reui/event-calendar/event-calendar-recurrence.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx["components-web/src/components/reui/event-calendar/event-calendar-resource-view.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx["components-web/src/components/reui/event-calendar/event-calendar-time-grid.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx["components-web/src/components/reui/event-calendar/event-calendar-types.tsx"]
-  file_components_web_src_components_reui_event_calendar_event_calendar_tsx["components-web/src/components/reui/event-calendar/event-calendar.tsx"]
-  file_components_web_src_components_reui_file_type_tsx["components-web/src/components/reui/file-type.tsx"]
-  file_components_web_src_components_reui_filters_filters_advanced_tsx["components-web/src/components/reui/filters/filters-advanced.tsx"]
-  file_components_web_src_components_reui_filters_filters_builder_tsx["components-web/src/components/reui/filters/filters-builder.tsx"]
-  file_components_web_src_components_reui_filters_filters_chip_tsx["components-web/src/components/reui/filters/filters-chip.tsx"]
-  file_components_web_src_components_reui_filters_filters_context_tsx["components-web/src/components/reui/filters/filters-context.tsx"]
-  file_components_web_src_components_reui_filters_filters_date_tsx["components-web/src/components/reui/filters/filters-date.tsx"]
-  file_components_web_src_components_reui_filters_filters_dnd_tsx["components-web/src/components/reui/filters/filters-dnd.tsx"]
-  file_components_web_src_components_reui_filters_filters_draft_tsx["components-web/src/components/reui/filters/filters-draft.tsx"]
-  file_components_web_src_components_reui_filters_filters_editors_tsx["components-web/src/components/reui/filters/filters-editors.tsx"]
-  file_components_web_src_components_reui_filters_filters_i18n_tsx["components-web/src/components/reui/filters/filters-i18n.tsx"]
-  file_components_web_src_components_reui_filters_filters_lib_tsx["components-web/src/components/reui/filters/filters-lib.tsx"]
-  file_components_web_src_components_reui_filters_filters_operators_tsx["components-web/src/components/reui/filters/filters-operators.tsx"]
-  file_components_web_src_components_reui_filters_filters_query_tsx["components-web/src/components/reui/filters/filters-query.tsx"]
-  file_components_web_src_components_reui_filters_filters_types_tsx["components-web/src/components/reui/filters/filters-types.tsx"]
-  file_components_web_src_components_reui_filters_filters_tsx["components-web/src/components/reui/filters/filters.tsx"]
-  file_components_web_src_components_reui_frame_tsx["components-web/src/components/reui/frame.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx["components-web/src/components/reui/gantt/gantt-bar.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_dnd_tsx["components-web/src/components/reui/gantt/gantt-dnd.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_i18n_tsx["components-web/src/components/reui/gantt/gantt-i18n.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_lib_tsx["components-web/src/components/reui/gantt/gantt-lib.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx["components-web/src/components/reui/gantt/gantt-nav.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_recurrence_tsx["components-web/src/components/reui/gantt/gantt-recurrence.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_types_tsx["components-web/src/components/reui/gantt/gantt-types.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_view_tsx["components-web/src/components/reui/gantt/gantt-view.tsx"]
-  file_components_web_src_components_reui_gantt_gantt_tsx["components-web/src/components/reui/gantt/gantt.tsx"]
-  file_components_web_src_components_reui_icon_stack_tsx["components-web/src/components/reui/icon-stack.tsx"]
-  file_components_web_src_components_reui_icon_tile_tsx["components-web/src/components/reui/icon-tile.tsx"]
-  file_components_web_src_components_reui_kanban_tsx["components-web/src/components/reui/kanban.tsx"]
-  file_components_web_src_components_reui_number_field_tsx["components-web/src/components/reui/number-field.tsx"]
-  file_components_web_src_components_reui_phone_input_tsx["components-web/src/components/reui/phone-input.tsx"]
-  file_components_web_src_components_reui_rating_tsx["components-web/src/components/reui/rating.tsx"]
-  file_components_web_src_components_reui_scrollspy_tsx["components-web/src/components/reui/scrollspy.tsx"]
-  file_components_web_src_components_reui_signature_pad_tsx["components-web/src/components/reui/signature-pad.tsx"]
-  file_components_web_src_components_reui_sortable_tsx["components-web/src/components/reui/sortable.tsx"]
-  file_components_web_src_components_reui_stepper_tsx["components-web/src/components/reui/stepper.tsx"]
-  file_components_web_src_components_reui_time_picker_tsx["components-web/src/components/reui/time-picker.tsx"]
-  file_components_web_src_components_reui_timeline_tsx["components-web/src/components/reui/timeline.tsx"]
-  file_components_web_src_components_reui_tree_tsx["components-web/src/components/reui/tree.tsx"]
-  file_components_web_src_components_ui_accordion_tsx["components-web/src/components/ui/accordion.tsx"]
-  file_components_web_src_components_ui_alert_dialog_tsx["components-web/src/components/ui/alert-dialog.tsx"]
-  file_components_web_src_components_ui_alert_tsx["components-web/src/components/ui/alert.tsx"]
-  file_components_web_src_components_ui_aspect_ratio_tsx["components-web/src/components/ui/aspect-ratio.tsx"]
-  file_components_web_src_components_ui_avatar_tsx["components-web/src/components/ui/avatar.tsx"]
-  file_components_web_src_components_ui_badge_tsx["components-web/src/components/ui/badge.tsx"]
-  file_components_web_src_components_ui_breadcrumb_tsx["components-web/src/components/ui/breadcrumb.tsx"]
-  file_components_web_src_components_ui_button_group_tsx["components-web/src/components/ui/button-group.tsx"]
-  file_components_web_src_components_ui_button_tsx["components-web/src/components/ui/button.tsx"]
-  file_components_web_src_components_ui_calendar_tsx["components-web/src/components/ui/calendar.tsx"]
-  file_components_web_src_components_ui_card_tsx["components-web/src/components/ui/card.tsx"]
-  file_components_web_src_components_ui_carousel_tsx["components-web/src/components/ui/carousel.tsx"]
-  file_components_web_src_components_ui_chart_tsx["components-web/src/components/ui/chart.tsx"]
-  file_components_web_src_components_ui_checkbox_tsx["components-web/src/components/ui/checkbox.tsx"]
-  file_components_web_src_components_ui_collapsible_tsx["components-web/src/components/ui/collapsible.tsx"]
-  file_components_web_src_components_ui_combobox_tsx["components-web/src/components/ui/combobox.tsx"]
-  file_components_web_src_components_ui_command_tsx["components-web/src/components/ui/command.tsx"]
-  file_components_web_src_components_ui_context_menu_tsx["components-web/src/components/ui/context-menu.tsx"]
-  file_components_web_src_components_ui_dialog_tsx["components-web/src/components/ui/dialog.tsx"]
-  file_components_web_src_components_ui_drawer_tsx["components-web/src/components/ui/drawer.tsx"]
-  file_components_web_src_components_ui_dropdown_menu_tsx["components-web/src/components/ui/dropdown-menu.tsx"]
-  file_components_web_src_components_ui_empty_tsx["components-web/src/components/ui/empty.tsx"]
-  file_components_web_src_components_ui_field_tsx["components-web/src/components/ui/field.tsx"]
-  file_components_web_src_components_ui_hover_card_tsx["components-web/src/components/ui/hover-card.tsx"]
-  file_components_web_src_components_ui_input_group_tsx["components-web/src/components/ui/input-group.tsx"]
-  file_components_web_src_components_ui_input_otp_tsx["components-web/src/components/ui/input-otp.tsx"]
-  file_components_web_src_components_ui_input_tsx["components-web/src/components/ui/input.tsx"]
-  file_components_web_src_components_ui_item_tsx["components-web/src/components/ui/item.tsx"]
-  file_components_web_src_components_ui_kbd_tsx["components-web/src/components/ui/kbd.tsx"]
-  file_components_web_src_components_ui_label_tsx["components-web/src/components/ui/label.tsx"]
-  file_components_web_src_components_ui_menubar_tsx["components-web/src/components/ui/menubar.tsx"]
-  file_components_web_src_components_ui_navigation_menu_tsx["components-web/src/components/ui/navigation-menu.tsx"]
-  file_components_web_src_components_ui_pagination_tsx["components-web/src/components/ui/pagination.tsx"]
-  file_components_web_src_components_ui_popover_tsx["components-web/src/components/ui/popover.tsx"]
-  file_components_web_src_components_ui_progress_tsx["components-web/src/components/ui/progress.tsx"]
-  file_components_web_src_components_ui_radio_group_tsx["components-web/src/components/ui/radio-group.tsx"]
-  file_components_web_src_components_ui_resizable_tsx["components-web/src/components/ui/resizable.tsx"]
-  file_components_web_src_components_ui_scroll_area_tsx["components-web/src/components/ui/scroll-area.tsx"]
-  file_components_web_src_components_ui_select_tsx["components-web/src/components/ui/select.tsx"]
-  file_components_web_src_components_ui_separator_tsx["components-web/src/components/ui/separator.tsx"]
-  file_components_web_src_components_ui_sheet_tsx["components-web/src/components/ui/sheet.tsx"]
-  file_components_web_src_components_ui_sidebar_tsx["components-web/src/components/ui/sidebar.tsx"]
-  file_components_web_src_components_ui_skeleton_tsx["components-web/src/components/ui/skeleton.tsx"]
-  file_components_web_src_components_ui_slider_tsx["components-web/src/components/ui/slider.tsx"]
-  file_components_web_src_components_ui_sonner_tsx["components-web/src/components/ui/sonner.tsx"]
-  file_components_web_src_components_ui_spinner_tsx["components-web/src/components/ui/spinner.tsx"]
-  file_components_web_src_components_ui_switch_tsx["components-web/src/components/ui/switch.tsx"]
-  file_components_web_src_components_ui_table_tsx["components-web/src/components/ui/table.tsx"]
-  file_components_web_src_components_ui_tabs_tsx["components-web/src/components/ui/tabs.tsx"]
-  file_components_web_src_components_ui_textarea_tsx["components-web/src/components/ui/textarea.tsx"]
-  file_components_web_src_components_ui_toggle_group_tsx["components-web/src/components/ui/toggle-group.tsx"]
-  file_components_web_src_components_ui_toggle_tsx["components-web/src/components/ui/toggle.tsx"]
-  file_components_web_src_components_ui_tooltip_tsx["components-web/src/components/ui/tooltip.tsx"]
-  file_components_web_src_hooks_use_copy_to_clipboard_ts["components-web/src/hooks/use-copy-to-clipboard.ts"]
-  file_components_web_src_hooks_use_file_upload_ts["components-web/src/hooks/use-file-upload.ts"]
-  file_components_web_src_hooks_use_media_query_ts["components-web/src/hooks/use-media-query.ts"]
-  file_components_web_src_hooks_use_mobile_ts["components-web/src/hooks/use-mobile.ts"]
-  file_components_web_src_hooks_use_scroll_position_ts["components-web/src/hooks/use-scroll-position.ts"]
-  file_components_web_src_hooks_use_slider_input_ts["components-web/src/hooks/use-slider-input.ts"]
-  file_components_web_src_index_ts["components-web/src/index.ts"]
-  file_components_web_src_lib_utils_ts["components-web/src/lib/utils.ts"]
-  file_components_web_vite_config_mts["components-web/vite.config.mts"]
+  file_components_callidescope_config_ts["components/callidescope.config.ts"]
+  file_components_codependix_config_ts["components/codependix.config.ts"]
+  file_components_codometer_config_ts["components/codometer.config.ts"]
+  file_components_eslint_config_ts["components/eslint.config.ts"]
+  file_components_src_components_examples_c_sidebar_1_tsx["components/src/components/examples/c-sidebar-1.tsx"]
+  file_components_src_components_reui_alert_tsx["components/src/components/reui/alert.tsx"]
+  file_components_src_components_reui_autocomplete_tsx["components/src/components/reui/autocomplete.tsx"]
+  file_components_src_components_reui_badge_tsx["components/src/components/reui/badge.tsx"]
+  file_components_src_components_reui_cascader_cascader_async_tsx["components/src/components/reui/cascader/cascader-async.tsx"]
+  file_components_src_components_reui_cascader_cascader_columns_tsx["components/src/components/reui/cascader/cascader-columns.tsx"]
+  file_components_src_components_reui_cascader_cascader_context_tsx["components/src/components/reui/cascader/cascader-context.tsx"]
+  file_components_src_components_reui_cascader_cascader_footer_tsx["components/src/components/reui/cascader/cascader-footer.tsx"]
+  file_components_src_components_reui_cascader_cascader_i18n_tsx["components/src/components/reui/cascader/cascader-i18n.tsx"]
+  file_components_src_components_reui_cascader_cascader_item_tsx["components/src/components/reui/cascader/cascader-item.tsx"]
+  file_components_src_components_reui_cascader_cascader_lib_tsx["components/src/components/reui/cascader/cascader-lib.tsx"]
+  file_components_src_components_reui_cascader_cascader_nav_tsx["components/src/components/reui/cascader/cascader-nav.tsx"]
+  file_components_src_components_reui_cascader_cascader_types_tsx["components/src/components/reui/cascader/cascader-types.tsx"]
+  file_components_src_components_reui_cascader_cascader_virtual_tsx["components/src/components/reui/cascader/cascader-virtual.tsx"]
+  file_components_src_components_reui_cascader_cascader_tsx["components/src/components/reui/cascader/cascader.tsx"]
+  file_components_src_components_reui_code_block_code_block_highlight_tsx["components/src/components/reui/code-block/code-block-highlight.tsx"]
+  file_components_src_components_reui_code_block_code_block_tsx["components/src/components/reui/code-block/code-block.tsx"]
+  file_components_src_components_reui_color_picker_tsx["components/src/components/reui/color-picker.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_cell_selection_tsx["components/src/components/reui/data-grid/data-grid-cell-selection.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx["components/src/components/reui/data-grid/data-grid-column-filter.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_column_header_tsx["components/src/components/reui/data-grid/data-grid-column-header.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_column_visibility_tsx["components/src/components/reui/data-grid/data-grid-column-visibility.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_i18n_tsx["components/src/components/reui/data-grid/data-grid-i18n.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_pagination_tsx["components/src/components/reui/data-grid/data-grid-pagination.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_scroll_area_tsx["components/src/components/reui/data-grid/data-grid-scroll-area.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx["components/src/components/reui/data-grid/data-grid-table-dnd-rows.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_tsx["components/src/components/reui/data-grid/data-grid-table-dnd.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_table_virtual_tsx["components/src/components/reui/data-grid/data-grid-table-virtual.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_table_tsx["components/src/components/reui/data-grid/data-grid-table.tsx"]
+  file_components_src_components_reui_data_grid_data_grid_tsx["components/src/components/reui/data-grid/data-grid.tsx"]
+  file_components_src_components_reui_date_selector_tsx["components/src/components/reui/date-selector.tsx"]
+  file_components_src_components_reui_emoji_picker_tsx["components/src/components/reui/emoji-picker.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx["components/src/components/reui/event-calendar/event-calendar-agenda-view.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx["components/src/components/reui/event-calendar/event-calendar-content.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx["components/src/components/reui/event-calendar/event-calendar-dnd.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_event_tsx["components/src/components/reui/event-calendar/event-calendar-event.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_i18n_tsx["components/src/components/reui/event-calendar/event-calendar-i18n.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_lib_tsx["components/src/components/reui/event-calendar/event-calendar-lib.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx["components/src/components/reui/event-calendar/event-calendar-month-view.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx["components/src/components/reui/event-calendar/event-calendar-nav.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_recurrence_tsx["components/src/components/reui/event-calendar/event-calendar-recurrence.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx["components/src/components/reui/event-calendar/event-calendar-resource-view.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx["components/src/components/reui/event-calendar/event-calendar-time-grid.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_types_tsx["components/src/components/reui/event-calendar/event-calendar-types.tsx"]
+  file_components_src_components_reui_event_calendar_event_calendar_tsx["components/src/components/reui/event-calendar/event-calendar.tsx"]
+  file_components_src_components_reui_file_type_tsx["components/src/components/reui/file-type.tsx"]
+  file_components_src_components_reui_filters_filters_advanced_tsx["components/src/components/reui/filters/filters-advanced.tsx"]
+  file_components_src_components_reui_filters_filters_builder_tsx["components/src/components/reui/filters/filters-builder.tsx"]
+  file_components_src_components_reui_filters_filters_chip_tsx["components/src/components/reui/filters/filters-chip.tsx"]
+  file_components_src_components_reui_filters_filters_context_tsx["components/src/components/reui/filters/filters-context.tsx"]
+  file_components_src_components_reui_filters_filters_date_tsx["components/src/components/reui/filters/filters-date.tsx"]
+  file_components_src_components_reui_filters_filters_dnd_tsx["components/src/components/reui/filters/filters-dnd.tsx"]
+  file_components_src_components_reui_filters_filters_draft_tsx["components/src/components/reui/filters/filters-draft.tsx"]
+  file_components_src_components_reui_filters_filters_editors_tsx["components/src/components/reui/filters/filters-editors.tsx"]
+  file_components_src_components_reui_filters_filters_i18n_tsx["components/src/components/reui/filters/filters-i18n.tsx"]
+  file_components_src_components_reui_filters_filters_lib_tsx["components/src/components/reui/filters/filters-lib.tsx"]
+  file_components_src_components_reui_filters_filters_operators_tsx["components/src/components/reui/filters/filters-operators.tsx"]
+  file_components_src_components_reui_filters_filters_query_tsx["components/src/components/reui/filters/filters-query.tsx"]
+  file_components_src_components_reui_filters_filters_types_tsx["components/src/components/reui/filters/filters-types.tsx"]
+  file_components_src_components_reui_filters_filters_tsx["components/src/components/reui/filters/filters.tsx"]
+  file_components_src_components_reui_frame_tsx["components/src/components/reui/frame.tsx"]
+  file_components_src_components_reui_gantt_gantt_bar_tsx["components/src/components/reui/gantt/gantt-bar.tsx"]
+  file_components_src_components_reui_gantt_gantt_dnd_tsx["components/src/components/reui/gantt/gantt-dnd.tsx"]
+  file_components_src_components_reui_gantt_gantt_i18n_tsx["components/src/components/reui/gantt/gantt-i18n.tsx"]
+  file_components_src_components_reui_gantt_gantt_lib_tsx["components/src/components/reui/gantt/gantt-lib.tsx"]
+  file_components_src_components_reui_gantt_gantt_nav_tsx["components/src/components/reui/gantt/gantt-nav.tsx"]
+  file_components_src_components_reui_gantt_gantt_recurrence_tsx["components/src/components/reui/gantt/gantt-recurrence.tsx"]
+  file_components_src_components_reui_gantt_gantt_types_tsx["components/src/components/reui/gantt/gantt-types.tsx"]
+  file_components_src_components_reui_gantt_gantt_view_tsx["components/src/components/reui/gantt/gantt-view.tsx"]
+  file_components_src_components_reui_gantt_gantt_tsx["components/src/components/reui/gantt/gantt.tsx"]
+  file_components_src_components_reui_icon_stack_tsx["components/src/components/reui/icon-stack.tsx"]
+  file_components_src_components_reui_icon_tile_tsx["components/src/components/reui/icon-tile.tsx"]
+  file_components_src_components_reui_kanban_tsx["components/src/components/reui/kanban.tsx"]
+  file_components_src_components_reui_number_field_tsx["components/src/components/reui/number-field.tsx"]
+  file_components_src_components_reui_phone_input_tsx["components/src/components/reui/phone-input.tsx"]
+  file_components_src_components_reui_rating_tsx["components/src/components/reui/rating.tsx"]
+  file_components_src_components_reui_scrollspy_tsx["components/src/components/reui/scrollspy.tsx"]
+  file_components_src_components_reui_signature_pad_tsx["components/src/components/reui/signature-pad.tsx"]
+  file_components_src_components_reui_sortable_tsx["components/src/components/reui/sortable.tsx"]
+  file_components_src_components_reui_stepper_tsx["components/src/components/reui/stepper.tsx"]
+  file_components_src_components_reui_time_picker_tsx["components/src/components/reui/time-picker.tsx"]
+  file_components_src_components_reui_timeline_tsx["components/src/components/reui/timeline.tsx"]
+  file_components_src_components_reui_tree_tsx["components/src/components/reui/tree.tsx"]
+  file_components_src_components_ui_accordion_tsx["components/src/components/ui/accordion.tsx"]
+  file_components_src_components_ui_alert_dialog_tsx["components/src/components/ui/alert-dialog.tsx"]
+  file_components_src_components_ui_alert_tsx["components/src/components/ui/alert.tsx"]
+  file_components_src_components_ui_aspect_ratio_tsx["components/src/components/ui/aspect-ratio.tsx"]
+  file_components_src_components_ui_avatar_tsx["components/src/components/ui/avatar.tsx"]
+  file_components_src_components_ui_badge_tsx["components/src/components/ui/badge.tsx"]
+  file_components_src_components_ui_breadcrumb_tsx["components/src/components/ui/breadcrumb.tsx"]
+  file_components_src_components_ui_button_group_tsx["components/src/components/ui/button-group.tsx"]
+  file_components_src_components_ui_button_tsx["components/src/components/ui/button.tsx"]
+  file_components_src_components_ui_calendar_tsx["components/src/components/ui/calendar.tsx"]
+  file_components_src_components_ui_card_tsx["components/src/components/ui/card.tsx"]
+  file_components_src_components_ui_carousel_tsx["components/src/components/ui/carousel.tsx"]
+  file_components_src_components_ui_chart_tsx["components/src/components/ui/chart.tsx"]
+  file_components_src_components_ui_checkbox_tsx["components/src/components/ui/checkbox.tsx"]
+  file_components_src_components_ui_collapsible_tsx["components/src/components/ui/collapsible.tsx"]
+  file_components_src_components_ui_combobox_tsx["components/src/components/ui/combobox.tsx"]
+  file_components_src_components_ui_command_tsx["components/src/components/ui/command.tsx"]
+  file_components_src_components_ui_context_menu_tsx["components/src/components/ui/context-menu.tsx"]
+  file_components_src_components_ui_dialog_tsx["components/src/components/ui/dialog.tsx"]
+  file_components_src_components_ui_drawer_tsx["components/src/components/ui/drawer.tsx"]
+  file_components_src_components_ui_dropdown_menu_tsx["components/src/components/ui/dropdown-menu.tsx"]
+  file_components_src_components_ui_empty_tsx["components/src/components/ui/empty.tsx"]
+  file_components_src_components_ui_field_tsx["components/src/components/ui/field.tsx"]
+  file_components_src_components_ui_hover_card_tsx["components/src/components/ui/hover-card.tsx"]
+  file_components_src_components_ui_input_group_tsx["components/src/components/ui/input-group.tsx"]
+  file_components_src_components_ui_input_otp_tsx["components/src/components/ui/input-otp.tsx"]
+  file_components_src_components_ui_input_tsx["components/src/components/ui/input.tsx"]
+  file_components_src_components_ui_item_tsx["components/src/components/ui/item.tsx"]
+  file_components_src_components_ui_kbd_tsx["components/src/components/ui/kbd.tsx"]
+  file_components_src_components_ui_label_tsx["components/src/components/ui/label.tsx"]
+  file_components_src_components_ui_menubar_tsx["components/src/components/ui/menubar.tsx"]
+  file_components_src_components_ui_navigation_menu_tsx["components/src/components/ui/navigation-menu.tsx"]
+  file_components_src_components_ui_pagination_tsx["components/src/components/ui/pagination.tsx"]
+  file_components_src_components_ui_popover_tsx["components/src/components/ui/popover.tsx"]
+  file_components_src_components_ui_progress_tsx["components/src/components/ui/progress.tsx"]
+  file_components_src_components_ui_radio_group_tsx["components/src/components/ui/radio-group.tsx"]
+  file_components_src_components_ui_resizable_tsx["components/src/components/ui/resizable.tsx"]
+  file_components_src_components_ui_scroll_area_tsx["components/src/components/ui/scroll-area.tsx"]
+  file_components_src_components_ui_select_tsx["components/src/components/ui/select.tsx"]
+  file_components_src_components_ui_separator_tsx["components/src/components/ui/separator.tsx"]
+  file_components_src_components_ui_sheet_tsx["components/src/components/ui/sheet.tsx"]
+  file_components_src_components_ui_sidebar_tsx["components/src/components/ui/sidebar.tsx"]
+  file_components_src_components_ui_skeleton_tsx["components/src/components/ui/skeleton.tsx"]
+  file_components_src_components_ui_slider_tsx["components/src/components/ui/slider.tsx"]
+  file_components_src_components_ui_sonner_tsx["components/src/components/ui/sonner.tsx"]
+  file_components_src_components_ui_spinner_tsx["components/src/components/ui/spinner.tsx"]
+  file_components_src_components_ui_switch_tsx["components/src/components/ui/switch.tsx"]
+  file_components_src_components_ui_table_tsx["components/src/components/ui/table.tsx"]
+  file_components_src_components_ui_tabs_tsx["components/src/components/ui/tabs.tsx"]
+  file_components_src_components_ui_textarea_tsx["components/src/components/ui/textarea.tsx"]
+  file_components_src_components_ui_toggle_group_tsx["components/src/components/ui/toggle-group.tsx"]
+  file_components_src_components_ui_toggle_tsx["components/src/components/ui/toggle.tsx"]
+  file_components_src_components_ui_tooltip_tsx["components/src/components/ui/tooltip.tsx"]
+  file_components_src_hooks_use_copy_to_clipboard_ts["components/src/hooks/use-copy-to-clipboard.ts"]
+  file_components_src_hooks_use_file_upload_ts["components/src/hooks/use-file-upload.ts"]
+  file_components_src_hooks_use_media_query_ts["components/src/hooks/use-media-query.ts"]
+  file_components_src_hooks_use_mobile_ts["components/src/hooks/use-mobile.ts"]
+  file_components_src_hooks_use_scroll_position_ts["components/src/hooks/use-scroll-position.ts"]
+  file_components_src_hooks_use_slider_input_ts["components/src/hooks/use-slider-input.ts"]
+  file_components_src_index_ts["components/src/index.ts"]
+  file_components_src_lib_utils_ts["components/src/lib/utils.ts"]
+  file_components_vite_config_mts["components/vite.config.mts"]
   file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
   file_configuration_codependix_config_ts["configuration/codependix.config.ts"]
   file_configuration_codometer_config_ts["configuration/codometer.config.ts"]
@@ -3808,6 +3897,83 @@ graph LR
   file_database_testing_mocks_ts["database/testing/mocks.ts"]
   file_database_testing_setup_ts["database/testing/setup.ts"]
   file_database_vitest_config_ts["database/vitest.config.ts"]
+  file_installation_callidescope_config_ts["installation/callidescope.config.ts"]
+  file_installation_codependix_config_ts["installation/codependix.config.ts"]
+  file_installation_codometer_config_ts["installation/codometer.config.ts"]
+  file_installation_eslint_config_ts["installation/eslint.config.ts"]
+  file_installation_src_installation_constants_ts["installation/src/installation.constants.ts"]
+  file_installation_src_installation_main_end_to_end_test_ts["installation/src/installation.main.end-to-end.test.ts"]
+  file_installation_src_installation_main_ts["installation/src/installation.main.ts"]
+  file_installation_src_installation_main_unit_test_ts["installation/src/installation.main.unit.test.ts"]
+  file_installation_src_installation_module_ts["installation/src/installation.module.ts"]
+  file_installation_src_installation_repl_ts["installation/src/installation.repl.ts"]
+  file_installation_src_installation_repl_unit_test_ts["installation/src/installation.repl.unit.test.ts"]
+  file_installation_src_modules_dependencies_dependencies_command_ts["installation/src/modules/dependencies/dependencies.command.ts"]
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts["installation/src/modules/dependencies/dependencies.command.unit.test.ts"]
+  file_installation_src_modules_dependencies_dependencies_constants_ts["installation/src/modules/dependencies/dependencies.constants.ts"]
+  file_installation_src_modules_dependencies_dependencies_module_ts["installation/src/modules/dependencies/dependencies.module.ts"]
+  file_installation_src_modules_dependencies_dependencies_service_ts["installation/src/modules/dependencies/dependencies.service.ts"]
+  file_installation_src_modules_dependencies_dependencies_service_unit_test_ts["installation/src/modules/dependencies/dependencies.service.unit.test.ts"]
+  file_installation_src_modules_dependencies_dependencies_types_ts["installation/src/modules/dependencies/dependencies.types.ts"]
+  file_installation_src_modules_environment_files_environment_files_command_ts["installation/src/modules/environment-files/environment-files.command.ts"]
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts["installation/src/modules/environment-files/environment-files.command.unit.test.ts"]
+  file_installation_src_modules_environment_files_environment_files_constants_ts["installation/src/modules/environment-files/environment-files.constants.ts"]
+  file_installation_src_modules_environment_files_environment_files_module_ts["installation/src/modules/environment-files/environment-files.module.ts"]
+  file_installation_src_modules_environment_files_environment_files_service_ts["installation/src/modules/environment-files/environment-files.service.ts"]
+  file_installation_src_modules_environment_files_environment_files_service_unit_test_ts["installation/src/modules/environment-files/environment-files.service.unit.test.ts"]
+  file_installation_src_modules_environment_files_environment_files_types_ts["installation/src/modules/environment-files/environment-files.types.ts"]
+  file_installation_src_modules_process_runner_process_runner_constants_ts["installation/src/modules/process-runner/process-runner.constants.ts"]
+  file_installation_src_modules_process_runner_process_runner_module_ts["installation/src/modules/process-runner/process-runner.module.ts"]
+  file_installation_src_modules_process_runner_process_runner_service_ts["installation/src/modules/process-runner/process-runner.service.ts"]
+  file_installation_src_modules_process_runner_process_runner_service_unit_test_ts["installation/src/modules/process-runner/process-runner.service.unit.test.ts"]
+  file_installation_src_modules_process_runner_process_runner_types_ts["installation/src/modules/process-runner/process-runner.types.ts"]
+  file_installation_src_modules_reporter_reporter_constants_ts["installation/src/modules/reporter/reporter.constants.ts"]
+  file_installation_src_modules_reporter_reporter_module_ts["installation/src/modules/reporter/reporter.module.ts"]
+  file_installation_src_modules_reporter_reporter_service_ts["installation/src/modules/reporter/reporter.service.ts"]
+  file_installation_src_modules_reporter_reporter_service_unit_test_ts["installation/src/modules/reporter/reporter.service.unit.test.ts"]
+  file_installation_src_modules_reporter_reporter_types_ts["installation/src/modules/reporter/reporter.types.ts"]
+  file_installation_src_modules_setup_setup_command_ts["installation/src/modules/setup/setup.command.ts"]
+  file_installation_src_modules_setup_setup_command_unit_test_ts["installation/src/modules/setup/setup.command.unit.test.ts"]
+  file_installation_src_modules_setup_setup_constants_ts["installation/src/modules/setup/setup.constants.ts"]
+  file_installation_src_modules_setup_setup_module_ts["installation/src/modules/setup/setup.module.ts"]
+  file_installation_src_modules_setup_setup_service_ts["installation/src/modules/setup/setup.service.ts"]
+  file_installation_src_modules_setup_setup_service_unit_test_ts["installation/src/modules/setup/setup.service.unit.test.ts"]
+  file_installation_src_modules_setup_setup_types_ts["installation/src/modules/setup/setup.types.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_command_ts["installation/src/modules/shell-configuration/shell-configuration.command.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts["installation/src/modules/shell-configuration/shell-configuration.command.unit.test.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_constants_ts["installation/src/modules/shell-configuration/shell-configuration.constants.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_module_ts["installation/src/modules/shell-configuration/shell-configuration.module.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_service_ts["installation/src/modules/shell-configuration/shell-configuration.service.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_service_unit_test_ts["installation/src/modules/shell-configuration/shell-configuration.service.unit.test.ts"]
+  file_installation_src_modules_shell_configuration_shell_configuration_types_ts["installation/src/modules/shell-configuration/shell-configuration.types.ts"]
+  file_installation_src_modules_software_software_brew_service_ts["installation/src/modules/software/software-brew.service.ts"]
+  file_installation_src_modules_software_software_brew_service_unit_test_ts["installation/src/modules/software/software-brew.service.unit.test.ts"]
+  file_installation_src_modules_software_software_database_service_ts["installation/src/modules/software/software-database.service.ts"]
+  file_installation_src_modules_software_software_database_service_unit_test_ts["installation/src/modules/software/software-database.service.unit.test.ts"]
+  file_installation_src_modules_software_software_docker_service_ts["installation/src/modules/software/software-docker.service.ts"]
+  file_installation_src_modules_software_software_docker_service_unit_test_ts["installation/src/modules/software/software-docker.service.unit.test.ts"]
+  file_installation_src_modules_software_software_gpg_service_ts["installation/src/modules/software/software-gpg.service.ts"]
+  file_installation_src_modules_software_software_gpg_service_unit_test_ts["installation/src/modules/software/software-gpg.service.unit.test.ts"]
+  file_installation_src_modules_software_software_infra_service_ts["installation/src/modules/software/software-infra.service.ts"]
+  file_installation_src_modules_software_software_infra_service_unit_test_ts["installation/src/modules/software/software-infra.service.unit.test.ts"]
+  file_installation_src_modules_software_software_ollama_service_ts["installation/src/modules/software/software-ollama.service.ts"]
+  file_installation_src_modules_software_software_ollama_service_unit_test_ts["installation/src/modules/software/software-ollama.service.unit.test.ts"]
+  file_installation_src_modules_software_software_python_service_ts["installation/src/modules/software/software-python.service.ts"]
+  file_installation_src_modules_software_software_python_service_unit_test_ts["installation/src/modules/software/software-python.service.unit.test.ts"]
+  file_installation_src_modules_software_software_command_ts["installation/src/modules/software/software.command.ts"]
+  file_installation_src_modules_software_software_command_unit_test_ts["installation/src/modules/software/software.command.unit.test.ts"]
+  file_installation_src_modules_software_software_constants_ts["installation/src/modules/software/software.constants.ts"]
+  file_installation_src_modules_software_software_module_ts["installation/src/modules/software/software.module.ts"]
+  file_installation_src_modules_software_software_service_ts["installation/src/modules/software/software.service.ts"]
+  file_installation_src_modules_software_software_service_unit_test_ts["installation/src/modules/software/software.service.unit.test.ts"]
+  file_installation_src_modules_software_software_types_ts["installation/src/modules/software/software.types.ts"]
+  file_installation_testing_environment_ts["installation/testing/environment.ts"]
+  file_installation_testing_fake_process_runner_ts["installation/testing/fake-process-runner.ts"]
+  file_installation_testing_mocks_ts["installation/testing/mocks.ts"]
+  file_installation_testing_report_ts["installation/testing/report.ts"]
+  file_installation_testing_setup_ts["installation/testing/setup.ts"]
+  file_installation_testing_temporary_workspace_ts["installation/testing/temporary-workspace.ts"]
+  file_installation_vitest_config_ts["installation/vitest.config.ts"]
   file_lexico_api_callidescope_config_ts["lexico-api/callidescope.config.ts"]
   file_lexico_api_codependix_config_ts["lexico-api/codependix.config.ts"]
   file_lexico_api_codometer_config_ts["lexico-api/codometer.config.ts"]
@@ -4717,6 +4883,122 @@ graph LR
   file_meanderaw_web_testing_setup_ts["meanderaw-web/testing/setup.ts"]
   file_meanderaw_web_vite_config_mts["meanderaw-web/vite.config.mts"]
   file_meanderaw_web_vitest_config_ts["meanderaw-web/vitest.config.ts"]
+  file_publication_callidescope_config_ts["publication/callidescope.config.ts"]
+  file_publication_codependix_config_ts["publication/codependix.config.ts"]
+  file_publication_codometer_config_ts["publication/codometer.config.ts"]
+  file_publication_eslint_config_ts["publication/eslint.config.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts["publication/src/modules/adopt-task-database/adopt-task-database.command.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-database.command.unit.test.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_constants_ts["publication/src/modules/adopt-task-database/adopt-task-database.constants.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts["publication/src/modules/adopt-task-database/adopt-task-database.module.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_types_ts["publication/src/modules/adopt-task-database/adopt-task-database.types.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_command_ts["publication/src/modules/keep-task-database/keep-task-database.command.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["publication/src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_constants_ts["publication/src/modules/keep-task-database/keep-task-database.constants.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_module_ts["publication/src/modules/keep-task-database/keep-task-database.module.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["publication/src/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_types_ts["publication/src/modules/keep-task-database/keep-task-database.types.ts"]
+  file_publication_src_modules_link_packages_link_packages_command_ts["publication/src/modules/link-packages/link-packages.command.ts"]
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts["publication/src/modules/link-packages/link-packages.command.unit.test.ts"]
+  file_publication_src_modules_link_packages_link_packages_constants_ts["publication/src/modules/link-packages/link-packages.constants.ts"]
+  file_publication_src_modules_link_packages_link_packages_module_ts["publication/src/modules/link-packages/link-packages.module.ts"]
+  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts["publication/src/modules/link-packages/link-packages.module.unit.test.ts"]
+  file_publication_src_modules_link_packages_link_packages_service_ts["publication/src/modules/link-packages/link-packages.service.ts"]
+  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts["publication/src/modules/link-packages/link-packages.service.unit.test.ts"]
+  file_publication_src_modules_link_packages_link_packages_types_ts["publication/src/modules/link-packages/link-packages.types.ts"]
+  file_publication_src_modules_main_tip_main_tip_constants_ts["publication/src/modules/main-tip/main-tip.constants.ts"]
+  file_publication_src_modules_main_tip_main_tip_module_ts["publication/src/modules/main-tip/main-tip.module.ts"]
+  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts["publication/src/modules/main-tip/main-tip.module.unit.test.ts"]
+  file_publication_src_modules_main_tip_main_tip_service_ts["publication/src/modules/main-tip/main-tip.service.ts"]
+  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts["publication/src/modules/main-tip/main-tip.service.unit.test.ts"]
+  file_publication_src_modules_main_tip_main_tip_types_ts["publication/src/modules/main-tip/main-tip.types.ts"]
+  file_publication_src_modules_process_runner_process_runner_constants_ts["publication/src/modules/process-runner/process-runner.constants.ts"]
+  file_publication_src_modules_process_runner_process_runner_module_ts["publication/src/modules/process-runner/process-runner.module.ts"]
+  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts["publication/src/modules/process-runner/process-runner.module.unit.test.ts"]
+  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts["publication/src/modules/process-runner/process-runner.service.integration.test.ts"]
+  file_publication_src_modules_process_runner_process_runner_service_ts["publication/src/modules/process-runner/process-runner.service.ts"]
+  file_publication_src_modules_process_runner_process_runner_service_unit_test_ts["publication/src/modules/process-runner/process-runner.service.unit.test.ts"]
+  file_publication_src_modules_process_runner_process_runner_types_ts["publication/src/modules/process-runner/process-runner.types.ts"]
+  file_publication_src_modules_process_runner_process_runner_utilities_ts["publication/src/modules/process-runner/process-runner.utilities.ts"]
+  file_publication_src_modules_process_runner_process_runner_utilities_unit_test_ts["publication/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_command_ts["publication/src/modules/publish-packages/publish-packages.command.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts["publication/src/modules/publish-packages/publish-packages.command.unit.test.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_constants_ts["publication/src/modules/publish-packages/publish-packages.constants.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_module_ts["publication/src/modules/publish-packages/publish-packages.module.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts["publication/src/modules/publish-packages/publish-packages.module.unit.test.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_service_ts["publication/src/modules/publish-packages/publish-packages.service.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts["publication/src/modules/publish-packages/publish-packages.service.unit.test.ts"]
+  file_publication_src_modules_publish_packages_publish_packages_types_ts["publication/src/modules/publish-packages/publish-packages.types.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.unit.test.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.constants.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.module.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.module.unit.test.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.unit.test.ts"]
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts["publication/src/modules/publishable-packages-gate/publishable-packages-gate.types.ts"]
+  file_publication_src_modules_release_group_release_group_constants_ts["publication/src/modules/release-group/release-group.constants.ts"]
+  file_publication_src_modules_release_group_release_group_module_ts["publication/src/modules/release-group/release-group.module.ts"]
+  file_publication_src_modules_release_group_release_group_module_unit_test_ts["publication/src/modules/release-group/release-group.module.unit.test.ts"]
+  file_publication_src_modules_release_group_release_group_service_ts["publication/src/modules/release-group/release-group.service.ts"]
+  file_publication_src_modules_release_group_release_group_service_unit_test_ts["publication/src/modules/release-group/release-group.service.unit.test.ts"]
+  file_publication_src_modules_release_group_release_group_types_ts["publication/src/modules/release-group/release-group.types.ts"]
+  file_publication_src_modules_run_affected_run_affected_command_ts["publication/src/modules/run-affected/run-affected.command.ts"]
+  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts["publication/src/modules/run-affected/run-affected.command.unit.test.ts"]
+  file_publication_src_modules_run_affected_run_affected_constants_ts["publication/src/modules/run-affected/run-affected.constants.ts"]
+  file_publication_src_modules_run_affected_run_affected_module_ts["publication/src/modules/run-affected/run-affected.module.ts"]
+  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts["publication/src/modules/run-affected/run-affected.module.unit.test.ts"]
+  file_publication_src_modules_run_affected_run_affected_service_ts["publication/src/modules/run-affected/run-affected.service.ts"]
+  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts["publication/src/modules/run-affected/run-affected.service.unit.test.ts"]
+  file_publication_src_modules_run_affected_run_affected_types_ts["publication/src/modules/run-affected/run-affected.types.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_command_ts["publication/src/modules/tag-codebase/tag-codebase.command.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_constants_ts["publication/src/modules/tag-codebase/tag-codebase.constants.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_module_ts["publication/src/modules/tag-codebase/tag-codebase.module.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.module.unit.test.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_service_ts["publication/src/modules/tag-codebase/tag-codebase.service.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.service.unit.test.ts"]
+  file_publication_src_modules_tag_codebase_tag_codebase_types_ts["publication/src/modules/tag-codebase/tag-codebase.types.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_command_ts["publication/src/modules/tag-packages/tag-packages.command.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts["publication/src/modules/tag-packages/tag-packages.command.unit.test.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_constants_ts["publication/src/modules/tag-packages/tag-packages.constants.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_module_ts["publication/src/modules/tag-packages/tag-packages.module.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts["publication/src/modules/tag-packages/tag-packages.module.unit.test.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_service_ts["publication/src/modules/tag-packages/tag-packages.service.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts["publication/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
+  file_publication_src_modules_tag_packages_tag_packages_types_ts["publication/src/modules/tag-packages/tag-packages.types.ts"]
+  file_publication_src_modules_task_database_task_database_constants_ts["publication/src/modules/task-database/task-database.constants.ts"]
+  file_publication_src_modules_task_database_task_database_module_ts["publication/src/modules/task-database/task-database.module.ts"]
+  file_publication_src_modules_task_database_task_database_module_unit_test_ts["publication/src/modules/task-database/task-database.module.unit.test.ts"]
+  file_publication_src_modules_task_database_task_database_service_ts["publication/src/modules/task-database/task-database.service.ts"]
+  file_publication_src_modules_task_database_task_database_service_unit_test_ts["publication/src/modules/task-database/task-database.service.unit.test.ts"]
+  file_publication_src_modules_task_database_task_database_types_ts["publication/src/modules/task-database/task-database.types.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_command_ts["publication/src/modules/verify-task-database/verify-task-database.command.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["publication/src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_constants_ts["publication/src/modules/verify-task-database/verify-task-database.constants.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_module_ts["publication/src/modules/verify-task-database/verify-task-database.module.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["publication/src/modules/verify-task-database/verify-task-database.module.unit.test.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_types_ts["publication/src/modules/verify-task-database/verify-task-database.types.ts"]
+  file_publication_src_modules_version_packages_version_packages_command_ts["publication/src/modules/version-packages/version-packages.command.ts"]
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts["publication/src/modules/version-packages/version-packages.command.unit.test.ts"]
+  file_publication_src_modules_version_packages_version_packages_constants_ts["publication/src/modules/version-packages/version-packages.constants.ts"]
+  file_publication_src_modules_version_packages_version_packages_module_ts["publication/src/modules/version-packages/version-packages.module.ts"]
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts["publication/src/modules/version-packages/version-packages.module.unit.test.ts"]
+  file_publication_src_modules_version_packages_version_packages_service_ts["publication/src/modules/version-packages/version-packages.service.ts"]
+  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts["publication/src/modules/version-packages/version-packages.service.unit.test.ts"]
+  file_publication_src_modules_version_packages_version_packages_types_ts["publication/src/modules/version-packages/version-packages.types.ts"]
+  file_publication_src_publication_constants_ts["publication/src/publication.constants.ts"]
+  file_publication_src_publication_main_end_to_end_test_ts["publication/src/publication.main.end-to-end.test.ts"]
+  file_publication_src_publication_main_ts["publication/src/publication.main.ts"]
+  file_publication_src_publication_main_unit_test_ts["publication/src/publication.main.unit.test.ts"]
+  file_publication_src_publication_module_ts["publication/src/publication.module.ts"]
+  file_publication_src_publication_repl_ts["publication/src/publication.repl.ts"]
+  file_publication_src_publication_repl_unit_test_ts["publication/src/publication.repl.unit.test.ts"]
+  file_publication_src_publication_types_ts["publication/src/publication.types.ts"]
+  file_publication_testing_mocks_ts["publication/testing/mocks.ts"]
+  file_publication_testing_setup_ts["publication/testing/setup.ts"]
+  file_publication_vitest_config_ts["publication/vitest.config.ts"]
   file_synchronization_callidescope_config_ts["synchronization/callidescope.config.ts"]
   file_synchronization_codependix_config_ts["synchronization/codependix.config.ts"]
   file_synchronization_codometer_config_ts["synchronization/codometer.config.ts"]
@@ -4743,6 +5025,16 @@ graph LR
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_constants_ts["synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.constants.ts"]
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts["synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.module.ts"]
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_types_ts["synchronization/src/modules/devcontainer-configuration/devcontainer-configuration.types.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_fixtures_utilities_ts["synchronization/src/modules/installed-skills/installed-skills-fixtures.utilities.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts["synchronization/src/modules/installed-skills/installed-skills-process.service.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills-process.service.unit.test.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts["synchronization/src/modules/installed-skills/installed-skills.command.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills.command.unit.test.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_constants_ts["synchronization/src/modules/installed-skills/installed-skills.constants.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts["synchronization/src/modules/installed-skills/installed-skills.module.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts["synchronization/src/modules/installed-skills/installed-skills.service.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts["synchronization/src/modules/installed-skills/installed-skills.service.unit.test.ts"]
+  file_synchronization_src_modules_installed_skills_installed_skills_types_ts["synchronization/src/modules/installed-skills/installed-skills.types.ts"]
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts["synchronization/src/modules/issue-labels/issue-labels-github.service.ts"]
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts["synchronization/src/modules/issue-labels/issue-labels-github.service.unit.test.ts"]
   file_synchronization_src_modules_issue_labels_issue_labels_command_ts["synchronization/src/modules/issue-labels/issue-labels.command.ts"]
@@ -4901,6 +5193,26 @@ graph LR
   file_validation_src_modules_readme_projects_readme_projects_service_ts["validation/src/modules/readme-projects/readme-projects.service.ts"]
   file_validation_src_modules_readme_projects_readme_projects_service_unit_test_ts["validation/src/modules/readme-projects/readme-projects.service.unit.test.ts"]
   file_validation_src_modules_readme_projects_readme_projects_types_ts["validation/src/modules/readme-projects/readme-projects.types.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts["validation/src/modules/session-branch-name/session-branch-name-git.service.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_git_service_unit_test_ts["validation/src/modules/session-branch-name/session-branch-name-git.service.unit.test.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_command_ts["validation/src/modules/session-branch-name/session-branch-name.command.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_command_unit_test_ts["validation/src/modules/session-branch-name/session-branch-name.command.unit.test.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_constants_ts["validation/src/modules/session-branch-name/session-branch-name.constants.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_module_ts["validation/src/modules/session-branch-name/session-branch-name.module.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_module_unit_test_ts["validation/src/modules/session-branch-name/session-branch-name.module.unit.test.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_service_ts["validation/src/modules/session-branch-name/session-branch-name.service.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_service_unit_test_ts["validation/src/modules/session-branch-name/session-branch-name.service.unit.test.ts"]
+  file_validation_src_modules_session_branch_name_session_branch_name_types_ts["validation/src/modules/session-branch-name/session-branch-name.types.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts["validation/src/modules/session-worktree-name/session-worktree-name-git.service.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_unit_test_ts["validation/src/modules/session-worktree-name/session-worktree-name-git.service.unit.test.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_ts["validation/src/modules/session-worktree-name/session-worktree-name.command.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts["validation/src/modules/session-worktree-name/session-worktree-name.command.unit.test.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_constants_ts["validation/src/modules/session-worktree-name/session-worktree-name.constants.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts["validation/src/modules/session-worktree-name/session-worktree-name.module.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts["validation/src/modules/session-worktree-name/session-worktree-name.module.unit.test.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts["validation/src/modules/session-worktree-name/session-worktree-name.service.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts["validation/src/modules/session-worktree-name/session-worktree-name.service.unit.test.ts"]
+  file_validation_src_modules_session_worktree_name_session_worktree_name_types_ts["validation/src/modules/session-worktree-name/session-worktree-name.types.ts"]
   file_validation_src_validation_constants_ts["validation/src/validation.constants.ts"]
   file_validation_src_validation_main_end_to_end_test_ts["validation/src/validation.main.end-to-end.test.ts"]
   file_validation_src_validation_main_ts["validation/src/validation.main.ts"]
@@ -7780,290 +8092,290 @@ graph LR
   file_codometer_output_src_modules_report_report_service_ts --> file_codometer_output_src_modules_report_report_constants_ts
   file_codometer_output_src_modules_report_report_service_ts --> file_codometer_output_src_modules_report_report_types_ts
   file_codometer_output_src_modules_report_report_service_unit_test_ts --> file_codometer_output_src_modules_report_report_service_ts
-  file_components_web_src_components_examples_c_sidebar_1_tsx --> file_components_web_src_components_ui_avatar_tsx
-  file_components_web_src_components_examples_c_sidebar_1_tsx --> file_components_web_src_components_ui_breadcrumb_tsx
-  file_components_web_src_components_examples_c_sidebar_1_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_examples_c_sidebar_1_tsx --> file_components_web_src_components_ui_card_tsx
-  file_components_web_src_components_examples_c_sidebar_1_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_examples_c_sidebar_1_tsx --> file_components_web_src_components_ui_sidebar_tsx
-  file_components_web_src_components_reui_autocomplete_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_cascader_cascader_async_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_async_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_cascader_cascader_async_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_columns_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_columns_tsx --> file_components_web_src_components_reui_cascader_cascader_item_tsx
-  file_components_web_src_components_reui_cascader_cascader_columns_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_cascader_cascader_columns_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_cascader_cascader_context_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_footer_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_footer_tsx --> file_components_web_src_components_reui_cascader_cascader_item_tsx
-  file_components_web_src_components_reui_cascader_cascader_footer_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_cascader_cascader_footer_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_i18n_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_item_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_item_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_cascader_cascader_item_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_item_tsx --> file_components_web_src_components_ui_spinner_tsx
-  file_components_web_src_components_reui_cascader_cascader_lib_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_nav_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_nav_tsx --> file_components_web_src_components_reui_cascader_cascader_i18n_tsx
-  file_components_web_src_components_reui_cascader_cascader_nav_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_cascader_cascader_nav_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_virtual_tsx --> file_components_web_src_components_reui_cascader_cascader_columns_tsx
-  file_components_web_src_components_reui_cascader_cascader_virtual_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_virtual_tsx --> file_components_web_src_components_reui_cascader_cascader_item_tsx
-  file_components_web_src_components_reui_cascader_cascader_tsx --> file_components_web_src_components_reui_cascader_cascader_async_tsx
-  file_components_web_src_components_reui_cascader_cascader_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_cascader_cascader_tsx --> file_components_web_src_components_reui_cascader_cascader_i18n_tsx
-  file_components_web_src_components_reui_cascader_cascader_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_cascader_cascader_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_cascader_cascader_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_code_block_code_block_tsx --> file_components_web_src_components_reui_code_block_code_block_highlight_tsx
-  file_components_web_src_components_reui_code_block_code_block_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_color_picker_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_color_picker_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_color_picker_tsx --> file_components_web_src_components_ui_input_group_tsx
-  file_components_web_src_components_reui_color_picker_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_color_picker_tsx --> file_components_web_src_components_ui_separator_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_cell_selection_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_cell_selection_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_web_src_components_reui_badge_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_web_src_components_ui_separator_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_header_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_header_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_header_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_visibility_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_column_visibility_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_web_src_components_ui_select_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_web_src_components_ui_skeleton_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_scroll_area_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_components_web_src_components_reui_data_grid_data_grid_table_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_components_web_src_components_reui_data_grid_data_grid_table_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_components_web_src_components_reui_data_grid_data_grid_table_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_components_web_src_components_ui_spinner_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_tsx --> file_components_web_src_components_reui_data_grid_data_grid_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_tsx --> file_components_web_src_components_ui_checkbox_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_table_tsx --> file_components_web_src_components_ui_spinner_tsx
-  file_components_web_src_components_reui_data_grid_data_grid_tsx --> file_components_web_src_components_reui_data_grid_data_grid_i18n_tsx
-  file_components_web_src_components_reui_date_selector_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_date_selector_tsx --> file_components_web_src_components_ui_calendar_tsx
-  file_components_web_src_components_reui_date_selector_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_reui_date_selector_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_date_selector_tsx --> file_components_web_src_components_ui_tabs_tsx
-  file_components_web_src_components_reui_date_selector_tsx --> file_components_web_src_hooks_use_mobile_ts
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_empty_tsx
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_input_group_tsx
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_skeleton_tsx
-  file_components_web_src_components_reui_emoji_picker_tsx --> file_components_web_src_components_ui_tabs_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_web_src_components_reui_icon_stack_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_agenda_view_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_i18n_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_recurrence_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_ui_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_recurrence_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_dnd_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_event_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_i18n_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_lib_tsx
-  file_components_web_src_components_reui_event_calendar_event_calendar_tsx --> file_components_web_src_components_reui_event_calendar_event_calendar_types_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_builder_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_chip_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_context_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_dnd_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_i18n_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_lib_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_operators_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_query_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_filters_filters_advanced_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_cascader_cascader_footer_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_cascader_cascader_nav_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_cascader_cascader_virtual_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_cascader_cascader_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_filters_filters_context_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_filters_filters_lib_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_filters_filters_operators_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_filters_filters_builder_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_reui_filters_filters_context_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_reui_filters_filters_editors_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_reui_filters_filters_lib_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_reui_filters_filters_operators_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_reui_filters_filters_query_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_ui_button_group_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_filters_filters_chip_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_filters_filters_context_tsx --> file_components_web_src_components_reui_filters_filters_draft_tsx
-  file_components_web_src_components_reui_filters_filters_context_tsx --> file_components_web_src_components_reui_filters_filters_lib_tsx
-  file_components_web_src_components_reui_filters_filters_context_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_draft_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_cascader_cascader_context_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_cascader_cascader_footer_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_cascader_cascader_item_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_cascader_cascader_nav_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_cascader_cascader_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_filters_filters_context_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_filters_filters_lib_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_ui_button_group_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_filters_filters_editors_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_reui_filters_filters_i18n_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_lib_tsx --> file_components_web_src_components_reui_cascader_cascader_lib_tsx
-  file_components_web_src_components_reui_filters_filters_lib_tsx --> file_components_web_src_components_reui_cascader_cascader_types_tsx
-  file_components_web_src_components_reui_filters_filters_lib_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_operators_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_query_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_advanced_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_builder_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_chip_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_context_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_draft_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_editors_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_i18n_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_lib_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_operators_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_query_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_reui_filters_filters_types_tsx
-  file_components_web_src_components_reui_filters_filters_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx --> file_components_web_src_components_reui_gantt_gantt_dnd_tsx
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx --> file_components_web_src_components_reui_gantt_gantt_lib_tsx
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx --> file_components_web_src_components_reui_gantt_gantt_tsx
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx --> file_components_web_src_components_ui_context_menu_tsx
-  file_components_web_src_components_reui_gantt_gantt_bar_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_gantt_gantt_dnd_tsx --> file_components_web_src_components_reui_gantt_gantt_lib_tsx
-  file_components_web_src_components_reui_gantt_gantt_dnd_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_dnd_tsx --> file_components_web_src_components_reui_gantt_gantt_tsx
-  file_components_web_src_components_reui_gantt_gantt_i18n_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_lib_tsx --> file_components_web_src_components_reui_gantt_gantt_recurrence_tsx
-  file_components_web_src_components_reui_gantt_gantt_lib_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_reui_gantt_gantt_lib_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_reui_gantt_gantt_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_ui_calendar_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_reui_gantt_gantt_nav_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_gantt_gantt_recurrence_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_reui_gantt_gantt_bar_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_reui_gantt_gantt_dnd_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_reui_gantt_gantt_lib_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_reui_gantt_gantt_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_ui_checkbox_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_ui_context_menu_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_gantt_gantt_view_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_reui_gantt_gantt_tsx --> file_components_web_src_components_reui_gantt_gantt_i18n_tsx
-  file_components_web_src_components_reui_gantt_gantt_tsx --> file_components_web_src_components_reui_gantt_gantt_lib_tsx
-  file_components_web_src_components_reui_gantt_gantt_tsx --> file_components_web_src_components_reui_gantt_gantt_types_tsx
-  file_components_web_src_components_reui_number_field_tsx --> file_components_web_src_components_ui_label_tsx
-  file_components_web_src_components_reui_phone_input_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_phone_input_tsx --> file_components_web_src_components_ui_combobox_tsx
-  file_components_web_src_components_reui_phone_input_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_reui_phone_input_tsx --> file_components_web_src_components_ui_scroll_area_tsx
-  file_components_web_src_components_reui_signature_pad_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_time_picker_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_reui_time_picker_tsx --> file_components_web_src_components_ui_input_group_tsx
-  file_components_web_src_components_reui_time_picker_tsx --> file_components_web_src_components_ui_popover_tsx
-  file_components_web_src_components_ui_alert_dialog_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_button_group_tsx --> file_components_web_src_components_ui_separator_tsx
-  file_components_web_src_components_ui_calendar_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_carousel_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_combobox_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_combobox_tsx --> file_components_web_src_components_ui_input_group_tsx
-  file_components_web_src_components_ui_command_tsx --> file_components_web_src_components_ui_dialog_tsx
-  file_components_web_src_components_ui_command_tsx --> file_components_web_src_components_ui_input_group_tsx
-  file_components_web_src_components_ui_dialog_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_field_tsx --> file_components_web_src_components_ui_label_tsx
-  file_components_web_src_components_ui_field_tsx --> file_components_web_src_components_ui_separator_tsx
-  file_components_web_src_components_ui_input_group_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_input_group_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_ui_input_group_tsx --> file_components_web_src_components_ui_textarea_tsx
-  file_components_web_src_components_ui_item_tsx --> file_components_web_src_components_ui_separator_tsx
-  file_components_web_src_components_ui_menubar_tsx --> file_components_web_src_components_ui_dropdown_menu_tsx
-  file_components_web_src_components_ui_pagination_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_sheet_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_button_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_input_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_separator_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_sheet_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_skeleton_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_components_ui_tooltip_tsx
-  file_components_web_src_components_ui_sidebar_tsx --> file_components_web_src_hooks_use_mobile_ts
-  file_components_web_src_components_ui_toggle_group_tsx --> file_components_web_src_components_ui_toggle_tsx
+  file_components_src_components_examples_c_sidebar_1_tsx --> file_components_src_components_ui_avatar_tsx
+  file_components_src_components_examples_c_sidebar_1_tsx --> file_components_src_components_ui_breadcrumb_tsx
+  file_components_src_components_examples_c_sidebar_1_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_examples_c_sidebar_1_tsx --> file_components_src_components_ui_card_tsx
+  file_components_src_components_examples_c_sidebar_1_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_examples_c_sidebar_1_tsx --> file_components_src_components_ui_sidebar_tsx
+  file_components_src_components_reui_autocomplete_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_cascader_cascader_async_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_async_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_cascader_cascader_async_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_columns_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_columns_tsx --> file_components_src_components_reui_cascader_cascader_item_tsx
+  file_components_src_components_reui_cascader_cascader_columns_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_cascader_cascader_columns_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_cascader_cascader_context_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_footer_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_footer_tsx --> file_components_src_components_reui_cascader_cascader_item_tsx
+  file_components_src_components_reui_cascader_cascader_footer_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_cascader_cascader_footer_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_i18n_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_item_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_item_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_cascader_cascader_item_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_item_tsx --> file_components_src_components_ui_spinner_tsx
+  file_components_src_components_reui_cascader_cascader_lib_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_nav_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_nav_tsx --> file_components_src_components_reui_cascader_cascader_i18n_tsx
+  file_components_src_components_reui_cascader_cascader_nav_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_cascader_cascader_nav_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_virtual_tsx --> file_components_src_components_reui_cascader_cascader_columns_tsx
+  file_components_src_components_reui_cascader_cascader_virtual_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_virtual_tsx --> file_components_src_components_reui_cascader_cascader_item_tsx
+  file_components_src_components_reui_cascader_cascader_tsx --> file_components_src_components_reui_cascader_cascader_async_tsx
+  file_components_src_components_reui_cascader_cascader_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_cascader_cascader_tsx --> file_components_src_components_reui_cascader_cascader_i18n_tsx
+  file_components_src_components_reui_cascader_cascader_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_cascader_cascader_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_cascader_cascader_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_code_block_code_block_tsx --> file_components_src_components_reui_code_block_code_block_highlight_tsx
+  file_components_src_components_reui_code_block_code_block_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_color_picker_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_color_picker_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_color_picker_tsx --> file_components_src_components_ui_input_group_tsx
+  file_components_src_components_reui_color_picker_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_color_picker_tsx --> file_components_src_components_ui_separator_tsx
+  file_components_src_components_reui_data_grid_data_grid_cell_selection_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_cell_selection_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_src_components_reui_badge_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_filter_tsx --> file_components_src_components_ui_separator_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_header_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_header_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_header_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_visibility_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_column_visibility_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_src_components_ui_select_tsx
+  file_components_src_components_reui_data_grid_data_grid_pagination_tsx --> file_components_src_components_ui_skeleton_tsx
+  file_components_src_components_reui_data_grid_data_grid_scroll_area_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_components_src_components_reui_data_grid_data_grid_table_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_components_src_components_reui_data_grid_data_grid_table_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_dnd_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_components_src_components_reui_data_grid_data_grid_table_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_virtual_tsx --> file_components_src_components_ui_spinner_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_tsx --> file_components_src_components_reui_data_grid_data_grid_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_tsx --> file_components_src_components_ui_checkbox_tsx
+  file_components_src_components_reui_data_grid_data_grid_table_tsx --> file_components_src_components_ui_spinner_tsx
+  file_components_src_components_reui_data_grid_data_grid_tsx --> file_components_src_components_reui_data_grid_data_grid_i18n_tsx
+  file_components_src_components_reui_date_selector_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_date_selector_tsx --> file_components_src_components_ui_calendar_tsx
+  file_components_src_components_reui_date_selector_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_reui_date_selector_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_date_selector_tsx --> file_components_src_components_ui_tabs_tsx
+  file_components_src_components_reui_date_selector_tsx --> file_components_src_hooks_use_mobile_ts
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_empty_tsx
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_input_group_tsx
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_skeleton_tsx
+  file_components_src_components_reui_emoji_picker_tsx --> file_components_src_components_ui_tabs_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_src_components_reui_icon_stack_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_src_components_reui_event_calendar_event_calendar_agenda_view_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_content_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_event_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_i18n_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_lib_tsx --> file_components_src_components_reui_event_calendar_event_calendar_recurrence_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_lib_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_month_view_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_ui_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_nav_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_recurrence_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_resource_view_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_src_components_reui_event_calendar_event_calendar_dnd_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_src_components_reui_event_calendar_event_calendar_event_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_src_components_reui_event_calendar_event_calendar_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_time_grid_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_tsx --> file_components_src_components_reui_event_calendar_event_calendar_i18n_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_tsx --> file_components_src_components_reui_event_calendar_event_calendar_lib_tsx
+  file_components_src_components_reui_event_calendar_event_calendar_tsx --> file_components_src_components_reui_event_calendar_event_calendar_types_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_builder_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_chip_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_context_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_dnd_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_i18n_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_lib_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_operators_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_query_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_filters_filters_advanced_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_cascader_cascader_footer_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_cascader_cascader_nav_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_cascader_cascader_virtual_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_cascader_cascader_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_filters_filters_context_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_filters_filters_lib_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_filters_filters_operators_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_filters_filters_builder_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_reui_filters_filters_context_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_reui_filters_filters_editors_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_reui_filters_filters_lib_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_reui_filters_filters_operators_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_reui_filters_filters_query_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_ui_button_group_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_filters_filters_chip_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_filters_filters_context_tsx --> file_components_src_components_reui_filters_filters_draft_tsx
+  file_components_src_components_reui_filters_filters_context_tsx --> file_components_src_components_reui_filters_filters_lib_tsx
+  file_components_src_components_reui_filters_filters_context_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_draft_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_cascader_cascader_context_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_cascader_cascader_footer_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_cascader_cascader_item_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_cascader_cascader_nav_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_cascader_cascader_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_filters_filters_context_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_filters_filters_lib_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_ui_button_group_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_filters_filters_editors_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_reui_filters_filters_i18n_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_lib_tsx --> file_components_src_components_reui_cascader_cascader_lib_tsx
+  file_components_src_components_reui_filters_filters_lib_tsx --> file_components_src_components_reui_cascader_cascader_types_tsx
+  file_components_src_components_reui_filters_filters_lib_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_operators_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_query_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_advanced_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_builder_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_chip_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_context_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_draft_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_editors_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_i18n_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_lib_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_operators_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_query_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_reui_filters_filters_types_tsx
+  file_components_src_components_reui_filters_filters_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_gantt_gantt_bar_tsx --> file_components_src_components_reui_gantt_gantt_dnd_tsx
+  file_components_src_components_reui_gantt_gantt_bar_tsx --> file_components_src_components_reui_gantt_gantt_lib_tsx
+  file_components_src_components_reui_gantt_gantt_bar_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_bar_tsx --> file_components_src_components_reui_gantt_gantt_tsx
+  file_components_src_components_reui_gantt_gantt_bar_tsx --> file_components_src_components_ui_context_menu_tsx
+  file_components_src_components_reui_gantt_gantt_bar_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_gantt_gantt_dnd_tsx --> file_components_src_components_reui_gantt_gantt_lib_tsx
+  file_components_src_components_reui_gantt_gantt_dnd_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_dnd_tsx --> file_components_src_components_reui_gantt_gantt_tsx
+  file_components_src_components_reui_gantt_gantt_i18n_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_lib_tsx --> file_components_src_components_reui_gantt_gantt_recurrence_tsx
+  file_components_src_components_reui_gantt_gantt_lib_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_reui_gantt_gantt_lib_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_reui_gantt_gantt_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_ui_calendar_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_reui_gantt_gantt_nav_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_gantt_gantt_recurrence_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_reui_gantt_gantt_bar_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_reui_gantt_gantt_dnd_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_reui_gantt_gantt_lib_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_reui_gantt_gantt_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_ui_checkbox_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_ui_context_menu_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_gantt_gantt_view_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_reui_gantt_gantt_tsx --> file_components_src_components_reui_gantt_gantt_i18n_tsx
+  file_components_src_components_reui_gantt_gantt_tsx --> file_components_src_components_reui_gantt_gantt_lib_tsx
+  file_components_src_components_reui_gantt_gantt_tsx --> file_components_src_components_reui_gantt_gantt_types_tsx
+  file_components_src_components_reui_number_field_tsx --> file_components_src_components_ui_label_tsx
+  file_components_src_components_reui_phone_input_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_phone_input_tsx --> file_components_src_components_ui_combobox_tsx
+  file_components_src_components_reui_phone_input_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_reui_phone_input_tsx --> file_components_src_components_ui_scroll_area_tsx
+  file_components_src_components_reui_signature_pad_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_time_picker_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_reui_time_picker_tsx --> file_components_src_components_ui_input_group_tsx
+  file_components_src_components_reui_time_picker_tsx --> file_components_src_components_ui_popover_tsx
+  file_components_src_components_ui_alert_dialog_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_button_group_tsx --> file_components_src_components_ui_separator_tsx
+  file_components_src_components_ui_calendar_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_carousel_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_combobox_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_combobox_tsx --> file_components_src_components_ui_input_group_tsx
+  file_components_src_components_ui_command_tsx --> file_components_src_components_ui_dialog_tsx
+  file_components_src_components_ui_command_tsx --> file_components_src_components_ui_input_group_tsx
+  file_components_src_components_ui_dialog_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_field_tsx --> file_components_src_components_ui_label_tsx
+  file_components_src_components_ui_field_tsx --> file_components_src_components_ui_separator_tsx
+  file_components_src_components_ui_input_group_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_input_group_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_ui_input_group_tsx --> file_components_src_components_ui_textarea_tsx
+  file_components_src_components_ui_item_tsx --> file_components_src_components_ui_separator_tsx
+  file_components_src_components_ui_menubar_tsx --> file_components_src_components_ui_dropdown_menu_tsx
+  file_components_src_components_ui_pagination_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_sheet_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_components_ui_button_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_components_ui_input_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_components_ui_separator_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_components_ui_sheet_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_components_ui_skeleton_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_components_ui_tooltip_tsx
+  file_components_src_components_ui_sidebar_tsx --> file_components_src_hooks_use_mobile_ts
+  file_components_src_components_ui_toggle_group_tsx --> file_components_src_components_ui_toggle_tsx
   file_configuration_commitlint_config_ts --> file_configuration_conventional_config_d_cts
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_end_to_end_test_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___constants_ts
   file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___main_ts --> file_configuration_conformetry_templates_nestjs_command_project___nameKebabCase___src___nameKebabCase___module_ts
@@ -8734,6 +9046,212 @@ graph LR
   file_database_testing_fixtures_sample_widgets_module_ts --> file_database_testing_fixtures_widget_entity_ts
   file_database_testing_fixtures_sample_widgets_service_ts --> file_database_testing_fixtures_widget_entity_ts
   file_database_testing_fixtures_widget_entity_ts --> file_database_src_modules_database_entities_deletable_entity_ts
+  file_installation_src_installation_main_end_to_end_test_ts --> file_installation_src_installation_constants_ts
+  file_installation_src_installation_main_ts --> file_installation_src_installation_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_installation_constants_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_dependencies_dependencies_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_environment_files_environment_files_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_setup_setup_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_software_software_module_ts
+  file_installation_src_installation_repl_ts --> file_installation_src_installation_module_ts
+  file_installation_src_modules_dependencies_dependencies_command_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_command_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_dependencies_dependencies_module_ts --> file_installation_src_modules_dependencies_dependencies_command_ts
+  file_installation_src_modules_dependencies_dependencies_module_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_dependencies_dependencies_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_dependencies_dependencies_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_dependencies_dependencies_service_ts --> file_installation_src_modules_dependencies_dependencies_constants_ts
+  file_installation_src_modules_dependencies_dependencies_service_ts --> file_installation_src_modules_dependencies_dependencies_types_ts
+  file_installation_src_modules_dependencies_dependencies_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_dependencies_dependencies_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_dependencies_dependencies_service_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_dependencies_dependencies_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_dependencies_dependencies_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_environment_files_environment_files_command_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_command_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_environment_files_environment_files_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_environment_files_environment_files_module_ts --> file_installation_src_modules_environment_files_environment_files_command_ts
+  file_installation_src_modules_environment_files_environment_files_module_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_environment_files_environment_files_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_environment_files_environment_files_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_environment_files_environment_files_service_ts --> file_installation_src_modules_environment_files_environment_files_constants_ts
+  file_installation_src_modules_environment_files_environment_files_service_ts --> file_installation_src_modules_environment_files_environment_files_types_ts
+  file_installation_src_modules_environment_files_environment_files_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_environment_files_environment_files_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_process_runner_process_runner_module_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_process_runner_process_runner_service_ts --> file_installation_src_modules_process_runner_process_runner_constants_ts
+  file_installation_src_modules_process_runner_process_runner_service_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
+  file_installation_src_modules_process_runner_process_runner_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_process_runner_process_runner_service_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_reporter_reporter_module_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_reporter_reporter_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_setup_setup_command_ts --> file_installation_src_modules_setup_setup_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_setup_setup_command_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_setup_setup_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_docker_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_gpg_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_infra_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_dependencies_dependencies_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_environment_files_environment_files_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_setup_setup_command_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_setup_setup_service_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_software_software_module_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_setup_setup_constants_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_setup_setup_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_command_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_command_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_service_ts --> file_installation_src_modules_shell_configuration_shell_configuration_constants_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_shell_configuration_shell_configuration_service_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
+  file_installation_src_modules_software_software_brew_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_brew_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_brew_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_brew_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_brew_service_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_database_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_database_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_database_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_database_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_database_service_unit_test_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_docker_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_docker_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_docker_service_ts --> file_installation_src_modules_software_software_constants_ts
+  file_installation_src_modules_software_software_docker_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_docker_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_docker_service_unit_test_ts --> file_installation_src_modules_software_software_docker_service_ts
+  file_installation_src_modules_software_software_gpg_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_gpg_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_gpg_service_ts --> file_installation_src_modules_software_software_constants_ts
+  file_installation_src_modules_software_software_gpg_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_gpg_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_gpg_service_unit_test_ts --> file_installation_src_modules_software_software_gpg_service_ts
+  file_installation_src_modules_software_software_infra_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_infra_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_infra_service_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_infra_service_ts --> file_installation_src_modules_software_software_constants_ts
+  file_installation_src_modules_software_software_infra_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_infra_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_infra_service_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_infra_service_unit_test_ts --> file_installation_src_modules_software_software_infra_service_ts
+  file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_software_software_constants_ts
+  file_installation_src_modules_software_software_ollama_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_ollama_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_ollama_service_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_ollama_service_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
+  file_installation_src_modules_software_software_python_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_python_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_python_service_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_python_service_ts --> file_installation_src_modules_software_software_constants_ts
+  file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_software_software_command_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_docker_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_gpg_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_infra_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_command_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_software_software_constants_ts --> file_installation_src_modules_software_software_types_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_brew_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_docker_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_gpg_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_infra_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_ollama_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_command_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_software_software_service_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_service_ts --> file_installation_src_modules_software_software_docker_service_ts
+  file_installation_src_modules_software_software_service_ts --> file_installation_src_modules_software_software_gpg_service_ts
+  file_installation_src_modules_software_software_service_ts --> file_installation_src_modules_software_software_infra_service_ts
+  file_installation_src_modules_software_software_service_ts --> file_installation_src_modules_software_software_ollama_service_ts
+  file_installation_src_modules_software_software_service_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_docker_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_gpg_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_infra_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_testing_environment_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
   file_lexico_api_src_deletable_entities_ts --> file_lexico_api_src_lexico_api_types_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_lexemes_lexemes_module_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_literature_literature_module_ts
@@ -11679,6 +12197,285 @@ graph LR
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_src_routes_index_tsx
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_testing_render_route_tsx
   file_meanderaw_web_testing_render_route_tsx --> file_meanderaw_web_src_router_tsx
+  file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_publication_src_modules_keep_task_database_keep_task_database_command_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_module_ts --> file_publication_src_modules_keep_task_database_keep_task_database_command_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_publication_src_modules_keep_task_database_keep_task_database_command_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_publication_src_modules_keep_task_database_keep_task_database_module_ts
+  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
+  file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
+  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
+  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_link_packages_link_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
+  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
+  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
+  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_link_packages_link_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_link_packages_link_packages_constants_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_link_packages_link_packages_types_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
+  file_publication_src_modules_link_packages_link_packages_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
+  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_link_packages_link_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_main_tip_main_tip_module_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_main_tip_main_tip_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_main_tip_main_tip_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_main_tip_main_tip_constants_ts
+  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_main_tip_main_tip_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_process_runner_process_runner_module_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_process_runner_process_runner_service_integration_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_process_runner_process_runner_service_ts --> file_publication_src_modules_process_runner_process_runner_constants_ts
+  file_publication_src_modules_process_runner_process_runner_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_process_runner_process_runner_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_process_runner_process_runner_utilities_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_command_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_publish_packages_publish_packages_constants_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_publish_packages_publish_packages_types_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_service_ts
+  file_publication_src_modules_publish_packages_publish_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_command_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_constants_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_types_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_service_ts
+  file_publication_src_modules_release_group_release_group_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_release_group_release_group_module_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_release_group_release_group_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_release_group_release_group_constants_ts
+  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
+  file_publication_src_modules_release_group_release_group_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_types_ts
+  file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_run_affected_run_affected_command_ts --> file_publication_src_modules_run_affected_run_affected_constants_ts
+  file_publication_src_modules_run_affected_run_affected_command_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
+  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
+  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
+  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
+  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
+  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
+  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
+  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
+  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_run_affected_run_affected_constants_ts
+  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_run_affected_run_affected_types_ts
+  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_command_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_module_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_service_ts --> file_publication_src_modules_tag_codebase_tag_codebase_constants_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_tag_codebase_tag_codebase_service_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_release_group_release_group_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_command_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
+  file_publication_src_modules_tag_packages_tag_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_release_group_release_group_types_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_constants_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_types_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_task_database_task_database_module_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_task_database_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_task_database_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_modules_task_database_task_database_constants_ts
+  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_modules_task_database_task_database_types_ts
+  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_task_database_task_database_service_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_publication_src_modules_verify_task_database_verify_task_database_command_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_module_ts --> file_publication_src_modules_verify_task_database_verify_task_database_command_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_publication_src_modules_verify_task_database_verify_task_database_command_ts
+  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_publication_src_modules_verify_task_database_verify_task_database_module_ts
+  file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_testing_mocks_ts
+  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
+  file_publication_src_modules_version_packages_version_packages_module_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_command_ts
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
+  file_publication_src_modules_version_packages_version_packages_module_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
+  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_modules_version_packages_version_packages_constants_ts
+  file_publication_src_modules_version_packages_version_packages_service_ts --> file_publication_src_publication_types_ts
+  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
+  file_publication_src_modules_version_packages_version_packages_service_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
+  file_publication_src_publication_main_end_to_end_test_ts --> file_publication_src_publication_constants_ts
+  file_publication_src_publication_main_ts --> file_publication_src_publication_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
+  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_keep_task_database_keep_task_database_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_verify_task_database_verify_task_database_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
+  file_publication_src_publication_module_ts --> file_publication_src_publication_constants_ts
+  file_publication_src_publication_repl_ts --> file_publication_src_publication_module_ts
+  file_publication_src_publication_types_ts --> file_publication_src_publication_constants_ts
+  file_publication_testing_mocks_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
+  file_publication_testing_mocks_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_types_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
@@ -11728,6 +12525,29 @@ graph LR
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_unit_test_ts --> file_synchronization_testing_mocks_ts
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
   file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_fixtures_utilities_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_process_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_constants_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_fixtures_utilities_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_command_unit_test_ts --> file_synchronization_testing_mocks_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_constants_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_ts --> file_synchronization_src_modules_installed_skills_installed_skills_types_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_process_service_ts
+  file_synchronization_src_modules_installed_skills_installed_skills_service_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_service_ts
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_constants_ts
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts --> file_synchronization_src_modules_issue_labels_issue_labels_types_ts
   file_synchronization_src_modules_issue_labels_issue_labels_github_service_unit_test_ts --> file_synchronization_src_modules_issue_labels_issue_labels_github_service_ts
@@ -11816,6 +12636,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_conventional_config_conventional_config_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_package_manifests_package_manifests_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts
@@ -11826,6 +12647,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_package_manifests_package_manifests_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_command_ts
@@ -11838,6 +12660,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_package_manifests_package_manifests_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
@@ -11849,6 +12672,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
@@ -12082,6 +12906,46 @@ graph LR
   file_validation_src_modules_readme_projects_readme_projects_module_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
   file_validation_src_modules_readme_projects_readme_projects_service_ts --> file_validation_src_modules_readme_projects_readme_projects_constants_ts
   file_validation_src_modules_readme_projects_readme_projects_service_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts --> file_validation_src_modules_session_branch_name_session_branch_name_types_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_git_service_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_command_ts --> file_validation_src_modules_session_branch_name_session_branch_name_constants_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_command_ts --> file_validation_src_modules_session_branch_name_session_branch_name_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_command_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_types_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_ts --> file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_ts --> file_validation_src_modules_session_branch_name_session_branch_name_command_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_ts --> file_validation_src_modules_session_branch_name_session_branch_name_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_command_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_service_ts --> file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_service_ts --> file_validation_src_modules_session_branch_name_session_branch_name_constants_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_service_ts --> file_validation_src_modules_session_branch_name_session_branch_name_types_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_service_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_validation_src_modules_session_branch_name_session_branch_name_service_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_constants_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_constants_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_validation_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_service_ts
   file_validation_src_validation_main_end_to_end_test_ts --> file_validation_src_validation_constants_ts
   file_validation_src_validation_main_ts --> file_validation_src_validation_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
@@ -12093,6 +12957,8 @@ graph LR
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
   file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
+  file_validation_src_validation_main_unit_test_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_audit_governance_audit_governance_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_catalog_manifests_catalog_manifests_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_issue_metadata_issue_metadata_module_ts
@@ -12102,6 +12968,8 @@ graph LR
   file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_metadata_pull_request_metadata_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_modules_readme_projects_readme_projects_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_session_branch_name_session_branch_name_module_ts
+  file_validation_src_validation_module_ts --> file_validation_src_modules_session_worktree_name_session_worktree_name_module_ts
   file_validation_src_validation_module_ts --> file_validation_src_validation_constants_ts
   file_validation_src_validation_repl_ts --> file_validation_src_validation_module_ts
 ```
@@ -12115,8 +12983,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-47-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.89_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-65-4a4a4a?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.83_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-64-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-1-3178c6?style=flat-square)
 
 ### TypeScript
@@ -12163,31 +13031,31 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### JSON
 
-![JSON Files](https://img.shields.io/badge/JSON_Files-20-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-3731-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-388-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-201-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1141-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1241-16a34a?style=flat-square)
+![JSON Files](https://img.shields.io/badge/JSON_Files-19-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3709-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-381-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-200-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1125-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1231-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-95-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-94-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-807-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1964-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-805-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1945-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-8-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2655-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2692-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-375-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
 ![YAML Keys](https://img.shields.io/badge/YAML_Keys-1325-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2512-16a34a?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2514-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-413-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-425-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -12202,17 +13070,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-56-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-4100-4eaa25?style=flat-square)
-![Shell Functions](https://img.shields.io/badge/Shell_Functions-60-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-374-0284c7?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-35-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-2577-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-32-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-243-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-257-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-51-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-125-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-56-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-1028-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-1028-475569?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-169-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-37-8b5cf6?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-86-059669?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-35-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-587-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-587-475569?style=flat-square)
 
 ### SQL
 
@@ -12298,25 +13166,25 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-116-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19178-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-115-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-672-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-521-a78bfa?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-117-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19155-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-116-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-674-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-519-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5479-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-857-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4162-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5451-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-851-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4135-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-232-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1978-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-708-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-234-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-1999-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-714-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-387-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11087-ef4444?style=flat-square)
-![Block Quotes](https://img.shields.io/badge/Block_Quotes-20-ca8a04?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-384-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11158-ef4444?style=flat-square)
+![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
 
@@ -12328,13 +13196,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6166 |
-| Files | 1768 |
-| Calls traced | 6629 |
-| Call stacks | 1693 |
+| Callables | 6473 |
+| Files | 1910 |
+| Calls traced | 7125 |
+| Call stacks | 1777 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 331 |
+| Unfollowable calls | 351 |
 
 ### Projects
 
@@ -12353,13 +13221,14 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
 | `projects/logging` | 4 | 4 | 0 | 2 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
+| `projects/publication` | 6 | 6 | 0 | 8 |
 | `projects/validation` | 8 | 8 | 0 | 9 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
 | `projects/synchronization` | 9 | 10 | 1 | 9 |
-| `projects/components-web` | 0 | 3 | 3 | 0 |
+| `projects/components` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
@@ -12378,6 +13247,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
 | `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
 | `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
+| `projects/installation` | 8 | 17 | 9 | 6 |
 | `projects/lexico/lexico-api` | 8 | 17 | 9 | 10 |
 | `projects/configuration` | 5 | 17 | 12 | 2 |
 | `projects/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
@@ -12389,10 +13259,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 14 |
+| 0 — at limit | 15 |
 | 1 | 2 |
 | 2–3 | 2 |
-| 4+ | 11 |
+| 4+ | 12 |
 | no stacks | 14 |
 
 ### Call stacks over the depth limit (0)

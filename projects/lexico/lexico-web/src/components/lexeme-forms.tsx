@@ -7,7 +7,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@codebase/components-web";
+} from "@codebase/components";
 
 import { AdjectiveForms } from "./adjective-forms";
 import { NounForms } from "./noun-forms";
