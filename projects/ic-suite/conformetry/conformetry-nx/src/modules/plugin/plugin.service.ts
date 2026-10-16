@@ -41,6 +41,7 @@ import type {
   RunValidationResult,
 } from "./plugin.types";
 import type { TemplateDefinition } from "@conformetry/configuration";
+import type { GeneratorDefinition } from "@conformetry/generation";
 
 /**
  * The plugin's whole surface: infer targets, generate, validate.
@@ -178,6 +179,57 @@ export class PluginService {
     );
 
     return parsed;
+  }
+
+  /**
+   * Finds one configured generator and shapes it the way the runtime takes it.
+   *
+   * The configuration path is resolved once, the way the command line does
+   * it, so the file the definition is loaded from and the directory its hooks
+   * are anchored to are the same file whichever directory `nx g` ran from.
+   */
+  private async resolveGeneratorDefinition(args: {
+    configurationPath: string;
+    generatorName: string;
+    workspaceRoot: string;
+  }): Promise<{
+    configurationDirectoryPath: string;
+    definition: GeneratorDefinition;
+  }> {
+    const configurationPath =
+      await this.configurationService.resolveConfigurationPath(
+        args.configurationPath,
+      );
+    const configuration =
+      await this.configurationService.loadConformetryConfiguration(
+        configurationPath,
+      );
+    const definition = configuration.find((generator) => {
+      return generator.name === args.generatorName;
+    });
+
+    if (definition === undefined) {
+      this.logger.error("🚫 Rejected an unknown generator", undefined, {
+        generator: args.generatorName,
+      });
+      throw new Error(
+        `Unknown conformetry generator: ${args.generatorName}. Configured generators: ${configuration.map((generator) => generator.name).join(", ")}.`,
+      );
+    }
+
+    return {
+      configurationDirectoryPath: path.dirname(configurationPath),
+      definition: {
+        // Forwarded only when declared, as the command line does, so a
+        // generator with none reaches the runtime unchanged.
+        ...(definition.hooks === undefined ? {} : { hooks: definition.hooks }),
+        name: definition.name,
+        templateDirectoryPath: path.resolve(
+          args.workspaceRoot,
+          definition.templatePath,
+        ),
+      },
+    };
   }
 
   /**
@@ -344,6 +396,8 @@ export class PluginService {
    *
    * Nothing is written to disk here — the tree records the writes and Nx
    * decides whether to flush them, which is what makes `--dry-run` honest.
+   * The configured hooks are handed the same tree-backed adapter, so a write
+   * through `context.filesystem` is previewed and flushed like any other.
    */
   public async runGenerator(args: RunGeneratorArguments): Promise<string[]> {
     const pluginOptions = this.resolveOptions({
@@ -355,39 +409,20 @@ export class PluginService {
       workspaceRoot: args.workspaceRoot,
     });
 
-    const configuration =
-      await this.configurationService.loadConformetryConfiguration(
-        pluginOptions.configurationPath,
-      );
-    const definition = configuration.find((generator) => {
-      return generator.name === args.generatorName;
-    });
-
-    if (definition === undefined) {
-      this.logger.error("🚫 Rejected an unknown generator", undefined, {
-        generator: args.generatorName,
+    const { configurationDirectoryPath, definition } =
+      await this.resolveGeneratorDefinition({
+        configurationPath: pluginOptions.configurationPath,
+        generatorName: args.generatorName,
+        workspaceRoot: args.workspaceRoot,
       });
-      throw new Error(
-        `Unknown conformetry generator: ${args.generatorName}. Configured generators: ${configuration.map((generator) => generator.name).join(", ")}.`,
-      );
-    }
-
     const adapters = this.adapterService.createAdapters({
       tree: args.tree,
       workspaceRoot: args.workspaceRoot,
     });
     const inputs = this.optionsService.resolveGeneratorInputs(args.options);
     const { generatedFilePaths } = await this.generationService.runGenerator({
-      configurationDirectoryPath: path.dirname(
-        path.resolve(args.workspaceRoot, pluginOptions.configurationPath),
-      ),
-      definition: {
-        name: definition.name,
-        templateDirectoryPath: path.resolve(
-          args.workspaceRoot,
-          definition.templatePath,
-        ),
-      },
+      configurationDirectoryPath,
+      definition,
       filesystem: adapters.filesystem,
       formatter: adapters.formatter,
       inputs,
