@@ -63,6 +63,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 | `deployments`     | GitHub Actions workflows and CI/CD pipeline configuration                                                                                 |
 | `documentation`   | Markdown docs, skills, planning files, and AGENTS.md files                                                                                |
 | `infrastructure`  | Helm charts, Terraform configs, and Kubernetes resources                                                                                  |
+| `installation`    | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software)         |
 | `JimmyPaolini`    | Static GitHub profile README project (markdown and assets)                                                                                |
 | `lexico`          | TanStack Start SSR Latin dictionary web app with Supabase backend                                                                         |
 | `components-web`  | Shared React/shadcn component library                                                                                                     |
