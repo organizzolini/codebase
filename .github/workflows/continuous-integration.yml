@@ -169,7 +169,7 @@ jobs:
           matrix.check.target == 'secure-code'
         env:
           NX_VERBOSE_LOGGING: ${{ inputs.verbose || false }}
-        run: pnpm exec nx run codebase:secure-code-ci
+        run: pnpm exec nx run configuration:secure-code-ci
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
