@@ -12,6 +12,8 @@ import { ReporterService } from "../reporter/reporter.service";
 import {
   COMPLETION_COMMANDS,
   GPG_TTY_BLOCK,
+  LEGACY_PROCESSES_MARKER,
+  LEGACY_PROCESSES_SCRIPT,
   MARKERS,
   NODE_OPTIONS_BLOCK,
   PNPM_BLOCK,
@@ -95,8 +97,6 @@ export class ShellConfigurationService {
 
   /** Configures one startup file. */
   private configureStartupFile(file: string): void {
-    const codebaseDirectory = process.cwd();
-
     this.reporter.print(`🐚 Configuring shell in ${file}...`);
 
     this.appendBlock(
@@ -109,11 +109,7 @@ export class ShellConfigurationService {
     this.appendBlock(file, MARKERS.nodeOptions, NODE_OPTIONS_BLOCK);
     this.appendCompletions(file);
     this.appendTerraformCompletion(file);
-    this.appendBlock(
-      file,
-      MARKERS.utilities,
-      `[ -f "${codebaseDirectory}/scripts/shell/processes.sh" ] && . "${codebaseDirectory}/scripts/shell/processes.sh"`,
-    );
+    this.removeProcessesBlock(file);
 
     this.reporter.print(`✅ Shell configuration updated in ${file}`);
   }
@@ -144,6 +140,23 @@ export class ShellConfigurationService {
   /** Reads a startup file, or an empty string when there is none yet. */
   private readStartupFile(file: string): string {
     return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
+  }
+
+  /**
+   * Removes the block an earlier run wrote to source `scripts/shell/processes.sh`,
+   * which no longer exists. The block was a marker line and one sourcing line;
+   * a marker followed by anything else was not written by this command.
+   */
+  private removeProcessesBlock(file: string): void {
+    const lines = this.readStartupFile(file).split("\n");
+    const start = lines.indexOf(LEGACY_PROCESSES_MARKER);
+
+    if (start === -1 || !lines[start + 1]?.includes(LEGACY_PROCESSES_SCRIPT)) {
+      return;
+    }
+
+    lines.splice(start, 2);
+    fs.writeFileSync(file, lines.join("\n"));
   }
 
   // 🌎 Public Methods

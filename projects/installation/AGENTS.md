@@ -4,19 +4,19 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. A behavior-preserving port of what `scripts/local/` used to do in shell.
+**Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. A behavior-preserving port of what the `scripts/local/` shell used to do.
 
 ### Run Locally
 
 ```bash
-bash scripts/local/setup.sh                      # A fresh machine: the stub installs Node, then calls `setup`
+bash scripts/installation.sh                     # A fresh machine: the script installs Node, then calls `setup`
 nx run installation:start:setup                  # Everything this project does, in order
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 ```
 
 ## What belongs here, and what deliberately does not
 
-The commands run on Node, so whatever installs Node cannot be one of them. These stay in `scripts/local/` as the bootstrap stub: `setup.sh` itself, `software/brew.sh`, and `software/node.sh` (nvm, Node, pnpm, nx, Husky's init file), plus `scripts/utilities.sh`. The stub runs `pnpm install` before calling `setup`, because the commands are written in the packages it installs; the `dependencies` command then runs it again, which is a no-op.
+The commands run on Node, so whatever installs Node cannot be one of them. These stay in one shell file, `scripts/installation.sh` (Homebrew check, nvm, Node, pnpm, nx, Husky's init file), which sources `scripts/utilities.sh`. The script runs `pnpm install` before calling `setup`, because the commands are written in the packages it installs; the `dependencies` command then runs it again, which is a no-op.
 
 Every command spawns processes only through `ProcessRunnerService` and prints only through `ReporterService`, so a test replaces the whole machine with `testing/fake-process-runner.ts` and runs against a real temporary workspace from `testing/temporary-workspace.ts`. That workspace lives under `node_modules`, never the operating system's temporary directory: a child spawned from there cannot resolve this project's loader on Linux.
 
@@ -28,7 +28,7 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `environment-files`   | `modules/environment-files`               |
 | `dependencies`        | `modules/dependencies`                    |
 
-From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `setup.sh` runs the command with plain `node`, so the reset happens there.
+From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
 
 `setup` configures the shell before it installs software, as the script always did, so completions for tools installed in the same run are wired the next time it runs.
 
