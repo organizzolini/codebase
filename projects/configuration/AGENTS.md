@@ -40,6 +40,16 @@ walk for the main configuration. This repository names
 `projects/configuration/<tool>.config.ts` in `nx.json` and in the targets here,
 and each project's codometer target names its own `codometer.config.ts`.
 
+## Pass every config and ignore file explicitly
+
+No target relies on a tool finding a file by walking up the directory tree.
+Each command names its config (`--config`, `-c`, `--rcfile`, `--ignore-path`,
+`--ignorefile`, `--gitleaks-ignore-path`), and the editor settings in
+`.vscode/settings.json` name the same files. Two files whose tools would
+otherwise discover them by name have different names for that reason:
+`markdownlint-cli2.config.jsonc` and `.shellcheck.rc`. Give a new tool's file a
+name its tool does not auto-discover, and pass the path.
+
 ## What stays at the repository root
 
 Only files a tool insists on finding there: `nx.json`, `package.json`,
