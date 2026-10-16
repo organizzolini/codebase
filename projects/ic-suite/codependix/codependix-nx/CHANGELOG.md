@@ -1,3 +1,10 @@
+## 0.0.16 (2026-10-16)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.31
+- Updated codependix-cli to 0.0.31
+
 ## 0.0.15 (2026-10-15)
 
 ### 💅 Refactors

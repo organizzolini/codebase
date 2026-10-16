@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.1](https://github.com/organizzolini/codebase/compare/v3.9.0...v3.9.1) (2026-10-16)
+
+### 🐛 Bug Fixes
+
+* **codependix:** 🐛 load a project's module files one at a time ([#1668](https://github.com/organizzolini/codebase/issues/1668)) ([00b141b](https://github.com/organizzolini/codebase/commit/00b141bbe9e20e600a19fcc20fe4d7952434bdf1))
+
 ## [3.9.0](https://github.com/organizzolini/codebase/compare/v3.8.3...v3.9.0) (2026-10-16)
 
 ### ✨ Features

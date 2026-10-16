@@ -1,3 +1,9 @@
+## 0.0.29 (2026-10-16)
+
+### 🩹 Fixes
+
+- **codependix:** 🐛 load a project's module files one at a time ([#1668](https://github.com/organizzolini/codebase/pull/1668))
+
 ## 0.0.28 (2026-10-15)
 
 This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
