@@ -357,10 +357,15 @@ describe("the examples this package ships", () => {
   });
 
   describe("the hooks example", () => {
-    // Inside this package rather than the OS temporary directory: the loader
-    // hook that transforms the configuration cannot resolve modules from
+    // Inside the workspace's ignored temporary directory, not the system's: the
+    // loader hook that transforms the configuration cannot resolve modules from
     // outside the workspace, which passes on macOS and fails on Linux runners.
-    const runDirectory = path.join(examplesDirectory, "hooks", "output");
+    const runDirectory = path.join(
+      workspaceRoot,
+      "tmp",
+      "conformetry-examples",
+      "hooks-test",
+    );
 
     afterEach(() => {
       fs.rmSync(runDirectory, { force: true, recursive: true });
