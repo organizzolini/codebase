@@ -11,6 +11,12 @@ vi.mock("@nestjs/core", () => ({
   repl,
 }));
 
+// The real root module imports every command's module graph, which costs
+// seconds to load on CI; the bootstrap only hands it to `repl`.
+const mainModule = { name: "MainModule" };
+
+vi.mock("./publication.module", () => ({ MainModule: mainModule }));
+
 describe("repl bootstrap", () => {
   beforeEach(() => {
     repl.mockClear();
@@ -22,6 +28,6 @@ describe("repl bootstrap", () => {
 
     await import("./publication.repl");
 
-    expect(repl).toHaveBeenCalledTimes(1);
+    expect(repl).toHaveBeenCalledExactlyOnceWith(mainModule);
   });
 });

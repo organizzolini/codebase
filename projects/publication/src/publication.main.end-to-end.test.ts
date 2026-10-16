@@ -1,36 +1,38 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { environmentSchema } from "./publication.constants";
 
 /** The workspace root, which the spawned command runs from, as the Nx targets do. */
 const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../..");
 
-/** Runs the real command line, with the Nx revision variables left out. */
-const runCommand = (
-  name: string,
-): { output: string; status: null | number } => {
+/**
+ * How long the one real boot may take. CI run 38950100262 took 20.6s for the
+ * first boot of this command line and 12.5s for a second, swc-node
+ * transforming the whole module graph cold each time; three times the slower
+ * one leaves headroom on a busy runner.
+ */
+const BOOT_TIMEOUT_MILLISECONDS = 60_000;
+
+/** The commands the container must register, each named in the help. */
+const COMMAND_NAMES = ["publishable-packages-gate", "run-affected"];
+
+/** Runs the real command line once, asking only for its help. */
+const runHelp = (): { output: string; status: null | number } => {
   const result = spawnSync(
     process.execPath,
     [
       "--import",
       "@swc-node/register/esm-register",
       "projects/publication/src/publication.main.ts",
-      name,
+      "--help",
     ],
     {
       cwd: WORKSPACE_ROOT,
       encoding: "utf8",
-      env: {
-        ...process.env,
-        FORCE_COLOR: "0",
-        NODE_OPTIONS: "",
-        NX_BASE: "",
-        NX_HEAD: "",
-        TARGET: "",
-      },
+      env: { ...process.env, FORCE_COLOR: "0", NODE_OPTIONS: "" },
     },
   );
 
@@ -46,25 +48,26 @@ describe("main end-to-end suite", () => {
   });
 
   // A dependency-injection gap fails only when the real container boots,
-  // which neither the unit tests nor the lint gate do. Each command is run
-  // far enough to reach its own first check.
+  // which neither the unit tests nor the lint gate do. `--help` boots the
+  // whole container, every command's providers included, before commander
+  // prints anything, so one spawn checks them all: each extra spawn would
+  // pay the whole cold transform again.
   describe("command boot e2e", () => {
-    it("boots run-affected and reaches its input check", () => {
+    let boot: { output: string; status: null | number };
+
+    beforeAll(() => {
+      boot = runHelp();
+    }, BOOT_TIMEOUT_MILLISECONDS);
+
+    it("boots the container without an error", () => {
       expect.hasAssertions();
-
-      const { output, status } = runCommand("run-affected");
-
-      expect(output).toContain("TARGET is unset");
-      expect(status).toBe(1);
+      expect(boot.status).toBe(0);
+      expect(boot.output).not.toContain("Nest can't resolve");
     });
 
-    it("boots publishable-packages-gate and reaches its input check", () => {
+    it.each(COMMAND_NAMES)("registers %s", (name) => {
       expect.hasAssertions();
-
-      const { output, status } = runCommand("publishable-packages-gate");
-
-      expect(output).toContain("NX_BASE and NX_HEAD are unset");
-      expect(status).toBe(1);
+      expect(boot.output).toContain(name);
     });
   });
 });
