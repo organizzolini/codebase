@@ -322,10 +322,12 @@ Nx decides a cache hit only from its task-result database,
 machine, and every hosted runner is a fresh VM, so a restored database goes
 unread unless it is adopted under the current machine's id.
 
-The `setup-codebase` action verifies and adopts the restored database before
-`pnpm install`, so those two steps are still shell. A NestJS command cannot run
-before the install, and moving them after it is gated on a measurement of the
-cache-hit counts.
+The `setup-codebase` action restores the cache, imports the pull request's in a
+merge group, then verifies and adopts the database, all before `pnpm install`,
+so those steps are still shell: a NestJS command cannot run before the install.
+Moving verify and adopt after it was measured without the import, never in a
+merge group, so it waits on a new measurement. `merge-task-cache.sh` sources
+`task-database.sh`, which stays with them.
 
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
