@@ -28,7 +28,8 @@ const result = await generationService.runGenerator({
 ```
 
 The lifecycle is `preGenerate` → render → `postGenerate` → format, and the
-returned file paths are sorted.
+rendered file paths are sorted. A path a hook pushes onto the list is appended
+after the sort.
 
 ## Hooks
 
@@ -41,13 +42,16 @@ A generator may declare two functions that run around generation. The
 | `postGenerate` | After the template is rendered, before formatting | Every rendered path, sorted   |
 
 Each hook receives one `GeneratorHookContext`, may be sync or async, and is
-awaited. Hooks are plain functions, so a configuration that declares them must
-be TypeScript: JSON cannot carry a function. Import the types from
+awaited. Hooks are plain functions, so a configuration cannot declare them in
+JSON, which cannot carry a function; any JavaScript or TypeScript configuration
+can. Import the types from
 `@conformetry/configuration`, which re-exports `GeneratorHook`,
 `GeneratorHookContext`, and `GeneratorHooks` from `@conformetry/core`; a
 configuration needs no other dependency to type its hooks.
 
 ```ts
+import path from "node:path";
+
 import type {
   ConformetryConfiguration,
   GeneratorHookContext,
@@ -192,9 +196,9 @@ the reason above.
 
 ## Exports
 
-`GenerationService`, `RenderingService`, their modules, and the
-`FileSystemAdapter`, `FormatterAdapter`, `GeneratorDefinition`, and
-`Substitutions` types. The hook types live in `@conformetry/core`.
+`GenerationService`, `GenerationModule`, and the `DirectoryEntry`,
+`FileSystemAdapter`, `FormatterAdapter`, and `GeneratorDefinition` types. The
+hook types are re-exported for configurations from `@conformetry/configuration`.
 
 ## Test
 

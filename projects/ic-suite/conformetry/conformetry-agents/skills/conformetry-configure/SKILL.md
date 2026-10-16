@@ -112,28 +112,28 @@ render. `name` is deliberately _not_ reserved.
 
 A generator may declare `hooks` with `preGenerate` and `postGenerate`: plain
 functions the host runs around generation. Use one to refuse bad input before
-anything is written, or to produce a file the template cannot, such as an entry
-in an index.
+anything is written, or to edit a file the template cannot own, such as an index or a helm values
+file.
 
 - **`preGenerate`** runs before anything is written, with an empty
   `generatedFilePaths`. Throw to refuse the run.
 - **`postGenerate`** runs after the template is rendered and before formatting,
   with the sorted `generatedFilePaths`.
 
-A configuration that declares hooks must be TypeScript, because JSON cannot
-hold a function. Type them with `GeneratorHookContext` from
+A configuration cannot declare hooks in JSON, because JSON cannot hold a
+function; any JavaScript or TypeScript configuration can. Type them with `GeneratorHookContext` from
 `@conformetry/configuration`. Three rules keep a hook correct under both hosts:
 
 - **Write through `context.filesystem`, never `node:fs`.** Under Nx the adapter
   writes to the virtual tree, so `--dry-run` and a failed run stay clean.
-- **Pass it absolute paths inside the workspace**, built from
+- **Give `context.filesystem` absolute paths inside the workspace**, built from
   `context.configurationDirectoryPath`. A path outside is re-rooted inside the
   workspace under Nx.
 - **Push a path you wrote onto `context.generatedFilePaths`** so the host
   formats and reports it.
 
 On the command line a throwing `postGenerate` leaves the rendered files on
-disk. The generation README holds the full context table and the error
+disk. [The generation README](https://github.com/Organizzolini/codebase/blob/main/projects/ic-suite/conformetry/conformetry-generation/README.md#hooks) holds the full context table and the error
 behavior per host, and the `hooks` example runs both hooks.
 
 ## Writing a template
