@@ -52,30 +52,36 @@ jobs:
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
-          # Guard and Test run cold whenever a change reaches the shared
-          # configuration project, and cold they sit at the 12-minute limit:
-          # Test took 11m53s on a push to `main` that passed by seven seconds,
-          # and merge groups and a pull request run were cancelled at the
-          # limit, with every finished task passing. Warm they take about
-          # three. 20 minutes covers a cold run with the setup and cleanup
-          # around it.
+          # Guard runs cold whenever a change reaches the shared configuration
+          # project, and cold it sits near the 12-minute limit: a cold run took
+          # 10m29s, and runs were cancelled at the limit with every finished
+          # task passing. Warm it takes about two. 20 minutes covers a cold
+          # run with the setup and cleanup around it.
           - target: guard-code
             name: Guard
             emoji: 💂
             timeout-minutes: 20
-          # Tests run in three legs that together cover every project once.
+          # Tests run in four legs that together cover every project once.
           # Meanderaw alone: uncached, it took over seven minutes beside every
           # other project's tests and waited for a free `--parallel` slot, so a
           # run that affects everything (an `nx.json` change) outlasted the
           # 12-minute limit; alone it takes about three. ic-suite's 37 packages
-          # were most of what remained. The third leg, everything else, keeps
-          # the `Test` name branch protection has always required. A leg whose
-          # projects are unaffected runs nothing.
+          # were most of what remained. Caelundas's command line is the last
+          # of these: it cannot start until its ephemeris download finishes,
+          # so beside the rest it ran last, alone, for another four minutes
+          # (cold, 4m12s of a 7m02s run), and at times ran past the limit.
+          # The fourth leg, everything else, keeps the `Test` name branch
+          # protection has always required. A leg whose projects are
+          # unaffected runs nothing.
           - target: test-code
             name: Test
             emoji: 🧑‍🔬
-            exclude: meanderaw-cli,projects/ic-suite/**
-            timeout-minutes: 20
+            exclude: caelundas-cli,meanderaw-cli,projects/ic-suite/**
+          - target: test-code
+            name: Test Caelundas
+            emoji: 🧑‍🔬
+            exclude: "*,!caelundas-cli"
+            shard: caelundas-cli
           - target: test-code
             name: Test Meanderaw
             emoji: 🧑‍🔬
