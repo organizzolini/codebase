@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.5](https://github.com/organizzolini/codebase/compare/v3.9.4...v3.9.5) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,installation,scripts:** ♻️ create the installation project from the local setup scripts ([#1564](https://github.com/organizzolini/codebase/issues/1564)) ([91df9a1](https://github.com/organizzolini/codebase/commit/91df9a1010b6fe78ecc2cd17eab9da57fd98ff3c)), closes [#1550](https://github.com/organizzolini/codebase/issues/1550) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1551](https://github.com/organizzolini/codebase/issues/1551) [#1552](https://github.com/organizzolini/codebase/issues/1552) [#1553](https://github.com/organizzolini/codebase/issues/1553) [#1554](https://github.com/organizzolini/codebase/issues/1554) [#1555](https://github.com/organizzolini/codebase/issues/1555) [#1556](https://github.com/organizzolini/codebase/issues/1556) [#1557](https://github.com/organizzolini/codebase/issues/1557)
+* **validation:** ♻️ move session branch and worktree checks into commands ([#1567](https://github.com/organizzolini/codebase/issues/1567)) ([9cab275](https://github.com/organizzolini/codebase/commit/9cab275d281769911850de07d11bc35aa77bb651)), closes [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1524](https://github.com/organizzolini/codebase/issues/1524) [#1525](https://github.com/organizzolini/codebase/issues/1525) [#1526](https://github.com/organizzolini/codebase/issues/1526) [#1527](https://github.com/organizzolini/codebase/issues/1527) [#1528](https://github.com/organizzolini/codebase/issues/1528) [#1529](https://github.com/organizzolini/codebase/issues/1529) [#1563](https://github.com/organizzolini/codebase/issues/1563)
+
 ## [3.9.4](https://github.com/organizzolini/codebase/compare/v3.9.3...v3.9.4) (2026-10-16)
 
 ### 📝 Documentation
