@@ -73,8 +73,8 @@ describe("export --dry-run", () => {
 
       expect(result.exitCode).toBe(0);
       expect(output).toContain('database "fixture_development" on 127.0.0.1');
-      expect(output).toContain("fixture.widgets: would export data");
-      expect(output).toContain(`${file} would be created`);
+      expect(output).toContain("Planning to export data of fixture.widgets");
+      expect(output).toContain(`Planning to create ${file}`);
       expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
       expect(fs.readFileSync(runs, "utf8")).toBe("--version\n");
       expect(fs.readdirSync(directory).toSorted()).toStrictEqual([
@@ -94,7 +94,7 @@ describe("export --dry-run", () => {
       const result = await runDryRun("--ddl", "--overwrite");
 
       expect(result.exitCode).toBe(0);
-      expect(result.logs.join("\n")).toContain(`${file} would be overwritten`);
+      expect(result.logs.join("\n")).toContain(`Planning to overwrite ${file}`);
       expect(fs.readFileSync(file, "utf8")).toBe("an earlier dump");
       expect(fs.statSync(file).mtimeMs).toBe(before);
       expect(fs.readdirSync(directory).toSorted()).toStrictEqual([

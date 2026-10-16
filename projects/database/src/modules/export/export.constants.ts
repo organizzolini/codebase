@@ -60,7 +60,8 @@ export class ExportTableError extends Error {
  * What `export --dry-run` prints, one line each: where it would export
  * from and to, what it would export of each selected table, in the plan's
  * order, and whether `file` (`exists`) would be created or overwritten.
- * Never carries the password.
+ * Never carries the password. Each line is a whole log message, so each
+ * opens with an emoji and a verb, as `LoggerService` requires.
  */
 export const dryRunMessages = (
   {
@@ -71,9 +72,10 @@ export const dryRunMessages = (
   }: Pick<ExportPlan, "connection" | "content" | "file" | "tables">,
   exists: boolean,
 ): string[] => [
-  `🔍 Dry run: would export ${describePostgresContent(content)} from database "${database}" on ${host} to ${file}; nothing was connected to or changed`,
+  `🔍 Planning export of ${describePostgresContent(content)} from database "${database}" on ${host} to ${file}; nothing was connected to or changed`,
   ...tables.map(
-    (table) => `  ${table}: would export ${describePostgresContent(content)}`,
+    (table) =>
+      `🔍 Planning to export ${describePostgresContent(content)} of ${table}`,
   ),
-  `  ${file} would be ${exists ? "overwritten" : "created"}`,
+  `🔍 Planning to ${exists ? "overwrite" : "create"} ${file}`,
 ];

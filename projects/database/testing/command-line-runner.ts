@@ -41,14 +41,11 @@ interface RunCliCommandLineOptions {
   readonly module?: DynamicModule | Type<unknown>;
 }
 
-const LOGGER_LEVELS = [
-  "debug",
-  "error",
-  "info",
-  "log",
-  "verbose",
-  "warn",
-] as const;
+/**
+ * The `LoggerService` levels that write a line. `log` is not among them: it
+ * hands its message to `info`, which records it.
+ */
+const LOGGER_LEVELS = ["debug", "error", "info", "verbose", "warn"] as const;
 
 /**
  * Runs `argv` through the real nest-commander runner and module graph, as
@@ -57,6 +54,9 @@ const LOGGER_LEVELS = [
  *
  * Standard output, standard error, and the application's `LoggerService` are
  * captured for the run and restored after, so nothing reaches the console.
+ * Every message still passes through the real `LoggerService`, whose logging
+ * convention fails the run as it fails `database.main.ts`; the vitest
+ * configuration's `LOG_LEVEL=silent` keeps the lines themselves quiet.
  * Output a spawned process writes to its own descriptors is not captured:
  * the command must surface it through its logger or its error.
  */
@@ -65,18 +65,16 @@ export async function runCliCommandLine({
   env = {},
   module = MainModule,
 }: RunCliCommandLineOptions): Promise<CommandLineResult> {
-  const logs: string[] = [];
+  let logs: readonly string[];
   const stdout: string[] = [];
   const stderr: string[] = [];
   const restoreEnvironment = replaceEnvironment(env);
+  const loggerSpies = LOGGER_LEVELS.map((level) => ({
+    level,
+    spy: vi.spyOn(LoggerService.prototype, level),
+  }));
   const spies = [
-    ...LOGGER_LEVELS.map((level) =>
-      vi
-        .spyOn(LoggerService.prototype, level)
-        .mockImplementation((message: unknown) => {
-          logs.push(`${level}: ${String(message)}`);
-        }),
-    ),
+    ...loggerSpies.map(({ spy }) => spy),
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
       stdout.push(String(chunk));
       return true;
@@ -117,6 +115,7 @@ export async function runCliCommandLine({
     exitCode = exitCodeOf(error);
     stderr.push(`${error instanceof Error ? error.message : String(error)}\n`);
   } finally {
+    logs = loggedLines(loggerSpies);
     for (const spy of spies) spy.mockRestore();
     restoreEnvironment();
   }
@@ -139,6 +138,27 @@ function exitCodeOf(error: unknown): number {
     return error.exitCode;
   }
   return 1;
+}
+
+/**
+ * Every line the `LoggerService` levels spied on were asked to write, as
+ * `level: message`, in the order the run wrote them.
+ */
+function loggedLines(
+  loggerSpies: readonly {
+    level: (typeof LOGGER_LEVELS)[number];
+    spy: { mock: { calls: unknown[][]; invocationCallOrder: number[] } };
+  }[],
+): string[] {
+  return loggerSpies
+    .flatMap(({ level, spy }) =>
+      spy.mock.calls.map((call, index) => ({
+        line: `${level}: ${String(call[0])}`,
+        order: spy.mock.invocationCallOrder[index] ?? 0,
+      })),
+    )
+    .toSorted((left, right) => left.order - right.order)
+    .map(({ line }) => line);
 }
 
 /**

@@ -116,7 +116,8 @@ export const truncatedMessage = (
  * to, what the dump holds of each selected table (`held`, keyed by the
  * qualified name, in the plan's order), and what `--clean` would drop and
  * recreate (with `--ddl`) or truncate (with `--data` alone). Never
- * carries the password.
+ * carries the password. Each line is a whole log message, so each opens
+ * with an emoji and a verb, as `LoggerService` requires.
  */
 export const dryRunMessages = (
   {
@@ -128,14 +129,14 @@ export const dryRunMessages = (
   }: Pick<ImportPlan, "clean" | "connection" | "content" | "file" | "tables">,
   held: ReadonlyMap<string, PostgresContent>,
 ): string[] => [
-  `🔍 Dry run: would import ${describePostgresContent(content)} from ${file} into database "${database}" on ${host}; nothing was connected to or changed`,
+  `🔍 Planning import of ${describePostgresContent(content)} from ${file} into database "${database}" on ${host}; nothing was connected to or changed`,
   ...[...held].map(
     ([table, holds]) =>
-      `  ${table}: the dump holds ${describePostgresContent(holds)}`,
+      `🔍 Found ${describePostgresContent(holds)} of ${table} in the dump`,
   ),
   ...(clean
     ? [
-        `  --clean ${content.ddl ? "with --ddl would drop and recreate" : "with --data would truncate"} ${tables.join(", ")}, deleting every row ${tables.length === 1 ? "it holds" : "they hold"}, then restore ${content.ddl ? "them from the dump" : "the dump's rows"}`,
+        `🔍 Planning to ${content.ddl ? "drop and recreate" : "truncate"} ${tables.join(", ")} for --clean with ${content.ddl ? "--ddl" : "--data"}, deleting every row ${tables.length === 1 ? "it holds" : "they hold"}, then restore ${content.ddl ? "them from the dump" : "the dump's rows"}`,
       ]
     : []),
 ];
