@@ -11,22 +11,36 @@ second to write a receipt beside the configuration.
 pnpm exec nx run conformetry-examples:hooks
 ```
 
+Among what it prints, three lines are checked by the examples' integration test
+(the path before `hooks/mars/mars.txt` is elided, as it depends on where the
+run's output directory is):
+
 ```text
 Receipt written: <this folder>/receipts/mars.log
-  tmp/conformetry-examples/hooks/mars/mars.txt
-  <this folder>/receipts/mars.log
+…hooks/mars/mars.txt
+<this folder>/receipts/mars.log
 ```
 
-The receipt is not part of the template: the `postGenerate` hook wrote it,
-through the same filesystem adapter the run uses, at a path built from the
-directory that holds the configuration. It then added the path to the list of
-generated files, which is why the command lists it and the formatter covers it.
-`receipts/` is git-ignored, so delete it whenever you like.
+The first line is the `postGenerate` hook announcing itself. The other two are
+the run's own list of generated files: the rendered `mars.txt`, and the receipt,
+which is on the list because the hook pushed it there.
+
+The test also reads both files back. `mars.txt` holds `Receipt for mars.` and the
+receipt names `mars.txt`. The receipt is not part of the template: the hook wrote
+it through the same filesystem adapter the run uses, at a path built from the
+directory that holds the configuration. It never lands beside the rendered
+output. `receipts/` is git-ignored, so delete it whenever you like.
 
 Now give it a name the `preGenerate` hook refuses:
 
 ```bash
 pnpm exec nx run conformetry-cli:start -- generate --template receipt --name "Not Kebab" --directory tmp/conformetry-examples/hooks-refused --config projects/ic-suite/conformetry/conformetry-examples/examples/hooks/conformetry.config.ts
+```
+
+The output names the refusal, and the test asserts that it begins:
+
+```text
+Refused "Not Kebab"
 ```
 
 The run exits non-zero and `tmp/conformetry-examples/hooks-refused` does not
@@ -53,7 +67,10 @@ Three facts do all the work:
   directory, the filesystem adapter the run uses, the directory that holds the
   configuration, and, in `postGenerate`, the files rendered so far.
 - **A hook that throws fails the run.** A throwing `preGenerate` leaves nothing
-  written; a throwing `postGenerate` leaves what the render already wrote.
+  written, as the refused run above shows. What a throwing `postGenerate` leaves
+  behind depends on the host; the
+  [generation README](../../../conformetry-generation/README.md#when-a-hook-throws)
+  has the table.
 - **Unknown keys under `hooks` are refused.** `afterGenerate` is not a hook, and
   the configuration is rejected rather than the key being ignored.
 
