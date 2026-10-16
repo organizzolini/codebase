@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.7](https://github.com/organizzolini/codebase/compare/v3.9.6...v3.9.7) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **publication:** ♻️ move the release steps into publication commands ([#1569](https://github.com/organizzolini/codebase/issues/1569)) ([de0da35](https://github.com/organizzolini/codebase/commit/de0da3510d5cf443f086eaa970607ec254595e7e)), closes [#1537](https://github.com/organizzolini/codebase/issues/1537) [#1511](https://github.com/organizzolini/codebase/issues/1511) [#1538](https://github.com/organizzolini/codebase/issues/1538) [#1539](https://github.com/organizzolini/codebase/issues/1539) [#1540](https://github.com/organizzolini/codebase/issues/1540) [#1541](https://github.com/organizzolini/codebase/issues/1541) [#1542](https://github.com/organizzolini/codebase/issues/1542) [#1562](https://github.com/organizzolini/codebase/issues/1562)
+
 ## [3.9.6](https://github.com/organizzolini/codebase/compare/v3.9.5...v3.9.6) (2026-10-16)
 
 ### ♻️ Code Refactoring
