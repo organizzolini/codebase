@@ -61,11 +61,17 @@ export class NestjsProjectService {
     const moduleFiles = this.findModuleFiles(
       path.join(project.absoluteRoot, "src"),
     );
-    const loadedClasses = await Promise.all(
-      moduleFiles.map(async (file) => this.loadModuleClasses(file)),
-    );
+    const loadedClasses: Type<unknown>[] = [];
 
-    return SyntheticRootModule.forModules(loadedClasses.flat());
+    // One file at a time: modules that share an import, as a container's
+    // modules usually do, must not race to evaluate it. A shared file
+    // evaluated twice yields two classes of one name, and the container then
+    // counts one more module than the project defines.
+    for (const file of moduleFiles) {
+      loadedClasses.push(...(await this.loadModuleClasses(file)));
+    }
+
+    return SyntheticRootModule.forModules(loadedClasses);
   }
 
   /**
