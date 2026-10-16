@@ -18,6 +18,17 @@ inputs:
       output. Required when `nx-cache` is "true"; saving is skipped, rather
       than failing the job, when it is empty — the same job asked
       `setup-codebase` to skip restoring, or restore itself never ran.
+  nx-cache-scope:
+    description: |
+      The `nx-cache-scope` of `setup-codebase`, which names the artifact. Needed
+      only when `nx-cache-artifact` is "true".
+    default: ""
+  nx-cache-artifact:
+    description: |
+      Upload the Nx task cache as a workflow artifact for the merge group to
+      import. Set it only on a pull request from this repository, whose head
+      commit names the artifact.
+    default: "false"
   eslint-cache:
     description: Save the ESLint cache
     default: "false"
@@ -51,6 +62,25 @@ runs:
     # step, but cheap insurance: GitHub re-evaluates `if` conditions per step
     # on a cancellation, and there is no cost to a step that always runs
     # asking again.
+    # The merge group's run cannot read the caches a pull request run saves,
+    # so it gets the same files by artifact instead; `import-pr-task-cache.sh`
+    # downloads them. Hidden files are included because `.nx` is one. Three
+    # days cover the wait in the queue.
+    - name: 📤 Share Nx Cache With The Merge Group
+      if: |
+        always() && inputs.nx-cache == 'true' && inputs.nx-cache-artifact ==
+        'true' && inputs.nx-cache-scope != ''
+      uses: actions/upload-artifact@v7
+      with:
+        name: nx-cache-${{ inputs.nx-cache-scope }}-${{ github.event.pull_request.head.sha }}
+        path: |
+          .nx/cache
+          .nx/workspace-data/*.db*
+        include-hidden-files: true
+        if-no-files-found: ignore
+        overwrite: true
+        retention-days: 3
+
     - name: ♻️ Save Nx Cache
       if: |
         always() && inputs.nx-cache == 'true' && inputs.nx-cache-primary-key

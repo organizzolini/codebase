@@ -19,6 +19,7 @@ on:
         default: false
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
   issues: write
@@ -208,13 +209,20 @@ jobs:
       # groups and pull requests see their own refs and `main`'s. Saving only
       # filled the repository's 10 GB quota (a third of it, measured) and
       # pushed out the entries `main` saves for everyone else, so a merge
-      # group still restores `main`'s caches but saves none of its own.
+      # group still restores `main`'s caches but saves none of its own. It imports
+      # the pull request's instead, from the artifact the pull request's run
+      # uploads here.
       - name: 🧹 Cleanup Codebase
         if: always() && steps.check-skip.outputs.skip != 'true'
         uses: ./.github/actions/cleanup-codebase
         with:
           nx-cache: ${{ github.event_name == 'merge_group' && 'false' || 'true' }}
           nx-cache-primary-key: ${{ steps.setup.outputs.nx-cache-primary-key }}
+          nx-cache-scope: ${{ steps.setup.outputs.nx-cache-scope }}
+          nx-cache-artifact: >-
+            ${{ github.event_name == 'pull_request' &&
+            github.event.pull_request.head.repo.full_name == github.repository
+            && 'true' || 'false' }}
           eslint-cache: >-
             ${{ matrix.check.target == 'lint-code' &&
             github.event_name != 'merge_group' && 'true' || 'false' }}

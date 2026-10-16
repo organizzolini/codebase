@@ -13,6 +13,12 @@ task_database_directory() {
   printf '%s' "${NX_WORKSPACE_DATA_DIRECTORY:-.nx/workspace-data}"
 }
 
+# Where Nx keeps the task outputs the database indexes, honouring the same
+# override Nx itself reads.
+task_cache_directory() {
+  printf '%s' "${NX_CACHE_DIRECTORY:-.nx/cache}"
+}
+
 # Prints every task database, one path per line, and nothing when there are
 # none.
 list_task_databases() {

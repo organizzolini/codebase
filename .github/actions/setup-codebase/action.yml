@@ -76,6 +76,12 @@ outputs:
       `nx-cache-primary-key` input so a save at the end of the job reuses the
       same key rather than recomputing it a second place.
     value: ${{ steps.nx-cache.outputs.cache-primary-key }}
+  nx-cache-scope:
+    description: |
+      The `nx-cache-scope` this job used. Pass it to `cleanup-codebase`'s own
+      `nx-cache-scope` input so the artifact it uploads is named the way a merge
+      group looks for it.
+    value: ${{ inputs.nx-cache-scope }}
 
 runs:
   using: composite
@@ -247,6 +253,19 @@ runs:
           nx-cache-${{ inputs.nx-cache-scope }}-${{ runner.os }}-${{ hashFiles(
           'pnpm-lock.yaml') }}-
           nx-cache-${{ inputs.nx-cache-scope }}-${{ runner.os }}-
+
+    # A merge group cannot read the pull request's caches, only `main`'s, so
+    # its tasks run a second time. The pull request's run uploads its cache as
+    # an artifact, which any run can read, and this merges it in before the
+    # steps below tidy the database. See `scripts/nx/import-pr-task-cache.sh`
+    # for why only a pull request from this repository is trusted.
+    - name: 📥 Import Pull Request Nx Cache
+      if: inputs.nx-cache == 'true' && github.event_name == 'merge_group'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        NX_CACHE_SCOPE: ${{ inputs.nx-cache-scope }}
+      run: bash scripts/nx/import-pr-task-cache.sh
 
     # Restored databases can be left structurally valid but page-corrupt by a
     # cancelled save. Nx fails hard on those, so discard them before the first
