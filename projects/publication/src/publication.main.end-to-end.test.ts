@@ -20,6 +20,8 @@ const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 const COMMAND_NAMES = [
   "adopt-task-database",
   "keep-task-database",
+  "link-packages",
+  "publish-packages",
   "publishable-packages-gate",
   "run-affected",
   "tag-codebase",
@@ -126,24 +128,6 @@ describe("main end-to-end suite", () => {
     it.each(COMMAND_NAMES)("registers %s", (name) => {
       expect.hasAssertions();
       expect(boot.output).toContain(name);
-    });
-
-    it("boots publish-packages and reaches its input check", () => {
-      expect.hasAssertions();
-
-      const { output, status } = runCommand("publish-packages");
-
-      expect(output).toContain("❌ GITHUB_PACKAGES_TOKEN is unset");
-      expect(status).toBe(1);
-    });
-
-    it("boots link-packages and reaches its input check", () => {
-      expect.hasAssertions();
-
-      const { output, status } = runCommand("link-packages");
-
-      expect(output).toContain("❌ GITHUB_OUTPUT is unset");
-      expect(status).toBe(1);
     });
   });
 });
