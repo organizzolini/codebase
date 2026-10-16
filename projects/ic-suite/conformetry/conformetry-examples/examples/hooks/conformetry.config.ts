@@ -26,7 +26,7 @@ const conformetryConfiguration: ConformetryConfiguration = [
         const receiptPath = path.join(
           context.configurationDirectoryPath,
           "receipts",
-          `${context.input["name"] ?? ""}.log`,
+          `${context.substitutions["nameKebabCase"] ?? ""}.log`,
         );
 
         await context.filesystem.writeFile(

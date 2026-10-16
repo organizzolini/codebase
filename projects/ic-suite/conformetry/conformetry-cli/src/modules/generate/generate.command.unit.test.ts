@@ -67,11 +67,8 @@ describe(GenerateCommand, () => {
   beforeEach(() => {
     process.exitCode = undefined;
     vi.mocked(configurationService.resolveConfigurationPath).mockImplementation(
-      async (configurationPath: string) => {
-        await Promise.resolve();
-
-        return `/workspace/${configurationPath}`;
-      },
+      async (configurationPath: string) =>
+        await Promise.resolve(`/workspace/${configurationPath}`),
     );
     vi.mocked(
       configurationService.loadConformetryConfiguration,

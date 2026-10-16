@@ -498,6 +498,7 @@ anything else:
 import { GenerationService } from "@conformetry/generation";
 
 const result = await generationService.runGenerator({
+  configurationDirectoryPath: "/workspace/configuration",
   definition: {
     name: "nestjs-service-module",
     templateDirectoryPath: "templates/nestjs-service-module",
