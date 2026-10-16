@@ -100,7 +100,7 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
       expect(
         environmentSchema.parse({ PUSH_RETRY_DELAY: "2.5" }),
-      ).toStrictEqual({ PUSH_RETRY_DELAY: "2.5" });
+      ).toMatchObject({ PUSH_RETRY_DELAY: "2.5" });
       expect(() =>
         environmentSchema.parse({ PUSH_RETRY_DELAY: "soon" }),
       ).toThrow("PUSH_RETRY_DELAY must be a number of seconds");

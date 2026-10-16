@@ -46,14 +46,14 @@
         "run-affected": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts run-affected"
         },
-        "verify-task-database": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts verify-task-database"
-        },
         "tag-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts tag-codebase"
         },
         "tag-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts tag-packages"
+        },
+        "verify-task-database": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts verify-task-database"
         },
         "version-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts version-packages"

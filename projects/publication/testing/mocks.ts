@@ -26,6 +26,15 @@ export interface RecordedCall {
 }
 
 /**
+ * How a scripted command line answers: one result every time, or one result
+ * per call in turn, the last repeating.
+ */
+export type ScriptedAnswer<Result> = readonly Result[] | Result;
+
+/** Something a scripted command line does to the disk when it is called. */
+export type ScriptedEffect = (args: readonly string[]) => void;
+
+/**
  * A task-database directory inside the workspace, for a test to fill.
  *
  * It sits under `.nx`, which is ignored, and never in the operating system's
@@ -49,15 +58,6 @@ export interface TaskDatabaseWorkspace {
   /** Writes a file beside the database directory, and returns its path. */
   writeBeside: (name: string, text: string) => string;
 }
-
-/**
- * How a scripted command line answers: one result every time, or one result
- * per call in turn, the last repeating.
- */
-export type ScriptedAnswer<Result> = readonly Result[] | Result;
-
-/** Something a scripted command line does to the disk when it is called. */
-export type ScriptedEffect = (args: readonly string[]) => void;
 
 /** Tells a sequence of answers from a single one. */
 const isSequence = <Result>(
