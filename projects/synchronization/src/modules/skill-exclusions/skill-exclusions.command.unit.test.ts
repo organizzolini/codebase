@@ -141,7 +141,7 @@ describe(SkillExclusionsCommand, () => {
       expect(SKILL_EXCLUSION_FILES.map((file) => file.filePath)).toStrictEqual([
         ".gitattributes",
         "projects/configuration/.codometerignore",
-        "projects/configuration/.markdownlint-cli2.jsonc",
+        "projects/configuration/markdownlint-cli2.config.jsonc",
         "projects/configuration/.prettierignore",
         "projects/configuration/cspell.config.yaml",
       ]);
@@ -157,13 +157,14 @@ describe(SkillExclusionsCommand, () => {
     // A `#` marker in JSONC is a syntax error, so the markers cannot be shared.
     it("delimits the JSONC file with // and every other file with #", () => {
       expect(
-        fileNamed("projects/configuration/.markdownlint-cli2.jsonc")
+        fileNamed("projects/configuration/markdownlint-cli2.config.jsonc")
           .commentPrefix,
       ).toBe("//");
       expect(
         SKILL_EXCLUSION_FILES.filter(
           (file) =>
-            file.filePath !== "projects/configuration/.markdownlint-cli2.jsonc",
+            file.filePath !==
+            "projects/configuration/markdownlint-cli2.config.jsonc",
         ).map((file) => file.commentPrefix),
       ).toStrictEqual(["#", "#", "#", "#"]);
     });
@@ -173,7 +174,7 @@ describe(SkillExclusionsCommand, () => {
     it("renders a markdownlint entry as an indented JSONC array element", () => {
       expect(
         fileNamed(
-          "projects/configuration/.markdownlint-cli2.jsonc",
+          "projects/configuration/markdownlint-cli2.config.jsonc",
         ).renderEntry("tdd"),
       ).toBe('    ".agents/skills/tdd/**",');
     });
@@ -267,7 +268,7 @@ describe(SkillExclusionsCommand, () => {
       setLockedSkills(["tdd"]);
       setSynchronizedFiles(["tdd"]);
       const jsonc = fileNamed(
-        "projects/configuration/.markdownlint-cli2.jsonc",
+        "projects/configuration/markdownlint-cli2.config.jsonc",
       );
 
       fileContents.set(
@@ -287,7 +288,7 @@ describe(SkillExclusionsCommand, () => {
       setLockedSkills(["ask-matt", "tdd"]);
       setSynchronizedFiles(["ask-matt", "tdd"]);
       const jsonc = fileNamed(
-        "projects/configuration/.markdownlint-cli2.jsonc",
+        "projects/configuration/markdownlint-cli2.config.jsonc",
       );
       const [startMarker, endMarker] = markers(jsonc);
 
@@ -394,7 +395,7 @@ describe(SkillExclusionsCommand, () => {
       setLockedSkills(["tdd"]);
       setSynchronizedFiles([]);
       const jsonc = fileNamed(
-        "projects/configuration/.markdownlint-cli2.jsonc",
+        "projects/configuration/markdownlint-cli2.config.jsonc",
       );
       const [startMarker, endMarker] = markers(jsonc);
 
