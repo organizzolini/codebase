@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -75,6 +75,10 @@ const EXPECTATIONS: Record<string, ExampleExpectation> = {
     present: ["All checked files conform.", "Could not infer {{owner}}"],
   },
   "hello-template": { exitCode: 0, present: ["All checked files conform."] },
+  hooks: {
+    exitCode: 0,
+    present: ["Receipt written:", "hooks/mars/mars.txt"],
+  },
   "language-validators": {
     exitCode: 0,
     present: ["All checked files conform."],
@@ -232,6 +236,38 @@ const readFileTree = (directory: string): Record<string, string> => {
   );
 };
 
+/** One run of the hooks example's generator against an output directory. */
+const runHooksExample = (
+  name: string,
+  outputDirectory: string,
+): { exitCode: number; output: string } => {
+  const result = spawnSync(
+    "node",
+    [
+      ...CONFORMETRY_COMMAND,
+      "generate",
+      "--template",
+      "receipt",
+      "--name",
+      name,
+      "--directory",
+      outputDirectory,
+      "--config",
+      "projects/ic-suite/conformetry/conformetry-examples/examples/hooks/conformetry.config.ts",
+    ],
+    {
+      cwd: workspaceRoot,
+      encoding: "utf8",
+      env: { ...process.env, ...COMMAND_ENVIRONMENT },
+    },
+  );
+
+  return {
+    exitCode: result.status ?? 1,
+    output: `${result.stdout}${result.stderr}`,
+  };
+};
+
 describe("the examples this package ships", () => {
   it("expects an outcome from every example directory", () => {
     expect(Object.keys(EXPECTATIONS).toSorted()).toStrictEqual(
@@ -318,5 +354,37 @@ describe("the examples this package ships", () => {
         fs.rmSync(outputDirectory, { force: true, recursive: true });
       },
     );
+  });
+
+  describe("the hooks example", () => {
+    // Inside this package rather than the OS temporary directory: the loader
+    // hook that transforms the configuration cannot resolve modules from
+    // outside the workspace, which passes on macOS and fails on Linux runners.
+    const runDirectory = path.join(examplesDirectory, "hooks", "output");
+
+    afterEach(() => {
+      fs.rmSync(runDirectory, { force: true, recursive: true });
+    });
+
+    it("leaves the file its postGenerate hook wrote beside the generated one", () => {
+      const { exitCode, output } = runHooksExample("mars", runDirectory);
+
+      expect(output).toContain("Receipt written:");
+      expect(exitCode).toBe(0);
+      expect(
+        fs.readFileSync(path.join(runDirectory, "mars", "mars.txt"), "utf8"),
+      ).toBe("Receipt for mars.\n");
+      expect(
+        fs.readFileSync(path.join(runDirectory, "mars", "receipt.log"), "utf8"),
+      ).toContain("mars.txt");
+    });
+
+    it("writes nothing when its preGenerate hook refuses the input", () => {
+      const { exitCode, output } = runHooksExample("Not Kebab", runDirectory);
+
+      expect(output).toContain('Refused "Not Kebab"');
+      expect(exitCode).not.toBe(0);
+      expect(fs.existsSync(runDirectory)).toBe(false);
+    });
   });
 });
