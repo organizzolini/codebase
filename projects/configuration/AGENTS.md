@@ -73,7 +73,7 @@ tool configs import it. Keep that: it is true, and `nx affected` uses it.
   target, and the `*-is-a-leaf` rules reach every project but it. A new rule
   must do the same, or every project's `codependix-gate` fails.
 - **Releases ignore it.** A change here would otherwise patch-bump every
-  package. `scripts/release/version-packages.sh` appends this folder to
+  package. the `publication` project's `version-packages` command appends this folder to
   `.nxignore` for the `nx release` command and restores the file on exit. Do not
   run `nx release` by hand without the same ignore, or it will version every
   package.

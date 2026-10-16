@@ -34,14 +34,29 @@
         "keep-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts keep-task-database"
         },
+        "link-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts link-packages"
+        },
+        "publish-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts publish-packages"
+        },
         "publishable-packages-gate": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts publishable-packages-gate"
         },
         "run-affected": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts run-affected"
         },
+        "tag-codebase": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts tag-codebase"
+        },
+        "tag-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts tag-packages"
+        },
         "verify-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts verify-task-database"
+        },
+        "version-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts version-packages"
         }
       },
       "description": "Run one publication command by name. Callers in CI set the variables each command reads, such as NX_BASE and NX_HEAD.",

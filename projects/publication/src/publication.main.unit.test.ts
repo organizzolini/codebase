@@ -1,8 +1,13 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
+import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
 import type { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
 import type { RunAffectedModule } from "./modules/run-affected/run-affected.module";
+import type { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
+import type { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
+import type { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
 import type { LoggerService } from "@codebase/logging";
 
 type CommandFactoryRun = (
@@ -19,6 +24,11 @@ const loggerServiceMock = createMock<LoggerService>();
 const publishablePackagesGateModuleMock =
   createMock<PublishablePackagesGateModule>();
 const runAffectedModuleMock = createMock<RunAffectedModule>();
+const tagCodebaseModuleMock = createMock<TagCodebaseModule>();
+const versionPackagesModuleMock = createMock<VersionPackagesModule>();
+const tagPackagesModuleMock = createMock<TagPackagesModule>();
+const publishPackagesModuleMock = createMock<PublishPackagesModule>();
+const linkPackagesModuleMock = createMock<LinkPackagesModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -67,6 +77,36 @@ vi.mock("./modules/adopt-task-database/adopt-task-database.module", () => ({
 
 vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
   KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
+}));
+
+vi.mock("./modules/tag-codebase/tag-codebase.module", () => ({
+  TagCodebaseModule: function TagCodebaseModule() {
+    return tagCodebaseModuleMock;
+  },
+}));
+
+vi.mock("./modules/link-packages/link-packages.module", () => ({
+  LinkPackagesModule: function LinkPackagesModule() {
+    return linkPackagesModuleMock;
+  },
+}));
+
+vi.mock("./modules/publish-packages/publish-packages.module", () => ({
+  PublishPackagesModule: function PublishPackagesModule() {
+    return publishPackagesModuleMock;
+  },
+}));
+
+vi.mock("./modules/tag-packages/tag-packages.module", () => ({
+  TagPackagesModule: function TagPackagesModule() {
+    return tagPackagesModuleMock;
+  },
+}));
+
+vi.mock("./modules/version-packages/version-packages.module", () => ({
+  VersionPackagesModule: function VersionPackagesModule() {
+    return versionPackagesModuleMock;
+  },
 }));
 
 describe("main bootstrap", () => {

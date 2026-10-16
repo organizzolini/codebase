@@ -236,7 +236,8 @@ jobs:
       # and leaves the remote carrying the release token. When `main` moves
       # during the run, this step or a later one sets `RELEASE_SUPERSEDED` and
       # every step after it skips, since the newer commit's run releases it all.
-      # `scripts/release/version-packages.sh` and `main-tip.sh` explain more.
+      # The `version-packages` command and `MainTipService` of the
+      # `publication` project explain more.
       #
       # It precedes the build, so npm gets a `dist` built from the manifest it
       # is published with, and the queued run on the release commit restores
@@ -248,7 +249,9 @@ jobs:
           matrix.target.id == 'push-releases'
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        run: bash scripts/release/version-packages.sh
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/publication/src/publication.main.ts version-packages
 
       - name: 👷 Build Projects
         if: >-
@@ -318,11 +321,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           GIT_COMMITTER_EMAIL: jimmypaolini@gmail.com
           GIT_COMMITTER_NAME: Jimmy Paolini
-        run: bash scripts/release/tag-codebase.sh
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/publication/src/publication.main.ts tag-codebase
 
       # Tags each newly versioned package on the release commit and pushes the
-      # tags. `scripts/release/tag-packages.sh` explains the commit it makes
-      # when there was no codebase release to carry the versions.
+      # tags. The `tag-packages` command of the `publication` project explains
+      # the commit it makes when there was no codebase release to carry the
+      # versions.
       - name: 🔖 Tag Packages
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -331,11 +337,13 @@ jobs:
         env:
           GIT_COMMITTER_EMAIL: jimmypaolini@gmail.com
           GIT_COMMITTER_NAME: Jimmy Paolini
-        run: bash scripts/release/tag-packages.sh
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/publication/src/publication.main.ts tag-packages
 
       # Publishes each released package to npm with provenance, and to GitHub
       # Packages under the owner's scope.
-      # `scripts/release/publish-packages.sh` explains why it uses pnpm, why the
+      # The `publish-packages` command explains why it uses pnpm, why the
       # GitHub Packages copies are renamed, and how a re-run completes a run that
       # stopped part way. The workflow's own token publishes the copies, which
       # links each one to this repository; `packages: write` above allows it.
@@ -348,11 +356,13 @@ jobs:
         env:
           GITHUB_PACKAGES_TOKEN: ${{ github.token }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bash scripts/release/publish-packages.sh
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/publication/src/publication.main.ts publish-packages
 
       # Lists each package published to npm on the organization's Linked
       # artifacts page, and names the ones this run published for the
-      # attestation below. `scripts/release/link-packages.sh` explains why only
+      # attestation below. The `link-packages` command explains why only
       # those are attested. It runs whenever publishing ran, even if that failed
       # part way, such as on one GitHub Packages mirror: a version already on
       # npm can only be attested by the run that published it, since a re-run
@@ -364,7 +374,9 @@ jobs:
           contains(fromJSON('["success", "failure"]'), steps.publish-packages.outcome)
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bash scripts/release/link-packages.sh
+        run: |
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/publication/src/publication.main.ts link-packages
 
       # A GitHub build-provenance attestation for each npm tarball this run
       # published, which the Linked artifacts page shows beside its record.
