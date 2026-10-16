@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -520,6 +521,57 @@ describe(PluginService, () => {
       );
 
       runGeneratorSpy.mockRestore();
+    });
+
+    it("keeps a hook's write in the tree rather than on disk", async () => {
+      const tree = createTree();
+
+      tree.root = workspaceRoot;
+
+      const generatedFilePaths = await service.runGenerator({
+        generatorName: "widget",
+        options: {
+          ...hooksOptions,
+          directory: "packages/widgets/src/modules",
+          name: "bolts",
+        },
+        tree,
+        workspaceRoot,
+      });
+
+      // The hook builds an absolute path; the tree-backed adapter is what
+      // turns it into the workspace-relative path the tree records.
+      expect(tree.read("receipts/bolts.log", "utf8")).toBe("stamped\n");
+      expect(existsSync(path.join(workspaceRoot, "receipts/bolts.log"))).toBe(
+        false,
+      );
+      expect(generatedFilePaths).toContain(
+        path.join(workspaceRoot, "receipts/bolts.log"),
+      );
+    });
+
+    it("leaves the tree untouched when a hook throws", async () => {
+      const tree = createTree();
+
+      tree.root = workspaceRoot;
+
+      // `createTree` itself records a `.prettierrc`, so "untouched" means no
+      // change beyond the ones the tree already held.
+      const changesBefore = tree.listChanges();
+
+      await expect(
+        service.runGenerator({
+          generatorName: "widget",
+          options: {
+            ...hooksOptions,
+            directory: "packages/widgets/src/modules",
+            name: "forbidden",
+          },
+          tree,
+          workspaceRoot,
+        }),
+      ).rejects.toThrow("Refused the name forbidden");
+      expect(tree.listChanges()).toStrictEqual(changesBefore);
     });
   });
 
