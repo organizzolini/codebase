@@ -294,6 +294,63 @@ describe(PathsService, () => {
     });
   });
 
+  describe("resolveGenerationPath with declared directories", () => {
+    let directoriesPath: string;
+
+    beforeAll(async () => {
+      directoriesPath = path.join(workspaceRoot, "directories.config.json");
+      await writeFile(
+        directoriesPath,
+        JSON.stringify([
+          {
+            directories: ["projects", "projects/*"],
+            name: "web",
+            templatePath: "templates/web",
+          },
+        ]),
+        "utf8",
+      );
+    });
+
+    it("defaults to the first allowed directory", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects"));
+    });
+
+    it("accepts a directory matching an allowed pattern", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { directory: "projects/caelundas", name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects/caelundas"));
+    });
+
+    it("refuses a directory outside the allowed set, naming the patterns", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { directory: "packages", name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).rejects.toThrow(
+        /cannot generate into packages\. Allowed directories: projects, projects\/\*\./u,
+      );
+    });
+  });
+
   describe("resolveGenerationPath with a crafted set of instances", () => {
     /**
      * Builds a `PathsService` whose collaborators are stubbed, so the

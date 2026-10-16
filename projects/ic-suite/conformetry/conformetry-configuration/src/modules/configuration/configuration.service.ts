@@ -92,6 +92,9 @@ export class ConfigurationService {
       ...(definition.description === undefined
         ? {}
         : { description: definition.description }),
+      ...(definition.directories === undefined
+        ? {}
+        : { directories: definition.directories }),
       inputs: definition.inputs ?? {},
       instances: definition.instances ?? [],
       name: definition.name,

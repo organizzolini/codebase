@@ -2,6 +2,7 @@ import path from "node:path";
 
 import {
   ConfigurationService,
+  InputError,
   missingDirectoryError,
 } from "@conformetry/configuration";
 import { Injectable } from "@nestjs/common";
@@ -16,6 +17,10 @@ import {
   PROJECT_INPUT_NAME,
   TYPE_INPUT_NAME,
 } from "./paths.constants";
+import {
+  matchesDirectoryPattern,
+  staticDirectoryPrefix,
+} from "./paths.utilities";
 
 import type { ResolveGenerationPathArguments } from "./paths.types";
 import type { Instance } from "@conformetry/configuration";
@@ -47,6 +52,43 @@ export class PathsService {
 
   // 🔏 Private Methods
 
+  /** Refuses a destination the generator's `directories` do not admit. */
+  private assertDirectoryAllowed(args: {
+    allowedDirectories: string[] | undefined;
+    directory: string;
+    generatorName: string | undefined;
+    workspaceRoot: string;
+  }): void {
+    if (args.allowedDirectories === undefined) {
+      return;
+    }
+
+    const relativeDirectory = path
+      .relative(args.workspaceRoot, args.directory)
+      .split(path.sep)
+      .join("/");
+
+    if (
+      args.allowedDirectories.some((pattern) => {
+        return matchesDirectoryPattern({
+          directory: relativeDirectory,
+          pattern,
+        });
+      })
+    ) {
+      return;
+    }
+
+    const subject =
+      args.generatorName === undefined
+        ? "This generator"
+        : `Generator ${args.generatorName}`;
+
+    throw new InputError(
+      `${subject} cannot generate into ${relativeDirectory === "" ? "the workspace root" : relativeDirectory}. Allowed directories: ${args.allowedDirectories.join(", ")}.`,
+    );
+  }
+
   /**
    * Locates a named module, refusing one the project does not have.
    *
@@ -71,6 +113,44 @@ export class PathsService {
     }
 
     return modulePath;
+  }
+
+  /** The generator's declared `directories`, if it names a definition. */
+  private async resolveAllowedDirectories(args: {
+    configurationPath: string;
+    generatorName: string | undefined;
+  }): Promise<string[] | undefined> {
+    if (args.generatorName === undefined) {
+      return undefined;
+    }
+
+    const configuration =
+      await this.configurationService.loadConformetryConfiguration(
+        args.configurationPath,
+      );
+
+    return configuration.find((generator) => {
+      return generator.name === args.generatorName;
+    })?.directories;
+  }
+
+  /** Resolves a caller-named destination, refusing one not allowed. */
+  private resolveExplicitDirectory(args: {
+    allowedDirectories: string[] | undefined;
+    explicitDirectory: string;
+    generatorName: string | undefined;
+    workspaceRoot: string;
+  }): string {
+    const directory = path.resolve(args.workspaceRoot, args.explicitDirectory);
+
+    this.assertDirectoryAllowed({
+      allowedDirectories: args.allowedDirectories,
+      directory,
+      generatorName: args.generatorName,
+      workspaceRoot: args.workspaceRoot,
+    });
+
+    return directory;
   }
 
   /**
@@ -138,11 +218,21 @@ export class PathsService {
    * generator having worked.
    */
   private resolveNewProjectPath(args: {
+    allowedDirectories: string[] | undefined;
     generatorName: string | undefined;
     tree: Tree;
     type: string | undefined;
     workspaceRoot: string;
   }): string {
+    const [firstAllowed] = args.allowedDirectories ?? [];
+
+    if (args.type === undefined && firstAllowed !== undefined) {
+      return path.resolve(
+        args.workspaceRoot,
+        staticDirectoryPrefix(firstAllowed),
+      );
+    }
+
     if (args.type === undefined) {
       throw missingDirectoryError({
         generatorName: args.generatorName,
@@ -154,6 +244,30 @@ export class PathsService {
       args.workspaceRoot,
       this.resolveTypeDirectoryPath({ tree: args.tree, type: args.type }) ??
         args.type,
+    );
+  }
+
+  /** Places an instance inside an existing project: scope first, then layout. */
+  private async resolveProjectParentPath(args: {
+    configurationPath: string;
+    generatorName: string | undefined;
+    instances: Instance[];
+    projectRootPath: string;
+  }): Promise<string> {
+    const scopedDirectory = await this.resolveScopedDirectory({
+      configurationPath: args.configurationPath,
+      generatorName: args.generatorName,
+    });
+
+    if (scopedDirectory !== undefined) {
+      return path.join(args.projectRootPath, scopedDirectory);
+    }
+
+    return (
+      this.resolveModuleParentPath({
+        instances: args.instances,
+        projectRootPath: args.projectRootPath,
+      }) ?? args.projectRootPath
     );
   }
 
@@ -221,16 +335,26 @@ export class PathsService {
   public async resolveGenerationPath(
     args: ResolveGenerationPathArguments,
   ): Promise<string> {
+    const allowedDirectories = await this.resolveAllowedDirectories({
+      configurationPath: args.configurationPath,
+      generatorName: args.generatorName,
+    });
     const explicitDirectory = args.inputs[DIRECTORY_INPUT_NAME];
 
     if (explicitDirectory !== undefined) {
-      return path.resolve(args.workspaceRoot, explicitDirectory);
+      return this.resolveExplicitDirectory({
+        allowedDirectories,
+        explicitDirectory,
+        generatorName: args.generatorName,
+        workspaceRoot: args.workspaceRoot,
+      });
     }
 
     const projectName = args.inputs[PROJECT_INPUT_NAME];
 
     if (projectName === undefined) {
       return this.resolveNewProjectPath({
+        allowedDirectories,
         generatorName: args.generatorName,
         tree: args.tree,
         type: args.inputs[TYPE_INPUT_NAME],
@@ -259,18 +383,11 @@ export class PathsService {
       });
     }
 
-    const scopedDirectory = await this.resolveScopedDirectory({
+    return await this.resolveProjectParentPath({
       configurationPath: args.configurationPath,
       generatorName: args.generatorName,
+      instances,
+      projectRootPath,
     });
-
-    if (scopedDirectory !== undefined) {
-      return path.join(projectRootPath, scopedDirectory);
-    }
-
-    return (
-      this.resolveModuleParentPath({ instances, projectRootPath }) ??
-      projectRootPath
-    );
   }
 }

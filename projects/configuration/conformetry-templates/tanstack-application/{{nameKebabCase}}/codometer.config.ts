@@ -1,4 +1,4 @@
-import { codometerConfiguration } from "../../projects/configuration/codometer.config.js";
+import { codometerConfiguration } from "{{workspaceRootRelativePath}}projects/configuration/codometer.config.js";
 
 export default {
   ...codometerConfiguration,

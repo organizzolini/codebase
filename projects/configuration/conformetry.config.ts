@@ -148,6 +148,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   {
     description:
       "A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/",
+    directories: ["projects", "projects/*", "projects/*/*"],
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
     }),

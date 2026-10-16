@@ -24,6 +24,7 @@ import {
 } from "../options/options.constants";
 import { OptionsService } from "../options/options.service";
 import { PathsService } from "../paths/paths.service";
+import { resolveWorkspaceRootRelativePath } from "../paths/paths.utilities";
 import { ProjectsService } from "../projects/projects.service";
 
 import {
@@ -41,6 +42,7 @@ import type {
   RunValidationResult,
 } from "./plugin.types";
 import type { TemplateDefinition } from "@conformetry/configuration";
+import type { Tree } from "@nx/devkit";
 
 /**
  * The plugin's whole surface: infer targets, generate, validate.
@@ -178,6 +180,46 @@ export class PluginService {
     );
 
     return parsed;
+  }
+
+  /**
+   * Decides where a generator writes and the inputs it renders with.
+   *
+   * The inputs gain a derived `workspaceRootRelativePath` so a template never
+   * hardcodes how deep it lands. Spread first: a generator that still declares
+   * its own input of this name keeps it.
+   */
+  private async resolveDestination(args: {
+    configurationPath: string;
+    generatorName: string;
+    options: Record<string, unknown>;
+    tree: Tree;
+    workspaceRoot: string;
+  }): Promise<{
+    inputs: Record<string, string | undefined>;
+    instancePath: string;
+  }> {
+    const resolvedInputs = this.optionsService.resolveGeneratorInputs(
+      args.options,
+    );
+    const instancePath = await this.pathsService.resolveGenerationPath({
+      configurationPath: args.configurationPath,
+      generatorName: args.generatorName,
+      inputs: resolvedInputs,
+      tree: args.tree,
+      workspaceRoot: args.workspaceRoot,
+    });
+
+    return {
+      inputs: {
+        workspaceRootRelativePath: resolveWorkspaceRootRelativePath({
+          directoryPath: instancePath,
+          workspaceRoot: args.workspaceRoot,
+        }),
+        ...resolvedInputs,
+      },
+      instancePath,
+    };
   }
 
   /**
@@ -376,7 +418,13 @@ export class PluginService {
       tree: args.tree,
       workspaceRoot: args.workspaceRoot,
     });
-    const inputs = this.optionsService.resolveGeneratorInputs(args.options);
+    const { inputs, instancePath } = await this.resolveDestination({
+      configurationPath: pluginOptions.configurationPath,
+      generatorName: args.generatorName,
+      options: args.options,
+      tree: args.tree,
+      workspaceRoot: args.workspaceRoot,
+    });
     const { generatedFilePaths } = await this.generationService.runGenerator({
       definition: {
         name: definition.name,
@@ -388,13 +436,7 @@ export class PluginService {
       filesystem: adapters.filesystem,
       formatter: adapters.formatter,
       inputs,
-      instancePath: await this.pathsService.resolveGenerationPath({
-        configurationPath: pluginOptions.configurationPath,
-        generatorName: args.generatorName,
-        inputs,
-        tree: args.tree,
-        workspaceRoot: args.workspaceRoot,
-      }),
+      instancePath,
     });
 
     this.logger.info("✨ Generated instance files", undefined, {
