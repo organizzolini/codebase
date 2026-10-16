@@ -42,9 +42,15 @@ one class.
 | ------- | ------ | ----------- |
 | `run-affected` | `src/modules/run-affected` | the `run-affected` composite action |
 | `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 📦 Publishable Packages leg of Continuous Integration |
+| `verify-task-database` | `src/modules/verify-task-database` | the `cleanup-codebase` composite action |
+| `adopt-task-database` | `src/modules/adopt-task-database` | nothing yet: `setup-codebase` runs it before install, as `scripts/nx/adopt-task-database.sh` |
+| `keep-task-database` | `src/modules/keep-task-database` | the `cleanup-codebase` composite action |
 
 `src/modules/process-runner` holds the shared wrapper over `node:child_process`
-(`capture` returns the output, `stream` inherits it).
+(`capture` returns the output, `stream` inherits it). `src/modules/task-database`
+holds the service the three task-database commands share; it reads
+`NX_WORKSPACE_DATA_DIRECTORY` and `MACHINE_ID_FILES`, and opens the databases
+with the built-in `node:sqlite`, so no `sqlite3` binary is needed.
 
 Run one locally with `nx run publication:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).

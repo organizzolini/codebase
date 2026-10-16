@@ -317,21 +317,23 @@ between commands live in a sourced file beside them.
 
 ### Task-Result Database
 
-The `setup-codebase` and `cleanup-codebase` actions run these around CI's Nx
-cache restore and save, and all of them source `task-database.sh` for the
-shared helpers.
-
 Nx decides a cache hit only from its task-result database,
 `.nx/workspace-data/<machine-id>-v<schema>.db`. That file is named after the
 machine, and every hosted runner is a fresh VM, so a restored database goes
 unread unless it is adopted under the current machine's id.
 
+The `setup-codebase` action restores the cache, imports the pull request's in a
+merge group, then verifies and adopts the database, all before `pnpm install`,
+so those steps are still shell: a NestJS command cannot run before the install.
+Moving verify and adopt after it was measured without the import, never in a
+merge group, so it waits on a new measurement. `merge-task-cache.sh` sources
+`task-database.sh`, which stays with them.
+
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
-| `verify-task-database.sh` | setup and cleanup | Discards any database that fails `PRAGMA integrity_check` |
+| `verify-task-database.sh` | setup, after the restore | Discards any database that fails `PRAGMA integrity_check` |
 | `adopt-task-database.sh` | setup, after the restore | Renames the newest restored database to this machine's id and discards the rest |
-| `keep-task-database.sh` | cleanup, before the save | Keeps only the newest database, and warns if there was more than one |
-| `import-pr-task-cache.sh` | setup, in a merge group | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
+| `import-pr-task-cache.sh` | setup, in a merge group, before the verify | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
 | `merge-task-cache.sh` | called by the import | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
 | `task-database.sh` | sourced by the above | Lists, picks, and discards databases along with their `-wal`, `-shm`, and `-journal` files |
 
@@ -341,15 +343,22 @@ finished. The pull request's run uploads its cache as an artifact in
 `cleanup-codebase`, which any run can read, and only for a pull request from
 this repository.
 
+The `cleanup-codebase` action runs after the install, so its two steps are
+commands (which open the databases with the built-in `node:sqlite`, not the
+`sqlite3` binary) of the [publication](../projects/publication) project:
+`verify-task-database` and `keep-task-database` (which keeps only the newest
+database, and warns if there was more than one). The `adopt-task-database`
+command is the same as the script and is tested, ready for the move.
+
 All of them honour `NX_WORKSPACE_DATA_DIRECTORY`, and the two that touch task
-outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database.sh`
-also reads `MACHINE_ID_FILES`, a space-separated list of files to take the id
-from, in priority order. So the scripts can be exercised locally against a
-scratch directory and a fake id:
+outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database` also reads
+`MACHINE_ID_FILES`, a space-separated list of files to take the id from, in
+priority order. So they can be exercised locally against a scratch directory
+and a fake id:
 
 ```bash
 NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
-  bash scripts/nx/adopt-task-database.sh
+  nx run publication:start:adopt-task-database
 ```
 
 ### Affected Runs
