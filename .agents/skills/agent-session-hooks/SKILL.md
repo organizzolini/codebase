@@ -16,8 +16,8 @@ Startup checks run at the start of every agent session and inject their failure 
 
 | Script                                  | Checks                                                                                                            |
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `validate-session-branch-name.sh`       | Branch follows `<type>/<scope>-<description>`; directs the agent to the rename-branch skill                       |
-| `validate-session-worktree-name.sh`     | Worktree directory follows lowercase kebab-case naming and ignore conventions                                     |
+| `validate-session-branch-name.sh`       | Shim over `validation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                     |
+| `validate-session-worktree-name.sh`     | Shim over `validation`'s `session-worktree-name`: worktree is kebab-case and gitignored                           |
 | `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                                 |
 | `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                                      |
 | `validate-session-skills.sh`            | Shim over `synchronization`'s `installed-skills check`: every skill in `skills-lock.json` is present              |
@@ -34,7 +34,7 @@ Each script is registered twice, once per harness, and both registrations point 
 
 When adding a check: put the script under `scripts/git/`, emit through `scripts/git/emit-session-hook-context.sh` so both harnesses can read it, and register it in both places.
 
-A check that needs real logic belongs in a NestJS command that only prints the context and sets an exit code, with the hook reduced to a shim over it. `validate-session-skills.sh` is the pattern: from the repository root, run the command with standard error discarded, exit when it succeeds, and otherwise pipe whatever it printed into the emitter, naming how a person reruns the check:
+A check that needs real logic belongs in a NestJS command that only prints the context and sets an exit code, with the hook reduced to a shim over it. `validate-session-skills.sh`, `validate-session-branch-name.sh`, and `validate-session-worktree-name.sh` are the pattern: from the repository root, run the command with standard error discarded, exit when it succeeds, and otherwise pipe whatever it printed into the emitter, naming how a person reruns the check:
 
 ```bash
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 0
@@ -44,6 +44,8 @@ printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "<rerun
 
 An empty context is how the emitter learns the command could not run at all. With no finished install (`node_modules/.modules.yaml` absent) it directs the agent to run `pnpm install`; otherwise it directs the agent to the rerun command, whose error the shim discarded. Without `node` it stays silent, since nothing can be emitted.
 
-The command must therefore print nothing to standard output except the context, which is why the `synchronization` command-line application sends its logs to standard error; a project hosting a new hook command must do the same.
+The command must therefore print nothing to standard output except the context, which is why the `synchronization` and `validation` command-line applications send their logs to standard error; a project hosting a new hook command must do the same. Which project a command belongs in follows each project's own rule: a `check` with a `write` belongs in `synchronization`, a one-sided check in `validation`.
+
+The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `projects/validation/AGENTS.md`.
 
 Why the credential checks resolve the session's own token and signing configuration rather than the hook shell's, and why a hook can fail but never hang, is in [ADR 0010](../../documentation/adr/0010-judge-the-credentials-a-session-really-uses.md).

@@ -13,6 +13,8 @@ import { PullRequestBodyModule } from "./modules/pull-request-body/pull-request-
 import { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
 import { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
+import { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
+import { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
 import { environmentSchema } from "./validation.constants";
 
 /**
@@ -37,6 +39,8 @@ import { environmentSchema } from "./validation.constants";
     PullRequestReleaseSignificanceModule,
     PublishablePackagesModule,
     ReadmeProjectsModule,
+    SessionBranchNameModule,
+    SessionWorktreeNameModule,
   ],
 })
 export class MainModule {}

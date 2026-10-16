@@ -10,6 +10,8 @@ import type { PullRequestBodyModule } from "./modules/pull-request-body/pull-req
 import type { PullRequestMetadataModule } from "./modules/pull-request-metadata/pull-request-metadata.module";
 import type { PullRequestReleaseSignificanceModule } from "./modules/pull-request-release-significance/pull-request-release-significance.module";
 import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
+import type { SessionBranchNameModule } from "./modules/session-branch-name/session-branch-name.module";
+import type { SessionWorktreeNameModule } from "./modules/session-worktree-name/session-worktree-name.module";
 import type { LoggerService } from "@codebase/logging";
 
 type CommandFactoryRun = (
@@ -23,6 +25,7 @@ type CommandFactoryRun = (
 
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
+const logToStandardError = vi.fn<() => void>();
 const auditGovernanceModuleMock = createMock<AuditGovernanceModule>();
 const catalogManifestsModuleMock = createMock<CatalogManifestsModule>();
 const issueMetadataModuleMock = createMock<IssueMetadataModule>();
@@ -33,6 +36,8 @@ const pullRequestReleaseSignificanceModuleMock =
   createMock<PullRequestReleaseSignificanceModule>();
 const publishablePackagesModuleMock = createMock<PublishablePackagesModule>();
 const readmeProjectsModuleMock = createMock<ReadmeProjectsModule>();
+const sessionBranchNameModuleMock = createMock<SessionBranchNameModule>();
+const sessionWorktreeNameModuleMock = createMock<SessionWorktreeNameModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -49,8 +54,20 @@ vi.mock("@codebase/logging", () => ({
   // `validation.module` imports `LoggerModule` from the same specifier, so the mock
   // has to stand in for the whole package, not just the service.
   LoggerModule: function LoggerModule() {},
-  LoggerService: function LoggerService() {
-    return loggerServiceMock;
+  // A class rather than a function returning the mock: `main` both
+  // constructs it and calls its static `logToStandardError`.
+  LoggerService: class MockLoggerService {
+    static logToStandardError(): void {
+      logToStandardError();
+    }
+
+    error(message: string, stack?: string): void {
+      loggerServiceMock.error(message, stack);
+    }
+
+    setContext(context: string): void {
+      loggerServiceMock.setContext(context);
+    }
   },
 }));
 
@@ -114,6 +131,18 @@ vi.mock("./modules/readme-projects/readme-projects.module", () => ({
   },
 }));
 
+vi.mock("./modules/session-branch-name/session-branch-name.module", () => ({
+  SessionBranchNameModule: function SessionBranchNameModule() {
+    return sessionBranchNameModuleMock;
+  },
+}));
+
+vi.mock("./modules/session-worktree-name/session-worktree-name.module", () => ({
+  SessionWorktreeNameModule: function SessionWorktreeNameModule() {
+    return sessionWorktreeNameModuleMock;
+  },
+}));
+
 describe("main bootstrap", () => {
   const originalExitCode = process.exitCode;
 
@@ -142,6 +171,19 @@ describe("main bootstrap", () => {
     expect(firstCall).toBeDefined();
     expect(firstCall?.[1]).toStrictEqual(
       expect.objectContaining({ bufferLogs: true }),
+    );
+  });
+
+  // The session commands print their hooks' context, so a log line on
+  // standard output would become part of what an agent reads.
+  it("sends every log line to standard error before anything logs", async () => {
+    logToStandardError.mockClear();
+
+    await import("./validation.main");
+
+    expect(logToStandardError).toHaveBeenCalledTimes(1);
+    expect(logToStandardError.mock.invocationCallOrder[0]).toBeLessThan(
+      run.mock.invocationCallOrder[0] ?? 0,
     );
   });
 

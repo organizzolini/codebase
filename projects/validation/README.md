@@ -13,6 +13,8 @@ nx run validation:start:pull-request-metadata     # labels and assignees against
 nx run validation:start:pull-request-body         # the four headings, each section's shape and length, and no unfilled template comment
 nx run validation:start:catalog-manifests         # catalog:/workspace:* in every manifest
 nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
+nx run validation:start:session-branch-name       # the checked-out branch against the naming convention
+nx run validation:start:session-worktree-name     # the linked worktree's directory name and gitignore status
 nx run validation:verify-publishable-packages     # pack ic-suite, install the tarballs, run the plugins
 ```
 
@@ -45,6 +47,8 @@ authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
 | `catalog-manifests` | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
 | `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
 | `publishable-packages` | Do the packed ic-suite packages work when installed by someone else? |
+| `session-branch-name` | Does the checked-out branch follow `<type>/<scope>-<description>`? |
+| `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout? |
 
 ### `pull-request-metadata`
 
@@ -106,6 +110,36 @@ something else, for the reason the manifest check does not: what "in sync" means
 is pnpm's answer, not one worth reimplementing. `--lockfile-only` means it never
 writes `node_modules`, so it cannot re-link packages under the tasks the
 pre-commit hook runs beside it.
+
+### `session-branch-name`
+
+The branch-name session hook, `scripts/git/validate-session-branch-name.sh`,
+is a shim over this command. It reads the pattern and the error text from
+[validate-branch-name.config.cjs](../../validate-branch-name.config.cjs), the
+file the pre-push hook enforces, so the two never disagree. A compliant
+branch, a detached HEAD, and a directory outside a repository all print
+nothing and exit 0. Anything else prints the configured error — the format,
+every valid type and scope — then the directive to invoke the rename-branch
+skill, and exits 1.
+
+Its standard output is only that context, never a log line, because the hook
+hands it to the agent word for word; which JSON shape it travels in is the
+hook emitter's business, not this command's.
+
+### `session-worktree-name`
+
+The worktree-name session hook, `scripts/git/validate-session-worktree-name.sh`,
+is a shim over this command, run from the root of the checkout the hook lives
+in. Only a linked worktree is judged: the main checkout, a submodule, a
+directory outside a repository, and a machine without `git` all print nothing
+and exit 0. A linked worktree must have a lowercase kebab-case directory name,
+and one inside the main checkout must be gitignored there, so that its
+contents are never committed. Every problem is printed at once, then the
+directive to invoke the using-git-worktrees skill, with exit 1.
+
+This check used to need nothing but `git`. As a command it needs a healthy
+`node_modules` too, a cost accepted for one way of writing session checks;
+the hook says to run `pnpm install` when that is what stops it.
 
 ### `publishable-packages`
 
