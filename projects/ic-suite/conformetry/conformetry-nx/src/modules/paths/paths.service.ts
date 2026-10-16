@@ -22,7 +22,10 @@ import {
   staticDirectoryPrefix,
 } from "./paths.utilities";
 
-import type { ResolveGenerationPathArguments } from "./paths.types";
+import type {
+  AllowedDirectories,
+  ResolveGenerationPathArguments,
+} from "./paths.types";
 import type { Instance } from "@conformetry/configuration";
 import type { Tree } from "@nx/devkit";
 
@@ -52,14 +55,14 @@ export class PathsService {
 
   // 🔏 Private Methods
 
-  /** Refuses a destination the generator's `directories` do not admit. */
+  /** Refuses a destination the generator's instances are not found in. */
   private assertDirectoryAllowed(args: {
-    allowedDirectories: string[] | undefined;
+    allowedDirectories: AllowedDirectories | undefined;
     directory: string;
     generatorName: string | undefined;
     workspaceRoot: string;
   }): void {
-    if (args.allowedDirectories === undefined) {
+    if (args.allowedDirectories?.enforced !== true) {
       return;
     }
 
@@ -69,7 +72,7 @@ export class PathsService {
       .join("/");
 
     if (
-      args.allowedDirectories.some((pattern) => {
+      args.allowedDirectories.patterns.some((pattern) => {
         return matchesDirectoryPattern({
           directory: relativeDirectory,
           pattern,
@@ -85,7 +88,7 @@ export class PathsService {
         : `Generator ${args.generatorName}`;
 
     throw new InputError(
-      `${subject} cannot generate into ${relativeDirectory === "" ? "the workspace root" : relativeDirectory}. Allowed directories: ${args.allowedDirectories.join(", ")}.`,
+      `${subject} cannot generate into ${relativeDirectory === "" ? "the workspace root" : relativeDirectory}. Allowed directories: ${args.allowedDirectories.patterns.join(", ")}.`,
     );
   }
 
@@ -115,11 +118,20 @@ export class PathsService {
     return modulePath;
   }
 
-  /** The generator's declared `directories`, if it names a definition. */
+  /**
+   * The directories a generator's instances sit in, read from its `instances`.
+   *
+   * An instance's path is the directory its template is laid over, so the
+   * parent of each workspace pattern is where a new one may go — which is what
+   * keeps generation and validation pointed at the same places. Only groups
+   * without tags count, because a tagged group is read inside projects that
+   * already exist. `undefined` when there are none, which places no
+   * restriction.
+   */
   private async resolveAllowedDirectories(args: {
     configurationPath: string;
     generatorName: string | undefined;
-  }): Promise<string[] | undefined> {
+  }): Promise<AllowedDirectories | undefined> {
     if (args.generatorName === undefined) {
       return undefined;
     }
@@ -128,15 +140,29 @@ export class PathsService {
       await this.configurationService.loadConformetryConfiguration(
         args.configurationPath,
       );
+    const patterns = (
+      configuration.find((generator) => {
+        return generator.name === args.generatorName;
+      })?.instances ?? []
+    )
+      .filter((group) => !this.configurationService.isProjectScoped(group))
+      .flatMap((group) => group.patterns ?? []);
 
-    return configuration.find((generator) => {
-      return generator.name === args.generatorName;
-    })?.directories;
+    return patterns.length === 0
+      ? undefined
+      : {
+          // A literal path names one known instance rather than a place new
+          // ones may go, so only a glob turns the list into a restriction.
+          enforced: patterns.some((pattern) => pattern.includes("*")),
+          patterns: [
+            ...new Set(patterns.map((pattern) => path.posix.dirname(pattern))),
+          ],
+        };
   }
 
   /** Resolves a caller-named destination, refusing one not allowed. */
   private resolveExplicitDirectory(args: {
-    allowedDirectories: string[] | undefined;
+    allowedDirectories: AllowedDirectories | undefined;
     explicitDirectory: string;
     generatorName: string | undefined;
     workspaceRoot: string;
@@ -218,13 +244,13 @@ export class PathsService {
    * generator having worked.
    */
   private resolveNewProjectPath(args: {
-    allowedDirectories: string[] | undefined;
+    allowedDirectories: AllowedDirectories | undefined;
     generatorName: string | undefined;
     tree: Tree;
     type: string | undefined;
     workspaceRoot: string;
   }): string {
-    const [firstAllowed] = args.allowedDirectories ?? [];
+    const [firstAllowed] = args.allowedDirectories?.patterns ?? [];
 
     if (args.type === undefined && firstAllowed !== undefined) {
       return path.resolve(
@@ -240,11 +266,20 @@ export class PathsService {
       });
     }
 
-    return path.resolve(
+    const directory = path.resolve(
       args.workspaceRoot,
       this.resolveTypeDirectoryPath({ tree: args.tree, type: args.type }) ??
         args.type,
     );
+
+    this.assertDirectoryAllowed({
+      allowedDirectories: args.allowedDirectories,
+      directory,
+      generatorName: args.generatorName,
+      workspaceRoot: args.workspaceRoot,
+    });
+
+    return directory;
   }
 
   /** Places an instance inside an existing project: scope first, then layout. */

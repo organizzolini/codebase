@@ -148,11 +148,33 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   {
     description:
       "A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/",
-    directories: ["projects", "projects/*", "projects/*/*"],
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
+      workspaceRelativePrefix: z
+        .string()
+        .describe(
+          "Relative climb from the project root back to the workspace root, e.g. ../.. two directories down or ../../../ three directories down",
+        ),
     }),
-    instances: [],
+    // Where existing applications live is also where a new one may be
+    // generated. The climb back to the workspace root is read from each
+    // instance during validation, so no group has to state it.
+    instances: [
+      {
+        // `components-web` is not an application and is being renamed.
+        exclude: [
+          "projects/**/node_modules/**",
+          "projects/components-web",
+          "projects/lexico/lexico-web",
+        ],
+        patterns: ["projects/**/*-web"],
+      },
+      {
+        patterns: ["projects/lexico/lexico-web"],
+        // Migration bar: this app predates the template and still diverges.
+        threshold: 0.75,
+      },
+    ],
     name: "tanstack-application",
     templatePath:
       "projects/configuration/conformetry-templates/tanstack-application",

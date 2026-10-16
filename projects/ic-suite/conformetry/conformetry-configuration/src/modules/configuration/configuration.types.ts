@@ -16,18 +16,6 @@ export type ConformetryConfiguration = ConformetryGeneratorDefinition[];
 export interface ConformetryGeneratorDefinition {
   description?: string;
   /**
-   * Parent directories a new instance may be generated into, as
-   * workspace-relative globs where `*` stands for one folder name, such as
-   * `applications/*` for one level down or `applications/*` followed by
-   * another `/*` for two.
-   *
-   * The first pattern's static prefix is where a run with no destination
-   * lands, and a destination matching none of them is refused. Omitted places
-   * no restriction, which is how a generator that writes into an existing
-   * project — located by `instances` instead — behaves.
-   */
-  directories?: string[];
-  /**
    * The values this generator substitutes, as JSON Schema fragments. Named for
    * what the implementation calls them everywhere else — a generator takes
    * inputs and renders a template with them.

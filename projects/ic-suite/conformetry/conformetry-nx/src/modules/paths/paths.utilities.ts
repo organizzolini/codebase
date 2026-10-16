@@ -4,39 +4,18 @@ import path from "node:path";
  * Whether a workspace-relative directory is one a pattern admits.
  *
  * `*` stands for part of one folder name, never a separator, so
- * `applications/*` admits `applications/caelundas` and not
- * `applications/caelundas/caelundas-web` — depth is stated by the pattern.
+ * `projects/*` admits `projects/caelundas` and not `projects/caelundas/web`.
+ * A `**` segment stands for any number of folders, none included, which is how
+ * a pattern states that depth does not matter.
  */
 export function matchesDirectoryPattern(args: {
   directory: string;
   pattern: string;
 }): boolean {
-  const directorySegments = path.posix.normalize(args.directory).split("/");
-  const patternSegments = args.pattern.split("/");
-
-  return (
-    directorySegments.length === patternSegments.length &&
-    patternSegments.every((segment, index) => {
-      return toSegmentExpression(segment).test(directorySegments[index] ?? "");
-    })
-  );
-}
-
-/**
- * The climb from a generated instance back to the workspace root, with a
- * trailing separator so a template writes `{{workspaceRootRelativePath}}x`.
- *
- * The instance sits one folder below the directory it is generated into, which
- * is why the count is one more than the directory's own depth.
- */
-export function resolveWorkspaceRootRelativePath(args: {
-  directoryPath: string;
-  workspaceRoot: string;
-}): string {
-  const relativePath = path.relative(args.workspaceRoot, args.directoryPath);
-  const depth = relativePath === "" ? 0 : relativePath.split(path.sep).length;
-
-  return "../".repeat(depth + 1);
+  return matchesSegments({
+    directorySegments: path.posix.normalize(args.directory).split("/"),
+    patternSegments: args.pattern.split("/"),
+  });
 }
 
 /** The folder a pattern points at before its first wildcard segment. */
@@ -45,6 +24,41 @@ export function staticDirectoryPrefix(pattern: string): string {
   const globIndex = segments.findIndex((segment) => segment.includes("*"));
 
   return (globIndex === -1 ? segments : segments.slice(0, globIndex)).join("/");
+}
+
+/** Matches directory segments against pattern segments, honouring `**`. */
+function matchesSegments(args: {
+  directorySegments: string[];
+  patternSegments: string[];
+}): boolean {
+  const [segment, ...restPattern] = args.patternSegments;
+
+  if (segment === undefined) {
+    return args.directorySegments.length === 0;
+  }
+
+  if (segment === "**") {
+    return (
+      args.directorySegments.some((_, skipped) => {
+        return matchesSegments({
+          directorySegments: args.directorySegments.slice(skipped),
+          patternSegments: restPattern,
+        });
+      }) ||
+      matchesSegments({ directorySegments: [], patternSegments: restPattern })
+    );
+  }
+
+  const [first, ...restDirectory] = args.directorySegments;
+
+  return (
+    first !== undefined &&
+    toSegmentExpression(segment).test(first) &&
+    matchesSegments({
+      directorySegments: restDirectory,
+      patternSegments: restPattern,
+    })
+  );
 }
 
 /** Escapes a segment so only `*` acts as a wildcard in it. */

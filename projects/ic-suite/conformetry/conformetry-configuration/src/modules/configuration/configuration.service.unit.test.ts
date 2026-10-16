@@ -403,24 +403,6 @@ describe(ConfigurationService, () => {
     expect(configuration[0]?.templatePath).toBe("custom/templates/example");
   });
 
-  it("keeps a generator's declared directories", async () => {
-    const configurationPath = await writeConfiguration([
-      {
-        directories: ["projects", "projects/*"],
-        name: "example",
-        templatePath: "templates/example",
-      },
-    ]);
-
-    const configuration =
-      await service.loadConformetryConfiguration(configurationPath);
-
-    expect(configuration[0]?.directories).toStrictEqual([
-      "projects",
-      "projects/*",
-    ]);
-  });
-
   it("keeps a generator's declared threshold", async () => {
     const configurationPath = await writeConfiguration([
       { name: "example", templatePath: "templates/example", threshold: 0.9 },

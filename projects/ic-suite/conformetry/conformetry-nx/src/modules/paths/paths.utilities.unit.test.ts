@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import {
   matchesDirectoryPattern,
-  resolveWorkspaceRootRelativePath,
   staticDirectoryPrefix,
 } from "./paths.utilities";
 
@@ -19,6 +18,25 @@ describe("paths utilities", () => {
         matchesDirectoryPattern({
           directory: "projects/a/b",
           pattern: "projects/*",
+        }),
+      ).toBe(false);
+    });
+
+    it("lets a double wildcard stand for any number of folders, none included", () => {
+      for (const directory of [
+        "projects",
+        "projects/caelundas",
+        "projects/ic-suite/conformetry",
+      ]) {
+        expect(
+          matchesDirectoryPattern({ directory, pattern: "projects/**" }),
+        ).toBe(true);
+      }
+
+      expect(
+        matchesDirectoryPattern({
+          directory: "packages",
+          pattern: "projects/**",
         }),
       ).toBe(false);
     });
@@ -46,23 +64,6 @@ describe("paths utilities", () => {
     it("stops at the first wildcard segment", () => {
       expect(staticDirectoryPrefix("projects/*/*")).toBe("projects");
       expect(staticDirectoryPrefix("projects")).toBe("projects");
-    });
-  });
-
-  describe(resolveWorkspaceRootRelativePath, () => {
-    it("climbs one folder more than the directory is deep", () => {
-      expect(
-        resolveWorkspaceRootRelativePath({
-          directoryPath: "/ws/projects",
-          workspaceRoot: "/ws",
-        }),
-      ).toBe("../../");
-      expect(
-        resolveWorkspaceRootRelativePath({
-          directoryPath: "/ws/projects/caelundas",
-          workspaceRoot: "/ws",
-        }),
-      ).toBe("../../../");
     });
   });
 });

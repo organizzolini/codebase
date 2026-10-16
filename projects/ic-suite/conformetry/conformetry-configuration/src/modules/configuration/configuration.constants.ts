@@ -71,7 +71,6 @@ export const conformetryConfigurationSchema = z
   .array(
     z.strictObject({
       description: z.string().optional(),
-      directories: z.array(z.string()).optional(),
       // Each input is a JSON Schema fragment, so it must be an object; its own
       // fields may hold any JSON value.
       inputs: z

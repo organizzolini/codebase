@@ -294,7 +294,7 @@ describe(PathsService, () => {
     });
   });
 
-  describe("resolveGenerationPath with declared directories", () => {
+  describe("resolveGenerationPath with instances", () => {
     let directoriesPath: string;
 
     beforeAll(async () => {
@@ -303,7 +303,7 @@ describe(PathsService, () => {
         directoriesPath,
         JSON.stringify([
           {
-            directories: ["projects", "projects/*"],
+            instances: [{ patterns: ["projects/**/*-web"] }],
             name: "web",
             templatePath: "templates/web",
           },
@@ -312,7 +312,7 @@ describe(PathsService, () => {
       );
     });
 
-    it("defaults to the first allowed directory", async () => {
+    it("defaults to the parent of the first instance pattern", async () => {
       await expect(
         service.resolveGenerationPath({
           configurationPath: directoriesPath,
@@ -346,8 +346,45 @@ describe(PathsService, () => {
           workspaceRoot,
         }),
       ).rejects.toThrow(
-        /cannot generate into packages\. Allowed directories: projects, projects\/\*\./u,
+        /cannot generate into packages\. Allowed directories: projects\/\*\*\./u,
       );
+    });
+  });
+
+  describe("resolveGenerationPath with literal instance paths", () => {
+    it("defaults to the instance's parent but does not restrict a directory", async () => {
+      const literalPath = path.join(workspaceRoot, "literal.config.json");
+
+      await writeFile(
+        literalPath,
+        JSON.stringify([
+          {
+            instances: [{ patterns: ["projects/known"] }],
+            name: "known",
+            templatePath: "templates/known",
+          },
+        ]),
+        "utf8",
+      );
+
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: literalPath,
+          generatorName: "known",
+          inputs: { name: "my-known" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects"));
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: literalPath,
+          generatorName: "known",
+          inputs: { directory: "elsewhere", name: "my-known" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "elsewhere"));
     });
   });
 
