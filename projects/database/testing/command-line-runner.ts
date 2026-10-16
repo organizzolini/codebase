@@ -43,7 +43,7 @@ interface RunCliCommandLineOptions {
 
 /**
  * The `LoggerService` levels that write a line. `log` is not among them: it
- * hands its message to `info`, which records it.
+ * hands its message to `info`, so a `log` call is recorded as `info: …`.
  */
 const LOGGER_LEVELS = ["debug", "error", "info", "verbose", "warn"] as const;
 

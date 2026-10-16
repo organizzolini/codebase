@@ -21,17 +21,17 @@ export default mergeConfig(
         include: ["src/**/*.ts", "testing/database-testing.utilities.ts"],
       },
       /**
-       * Two minutes per `beforeAll`, where the shared default is ten seconds:
-       * an integration suite's hook pulls and starts a Postgres
-       * container and migrates it, which takes several seconds on a
-       * developer's machine and several times that on a CI runner.
-       */
-      /**
        * The command-line runner hands every message to the real
        * `LoggerService`, so its convention is checked; silent keeps the
        * lines themselves out of the test output.
        */
       env: { LOG_LEVEL: "silent" },
+      /**
+       * Two minutes per `beforeAll`, where the shared default is ten seconds:
+       * an integration suite's hook pulls and starts a Postgres
+       * container and migrates it, which takes several seconds on a
+       * developer's machine and several times that on a CI runner.
+       */
       hookTimeout: 120_000,
       /** Two minutes per test too, for the containers some tests start themselves. */
       testTimeout: 120_000,
