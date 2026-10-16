@@ -24,6 +24,7 @@ two fields are required:
 | `inputs` | no | Values the template renders with, as JSON Schema fragments |
 | `instances` | no | Where this generator's output already lives |
 | `description` | no | Shown when generators are listed |
+| `hooks` | no | Functions that run before and after generation; see [Hooks](#hooks) |
 | `threshold` | no | Lowest conformance score this generator's instances may have, 0 to 1 |
 
 Unknown keys are **rejected**, so a misspelled field — or `aliases`, which was
@@ -106,6 +107,34 @@ a generator whose groups carry tags additionally turns it into a project picker.
 `config`, `help`, `instancePath`, and `template` are reserved and never treated
 as inputs — `--template` is how the command-line host selects which template to
 render. `name` is deliberately _not_ reserved.
+
+## Hooks
+
+A generator may declare `hooks` with `preGenerate` and `postGenerate`: plain
+functions the host runs around generation. Use one to refuse bad input before
+anything is written, or to produce a file the template cannot, such as an entry
+in an index.
+
+- **`preGenerate`** runs before anything is written, with an empty
+  `generatedFilePaths`. Throw to refuse the run.
+- **`postGenerate`** runs after the template is rendered and before formatting,
+  with the sorted `generatedFilePaths`.
+
+A configuration that declares hooks must be TypeScript, because JSON cannot
+hold a function. Type them with `GeneratorHookContext` from
+`@conformetry/configuration`. Three rules keep a hook correct under both hosts:
+
+- **Write through `context.filesystem`, never `node:fs`.** Under Nx the adapter
+  writes to the virtual tree, so `--dry-run` and a failed run stay clean.
+- **Pass it absolute paths inside the workspace**, built from
+  `context.configurationDirectoryPath`. A path outside is re-rooted inside the
+  workspace under Nx.
+- **Push a path you wrote onto `context.generatedFilePaths`** so the host
+  formats and reports it.
+
+On the command line a throwing `postGenerate` leaves the rendered files on
+disk. The generation README holds the full context table and the error
+behavior per host, and the `hooks` example runs both hooks.
 
 ## Writing a template
 
@@ -231,7 +260,7 @@ result, and `conformetry-generate` for the generation step itself.
 
 ## Seeing it rather than reading about it
 
-[`conformetry-examples`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) is eleven self-contained examples, each
+[`conformetry-examples`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) is twelve self-contained examples, each
 a complete configuration small enough to read in one sitting. The ones that
 answer configuration questions:
 
@@ -243,6 +272,8 @@ answer configuration questions:
   and why declaring the same glob twice is a mistake.
 - **`nx-host`** — tag-scoped instance groups, and what a host without a project
   graph does with them.
+- **`hooks`** — a `preGenerate` that refuses a bad name and a `postGenerate`
+  that writes a receipt.
 - **`failure-modes`** — a placeholder nobody supplied and no instance text
   reveals, refused by generation and reported by validation.
 
