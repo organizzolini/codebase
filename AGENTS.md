@@ -26,12 +26,6 @@ Work in this repository integrates skills from both
 track, implement, and review non-trivial features, refactors, and bugfixes with
 strict verification gates.
 
-**GitHub Issue Types follow the hierarchy.** A root issue (no parent) is a
-**Feature** or a **Bug**; every sub-issue is a **Task**. Set the type whenever an
-issue is created or linked — see
-[`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md).
-The Continuous Compliance workflow fails an issue that breaks this.
-
 **Planning is human-gated; implementation is continuous.** During planning,
 never chain skills automatically — stop after each step and wait for explicit
 invocation. During implementation, subagents execute autonomously and may create
