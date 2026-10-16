@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.8](https://github.com/organizzolini/codebase/compare/v3.9.7...v3.9.8) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,synchronization:** ♻️ remove the root project ([#1690](https://github.com/organizzolini/codebase/issues/1690)) ([766efff](https://github.com/organizzolini/codebase/commit/766efff8b6f15f6541ccbc466e90629c543af8d7)), closes [#1669](https://github.com/organizzolini/codebase/issues/1669)
+
 ## [3.9.7](https://github.com/organizzolini/codebase/compare/v3.9.6...v3.9.7) (2026-10-16)
 
 ### ♻️ Code Refactoring
