@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@codebase/components-web";
+import { Card, CardContent } from "@codebase/components";
 
 import { LexemeEtymology } from "./lexeme-etymology";
 import { LexemeForms } from "./lexeme-forms";

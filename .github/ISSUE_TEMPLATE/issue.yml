@@ -54,7 +54,7 @@ body:
         - installation
         - JimmyPaolini
         - lexico
-        - components-web
+        - components
         - lexico-entities
         - lexico-cli
         - meanderaw

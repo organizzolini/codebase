@@ -1,8 +1,4 @@
-import {
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@codebase/components-web";
+import { CardDescription, CardHeader, CardTitle } from "@codebase/components";
 
 import type { ReactNode } from "react";
 
