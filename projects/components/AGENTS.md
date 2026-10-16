@@ -67,9 +67,9 @@ This project is `base-nova`, so use only the `/base/` variant of a ReUI item.
 
 The skill comes from `https://mcp.reui.io/api/skills/download` and is recorded in
 `skills-lock.json` as `local`, so `skills update` skips it. The weekly
-`upgrade-dependencies` workflow refreshes it with `scripts/update-reui-skill.sh`;
-run `pnpm exec nx run codebase:update-reui-skill` to refresh it sooner. Never edit
-the folder by hand.
+`upgrade-dependencies` workflow refreshes it with the `installation` project's
+`update-reui-skill` command; run `pnpm exec nx run installation:start:update-reui-skill`
+to refresh it sooner. Never edit the folder by hand.
 
 ## Architecture Overview
 

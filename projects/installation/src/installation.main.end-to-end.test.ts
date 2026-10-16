@@ -15,6 +15,7 @@ const COMMAND_NAMES = [
   "setup",
   "shell-configuration",
   "software",
+  "update-reui-skill",
 ];
 
 // Each test boots a whole Node process through the SWC loader, which takes
