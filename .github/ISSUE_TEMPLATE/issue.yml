@@ -63,6 +63,7 @@ body:
         - codependix
         - codometer
         - no-release
+        - publication
         - release
         - reporting
         - scripts
