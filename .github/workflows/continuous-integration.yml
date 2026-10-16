@@ -19,6 +19,7 @@ on:
         default: false
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
   issues: write
@@ -51,21 +52,34 @@ jobs:
           - target: deprecate-code
             name: Deprecate
             emoji: 🧟
+          # Guard runs cold whenever a change reaches the shared configuration
+          # project, and cold it sits near the 12-minute limit: a cold run took
+          # 10m29s, and runs were cancelled at the limit with every finished
+          # task passing. Warm it takes about two. 20 minutes covers a cold
+          # run with the setup and cleanup around it.
           - target: guard-code
             name: Guard
             emoji: 💂
-          # Tests run in three legs that together cover every project once.
-          # Meanderaw alone: uncached, it took over seven minutes beside every
-          # other project's tests and waited for a free `--parallel` slot, so a
-          # run that affects everything (an `nx.json` change) outlasted the
-          # 12-minute limit; alone it takes about three. ic-suite's 37 packages
-          # were most of what remained. The third leg, everything else, keeps
-          # the `Test` name branch protection has always required. A leg whose
-          # projects are unaffected runs nothing.
+            timeout-minutes: 20
+          # Tests run in four legs that together cover every project once, so
+          # none waits for a free `--parallel` slot behind the slow ones.
+          # Meanderaw alone took over seven minutes uncached beside the rest,
+          # and about three alone. ic-suite's 37 packages were most of what
+          # remained. Caelundas's command line cannot start until its
+          # ephemeris download finishes, so it ran last and alone for four more
+          # minutes. Its leg takes the whole folder, so a new project joins it.
+          # The fourth leg, everything else, keeps the `Test` name branch
+          # protection has always required. A leg with nothing affected runs
+          # nothing.
           - target: test-code
             name: Test
             emoji: 🧑‍🔬
-            exclude: meanderaw-cli,projects/ic-suite/**
+            exclude: meanderaw-cli,projects/caelundas/**,projects/ic-suite/**
+          - target: test-code
+            name: Test Caelundas
+            emoji: 🧑‍🔬
+            exclude: "*,!projects/caelundas/**"
+            shard: caelundas
           - target: test-code
             name: Test Meanderaw
             emoji: 🧑‍🔬
@@ -179,6 +193,7 @@ jobs:
         with:
           target: ${{ matrix.check.target }}
           include-spelling: ${{ matrix.check.target == 'format-code' }}
+          include-templates: ${{ matrix.check.target == 'guard-code' }}
           arguments: >-
             ${{ matrix.check.target == 'test-code' && '--configuration=coverage'
             || matrix.check.target != 'build-projects' && '--configuration=check'
@@ -202,10 +217,25 @@ jobs:
           target: ${{ matrix.check.target }}
           shard: ${{ matrix.check.shard }}
 
+      # A merge group runs on its own `gh-readonly-queue/...` ref, new for every
+      # group, and a cache saved there is readable by no later run: later
+      # groups and pull requests see their own refs and `main`'s. Saving only
+      # filled the repository's 10 GB quota (a third of it, measured) and
+      # pushed out the entries `main` saves for everyone else, so a merge
+      # group still restores `main`'s caches but saves none of its own. It imports
+      # the pull request's instead, from the artifact the pull request's run
+      # uploads here.
       - name: 🧹 Cleanup Codebase
         if: always() && steps.check-skip.outputs.skip != 'true'
         uses: ./.github/actions/cleanup-codebase
         with:
-          nx-cache: "true"
+          nx-cache: ${{ github.event_name == 'merge_group' && 'false' || 'true' }}
           nx-cache-primary-key: ${{ steps.setup.outputs.nx-cache-primary-key }}
-          eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
+          nx-cache-scope: ${{ steps.setup.outputs.nx-cache-scope }}
+          nx-cache-artifact: >-
+            ${{ github.event_name == 'pull_request' &&
+            github.event.pull_request.head.repo.full_name == github.repository
+            && 'true' || 'false' }}
+          eslint-cache: >-
+            ${{ matrix.check.target == 'lint-code' &&
+            github.event_name != 'merge_group' && 'true' || 'false' }}

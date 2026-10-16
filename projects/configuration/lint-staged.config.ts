@@ -8,6 +8,7 @@
  * Invoked by Husky's pre-commit hook via `npx lint-staged`.
  */
 import { execFileSync } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 
 /**
@@ -32,7 +33,21 @@ import path from "node:path";
  * The per-project `codependix-gate` replaced the first and was measured on
  * macOS at up to 1.3 GB (`lexico-api`), under that figure.
  */
-const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : 4;
+const ANALYSIS_PARALLELISM = process.env["CI"] ? 8 : getLocalParallelism();
+
+/**
+ * How many tasks a local run may execute at once: two fewer than the CPU
+ * count, so the machine stays usable, within a floor of 4 and a ceiling of 12.
+ * A cold run of every target at 4 measured 31m24s against a critical path of
+ * 1m24s and used 140% of an 18-core machine, so the fixed 4 left the cores
+ * idle. Memory bounds it from the other side: the heaviest tasks peak near
+ * 1.6 GB, so each slot is budgeted 3 GB of the machine's total memory.
+ */
+function getLocalParallelism(): number {
+  const byCpu = os.availableParallelism() - 2;
+  const byMemory = Math.floor(os.totalmem() / 3 / 1024 ** 3);
+  return Math.max(4, Math.min(byCpu, byMemory, 12));
+}
 
 /**
  * Renders staged paths as one workspace-relative `--files=` flag each.
@@ -58,7 +73,9 @@ function getStagedFilesFlags(files: string[]): string {
 
 /**
  * Hands `nx affected` the staged changes as two revisions, so it selects
- * projects the way CI's `scripts/nx/run-affected.sh` does.
+ * projects the way CI's `scripts/nx/run-affected.sh` does when it has no
+ * change set to correct. The hook does not call that script: its spelling files
+ * stay in.
  *
  * Given `--files`, Nx counts a file as changed in full. Given a base and a
  * head, it diffs `package.json` and `pnpm-lock.yaml` field by field. The
@@ -101,6 +118,39 @@ function runGit(gitArguments: string[]): string {
   }).trim();
 }
 
+/**
+ * Flags selecting every conformetry instance, when a conformetry template is
+ * staged, and `undefined` when none is.
+ *
+ * `.nxignore` hides some template files from Nx, so editing one selects no
+ * project. This passes the staged files plus the conformetry configuration,
+ * an input of every instance project, so all of them are selected. The edit
+ * still reaches each project's cache key through the template hash input the
+ * plugin declares, so each one re-validates.
+ */
+function getStagedTemplateFlags(files: string[]): string | undefined {
+  const stagedTemplates = files.some((file) =>
+    path
+      .relative(process.cwd(), file)
+      .startsWith("projects/configuration/conformetry-templates/"),
+  );
+
+  return stagedTemplates
+    ? `${getStagedFilesFlags(files)} --files=projects/configuration/conformetry.config.ts`
+    : undefined;
+}
+
+/**
+ * Hands `nx affected` the staged changes: the template flags when a template
+ * is staged, otherwise two revisions.
+ *
+ * Staged files are counted in full, as with `--files`, so a commit that stages
+ * a template loses the field-level diff of `package.json` and the lockfile.
+ */
+function getStagedChangeFlags(files: string[]): string {
+  return getStagedTemplateFlags(files) ?? getStagedRevisionFlags(files);
+}
+
 const config = {
   // 🔒 Lockfile integrity
   // Run as the `validation` CLI rather than through its Nx target, which would
@@ -139,9 +189,10 @@ const config = {
   // cache-hits the rest. Doing it by hand duplicated that, and every entry
   // cost another project graph build.
 
-  // Conformetry validates the whole workspace on every commit: generated
-  // instances need not match a template-pattern glob to have drifted, so it
-  // cannot be scoped to `affected`.
+  // Conformetry is scoped like the rest: a project needs validating when its own
+  // files, the conformetry configuration, or a conformetry template change. The
+  // template case is the one `nx affected` cannot always see, so
+  // `getStagedChangeFlags` covers it.
 
   // Each derivation synchronization is named alongside `lint-code` rather
   // than reached through its `dependsOn`, for the reason the Lint Codebase
@@ -172,8 +223,7 @@ const config = {
   // without a shell, so `NX_DAEMON=false nx ...` would be parsed as the
   // executable name.
   "*": (files: string[]): string[] => [
-    `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedRevisionFlags(files)}`,
-    "pnpm exec nx run-many --targets=conformetry-validate --outputStyle=static",
+    `pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}`,
   ],
 };
 

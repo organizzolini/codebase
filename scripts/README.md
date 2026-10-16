@@ -411,9 +411,18 @@ unread unless it is adopted under the current machine's id.
 | `verify-task-database.sh` | setup and cleanup | Discards any database that fails `PRAGMA integrity_check` |
 | `adopt-task-database.sh` | setup, after the restore | Renames the newest restored database to this machine's id and discards the rest |
 | `keep-task-database.sh` | cleanup, before the save | Keeps only the newest database, and warns if there was more than one |
+| `import-pr-task-cache.sh` | setup, in a merge group | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
+| `merge-task-cache.sh` | called by the import | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
 | `task-database.sh` | sourced by the above | Lists, picks, and discards databases along with their `-wal`, `-shm`, and `-journal` files |
 
-All of them honour `NX_WORKSPACE_DATA_DIRECTORY`. `adopt-task-database.sh`
+A merge group runs on a ref that reads only `main`'s caches, never the pull
+request's, so without the import it runs again every task the pull request just
+finished. The pull request's run uploads its cache as an artifact in
+`cleanup-codebase`, which any run can read, and only for a pull request from
+this repository.
+
+All of them honour `NX_WORKSPACE_DATA_DIRECTORY`, and the two that touch task
+outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database.sh`
 also reads `MACHINE_ID_FILES`, a space-separated list of files to take the id
 from, in priority order. So the scripts can be exercised locally against a
 scratch directory and a fake id:
@@ -428,7 +437,7 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 | Script | Runs in | What it does |
 | ------ | ------- | ------------ |
 | `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-| `run-affected.sh` | `run-affected` | Runs `nx affected` for `TARGET` over `--base`/`--head`, or over `--stdin` with spelling files dropped when the change set has any and `INCLUDE_SPELLING` is not `true` |
+| `run-affected.sh` | `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
 | `verify-publishable-packages.sh` | the 📦 Publishable Packages leg | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
 All three read everything from the environment, so any of them can be run locally. With

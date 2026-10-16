@@ -246,11 +246,14 @@ describe(PluginService, () => {
           // The configuration, emitted plugin, and every configured
           // template invalidate the cache, so a cache hit cannot skip the
           // drift check the executor performs, nor survive a template edit.
+          // The template hash reads the disk, so it also sees template files
+          // a workspace hides from Nx.
           inputs: [
             "default",
             `{workspaceRoot}/${options.configurationPath}`,
             "{workspaceRoot}/.conformetry/nx-generators/**/*",
             "{workspaceRoot}/templates/widget/**/*",
+            { runtime: expect.stringContaining("node -e '") as string },
           ],
           options: {},
         },

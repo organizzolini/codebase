@@ -1,33 +1,68 @@
 #!/usr/bin/env bash
-# Runs `nx affected` for one target between `NX_BASE` and `NX_HEAD`, dropping
-# spelling files from the change set unless `INCLUDE_SPELLING` is "true".
+# Runs one Nx target on the projects a CI change affects, after correcting the
+# changed-file list Nx selects them from.
 #
-# `spell-check` lists the shared dictionaries among its `{workspaceRoot}`
-# inputs, and Nx decides affected per project, not per target: one new word in
-# a dictionary marks every project affected for every target, so a word list
-# edit ran the whole workspace's tests and timed the job out. Only the target
-# that runs `spell-check` should see those files.
+# CI matrix leg -> `run-affected` action -> this script -> `nx affected`. The
+# caller picks the target and revisions; Nx picks the projects; this script
+# picks which changed files Nx hears about. The pre-commit hook does not use it.
 #
-# Handing Nx its list over `--stdin` is the fallback, not the default, because
-# Nx reads every file it names as changed in full. A lockfile then touches
-# every project, defeating `projectsAffectedByDependencyUpdates: "auto"`, and a
-# release commit's one-line `package.json` version bump affected 47 projects
-# instead of 3. Only `--base`/`--head` let Nx diff those files field by field,
-# so any change set with nothing to drop goes through them unchanged.
+# 1. List the files changed between NX_BASE and NX_HEAD.
+# 2. Correct the files that mislead Nx for this target:
+#    - Spelling files over-select: Nx decides affected per project, so one new
+#      dictionary word selected every project. Dropped unless INCLUDE_SPELLING.
+#    - Conformetry templates under-select: `.nxignore` hides some from Nx. With
+#      INCLUDE_TEMPLATES, a changed template adds the conformetry config, an
+#      input of every instance project; the template hash input then busts
+#      their caches. Set it only for the target running `conformetry-validate`.
+# 3. Nothing to correct: `nx affected --base --head`. Otherwise `--stdin`.
 #
-# The dropped-files list is built the way Nx builds its own: the merge base of
-# the two revisions, falling back to `NX_BASE` itself, then
-# `git diff --name-only --no-renames --relative`. An empty list affects nothing
-# and exits cleanly; it never falls back to everything.
+# `--stdin` is the fallback because Nx counts every file it is handed as changed
+# in full, so a lockfile touches every project. Only `--base`/`--head` diff
+# `package.json` and the lockfile field by field.
 #
-# Inputs, all from the environment:
-#   TARGET            the Nx target to run (required)
-#   ARGUMENTS         extra `nx affected` flags, space separated
-#   INCLUDE_SPELLING  "true" to keep spelling files
-#   NX_BASE, NX_HEAD  the revisions, as `nrwl/nx-set-shas` exports them
-#   SPELLING_PATHS    an extended regex overriding which files are spelling
+# An empty list affects nothing; it never falls back to everything.
+#
+# Environment: TARGET (required), ARGUMENTS (extra `nx affected` flags),
+# NX_BASE and NX_HEAD, INCLUDE_SPELLING, INCLUDE_TEMPLATES, and the regex
+# overrides SPELLING_PATHS and TEMPLATE_PATHS.
 
 set -euo pipefail
+
+DEFAULT_SPELLING_PATHS='^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
+DEFAULT_TEMPLATE_PATHS='^projects/configuration/conformetry-templates/'
+TEMPLATE_SELECTOR="projects/configuration/conformetry.config.ts"
+
+spelling_paths="${SPELLING_PATHS:-${DEFAULT_SPELLING_PATHS}}"
+template_paths="${TEMPLATE_PATHS:-${DEFAULT_TEMPLATE_PATHS}}"
+
+arguments=()
+read -ra arguments <<<"${ARGUMENTS:-}"
+
+# Prints the changed files, one per line.
+list_changed_files() {
+  local base
+  base="$(git merge-base "${NX_BASE}" "${NX_HEAD}" || echo "${NX_BASE}")"
+  git diff --name-only --no-renames --relative "${base}" "${NX_HEAD}"
+}
+
+# Prints the lines of "$2" matching the regex "$1".
+matching() {
+  grep -E "$1" <<<"$2" || true
+}
+
+# Prints the lines of "$2" not matching the regex "$1".
+excluding() {
+  grep -Ev "$1" <<<"$2" || true
+}
+
+# Prints heading "$1", then each file in "$2".
+report() {
+  local heading="$1" files="$2" file
+  echo "${heading}"
+  while IFS= read -r file; do
+    printf '  %s\n' "${file}"
+  done <<<"${files}"
+}
 
 if [[ -z "${TARGET:-}" ]]; then
   echo "❌ TARGET is unset; name the Nx target to run"
@@ -39,31 +74,45 @@ if [[ -z "${NX_BASE:-}" || -z "${NX_HEAD:-}" ]]; then
   exit 1
 fi
 
-default_spelling_paths='^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
-spelling_paths="${SPELLING_PATHS:-${default_spelling_paths}}"
-
-arguments=()
-read -ra arguments <<<"${ARGUMENTS:-}"
-
+# Steps 1 and 2. The list is only built when this target asks for a correction.
+changed=""
 spelling=""
-if [[ "${INCLUDE_SPELLING:-false}" != "true" ]]; then
-  base="$(git merge-base "${NX_BASE}" "${NX_HEAD}" || echo "${NX_BASE}")"
-  changed="$(git diff --name-only --no-renames --relative \
-    "${base}" "${NX_HEAD}")"
-  spelling="$(grep -E "${spelling_paths}" <<<"${changed}" || true)"
+templates=""
+drop_spelling=false
+add_templates=false
+[[ "${INCLUDE_SPELLING:-false}" != "true" ]] && drop_spelling=true
+[[ "${INCLUDE_TEMPLATES:-false}" == "true" ]] && add_templates=true
+
+if [[ "${drop_spelling}" == true || "${add_templates}" == true ]]; then
+  changed="$(list_changed_files)"
+fi
+if [[ "${drop_spelling}" == true ]]; then
+  spelling="$(matching "${spelling_paths}" "${changed}")"
+fi
+if [[ "${add_templates}" == true ]]; then
+  templates="$(matching "${template_paths}" "${changed}")"
 fi
 
-if [[ -z "${spelling}" ]]; then
+# Step 3, nothing to correct: Nx diffs the revisions itself.
+if [[ -z "${spelling}" && -z "${templates}" ]]; then
   exec pnpm exec nx affected --base="${NX_BASE}" --head="${NX_HEAD}" \
     --target="${TARGET}" ${arguments[@]+"${arguments[@]}"}
 fi
 
-echo "✂️ Not affecting ${TARGET} with spelling files:"
-while IFS= read -r spelling_path; do
-  printf '  %s\n' "${spelling_path}"
-done <<<"${spelling}"
+# Step 3, corrected: hand Nx the rewritten list.
+corrected="${changed}"
 
-kept="$(grep -Ev "${spelling_paths}" <<<"${changed}" || true)"
-printf '%s\n' "${kept}" \
+if [[ -n "${spelling}" ]]; then
+  report "✂️ Not affecting ${TARGET} with spelling files:" "${spelling}"
+  corrected="$(excluding "${spelling_paths}" "${corrected}")"
+fi
+
+if [[ -n "${templates}" ]]; then
+  report "🧬 Selecting every conformetry instance for ${TARGET}, templates changed:" \
+    "${templates}"
+  corrected="$(printf '%s\n%s' "${corrected}" "${TEMPLATE_SELECTOR}")"
+fi
+
+printf '%s\n' "${corrected}" \
   | pnpm exec nx affected --stdin --target="${TARGET}" \
     ${arguments[@]+"${arguments[@]}"}
