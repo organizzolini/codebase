@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.3](https://github.com/organizzolini/codebase/compare/v3.8.2...v3.8.3) (2026-10-16)
+
+### 🐛 Bug Fixes
+
+* **database:** 🐛 start dry-run plan log messages with a verb ([#1666](https://github.com/organizzolini/codebase/issues/1666)) ([950d721](https://github.com/organizzolini/codebase/commit/950d721b93412e7ed43abc730b4392632c8680f9)), closes [#1571](https://github.com/organizzolini/codebase/issues/1571) [#1593](https://github.com/organizzolini/codebase/issues/1593)
+
 ## [3.8.2](https://github.com/organizzolini/codebase/compare/v3.8.1...v3.8.2) (2026-10-15)
 
 ### ♻️ Code Refactoring

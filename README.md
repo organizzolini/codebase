@@ -3752,6 +3752,7 @@ graph LR
   file_database_src_modules_export_export_arguments_command_integration_test_ts["database/src/modules/export/export-arguments.command.integration.test.ts"]
   file_database_src_modules_export_export_dry_run_command_integration_test_ts["database/src/modules/export/export-dry-run.command.integration.test.ts"]
   file_database_src_modules_export_export_dry_run_command_unit_test_ts["database/src/modules/export/export-dry-run.command.unit.test.ts"]
+  file_database_src_modules_export_export_log_convention_command_unit_test_ts["database/src/modules/export/export-log-convention.command.unit.test.ts"]
   file_database_src_modules_export_export_missing_table_command_integration_test_ts["database/src/modules/export/export-missing-table.command.integration.test.ts"]
   file_database_src_modules_export_export_missing_table_command_unit_test_ts["database/src/modules/export/export-missing-table.command.unit.test.ts"]
   file_database_src_modules_export_export_preflight_command_integration_test_ts["database/src/modules/export/export-preflight.command.integration.test.ts"]
@@ -8599,6 +8600,9 @@ graph LR
   file_database_src_modules_export_export_dry_run_command_integration_test_ts --> file_database_testing_fixture_database_ts
   file_database_src_modules_export_export_dry_run_command_unit_test_ts --> file_database_testing_command_line_runner_ts
   file_database_src_modules_export_export_dry_run_command_unit_test_ts --> file_database_testing_mocks_ts
+  file_database_src_modules_export_export_log_convention_command_unit_test_ts --> file_database_src_modules_export_export_constants_ts
+  file_database_src_modules_export_export_log_convention_command_unit_test_ts --> file_database_testing_command_line_runner_ts
+  file_database_src_modules_export_export_log_convention_command_unit_test_ts --> file_database_testing_mocks_ts
   file_database_src_modules_export_export_missing_table_command_integration_test_ts --> file_database_testing_command_line_runner_ts
   file_database_src_modules_export_export_missing_table_command_integration_test_ts --> file_database_testing_fixture_database_ts
   file_database_src_modules_export_export_missing_table_command_unit_test_ts --> file_database_testing_command_line_runner_ts

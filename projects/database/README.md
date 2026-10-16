@@ -442,6 +442,7 @@ graph LR
   file_src_modules_export_export_arguments_command_integration_test_ts["src/modules/export/export-arguments.command.integration.test.ts"]
   file_src_modules_export_export_dry_run_command_integration_test_ts["src/modules/export/export-dry-run.command.integration.test.ts"]
   file_src_modules_export_export_dry_run_command_unit_test_ts["src/modules/export/export-dry-run.command.unit.test.ts"]
+  file_src_modules_export_export_log_convention_command_unit_test_ts["src/modules/export/export-log-convention.command.unit.test.ts"]
   file_src_modules_export_export_missing_table_command_integration_test_ts["src/modules/export/export-missing-table.command.integration.test.ts"]
   file_src_modules_export_export_missing_table_command_unit_test_ts["src/modules/export/export-missing-table.command.unit.test.ts"]
   file_src_modules_export_export_preflight_command_integration_test_ts["src/modules/export/export-preflight.command.integration.test.ts"]
@@ -548,6 +549,9 @@ graph LR
   file_src_modules_export_export_dry_run_command_integration_test_ts --> file_testing_fixture_database_ts
   file_src_modules_export_export_dry_run_command_unit_test_ts --> file_testing_command_line_runner_ts
   file_src_modules_export_export_dry_run_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_export_export_log_convention_command_unit_test_ts --> file_src_modules_export_export_constants_ts
+  file_src_modules_export_export_log_convention_command_unit_test_ts --> file_testing_command_line_runner_ts
+  file_src_modules_export_export_log_convention_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_export_export_missing_table_command_integration_test_ts --> file_testing_command_line_runner_ts
   file_src_modules_export_export_missing_table_command_integration_test_ts --> file_testing_fixture_database_ts
   file_src_modules_export_export_missing_table_command_unit_test_ts --> file_testing_command_line_runner_ts
@@ -851,8 +855,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PostgresClientService.anonymous` | 2 | `PostgresClientService.execFile(…)`, `postgresProcessEnvironment` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:69` |
 | `PostgresClientService.execFile(…)` | 2 | `PostgresClientError.constructor`, `maskPostgresCredentials` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:77` |
 | `PostgresClientService.list` | 2 | `PostgresClientService.run`, `parsePostgresDumpContents` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:181` |
-| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/export/export.constants.ts:65` |
-| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/import/import.constants.ts:121` |
+| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/export/export.constants.ts:66` |
+| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/import/import.constants.ts:122` |
 | `ImportCommand.missing` | 2 | `dumpedTables`, `ImportCommand.filter(…)` | `projects/database/src/modules/import/import.command.ts:100` |
 | `createDataSource` | 2 | `postgresDataSourceOptions`, `postgresConnection` | `projects/database/src/modules/database/database.utilities.ts:69` |
 | `postgresConnection` | 2 | `postgresEnvironmentKey`, `postgresSettingsSchema` | `projects/database/src/modules/database/database.utilities.ts:86` |
@@ -870,12 +874,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `map(…)` | 1 | `quotePostgresTable` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:35` |
 | `PostgresClientService.run` | 1 | `PostgresClientService.anonymous` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:64` |
 | `PostgresClientService.anonymous` | 1 | `PostgresClientService.execFile(…)` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:139` |
-| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/export/export.constants.ts:76` |
+| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/export/export.constants.ts:77` |
 | `ExportCommand.logDryRun` | 1 | `dryRunMessages` | `projects/database/src/modules/export/export.command.ts:76` |
 | `ExportCommand.requireOption` | 1 | `ExportOptionsError.constructor` | `projects/database/src/modules/export/export.command.ts:125` |
 | `ExportCommand.selectContent` | 1 | `ExportOptionsError.constructor` | `projects/database/src/modules/export/export.command.ts:138` |
 | `referencedTablesMessage` | 1 | `map(…)` | `projects/database/src/modules/import/import.constants.ts:93` |
-| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/import/import.constants.ts:133` |
+| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/import/import.constants.ts:134` |
 | `ImportCommand.requireOption` | 1 | `ImportOptionsError.constructor` | `projects/database/src/modules/import/import.command.ts:178` |
 | `ImportCommand.selectContent` | 1 | `ImportOptionsError.constructor` | `projects/database/src/modules/import/import.command.ts:216` |
 | `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/database/src/modules/database/database.utilities.ts:35` |
@@ -893,36 +897,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10276-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-331.39_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10414-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-336.15_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-86-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-87-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-86-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-87-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-29-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-7-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-46-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-280-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-283-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-1-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-33-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-34-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-20-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-622-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-635-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-60-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-412-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-270-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-597-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-404-0284c7?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-422-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-273-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-603-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-413-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-144-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-362-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-847-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-367-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-862-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -1040,7 +1044,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Types Files](https://img.shields.io/badge/Types_Files-6-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-6-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-18-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-19-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-14-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
