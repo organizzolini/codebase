@@ -111,7 +111,7 @@
     },
     "hooks": {
       "cache": false,
-      "description": "Generate through a generator whose postGenerate hook writes a receipt and whose preGenerate hook refuses a bad name",
+      "description": "Generate through a generator whose postGenerate hook writes a receipt beside the configuration and whose preGenerate hook refuses a bad name",
       "executor": "nx:run-commands",
       "options": {
         "command": "node --import @swc-node/register/esm-register projects/ic-suite/conformetry/conformetry-cli/src/conformetry-cli.main.ts generate --template receipt --name mars --directory tmp/conformetry-examples/hooks --config projects/ic-suite/conformetry/conformetry-examples/examples/hooks/conformetry.config.ts",
