@@ -37,6 +37,6 @@ a public package name on the registry for an internal cross-cutting utility.
   dependency pointing directly to TypeScript source, maintaining unified local
   development without intermediate build steps.
 - **Shared build configuration bundles the logger by default:**
-  `configuration/vite.library.config.ts` treats `@codebase/logging` as bundled
+  `projects/configuration/vite.library.config.ts` treats `@codebase/logging` as bundled
   instead of external, ensuring consistent bundling across all publishable
   packages.

@@ -1,6 +1,9 @@
 // ♟️ Constants
 
-import { InputError } from "@callidescope/configuration";
+import {
+  ConfigurationPathRequiredError,
+  InputError,
+} from "@callidescope/configuration";
 import { ProgramConfigurationError } from "@callidescope/graph";
 
 import { isRefusedProjectConfiguration } from "../address-lookup/address-lookup.constants";
@@ -67,7 +70,10 @@ export const readRefusalHeadline = (error: unknown): string | undefined => {
     return REJECTED_PROJECT_CONFIGURATION;
   }
 
-  return error instanceof InputError ? REJECTED_COMMAND_LINE : undefined;
+  return error instanceof InputError ||
+    error instanceof ConfigurationPathRequiredError
+    ? REJECTED_COMMAND_LINE
+    : undefined;
 };
 
 // 🚨 Errors

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.2](https://github.com/organizzolini/codebase/compare/v3.8.1...v3.8.2) (2026-10-15)
+
+### ♻️ Code Refactoring
+
+* **callidescope,codependix,codometer,conformetry:** ♻️ require --config on every ic-suite command line ([#1598](https://github.com/organizzolini/codebase/issues/1598)) ([541a319](https://github.com/organizzolini/codebase/commit/541a3197012a76135d1258490d458a25b72ba983))
+
+## [3.8.1](https://github.com/organizzolini/codebase/compare/v3.8.0...v3.8.1) (2026-10-15)
+
+### ♻️ Code Refactoring
+
+* **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/issues/1509)) ([e9de999](https://github.com/organizzolini/codebase/commit/e9de99988526745eead1e988765f8261daae816e))
+
+## [3.8.0](https://github.com/organizzolini/codebase/compare/v3.7.0...v3.8.0) (2026-10-15)
+
+### ✨ Features
+
+* **database,lexico-cli,scripts:** ✨ add export and import commands for postgres data ([#1593](https://github.com/organizzolini/codebase/issues/1593)) ([3968c32](https://github.com/organizzolini/codebase/commit/3968c3215c2e79a8584c116fe3aef1350ac92847)), closes [#1594](https://github.com/organizzolini/codebase/issues/1594) [#1572](https://github.com/organizzolini/codebase/issues/1572) [#1571](https://github.com/organizzolini/codebase/issues/1571) [#1573](https://github.com/organizzolini/codebase/issues/1573) [#1574](https://github.com/organizzolini/codebase/issues/1574) [#1575](https://github.com/organizzolini/codebase/issues/1575) [#1576](https://github.com/organizzolini/codebase/issues/1576) [#1577](https://github.com/organizzolini/codebase/issues/1577) [#1578](https://github.com/organizzolini/codebase/issues/1578) [#1579](https://github.com/organizzolini/codebase/issues/1579) [#1580](https://github.com/organizzolini/codebase/issues/1580) [#1581](https://github.com/organizzolini/codebase/issues/1581) [#1594](https://github.com/organizzolini/codebase/issues/1594)
+
+### 📝 Documentation
+
+* **components-web,documentation:** 📝 add reui skill and mcp servers ([#1600](https://github.com/organizzolini/codebase/issues/1600)) ([66a0464](https://github.com/organizzolini/codebase/commit/66a0464318186b4cebb378964f14d7fba03a6790))
+
+### ♻️ Code Refactoring
+
+* **infrastructure,documentation:** 🔥 remove postgres-data targets and seed-postgres skill ([#1594](https://github.com/organizzolini/codebase/issues/1594)) ([e8a4e71](https://github.com/organizzolini/codebase/commit/e8a4e71f61d3b067551ca1155083e11ab3c0bc06)), closes [#1582](https://github.com/organizzolini/codebase/issues/1582) [#1583](https://github.com/organizzolini/codebase/issues/1583) [#1584](https://github.com/organizzolini/codebase/issues/1584) [#1571](https://github.com/organizzolini/codebase/issues/1571) [#1593](https://github.com/organizzolini/codebase/issues/1593)
+
 ## [3.7.0](https://github.com/organizzolini/codebase/compare/v3.6.0...v3.7.0) (2026-10-15)
 
 ### ✨ Features

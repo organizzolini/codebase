@@ -9,8 +9,10 @@ import {
   exampleConfiguration,
   measure,
   measureExample,
+  packageConfiguration,
   readMetric,
   readTarget,
+  runCodometer,
   withCorpusCopy,
 } from "./codometer.js";
 
@@ -25,7 +27,7 @@ import {
  * The examples are spread across this file and the suites beside it, one per
  * guide or two, because each spawn of the command line is its own process and
  * separate files are what the test runner runs in parallel. This one holds
- * targets, compression, and configuration discovery; `limits`,
+ * targets, compression, and the named configuration; `limits`,
  * `documentation`, `write-check`, `output`, and `written-reports` hold the
  * rest.
  */
@@ -123,9 +125,15 @@ describe("every example configuration this package ships", () => {
     });
   });
 
-  describe("configuration discovery", () => {
-    it("takes the first configuration found walking upward", () => {
-      const nested = measure([], exampleConfiguration("discovery", "nested"));
+  describe("the named configuration", () => {
+    it("answers alone, with nothing merged from a file above it", () => {
+      const nested = measure(
+        [
+          "--config",
+          exampleConfiguration("discovery", "nested", "codometer.config.ts"),
+        ],
+        exampleConfiguration("discovery", "nested"),
+      );
       const counters = readTarget(nested, "codebase").metrics.filter((metric) =>
         metric.path.startsWith("custom."),
       );
@@ -137,17 +145,20 @@ describe("every example configuration this package ships", () => {
       ]);
     });
 
-    it("continues upward from a folder carrying no configuration", () => {
-      const parent = measure([], exampleConfiguration("discovery"));
+    it("is never searched for from the folder measured", () => {
+      const parent = measure(
+        ["--config", packageConfiguration],
+        exampleConfiguration("discovery"),
+      );
       const counters = readTarget(parent, "codebase").metrics.filter((metric) =>
         metric.path.startsWith("custom."),
       );
 
-      // The package's own configuration — conventions and all — is what
-      // answers. Nothing here is a function of which folder was measured, so
-      // its own "Corpus" input is resolved too, and reported as a failure
-      // rather than gating anything: this bare run neither writes nor checks,
-      // and a failure fails only a run that does one of those.
+      // The package's own configuration — conventions and all — answers
+      // because it was named. Its "Corpus" input is resolved too, and
+      // reported as a failure rather than gating anything: this run neither
+      // writes nor checks, and a failure fails only a run that does one of
+      // those.
       expect(counters.map((metric) => metric.path)).toStrictEqual([
         "custom.Service Files",
         "custom.Unit Tests",
@@ -155,6 +166,13 @@ describe("every example configuration this package ships", () => {
       ]);
       expect(readTarget(parent, "Corpus").empty).toBe(true);
       expect(parent.failures).toHaveLength(1);
+    });
+
+    it("refuses a run that names no configuration", () => {
+      const run = runCodometer([], exampleConfiguration("discovery"));
+
+      expect(run.exitCode).not.toBe(0);
+      expect(run.standardError).toContain("--config");
     });
   });
 });

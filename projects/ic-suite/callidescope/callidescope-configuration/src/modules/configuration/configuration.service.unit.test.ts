@@ -164,7 +164,7 @@ describe(ConfigurationService, () => {
       projects: ["packages/example"],
       workspaceAuthoredLimits: undefined,
       workspaceConfiguration: buildConfiguration(),
-      workspaceConfigurationPath: undefined,
+      workspaceConfigurationPath: "/workspace/callidescope.config.ts",
     };
 
     // Every question a consumer can ask reaches exactly one collaborator, with
@@ -180,7 +180,10 @@ describe(ConfigurationService, () => {
           configurationFileService.findConfigurationFileAt.mock.calls[0]?.[0],
       },
       {
-        ask: async (subject) => await subject.loadConfigurationFile({}),
+        ask: async (subject) =>
+          await subject.loadConfigurationFile({
+            configurationPath: "callidescope.config.ts",
+          }),
         name: "loadConfigurationFile",
         read: ({ configurationFileService }) =>
           configurationFileService.loadConfigurationFile.mock.calls[0]?.[0],
@@ -196,6 +199,12 @@ describe(ConfigurationService, () => {
         name: "parseCommaDelimitedOption",
         read: ({ inputService }) =>
           inputService.parseCommaDelimitedOption.mock.calls[0]?.[0],
+      },
+      {
+        ask: (subject) => subject.requireConfigurationPath("a", "--config"),
+        name: "requireConfigurationPath",
+        read: ({ inputService }) =>
+          inputService.requireConfigurationPath.mock.calls[0]?.[0],
       },
       {
         ask: (subject) => subject.parseOptionalOption("a"),
@@ -223,13 +232,15 @@ describe(ConfigurationService, () => {
           projectConfigurationService.resolveLimits.mock.calls[0]?.[0],
       },
       {
-        ask: async (subject) => await subject.prepareLookup({}),
+        ask: async (subject) =>
+          await subject.prepareLookup({ config: "callidescope.config.ts" }),
         name: "prepareLookup",
         read: ({ runPlanService }) =>
           runPlanService.prepareLookup.mock.calls[0]?.[0],
       },
       {
-        ask: async (subject) => await subject.prepareRun({}),
+        ask: async (subject) =>
+          await subject.prepareRun({ config: "callidescope.config.ts" }),
         name: "prepareRun",
         read: ({ runPlanService }) =>
           runPlanService.prepareRun.mock.calls[0]?.[0],
@@ -290,10 +301,11 @@ describe(ConfigurationService, () => {
 
       await subject.loadProjectConfigurations({
         projects: ["packages/example"],
+        workspaceConfigurationPath: "/workspace/callidescope.config.ts",
         workspaceRoot: "/workspace",
       });
-      await subject.prepareRun({});
-      await subject.prepareLookup({});
+      await subject.prepareRun({ config: "callidescope.config.ts" });
+      await subject.prepareLookup({ config: "callidescope.config.ts" });
 
       expect([
         collaborators.projectConfigurationService.loadProjectConfigurations.mock

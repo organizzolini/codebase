@@ -119,7 +119,7 @@ The devcontainer handles equivalent setup automatically.
 
 **What it does:**
 
-- Creates `.env` from every `.env.default` in the repository (excluding `configuration/conformetry-templates/`), skipping any `.env` that already exists
+- Creates `.env` from every `.env.default` in the repository (excluding `projects/configuration/conformetry-templates/`), skipping any `.env` that already exists
 - Appends `LOCAL_WORKSPACE_FOLDER=$(pwd)` to root `.env` for docker-compose volume mounts
 - Sources `.env` file and exports environment variables
 
@@ -724,7 +724,7 @@ versions only what has changed since each package's last tag, tagging skips a
 tag that already exists, pnpm skips a version npm already has, and so is a
 version GitHub Packages already has or a tarball that already has a storage
 record. `GITHUB_PACKAGES_REGISTRY` points the
-mirror at another registry, such as `codebase:local-registry`, to try it
+mirror at another registry, such as `configuration:local-registry`, to try it
 without touching GitHub.
 
 ## Contributing

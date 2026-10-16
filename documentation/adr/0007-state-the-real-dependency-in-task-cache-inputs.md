@@ -10,7 +10,7 @@ on essentially every run, and 🧑‍🔧 Lint Codebase never recorded a single 
 hit: it ran 475–520 tasks cold every time and took 5–9 minutes against a
 12-minute limit. Nothing failed. The work was simply repeated.
 
-We reduced `shared-globals` to `configuration/tsconfig.json` and made every
+We reduced `shared-globals` to `projects/configuration/tsconfig.json` and made every
 target name the dependency it actually has.
 
 ## Considered options
@@ -18,7 +18,7 @@ target name the dependency it actually has.
 - **Leave it.** Rejected: nothing was broken, but the whole point of a task
   cache is not repeating work, and this configuration guaranteed it never
   stopped.
-- **Drop `shared-globals` entirely.** Rejected: `configuration/tsconfig.json` is
+- **Drop `shared-globals` entirely.** Rejected: `projects/configuration/tsconfig.json` is
   a genuine input to nearly every lint target, and it is low-churn. Removing it
   would trade over-invalidation for stale results.
 - **Name the real dependency per target.** Chosen. Tool versions go in a

@@ -6,7 +6,7 @@
 # `nx affected --target=$TARGET`. The caller picks the target and the revisions;
 # Nx picks the projects. This script only decides which changed files Nx is
 # told about. The pre-commit hook does not use it (see
-# `configuration/lint-staged.config.ts`).
+# `projects/configuration/lint-staged.config.ts`).
 #
 # 1. List the files changed between NX_BASE and NX_HEAD.
 # 2. Find the files that would mislead Nx for this target:
@@ -16,7 +16,7 @@
 #      INCLUDE_SPELLING is "true".
 #    - Conformetry templates under-select. `.nxignore` hides some of them from
 #      Nx, so editing one selected nothing. With INCLUDE_TEMPLATES, a changed
-#      template adds `configuration/conformetry.config.ts`, an input of every
+#      template adds `projects/configuration/conformetry.config.ts`, an input of every
 #      instance project, to the list. The edit still reaches the project's
 #      cache key through the template hash input, so each selected project
 #      re-validates. Set it only for the target that runs
@@ -45,9 +45,9 @@
 
 set -euo pipefail
 
-DEFAULT_SPELLING_PATHS='^configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
-DEFAULT_TEMPLATE_PATHS='^configuration/conformetry-templates/'
-TEMPLATE_SELECTOR="configuration/conformetry.config.ts"
+DEFAULT_SPELLING_PATHS='^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$'
+DEFAULT_TEMPLATE_PATHS='^projects/configuration/conformetry-templates/'
+TEMPLATE_SELECTOR="projects/configuration/conformetry.config.ts"
 
 spelling_paths="${SPELLING_PATHS:-${DEFAULT_SPELLING_PATHS}}"
 template_paths="${TEMPLATE_PATHS:-${DEFAULT_TEMPLATE_PATHS}}"

@@ -11,6 +11,9 @@ import type { LocatedWorkspace } from "@callidescope/cli";
 import type { CallableId } from "@callidescope/core";
 import type { DiscoveredCallable } from "@callidescope/graph";
 
+/** The workspace configuration every run must name. */
+const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
+
 /** The address every test looks up. */
 const ADDRESS = "src/foo.service.ts#FooService.bar";
 
@@ -74,6 +77,7 @@ describe(AddressService, () => {
 
     await service.runDepth({
       addresses: [ADDRESS],
+      configurationPath: CONFIGURATION_PATH,
       directories: ["packages/alpha"],
     });
 
@@ -81,6 +85,7 @@ describe(AddressService, () => {
     // the plugin drives the lookup service directly rather than through a
     // command, and every value that command would prompt for is passed.
     expect(addressLookupService.locate).toHaveBeenCalledWith({
+      config: CONFIGURATION_PATH,
       directories: ["packages/alpha"],
     });
   });
@@ -109,6 +114,7 @@ describe(AddressService, () => {
       await expect(
         service.runDepth({
           addresses: [ADDRESS],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({ ok: true, report: "# Depth" });
@@ -128,6 +134,7 @@ describe(AddressService, () => {
       await expect(
         service.runDepth({
           addresses: [ADDRESS],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({
@@ -148,6 +155,7 @@ describe(AddressService, () => {
       await expect(
         service.runDepth({
           addresses: [ADDRESS],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toMatchObject({ ok: false });
@@ -161,6 +169,7 @@ describe(AddressService, () => {
       await expect(
         service.runBreadth({
           addresses: [ADDRESS],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({ ok: true, report: "# Breadth" });
@@ -183,6 +192,7 @@ describe(AddressService, () => {
       await expect(
         service.runBreadth({
           addresses: [ADDRESS],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toMatchObject({ ok: false });
@@ -196,6 +206,7 @@ describe(AddressService, () => {
       await expect(
         service.runBreadth({
           addresses: [ADDRESS],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({ ok: false, report: "Ambiguous." });
@@ -209,6 +220,7 @@ describe(AddressService, () => {
       await expect(
         service.runDepth({
           addresses: [ADDRESS, "packages/beta/src/b.service.ts#B.c"],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({ ok: true, report: "# Depth" });
@@ -225,6 +237,7 @@ describe(AddressService, () => {
 
       await service.runDepth({
         addresses: [ADDRESS, "packages/beta/src/b.service.ts#B.c"],
+        configurationPath: CONFIGURATION_PATH,
         directories: ["packages/alpha"],
       });
 
@@ -252,6 +265,7 @@ describe(AddressService, () => {
       await expect(
         service.runDepth({
           addresses: [ADDRESS, "nope.ts#Nope.nope"],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({
@@ -272,6 +286,7 @@ describe(AddressService, () => {
       await expect(
         service.runDepth({
           addresses: [ADDRESS, "nope.ts#Nope.nope"],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({
@@ -286,6 +301,7 @@ describe(AddressService, () => {
       await expect(
         service.runBreadth({
           addresses: [ADDRESS, "packages/beta/src/b.service.ts#B.c"],
+          configurationPath: CONFIGURATION_PATH,
           directories: ["packages/alpha"],
         }),
       ).resolves.toStrictEqual({ ok: true, report: "# Breadth" });

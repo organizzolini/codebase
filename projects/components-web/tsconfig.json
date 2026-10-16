@@ -8,14 +8,14 @@
     "outDir": "../../dist/out-tsc",
     "paths": {
       "@/*": ["./src/*"],
-      "codebase/configuration/*": ["../../configuration/*"],
+      "codebase/configuration/*": ["../../projects/configuration/*"],
       "eslint-plugin-better-max-params": [
-        "../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
+        "../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "types": ["node", "vite/client"]
   },
-  "extends": "../../configuration/tsconfig.json",
+  "extends": "../../projects/configuration/tsconfig.json",
   "include": [
     "callidescope.config.ts",
     "codependix.config.ts",

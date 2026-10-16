@@ -8,7 +8,11 @@ import { runAddressExecutor } from "./address.utilities";
 import type { PluginService } from "../plugin/plugin.service";
 import type { ResolvedTraceScope } from "../plugin/plugin.types";
 import type { AddressService } from "./address.service";
+import type { ConfigurationService } from "@callidescope/configuration";
 import type { ExecutorContext } from "@nx/devkit";
+
+/** The workspace configuration every run must name. */
+const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
 
 const addressService = createMock<AddressService>();
 const pluginService = createMock<PluginService>();
@@ -17,7 +21,14 @@ vi.mock("../plugin/plugin-context.utilities", () => ({
   resolveAddressService: async (): Promise<AddressService> =>
     await Promise.resolve(addressService),
   resolveOptionsService: async (): Promise<OptionsService> =>
-    await Promise.resolve(new OptionsService()),
+    await Promise.resolve(
+      new OptionsService(
+        createMock<ConfigurationService>({
+          requireConfigurationPath: (path: string | undefined): string =>
+            path ?? "",
+        }),
+      ),
+    ),
   resolvePluginService: async (): Promise<PluginService> =>
     await Promise.resolve(pluginService),
 }));
@@ -79,7 +90,10 @@ describe(runAddressExecutor, () => {
         runAddressExecutor({
           context: buildContext("alpha"),
           kind,
-          options: { addresses: [ADDRESS] },
+          options: {
+            addresses: [ADDRESS],
+            configuration: CONFIGURATION_PATH,
+          },
         }),
       ).resolves.toStrictEqual({ success: true });
       expect(process.stdout.write).toHaveBeenCalledWith(`${report}\n`);
@@ -92,7 +106,7 @@ describe(runAddressExecutor, () => {
     await runAddressExecutor({
       context: buildContext("alpha"),
       kind: "depth",
-      options: { addresses: [ADDRESS] },
+      options: { addresses: [ADDRESS], configuration: CONFIGURATION_PATH },
     });
 
     expect(pluginService.resolveTraceScope).toHaveBeenCalledWith({
@@ -114,7 +128,11 @@ describe(runAddressExecutor, () => {
     await runAddressExecutor({
       context: buildContext("alpha"),
       kind: "breadth",
-      options: { addresses: [ADDRESS], tags: ["type:package"] },
+      options: {
+        addresses: [ADDRESS],
+        configuration: CONFIGURATION_PATH,
+        tags: ["type:package"],
+      },
     });
 
     expect(pluginService.resolveTraceScope).toHaveBeenCalledWith(
@@ -130,7 +148,7 @@ describe(runAddressExecutor, () => {
       kind: "depth",
       options: {
         addresses: [ADDRESS],
-        configurationPath: "elsewhere.ts",
+        configuration: "elsewhere.ts",
         // Narrowed rather than trusted: a hand-written target bypasses the
         // executor's schema enum.
         format: "not-a-format",
@@ -146,9 +164,15 @@ describe(runAddressExecutor, () => {
   });
 
   it.each([
-    ["no addresses", {}],
-    ["an empty address list", { addresses: [] }],
-    ["nothing but a blank address", { addresses: [""] }],
+    ["no addresses", { configuration: CONFIGURATION_PATH }],
+    [
+      "an empty address list",
+      { addresses: [], configuration: CONFIGURATION_PATH },
+    ],
+    [
+      "nothing but a blank address",
+      { addresses: [""], configuration: CONFIGURATION_PATH },
+    ],
   ])("refuses a run with %s", async (_description, options) => {
     expect.hasAssertions();
 
@@ -169,7 +193,10 @@ describe(runAddressExecutor, () => {
       runAddressExecutor({
         context: buildContext(),
         kind: "depth",
-        options: { addresses: [ADDRESS] },
+        options: {
+          addresses: [ADDRESS],
+          configuration: CONFIGURATION_PATH,
+        },
       }),
     ).rejects.toThrow("must be run against a project");
   });
@@ -185,7 +212,11 @@ describe(runAddressExecutor, () => {
       runAddressExecutor({
         context: buildContext("alpha"),
         kind: "depth",
-        options: { addresses: [ADDRESS], projects: ["absent"] },
+        options: {
+          addresses: [ADDRESS],
+          configuration: CONFIGURATION_PATH,
+          projects: ["absent"],
+        },
       }),
     ).rejects.toThrow("Unknown Nx projects.");
     expect(addressService.runDepth).not.toHaveBeenCalled();
@@ -203,7 +234,10 @@ describe(runAddressExecutor, () => {
       runAddressExecutor({
         context: buildContext("alpha"),
         kind: "depth",
-        options: { addresses: [ADDRESS] },
+        options: {
+          addresses: [ADDRESS],
+          configuration: CONFIGURATION_PATH,
+        },
       }),
     ).resolves.toStrictEqual({ success: false });
     expect(process.stdout.write).toHaveBeenCalledWith(

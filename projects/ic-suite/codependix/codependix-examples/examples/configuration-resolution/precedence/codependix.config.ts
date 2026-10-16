@@ -1,6 +1,6 @@
 /**
- * The TypeScript configuration file, which wins over the JSON one beside it
- * because `CONFIGURATION_FILE_NAMES` searches for it first.
+ * The TypeScript configuration file. The JSON one beside it is read only when
+ * `--config` names it: nothing searches a directory for a file.
  */
 export default {
   include: ["packages/*", "codependix-*"],

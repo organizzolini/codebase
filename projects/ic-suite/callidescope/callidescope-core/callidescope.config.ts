@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../../projects/configuration/callidescope.config.js";
 
 /**
  * What callidescope-core is held to, measured rather than assumed.
@@ -8,7 +8,7 @@ import { projectDefaults } from "../../../../configuration/callidescope.config.j
  * already here the day a callable arrives rather than being introduced after
  * one has.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

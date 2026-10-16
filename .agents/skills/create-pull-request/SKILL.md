@@ -26,8 +26,8 @@ PR titles **must** follow the same format as commit messages:
 
 ### Structure Rules
 
-1. **Type**: Required, lowercase, from [allowed types](../../../configuration/conventional.config.cjs)
-2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/conventional.config.cjs)
+1. **Type**: Required, lowercase, from [allowed types](../../../projects/configuration/conventional.config.cjs)
+2. **Scope**: Required, lowercase, from [allowed scopes](../../../projects/configuration/conventional.config.cjs)
 3. **Gitmoji**: Required, emoji at start of subject
 4. **Subject**: Required, lowercase, imperative mood, no period
 
@@ -204,7 +204,7 @@ Adds a user profile page where users can view and edit their information.
    nx run lexico-web:vitest
    ```
 
-2. Run `nx run lexico-web:develop` and navigate to `/profile`.
+2. Run `nx run lexico-web:start` and navigate to `/profile`.
 
 ## 🔗 Related
 
@@ -387,7 +387,7 @@ Adds autocomplete suggestions to the dictionary search input.
 ## 🧪 Testing
 
 1. Run `nx run lexico-web:vitest`.
-2. Run `nx run lexico-web:develop`, navigate to the search page, and type a query.
+2. Run `nx run lexico-web:start`, navigate to the search page, and type a query.
 
 ## 🔗 Related
 
@@ -465,7 +465,7 @@ Updates TanStack Router to latest version with bug fixes.
 ## 🧪 Testing
 
 1. Run `nx run lexico-web:vitest`.
-2. Run `nx run lexico-web:develop` and confirm every route works as before.
+2. Run `nx run lexico-web:start` and confirm every route works as before.
 
 ## 🔗 Related
 

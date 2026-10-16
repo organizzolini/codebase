@@ -9,7 +9,7 @@
 ### Run Locally
 
 ```bash
-nx run caelundas-web:develop
+nx run caelundas-web:start
 ```
 
 ## Architecture Overview
@@ -65,7 +65,7 @@ nx g conformetry:react-hook --name=use-<hook> --project=caelundas-web
 A route's name is its file stem — `index`, `search`, `word.$id` — and its route
 path is the URL it serves: `/`, `/search`, `/word/$id`. TanStack's route
 generator rewrites the path argument to match the file whenever they disagree,
-and regenerates `src/lib/routeTree.gen.ts` on every `develop` or `build`. Each page is a `<section>` with an `<h1>`, named after its
+and regenerates `src/lib/routeTree.gen.ts` on every `start` or `build`. Each page is a `<section>` with an `<h1>`, named after its
 route — `word.$id` renders `WordIdPage` — inside the `<main>` the root layout
 renders.
 
@@ -92,7 +92,7 @@ pnpm add --filter caelundas-web zod
 ### Key Commands
 
 ```bash
-nx run caelundas-web:develop      # Development server on http://localhost:3000
+nx run caelundas-web:start      # Development server on http://localhost:3000
 nx run caelundas-web:build        # Production build into dist/
 nx run caelundas-web:preview      # Serve the production build
 nx run caelundas-web:vitest       # Unit tests

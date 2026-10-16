@@ -1,0 +1,784 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": [
+    "!callidescope-configuration",
+    "!codependix-configuration",
+    "!codometer-configuration",
+    "!conformetry-configuration",
+    "!conformetry-nx",
+    "!logging"
+  ],
+  "name": "configuration",
+  "namedInputs": {
+    "vendored-skills": [
+      "!{workspaceRoot}/.agents/skills/ask-matt/**",
+      "!{workspaceRoot}/.agents/skills/brainstorming/**",
+      "!{workspaceRoot}/.agents/skills/callidescope-configure/**",
+      "!{workspaceRoot}/.agents/skills/callidescope-trace/**",
+      "!{workspaceRoot}/.agents/skills/callidescope-triage/**",
+      "!{workspaceRoot}/.agents/skills/code-review/**",
+      "!{workspaceRoot}/.agents/skills/codebase-design/**",
+      "!{workspaceRoot}/.agents/skills/codependix-configure/**",
+      "!{workspaceRoot}/.agents/skills/codependix-export/**",
+      "!{workspaceRoot}/.agents/skills/codependix-navigate/**",
+      "!{workspaceRoot}/.agents/skills/codependix-triage/**",
+      "!{workspaceRoot}/.agents/skills/codometer-configure/**",
+      "!{workspaceRoot}/.agents/skills/codometer-measure/**",
+      "!{workspaceRoot}/.agents/skills/codometer-triage/**",
+      "!{workspaceRoot}/.agents/skills/conformetry-configure/**",
+      "!{workspaceRoot}/.agents/skills/conformetry-generate/**",
+      "!{workspaceRoot}/.agents/skills/conformetry-validate/**",
+      "!{workspaceRoot}/.agents/skills/diagnosing-bugs/**",
+      "!{workspaceRoot}/.agents/skills/dispatching-parallel-agents/**",
+      "!{workspaceRoot}/.agents/skills/domain-modeling/**",
+      "!{workspaceRoot}/.agents/skills/finishing-a-development-branch/**",
+      "!{workspaceRoot}/.agents/skills/gh-stack/**",
+      "!{workspaceRoot}/.agents/skills/github-issues/**",
+      "!{workspaceRoot}/.agents/skills/grill-me/**",
+      "!{workspaceRoot}/.agents/skills/grill-with-docs/**",
+      "!{workspaceRoot}/.agents/skills/grilling/**",
+      "!{workspaceRoot}/.agents/skills/handoff/**",
+      "!{workspaceRoot}/.agents/skills/impeccable/**",
+      "!{workspaceRoot}/.agents/skills/implement/**",
+      "!{workspaceRoot}/.agents/skills/improve-codebase-architecture/**",
+      "!{workspaceRoot}/.agents/skills/link-workspace-packages/**",
+      "!{workspaceRoot}/.agents/skills/monitor-ci/**",
+      "!{workspaceRoot}/.agents/skills/nx-generate/**",
+      "!{workspaceRoot}/.agents/skills/nx-import/**",
+      "!{workspaceRoot}/.agents/skills/nx-plugins/**",
+      "!{workspaceRoot}/.agents/skills/nx-run-tasks/**",
+      "!{workspaceRoot}/.agents/skills/nx-workspace/**",
+      "!{workspaceRoot}/.agents/skills/prototype/**",
+      "!{workspaceRoot}/.agents/skills/receiving-code-review/**",
+      "!{workspaceRoot}/.agents/skills/requesting-code-review/**",
+      "!{workspaceRoot}/.agents/skills/research/**",
+      "!{workspaceRoot}/.agents/skills/reui/**",
+      "!{workspaceRoot}/.agents/skills/setup-matt-pocock-skills/**",
+      "!{workspaceRoot}/.agents/skills/subagent-driven-development/**",
+      "!{workspaceRoot}/.agents/skills/systematic-debugging/**",
+      "!{workspaceRoot}/.agents/skills/tdd/**",
+      "!{workspaceRoot}/.agents/skills/teach/**",
+      "!{workspaceRoot}/.agents/skills/test-driven-development/**",
+      "!{workspaceRoot}/.agents/skills/to-questionnaire/**",
+      "!{workspaceRoot}/.agents/skills/to-spec/**",
+      "!{workspaceRoot}/.agents/skills/to-tickets/**",
+      "!{workspaceRoot}/.agents/skills/triage/**",
+      "!{workspaceRoot}/.agents/skills/using-git-worktrees/**",
+      "!{workspaceRoot}/.agents/skills/verification-before-completion/**",
+      "!{workspaceRoot}/.agents/skills/wait-what/**",
+      "!{workspaceRoot}/.agents/skills/wayfinder/**",
+      "!{workspaceRoot}/.agents/skills/wizard/**",
+      "!{workspaceRoot}/.agents/skills/writing-for-agents/**",
+      "!{workspaceRoot}/.agents/skills/writing-skills/**"
+    ],
+    "workspace-files": ["{projectRoot}/**/*", "workspace-unowned"],
+    "workspace-unowned": [
+      "!{workspaceRoot}/projects/**/*",
+      "{workspaceRoot}/**/*"
+    ]
+  },
+  "projectType": "library",
+  "sourceRoot": "projects/configuration",
+  "tags": ["name:configuration"],
+  "targets": {
+    "build-projects": {
+      "cache": false,
+      "dependsOn": ["codometer"],
+      "description": "Measure the repository and gate the limits it declares over itself. An nx:noop aggregator, the way every project's `build-projects` is. `dependsOn` names `codometer` alone rather than inheriting the targetDefault's `build`: this project builds nothing, and this run measures source. It exists so 👷 Make Projects reaches the repository itself — the workflows under .github belong to no project, so without this nothing gates their comment budgets.",
+      "executor": "nx:noop"
+    },
+    "callidescope": {
+      "cache": true,
+      "configurations": {
+        "write": {
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/callidescope/callidescope-cli/src/callidescope-cli.main.ts callidescope --config projects/configuration/callidescope.config.ts --write"
+        }
+      },
+      "defaultConfiguration": "write",
+      "description": "Publish the workspace call-stack trace: every project's README block, the mermaid diagram, and the JSON report. The only configuration left is `write` — depth checking now runs through the inferred per-project `callidescope-gate` target, a dependency of `guard-code`, scoped by `nx affected` in the 💂 Guard check and `projects/configuration/lint-staged.config.ts`, so a pull request and a commit gate the projects a change actually touched rather than the whole workspace. This target still stays out of `lint-code`'s `dependsOn` for the reason it always did, unchanged by that split because `write` is exactly the configuration that remains: Nx forwards an explicit configuration down `dependsOn`, so a target reachable from there would take `write` from `lint-code --configuration=write` and publish the report from a branch. `defaultConfiguration` is `write`, the only configuration left, so a bare `nx run configuration:callidescope` does what `:write` does. Publishing did not fan out the way gating did: one JSON report and one set of README blocks are what the whole workspace needs, and computing either per project would mean rebuilding the same call graph many times for one merged artifact, where gating benefits from being scoped to what changed and publishing does not. Three traced call-graph roots carry no gate of their own and never will, because a gate is inferred onto an Nx project and none of them is one: the three fixture roots under `projects/ic-suite/codependix/codependix-examples/examples/`, which measure depth 0. They keep being traced and published here on the default branch, so a regression in any of them still lands in the report; it only stops failing a pull request. `projects/configuration/` was a fourth until it became an Nx project, and now has an inferred gate of its own. The workspace root is a fifth gap of a different kind and is not one of the four: `projects/configuration/.callidescopeignore` drops it as a project, for the reason recorded there, so the loose maintenance scripts it once owned are traced by nothing at all — which is also why the root project is skipped from gate inference, its scope being the workspace itself. The README glob is an input because `write` splices into those files: without it, a hand-edited report replays a cached run.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/**/*.{cts,mts,ts,tsx}",
+        "{workspaceRoot}/**/README.md",
+        "{workspaceRoot}/projects/configuration/.callidescopeignore",
+        "{workspaceRoot}/projects/configuration/callidescope.config.ts",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
+    "codependix": {
+      "cache": true,
+      "configurations": {
+        "write": {
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codependix/codependix-cli/src/codependix-cli.main.ts map --directory . --config projects/configuration/codependix.config.ts --write"
+        }
+      },
+      "defaultConfiguration": "write",
+      "description": "Publish the workspace dependency graphs: every project's README blocks, and whatever JSON or Markdown destinations the configuration names. The only configuration left is `write` — boundary checking now runs through the inferred per-project `codependix-gate` target, a dependency of `guard-code`, scoped by `nx affected` in the 💂 Guard check and `projects/configuration/lint-staged.config.ts`, so a pull request and a commit gate the projects a change actually touched rather than the whole workspace. This target stays out of `guard-code`'s and `lint-code`'s `dependsOn`, as `configuration:callidescope` does: Nx forwards an explicit configuration down `dependsOn`, so a target reachable from there would take `write` from `guard-code --configuration=write` and publish the exports from a branch. `defaultConfiguration` is `write`, the only configuration left, so a bare `nx run configuration:codependix` does what `:write` does. Publishing did not fan out the way gating did: one workspace-wide export, whose `## 🕸️ Codependix` anchors in every README must reflect one commit, is what the release needs, and a gate per project would rebuild the same graphs many times for one merged artifact. The release workflow runs it on the default branch, after `callidescope` and the module-graph synchronization have run, so each anchor reflects the same commit those write. The command line still accepts `--check boundaries` and `--check reports`, and nothing in the workspace runs either here: `--check reports` would fail every branch that changed a project graph rather than anything the branch itself did. The README glob is an input because `write` splices Markdown into anchor blocks placed by hand in those files.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/**/*.{cts,mts,ts,tsx}",
+        "{workspaceRoot}/**/README.md",
+        "{workspaceRoot}/projects/configuration/codependix.config.ts",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
+    "codometer": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config projects/configuration/codometer.config.ts --output-json --check limits"
+        },
+        "write": {
+          "command": "node --import @swc-node/register/esm-register projects/ic-suite/codometer/codometer-cli/src/codometer-cli.main.ts measure --config projects/configuration/codometer.config.ts --output-json --output-markdown"
+        }
+      },
+      "defaultConfiguration": "check",
+      "dependsOn": [],
+      "description": "Measure the whole repository: `check` gates the limits it declares over itself, chiefly the 128-word comment budgets declared per language, and `write` writes its README.md statistics badges. The two flags name two findings on opposite sides of a pull request, the same split callidescope makes. `check` reads no output destination and writes nothing, which is what makes it safe on a branch — a breached budget is something the branch did. `write` passes `--output-markdown` with no path, since the workspace configuration already declares README.md as its markdown destination. Report staleness is deliberately not checked: those badges are written on main by the release workflow, so every branch would fail for being behind rather than for anything it did. `dependsOn` is written out as an empty list rather than left to the `codometer` targetDefault, which depends on `build`: a per-project run measures compiled output and must wait for it, while this one measures source and would otherwise wait on every build in the workspace — slow, and circular, since the tools it would be waiting for are measured by it. The two are deliberately different and must not be collapsed into one. `options.env.SWC_NODE_PROJECT` is written out for the same reason: the `codometer` targetDefault points it at `../../projects/configuration/tsconfig.json`, relative to a per-project run's own `{projectRoot}` cwd, and this target already overrides `cwd` back to `{workspaceRoot}` — merging the targetDefault's `env` in unchanged would resolve two directories above the repository entirely. `@swc-node/register`'s ESM hook needs this pointed at a real tsconfig to load `codometer-cli` at all, since it resolves `SWC_NODE_PROJECT` as `<cwd>/tsconfig.json` with no upward search. This is also the only run that reaches the workflows under .github, which belong to no project, so no per-project run ever measures them.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/codometer-report.json",
+        "{workspaceRoot}/**/*.{cjs,cts,js,json,jsx,mjs,mts,py,ts,tsx}",
+        "{workspaceRoot}/**/*.{yaml,yml}",
+        "{workspaceRoot}/projects/configuration/.codometerignore",
+        "{workspaceRoot}/projects/configuration/codometer.config.ts",
+        "{workspaceRoot}/README.md",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}",
+        "env": {
+          "SWC_NODE_PROJECT": "projects/configuration/tsconfig.json"
+        }
+      },
+      "outputs": [
+        "{workspaceRoot}/codometer-report.json",
+        "{workspaceRoot}/README.md"
+      ]
+    },
+    "commit-msg": {
+      "cache": false,
+      "description": "Run the commit-msg git hook script (commitlint). Pass the commit message file via --edit=<path>.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sh projects/configuration/.husky/commit-msg",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "commitlint": {
+      "cache": false,
+      "description": "Validate commit message format with commitlint. The commit-msg hook calls the binary directly to avoid a project graph build; this target is for manual use.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='--import=tsx' commitlint --config projects/configuration/commitlint.config.ts --edit {args.edit}",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "deprecate-code": {},
+    "eslint": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "eslint {args} --cache --cache-strategy content --cache-location \"$NX_WORKSPACE_ROOT/.eslintcache/\" --config projects/configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'scripts/' 'documentation/' 'projects/infrastructure/' '**/*.md' 'projects/configuration/project.json'"
+        },
+        "write": {
+          "command": "eslint {args} --fix --config projects/configuration/eslint.config.ts --no-error-on-unmatched-pattern '*.ts' '*.js' '*.json' 'scripts/' 'documentation/' 'projects/infrastructure/' '**/*.md' 'projects/configuration/project.json'"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Lint workspace root files with ESLint — config files, scripts, documentation, the infrastructure project (named explicitly rather than given its own eslint target, which would need a tsconfig just to lint an eslint.config.ts), and every markdown file in the workspace. That trailing `**/*.md` is what gives `project-structure/folder-structure` reach over markdown paths, and it is a workspace-wide glob rather than a list of directories on purpose: an enumerated list only judges the directories somebody remembered to add, so it would not have caught openwiki/ — the undeclared directory that motivated the rule — and would not catch the next one. Markdown inside a project is judged twice, here and by that project's own eslint target, which costs a second and reports the same answer.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/.eslintcache/**",
+        "{projectRoot}/**/*",
+        "{workspaceRoot}/projects/configuration/codebase-structure.json",
+        "{workspaceRoot}/projects/configuration/eslint.config.ts",
+        "shared-globals",
+        "workspace-files",
+        {
+          "externalDependencies": [
+            "@eslint/js",
+            "@eslint/markdown",
+            "@eslint-react/eslint-plugin",
+            "@nx/eslint-plugin",
+            "@vitest/eslint-plugin",
+            "eslint",
+            "eslint-config-prettier",
+            "eslint-plugin-better-max-params",
+            "eslint-plugin-import-x",
+            "eslint-plugin-jsdoc",
+            "eslint-plugin-jsonc",
+            "eslint-plugin-jsx-a11y",
+            "eslint-plugin-perfectionist",
+            "eslint-plugin-project-structure",
+            "eslint-plugin-tsdoc",
+            "eslint-plugin-unicorn",
+            "eslint-plugin-yml",
+            "typescript",
+            "typescript-eslint"
+          ]
+        }
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "fallow": {
+      "cache": true,
+      "configurations": {
+        "json": {
+          "command": "fallow --config projects/configuration/fallow.config.jsonc --format=json"
+        },
+        "markdown": {
+          "command": "fallow --config projects/configuration/fallow.config.jsonc --format=markdown"
+        },
+        "pr-comment-github": {
+          "command": "fallow --config projects/configuration/fallow.config.jsonc --format=pr-comment-github"
+        }
+      },
+      "description": "Run all fallow static analyses (dead-code, duplicates, health) in advisory mode",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+        "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+        "shared-globals",
+        {
+          "externalDependencies": ["fallow"]
+        }
+      ],
+      "options": {
+        "command": "fallow --config projects/configuration/fallow.config.jsonc",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "fallow-audit": {
+      "cache": false,
+      "configurations": {
+        "json": {
+          "command": "fallow audit --config projects/configuration/fallow.config.jsonc --format=json"
+        },
+        "markdown": {
+          "command": "fallow audit --config projects/configuration/fallow.config.jsonc --format=markdown"
+        },
+        "pr-comment-github": {
+          "command": "fallow audit --config projects/configuration/fallow.config.jsonc --format=pr-comment-github"
+        }
+      },
+      "description": "Fallow audit gate (new-only regression check on changed code) — advisory",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+        "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+        "shared-globals"
+      ],
+      "options": {
+        "command": "fallow audit --config projects/configuration/fallow.config.jsonc || true",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "fallow-dead-code": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "fallow dead-code --config projects/configuration/fallow.config.jsonc"
+        },
+        "json": {
+          "command": "fallow dead-code --config projects/configuration/fallow.config.jsonc --format=json"
+        },
+        "markdown": {
+          "command": "fallow dead-code --config projects/configuration/fallow.config.jsonc --format=markdown"
+        },
+        "pr-comment-github": {
+          "command": "fallow dead-code --config projects/configuration/fallow.config.jsonc --format=pr-comment-github"
+        },
+        "write": {
+          "command": "fallow dead-code --config projects/configuration/fallow.config.jsonc"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Fallow dead-code analysis (unused files, exports, types, dependencies, unresolved imports) — a `lint-code` gate beside `knip`, whose findings it deliberately mirrors: `projects/configuration/fallow.config.jsonc` carries the same entry points, the same per-file report suppressions, and the same ignored dependencies as `projects/configuration/knip.config.ts`, so a finding one reports the other reports too. The severities `knip` also fails on are `error` in that config; the rest stay `warn` and belong to `fallow-health` and `fallow-duplicates`, which are still advisory. The `write` configuration is identical to `check` because there is nothing to write: removing what this finds is `fallow-fix`, which stays manual-only.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+        "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+        "shared-globals",
+        {
+          "externalDependencies": ["fallow"]
+        }
+      ],
+      "options": {
+        "command": "fallow dead-code --config projects/configuration/fallow.config.jsonc",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "fallow-duplicates": {
+      "cache": true,
+      "configurations": {
+        "json": {
+          "command": "fallow dupes --config projects/configuration/fallow.config.jsonc --format=json"
+        },
+        "markdown": {
+          "command": "fallow dupes --config projects/configuration/fallow.config.jsonc --format=markdown"
+        },
+        "pr-comment-github": {
+          "command": "fallow dupes --config projects/configuration/fallow.config.jsonc --format=pr-comment-github"
+        }
+      },
+      "description": "Fallow strict duplication analysis (config-driven) with threshold gating",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+        "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+        "shared-globals",
+        {
+          "externalDependencies": ["fallow"]
+        }
+      ],
+      "options": {
+        "command": "fallow dupes --config projects/configuration/fallow.config.jsonc",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "fallow-fix": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "fallow fix --dry-run --config projects/configuration/fallow.config.jsonc"
+        },
+        "write": {
+          "command": "fallow fix --yes --config projects/configuration/fallow.config.jsonc"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "⚠️  MANUAL-ONLY (write config): removes unused exports/deps from source files — never include in automated pipelines. Use check config for safe dry-run preview.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+        "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "fallow-health": {
+      "cache": true,
+      "configurations": {
+        "json": {
+          "command": "fallow health --config projects/configuration/fallow.config.jsonc --format=json || true"
+        },
+        "markdown": {
+          "command": "fallow health --config projects/configuration/fallow.config.jsonc --format=markdown || true"
+        },
+        "pr-comment-github": {
+          "command": "fallow health --config projects/configuration/fallow.config.jsonc --format=pr-comment-github || true"
+        }
+      },
+      "description": "Fallow code health analysis (complexity, hotspots, maintainability) — advisory",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "!{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
+        "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+        "shared-globals",
+        {
+          "externalDependencies": ["fallow"]
+        }
+      ],
+      "options": {
+        "command": "fallow health --config projects/configuration/fallow.config.jsonc || true",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "format-code": {},
+    "gitleaks": {
+      "cache": true,
+      "configurations": {
+        "ci": {
+          "command": "gitleaks git --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path projects/configuration"
+        },
+        "ci-incremental": {
+          "command": "gitleaks git --log-opts=\"${NX_BASE}..${NX_HEAD}\" --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path projects/configuration"
+        }
+      },
+      "description": "Detect hardcoded secrets in git history using Gitleaks (detection only). The ci-incremental configuration scopes the scan to NX_BASE..NX_HEAD instead of full history, for push/pull_request/merge_group events where the weekly ci scan already covers everything older.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/projects/configuration/.gitleaksignore",
+        "{workspaceRoot}/projects/configuration/gitleaks.toml",
+        "workspace-files",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "gitleaks git --staged --verbose --redact --config projects/configuration/gitleaks.toml --gitleaks-ignore-path projects/configuration",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "guard-code": {},
+    "jscpd": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "jscpd --config projects/configuration/jscpd.config.json --no-tips --reporters console,threshold projects scripts configuration || true"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Run jscpd duplicate-code reporting and threshold status in advisory mode (never fails CI).",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/projects/**/*",
+        "{workspaceRoot}/projects/configuration/**/*",
+        "{workspaceRoot}/projects/configuration/jscpd.config.json",
+        "{workspaceRoot}/scripts/**/*",
+        "shared-globals",
+        {
+          "externalDependencies": ["jscpd"]
+        }
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "knip": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "knip --config projects/configuration/knip.config.ts --workspace ."
+        },
+        "write": {
+          "command": "knip --config projects/configuration/knip.config.ts --fix --workspace ."
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Check for unused files, dependencies, and exports in workspace root only",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/projects/configuration/knip.config.ts",
+        "workspace-files",
+        {
+          "externalDependencies": ["knip", "typescript"]
+        }
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "license-check": {
+      "cache": true,
+      "description": "Check licenses of production dependencies",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/package.json",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "workspace-files"
+      ],
+      "options": {
+        "command": "license-checker --json --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;Unlicense;Python-2.0;CC-BY-3.0;CC-BY-4.0;WTFPL;Zlib;BlueOak-1.0.0' --production --excludePrivatePackages",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "lint-code": {},
+    "lint-staged": {
+      "cache": false,
+      "description": "Run lint-staged on staged files (invoked by the pre-commit git hook)",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='--import=tsx' lint-staged --config projects/configuration/lint-staged.config.ts --continue-on-error",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "local-registry": {
+      "executor": "@nx/js:verdaccio",
+      "options": {
+        "config": "projects/configuration/verdaccio.config.yml",
+        "port": 4873,
+        "storage": "tmp/local-registry/storage"
+      }
+    },
+    "markdown-lint": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "markdownlint-cli2 --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
+        },
+        "write": {
+          "command": "markdownlint-cli2 --fix --config projects/configuration/.markdownlint-cli2.jsonc '*.md' '.agents/**/*.md' 'documentation/**/*.md' 'scripts/**/*.md' 'projects/configuration/*.md'"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Lint markdown files in workspace root (agents, scripts, documentation). Reaches .agents/ so this repository's own skills are linted like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the markdownlint configuration. The inputs enumerate exactly the globs the command lints, plus the markdownlint configuration and shared-globals, and `markdownlint-cli2` as an external dependency, so a markdownlint upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The `workspace-files` input this project defines is deliberately absent: it spans every file no project owns, which would make every one the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills markdownlint already ignores, so editing one of them no longer busts the cache for nothing.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.md",
+        "{workspaceRoot}/*.md",
+        "{workspaceRoot}/.agents/**/*.md",
+        "{workspaceRoot}/documentation/**/*.md",
+        "{workspaceRoot}/projects/configuration/.markdownlint-cli2.jsonc",
+        "{workspaceRoot}/scripts/**/*.md",
+        "shared-globals",
+        "vendored-skills",
+        {
+          "externalDependencies": ["markdownlint-cli2"]
+        }
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "oxfmt": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'projects/configuration/project.json' 'projects/configuration/*.md'"
+        },
+        "write": {
+          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} '*.ts' '*.js' '*.json' '*.md' 'scripts/' 'documentation/' 'projects/configuration/project.json' 'projects/configuration/*.md'"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Format workspace root files with oxfmt (config files, scripts, documentation)",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*",
+        "{workspaceRoot}/projects/configuration/.oxfmtignore",
+        "{workspaceRoot}/projects/configuration/oxfmt.config.ts",
+        "workspace-files",
+        {
+          "externalDependencies": ["oxfmt"]
+        }
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "pnpm-audit": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "pnpm audit --audit-level=moderate --ignore-unfixable --ignore-registry-errors"
+        },
+        "write": {
+          "command": "jq 'del(.pnpm.overrides)' package.json > package.temporary.json && mv package.temporary.json package.json && pnpm update --no-frozen-lockfile && pnpm audit --fix --ignore-unfixable; pnpm install --no-frozen-lockfile"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Scan for fixable security vulnerabilities (check, which passes when the advisory registry is unreachable) or clean stale overrides and re-fix (write)",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "pre-commit": {
+      "cache": false,
+      "description": "Run the pre-commit git hook script (unstage notepads, lint-staged).",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sh projects/configuration/.husky/pre-commit",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "pre-push": {
+      "cache": false,
+      "description": "Run the pre-push git hook script (branch name validation).",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sh projects/configuration/.husky/pre-push",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "prettier": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "prettier {args} --config projects/configuration/prettier.config.ts --ignore-path .gitignore --ignore-path projects/configuration/.prettierignore --check --ignore-unknown ."
+        },
+        "write": {
+          "command": "prettier {args} --config projects/configuration/prettier.config.ts --ignore-path .gitignore --ignore-path projects/configuration/.prettierignore --write --ignore-unknown ."
+        }
+      },
+      "defaultConfiguration": "write",
+      "description": "Format workspace root files with Prettier (excluding NX projects)",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "workspace-files",
+        {
+          "externalDependencies": ["prettier"]
+        }
+      ],
+      "options": {
+        "command": "prettier {args} --config projects/configuration/prettier.config.ts --ignore-path .gitignore --ignore-path projects/configuration/.prettierignore --ignore-unknown .",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "secure-code": {},
+    "shellcheck": {
+      "cache": true,
+      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The installed skills under .agents/ are owned upstream and stay out too. projects/configuration/.shellcheckrc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. pyproject.toml and uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/.devcontainer/**/*.sh",
+        "{workspaceRoot}/projects/configuration/.husky/commit-msg",
+        "{workspaceRoot}/projects/configuration/.husky/pre-commit",
+        "{workspaceRoot}/projects/configuration/.husky/pre-push",
+        "{workspaceRoot}/projects/configuration/.shellcheckrc",
+        "{workspaceRoot}/pyproject.toml",
+        "{workspaceRoot}/scripts/**/*.sh",
+        "{workspaceRoot}/uv.lock"
+      ],
+      "options": {
+        "command": "uv run shellcheck --rcfile projects/configuration/.shellcheckrc --severity=style $(git ls-files -- '.devcontainer/*.sh' 'scripts/*.sh' projects/configuration/.husky/commit-msg projects/configuration/.husky/pre-commit projects/configuration/.husky/pre-push)",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "sherif": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "pnpm dlx sherif@1.10.0 -p projects/JimmyPaolini"
+        },
+        "write": {
+          "command": "pnpm dlx sherif@1.10.0 -p projects/JimmyPaolini --fix --no-install && nx run configuration:oxfmt:write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Lint codebase for consistent package.json conventions",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "spell-check": {
+      "cache": true,
+      "description": "Check spelling in every workspace root file no project owns (configuration, documentation, notepads, planning, scripts, and the .agents, .devcontainer, .github, and .vscode directories). Reaches .agents/ so this repository's own skills are spell-checked like any other documentation; the vendored skills in skills-lock.json are excluded per skill in the cspell configuration. The inputs enumerate exactly the globs the command checks, plus the cspell configuration and dictionaries and shared-globals, and `cspell` as an external dependency, so a cspell upgrade cannot replay a cached pass while unrelated lockfile churn still hits. The `workspace-files` input this project defines is deliberately absent: it spans every file no project owns, which would make every one the tool never reads invalidate this cache. The vendored-skills negations then drop the 59 skills cspell already ignores, so editing one of them no longer busts the cache for nothing.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*",
+        "{workspaceRoot}/*.{ts,tsx,js,jsx,md,yaml,yml,json}",
+        "{workspaceRoot}/.agents/**",
+        "{workspaceRoot}/.devcontainer/**",
+        "{workspaceRoot}/.github/**",
+        "{workspaceRoot}/.vscode/**",
+        "{workspaceRoot}/documentation/**",
+        "{workspaceRoot}/notepads/**",
+        "{workspaceRoot}/planning/**",
+        "{workspaceRoot}/projects/configuration/**",
+        "{workspaceRoot}/projects/configuration/.cspell/**",
+        "{workspaceRoot}/projects/configuration/cspell.config.yaml",
+        "{workspaceRoot}/scripts/**",
+        "shared-globals",
+        "vendored-skills",
+        {
+          "externalDependencies": ["cspell"]
+        }
+      ],
+      "options": {
+        "command": "cspell --config projects/configuration/cspell.config.yaml '*.{ts,tsx,js,jsx,md,yaml,yml,json}' '.agents/**' '.devcontainer/**' '.github/**' '.vscode/**' 'projects/configuration/**' 'documentation/**' 'notepads/**' 'planning/**' 'scripts/**' --no-progress --gitignore --gitignore-root .",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "syncpack": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "pnpm exec syncpack lint --config projects/configuration/syncpack.config.cjs"
+        },
+        "write": {
+          "command": "pnpm exec syncpack fix --config projects/configuration/syncpack.config.cjs && nx run configuration:oxfmt:write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Check dependency version consistency across packages (check) or fix mismatches (write)",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "{workspaceRoot}/projects/configuration/syncpack.config.cjs",
+        {
+          "externalDependencies": ["syncpack"]
+        }
+      ],
+      "options": {
+        "command": "pnpm exec syncpack lint --config projects/configuration/syncpack.config.cjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "validate-branch-name": {
+      "cache": false,
+      "description": "Validate the current branch name against the configured naming convention. The pre-push hook calls the binary directly to avoid a project graph build; this target is for manual use.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if [ -n \"$BRANCH_NAME\" ]; then validate-branch-name -t \"$BRANCH_NAME\"; else validate-branch-name; fi",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "vulture": {
+      "cache": true,
+      "configurations": {
+        "check": {},
+        "write": {}
+      },
+      "defaultConfiguration": "check",
+      "description": "Check root-level Python utilities for dead code",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/*.py",
+        "{workspaceRoot}/projects/affirmancy/pyproject.toml",
+        "{workspaceRoot}/projects/configuration/vulture_whitelist.py",
+        "{workspaceRoot}/pyproject.toml",
+        "{workspaceRoot}/scripts/**/*.py",
+        "{workspaceRoot}/uv.lock",
+        "workspace-files",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "uv run vulture . projects/configuration/vulture_whitelist.py --min-confidence 80 --exclude '*/projects/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*,*/.claude/*'",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "yaml-lint": {
+      "cache": true,
+      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer files, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. pyproject.toml and uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/.devcontainer/**/*.{yaml,yml}",
+        "{workspaceRoot}/.github/**/*.{yaml,yml}",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        "{workspaceRoot}/projects/configuration/cspell.config.yaml",
+        "{workspaceRoot}/projects/configuration/yamllint.yaml",
+        "{workspaceRoot}/pyproject.toml",
+        "{workspaceRoot}/uv.lock",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "uv run yamllint -c projects/configuration/yamllint.yaml .devcontainer .github projects/configuration/cspell.config.yaml projects/configuration/yamllint.yaml pnpm-workspace.yaml",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  }
+}

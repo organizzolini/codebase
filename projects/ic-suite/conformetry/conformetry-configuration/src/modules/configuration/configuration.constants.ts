@@ -4,6 +4,26 @@ import { z } from "zod";
 
 import { assertNoCollisions } from "./configuration.utilities";
 
+/**
+ * Raised when a run names no configuration file.
+ *
+ * There is no default file and no filename search: the path is the one thing a
+ * run cannot infer, and a guessed file is a silently wrong configuration. The
+ * surface is how the caller spells the thing the person left unset — a flag, an
+ * option, a registration — so the message points at the fix where they are.
+ */
+export class ConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `A conformetry configuration path is required, but ${surface} is missing or blank. No default file is assumed and none is searched for.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
+    this.surface = surface;
+  }
+
+  public readonly surface: string;
+}
+
 /** Raised when the configuration path points to an unsupported file type. */
 export class UnknownConfigurationFileTypeError extends Error {
   constructor(filePath: string) {

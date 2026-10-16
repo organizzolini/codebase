@@ -17,6 +17,8 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
+import { CONFIG_FLAG_SURFACE } from "./map.constants";
+
 import type {
   BoundaryCheckOutcome,
   BoundaryReportArguments,
@@ -117,6 +119,10 @@ export class MapCommand extends CommandRunner {
   }): Promise<GraphRunContext> {
     const context = await this.runContextService.build({
       ...args,
+      configuration: this.configurationService.requireConfigurationPath(
+        args.options.config,
+        CONFIG_FLAG_SURFACE,
+      ),
       workingDirectory: path.resolve(args.options.directory ?? process.cwd()),
     });
 
@@ -244,10 +250,11 @@ export class MapCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses the optional configuration path from command-line input. */
+  /** Parses the required configuration path from command-line input. */
   @Option({
-    description: "Path to the codependix configuration file",
-    flags: "--config [config]",
+    description: "Path to the codependix configuration file (required)",
+    flags: "--config <config>",
+    required: true,
   })
   public parseConfig(value: string | undefined): string | undefined {
     return this.configurationService.parseOptionalOption(value);

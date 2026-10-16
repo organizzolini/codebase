@@ -220,6 +220,9 @@ describe(MapCommand, () => {
     vi.mocked(configurationService.parseFlagOption).mockImplementation(
       (value) => value ?? true,
     );
+    vi.mocked(configurationService.requireConfigurationPath).mockReturnValue(
+      "codependix.config.ts",
+    );
     selectMode();
   });
 
@@ -364,12 +367,42 @@ describe(MapCommand, () => {
     );
   });
 
+  it("asks the configuration package to require the --config flag", async () => {
+    selectMode({ checksBoundaries: true, writes: true });
+
+    await run({ config: "named.config.ts" });
+
+    expect(configurationService.requireConfigurationPath).toHaveBeenCalledWith(
+      "named.config.ts",
+      "`--config` flag",
+    );
+  });
+
+  it("reports a refused configuration path without building a context", async () => {
+    selectMode({ checksBoundaries: true, writes: true });
+    vi.mocked(configurationService.requireConfigurationPath).mockImplementation(
+      () => {
+        throw new Error("a configuration path is required");
+      },
+    );
+
+    await run({});
+
+    expect(runContextService.build).not.toHaveBeenCalled();
+    expect(loggerService.error).toHaveBeenCalledWith(
+      "💥 Failed running codependix",
+      undefined,
+      { reason: "a configuration path is required" },
+    );
+  });
+
   it("builds the context once and hands it to both passes", async () => {
     selectMode({ checksBoundaries: true, writes: true });
 
     await run({ directory: "/workspace" });
 
     expect(runContextService.build).toHaveBeenCalledWith({
+      configuration: "codependix.config.ts",
       mode: "write",
       options: { directory: "/workspace" },
       workingDirectory: "/workspace",
@@ -384,6 +417,7 @@ describe(MapCommand, () => {
     await run({});
 
     expect(runContextService.build).toHaveBeenCalledWith({
+      configuration: "codependix.config.ts",
       mode: "check",
       options: {},
       workingDirectory: process.cwd(),

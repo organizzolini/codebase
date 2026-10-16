@@ -610,8 +610,8 @@ describe("callidescope examples (integration)", () => {
     it("traces this package and the projects its imports reach", () => {
       // The closure, stated as a set. What is absent asserts the narrowing
       // rule this run exercises: the package's program really reads five
-      // files under `configuration/` — its own `codependix.config.ts`
-      // scaffold added a fifth, spreading `configuration/codependix.config.ts`
+      // files under `projects/configuration/` — its own `codependix.config.ts`
+      // scaffold added a fifth, spreading `projects/configuration/codependix.config.ts`
       // and so reaching `packages/codependix-configuration` alongside the
       // four it already read — a project root holding a `tsconfig.json` and
       // no `package.json`, and admitting it would reach every toolchain the

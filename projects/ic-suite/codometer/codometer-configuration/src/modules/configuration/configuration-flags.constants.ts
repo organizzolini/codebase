@@ -1,5 +1,23 @@
 // ♟️ Constants
 
+// 🚨 Errors
+
+/**
+ * Raised when a run names no configuration path.
+ *
+ * Codometer never searches for a configuration or assumes one, so the path is
+ * always the caller's to supply; the message names the surface that failed to
+ * supply it, such as the `--config` flag.
+ */
+export class ConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `${surface} is required: codometer never searches for or assumes a configuration file. Pass the path to a codometer configuration file, such as codometer.config.ts.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
+  }
+}
+
 /** What `--check limits` asks the run to fail on: a breached failing limit. */
 export const CHECK_LIMITS = "limits";
 

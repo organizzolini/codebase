@@ -1,6 +1,6 @@
 ---
 name: spell-check
-description: Run and triage cspell in this codebase. Use when spell-check fails in lint-staged, nx affected, or nx run-many, when cspell reports Unknown word entries, or when adding domain vocabulary to the correct dictionary under configuration/.cspell. Covers full-workspace checks, project-targeted checks, and dictionary update validation.
+description: Run and triage cspell in this codebase. Use when spell-check fails in lint-staged, nx affected, or nx run-many, when cspell reports Unknown word entries, or when adding domain vocabulary to the correct dictionary under projects/configuration/.cspell. Covers full-workspace checks, project-targeted checks, and dictionary update validation.
 license: MIT
 ---
 
@@ -17,20 +17,20 @@ Use this skill to run cspell consistently in this codebase and fix failures by u
 
 ## Repository-Specific CSpell Configuration
 
-- Main config file: `configuration/cspell.config.yaml`
-- Dictionary folder: `configuration/.cspell/`
+- Main config file: `projects/configuration/cspell.config.yaml`
+- Dictionary folder: `projects/configuration/.cspell/`
 - Active custom dictionaries:
-  - `configuration/.cspell/lexico.txt`
-  - `configuration/.cspell/affirmancy.txt`
-  - `configuration/.cspell/ai.txt`
-  - `configuration/.cspell/astronomy.txt`
-  - `configuration/.cspell/ics.txt`
-  - `configuration/.cspell/infrastructure.txt`
-  - `configuration/.cspell/nasa-horizons.txt`
-  - `configuration/.cspell/python.txt`
-  - `configuration/.cspell/tooling.txt`
+  - `projects/configuration/.cspell/lexico.txt`
+  - `projects/configuration/.cspell/affirmancy.txt`
+  - `projects/configuration/.cspell/ai.txt`
+  - `projects/configuration/.cspell/astronomy.txt`
+  - `projects/configuration/.cspell/ics.txt`
+  - `projects/configuration/.cspell/infrastructure.txt`
+  - `projects/configuration/.cspell/nasa-horizons.txt`
+  - `projects/configuration/.cspell/python.txt`
+  - `projects/configuration/.cspell/tooling.txt`
 
-Important: In this repository, use `configuration/.cspell/*` as the source of truth for dictionary updates.
+Important: In this repository, use `projects/configuration/.cspell/*` as the source of truth for dictionary updates.
 
 ## Workflow
 
@@ -51,7 +51,7 @@ pnpm exec nx run <project>:spell-check
 Or run directly on specific files with the repository config:
 
 ```bash
-pnpm exec cspell --config configuration/cspell.config.yaml --no-progress <file1> <file2>
+pnpm exec cspell --config projects/configuration/cspell.config.yaml --no-progress <file1> <file2>
 ```
 
 ### 2. Extract Unknown Words
@@ -70,13 +70,13 @@ Use the exact casing reported by cspell when adding dictionary words.
 
 Select dictionary by domain:
 
-- Lexico, Latin, lexico-cli, lexico-entities: `configuration/.cspell/lexico.txt`
-- Astronomy or caelundas domain terms: `configuration/.cspell/astronomy.txt`
-- Infrastructure/Kubernetes/Terraform terms: `configuration/.cspell/infrastructure.txt`
-- Python toolchain terms: `configuration/.cspell/python.txt`
-- Generic build/dev tooling terms: `configuration/.cspell/tooling.txt`
+- Lexico, Latin, lexico-cli, lexico-entities: `projects/configuration/.cspell/lexico.txt`
+- Astronomy or caelundas domain terms: `projects/configuration/.cspell/astronomy.txt`
+- Infrastructure/Kubernetes/Terraform terms: `projects/configuration/.cspell/infrastructure.txt`
+- Python toolchain terms: `projects/configuration/.cspell/python.txt`
+- Generic build/dev tooling terms: `projects/configuration/.cspell/tooling.txt`
 
-When in doubt for Lexico-family projects, prefer `configuration/.cspell/lexico.txt`.
+When in doubt for Lexico-family projects, prefer `projects/configuration/.cspell/lexico.txt`.
 
 ### 3.1 Break Out a New Dictionary File
 
@@ -95,8 +95,8 @@ Use this decision rule:
 
 If you create a new dictionary:
 
-1. Add `configuration/.cspell/<new-domain>.txt`.
-1. Register it in `configuration/cspell.config.yaml` under `dictionaryDefinitions`.
+1. Add `projects/configuration/.cspell/<new-domain>.txt`.
+1. Register it in `projects/configuration/cspell.config.yaml` under `dictionaryDefinitions`.
 1. Add it to the `dictionaries` list in the same config.
 1. Re-run:
 
@@ -104,7 +104,7 @@ If you create a new dictionary:
 pnpm exec nx run-many --target=spell-check
 ```
 
-Editing a skill doc needs no synchronization run of its own — the command that regenerated a skills table of contents was retired with the table. The one exception is the generated types and scopes tables that several skill docs carry between marker comments: those come from [configuration/conventional.config.cjs](../../../configuration/conventional.config.cjs), so if a word landed inside one, change the config and regenerate rather than editing the table.
+Editing a skill doc needs no synchronization run of its own — the command that regenerated a skills table of contents was retired with the table. The one exception is the generated types and scopes tables that several skill docs carry between marker comments: those come from [projects/configuration/conventional.config.cjs](../../../projects/configuration/conventional.config.cjs), so if a word landed inside one, change the config and regenerate rather than editing the table.
 
 ```bash
 pnpm exec nx run synchronization:conventional-config:write
@@ -135,9 +135,9 @@ Success criteria:
 ## Troubleshooting
 
 - Config not picked up:
-  - Always pass `--config configuration/cspell.config.yaml` when invoking cspell directly.
+  - Always pass `--config projects/configuration/cspell.config.yaml` when invoking cspell directly.
 - Wrong dictionary edited:
-  - Confirm dictionary paths in `configuration/cspell.config.yaml` under `dictionaryDefinitions`.
+  - Confirm dictionary paths in `projects/configuration/cspell.config.yaml` under `dictionaryDefinitions`.
 - Large output is truncated:
   - Pipe output to a file and post-process unknown words with `rg` and `sed`.
 - Case-sensitive failures:
@@ -146,6 +146,6 @@ Success criteria:
 ## Completion Checklist
 
 - Reproduced the failure with Nx spell-check.
-- Added only necessary words to the correct `configuration/.cspell/*.txt` file.
+- Added only necessary words to the correct `projects/configuration/.cspell/*.txt` file.
 - Re-validated project-level spell-check (if applicable).
 - Re-validated full workspace spell-check successfully.

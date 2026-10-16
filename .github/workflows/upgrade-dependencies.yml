@@ -103,6 +103,9 @@ jobs:
           # This violates eslint-plugin-project-structure rules in the pre-commit hook.
           # We remove it here until the CLI is fixed.
           rm -rf agent/
+          # ReUI serves its skill as a JSON bundle rather than a GitHub source, so
+          # `skills update` skips it; this script re-fetches and re-pins it.
+          bash scripts/update-reui-skill.sh
 
       - name: 🔍 Detect Upgrades
         id: check

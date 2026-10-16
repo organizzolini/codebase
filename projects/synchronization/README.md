@@ -15,8 +15,8 @@ fails when someone edits the copy instead of the source.
 
 Every synchronization command is its own Nx target on this project, run
 directly rather than through a shared aggregate — the same way
-[`codebase:codometer`](../ic-suite/codometer/codometer-cli/README.md) and
-[`codebase:callidescope`](../ic-suite/callidescope/callidescope-cli/README.md) are named
+[`configuration:codometer`](../ic-suite/codometer/codometer-cli/README.md) and
+[`configuration:callidescope`](../ic-suite/callidescope/callidescope-cli/README.md) are named
 by their own callers instead of looping through one process:
 
 ```bash
@@ -49,7 +49,7 @@ except `pull-request-labels` — are **derivations**: committed files derived
 from configuration a pull request can also change, so `check` runs on a pull
 request and `write` runs on the default branch's release. The
 [🧑‍🔧 Lint Codebase](../../.github/workflows/lint-code.yml) workflow and
-[`configuration/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
+[`projects/configuration/lint-staged.config.ts`](../../projects/configuration/lint-staged.config.ts)
 each name every derivation target directly alongside `lint-code` in one
 `nx affected` invocation, rather than reaching them through
 [`lint-code`](../../AGENTS.md#code-quality)'s `dependsOn` — Nx forwards an
@@ -68,21 +68,21 @@ target, on `opened`/`reopened`, and nothing else names it.
 
 ## What it synchronizes
 
-| Command                      | Source                                  | Destination                                                                                           |
-| ---------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `conformetry-generators`     | `configuration/conformetry.config.ts`   | The generator table in `AGENTS.md`, between marker comments                                           |
-| `conventional-config`        | `configuration/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
-| `devcontainer-configuration` | `.devcontainer/local/devcontainer.json` | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
-| `pull-request-labels`        | `configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
-| `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`      | The template embedded in the PR skill files                                                           |
-| `skill-exclusions`           | `skills-lock.json`                      | The installed-skill exclusion lists in five ignore files                                              |
-| `vscode-extensions`          | `.vscode/extensions.json`               | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
-| `vscode-settings`            | `.vscode/settings.json`                 | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
+| Command                      | Source                                           | Destination                                                                                           |
+| ---------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `conformetry-generators`     | `projects/configuration/conformetry.config.ts`   | The generator table in `AGENTS.md`, between marker comments                                           |
+| `conventional-config`        | `projects/configuration/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
+| `devcontainer-configuration` | `.devcontainer/local/devcontainer.json`          | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
+| `pull-request-labels`        | `projects/configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
+| `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`               | The template embedded in the PR skill files                                                           |
+| `skill-exclusions`           | `skills-lock.json`                               | The installed-skill exclusion lists in five ignore files                                              |
+| `vscode-extensions`          | `.vscode/extensions.json`                        | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
+| `vscode-settings`            | `.vscode/settings.json`                          | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
 
 ### Pull request labels
 
 `pull-request-labels` is the odd one out: its destination is GitHub rather than
-a file. It reads `configuration/conventional.config.cjs` and reconciles the
+a file. It reads `projects/configuration/conventional.config.cjs` and reconciles the
 repository's labels against it — every `type:<name>`, every lowercased
 `scope:<name>`, and the three `do-not-merge`, `source:agent`, and
 `source:human` labels that no configuration derives. It creates what is missing
@@ -118,8 +118,8 @@ commands each caller wanted, and the taxonomy kept stretching every time a new
 caller's requirements did not fit the existing values.
 
 Each command is its own Nx target instead, run directly the way
-[`codebase:codometer`](../ic-suite/codometer/codometer-cli/README.md) and
-[`codebase:callidescope`](../ic-suite/callidescope/callidescope-cli/README.md) are named
+[`configuration:codometer`](../ic-suite/codometer/codometer-cli/README.md) and
+[`configuration:callidescope`](../ic-suite/callidescope/callidescope-cli/README.md) are named
 by their own callers. Which commands a caller wants is a property of the
 caller — the list of `--target` flags it passes — rather than something the
 commands declare about themselves centrally. Each target declares its own
@@ -128,7 +128,7 @@ reads has changed, and each caller decides for itself which targets belong in
 which invocation:
 
 - [🧑‍🔧 Lint Codebase](../../.github/workflows/lint-code.yml) and
-  [`configuration/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
+  [`projects/configuration/lint-staged.config.ts`](../../projects/configuration/lint-staged.config.ts)
   each name every derivation target directly alongside `lint-code` in one
   `nx affected` invocation, so a pull request and a commit both check drift.
 - The release workflow runs every derivation's `write` configuration through
@@ -183,7 +183,7 @@ MIT — see [LICENSE](../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../projects/configuration/conformetry-templates/nestjs-command-project) conformetry template.
 
 <!-- callidescope:start -->
 
@@ -299,12 +299,12 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> ConformetryGeneratorsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [projects/synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:206]
      ↳ Synchronizes the generators table and reports success without exiting.
     └─> ConformetryGeneratorsCommand.readGenerators(): Promise<ConformetryGeneratorMetadata[]> [projects/synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111]
-       ↳ Reads configuration/conformetry.config.ts and returns the list of generator metadata.
-      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:243]
+       ↳ Reads projects/configuration/conformetry.config.ts and returns the list of generator metadata.
+      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:244]
          ↳ Loads, validates, and normalizes a conformetry configuration file.
-        └─> ConfigurationService.resolveConfigurationPath(configurationPath: string): Promise<string> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:174]
+        └─> ConfigurationService.resolveConfigurationPath(configurationPath: string): Promise<string> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:175]
            ↳ Resolves a config path against the cwd, falling back to the workspace root.
-          └─> ConfigurationService.findWorkspaceRoot(): Promise<string | undefined> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:113]
+          └─> ConfigurationService.findWorkspaceRoot(): Promise<string | undefined> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:114]
              ↳ Walks upward from the process cwd looking for the workspace manifest.
 ```
 
@@ -544,7 +544,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ## 🕸️ Codependix
 
-Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run codebase:codependix:write`.
+Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
 
 ### Nx Neighborhood
 
@@ -929,8 +929,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10994-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-363.13_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-11007-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-363.68_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-92-3178c6?style=flat-square)
 

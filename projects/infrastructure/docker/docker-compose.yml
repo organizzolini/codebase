@@ -75,7 +75,7 @@ configs:
   # when the volume is empty: `nx run infrastructure:postgres:recreate`.
   # For an existing volume, run it by hand for the new project instead:
   # `docker exec -e POSTGRES_PROJECTS=<project> postgres sh
-  # /docker-entrypoint-initdb.d/databases.sh`, as the seed-postgres skill
+  # /docker-entrypoint-initdb.d/databases.sh`, as projects/infrastructure/README.md
   # and documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
   # describe.
   #

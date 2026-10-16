@@ -22,40 +22,6 @@ describe(ConfigurationLoaderService, () => {
     expect(service).toBeDefined();
   });
 
-  describe("findConfigurationFile", () => {
-    it("finds a configuration file in the search directory itself", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
-      const configurationPath = path.join(directory, "codependix.config.json");
-
-      await writeFile(configurationPath, "{}", "utf8");
-
-      expect(service.findConfigurationFile(directory)).toBe(configurationPath);
-    });
-
-    it("walks upward to find a configuration file", async () => {
-      const root = await mkdtemp(path.join(tmpdir(), "codependix-loader-"));
-      const nested = path.join(root, "nested", "deeper");
-
-      await mkdir(nested, { recursive: true });
-
-      const configurationPath = path.join(root, "codependix.config.json");
-
-      await writeFile(configurationPath, "{}", "utf8");
-
-      expect(service.findConfigurationFile(nested)).toBe(configurationPath);
-    });
-
-    it("returns undefined when no configuration file exists", async () => {
-      const directory = await mkdtemp(
-        path.join(tmpdir(), "codependix-loader-"),
-      );
-
-      expect(service.findConfigurationFile(directory)).toBeUndefined();
-    });
-  });
-
   describe("findProjectConfigurationFile", () => {
     it("finds a configuration file colocated with the project", async () => {
       const directory = await mkdtemp(
@@ -70,7 +36,7 @@ describe(ConfigurationLoaderService, () => {
       );
     });
 
-    it("never walks upward, unlike findConfigurationFile", async () => {
+    it("never walks upward", async () => {
       const root = await mkdtemp(path.join(tmpdir(), "codependix-loader-"));
       const nested = path.join(root, "nested");
 
@@ -94,18 +60,36 @@ describe(ConfigurationLoaderService, () => {
       );
 
       await expect(
-        service.readAuthoredConfiguration({ searchDirectory: directory }),
+        service.readAuthoredConfiguration({
+          configurationPath: path.join(directory, "codependix.config.json"),
+        }),
       ).resolves.toStrictEqual({ include: ["**"] });
     });
 
-    it("resolves to an empty configuration when none is found", async () => {
+    it("refuses a path naming no file rather than resolving to nothing", async () => {
       const directory = await mkdtemp(
         path.join(tmpdir(), "codependix-loader-"),
       );
 
       await expect(
-        service.readAuthoredConfiguration({ searchDirectory: directory }),
-      ).resolves.toStrictEqual({});
+        service.readAuthoredConfiguration({
+          configurationPath: path.join(directory, "codependix.config.json"),
+        }),
+      ).rejects.toThrow("Configuration file not found");
+    });
+
+    it("never searches the directory for a file the path did not name", async () => {
+      const directory = await mkdtemp(
+        path.join(tmpdir(), "codependix-loader-"),
+      );
+
+      await writeFile(path.join(directory, "codependix.config.ts"), "", "utf8");
+
+      await expect(
+        service.readAuthoredConfiguration({
+          configurationPath: path.join(directory, "other.config.json"),
+        }),
+      ).rejects.toThrow("Configuration file not found");
     });
   });
 

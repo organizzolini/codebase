@@ -16,7 +16,7 @@
     "node_modules",
     "output"
   ],
-  "extends": "../../../../configuration/tsconfig.json",
+  "extends": "../../../../projects/configuration/tsconfig.json",
   "include": [
     "codependix.config.ts",
     "codometer.config.ts",

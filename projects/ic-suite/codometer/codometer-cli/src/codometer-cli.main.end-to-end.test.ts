@@ -129,12 +129,46 @@ describe("main end-to-end suite", () => {
     });
   });
 
-  // The listing this command exists to produce has to survive a tree whose
-  // root carries no configuration file — which is every workspace that states
-  // its required `format` once in a shared object each project spreads. Run as
+  // `--config` is required: codometer never searches for a configuration file.
+  // Run as a real process because the refusal is the command line's own and
+  // comes with its own exit code.
+  describe("a run that names no configuration", () => {
+    let standardError: string;
+    let exitCode: null | number;
+
+    beforeAll(() => {
+      const result = spawnSync(
+        process.execPath,
+        [
+          "--import",
+          "@swc-node/register/esm-register",
+          COMMAND_PATH,
+          "measure",
+        ],
+        {
+          encoding: "utf8",
+          env: { ...process.env, FORCE_COLOR: "0" },
+          timeout: 120_000,
+        },
+      );
+
+      exitCode = result.status;
+      standardError = result.stderr;
+    }, 150_000);
+
+    it("is refused outright, naming the flag", () => {
+      expect.hasAssertions();
+
+      expect(exitCode).not.toBe(0);
+      expect(standardError).toContain("--config");
+    });
+  });
+
+  // The listing this command exists to produce has to survive a configuration
+  // that cannot be read — a `--config` naming a file that is not there. Run as
   // a real process because the exit code is half of what is under test, and
   // nothing beneath the command line reports one.
-  describe("the configuration command over a tree whose root configures nothing", () => {
+  describe("the configuration command given a configuration that cannot be read", () => {
     let standardOutput: string;
     let standardError: string;
     let exitCode: null | number;
@@ -146,8 +180,8 @@ describe("main end-to-end suite", () => {
       mkdirSync(path.join(workingDirectory, "packages", "logging"), {
         recursive: true,
       });
-      // One project configures itself. Nothing above it does, and the upward
-      // search runs out at the filesystem root.
+      // One project configures itself. The root configuration the run names
+      // below is not there.
       writeFileSync(
         path.join(workingDirectory, "packages/logging/codometer.config.json"),
         JSON.stringify({
@@ -163,6 +197,8 @@ describe("main end-to-end suite", () => {
           "@swc-node/register/esm-register",
           COMMAND_PATH,
           "configuration",
+          "--config",
+          path.join(workingDirectory, "missing.config.json"),
           "--directory",
           workingDirectory,
           "--limits",

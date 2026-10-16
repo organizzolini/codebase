@@ -30,6 +30,17 @@ export const packageDirectory = path.resolve(
   "..",
 );
 
+/**
+ * This package's own configuration, which the guides name with `--config`.
+ *
+ * Codometer never searches for a configuration, so every run that wants this
+ * package's conventions and its `Corpus` target names the file.
+ */
+export const packageConfiguration = path.join(
+  packageDirectory,
+  "codometer.config.ts",
+);
+
 const workspaceDirectory = path.resolve(
   packageDirectory,
   "..",
@@ -66,7 +77,7 @@ const commandLineEntry = path.resolve(
  * `/tmp`.
  *
  * `tmp/` is already ignored by `.gitignore` and by
- * `configuration/codebase-structure.json`, so nothing has to be taught about
+ * `projects/configuration/codebase-structure.json`, so nothing has to be taught about
  * it — the same arrangement `main.end-to-end.test.ts` uses for the same
  * reason.
  */
@@ -85,8 +96,8 @@ export const exampleConfiguration = (...segments: readonly string[]): string =>
 /**
  * Where `swc-node` reads its own compiler configuration from.
  *
- * The command line has no `--directory` flag any more — a run always measures
- * the process's own working directory — so a test that wants to measure the
+ * The command line has no `--directory` flag — a run always measures the
+ * process's own working directory — so a test that wants to measure the
  * corpus spawns the command line **with its `cwd` set there** rather than
  * naming the directory on the command line. `swc-node`'s tsconfig discovery
  * would otherwise walk upward from that same `cwd` looking for a
@@ -143,7 +154,8 @@ export type ReportedDeclaration = NonNullable<
  * flag of its own, so the directory a guide says to measure is the directory
  * this spawns from, exactly as running the documented `cd` and `codometer`
  * commands in a real shell would. Defaults to the workspace root, which is
- * where a bare `codometer` measures the whole repository from.
+ * where a run measures the whole repository from. Every run must carry its own
+ * `--config`: nothing is searched for.
  */
 export const runCodometer = (
   args: readonly string[],

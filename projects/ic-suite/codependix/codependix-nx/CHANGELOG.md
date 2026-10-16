@@ -1,3 +1,30 @@
+## 0.0.15 (2026-10-15)
+
+### 💅 Refactors
+
+- **callidescope,codependix,codometer,conformetry:** ♻️ require --config on every ic-suite command line ([#1598](https://github.com/organizzolini/codebase/pull/1598))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.30
+- Updated codependix-cli to 0.0.30
+
+## 0.0.14 (2026-10-15)
+
+### 💅 Refactors
+
+- **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/pull/1509))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.29
+
+## 0.0.13 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-cli to 0.0.28
+
 ## 0.0.12 (2026-10-15)
 
 ### 🚀 Features

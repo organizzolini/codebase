@@ -8,7 +8,7 @@
 // `bin`. TypeScript copies it through to the output verbatim, so the built
 // entry runs under a bare `node` with no loader registered — the decorator
 // metadata NestJS constructor injection reads is already in that output,
-// because `configuration/tsconfig.json` sets `emitDecoratorMetadata`. The
+// because `projects/configuration/tsconfig.json` sets `emitDecoratorMetadata`. The
 // executable bit is deliberately not managed here: npm and pnpm both set it on
 // a `bin` target at install time, even when the file ships mode 644.
 import "reflect-metadata";

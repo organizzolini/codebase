@@ -1,6 +1,9 @@
 // 🛠️ Utilities
 
-import { resolvePluginService } from "../../modules/plugin/plugin-context.utilities";
+import {
+  resolveOptionsService,
+  resolvePluginService,
+} from "../../modules/plugin/plugin-context.utilities";
 import { EMPTY_SCOPE_REPORT } from "../../modules/plugin/plugin.constants";
 import { resolveExecutorScope } from "../../modules/plugin/plugin.utilities";
 
@@ -45,11 +48,10 @@ export default async function gateExecutor(
     return { success: false };
   }
 
+  const optionsService = await resolveOptionsService();
   const pluginService = await resolvePluginService();
   const result = await pluginService.runGate({
-    ...(options.configurationPath === undefined
-      ? {}
-      : { configurationPath: options.configurationPath }),
+    configurationPath: optionsService.readConfiguration(options.configuration),
     directories: scope.directories,
     judgedProjectNames: scope.selectedDirectories,
     workspaceRoot: context.root,

@@ -1,7 +1,7 @@
 ## Develop
 
 ```bash
-nx run meanderaw-web:develop
+nx run meanderaw-web:start
 ```
 
 ## Test
@@ -12,7 +12,7 @@ nx run meanderaw-web:vitest
 
 ## 👔 Conformetry
 
-This project was generated from the [tanstack-application](../../../configuration/conformetry-templates/tanstack-application) conformetry template.
+This project was generated from the [tanstack-application](../../../projects/configuration/conformetry-templates/tanstack-application) conformetry template.
 
 <!-- callidescope:start -->
 
@@ -55,7 +55,7 @@ None.
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-371-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-17.08_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-17.13_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-5-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-13-3178c6?style=flat-square)
 

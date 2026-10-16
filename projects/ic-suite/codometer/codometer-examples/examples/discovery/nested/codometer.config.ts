@@ -1,37 +1,35 @@
 import type { CodometerConfiguration } from "@codometer/configuration";
 
 /**
- * The nearest configuration wins outright, and nothing is merged.
+ * The named configuration answers alone, and nothing is merged.
  *
- * Codometer searches for a configuration by walking **upward** from the folder
- * it was pointed at and taking the **first** file it finds. Three files are in
- * play above this one — this package's, and the workspace root's, which is
- * itself a re-export of `configuration/codometer.config.ts` — and none of them
- * contributes anything to a run measuring this folder.
+ * Codometer never searches for a configuration: the file `--config` names is
+ * the only one read. Three files sit above this one — this package's, and the
+ * workspace root's, which is itself a re-export of
+ * `projects/configuration/codometer.config.ts` — and none of them contributes
+ * anything to a run that names this file.
  *
  * That is visible rather than asserted, because the counter below exists
  * nowhere else:
  *
  * ```bash
- * # This file wins: one badge, "Configurations", and no "Service Files".
+ * # This file answers: one badge, "Configurations", and no "Service Files".
  * cd projects/ic-suite/codometer/codometer-examples/examples/discovery/nested
- * codometer
+ * codometer --config codometer.config.ts
  *
- * # One folder up carries no configuration, so the search continues to the
- * # package's: "Service Files" and "Unit Tests" return, "Configurations" does
- * # not — and so does the package's own "Corpus" input, now reported empty
- * # since this folder holds no `examples/corpus/`. See this package's own
- * # guide for why one plain configuration file now answers for both cases.
+ * # The same folder's parent, naming the package's configuration: "Service
+ * # Files" and "Unit Tests" return, "Configurations" does not — and so does
+ * # the package's own "Corpus" input, now reported empty since this folder
+ * # holds no `examples/corpus/`. See this package's own guide for why one
+ * # plain configuration file answers for both cases.
  * cd projects/ic-suite/codometer/codometer-examples/examples/discovery
- * codometer
+ * codometer --config ../../codometer.config.ts
  * ```
  *
- * Merging the two would leave a limit that never applied looking exactly like
- * one that did, and telling them apart would mean knowing which of several
- * files each field came from. So a project needs no configuration file of its
- * own — one at the top of a workspace can describe every folder beneath it —
- * and a project that writes one replaces that description rather than editing
- * it.
+ * Merging two files would leave a limit that never applied looking exactly
+ * like one that did, and telling them apart would mean knowing which of
+ * several files each field came from. So a project that writes its own file
+ * replaces a shared description rather than editing it.
  */
 const codometerConfiguration: CodometerConfiguration = {
   custom: [

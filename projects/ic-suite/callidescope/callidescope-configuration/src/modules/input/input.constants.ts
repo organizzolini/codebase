@@ -1,6 +1,23 @@
 // ♟️ Constants
 
 /**
+ * Raised when a run names no callidescope configuration file.
+ *
+ * There is no default location and nothing is searched for, so the path must
+ * come from the caller. The message names the surface that should have carried
+ * it — the command-line flag, the executor option, or the plugin option — so
+ * the reader is told which of the three to fix.
+ */
+export class ConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `${surface} is required and names the callidescope configuration file. Nothing is searched for, so a missing or blank value is refused.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
+  }
+}
+
+/**
  * Thrown when a command line cannot be turned into a run.
  *
  * One class rather than one per cause: every cause is the same event to

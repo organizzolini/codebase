@@ -156,6 +156,14 @@ Project-specific integration tests also cover Wiktionary HTML parsing.
 
 See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
 
+## Moving Data Between Databases
+
+Lexico tables move between databases through the database package's command
+line, not this one: `nx run database:start:export|import`, with
+`--schema lexico --table words` (or `--table lexico.words`). Run
+`import --dry-run` before `import --clean`, which never asks. See the
+[database README](../../database/README.md#moving-data-between-databases).
+
 ## Writing Modules
 
 Use the generator to scaffold new domain modules, then implement the service:
@@ -300,7 +308,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/lexico-cli.module.ts](src/lexico-cli.module.ts): Root NestJS module
 - [src/lexico-cli.constants.ts](src/lexico-cli.constants.ts): environmentSchema (Zod)
 - `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`develop`, `build`, `test`, `lint`, `typecheck`, `format`)
+- [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template
 
 **Project Files**:

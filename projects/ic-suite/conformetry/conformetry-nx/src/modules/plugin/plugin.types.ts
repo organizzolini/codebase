@@ -43,6 +43,8 @@ export interface RunGeneratorArguments {
 
 /** Arguments for validating one project. */
 export interface RunValidationArguments {
+  /** The executor's `configuration` option, taking precedence over `nx.json`. */
+  readonly configuration?: string;
   readonly languageNames?: string[];
   readonly options: unknown;
   readonly project: ProjectScope;

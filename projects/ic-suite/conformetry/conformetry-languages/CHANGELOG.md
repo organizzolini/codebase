@@ -1,3 +1,28 @@
+## 0.0.29 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.30
+- Updated conformetry-core to 0.0.29
+
+## 0.0.28 (2026-10-15)
+
+### 💅 Refactors
+
+- **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/pull/1509))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.29
+- Updated conformetry-core to 0.0.28
+
+## 0.0.27 (2026-10-15)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.28
+- Updated conformetry-core to 0.0.27
+
 ## 0.0.26 (2026-10-15)
 
 ### 🧱 Updated Dependencies

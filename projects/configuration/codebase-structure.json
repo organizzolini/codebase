@@ -1,0 +1,642 @@
+{
+  "$schema": "node_modules/eslint-plugin-project-structure/folderStructure.schema.json",
+  "ignorePatterns": [
+    ".git",
+    ".nx",
+    ".pnpm-store",
+    ".venv",
+    "__pycache__",
+    "build",
+    "coverage",
+    "dist",
+    "node_modules",
+    "output",
+    "tmp"
+  ],
+  "regexParameters": {
+    "templatePlaceholder": "\\{\\{[A-Za-z]+\\}\\}"
+  },
+  "rules": {
+    "any-file": {
+      "name": "*"
+    },
+    "codebase-project": {
+      "children": [
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "ruleId": "module-folder"
+                }
+              ],
+              "name": "modules"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "components"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "lib"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "routes"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "hooks"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "styles"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "assets"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "executors"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "generators"
+            },
+            {
+              "enforceExistence": "__plugin_entrypoints_are_forbidden__",
+              "name": "plugin.ts"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "source-python-file"
+                }
+              ],
+              "name": "python"
+            },
+            {
+              "ruleId": "source-entry-file"
+            },
+            {
+              "ruleId": "source-entry-support-file"
+            },
+            {
+              "ruleId": "source-python-file"
+            }
+          ],
+          "name": "src"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "testing"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "scripts"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "examples"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "skills"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "data"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "coverage"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "output"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "public"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
+    },
+    "infrastructure-project": {
+      "children": [
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "docker"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "helm"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "terraform"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "infrastructure"
+    },
+    "kebab-case-folder": {
+      "children": [
+        {
+          "ruleId": "kebab-case-folder"
+        },
+        {
+          "ruleId": "template-placeholder-folder"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
+    },
+    "module-file": {
+      "name": "^[a-z0-9-]+.(command|constants|entities|factories|functions|loader|module|resolver|service|types|utilities)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
+    },
+    "module-folder": {
+      "children": [
+        {
+          "ruleId": "kebab-case-folder"
+        },
+        {
+          "ruleId": "module-file"
+        }
+      ],
+      "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
+    },
+    "source-entry-file": {
+      "name": "^(?!(main|repl)[.])(constants|index|router|types|utilities|{templatePlaceholder}|[a-z0-9-]+)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
+    },
+    "source-entry-support-file": {
+      "name": "^(?!(main|repl)[.])({templatePlaceholder}|[a-z0-9-]+).(command|constants|entities|factories|loader|main|module|repl|resolver|service|types|utilities)(.(unit|integration|end-to-end).test)?.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$"
+    },
+    "source-python-file": {
+      "name": "^(py.typed|[a-z0-9_]+.(ipynb|py))$"
+    },
+    "template-placeholder-folder": {
+      "children": [
+        {
+          "ruleId": "kebab-case-folder"
+        },
+        {
+          "ruleId": "template-placeholder-folder"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "^{templatePlaceholder}$"
+    }
+  },
+  "structure": {
+    "children": [
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".agents"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".claude"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".devcontainer"
+      },
+      {
+        "name": ".editorconfig"
+      },
+      {
+        "name": ".env.default"
+      },
+      {
+        "name": ".gitattributes"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ruleId": "any-file"
+              }
+            ],
+            "name": "ISSUE_TEMPLATE"
+          },
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".github"
+      },
+      {
+        "name": ".gitignore"
+      },
+      {
+        "name": ".gitmodules"
+      },
+      {
+        "name": ".mcp.json"
+      },
+      {
+        "name": ".node-version"
+      },
+      {
+        "name": ".npmrc"
+      },
+      {
+        "name": ".nvmrc"
+      },
+      {
+        "name": ".nxignore"
+      },
+      {
+        "name": ".python-version"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".pnpm-store"
+      },
+      {
+        "name": ".prettierignore"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".vscode"
+      },
+      {
+        "name": "AGENTS.md"
+      },
+      {
+        "name": "CHANGELOG.md"
+      },
+      {
+        "name": "CONTEXT.md"
+      },
+      {
+        "name": "LICENSE"
+      },
+      {
+        "name": "README.md"
+      },
+      {
+        "name": "codependix-workspace-graph.json"
+      },
+      {
+        "name": "docs"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": "documentation"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": "notepads"
+      },
+      {
+        "name": "nx.json"
+      },
+      {
+        "name": "openwiki"
+      },
+      {
+        "name": "package.json"
+      },
+      {
+        "name": "pnpm-lock.yaml"
+      },
+      {
+        "name": "pnpm-workspace.yaml"
+      },
+      {
+        "name": "project.json"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ruleId": "any-file"
+              }
+            ],
+            "name": "JimmyPaolini"
+          },
+          {
+            "children": [
+              {
+                "ruleId": "codebase-project"
+              }
+            ],
+            "name": "caelundas"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "ruleId": "codebase-project"
+                  }
+                ],
+                "name": "callidescope"
+              },
+              {
+                "children": [
+                  {
+                    "ruleId": "codebase-project"
+                  }
+                ],
+                "name": "codependix"
+              },
+              {
+                "children": [
+                  {
+                    "ruleId": "codebase-project"
+                  }
+                ],
+                "name": "codometer"
+              },
+              {
+                "children": [
+                  {
+                    "ruleId": "codebase-project"
+                  }
+                ],
+                "name": "conformetry"
+              }
+            ],
+            "name": "ic-suite"
+          },
+          {
+            "ruleId": "infrastructure-project"
+          },
+          {
+            "children": [
+              {
+                "ruleId": "codebase-project"
+              }
+            ],
+            "name": "lexico"
+          },
+          {
+            "children": [
+              {
+                "ruleId": "codebase-project"
+              }
+            ],
+            "name": "meanderaw"
+          },
+          {
+            "children": [
+              {
+                "ruleId": "kebab-case-folder"
+              },
+              {
+                "ruleId": "any-file"
+              }
+            ],
+            "name": "configuration"
+          },
+          {
+            "ruleId": "codebase-project"
+          }
+        ],
+        "name": "projects"
+      },
+      {
+        "name": "pyproject.toml"
+      },
+      {
+        "children": [
+          {
+            "ruleId": "kebab-case-folder"
+          },
+          {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": "scripts"
+      },
+      {
+        "name": "skills-lock.json"
+      },
+      {
+        "name": "tsconfig.json"
+      },
+      {
+        "name": "uv.lock"
+      },
+      {
+        "name": "validate-branch-name.config.cjs"
+      }
+    ]
+  }
+}

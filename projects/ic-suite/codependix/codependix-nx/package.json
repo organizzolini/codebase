@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@codependix/cli": "workspace:*",
+    "@codependix/configuration": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
     "@nestjs/core": "catalog:ic-suite",
     "@nx/devkit": "catalog:",
@@ -88,5 +89,5 @@
     "strict": true
   },
   "types": "src/index.ts",
-  "version": "0.0.12"
+  "version": "0.0.15"
 }

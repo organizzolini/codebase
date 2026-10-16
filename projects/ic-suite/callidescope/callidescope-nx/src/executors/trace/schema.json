@@ -2,8 +2,8 @@
   "$schema": "http://json-schema.org/schema",
   "description": "Trace a project's call stacks with callidescope, following its Nx dependencies.",
   "properties": {
-    "configurationPath": {
-      "description": "Path to the callidescope configuration file, relative to the workspace root.",
+    "configuration": {
+      "description": "Required. Path to the callidescope configuration file, relative to the workspace root.",
       "type": "string"
     },
     "format": {
@@ -27,7 +27,7 @@
       "type": "boolean"
     }
   },
-  "required": [],
+  "required": ["configuration"],
   "title": "Callidescope trace",
   "type": "object"
 }

@@ -13,7 +13,10 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
-import { PATH_MISSING_ARGUMENTS_ERROR } from "./path.constants";
+import {
+  CONFIG_FLAG_SURFACE,
+  PATH_MISSING_ARGUMENTS_ERROR,
+} from "./path.constants";
 
 import type { PathCommandOptions } from "./path.types";
 
@@ -85,10 +88,11 @@ export class PathCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Parses the optional configuration path from command-line input. */
+  /** Parses the required configuration path from command-line input. */
   @Option({
-    description: "Path to the codependix configuration file",
-    flags: "--config [config]",
+    description: "Path to the codependix configuration file (required)",
+    flags: "--config <config>",
+    required: true,
   })
   public parseConfig(value: string | undefined): string | undefined {
     return this.configurationService.parseOptionalOption(value);
@@ -222,6 +226,10 @@ export class PathCommand extends CommandRunner {
       }
 
       const context = await this.runContextService.build({
+        configuration: this.configurationService.requireConfigurationPath(
+          options.config,
+          CONFIG_FLAG_SURFACE,
+        ),
         mode: "check",
         options,
         workingDirectory: path.resolve(options.directory ?? process.cwd()),

@@ -536,5 +536,46 @@ describe(PluginService, () => {
         }),
       ).rejects.toThrow("which does not exist");
     });
+
+    it("lets the executor's configuration option win over the registration", async () => {
+      const configurationPath = path.join(workspaceRoot, "missing.config.json");
+
+      await writeFile(
+        configurationPath,
+        JSON.stringify([
+          {
+            instances: [{ patterns: ["packages/*/src/modules/*"] }],
+            name: "widget",
+            templatePath: "templates/not-there",
+          },
+        ]),
+        "utf8",
+      );
+
+      await expect(
+        service.runValidation({
+          configuration: configurationPath,
+          options: {},
+          project: WIDGETS,
+          workspaceRoot,
+        }),
+      ).rejects.toThrow("which does not exist");
+    });
+
+    it("refuses to run when neither the options nor nx.json name a configuration path", async () => {
+      const bareRoot = await mkdtemp(path.join(tmpdir(), "conformetry-bare-"));
+
+      await expect(
+        service.runValidation({
+          options: {},
+          project: WIDGETS,
+          workspaceRoot: bareRoot,
+        }),
+      ).rejects.toThrow(
+        'the "configuration" option, or the "configurationPath" option of the @conformetry/nx plugin in nx.json,',
+      );
+
+      await rm(bareRoot, { force: true, recursive: true });
+    });
   });
 });

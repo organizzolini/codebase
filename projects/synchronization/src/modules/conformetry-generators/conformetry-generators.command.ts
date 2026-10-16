@@ -24,7 +24,7 @@ import type { ConformetryGeneratorMetadata } from "./conformetry-generators.type
  * word in AGENTS.md is loaded into every agent session. Adding a destination
  * back means adding its marker pair to that file first, or a run refuses.
  *
- * Reads configuration/conformetry.config.ts and injects a markdown
+ * Reads projects/configuration/conformetry.config.ts and injects a markdown
  * table between marker comments in both files.
  */
 @Command({
@@ -106,12 +106,12 @@ export class ConformetryGeneratorsCommand
   }
 
   /**
-   * Reads configuration/conformetry.config.ts and returns the list of generator metadata.
+   * Reads projects/configuration/conformetry.config.ts and returns the list of generator metadata.
    */
   private async readGenerators(): Promise<ConformetryGeneratorMetadata[]> {
     const configurationPath = path.join(
       process.cwd(),
-      "configuration/conformetry.config.ts",
+      "projects/configuration/conformetry.config.ts",
     );
 
     const configuration =

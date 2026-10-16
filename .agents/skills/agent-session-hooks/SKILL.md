@@ -14,13 +14,14 @@ Startup checks run at the start of every agent session and inject their failure 
 
 ## Architecture
 
-| Script                                  | Checks                                                                                                |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `validate-session-branch-name.sh`       | Branch follows `<type>/<scope>-<description>`; directs the agent to the rename-branch skill           |
-| `validate-session-worktree-name.sh`     | Worktree directory follows lowercase kebab-case naming and ignore conventions                         |
-| `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                     |
-| `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                          |
-| `validate-session-skills.sh`            | Every skill declared in `skills-lock.json` is present; directs the agent to `codebase:install-skills` |
+| Script                                  | Checks                                                                                                            |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `validate-session-branch-name.sh`       | Branch follows `<type>/<scope>-<description>`; directs the agent to the rename-branch skill                       |
+| `validate-session-worktree-name.sh`     | Worktree directory follows lowercase kebab-case naming and ignore conventions                                     |
+| `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                                 |
+| `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                                      |
+| `validate-session-skills.sh`            | Every skill declared in `skills-lock.json` is present; directs the agent to `codebase:install-skills`             |
+| `validate-session-hooks-path.sh`        | `core.hooksPath` resolves to a directory holding a pre-commit hook; git runs no hooks, silently, when it does not |
 
 Each script is registered twice, once per harness, and both registrations point at the same file:
 

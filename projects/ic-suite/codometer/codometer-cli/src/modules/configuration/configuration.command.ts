@@ -53,20 +53,17 @@ export class ConfigurationCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Parse the configuration file answering for the walk root.
+   * Parse the required configuration file answering for the walk root.
    *
-   * The exclusions the walk uses come from whatever configuration answers for
-   * the directory being listed, and a workspace stating its shared object
-   * somewhere every project spreads it from has nothing at its own root for
-   * the upward search to find — so it names that file here, the same way its
-   * measurement target already does.
+   * The exclusions the walk uses come from this file; nothing is searched for.
    */
   @Option({
     description:
-      "Path to the configuration file answering for the directory being listed",
-    flags: "--config [config]",
+      "Path to the configuration file answering for the directory being listed (required)",
+    flags: "--config <config>",
+    required: true,
   })
-  public parseConfig(value: string | undefined): string | undefined {
+  public parseConfig(value: string): string {
     return value;
   }
 
@@ -119,10 +116,16 @@ export class ConfigurationCommand extends CommandRunner {
       );
     }
 
+    const configurationPath =
+      this.codometerConfigurationService.requireConfigurationPath(
+        options.config,
+        "--config",
+      );
+
     const workingDirectory = path.resolve(options.directory ?? process.cwd());
     const { described, rootError } =
       await this.configurationService.describeConfigurations({
-        configurationPath: options.config,
+        configurationPath,
         workingDirectory,
       });
 

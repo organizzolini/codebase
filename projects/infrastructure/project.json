@@ -117,13 +117,13 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/terraform/**/*.tf",
-        "{workspaceRoot}/configuration/trivyignore",
+        "{workspaceRoot}/projects/configuration/trivyignore",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/trivyignore",
+        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile projects/configuration/trivyignore",
         "cwd": "{workspaceRoot}"
       }
     },

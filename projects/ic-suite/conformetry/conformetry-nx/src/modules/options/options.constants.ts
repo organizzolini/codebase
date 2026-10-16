@@ -4,36 +4,20 @@
 export const CONFORMETRY_NX_PLUGIN_NAME = "@conformetry/nx";
 
 /**
- * Root-level config filenames tried, in order, when the registration names none.
+ * How a refusal names the plugin option in the `nx.json` registration.
  *
- * All at the workspace root rather than under any particular repository's
- * convention for where configuration lives; a workspace that keeps it
- * elsewhere says so in its `nx.json` plugin entry. Every extension here is one
- * the configuration loader can read — an extensionless `.conformetryrc` is
- * deliberately absent, because it would resolve and then fail as an unknown
- * file type.
- *
- * The first entry doubles as the name reported when nothing is found, so it
- * stays the most conventional of them.
+ * Handed to the configuration layer, which owns the requirement and the words
+ * of the refusal; this is only where the path was meant to be set.
  */
-export const DEFAULT_CONFIGURATION_PATHS = [
-  "conformetry.config.ts",
-  "conformetry.config.mts",
-  "conformetry.config.cts",
-  "conformetry.config.js",
-  "conformetry.config.mjs",
-  "conformetry.config.cjs",
-  "conformetry.config.json",
-  "conformetry.config.jsonc",
-  "conformetry.json",
-  "conformetry.jsonc",
-  ".conformetryrc.ts",
-  ".conformetryrc.js",
-  ".conformetryrc.json",
-  "conformetryrc.ts",
-  "conformetryrc.js",
-  "conformetryrc.json",
-] as const;
+export const PLUGIN_OPTION_SURFACE =
+  'the "configurationPath" option of the @conformetry/nx plugin in nx.json';
+
+/**
+ * How a refusal names the executor and generator option.
+ *
+ * Those run with the registration as their fallback, so it is named too.
+ */
+export const EXECUTION_OPTION_SURFACE = `the "configuration" option, or ${PLUGIN_OPTION_SURFACE},`;
 
 /** Filename the workspace's Nx configuration is read from. */
 export const NX_CONFIGURATION_FILENAME = "nx.json";

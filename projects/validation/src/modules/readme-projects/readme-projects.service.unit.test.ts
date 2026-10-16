@@ -141,6 +141,28 @@ describe(ReadmeProjectsService, () => {
     });
   });
 
+  describe("resolveWorkspaceProjectPaths with templates", () => {
+    it("skips a template placeholder directory holding a manifest", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["configuration"]);
+
+      existingPaths.add("/workspace/projects/configuration");
+      scopeChildren.set("/workspace/projects/configuration", [
+        "{{nameKebabCase}}",
+      ]);
+
+      existingPaths.add(
+        "/workspace/projects/configuration/{{nameKebabCase}}/package.json",
+      );
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+  });
+
   describe("readRootReadme", () => {
     it("reads the workspace root README", () => {
       expect.hasAssertions();

@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { ConfigurationPathRequiredError } from "./configuration-flags.constants";
 import { ConfigurationFlagsService } from "./configuration-flags.service";
 
 import type { MeasureCommandOptions, RunMode } from "./configuration.types";
@@ -19,6 +20,26 @@ describe(ConfigurationFlagsService, () => {
   it("is defined", () => {
     expect(service).toBeDefined();
   });
+
+  // 🧭 Required configuration path
+
+  it("returns a configuration path it was given", () => {
+    expect(
+      service.requireConfigurationPath("codometer.config.ts", "--config"),
+    ).toBe("codometer.config.ts");
+  });
+
+  it.each([undefined, "", "   "])(
+    "refuses %j, naming the surface it was given",
+    (value) => {
+      expect(() => service.requireConfigurationPath(value, "--config")).toThrow(
+        ConfigurationPathRequiredError,
+      );
+      expect(() => service.requireConfigurationPath(value, "--config")).toThrow(
+        "--config is required",
+      );
+    },
+  );
 
   // 🔤 Optional option
 

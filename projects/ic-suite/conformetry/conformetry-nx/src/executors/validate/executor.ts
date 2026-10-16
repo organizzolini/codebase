@@ -34,6 +34,9 @@ export default async function validateExecutor(
 
   const pluginService = await resolvePluginService();
   const result = await pluginService.runValidation({
+    ...(options.configuration === undefined
+      ? {}
+      : { configuration: options.configuration }),
     ...(options.languages === undefined
       ? {}
       : { languageNames: options.languages }),

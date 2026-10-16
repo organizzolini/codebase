@@ -30,7 +30,7 @@ import type { CodependixRunMode, ProjectRunResult } from "@codependix/core";
  * somewhere. Writing into a temporary directory rather than into `output/`
  * keeps the committed output to what a reader should read, and keeps every
  * `<!-- codependix:start -->` marker this package produces out of any file the
- * real `codebase:codependix:write` could ever claim.
+ * real `configuration:codependix:write` could ever claim.
  */
 export interface ScratchProject {
   readonly absoluteRoot: string;
@@ -206,7 +206,7 @@ async function buildJsonDocument(): Promise<ExampleDocument> {
         note: "Each one is rendered by `DeliveryService.renderJson`, so it is byte-identical to what a real `codependix map --write` would produce — two-space indentation and a trailing newline.",
       },
       {
-        body: "Two workspace-level rules are switched off for `**/codependix-*graph.json`, for the same reason. `configuration/eslint.config.ts` turns `jsonc/sort-array-values` **off**: these arrays come out of the Nx project graph, a NestJS container, or a `ts.Program`, in whichever order each source discovers its projects, modules, or files — not alphabetical order. And `configuration/.oxfmtignore` and `.prettierignore` exclude the files outright: codependix renders them with `JSON.stringify(…, 2)`, which puts one array element per line, while oxfmt collapses a short array onto one. Either rule left on would rewrite what codependix had just written, and the very next `--check` would fail against the tool itself. It is the same reformatting-versus-drift conflict `.oxfmtignore` already resolves for `.conformetry/**`.",
+        body: "Two workspace-level rules are switched off for `**/codependix-*graph.json`, for the same reason. `projects/configuration/eslint.config.ts` turns `jsonc/sort-array-values` **off**: these arrays come out of the Nx project graph, a NestJS container, or a `ts.Program`, in whichever order each source discovers its projects, modules, or files — not alphabetical order. And `projects/configuration/.oxfmtignore` and `.prettierignore` exclude the files outright: codependix renders them with `JSON.stringify(…, 2)`, which puts one array element per line, while oxfmt collapses a short array onto one. Either rule left on would rewrite what codependix had just written, and the very next `--check` would fail against the tool itself. It is the same reformatting-versus-drift conflict `.oxfmtignore` already resolves for `.conformetry/**`.",
         heading: "Why two workspace rules are switched off for these files",
         note: "The five files beside this guide are named to match that glob, so both carve-outs cover them too rather than being described from a distance — which is how the second one was found in the first place.",
       },

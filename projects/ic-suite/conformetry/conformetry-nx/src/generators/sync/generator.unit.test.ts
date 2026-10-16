@@ -1,6 +1,7 @@
 import { createTree } from "nx/src/generators/testing-utils/create-tree";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { EXECUTION_OPTION_SURFACE } from "../../modules/options/options.constants";
 import {
   resolveGeneratorService,
   resolveOptionsService,
@@ -23,8 +24,9 @@ const emitPlugin = vi.fn();
 const resolveConfigurationPath =
   vi.fn<
     (args: {
-      exists: (candidatePath: string) => boolean;
+      configuration?: string | undefined;
       nxConfiguration: unknown;
+      surface?: string;
     }) => string
   >();
 
@@ -63,21 +65,15 @@ describe(syncGenerator, () => {
     expect(outOfSyncMessage.length).toBeGreaterThan(0);
   });
 
-  it("returns a callable so `nx g` can run it as a task", async () => {
-    const result = await syncGenerator(tree);
+  it("refuses to emit when no configuration path is registered", async () => {
+    resolveConfigurationPath.mockImplementation(() => {
+      throw new Error("A configuration path is required");
+    });
 
-    expect(typeof result).toBe("function");
-    expect(() => {
-      result();
-    }).not.toThrow();
-  });
-
-  it("falls back to the conventional paths when given no options", async () => {
-    await syncGenerator(tree);
-
-    // The defaults themselves are constants; what matters here is that the
-    // generator supplies all three rather than passing undefined through.
-    expect(emitPlugin).toHaveBeenCalledTimes(1);
+    await expect(syncGenerator(tree)).rejects.toThrow(
+      "A configuration path is required",
+    );
+    expect(emitPlugin).not.toHaveBeenCalled();
   });
 
   it("reads the plugin registration out of the workspace's nx.json", async () => {
@@ -101,27 +97,36 @@ describe(syncGenerator, () => {
     expect(call?.[0].nxConfiguration).toStrictEqual(nxConfiguration);
   });
 
-  it("checks the tree for a candidate path when resolving from the registration", async () => {
-    tree.write("conformetry.json", "[]\n");
-    // Stands in for the real candidate walk, so what is asserted is that the
-    // generator hands over a predicate answering about its own tree rather
-    // than the filesystem.
-    resolveConfigurationPath.mockImplementation((args) => {
-      return args.exists("conformetry.json")
-        ? "conformetry.json"
-        : "conformetry.config.ts";
-    });
+  it("uses the registered path when given no options", async () => {
+    resolveConfigurationPath.mockReturnValue("elsewhere/conformetry.config.ts");
 
     await syncGenerator(tree);
 
     expect(emitPlugin).toHaveBeenCalledWith(
-      expect.objectContaining({ configurationPath: "conformetry.json" }),
+      expect.objectContaining({
+        configurationPath: "elsewhere/conformetry.config.ts",
+      }),
+    );
+  });
+
+  it("hands the configuration option and its surface to the resolver", async () => {
+    await syncGenerator(tree, {
+      configuration: "custom/conformetry.config.ts",
+    });
+
+    expect(resolveConfigurationPath).toHaveBeenCalledWith(
+      expect.objectContaining({
+        configuration: "custom/conformetry.config.ts",
+        surface: EXECUTION_OPTION_SURFACE,
+      }),
     );
   });
 
   it("honors the paths a caller names", async () => {
+    resolveConfigurationPath.mockReturnValue("custom/conformetry.config.ts");
+
     await syncGenerator(tree, {
-      configurationPath: "custom/conformetry.config.ts",
+      configuration: "custom/conformetry.config.ts",
       outputPath: "custom/out",
       packageName: "@acme/conformetry-nx",
     });

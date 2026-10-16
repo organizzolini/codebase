@@ -3,6 +3,7 @@ export {
   CHECK_NAMES,
   CHECK_REPORTS,
   CHECK_SEPARATOR,
+  ConfigurationPathRequiredError,
   FORMAT_JSON,
   FORMAT_MARKDOWN,
   FORMAT_NAMES,

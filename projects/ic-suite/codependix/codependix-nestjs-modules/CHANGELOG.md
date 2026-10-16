@@ -1,3 +1,17 @@
+## 0.0.28 (2026-10-15)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
+## 0.0.27 (2026-10-15)
+
+### 💅 Refactors
+
+- **configuration,documentation:** ♻️ move the configuration folder into an nx project ([#1509](https://github.com/organizzolini/codebase/pull/1509))
+
+## 0.0.26 (2026-10-15)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
 ## 0.0.25 (2026-10-15)
 
 ### 🚀 Features

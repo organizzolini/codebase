@@ -39,7 +39,6 @@ export type {
   CallidescopeWriteConfiguration,
   LoadConfigurationArguments,
   LoadedCallidescopeConfiguration,
-  LoadedCallidescopeConfigurationFile,
   LoadedProjectConfiguration,
   LoadProjectConfigurationsArguments,
   MarkdownAnchorHelpers,
@@ -64,6 +63,7 @@ export type {
   ResolvedRunFlags,
 } from "./modules/flag-resolution/flag-resolution.types";
 export {
+  ConfigurationPathRequiredError,
   InputError,
   missingInputError,
   promptCancelledError,

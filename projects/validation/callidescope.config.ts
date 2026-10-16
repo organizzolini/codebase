@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
 
 /**
  * What validation is held to, measured rather than assumed.
@@ -16,7 +16,7 @@ import { projectDefaults } from "../../configuration/callidescope.config.js";
  * report. Ordinary fan-out, so the next such check is what moves this number
  * now.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

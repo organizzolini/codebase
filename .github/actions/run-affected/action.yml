@@ -36,6 +36,6 @@ runs:
         ARGUMENTS: ${{ inputs.arguments }}
         INCLUDE_SPELLING: ${{ inputs.include-spelling }}
         INCLUDE_TEMPLATES: ${{ inputs.include-templates }}
-        SPELLING_PATHS: ^configuration/\.cspell/|(^|/)cspell\.config\.yaml$
+        SPELLING_PATHS: ^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$
       run: bash scripts/nx/run-affected.sh
       shell: bash

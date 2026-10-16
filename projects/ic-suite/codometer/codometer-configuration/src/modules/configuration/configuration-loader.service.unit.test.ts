@@ -39,14 +39,6 @@ describe(ConfigurationLoaderService, () => {
     expect(service).toBeDefined();
   });
 
-  it("finds nothing in a directory with no configuration file", async () => {
-    const searchDirectory = await mkdtemp(
-      path.join(tmpdir(), "codometer-loader-empty-"),
-    );
-
-    await expect(service.load({ searchDirectory })).resolves.toBeUndefined();
-  });
-
   it("loads a JSON configuration file", async () => {
     const configurationPath = await writeConfigurationFile(
       "codometer.config.json",
@@ -91,7 +83,7 @@ describe(ConfigurationLoaderService, () => {
     // nobody builds anymore.
     const loaded = await service.load({ configurationPath });
 
-    expect(loaded?.configuration).toStrictEqual({});
+    expect(loaded.configuration).toStrictEqual({});
   });
 
   it("throws a typed error for an unsupported configuration file extension", async () => {
@@ -177,23 +169,27 @@ describe(ConfigurationLoaderService, () => {
 
     const loaded = await service.load({ configurationPath });
 
-    expect(loaded?.configuration).toStrictEqual({});
+    expect(loaded.configuration).toStrictEqual({});
   });
 
-  it("finds a configuration file by walking up from a nested directory", async () => {
+  it("does not search ancestors for a configuration file", async () => {
     const configurationPath = await writeConfigurationFile(
       "codometer.config.json",
       JSON.stringify({ defaultInput: "codebase" }),
     );
-    const rootDirectory = path.dirname(configurationPath);
-    const nestedDirectory = path.join(rootDirectory, "packages", "project");
+    const nestedDirectory = path.join(
+      path.dirname(configurationPath),
+      "packages",
+      "project",
+    );
     await mkdir(nestedDirectory, { recursive: true });
 
-    const loaded = await service.load({ searchDirectory: nestedDirectory });
-
-    expect(loaded).toStrictEqual({
-      configuration: { defaultInput: "codebase" },
-      path: configurationPath,
-    });
+    // A path naming a nested directory's own, absent file is an error even
+    // though an ancestor carries a configuration: nothing is walked upward.
+    await expect(
+      service.load({
+        configurationPath: path.join(nestedDirectory, "codometer.config.json"),
+      }),
+    ).rejects.toBeInstanceOf(ConfigurationFileNotFoundError);
   });
 });

@@ -42,10 +42,11 @@ export const SUPPORTED_CONFIGURATION_EXTENSIONS = new Set([
 ]);
 
 /**
- * File names searched for when no configuration path is given.
+ * File names a project's own configuration may take, beside its root.
  *
- * Searched in order, so a workspace carrying both a TypeScript and a JSON
- * configuration file gets the TypeScript one.
+ * Searched in order, so a project carrying both a TypeScript and a JSON
+ * configuration file gets the TypeScript one. The main configuration is never
+ * searched for: its path is always named.
  */
 export const CONFIGURATION_FILE_NAMES = [
   "codependix.config.ts",
@@ -289,5 +290,21 @@ export class ConfigurationFileNotFoundError extends Error {
   constructor(filePath: string) {
     super(`Configuration file not found: ${filePath}`);
     this.name = "ConfigurationFileNotFoundError";
+  }
+}
+
+/**
+ * Raised when no main configuration path was given.
+ *
+ * Names the surface the path should have come through — the command-line
+ * flag, the executor option, or the plugin option — so the message tells the
+ * caller which setting to fix rather than only that one is missing.
+ */
+export class ConfigurationPathRequiredError extends Error {
+  constructor(surface: string) {
+    super(
+      `A configuration path is required, but the ${surface} named none: give it the path of the codependix configuration file.`,
+    );
+    this.name = "ConfigurationPathRequiredError";
   }
 }

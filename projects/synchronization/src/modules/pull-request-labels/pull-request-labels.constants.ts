@@ -20,7 +20,8 @@ export const STEP_SUMMARY_FAILURE_MESSAGE =
   "⚠️ Unable to write the report to GITHUB_STEP_SUMMARY";
 
 /** The vocabulary's single source of truth, relative to the workspace root. */
-export const CONVENTIONAL_CONFIG_PATH = "configuration/conventional.config.cjs";
+export const CONVENTIONAL_CONFIG_PATH =
+  "projects/configuration/conventional.config.cjs";
 
 /** Color every `type:` label carries, so the family reads as one at a glance. */
 export const TYPE_LABEL_COLOR = "d93f0b";

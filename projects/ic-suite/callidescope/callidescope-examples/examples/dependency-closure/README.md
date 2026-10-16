@@ -54,12 +54,12 @@ starting roots and three arrive through the closure:
 | `projects/ic-suite/callidescope/callidescope-examples` | Named — the directory the run was pointed at |
 | `.../../examples/gated-leaf` | Named — a nested project [`gated-leaf`](../gated-leaf/README.md) explains, and says why it is named rather than reached |
 | `projects/ic-suite/callidescope/callidescope-configuration` | The fixture above imports it, and [`callidescope.workspace.config.ts`](../../callidescope.workspace.config.ts) imports a type from it |
-| `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared `configuration/codometer.config.ts` that this package's own [`codometer.config.ts`](../../codometer.config.ts) spreads |
-| `projects/logging` | Reached through the shared `configuration/eslint.config.ts`, which imports `@codebase/logging/eslint` |
+| `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared `projects/configuration/codometer.config.ts` that this package's own [`codometer.config.ts`](../../codometer.config.ts) spreads |
+| `projects/logging` | Reached through the shared `projects/configuration/eslint.config.ts`, which imports `@codebase/logging/eslint` |
 
 The last two arrive through the shared configuration directory the closure
 refuses to enter, which is not the contradiction it looks like. Refusing
-`configuration/` as a _destination_ keeps that directory from being traced; it
+`projects/configuration/` as a _destination_ keeps that directory from being traced; it
 does nothing to the files it imports, which resolve to their own packages and
 join the closure like anything else.
 
@@ -86,7 +86,7 @@ drags the whole workspace in:
   `tsconfig.json` is where a repository keeps shared settings, and shared
   settings are read by every project rather than depended on by any. This run
   exercises that rule: this package's program really reads four files under
-  [`configuration/`](../../../../../../configuration) — the shared `eslint.config.ts`,
+  [`projects/configuration/`](../../../../../../projects/configuration) — the shared `eslint.config.ts`,
   `vitest.config.ts`, and `codometer.config.ts` that this package's own three
   spread, plus a type declaration one of its `paths` entries names. Admit that
   directory and its program covers every configuration file in it, which reaches
@@ -109,7 +109,7 @@ Publishing. A run writes a `## 🔭 Callidescope` section for the projects it wa
 its three starting projects and leaves the three dependency packages alone —
 measurement reaches into a dependency, publishing does not. A closure that
 widened both would have this target rewriting an anchor block in three packages
-that never asked for it, and `nx run codebase:callidescope:write` — which reads
+that never asked for it, and `nx run configuration:callidescope:write` — which reads
 different limits — writing the opposite content back into the same three
 blocks on its next run.
 

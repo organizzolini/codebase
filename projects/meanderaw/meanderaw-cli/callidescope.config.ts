@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../configuration/callidescope.config.js";
+import { projectDefaults } from "../../../projects/configuration/callidescope.config.js";
 
 /**
  * What meanderaw is held to, measured rather than assumed.
@@ -20,7 +20,7 @@ import { projectDefaults } from "../../../configuration/callidescope.config.js";
  * coordinates, and renders the SVG. One sequential flow, so the next step
  * this pipeline gains is what moves the number.
  *
- * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

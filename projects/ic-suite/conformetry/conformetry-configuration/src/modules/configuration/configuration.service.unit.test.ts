@@ -13,7 +13,10 @@ import { InstanceGroupService } from "../instance-group/instance-group.service";
 import { RenderingService } from "../rendering/rendering.service";
 import { TemplateDiscoveryService } from "../template-discovery/template-discovery.service";
 
-import { UnknownConfigurationFileTypeError } from "./configuration.constants";
+import {
+  ConfigurationPathRequiredError,
+  UnknownConfigurationFileTypeError,
+} from "./configuration.constants";
 import { ConfigurationService } from "./configuration.service";
 
 import type { ConformetryConfiguration } from "./configuration.types";
@@ -375,7 +378,7 @@ describe(ConfigurationService, () => {
 
   it("loads the workspace configuration", async () => {
     const configuration = await service.loadConformetryConfiguration(
-      "configuration/conformetry.config.ts",
+      "projects/configuration/conformetry.config.ts",
     );
 
     expect(configuration.map((generator) => generator.name)).toContain(
@@ -599,6 +602,49 @@ describe(ConfigurationService, () => {
         await service.loadConformetryConfiguration(configurationPath);
 
       expect(configuration[0]?.name).toBe("widget");
+    });
+  });
+
+  describe("requireConfigurationPath", () => {
+    const surface = "the --config flag";
+
+    it("returns the path it was given, trimmed", () => {
+      expect(
+        service.requireConfigurationPath("  a/conformetry.config.ts ", surface),
+      ).toBe("a/conformetry.config.ts");
+    });
+
+    it.each([
+      ["absent", undefined],
+      ["empty", ""],
+      ["blank", "   "],
+    ])("refuses a path that is %s", (_description, value) => {
+      expect(() => service.requireConfigurationPath(value, surface)).toThrow(
+        ConfigurationPathRequiredError,
+      );
+    });
+
+    it("names the surface the caller passed", () => {
+      expect(() =>
+        service.requireConfigurationPath(undefined, "the nope option"),
+      ).toThrow(
+        /A conformetry configuration path is required, but the nope option is missing or blank\. No default file is assumed/,
+      );
+    });
+
+    it("carries the surface on the error", () => {
+      let caught: unknown;
+
+      try {
+        service.requireConfigurationPath(undefined, surface);
+      } catch (error) {
+        caught = error;
+      }
+
+      expect(caught).toMatchObject({
+        name: "ConfigurationPathRequiredError",
+        surface,
+      });
     });
   });
 

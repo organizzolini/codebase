@@ -31,7 +31,7 @@ the reproduction that produces that exact message is in
 | `A "both" export target needs a json destination.` | [`refusals`](examples/refusals) |
 | `A "markdown" export target needs a markdown destination.` | [`refusals`](examples/refusals) |
 | `A markdown destination needs an anchor, a path, or both` | [`refusals`](examples/refusals), and [`markdown-modes`](examples/markdown-modes) for the four shapes a destination can take |
-| `ConfigurationFileNotFoundError` | [`refusals`](examples/refusals) — an explicitly named `--config` must exist; an unnamed one may be absent |
+| `ConfigurationFileNotFoundError` | [`refusals`](examples/refusals) — `--config` is required and the file it names must exist |
 | `UnknownConfigurationFileTypeError` | [`refusals`](examples/refusals) — the seven readable extensions are listed there |
 | `TypescriptProjectConfigurationError` | [`typescript-resolution`](examples/typescript-resolution) — the compiler's own diagnostics, and why a parse failure is fatal rather than skipped |
 | `💥 Failed running codependix`, naming one project | [`container-rooting`](examples/container-rooting) — one project's failure is isolated; every other project still completed |
@@ -143,7 +143,7 @@ regression the `examples` check exists to catch.
   look malformed.
 - **Every anchor this package prints is named `example-*`.** An example printing
   `codependix-nx-projects` inside a Markdown file would be an anchor
-  `codebase:codependix:write` could claim and overwrite.
+  `configuration:codependix:write` could claim and overwrite.
 - **A committed guide must not carry an absolute path.** The
   `typescript-resolution` and `refusals` renderers redact theirs; anything new
   that quotes a filesystem error needs the same treatment, or the `examples`

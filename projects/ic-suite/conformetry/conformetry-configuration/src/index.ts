@@ -1,5 +1,8 @@
 // 📤 Exports
-export { UnknownConfigurationFileTypeError } from "./modules/configuration/configuration.constants";
+export {
+  ConfigurationPathRequiredError,
+  UnknownConfigurationFileTypeError,
+} from "./modules/configuration/configuration.constants";
 export { ConfigurationModule } from "./modules/configuration/configuration.module";
 export { ConfigurationService } from "./modules/configuration/configuration.service";
 export type {
