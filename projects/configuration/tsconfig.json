@@ -30,9 +30,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     // 🗺️ Codebase Path Aliases
-    // Enables `import { Button } from "@codebase/components-web"` across projects
+    // Enables `import { Button } from "@codebase/components"` across projects
     "paths": {
-      "@codebase/components-web": ["../components-web/src/index.ts"],
+      "@codebase/components": ["../components/src/index.ts"],
       "codebase/configuration/*": ["./*"],
       "eslint-plugin-better-max-params": [
         "./types/eslint-plugin-better-max-params/index.d.ts"

@@ -50,7 +50,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "../../components-web/src"),
+      "@": path.resolve(import.meta.dirname, "../../components/src"),
     },
     tsconfigPaths: true,
   },

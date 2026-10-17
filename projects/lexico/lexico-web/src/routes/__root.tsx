@@ -24,8 +24,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from "@codebase/components-web";
-import applicationCss from "@codebase/components-web/styles/globals.css?url";
+} from "@codebase/components";
+import applicationCss from "@codebase/components/styles/globals.css?url";
 
 import { Logo } from "../components/layout";
 import lexicoCss from "../styles/application.css?url";

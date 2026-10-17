@@ -52,7 +52,7 @@
     "src"
   ],
   "main": "./src/index.ts",
-  "name": "@codebase/components-web",
+  "name": "@codebase/components",
   "peerDependencies": {
     "react": "catalog:",
     "react-dom": "catalog:"

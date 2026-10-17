@@ -30,9 +30,9 @@ projects/lexico/lexico-web/src/routes/routeTree.gen.ts
 .claude/CLAUDE.md
 .github/copilot-instructions.md
 lint-staged.config.ts
-**/projects/components-web/src/components/**
-**/projects/components-web/src/hooks/**
-**/projects/components-web/src/lib/**
+**/projects/components/src/components/**
+**/projects/components/src/hooks/**
+**/projects/components/src/lib/**
 
 # Templates and data
 **/helm/**/templates/**

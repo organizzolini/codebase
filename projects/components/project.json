@@ -1,8 +1,8 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "components-web",
+  "name": "components",
   "projectType": "library",
-  "sourceRoot": "projects/components-web/src",
+  "sourceRoot": "projects/components/src",
   "tags": [
     "domain:lexico",
     "framework:react",
@@ -14,7 +14,7 @@
       "executor": "@nx/vite:build",
       "options": {
         "generatePackageJson": false,
-        "outputPath": "projects/components-web/dist"
+        "outputPath": "projects/components/dist"
       },
       "outputs": ["{options.outputPath}"]
     },

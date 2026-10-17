@@ -100,12 +100,15 @@
         "check": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills check"
         },
+        "force": {
+          "command": "SKILLS_INSTALL_FORCE=1 NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write"
+        },
         "write": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write"
         }
       },
       "defaultConfiguration": "check",
-      "description": "Checks or restores the skills `skills-lock.json` declares. `check` lists the locked skills whose `SKILL.md` is absent, and is what `scripts/git/validate-session-skills.sh` runs; `write` restores them, and is what the root `postinstall` and `codebase:install-skills` run. Never cached: its result depends on what is on disk and, in `write`, on the network.",
+      "description": "Checks or restores the skills `skills-lock.json` declares. `check` lists the locked skills whose `SKILL.md` is absent, and is what `scripts/git/validate-session-skills.sh` runs; `write` restores them, and is what the root `postinstall` runs. Never cached: its result depends on what is on disk and, in `write`, on the network.",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{workspaceRoot}"

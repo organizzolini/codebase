@@ -1,3 +1,17 @@
+## 0.0.34 (2026-10-16)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.35
+- Updated callidescope-core to 0.0.34
+
+## 0.0.33 (2026-10-16)
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.34
+- Updated callidescope-core to 0.0.33
+
 ## 0.0.32 (2026-10-16)
 
 ### 🧱 Updated Dependencies
