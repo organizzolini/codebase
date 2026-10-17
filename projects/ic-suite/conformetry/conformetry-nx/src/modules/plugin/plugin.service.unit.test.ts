@@ -494,33 +494,35 @@ describe(PluginService, () => {
 
       tree.root = workspaceRoot;
 
-      await service.runGenerator({
-        generatorName: "widget",
-        options: {
-          ...hooksOptions,
-          directory: "packages/widgets/src/modules",
-          name: "cogs",
-        },
-        tree,
-        workspaceRoot,
-      });
+      try {
+        await service.runGenerator({
+          generatorName: "widget",
+          options: {
+            ...hooksOptions,
+            directory: "packages/widgets/src/modules",
+            name: "cogs",
+          },
+          tree,
+          workspaceRoot,
+        });
 
-      expect(runGeneratorSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          configurationDirectoryPath: workspaceRoot,
-          definition: expect.objectContaining({
-            hooks: {
-              postGenerate: expect.any(Function) as unknown,
-              preGenerate: expect.any(Function) as unknown,
-            },
-          }) as unknown,
-          filesystem: expect.objectContaining({
-            writeFile: expect.any(Function) as unknown,
-          }) as unknown,
-        }),
-      );
-
-      runGeneratorSpy.mockRestore();
+        expect(runGeneratorSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            configurationDirectoryPath: workspaceRoot,
+            definition: expect.objectContaining({
+              hooks: {
+                postGenerate: expect.any(Function) as unknown,
+                preGenerate: expect.any(Function) as unknown,
+              },
+            }) as unknown,
+            filesystem: expect.objectContaining({
+              writeFile: expect.any(Function) as unknown,
+            }) as unknown,
+          }),
+        );
+      } finally {
+        runGeneratorSpy.mockRestore();
+      }
     });
 
     it("keeps a hook's write in the tree rather than on disk", async () => {
