@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.12](https://github.com/organizzolini/codebase/compare/v3.9.11...v3.9.12) (2026-10-17)
+
+### ♻️ Code Refactoring
+
+* **configuration,installation,scripts:** ♻️ inline the bootstrap into installation.sh and drop the shell helpers ([#1701](https://github.com/organizzolini/codebase/issues/1701)) ([6104702](https://github.com/organizzolini/codebase/commit/61047027c5d873178c2a76476db9c0fed0e9a6f2))
+
 ## [3.9.11](https://github.com/organizzolini/codebase/compare/v3.9.10...v3.9.11) (2026-10-17)
 
 ### 🐛 Bug Fixes
