@@ -189,6 +189,7 @@ export class TaskDatabaseService {
       connection.close();
     }
   }
+
   /**
    * Answers what SQLite itself says of a database: `ok` for a sound one, the
    * problems found for a damaged one, or why it could not be opened at all.
@@ -303,7 +304,6 @@ export class TaskDatabaseService {
     try {
       const values: string[] = [];
 
-      // A loop, not `map`, keeps a call level free for the merge's callers.
       for (const row of connection.prepare(sql).all()) {
         values.push(String(Object.values(row)[0]));
       }

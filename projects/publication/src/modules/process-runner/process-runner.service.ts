@@ -48,7 +48,8 @@ export class ProcessRunnerService {
 
     return {
       status: result.status ?? ABNORMAL_EXIT_STATUS,
-      stderr: `${result.stderr}${failure}`,
+      // Typed as a string, but absent when the process never started.
+      stderr: [result.stderr, failure].filter(Boolean).join(""),
       stdout: result.stdout,
     };
   }
@@ -119,7 +120,8 @@ export class ProcessRunnerService {
 
       return {
         status: result.status ?? ABNORMAL_EXIT_STATUS,
-        stderr: `${result.stderr}${failure}`,
+        // Typed as a string, but absent when the process never started.
+        stderr: [result.stderr, failure].filter(Boolean).join(""),
         stdout: "",
       };
     } finally {

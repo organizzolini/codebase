@@ -8,14 +8,15 @@ export const MERGE_GROUP_REF =
 export const PULL_REQUEST_QUERY =
   '[.head.sha, (.head.repo.full_name // "none"), .base.repo.full_name] | join(" ")';
 
-/** Where the work directory goes when the runner names no temporary one. */
+/** How the work directory's name starts, under `RUNNER_TEMP` or the system's. */
 export const WORK_DIRECTORY_PREFIX = "nx-cache-import-";
 
 export const NOT_MERGE_GROUP_MESSAGE =
   "📥 Not a merge group; nothing to import";
 
-export const COULD_NOT_IMPORT_MESSAGE =
-  "::warning::Could not import the pull request's Nx cache; running cold";
+/** Reports an import that failed, and why, on one line. */
+export const couldNotImportMessage = (reason: string): string =>
+  `::warning::Could not import the pull request's Nx cache (${reason.trim().replaceAll(/\s+/gv, " ")}); running cold`;
 
 /** Picks the newest unexpired artifact this repository's run of the head made. */
 export const artifactQuery = (headSha: string, repositoryId: string): string =>

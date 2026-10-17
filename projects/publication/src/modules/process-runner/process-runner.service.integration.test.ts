@@ -19,6 +19,17 @@ describe(ProcessRunnerService, () => {
     service = await module.resolve(ProcessRunnerService);
   });
 
+  describe("capture", () => {
+    it("reports a process that never started by its error alone", () => {
+      expect.hasAssertions();
+
+      const result = service.capture("publication-missing-executable", []);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toMatch(/^Error: spawnSync .*ENOENT$/v);
+    });
+  });
+
   describe("captureToFile", () => {
     const makeDirectory = useTemporaryDirectories();
 
@@ -50,7 +61,7 @@ describe(ProcessRunnerService, () => {
       );
 
       expect(result.status).toBe(1);
-      expect(result.stderr).toContain("ENOENT");
+      expect(result.stderr).toMatch(/^Error: spawnSync .*ENOENT$/v);
     });
   });
 

@@ -10,7 +10,7 @@ import { TaskDatabaseService } from "../task-database/task-database.service";
 
 import {
   artifactQuery,
-  COULD_NOT_IMPORT_MESSAGE,
+  couldNotImportMessage,
   importingMessage,
   MERGE_GROUP_REF,
   noArtifactMessage,
@@ -198,8 +198,14 @@ export class ImportPrTaskCacheService {
           ...this.taskDatabaseService.merge(unpacked).lines,
         ],
       };
-    } catch {
-      return { lines: [COULD_NOT_IMPORT_MESSAGE] };
+    } catch (error) {
+      return {
+        lines: [
+          couldNotImportMessage(
+            error instanceof Error ? error.message : String(error),
+          ),
+        ],
+      };
     } finally {
       if (work !== undefined) {
         fs.rmSync(work, { force: true, recursive: true });

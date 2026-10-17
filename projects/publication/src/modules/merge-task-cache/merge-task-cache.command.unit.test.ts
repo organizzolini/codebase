@@ -323,6 +323,44 @@ describe(MergeTaskCacheCommand, () => {
     );
   });
 
+  it("rolls the rows back when an insert fails part way through", async () => {
+    expect.hasAssertions();
+
+    const target = path.join(workspace.directory, "runner1-v3.db");
+
+    writeTaskDatabase(target, ["ours"]);
+    writeFile(source, "cache/theirs", "their output");
+    fs.mkdirSync(path.join(source, "workspace-data"), { recursive: true });
+    const connection = new DatabaseSync(sourceDatabase("other-v3.db"));
+
+    // Familiar table names, but no `configuration` column for the insert.
+    connection.exec(`
+      CREATE TABLE task_details (hash TEXT, project TEXT, target TEXT);
+      CREATE TABLE cache_outputs (hash TEXT, code INTEGER, size INTEGER, created_at TEXT, accessed_at TEXT);
+      INSERT INTO cache_outputs VALUES ('theirs', 0, 1, NULL, NULL);
+    `);
+    connection.close();
+
+    await runCommand(source);
+
+    expect(readCachedHashes(target)).toStrictEqual(["ours"]);
+
+    const check = new DatabaseSync(target);
+
+    expect(
+      check
+        .prepare("SELECT hash FROM task_details ORDER BY hash")
+        .all()
+        .map((row) => row["hash"]),
+    ).toStrictEqual(["ours"]);
+
+    check.close();
+
+    expect(printed[0]).toMatch(
+      /^::warning::Not merging the Nx cache from .*: /v,
+    );
+  });
+
   it("warns rather than fails when the merge itself breaks", async () => {
     expect.hasAssertions();
 

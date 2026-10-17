@@ -289,7 +289,7 @@ describe(ImportPrTaskCacheCommand, () => {
       readCachedHashes(path.join(workspace.directory, "runner1-v3.db")),
     ).toStrictEqual(["ours"]);
     expect(printed.at(-1)).toBe(
-      "::warning::Could not import the pull request's Nx cache; running cold",
+      "::warning::Could not import the pull request's Nx cache (HTTP 500); running cold",
     );
     expect(fs.readdirSync(runnerTemporary)).toStrictEqual([]);
   });
@@ -305,10 +305,25 @@ describe(ImportPrTaskCacheCommand, () => {
       await runCommand(runner);
 
       expect(printed.at(-1)).toBe(
-        "::warning::Could not import the pull request's Nx cache; running cold",
+        `::warning::Could not import the pull request's Nx cache (${name} is unset); running cold`,
       );
     },
   );
+
+  it("puts a multi-line reason on the warning's one line", async () => {
+    expect.hasAssertions();
+
+    const runner = new FakeProcessRunner({
+      ...sameRepository(),
+      [PULL_REQUEST]: failed("gh: Not Found\n  (HTTP 404)\n"),
+    });
+
+    await runCommand(runner);
+
+    expect(printed).toStrictEqual([
+      "::warning::Could not import the pull request's Nx cache (gh: Not Found (HTTP 404)); running cold",
+    ]);
+  });
 
   it("passes on the merge's own warning when the artifact holds no cache", async () => {
     expect.hasAssertions();
