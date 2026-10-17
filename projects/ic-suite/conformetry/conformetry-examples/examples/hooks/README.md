@@ -3,7 +3,7 @@
 A generator can declare two functions that run around generation:
 `preGenerate`, before any file is written, and `postGenerate`, after the
 template is rendered. This example uses the first to refuse a bad name and the
-second to write a receipt beside the generated file.
+second to write a receipt beside the configuration.
 
 ## Run it
 
@@ -12,12 +12,16 @@ pnpm exec nx run conformetry-examples:hooks
 ```
 
 ```text
-Receipt written: tmp/conformetry-examples/hooks/mars/receipt.log
+Receipt written: <this folder>/receipts/mars.log
   tmp/conformetry-examples/hooks/mars/mars.txt
+  <this folder>/receipts/mars.log
 ```
 
-The receipt is not part of the template: the `postGenerate` hook wrote it, so
-the command does not list it among the files it rendered.
+The receipt is not part of the template: the `postGenerate` hook wrote it,
+through the same filesystem adapter the run uses, at a path built from the
+directory that holds the configuration. It then added the path to the list of
+generated files, which is why the command lists it and the formatter covers it.
+`receipts/` is git-ignored, so delete it whenever you like.
 
 Now give it a name the `preGenerate` hook refuses:
 
@@ -35,6 +39,7 @@ exist afterwards: the hook threw before anything was written.
 ```text
 hooks/
 ├── conformetry.config.ts                      the generator and both hooks
+├── receipts/                                  written by the hook, git-ignored
 └── templates/
     └── receipt/
         └── {{nameKebabCase}}/
@@ -45,7 +50,8 @@ Three facts do all the work:
 
 - **A hook is a function in the configuration.** It receives the generator's
   definition, its inputs, the substitutions rendered from them, the output
-  directory, and, in `postGenerate`, the files rendered so far.
+  directory, the filesystem adapter the run uses, the directory that holds the
+  configuration, and, in `postGenerate`, the files rendered so far.
 - **A hook that throws fails the run.** A throwing `preGenerate` leaves nothing
   written; a throwing `postGenerate` leaves what the render already wrote.
 - **Unknown keys under `hooks` are refused.** `afterGenerate` is not a hook, and

@@ -172,7 +172,22 @@ export type GeneratorHook = (
  * Data exposed to generator hooks.
  */
 export interface GeneratorHookContext {
+  /**
+   * Absolute directory of the configuration file that declared the generator.
+   *
+   * The anchor for any path a hook builds that belongs to the configuration
+   * rather than to the instance being generated.
+   */
+  configurationDirectoryPath: string;
   definition: GeneratorDefinition;
+  /**
+   * The adapter the run itself reads and writes through.
+   *
+   * Absolute paths only, exactly as the runtime uses it. A hook that writes
+   * here lands in whatever the host writes to — the disk under the command
+   * line, a virtual tree under Nx — instead of bypassing it.
+   */
+  filesystem: FileSystemAdapter;
   generatedFilePaths: string[];
   input: Record<string, string>;
   outputDirectoryPath: string;
