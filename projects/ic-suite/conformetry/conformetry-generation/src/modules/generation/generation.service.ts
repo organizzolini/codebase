@@ -5,14 +5,16 @@ import { ConfigurationService } from "@conformetry/configuration";
 import { Injectable } from "@nestjs/common";
 
 import type {
-  DirectoryEntry,
-  FileSystemAdapter,
   FormatterAdapter,
-  GeneratorHookContext,
   RunGeneratorArguments,
   RunGeneratorResult,
 } from "./generation.types";
 import type { Substitutions } from "@conformetry/configuration";
+import type {
+  DirectoryEntry,
+  FileSystemAdapter,
+  GeneratorHookContext,
+} from "@conformetry/core";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**

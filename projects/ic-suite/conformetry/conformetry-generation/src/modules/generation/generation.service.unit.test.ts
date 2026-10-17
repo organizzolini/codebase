@@ -8,13 +8,13 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { GenerationService } from "./generation.service";
 
+import type { FormatterAdapter } from "./generation.types";
 import type {
   DirectoryEntry,
   FileSystemAdapter,
-  FormatterAdapter,
   GeneratorDefinition,
   GeneratorHookContext,
-} from "./generation.types";
+} from "@conformetry/core";
 
 class MockFileSystemAdapter implements FileSystemAdapter {
   private readonly directoryEntries = new Map<string, DirectoryEntry[]>();

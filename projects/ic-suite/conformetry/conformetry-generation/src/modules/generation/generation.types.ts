@@ -1,26 +1,6 @@
 // 🏷️ Types
 
-/**
- * A directory entry read from the source template tree.
- */
-export interface DirectoryEntry {
-  isDirectory: boolean;
-  name: string;
-}
-
-/**
- * Filesystem operations used by the runtime.
- *
- * Exists so a host with a virtual filesystem — an Nx generator `Tree`, for
- * instance — can run generation without touching disk. The default
- * implementation reads and writes directly.
- */
-export interface FileSystemAdapter {
-  listDirectory(directoryPath: string): Promise<DirectoryEntry[]>;
-  makeDirectory(directoryPath: string): Promise<void>;
-  readFile(filePath: string): Promise<string>;
-  writeFile(filePath: string, content: string): Promise<void>;
-}
+import type { FileSystemAdapter, GeneratorDefinition } from "@conformetry/core";
 
 /**
  * Formatting applied once generation completes.
@@ -30,42 +10,6 @@ export interface FileSystemAdapter {
  */
 export interface FormatterAdapter {
   formatFiles(filePaths: string[]): Promise<void>;
-}
-
-/**
- * Generator metadata and runtime configuration.
- */
-export interface GeneratorDefinition {
-  description?: string;
-  hooks?: GeneratorHooks;
-  name: string;
-  templateDirectoryPath: string;
-}
-
-/**
- * A generator hook function.
- */
-export type GeneratorHook = (
-  context: GeneratorHookContext,
-) => Promise<void> | void;
-
-/**
- * Data exposed to generator hooks.
- */
-export interface GeneratorHookContext {
-  definition: GeneratorDefinition;
-  generatedFilePaths: string[];
-  input: Record<string, string>;
-  outputDirectoryPath: string;
-  substitutions: Record<string, string>;
-}
-
-/**
- * Generator lifecycle hooks.
- */
-export interface GeneratorHooks {
-  postGenerate?: GeneratorHook;
-  preGenerate?: GeneratorHook;
 }
 
 /**
