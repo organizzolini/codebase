@@ -17,6 +17,7 @@ import { LoggerService } from "@codebase/logging";
 import { GenerateCommand } from "./generate.command";
 
 import type { ConformetryConfiguration } from "@conformetry/configuration";
+import type { GeneratorHook } from "@conformetry/core";
 
 const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
 
@@ -125,6 +126,41 @@ describe(GenerateCommand, () => {
         }),
       );
       expect(generationService.runGenerator).toHaveBeenCalledTimes(1);
+    });
+
+    it("forwards the hooks a generator declares to the runtime", async () => {
+      const hooks = {
+        postGenerate: vi.fn<GeneratorHook>(),
+        preGenerate: vi.fn<GeneratorHook>(),
+      };
+
+      vi.mocked(
+        configurationService.loadConformetryConfiguration,
+      ).mockResolvedValue([
+        {
+          hooks,
+          inputs: { name: { type: "string" } },
+          instances: [],
+          name: "widget",
+          templatePath: "configuration/templates/widget",
+        },
+      ]);
+
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        directory: "/tmp/out",
+        template: "widget",
+      });
+
+      expect(generationService.runGenerator).toHaveBeenCalledWith(
+        expect.objectContaining({
+          definition: {
+            hooks,
+            name: "widget",
+            templateDirectoryPath: "configuration/templates/widget",
+          },
+        }),
+      );
     });
 
     it("writes into the directory the caller named", async () => {

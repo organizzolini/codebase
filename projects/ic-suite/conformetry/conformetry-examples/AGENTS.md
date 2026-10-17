@@ -89,6 +89,7 @@ against the outcome its own guide promises.
 | How do tag-scoped instance groups work? | [nx-host](examples/nx-host/README.md) |
 | Which validator will handle this extension? | [language-validators](examples/language-validators/README.md) |
 | What will be refused, and what is merely permissive? | [failure-modes](examples/failure-modes/README.md) |
+| How do I run my own code before and after a generator writes? | [hooks](examples/hooks/README.md) |
 
 ## I am building a host
 
@@ -111,6 +112,7 @@ are, and why the compiler must preserve decorator metadata.
 | `ambiguous-attribution` | **1** | One instance ties between two templates |
 | `nx-host` | 0 | The command-line host finds nothing to check |
 | `embedding` | 0 | Conforms |
+| `hooks` | 0 | The `preGenerate` hook accepts the name and the `postGenerate` hook writes its receipt |
 | `failure-modes` | **1** | The `TODO` half conforms; the placeholder nobody supplied is refused |
 
 Every row is asserted by

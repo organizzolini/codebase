@@ -41,6 +41,7 @@ import type {
   ConformetryGeneratorDefinition,
   ParsedGeneratorEntry,
 } from "./configuration.types";
+import type { GeneratorHooks } from "@conformetry/core";
 
 /**
  * The one answer to "what is this run actually configured to do".
@@ -92,6 +93,9 @@ export class ConfigurationService {
       ...(definition.description === undefined
         ? {}
         : { description: definition.description }),
+      ...(definition.hooks === undefined
+        ? {}
+        : { hooks: this.applyHookDefaults(definition.hooks) }),
       inputs: definition.inputs ?? {},
       instances: definition.instances ?? [],
       name: definition.name,
@@ -102,6 +106,23 @@ export class ConfigurationService {
       ...(definition.threshold === undefined
         ? {}
         : { threshold: definition.threshold }),
+    };
+  }
+
+  /**
+   * Drops the hooks a generator left unset, rather than carrying them as
+   * explicit `undefined`, so what a host forwards is exactly what was declared.
+   */
+  private applyHookDefaults(
+    hooks: NonNullable<ParsedGeneratorEntry["hooks"]>,
+  ): GeneratorHooks {
+    return {
+      ...(hooks.postGenerate === undefined
+        ? {}
+        : { postGenerate: hooks.postGenerate }),
+      ...(hooks.preGenerate === undefined
+        ? {}
+        : { preGenerate: hooks.preGenerate }),
     };
   }
 

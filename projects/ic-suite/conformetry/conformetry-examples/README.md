@@ -36,6 +36,7 @@ Read in this order for a walkthrough; jump straight in for an answer.
 | [ambiguous-attribution](examples/ambiguous-attribution/README.md) | Why does one path list two templates? |
 | [nx-host](examples/nx-host/README.md) | What does `@conformetry/nx` add over the command line? |
 | [embedding](examples/embedding/README.md) | How do I drive conformetry from my own tool? |
+| [hooks](examples/hooks/README.md) | How do I run my own code before and after a generator writes? |
 | [failure-modes](examples/failure-modes/README.md) | What does conformetry refuse, and what does it let through? |
 
 ## Start to finish
