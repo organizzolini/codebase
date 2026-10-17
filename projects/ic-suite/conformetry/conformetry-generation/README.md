@@ -101,6 +101,9 @@ Paths differ by host:
   behaves the same however the command was started.
 - **`configurationDirectoryPath` is absolute under both hosts**, taken from
   the file that was actually loaded.
+- **`definition.templateDirectoryPath`** is the configuration's `templatePath`
+  as written, so workspace-relative, under the command line. Under Nx it is
+  resolved against the workspace root, so absolute.
 
 There is no `replaceInFile` helper. A hook that edits a rendered file reads it
 with `filesystem.readFile`, changes the text, and writes it back.
