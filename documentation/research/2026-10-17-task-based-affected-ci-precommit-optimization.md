@@ -75,7 +75,7 @@ In `.github/workflows/continuous-integration.yml`, CI runs matrix jobs for `type
 
 To avoid running all jobs across all projects, the codebase built an entire custom NestJS CLI service: `projects/publication/src/modules/run-affected/run-affected.service.ts`.
 
-#### The Problem
+#### CI Invalidation Challenges
 
 - **Dictionary Word Spurious Invalidation**:
   `projects/publication/src/modules/run-affected/run-affected.constants.ts` documents:
