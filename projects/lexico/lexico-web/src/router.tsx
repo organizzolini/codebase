@@ -1,25 +1,23 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
-import { routeTree } from "./routes/routeTree.gen";
+import { routeTree } from "./lib/routeTree.gen";
 
 /**
- * Creates and configures the application router.
- *
- * @returns Configured TanStack Router instance.
+ * Creates the application router, which TanStack Start calls once per request
+ * on the server and once on the client.
  */
 export function getRouter(): Router<typeof routeTree> {
-  const router = createRouter({
+  return createRouter({
     defaultPreload: "intent",
     routeTree,
     scrollRestoration: true,
   });
-
-  return router;
 }
 
 declare module "@tanstack/react-router" {
   /**
-   * Register.
+   * Registers this application's router, so links and hooks are typed against
+   * its route tree.
    */
   interface Register {
     router: ReturnType<typeof getRouter>;

@@ -1,8 +1,8 @@
-import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "@codebase/configuration/callidescope.config";
 
 /**
- * TODO: Measure this application's stacks and set its limits at what they
- * measure, then ratchet them down from there.
+ * TODO: Measure this application's stacks, and set limits here at what they
+ * measure where the workspace defaults do not fit.
  */
 export default {
   ...projectDefaults,
@@ -11,8 +11,4 @@ export default {
    * anything a person structured, so a depth finding there is not actionable.
    */
   exclude: ["src/lib/routeTree.gen.ts"],
-  limits: {
-    maximumBreadth: 8,
-    maximumDepth: 6,
-  },
 };

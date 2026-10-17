@@ -86,7 +86,7 @@
     // Start plugin rather than imported, so they are declared as entry points.
     // knip names the same paths in its own entry list.
     "projects/lexico/lexico-web/src/client.tsx",
-    "projects/lexico/lexico-web/src/routes/routeTree.gen.ts",
+    "projects/lexico/lexico-web/src/lib/routeTree.gen.ts",
     "projects/lexico/lexico-web/src/router.tsx",
     "projects/caelundas/caelundas-cli/src/modules/caelundas-database/migrations/**/*.ts",
     "projects/lexico/lexico-entities/src/modules/lexico-database/migrations/**/*.ts",

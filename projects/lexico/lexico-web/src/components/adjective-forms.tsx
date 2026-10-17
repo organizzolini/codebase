@@ -81,7 +81,7 @@ export function AdjectiveForms(
     >
       <Tabs
         className="-mx-4 gap-0"
-        onValueChange={(value) => {
+        onValueChange={(value: unknown) => {
           setSelectedGender(String(value));
         }}
         value={gender}

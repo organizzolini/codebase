@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../projects/configuration/codependix.config.js";
+import { projectDefaults } from "@codebase/configuration/codependix.config";
 
 export default {
   ...projectDefaults,

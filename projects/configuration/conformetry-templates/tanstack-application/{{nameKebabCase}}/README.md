@@ -12,4 +12,4 @@ nx run {{nameKebabCase}}:vitest
 
 ## 👔 Conformetry
 
-This project was generated from the [tanstack-application](../../projects/configuration/conformetry-templates/tanstack-application) conformetry template.
+This project was generated from the [tanstack-application](/projects/configuration/conformetry-templates/tanstack-application) conformetry template.

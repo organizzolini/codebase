@@ -78,6 +78,22 @@ for Latin and English matches at once and merges them, best first; set
 - [Codebase AGENTS.md](../../../AGENTS.md) — workspace conventions and Nx workflows
 - [TanStack Start](https://tanstack.com/router/latest/docs/framework/react/start/overview)
 
+## Develop
+
+```bash
+nx run lexico-web:start
+```
+
+## Test
+
+```bash
+nx run lexico-web:vitest
+```
+
+## 👔 Conformetry
+
+This project was generated from the [tanstack-application](/projects/configuration/conformetry-templates/tanstack-application) conformetry template.
+
 ## License
 
 MIT — see [LICENSE](../../../LICENSE).

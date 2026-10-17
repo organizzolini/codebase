@@ -294,6 +294,100 @@ describe(PathsService, () => {
     });
   });
 
+  describe("resolveGenerationPath with instances", () => {
+    let directoriesPath: string;
+
+    beforeAll(async () => {
+      directoriesPath = path.join(workspaceRoot, "directories.config.json");
+      await writeFile(
+        directoriesPath,
+        JSON.stringify([
+          {
+            instances: [{ patterns: ["projects/**/*-web"] }],
+            name: "web",
+            templatePath: "templates/web",
+          },
+        ]),
+        "utf8",
+      );
+    });
+
+    it("defaults to the parent of the first instance pattern", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects"));
+    });
+
+    it("accepts a directory matching an allowed pattern", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { directory: "projects/caelundas", name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects/caelundas"));
+    });
+
+    it("refuses a directory outside the allowed set, naming the patterns", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { directory: "packages", name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).rejects.toThrow(
+        /cannot generate into packages\. Allowed directories: projects\/\*\*\./u,
+      );
+    });
+  });
+
+  describe("resolveGenerationPath with literal instance paths", () => {
+    it("defaults to the instance's parent but does not restrict a directory", async () => {
+      const literalPath = path.join(workspaceRoot, "literal.config.json");
+
+      await writeFile(
+        literalPath,
+        JSON.stringify([
+          {
+            instances: [{ patterns: ["projects/known"] }],
+            name: "known",
+            templatePath: "templates/known",
+          },
+        ]),
+        "utf8",
+      );
+
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: literalPath,
+          generatorName: "known",
+          inputs: { name: "my-known" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects"));
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: literalPath,
+          generatorName: "known",
+          inputs: { directory: "elsewhere", name: "my-known" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "elsewhere"));
+    });
+  });
+
   describe("resolveGenerationPath with a crafted set of instances", () => {
     /**
      * Builds a `PathsService` whose collaborators are stubbed, so the

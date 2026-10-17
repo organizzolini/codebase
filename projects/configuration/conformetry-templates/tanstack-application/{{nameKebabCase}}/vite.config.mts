@@ -4,7 +4,6 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  cacheDir: "../../node_modules/.vite/projects/{{nameKebabCase}}",
   plugins: [
     tailwindcss(),
     // The generated route tree lives under `lib/`, because
@@ -25,7 +24,4 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   root: import.meta.dirname,
-  server: {
-    port: 3000,
-  },
 });

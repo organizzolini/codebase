@@ -17,16 +17,16 @@ export default defineConfig({
       external: ["expo-sqlite"],
     },
   },
-  cacheDir: "../../../node_modules/.vite/applications/lexico/lexico-web",
   css: {
     devSourcemap: true,
   },
   plugins: [
     tailwindcss(),
-    // The generated route tree sits beside the routes it describes rather than
-    // at the `src/` root, which `codebase-structure.json` restricts to
-    // entry-point names, and its path resolves relative to `srcDirectory` — a
-    // leading `src/` here writes to `src/src/`.
+    // The generated route tree lives under `lib/`, because
+    // `codebase-structure.json` refuses its camel-cased name at the `src/`
+    // root; the path resolves relative to `srcDirectory`, so a leading `src/`
+    // would write to `src/src/`. Test files sit beside the routes they test, so
+    // the route generator is told to skip them rather than treat them as routes.
 
     // The client entry is kept at its conventional `src/client.tsx` rather than
     // deleted even though TanStack would supply an identical virtual one: it
@@ -35,13 +35,11 @@ export default defineConfig({
     // manifest and from the catalog.
     tanstackStart({
       router: {
-        generatedRouteTree: "routes/routeTree.gen.ts",
-        // Route tests and the generated route tree sit beside the routes, so
-        // the route generator skips them rather than treating each as a route.
-        routeFileIgnorePattern: String.raw`\.(test|gen)\.`,
+        generatedRouteTree: "lib/routeTree.gen.ts",
+        routeFileIgnorePattern: String.raw`\.test\.`,
       },
     }),
-    // React plugin must come after TanStack Start plugin
+    // The React plugin must come after the TanStack Start plugin.
     react(),
   ],
   preview: {

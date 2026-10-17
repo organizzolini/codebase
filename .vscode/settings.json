@@ -688,6 +688,12 @@
     "https://schemastore.azurewebsites.net/": true,
     "https://www.schemastore.org/": true
   },
+  "json.schemas": [
+    {
+      "fileMatch": ["projects/**/project.json"],
+      "url": "./node_modules/nx/schemas/project-schema.json"
+    }
+  ],
   "json.validate.enable": true,
   "jsonc.format.enable": true,
   "jsonc.validate.enable": false,
