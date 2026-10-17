@@ -20,7 +20,22 @@ Each cell is Nx's `read the output from the cache … for X out of Y tasks` for 
 
 Pull request runs, old order against new. The baseline is [#1699](https://github.com/Organizzolini/codebase/pull/1699)'s run [38982553556](https://github.com/Organizzolini/codebase/actions/runs/38982553556); the candidate is this change's own pull request run. Neither can read the other's caches, so both restore `main`'s through `restore-keys`, and this change adds files to #1699's, so its inputs differ in the projects it touches.
 
-<!-- CANDIDATE-TABLE -->
+| Leg | #1699, old order | This change, new order |
+| --- | ---------------- | ---------------------- |
+| Typecheck | 54/163 | 53/163 |
+| Format | 212/273 | 208/273 |
+| Lint | 104/161 | 102/161 |
+| Deprecate | 56/161 | 55/161 |
+| Guard | 0/201 | 43/201 |
+| Build | 0/134 | 0/134 |
+| Test | 1/24 | 1/24 |
+| Test Caelundas | 1/5 | 1/5 |
+| Test IC Suite | 0/74 | 0/74 |
+| Test Meanderaw | 0/2 | 0/2 |
+| Publishable Packages | 0/60 | 0/60 |
+| Secure | 0/4 | 0/4 |
+
+The candidate is run [38988155260](https://github.com/Organizzolini/codebase/actions/runs/38988155260). Every leg adopted a database of 18 to 6,469 results after the install, as before it. The task totals are equal leg for leg, and the hits differ by one to four where this change's own files feed the tasks, the `publication` project and the root documentation, so those tasks miss in its run. Guard rose because `main`'s Guard cache was saved warmer in between. No leg lost hits to the order.
 
 Merge-group runs with the old order, each importing its pull request's artifact: [#1564](https://github.com/Organizzolini/codebase/actions/runs/38962477883), [#1565](https://github.com/Organizzolini/codebase/actions/runs/38966149604), [#1569](https://github.com/Organizzolini/codebase/actions/runs/38971996212), and both of [#1691](https://github.com/Organizzolini/codebase/actions/runs/38979617663)'s ([second](https://github.com/Organizzolini/codebase/actions/runs/38980360518)).
 
@@ -45,5 +60,5 @@ The spread is the point of the caveat: a hit needs the task's inputs to match a 
 
 - `scripts/nx/` holds only `await-health.sh` and `stop-port.sh`, which [ADR 0027](0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md) leaves undecided.
 - A step that must run before the install still cannot be a command. None remains in `setup-codebase`.
-- Each of the four steps boots the `publication` container, which costs seconds of the job that a shell script did not.
+- Each of the four steps boots the `publication` container. In the candidate run verify and adopt took under a second each, and `🕋 Setup Codebase` took a median of 74 seconds a leg against 71.5 before.
 - If the install ever opens the task database, the adoption would pick the empty database it wrote, since it is the newest. Check that again before adding an Nx call to a lifecycle script.
