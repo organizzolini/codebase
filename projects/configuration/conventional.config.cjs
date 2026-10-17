@@ -146,6 +146,11 @@ const scopes = [
     name: "installation",
   },
   {
+    description:
+      "Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database",
+    name: "integration",
+  },
+  {
     description: "Static GitHub profile README project (markdown and assets)",
     name: "JimmyPaolini",
   },
@@ -197,7 +202,7 @@ const scopes = [
   },
   {
     description:
-      "Publication CLI: the CI release steps and the Nx affected and publishable-package plumbing",
+      "Publication CLI: the CI release steps and the publishable-packages gate",
     name: "publication",
   },
   {
