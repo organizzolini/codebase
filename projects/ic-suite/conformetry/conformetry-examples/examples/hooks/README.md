@@ -76,5 +76,5 @@ Three facts do all the work:
 
 ## Next
 
-[embedding](../embedding/README.md), for driving the same generation from your
-own tool.
+[failure-modes](../failure-modes/README.md), for what the whole toolchain lets
+through.
