@@ -659,9 +659,10 @@
     },
     "shellcheck": {
       "cache": true,
-      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The installed skills under .agents/ are owned upstream and stay out too. projects/configuration/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. pyproject.toml and uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
+      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. projects/configuration/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. pyproject.toml and uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
       "executor": "nx:run-commands",
       "inputs": [
+        "{workspaceRoot}/.agents/skills/sign-commits/scripts/*.sh",
         "{workspaceRoot}/.devcontainer/**/*.sh",
         "{workspaceRoot}/projects/configuration/.husky/commit-msg",
         "{workspaceRoot}/projects/configuration/.husky/pre-commit",
@@ -672,7 +673,7 @@
         "{workspaceRoot}/uv.lock"
       ],
       "options": {
-        "command": "uv run shellcheck --rcfile projects/configuration/.shellcheck.rc --severity=style $(git ls-files -- '.devcontainer/*.sh' 'scripts/*.sh' projects/configuration/.husky/commit-msg projects/configuration/.husky/pre-commit projects/configuration/.husky/pre-push)",
+        "command": "uv run shellcheck --rcfile projects/configuration/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'scripts/*.sh' projects/configuration/.husky/commit-msg projects/configuration/.husky/pre-commit projects/configuration/.husky/pre-push)",
         "cwd": "{workspaceRoot}"
       }
     },

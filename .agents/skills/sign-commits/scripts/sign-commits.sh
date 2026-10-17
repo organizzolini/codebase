@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-repository_root="$(cd "${script_directory}/.." && pwd)"
+repository_root="$(git rev-parse --show-toplevel)"
 
 cd "${repository_root}"
 
