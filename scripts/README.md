@@ -6,8 +6,8 @@ Utility scripts for codebase setup, maintenance, and development workflows.
 
 This directory contains shell scripts for:
 
-- **Local setup** - macOS-specific initial codebase configuration (in `local/`)
-- **Shell utilities** - Common terminal operations
+- **Installation** - macOS-specific initial codebase configuration (`installation.sh`)
+- **Shell utilities** - The port-derivation helper (in `shell/`)
 - **Nx** - The CI steps around Nx: its affected runs and the task-result database CI caches (in `nx/`)
 
 > **The shell floor.** Which scripts stay shell, and why, is decided in
@@ -21,52 +21,47 @@ This directory contains shell scripts for:
 Run the main setup script to configure your local development environment:
 
 ```bash
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 This runs the following in sequence:
 
-1. `software/brew.sh` and `software/node.sh` - Check Homebrew, then install nvm, Node.js, pnpm, and nx
+1. Homebrew is checked, then nvm, Node.js, pnpm, and nx are installed or checked
 2. `pnpm install` - Installs the packages the next step is written in
 3. `projects/installation/src/installation.main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
 
 > **Note:** If using a devcontainer, these scripts are not needed — the devcontainer handles setup automatically via `.devcontainer/scripts/post-create-command.sh`.
 
-## Local Setup Scripts
+## Installation Script
 
-These scripts live in `scripts/local/` and are intended for **macOS local development only**.
+`scripts/installation.sh` is intended for **macOS local development only**.
 The devcontainer handles equivalent setup automatically.
 
-### setup.sh
+### installation.sh
 
 **Purpose:** Bootstrap a machine, then run the installation project's `setup` command
 
 **Usage:**
 
 ```bash
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 **What it does:**
 
 - Validates codebase root directory
 - Sources `utilities.sh` for common functions
-- Sources `software/brew.sh` and `software/node.sh` to install nvm, Node.js (from `.nvmrc`), pnpm, and nx
+- Checks Homebrew (never installs it; exits with an error if it is missing)
+- Installs or checks nvm, Node.js (from `.nvmrc`), pnpm, and nx, and writes Husky's init file
 - Runs `pnpm install`, so the command can start
 - Runs `projects/installation/src/installation.main.ts setup`, which does everything else
+
+It is one file because it installs the Node the TypeScript runs on, so none of it can be a command, and because the environment changes it makes (`nvm use`, `PATH`) must reach the `setup` command.
 
 **Prerequisites:**
 
 - Must be run from codebase root directory
 - Homebrew installed
-
-### software/brew.sh and software/node.sh
-
-**Purpose:** The part of the software step that cannot be TypeScript, because it installs the Node the TypeScript runs on
-
-- **Homebrew** - Checked, never installed; exits with an error if it is missing
-- **nvm, Node.js, pnpm, nx** - Installed or checked; Husky's init file is written
-- `brew_install_or_check` is defined here for `node.sh`
 
 ### The installation project
 
@@ -75,7 +70,7 @@ Everything after Node exists lives in [`projects/installation`](../projects/inst
 | Command               | What it does                                                                                                     |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
-| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion, and shell-helper blocks to `~/.zshrc` or `~/.bashrc`             |
+| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion blocks to your rc file; drops the retired helper                  |
 | `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
 | `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
 | `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
@@ -170,128 +165,6 @@ echo "Timestamp: $timestamp"
 - Makes all `.sh` files executable
 
 ## Shell Utilities
-
-### shell/grep.sh
-
-**Purpose:** Advanced grep with multi-casing support
-
-**Usage:**
-
-```bash
-./scripts/shell/grep.sh <query> [grep_options] [file...]
-```
-
-**Function: `grep_all_cases`**
-
-Searches for a term in all possible casings and spacings:
-
-- camelCase: `myVariableName`
-- PascalCase: `MyVariableName`
-- snake_case: `my_variable_name`
-- kebab-case: `my-variable-name`
-- space-separated: `my variable name`
-
-**Examples:**
-
-Search for "my variable name" in all casings:
-
-```bash
-./scripts/shell/grep.sh "myVariableName" src/
-# Matches: myVariableName, my_variable_name, my-variable-name, etc.
-```
-
-Search with grep options:
-
-```bash
-./scripts/shell/grep.sh "variable" -r -n src/
-# -r: recursive
-# -n: show line numbers
-```
-
-**Standard grep usage:**
-
-```bash
-# Case insensitive
-grep -i "word" file.txt
-
-# Whole word search
-grep -w "word" file.txt
-
-# Recursive search
-grep -r "word" .
-
-# Count matches
-grep -c "word" file.txt
-
-# Find files with matches
-grep -l "word" *
-
-# Invert match (non-matching lines)
-grep -v "word" file.txt
-
-# With pipes
-ps aux | grep "nginx"
-ls -l | grep ".txt"
-```
-
-### shell/killport.sh
-
-**Purpose:** Kill processes running on a specific port
-
-**Usage:**
-
-```bash
-source ./scripts/shell/killport.sh
-killport <port_number>
-```
-
-**Function: `killport(port)`**
-
-Finds and kills all processes listening on the specified port.
-
-**Examples:**
-
-Kill process on port 3000:
-
-```bash
-source ./scripts/shell/killport.sh
-killport 3000
-```
-
-**Output:**
-
-- If no processes: `👍 No processes found running on port 3000`
-- If processes found: Shows process name and PID, then kills them
-
-**Use cases:**
-
-- Free up port for development server
-- Clean up orphaned processes
-- Force restart of services
-
-### shell/netstat.sh
-
-**Purpose:** Network statistics and connection monitoring
-
-**Usage:**
-
-```bash
-./scripts/shell/netstat.sh [options]
-```
-
-See script for specific netstat usage patterns.
-
-### shell/sed.sh
-
-**Purpose:** Stream editor for text transformation
-
-**Usage:**
-
-```bash
-./scripts/shell/sed.sh [options]
-```
-
-See script for specific sed usage patterns and examples.
 
 ### shell/text-to-port.sh
 
@@ -416,11 +289,11 @@ See file for specific SQL queries and documentation.
 ```bash
 # ✅ Correct
 cd ~/Personal/codebase
-./scripts/local/setup.sh
+./scripts/installation.sh
 
 # ❌ Wrong
 cd scripts
-./setup.sh
+./installation.sh
 ```
 
 **Make scripts executable:**
@@ -436,7 +309,7 @@ Or use the utilities.sh automatic behavior (makes all `.sh` files executable).
 **Execute scripts** (standalone):
 
 ```bash
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 **Source scripts** (use functions in current shell):
@@ -491,7 +364,7 @@ cp .env.example .env
 # Edit .env with your values
 
 # 3. Run setup
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 ### Update Dependencies
@@ -532,37 +405,6 @@ If out of sync:
 pnpm install
 git add pnpm-lock.yaml
 git commit -m "chore(dependencies): update lockfile"
-```
-
-### Kill Development Servers
-
-Free up ports for development:
-
-```bash
-source ./scripts/shell/killport.sh
-
-# Kill common development ports
-killport 3000  # React dev server
-killport 5173  # Vite dev server
-killport 54321 # Supabase local API
-killport 54322 # Supabase local PostgreSQL
-killport 54323 # Supabase Studio
-```
-
-### Search Across Codebase
-
-Find code in all casings:
-
-```bash
-# Search for variable in all naming conventions
-./scripts/shell/grep.sh "userName" -r src/
-
-# Matches:
-# - userName
-# - user_name
-# - user-name
-# - UserName
-# - user name
 ```
 
 ## Troubleshooting

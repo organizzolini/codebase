@@ -1,12 +1,39 @@
 #!/bin/bash
-# node.sh — Install Node.js (via nvm), pnpm, nx, and configure Husky.
+# installation.sh — Entry point for local developer machine setup.
 #
-# nvm is used instead of a system Node.js so that the version is pinned by
-# .nvmrc and stays consistent across developer machines and the devcontainer.
+# Run this once after cloning the codebase repository to install all required tools,
+# configure your shell, and install project dependencies.
 #
-# Depends on: brew.sh (brew_install_or_check must be defined)
+# Usage: bash scripts/installation.sh   (from the workspace/worktree root)
+#
+# This is a bootstrap. It installs only what the real setup needs in order to
+# run: Homebrew's presence, nvm, Node.js, pnpm, and the workspace's packages.
+# Everything after that is the `setup` command of the installation project
+# (projects/installation), which configures the shell, installs the remaining
+# software, creates the .env files, and installs the dependencies.
+#
+# Execution order:
+#   1. utilities.sh        — validates cwd, loads .env, enables set -e
+#   2. Homebrew            — checked, never installed
+#   3. nvm, Node.js, pnpm  — nvm and Node (.nvmrc), Husky init, pnpm, nx
+#   4. pnpm install        — the packages the command is written in
+#   5. the setup command   — everything else, as tested TypeScript
+#
+# The whole bootstrap is one file, so environment changes made below
+# (nvm use, PATH updates) carry through into the setup command.
+
+source ./scripts/utilities.sh
+
+# ── Homebrew ─────────────────────────────────────────────────────────────────
+echo "🔍 Checking for Homebrew installation..."
+if ! command -v brew &> /dev/null; then
+  echo "🛑 Homebrew not found. Please install Homebrew first: https://brew.sh/" >&2
+  exit 1
+fi
 
 # ── nvm ──────────────────────────────────────────────────────────────────────
+# nvm is used instead of a system Node.js so that the version is pinned by
+# .nvmrc and stays consistent across developer machines and the devcontainer.
 echo "🔍 Checking for nvm installation..."
 if ! brew list nvm &> /dev/null; then
   echo "📦 nvm not found. Installing via Homebrew..."
@@ -78,7 +105,19 @@ else
 fi
 
 # ── pnpm ──────────────────────────────────────────────────────────────────────
-brew_install_or_check "pnpm"
+# Installed with Homebrew when it is not yet on PATH; when it is, this reports
+# whether an upgrade is available.
+echo "🔍 Checking for pnpm installation..."
+if ! command -v pnpm &> /dev/null; then
+  echo "📦 pnpm not found. Installing via Homebrew..."
+  brew install pnpm
+  echo "✅ pnpm installed via Homebrew"
+else
+  echo "👍 pnpm is already installed"
+  if brew outdated | grep -q "pnpm"; then
+    echo "🔄 pnpm is outdated. To update, run: brew upgrade pnpm"
+  fi
+fi
 
 echo "🔍 Setting up pnpm global bin directory..."
 export PNPM_HOME="${HOME}/.local/share/pnpm"
@@ -93,3 +132,9 @@ pnpm setup 2>/dev/null || true
 echo "🌐 Installing nx globally..."
 pnpm add -g nx
 echo "✅ nx available globally"
+
+# ── Packages and the setup command ────────────────────────────────────────────
+echo "📦 Installing the packages the setup command runs on..."
+pnpm install
+
+NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts setup
