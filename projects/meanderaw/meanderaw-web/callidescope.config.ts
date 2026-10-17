@@ -10,7 +10,7 @@ export default {
    * The generated route tree describes a code generator's output rather than
    * anything a person structured, so a depth finding there is not actionable.
    */
-  exclude: ["src/lib/routeTree.gen.ts"],
+  exclude: ["src/routeTree.gen.ts"],
   limits: {
     maximumBreadth: 8,
     maximumDepth: 6,

@@ -22,11 +22,9 @@ export default defineConfig({
   },
   plugins: [
     tailwindcss(),
-    // The generated route tree lives under `lib/`, because
-    // `codebase-structure.json` refuses its camel-cased name at the `src/`
-    // root; the path resolves relative to `srcDirectory`, so a leading `src/`
-    // would write to `src/src/`. Test files sit beside the routes they test, so
-    // the route generator is told to skip them rather than treat them as routes.
+    // The generated route tree lives under `src/`. Test files sit beside the
+    // routes they test, so the route generator is told to skip them rather than
+    // treat them as routes.
 
     // The client entry is kept at its conventional `src/client.tsx` rather than
     // deleted even though TanStack would supply an identical virtual one: it
@@ -35,7 +33,7 @@ export default defineConfig({
     // manifest and from the catalog.
     tanstackStart({
       router: {
-        generatedRouteTree: "lib/routeTree.gen.ts",
+        generatedRouteTree: "routeTree.gen.ts",
         routeFileIgnorePattern: String.raw`\.test\.`,
       },
     }),

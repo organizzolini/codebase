@@ -35,7 +35,7 @@ function IndexPage(): ReactNode {
   // 🎨 Markup
   return (
     <section>
-      <h1>Lexico</h1>
+      <h1>LexicoWeb</h1>
     </section>
   );
 }

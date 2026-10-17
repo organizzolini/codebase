@@ -6,7 +6,7 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["src/lib/routeTree.gen.ts"],
+    ignores: ["src/routeTree.gen.ts"],
   },
 
   // 📦 Dependency Checks

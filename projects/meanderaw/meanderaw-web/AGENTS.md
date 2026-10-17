@@ -1,8 +1,10 @@
-# MeanderawWeb
+# MeanderawWeb: TanStack Start Web Application
 
 ## Quick Start
 
 **Type**: Server-rendered web application (TanStack Start)
+
+**Purpose**: <!-- Briefly describe what this application is for -->
 
 ### Run Locally
 
@@ -25,8 +27,7 @@ nx run meanderaw-web:start
 src/
   client.tsx                     # Client entry, hydrates the document
   router.tsx                     # Creates the router; TanStack Start requires it here
-  lib/
-    routeTree.gen.ts             # Generated route tree — never edit
+  routeTree.gen.ts               # Generated route tree — never edit
   routes/
     __root.tsx                   # Document shell every route renders inside
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
@@ -63,11 +64,9 @@ nx g conformetry:react-hook --name=use-<hook> --project=meanderaw-web
 A route's name is its file stem — `index`, `search`, `word.$id` — and its route
 path is the URL it serves: `/`, `/search`, `/word/$id`. TanStack's route
 generator rewrites the path argument to match the file whenever they disagree,
-and regenerates `src/lib/routeTree.gen.ts` on every `start` or `build`. A new
-application has no route tree until one of them has run, so run `build` once
-after generating it and commit the file. Each page is a `<section>` with an
-`<h1>`, named after its route — `word.$id` renders `WordIdPage` — inside the
-layout the root route renders.
+and regenerates `src/routeTree.gen.ts` on every `start` or `build`. Each page
+is a `<section>` with an `<h1>`, named after its route — `word.$id` renders
+`WordIdPage` — inside the layout the root route renders.
 
 Keep a route file to its `Route` and the page it renders. Reusable pieces belong
 in `src/components/`, stateful logic in `src/hooks/`, and anything that runs on

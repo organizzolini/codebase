@@ -65,7 +65,7 @@ export const Route = createRootRoute({
         name: "viewport",
       },
       {
-        title: "Lexico - Latin Dictionary & Reader",
+        title: "LexicoWeb",
       },
       {
         content:

@@ -18,7 +18,7 @@ export default mergeConfig(
           "src/**/*.test.tsx",
           "src/**/*.functions.ts",
           "src/client.tsx",
-          "src/lib/**",
+          "src/routeTree.gen.ts",
           "src/router.tsx",
           "src/routes/__root.tsx",
         ],

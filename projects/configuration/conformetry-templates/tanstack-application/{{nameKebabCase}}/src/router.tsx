@@ -1,6 +1,6 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
-import { routeTree } from "./lib/routeTree.gen";
+import { routeTree } from "./routeTree.gen";
 
 /**
  * Creates the application router, which TanStack Start calls once per request

@@ -47,8 +47,8 @@ src/
 ├── routes/              # File-based routing (TanStack Router)
 │   ├── __root.tsx       # Root layout and sidebar
 │   ├── index.tsx        # / (redirects to /search)
-│   ├── search.tsx       # /search — loader, server function, page
-│   └── routeTree.gen.ts # Generated route tree, never edited
+│   └── search.tsx       # /search — loader, server function, page
+├── routeTree.gen.ts     # Generated route tree, never edited
 ├── components/          # One component and its test per file
 ├── styles/              # Lexico's accent color over the shadcn tokens
 ├── client.tsx           # Client entry
