@@ -381,21 +381,24 @@ describe("the examples this package ships", () => {
 
       expect(output).toContain("Receipt written:");
       expect(exitCode).toBe(0);
-      expect(
-        fs.readFileSync(path.join(runDirectory, "mars", "mars.txt"), "utf8"),
-      ).toBe("Receipt for mars.\n");
+      // Only the rendered file: a receipt written beside the output, wherever
+      // in it, would show up here as an extra entry.
+      expect(readFileTree(runDirectory)).toStrictEqual({
+        [path.join("mars", "mars.txt")]: "Receipt for mars.\n",
+      });
       expect(
         fs.readFileSync(path.join(receiptsDirectory, "mars.log"), "utf8"),
       ).toContain("mars.txt");
-      expect(
-        fs.existsSync(path.join(runDirectory, "mars", "receipt.log")),
-      ).toBe(false);
     });
 
     it("lists the receipt among the files the run produced", () => {
       const { output } = runHooksExample("mars", runDirectory);
 
-      expect(output).toContain(path.join(receiptsDirectory, "mars.log"));
+      // The command prints each listed path on its own line, indented two
+      // spaces; the hook's own "Receipt written:" line must not satisfy this.
+      expect(output).toContain(
+        `\n  ${path.join(receiptsDirectory, "mars.log")}\n`,
+      );
     });
 
     it("writes nothing when its preGenerate hook refuses the input", () => {
