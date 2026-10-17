@@ -476,11 +476,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  components_web["components"]
+  components["components"]
   lexico_web["lexico-web"]
-  lexico_web --> components_web
+  lexico_web --> components
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class components_web subject
+  class components subject
 ```
 <!-- codependix:end name="codependix-nx-projects" -->
 
@@ -932,13 +932,13 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-375-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-28.46_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-28.41_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-2-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-8-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Library bundle Size](https://img.shields.io/badge/Library_bundle_Size-343.59_kB_gzip-6b7280?style=flat-square)
+![Library bundle Size](https://img.shields.io/badge/Library_bundle_Size-343.54_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
