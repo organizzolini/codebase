@@ -187,7 +187,8 @@ export class GenerationService {
 
   /**
    * Runs the generator lifecycle — `preGenerate`, render, `postGenerate`,
-   * format — and returns the sorted list of generated file paths.
+   * format — and returns the generated file paths: the rendered paths sorted,
+   * then any path a `postGenerate` hook pushed, appended after the sort.
    */
   public async runGenerator(
     args: RunGeneratorArguments,
