@@ -104,8 +104,10 @@ jobs:
           # We remove it here until the CLI is fixed.
           rm -rf agent/
           # ReUI serves its skill as a JSON bundle rather than a GitHub source, so
-          # `skills update` skips it; this script re-fetches and re-pins it.
-          bash scripts/update-reui-skill.sh
+          # `skills update` skips it; the installation project's
+          # `update-reui-skill` command re-fetches and re-pins it.
+          NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+            projects/installation/src/installation.main.ts update-reui-skill
 
       - name: 🔍 Detect Upgrades
         id: check

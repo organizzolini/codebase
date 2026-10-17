@@ -22,13 +22,13 @@ Call stacks traced through `projects/installation`, deepest first. Each frame sh
 
 | Measure | Value |
 | --- | --- |
-| Callables | 99 |
-| Files | 49 |
-| Calls traced | 235 |
-| Call stacks | 5 |
+| Callables | 117 |
+| Files | 54 |
+| Calls traced | 254 |
+| Call stacks | 6 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 6 |
+| Unfollowable calls | 7 |
 
 ### Limits
 
@@ -99,7 +99,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>2 more call stacks</summary>
+<summary>3 more call stacks</summary>
 
 **4. `ShellConfigurationCommand.run`** — depth ≥ 6 · decorated-method
 
@@ -118,7 +118,21 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Runs a command to completion.
 ```
 
-**5. `EnvironmentFilesCommand.run`** — depth 4 · decorated-method
+**5. `UpdateReuiSkillCommand.run`** — depth 5 · decorated-method
+
+```text
+🚀 UpdateReuiSkillCommand.run(): Promise<void> [projects/installation/src/modules/update-reui-skill/update-reui-skill.command.ts:40]
+   ↳ Refreshes the skill.
+  └─> UpdateReuiSkillService.update(): Promise<void> [projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:193]
+     ↳ Refreshes the skill, printing the retry command instead of failing.
+    └─> UpdateReuiSkillService.refresh(root: string): Promise<void> [projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:158]
+       ↳ Fetches, compares, and writes only when the pin or the folder differs.
+      └─> UpdateReuiSkillService.fetchBundle(skillDirectory: string): Promise<SkillBundle> [projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:59]
+         ↳ Fetches the bundle and refuses one that is empty, unsafe, or without `SKILL.md`.
+        └─> UpdateReuiSkillService.map(…)(…): { content: Buffer<ArrayBuffer>; path: string; } [projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:77]
+```
+
+**6. `EnvironmentFilesCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 EnvironmentFilesCommand.run(): Promise<void> [projects/installation/src/modules/environment-files/environment-files.command.ts:39]
@@ -142,11 +156,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SoftwareOllamaService.installOllama` | 6 | `SoftwareBrewService.installOrCheck`, `ReporterService.print`, `SoftwareOllamaService.isRunning`, `SoftwareOllamaService.start`, `SoftwareOllamaService.waitUntilReady`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-ollama.service.ts:81` |
 
 <details>
-<summary>56 more callables</summary>
+<summary>62 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `SoftwareService.installSoftware` | 6 | `SoftwarePythonService.installPython`, `SoftwareOllamaService.installOllama`, `SoftwareDockerService.installDocker`, `SoftwareGpgService.installGpgSigning`, `SoftwareInfraService.installInfrastructureTools`, `SoftwareDatabaseService.installDatabaseTools` | `projects/installation/src/modules/software/software.service.ts:45` |
+| `UpdateReuiSkillService.refresh` | 6 | `UpdateReuiSkillService.fetchBundle`, `UpdateReuiSkillService.readLock`, `UpdateReuiSkillService.hashFiles`, `UpdateReuiSkillService.readInstalledFiles`, `ReporterService.print`, `UpdateReuiSkillService.install` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:158` |
 | `DependenciesService.writeKubeconfig` | 5 | `ReporterService.print`, `DependenciesService.readEnvironmentFile`, `DependenciesService.importCluster`, `DependenciesService.toClusterId`, `DependenciesService.readKubeconfig` | `projects/installation/src/modules/dependencies/dependencies.service.ts:159` |
 | `SoftwareDockerService.startDaemon` | 5 | `ReporterService.print`, `ProcessRunnerService.runOrThrow`, `SoftwareDockerService.isRunning`, `ProcessRunnerService.sleep`, `SoftwareDockerService.readVersion` | `projects/installation/src/modules/software/software-docker.service.ts:49` |
 | `SoftwareGpgService.installGpgSigning` | 5 | `SoftwareGpgService.installGpg`, `SoftwareGpgService.configureAgent`, `ReporterService.print`, `SoftwareGpgService.findSigningKeyId`, `SoftwareGpgService.configureSigning` | `projects/installation/src/modules/software/software-gpg.service.ts:151` |
@@ -167,6 +182,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SoftwareGpgService.configureSigning` | 3 | `ReporterService.print`, `ProcessRunnerService.run`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-gpg.service.ts:69` |
 | `SoftwareInfraService.installInfrastructureTools` | 3 | `SoftwareBrewService.installOrCheck`, `ReporterService.print`, `SoftwareInfraService.buildVersionLines` | `projects/installation/src/modules/software/software-infra.service.ts:108` |
 | `SoftwareOllamaService.waitUntilReady` | 3 | `ReporterService.print`, `SoftwareOllamaService.isRunning`, `ProcessRunnerService.sleep` | `projects/installation/src/modules/software/software-ollama.service.ts:66` |
+| `UpdateReuiSkillService.fetchBundle` | 3 | `UpdateReuiSkillService.map(…)`, `UpdateReuiSkillService.find(…)`, `UpdateReuiSkillService.some(…)` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:59` |
 | `DependenciesService.resetNxCache` | 2 | `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:137` |
 | `EnvironmentFilesService.findTargets` | 2 | `ProcessRunnerService.run`, `EnvironmentFilesService.map(…)` | `projects/installation/src/modules/environment-files/environment-files.service.ts:88` |
 | `ShellConfigurationService.appendTerraformCompletion` | 2 | `ProcessRunnerService.locate`, `ShellConfigurationService.appendBlock` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:73` |
@@ -177,6 +193,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SoftwareGpgService.findSigningKeyId` | 2 | `ProcessRunnerService.run`, `SoftwareGpgService.find(…)` | `projects/installation/src/modules/software/software-gpg.service.ts:107` |
 | `SoftwarePythonService.hasSupportedPython` | 2 | `ProcessRunnerService.locate`, `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-python.service.ts:38` |
 | `SetupService.printCompletion` | 2 | `SetupService.find(…)`, `ReporterService.print` | `projects/installation/src/modules/setup/setup.service.ts:45` |
+| `UpdateReuiSkillService.hashFiles` | 2 | `UpdateReuiSkillService.toSorted(…)`, `UpdateReuiSkillService.from(…)` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:99` |
+| `UpdateReuiSkillService.readInstalledFiles` | 2 | `UpdateReuiSkillService.map(…)`, `UpdateReuiSkillService.filter(…)` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:124` |
+| `UpdateReuiSkillService.update` | 2 | `UpdateReuiSkillService.refresh`, `ReporterService.print` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:193` |
 | `ProcessRunnerService.runOrThrow` | 1 | `ProcessRunnerService.run` | `projects/installation/src/modules/process-runner/process-runner.service.ts:92` |
 | `ProcessRunnerService.sleep` | 1 | `ProcessRunnerService.anonymous` | `projects/installation/src/modules/process-runner/process-runner.service.ts:109` |
 | `ProcessRunnerService.startDetached` | 1 | `ProcessRunnerService.on(…)` | `projects/installation/src/modules/process-runner/process-runner.service.ts:116` |
@@ -202,6 +221,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SoftwarePythonService.readUvVersion` | 1 | `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-python.service.ts:71` |
 | `SoftwareCommand.run` | 1 | `SoftwareService.installSoftware` | `projects/installation/src/modules/software/software.command.ts:41` |
 | `SetupCommand.run` | 1 | `SetupService.setUp` | `projects/installation/src/modules/setup/setup.command.ts:40` |
+| `UpdateReuiSkillCommand.run` | 1 | `UpdateReuiSkillService.update` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.command.ts:40` |
 
 </details>
 <!-- callidescope:end -->
@@ -238,6 +258,7 @@ flowchart LR
   SetupModule
   ShellConfigurationModule
   SoftwareModule
+  UpdateReuiSkillModule
   DependenciesModule --> ProcessRunnerModule
   DependenciesModule --> ReporterModule
   EnvironmentFilesModule --> ProcessRunnerModule
@@ -249,6 +270,7 @@ flowchart LR
   MainModule --> SetupModule
   MainModule --> ShellConfigurationModule
   MainModule --> SoftwareModule
+  MainModule --> UpdateReuiSkillModule
   SetupModule --> DependenciesModule
   SetupModule --> EnvironmentFilesModule
   SetupModule --> ReporterModule
@@ -258,6 +280,7 @@ flowchart LR
   ShellConfigurationModule --> ReporterModule
   SoftwareModule --> ProcessRunnerModule
   SoftwareModule --> ReporterModule
+  UpdateReuiSkillModule --> ReporterModule
 ```
 
 _Rounded modules are global: every module can inject them, so their edges are left out._
@@ -338,6 +361,13 @@ graph LR
   file_src_modules_software_software_service_ts["src/modules/software/software.service.ts"]
   file_src_modules_software_software_service_unit_test_ts["src/modules/software/software.service.unit.test.ts"]
   file_src_modules_software_software_types_ts["src/modules/software/software.types.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_command_ts["src/modules/update-reui-skill/update-reui-skill.command.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts["src/modules/update-reui-skill/update-reui-skill.command.unit.test.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_constants_ts["src/modules/update-reui-skill/update-reui-skill.constants.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_module_ts["src/modules/update-reui-skill/update-reui-skill.module.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_service_ts["src/modules/update-reui-skill/update-reui-skill.service.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts["src/modules/update-reui-skill/update-reui-skill.service.unit.test.ts"]
+  file_src_modules_update_reui_skill_update_reui_skill_types_ts["src/modules/update-reui-skill/update-reui-skill.types.ts"]
   file_testing_environment_ts["testing/environment.ts"]
   file_testing_fake_process_runner_ts["testing/fake-process-runner.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
@@ -354,6 +384,7 @@ graph LR
   file_src_installation_module_ts --> file_src_modules_setup_setup_module_ts
   file_src_installation_module_ts --> file_src_modules_shell_configuration_shell_configuration_module_ts
   file_src_installation_module_ts --> file_src_modules_software_software_module_ts
+  file_src_installation_module_ts --> file_src_modules_update_reui_skill_update_reui_skill_module_ts
   file_src_installation_repl_ts --> file_src_installation_module_ts
   file_src_modules_dependencies_dependencies_command_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_dependencies_dependencies_command_unit_test_ts --> file_src_modules_dependencies_dependencies_command_ts
@@ -548,6 +579,22 @@ graph LR
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_ollama_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_python_service_ts
   file_src_modules_software_software_service_unit_test_ts --> file_src_modules_software_software_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_command_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_constants_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_environment_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_report_ts
+  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_update_reui_skill_update_reui_skill_command_ts
+  file_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_update_reui_skill_update_reui_skill_constants_ts
+  file_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_update_reui_skill_update_reui_skill_types_ts
+  file_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
   file_testing_environment_ts --> file_testing_temporary_workspace_ts
   file_testing_fake_process_runner_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_testing_fake_process_runner_ts --> file_src_modules_process_runner_process_runner_types_ts
@@ -560,36 +607,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4892-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-164.38_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-77-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5718-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-189.54_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-84-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-77-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-7-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-84-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-11-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-32-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-138-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-36-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-164-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-22-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-14-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-28-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-205-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-74-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-186-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-93-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-228-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-408-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-74-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-268-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-417-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-24-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-15-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-31-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-242-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-89-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-212-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-119-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-279-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-448-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-88-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-305-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-469-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -610,16 +657,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-124-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-35-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-127-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-36-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-8-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-84-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-60-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-86-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-61-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-23-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-110-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-112-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -700,14 +747,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-8-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-14-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-5-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-8-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-7-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-9-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-15-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-6-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-9-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-8-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-21-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-23-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -745,23 +792,23 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-266-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-270-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-8-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-14-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-53-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-54-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-6-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-28-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-3-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-16-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-17-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-13-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-109-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-115-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

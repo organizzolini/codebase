@@ -207,7 +207,8 @@ function RootComponent(): ReactNode {
       <SidebarInset>
         {/* On a phone the sidebar is a sheet with no rail, so this is the only control that opens it */}
         <SidebarTrigger className="fixed top-3 left-3 z-20 md:hidden" />
-        <div className="flex-1 px-4 py-8 md:px-8">
+        {/* 16px matches the gap between result cards; the floating sidebar already leaves 8px on its side */}
+        <div className="flex-1 p-4 md:pl-2">
           <Outlet />
         </div>
       </SidebarInset>

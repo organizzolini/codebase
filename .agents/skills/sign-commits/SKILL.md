@@ -21,7 +21,7 @@ Keywords: sign commits, GPG sign branch, re-sign PR commits, verified commits, s
 
 - Run from the repository root
 - `git` is available and authenticated to the remote
-- The wrapper script is available at `scripts/sign-commits.sh`
+- The wrapper script is available at `.agents/skills/sign-commits/scripts/sign-commits.sh`
 - The signing configuration check script is available at `scripts/git/check-commit-signing-configuration.sh`
 - The branch contains only commits that are safe to rewrite
 
@@ -39,7 +39,7 @@ Keywords: sign commits, GPG sign branch, re-sign PR commits, verified commits, s
 Use the wrapper script for the normal path:
 
 ```bash
-bash scripts/sign-commits.sh
+bash .agents/skills/sign-commits/scripts/sign-commits.sh
 ```
 
 The script performs the same workflow documented below:
@@ -255,4 +255,4 @@ Stop and report to the user if the push fails.
 ## References
 
 - Create backups first with [backup-code](../backup-code/SKILL.md)
-- Run the wrapper script with `bash scripts/sign-commits.sh`
+- Run the wrapper script with `bash .agents/skills/sign-commits/scripts/sign-commits.sh`

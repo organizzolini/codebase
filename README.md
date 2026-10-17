@@ -853,6 +853,7 @@ graph LR
   module_installation_SetupModule["installation/SetupModule"]
   module_installation_ShellConfigurationModule["installation/ShellConfigurationModule"]
   module_installation_SoftwareModule["installation/SoftwareModule"]
+  module_installation_UpdateReuiSkillModule["installation/UpdateReuiSkillModule"]
   module_lexico_api_DatabaseModule["lexico-api/DatabaseModule"]
   module_lexico_api_GraphQLModule["lexico-api/GraphQLModule"]
   module_lexico_api_GraphQLSchemaBuilderModule["lexico-api/GraphQLSchemaBuilderModule"]
@@ -1632,6 +1633,7 @@ graph LR
   module_installation_MainModule --> module_installation_SetupModule
   module_installation_MainModule --> module_installation_ShellConfigurationModule
   module_installation_MainModule --> module_installation_SoftwareModule
+  module_installation_MainModule --> module_installation_UpdateReuiSkillModule
   module_installation_SetupModule --> module_installation_DependenciesModule
   module_installation_SetupModule --> module_installation_EnvironmentFilesModule
   module_installation_SetupModule --> module_installation_ReporterModule
@@ -1641,6 +1643,7 @@ graph LR
   module_installation_ShellConfigurationModule --> module_installation_ReporterModule
   module_installation_SoftwareModule --> module_installation_ProcessRunnerModule
   module_installation_SoftwareModule --> module_installation_ReporterModule
+  module_installation_UpdateReuiSkillModule --> module_installation_ReporterModule
   module_lexico_api_DatabaseModule --> module_lexico_api_TypeOrmModule
   module_lexico_api_GraphQLModule --> module_lexico_api_GraphQLSchemaBuilderModule
   module_lexico_api_LexemesModule --> module_lexico_api_TypeOrmModule
@@ -3967,6 +3970,13 @@ graph LR
   file_installation_src_modules_software_software_service_ts["installation/src/modules/software/software.service.ts"]
   file_installation_src_modules_software_software_service_unit_test_ts["installation/src/modules/software/software.service.unit.test.ts"]
   file_installation_src_modules_software_software_types_ts["installation/src/modules/software/software.types.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts["installation/src/modules/update-reui-skill/update-reui-skill.command.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts["installation/src/modules/update-reui-skill/update-reui-skill.command.unit.test.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_constants_ts["installation/src/modules/update-reui-skill/update-reui-skill.constants.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts["installation/src/modules/update-reui-skill/update-reui-skill.module.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts["installation/src/modules/update-reui-skill/update-reui-skill.service.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts["installation/src/modules/update-reui-skill/update-reui-skill.service.unit.test.ts"]
+  file_installation_src_modules_update_reui_skill_update_reui_skill_types_ts["installation/src/modules/update-reui-skill/update-reui-skill.types.ts"]
   file_installation_testing_environment_ts["installation/testing/environment.ts"]
   file_installation_testing_fake_process_runner_ts["installation/testing/fake-process-runner.ts"]
   file_installation_testing_mocks_ts["installation/testing/mocks.ts"]
@@ -9055,6 +9065,7 @@ graph LR
   file_installation_src_installation_module_ts --> file_installation_src_modules_setup_setup_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_software_software_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts
   file_installation_src_installation_repl_ts --> file_installation_src_installation_module_ts
   file_installation_src_modules_dependencies_dependencies_command_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_dependencies_dependencies_command_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_command_ts
@@ -9249,6 +9260,22 @@ graph LR
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_constants_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_constants_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_types_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts
   file_installation_testing_environment_ts --> file_installation_testing_temporary_workspace_ts
   file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
@@ -12984,7 +13011,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-47-22c55e?style=flat-square)
 ![Repository Size](https://img.shields.io/badge/Repository_Size-1.83_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-64-4a4a4a?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-65-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-1-3178c6?style=flat-square)
 
 ### TypeScript
@@ -13047,7 +13074,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2692-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2694-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-375-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
@@ -13070,17 +13097,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-35-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-2577-4eaa25?style=flat-square)
-![Shell Functions](https://img.shields.io/badge/Shell_Functions-32-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-243-0284c7?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-33-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-2354-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-29-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-229-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-169-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-37-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-86-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-35-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-587-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-587-475569?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-148-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-31-8b5cf6?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-81-059669?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-33-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-565-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-565-475569?style=flat-square)
 
 ### SQL
 
@@ -13166,24 +13193,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-117-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19155-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-116-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-674-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-118-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19198-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-117-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-677-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-519-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5451-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-851-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4135-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5462-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-852-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4139-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-234-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-1999-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-714-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-236-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2011-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-717-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-384-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11158-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11214-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13196,13 +13223,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6473 |
-| Files | 1910 |
-| Calls traced | 7125 |
-| Call stacks | 1777 |
+| Callables | 6492 |
+| Files | 1915 |
+| Calls traced | 7145 |
+| Call stacks | 1781 |
 | Deepest stack | 17 |
 | Stacks through recursion | 12 |
-| Unfollowable calls | 351 |
+| Unfollowable calls | 353 |
 
 ### Projects
 
