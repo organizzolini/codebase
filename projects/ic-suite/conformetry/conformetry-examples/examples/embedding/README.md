@@ -98,5 +98,5 @@ than asserted.
 
 ## Next
 
-[failure-modes](../failure-modes/README.md), for what the whole toolchain lets
-through.
+[hooks](../hooks/README.md), for running your own code before and after a
+generator writes.
