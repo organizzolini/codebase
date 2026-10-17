@@ -101,6 +101,7 @@ jupyter
 jupyterlab
 keyid
 keyof
+killport
 lemmatizers
 licen
 licenseignore
