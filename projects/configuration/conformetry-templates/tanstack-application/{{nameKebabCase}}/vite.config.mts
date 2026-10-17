@@ -24,7 +24,4 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   root: import.meta.dirname,
-  server: {
-    port: 3000,
-  },
 });

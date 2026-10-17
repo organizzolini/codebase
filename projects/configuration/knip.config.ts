@@ -171,11 +171,7 @@ const config: KnipConfig = {
     // The client entry and the generated route tree are named by the TanStack
     // Start plugin rather than imported, so knip is told where they are.
     "projects/lexico/lexico-web": {
-      entry: [
-        "src/client.tsx",
-        "src/router.tsx",
-        "src/routes/routeTree.gen.ts",
-      ],
+      entry: ["src/client.tsx", "src/router.tsx", "src/lib/routeTree.gen.ts"],
       ignoreDependencies: [
         "vitest", // Used by tests and Vitest config; Knip may miss it when test sources are excluded
       ],

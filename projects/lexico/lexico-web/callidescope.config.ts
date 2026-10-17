@@ -19,12 +19,10 @@ import { projectDefaults } from "@codebase/configuration/callidescope.config";
 export default {
   ...projectDefaults,
   /**
-   * The generated route tree. Its call stacks describe a code generator's
-   * output rather than anything a person structured, so a depth finding here
-   * is not actionable — moved from `projects/configuration/.callidescopeignore`, the
-   * only project this pattern ever matched.
+   * The generated route tree describes a code generator's output rather than
+   * anything a person structured, so a depth finding there is not actionable.
    */
-  exclude: ["src/routes/routeTree.gen.ts"],
+  exclude: ["src/lib/routeTree.gen.ts"],
   limits: {
     maximumBreadth: 9,
     maximumDepth: 9,

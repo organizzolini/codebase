@@ -22,7 +22,7 @@
       "vite/client"
     ]
   },
-  "exclude": [],
+  "exclude": ["dist", "node_modules", "output"],
   "extends": "@codebase/configuration/tsconfig.json",
   "include": [
     "callidescope.config.ts",

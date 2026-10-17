@@ -30,7 +30,7 @@ function IndexPage(): ReactNode {
   // 🎨 Markup
   return (
     <section>
-      <h1>{{namePascalCase}}</h1>
+      <h1>{{title}}</h1>
     </section>
   );
 }

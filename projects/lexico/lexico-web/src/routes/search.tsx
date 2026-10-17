@@ -89,6 +89,21 @@ const FORMS_SELECTION = `
 
 const searchSchema = z.object({ query: z.string().optional() });
 
+/**
+ * The connection a search query answers with. Its nodes are trusted to be the
+ * shape the selection above asks for, which is all the API contract promises.
+ */
+const connectionSchema = z.object({
+  edges: z.array(z.object({ node: z.custom<ResultNode>() })),
+});
+
+/**
+ * A lexeme with its forms, or nothing when the API has no lexeme by that id.
+ */
+const lexemeFormsSchema = z.object({
+  wordForms: z.array(z.custom<FormNode>()),
+});
+
 // 🏷️ Types
 
 /**
@@ -216,9 +231,7 @@ async function searchLanguage(
     `query ($query: String!, $first: Int!) { ${field}(query: $query, first: $first) { ${SEARCH_SELECTION} } }`,
     { first: SEARCH_PAGE_SIZE, query },
   );
-  const connection = data[field] as
-    | undefined
-    | { edges: { node: ResultNode }[] };
+  const connection = connectionSchema.optional().parse(data[field]);
 
   return connection?.edges.map((edge) => edge.node) ?? [];
 }
@@ -286,7 +299,7 @@ const getLexemeForms = createServerFunction({ method: "GET" })
       `query ($id: ID!) { lexeme(id: $id) { ${FORMS_SELECTION} } }`,
       { id: data.lexemeId },
     );
-    const lexeme = response["lexeme"] as null | { wordForms: FormNode[] };
+    const lexeme = lexemeFormsSchema.nullish().parse(response["lexeme"]);
 
     return (lexeme?.wordForms ?? []).map(
       ({ form: { __typename: kind, ...grammar }, id, word }) => ({
@@ -343,7 +356,7 @@ export const Route = createFileRoute("/search")({
  * What the page shows when the API cannot answer, with a way to ask again.
  */
 function SearchError(): ReactNode {
-  const router = useRouter();
+  const { invalidate } = useRouter();
 
   return (
     <section className="space-y-4 text-center">
@@ -351,7 +364,7 @@ function SearchError(): ReactNode {
       <p className="text-muted-foreground">Search is unavailable right now.</p>
       <Button
         onClick={() => {
-          void router.invalidate();
+          void invalidate();
         }}
         variant="outline"
       >

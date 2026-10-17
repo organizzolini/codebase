@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 // 🧭 Route
 
 /**
- * The landing path, which redirects to search.
+ * The landing page.
  */
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
 // 🧩 Component
 
 /**
- * The landing page, shown only for as long as the redirect to search takes.
+ * Renders the landing page's heading.
  */
 function IndexPage(): ReactNode {
   // 🪝 Hooks

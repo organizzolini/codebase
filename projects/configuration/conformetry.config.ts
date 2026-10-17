@@ -150,6 +150,11 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       "A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/",
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
+      title: z
+        .string()
+        .describe(
+          "Human-readable title, shown in the browser tab and as the heading of AGENTS.md",
+        ),
     }),
     // Where existing applications live is also where a new one may be
     // generated. The template reaches the shared configuration by package name,
@@ -158,13 +163,8 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       {
         // The `node_modules` links would otherwise be followed back to the
         // packages they point at.
-        exclude: ["projects/**/node_modules/**", "projects/lexico/lexico-web"],
+        exclude: ["projects/**/node_modules/**"],
         patterns: ["projects/**/*-web"],
-      },
-      {
-        patterns: ["projects/lexico/lexico-web"],
-        // Migration bar: this app predates the template and still diverges.
-        threshold: 0.75,
       },
     ],
     name: "tanstack-application",
