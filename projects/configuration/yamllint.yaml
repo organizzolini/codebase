@@ -18,9 +18,9 @@ ignore: |
   **/pnpm-lock.yaml
   **/templates/
   CHANGELOG.md
-  projects/components-web/src/components/
-  projects/components-web/src/hooks/use-mobile.tsx
-  projects/components-web/src/lib/utils.ts
+  projects/components/src/components/
+  projects/components/src/hooks/use-mobile.tsx
+  projects/components/src/lib/utils.ts
 
 rules:
   # Style rules (matching eslint-plugin-yml + Prettier)

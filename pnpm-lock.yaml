@@ -1101,7 +1101,7 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/components-web:
+  projects/components:
     dependencies:
       '@base-ui/react':
         specifier: 'catalog:'
@@ -3340,9 +3340,9 @@ importers:
 
   projects/lexico/lexico-web:
     dependencies:
-      '@codebase/components-web':
+      '@codebase/components':
         specifier: workspace:*
-        version: link:../../components-web
+        version: link:../../components
       '@tanstack/react-router':
         specifier: 'catalog:'
         version: 1.170.39(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

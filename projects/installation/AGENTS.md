@@ -6,12 +6,15 @@
 
 **Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. A behavior-preserving port of what the `scripts/local/` shell used to do.
 
+One command is maintenance rather than setup: `update-reui-skill` refreshes the vendored ReUI skill, and `upgrade-dependencies.yml` runs it after `skills update`. It is not part of `setup`, and an outage prints the retry command and exits 0.
+
 ### Run Locally
 
 ```bash
 bash scripts/installation.sh                     # A fresh machine: the script installs Node, then calls `setup`
 nx run installation:start:setup                  # Everything this project does, in order
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
+nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
 ```
 
 ## What belongs here, and what deliberately does not
@@ -27,6 +30,7 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `software`            | `modules/software` (one service per tool) |
 | `environment-files`   | `modules/environment-files`               |
 | `dependencies`        | `modules/dependencies`                    |
+| `update-reui-skill`   | `modules/update-reui-skill`               |
 
 From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
 

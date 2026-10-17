@@ -24,8 +24,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from "@codebase/components-web";
-import applicationCss from "@codebase/components-web/styles/globals.css?url";
+} from "@codebase/components";
+import applicationCss from "@codebase/components/styles/globals.css?url";
 
 import { Logo } from "../components/layout";
 import lexicoCss from "../styles/application.css?url";
@@ -232,7 +232,8 @@ function RootDocument(properties: Readonly<RootDocumentProperties>): ReactNode {
             {/* On a phone the sidebar is a sheet with no rail, so this is the only control that opens it */}
             <SidebarTrigger className="fixed top-3 left-3 z-20 md:hidden" />
             {/* Page content */}
-            <div className="flex-1 px-4 py-8 md:px-8">{children}</div>
+            {/* 16px matches the gap between result cards; the floating sidebar already leaves 8px on its side */}
+            <div className="flex-1 p-4 md:pl-2">{children}</div>
           </SidebarInset>
         </SidebarProvider>
         <TanStackRouterDevtools position="bottom-right" />

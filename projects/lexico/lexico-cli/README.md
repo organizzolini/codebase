@@ -117,7 +117,7 @@ nx run lexico-entities:migration:run
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
 - 📖 [lexico-entities](../lexico-entities/README.md) — the schema this writes to
-- 🎨 [components-web](../../components-web/README.md) — the interface
+- 🎨 [components](../../components/README.md) — the interface
 
 ## License
 

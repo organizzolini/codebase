@@ -4,7 +4,7 @@
   "bail": false,
   "cacheDirectory": ".nx/cache",
   "defaultBase": "main",
-  "defaultProject": "codebase",
+  "defaultProject": "configuration",
   "generators": {
     "@nx/react": {
       "application": {
@@ -109,9 +109,6 @@
   "projects": {
     "caelundas-cli": {
       "tags": ["domain:caelundas", "language:typescript", "type:application"]
-    },
-    "codebase": {
-      "tags": ["language:typescript", "type:tool"]
     }
   },
   "release": {
@@ -226,7 +223,7 @@
       {
         "cache": true,
         "dependsOn": ["^build"],
-        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `projects/configuration/vite.library.config.ts`, which belongs to the root project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
+        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `projects/configuration/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
         "filter": {
           "projects": ["projects/ic-suite/*/*"]
         },

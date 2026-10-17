@@ -1,5 +1,7 @@
 # 0026: Keep a Small Shell Floor Under the Scripts
 
+Superseded by [ADR 0027](0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md), which narrows the floor to the git hooks, the session hooks, and the Nx CI steps that run before `pnpm install`, and folds the machine bootstrap into one script.
+
 ## Context
 
 The repository's logic had spread into shell scripts under `scripts/` and `.github/`. Shell has no unit tests, no dependency injection, and no typed contracts, so the scripts that ship the IC suite and gate the session hooks were the least-tested code in the repository. NestJS commands in `synchronization`, `validation`, and two new projects, `publication` and `installation`, now take that logic over.

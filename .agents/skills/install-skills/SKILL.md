@@ -27,14 +27,14 @@ pnpm exec skills update
 
 ## Skills Without a GitHub Source
 
-`skills update` re-fetches each entry from its GitHub source, so a skill published any other way cannot ride it. The ReUI skill is one: reui.io serves it only as a JSON bundle. It is locked as `sourceType: "local"`, which `skills update` skips, and `scripts/update-reui-skill.sh` is its update step. The weekly `upgrade-dependencies.yml` runs it right after `skills update`; run it sooner with `pnpm exec nx run codebase:update-reui-skill`. It re-pins `computedHash` and also heals a folder edited by hand. Give any later skill of this kind its own script rather than hand-editing the folder.
+`skills update` re-fetches each entry from its GitHub source, so a skill published any other way cannot ride it. The ReUI skill is one: reui.io serves it only as a JSON bundle. It is locked as `sourceType: "local"`, which `skills update` skips, and the `installation` project's `update-reui-skill` command is its update step. The weekly `upgrade-dependencies.yml` runs it right after `skills update`; run it sooner with `pnpm exec nx run installation:start:update-reui-skill`. It re-pins `computedHash` and also heals a folder edited by hand. Give any later skill of this kind its own command rather than hand-editing the folder.
 
 ## Restoring Missing Skills
 
-The `installed-skills` command in the `synchronization` project restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. Its `write` mode runs from the root `postinstall` and the `codebase:install-skills` target: it is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build. `SKIP_SKILLS_INSTALL=1` leaves skills alone, and `SKILLS_INSTALL_FORCE=1` (the target's `force` configuration) restores even when every skill is present. Its `check` mode lists the locked skills whose `SKILL.md` is absent, and is what the `validate-session-skills.sh` session hook runs:
+The `installed-skills` command in the `synchronization` project restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. Its `write` mode runs from the root `postinstall` and the `synchronization:installed-skills:write` target: it is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build. `SKIP_SKILLS_INSTALL=1` leaves skills alone, and `SKILLS_INSTALL_FORCE=1` (the `force` configuration) restores even when every skill is present. Its `check` mode lists the locked skills whose `SKILL.md` is absent, and is what the `validate-session-skills.sh` session hook runs:
 
 ```bash
-pnpm exec nx run codebase:install-skills
+pnpm exec nx run synchronization:installed-skills:write
 ```
 
 ## Tool Exclusions

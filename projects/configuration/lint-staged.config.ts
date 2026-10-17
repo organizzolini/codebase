@@ -169,9 +169,9 @@ const config = {
 
   // 📦 Manifest consistency
   // A manifest under a project makes only that project affected, but syncpack
-  // and sherif compare every manifest against every other, so the root project
-  // and the `configuration` project, which owns those two, have to run whether
-  // or not `affected` selected them.
+  // and sherif compare every manifest against every other, so
+  // `configuration`, which owns those two, has to run whether or not
+  // `affected` selected it.
   "**/package.json": (): string[] => [
     "pnpm exec nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
     "pnpm exec nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",

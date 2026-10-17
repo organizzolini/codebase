@@ -1,4 +1,4 @@
-# 🎨 Lexico Components
+# 🎨 Components
 
 **Shared React component library built on shadcn/ui and Base UI primitives.**
 
@@ -9,7 +9,7 @@ The interface half of the [Lexico](../lexico/lexico-web/README.md) suite:
 | Project | Role |
 | ------- | ---- |
 | 🐺 [lexico-web](../lexico/lexico-web/README.md) | The SSR web application |
-| 🎨 [components-web](README.md) | This package — shared React components |
+| 🎨 [components](README.md) | This package — shared React components |
 | 📖 [lexico-entities](../lexico/lexico-entities/README.md) | TypeORM entities and migrations |
 | 🚰 [lexico-cli](../lexico/lexico-cli/README.md) | Dictionary and literature ingestion |
 
@@ -30,8 +30,8 @@ This package is already available in the codebase via workspace protocol. Import
 
 ```tsx
 // In projects/lexico/lexico-web/src/routes/example.tsx
-import { Button, Card, Input } from "@codebase/components-web";
-import "@codebase/components-web/styles/globals.css"; // Import once in root layout
+import { Button, Card, Input } from "@codebase/components";
+import "@codebase/components/styles/globals.css"; // Import once in root layout
 
 function ExamplePage() {
   return (
@@ -54,7 +54,7 @@ Add global CSS import to your root layout:
 
 ```tsx
 // projects/lexico/lexico-web/src/routes/__root.tsx
-import "@codebase/components-web/styles/globals.css";
+import "@codebase/components/styles/globals.css";
 ```
 
 ## Component Categories
@@ -112,7 +112,7 @@ import "@codebase/components-web/styles/globals.css";
 
 ```bash
 # Navigate to package directory
-cd projects/components-web
+cd projects/components
 
 # Add component
 pnpx shadcn@latest add <component-name>
@@ -218,26 +218,26 @@ import { ThemeProvider } from "next-themes";
 ### Build Library
 
 ```bash
-nx run components-web:build
+nx run components:build
 ```
 
 ### Type Checking
 
 ```bash
-nx run components-web:typecheck
+nx run components:typecheck
 ```
 
 ### Type Coverage
 
 ```bash
-nx run components-web:type-coverage
+nx run components:type-coverage
 # Target: 99.84%
 ```
 
 ### Bundle Size Analysis
 
 ```bash
-nx run components-web:codometer
+nx run components:codometer
 # Limit: 512 KB gzipped, warning at 384 KB
 ```
 
@@ -262,7 +262,7 @@ The 512 KB limit is a ratchet against the measured size, not a design target —
 ### Form with Validation
 
 ```tsx
-import { Input, Label, Button } from "@codebase/components-web";
+import { Input, Label, Button } from "@codebase/components";
 
 function LoginForm() {
   return (
@@ -298,7 +298,7 @@ import {
   DialogTitle,
   DialogTrigger,
   Button,
-} from "@codebase/components-web";
+} from "@codebase/components";
 
 function ConfirmDialog() {
   return (
@@ -325,7 +325,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Button,
-} from "@codebase/components-web";
+} from "@codebase/components";
 
 function UserMenu() {
   return (
@@ -365,7 +365,7 @@ Extends shared Tailwind configuration with component-specific patterns:
 ```js
 content: [
   "./src/**/*.{ts,tsx}",
-  "../components-web/src/**/*.{ts,tsx}",
+  "../components/src/**/*.{ts,tsx}",
 ];
 ```
 
@@ -392,7 +392,7 @@ Built on Base UI primitives which handle complex accessibility patterns automati
 Import global CSS in your root layout:
 
 ```tsx
-import "@codebase/components-web/styles/globals.css";
+import "@codebase/components/styles/globals.css";
 ```
 
 ### Import Errors
@@ -403,8 +403,8 @@ Verify TypeScript path mapping in `tsconfig.json`:
 {
   "compilerOptions": {
     "paths": {
-      "@codebase/components-web": [
-        "../components-web/src/index.ts"
+      "@codebase/components": [
+        "../components/src/index.ts"
       ]
     }
   }
@@ -437,7 +437,7 @@ See [LICENSE](../../LICENSE) for licensing information.
 
 ## 🔭 Callidescope
 
-Call stacks traced through `projects/components-web`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+Call stacks traced through `projects/components`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
 | Measure | Value |
 | --- | --- |
@@ -476,11 +476,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  components_web["components-web"]
+  components["components"]
   lexico_web["lexico-web"]
-  lexico_web --> components_web
+  lexico_web --> components
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class components_web subject
+  class components subject
 ```
 <!-- codependix:end name="codependix-nx-projects" -->
 
@@ -932,13 +932,13 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-375-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-28.46_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-28.45_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-2-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-8-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Library bundle Size](https://img.shields.io/badge/Library_bundle_Size-343.59_kB_gzip-6b7280?style=flat-square)
+![Library bundle Size](https://img.shields.io/badge/Library_bundle_Size-343.54_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -1136,7 +1136,7 @@ graph LR
 ![Links](https://img.shields.io/badge/Links-13-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-6-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-70-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-71-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.11](https://github.com/organizzolini/codebase/compare/v3.9.10...v3.9.11) (2026-10-17)
+
+### 🐛 Bug Fixes
+
+* **lexico:** 🐛 align search page spacing and stop the masonry layout flash ([#1696](https://github.com/organizzolini/codebase/issues/1696)) ([8b4149f](https://github.com/organizzolini/codebase/commit/8b4149fabf4a2542243e81c7cd0a894ebe8212fb))
+
+## [3.9.10](https://github.com/organizzolini/codebase/compare/v3.9.9...v3.9.10) (2026-10-17)
+
+### ♻️ Code Refactoring
+
+* **installation:** ♻️ move update-reui-skill into an installation command ([#1698](https://github.com/organizzolini/codebase/issues/1698)) ([c33111b](https://github.com/organizzolini/codebase/commit/c33111ba311409376ba10900ed9be8392f4799c8))
+* **scripts:** ♻️ drop the stale-branch script and move sign-commits into its skill ([#1699](https://github.com/organizzolini/codebase/issues/1699)) ([0d99a0f](https://github.com/organizzolini/codebase/commit/0d99a0f206e49c4e9639c11bd80e372967ee204e))
+
+## [3.9.9](https://github.com/organizzolini/codebase/compare/v3.9.8...v3.9.9) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **components:** ♻️ rename components-web to components and list it with the shared packages ([#1691](https://github.com/organizzolini/codebase/issues/1691)) ([ba4415c](https://github.com/organizzolini/codebase/commit/ba4415cf0e533e2804d9b100a3a4ffceb85ebc87))
+
+## [3.9.8](https://github.com/organizzolini/codebase/compare/v3.9.7...v3.9.8) (2026-10-16)
+
+### ♻️ Code Refactoring
+
+* **configuration,synchronization:** ♻️ remove the root project ([#1690](https://github.com/organizzolini/codebase/issues/1690)) ([766efff](https://github.com/organizzolini/codebase/commit/766efff8b6f15f6541ccbc466e90629c543af8d7)), closes [#1669](https://github.com/organizzolini/codebase/issues/1669)
+
 ## [3.9.7](https://github.com/organizzolini/codebase/compare/v3.9.6...v3.9.7) (2026-10-16)
 
 ### ♻️ Code Refactoring

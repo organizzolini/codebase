@@ -64,10 +64,10 @@ CHANGELOG.md
 # ⚙️ Generated files
 **/routeTree.gen.ts
 projectStructure.cache.json
-**/projects/components-web/src/lib/utils
-**/projects/components-web/src/components/**
-**/projects/components-web/src/lib/**
-**/projects/components-web/src/hooks/**
+**/projects/components/src/lib/utils
+**/projects/components/src/components/**
+**/projects/components/src/lib/**
+**/projects/components/src/hooks/**
 
 # 🏗 Infrastructure templates
 **/helm/**/templates/**
