@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "affected": {
+    "legacy": false
+  },
   "analytics": false,
   "bail": false,
   "cacheDirectory": ".nx/cache",
