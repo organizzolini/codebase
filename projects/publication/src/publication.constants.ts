@@ -3,6 +3,9 @@ import { z } from "zod";
 /** Where Nx keeps its task-result database unless told otherwise. */
 const DEFAULT_DATA_DIRECTORY = ".nx/workspace-data";
 
+/** Where Nx keeps its task outputs unless told otherwise. */
+const DEFAULT_CACHE_DIRECTORY = ".nx/cache";
+
 /** Where Nx reads the machine id from on Linux, in the order it tries them. */
 const DEFAULT_MACHINE_ID_FILES = "/var/lib/dbus/machine-id /etc/machine-id";
 
@@ -17,10 +20,14 @@ const DEFAULT_MACHINE_ID_FILES = "/var/lib/dbus/machine-id /etc/machine-id";
  */
 export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),
+  /** A push's previous tip, `github.event.before`. */
+  BEFORE: z.string().optional(),
   GITHUB_ENV: z.string().optional(),
   GITHUB_OUTPUT: z.string().optional(),
   GITHUB_PACKAGES_REGISTRY: z.string().optional(),
   GITHUB_PACKAGES_TOKEN: z.string().optional(),
+  /** The ref a run is for; a merge group's names the pull request. */
+  GITHUB_REF: z.string().optional(),
   GITHUB_REPOSITORY: z.string().optional(),
   GITHUB_REPOSITORY_OWNER: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
@@ -37,6 +44,13 @@ export const environmentSchema = z.object({
   NPM_REGISTRY: z.string().optional(),
   NPM_TOKEN: z.string().optional(),
   NX_BASE: z.string().optional(),
+  /** Where Nx keeps its task outputs; the override Nx itself reads. */
+  NX_CACHE_DIRECTORY: z
+    .string()
+    .optional()
+    .transform((value) => value || DEFAULT_CACHE_DIRECTORY),
+  /** The CI leg's cache scope, which names its cache artifact. */
+  NX_CACHE_SCOPE: z.string().optional(),
   NX_HEAD: z.string().optional(),
   /** Where Nx keeps its task-result database; the override Nx itself reads. */
   NX_WORKSPACE_DATA_DIRECTORY: z

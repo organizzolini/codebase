@@ -75,8 +75,8 @@ runs:
     # on a cancellation, and there is no cost to a step that always runs
     # asking again.
     # The merge group's run cannot read the caches a pull request run saves,
-    # so it gets the same files by artifact instead; `import-pr-task-cache.sh`
-    # downloads them. Hidden files are included because `.nx` is one. Three
+    # so it gets the same files by artifact instead; the `import-pr-task-cache`
+    # command of the `publication` project downloads them. Hidden files are included because `.nx` is one. Three
     # days cover the wait in the queue.
     - name: 📤 Share Nx Cache With The Merge Group
       if: |
