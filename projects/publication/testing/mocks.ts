@@ -115,7 +115,7 @@ const lookUp = <Value>(
  */
 export class FakeProcessRunner implements Pick<
   ProcessRunnerService,
-  "capture" | "captureAsync" | "stream"
+  "capture" | "captureAsync" | "captureToFile" | "stream"
 > {
   constructor(
     private readonly script: Readonly<
@@ -177,6 +177,17 @@ export class FakeProcessRunner implements Pick<
     await Promise.resolve();
 
     return this.capture(executable, args);
+  }
+
+  /**
+   * Answers a call whose output goes to a file exactly as `capture` would,
+   * minus the output: a scripted effect writes the file when a test needs it.
+   */
+  public captureToFile(
+    executable: string,
+    args: readonly string[],
+  ): CapturedProcess {
+    return { ...this.capture(executable, args), stdout: "" };
   }
 
   /** Records a streamed call, and ends it with its scripted exit code. */
@@ -258,6 +269,47 @@ export function createTaskDatabaseWorkspace(): TaskDatabaseWorkspace {
       return file;
     },
   };
+}
+
+/** The hashes of every cached result a task database holds, sorted. */
+export function readCachedHashes(file: string): string[] {
+  const connection = new DatabaseSync(file);
+
+  try {
+    return connection
+      .prepare("SELECT hash FROM cache_outputs ORDER BY hash")
+      .all()
+      .map((row) => String(row["hash"]));
+  } finally {
+    connection.close();
+  }
+}
+
+/**
+ * Writes a real Nx task database at the given path, with the two tables a
+ * merge reads, holding one task and one cached result per hash. Foreign keys
+ * match Nx's own: every result names a task.
+ */
+export function writeTaskDatabase(
+  file: string,
+  hashes: readonly string[],
+): void {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const connection = new DatabaseSync(file);
+
+  connection.exec(`
+    CREATE TABLE task_details (hash TEXT PRIMARY KEY NOT NULL, project TEXT NOT NULL, target TEXT NOT NULL, configuration TEXT);
+    CREATE TABLE cache_outputs (hash TEXT PRIMARY KEY NOT NULL, code INTEGER NOT NULL, size INTEGER NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, accessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (hash) REFERENCES task_details (hash));
+  `);
+  for (const hash of hashes) {
+    connection
+      .prepare("INSERT INTO task_details VALUES (?, 'project', 'target', NULL)")
+      .run(hash);
+    connection
+      .prepare("INSERT INTO cache_outputs (hash, code, size) VALUES (?, 0, 1)")
+      .run(hash);
+  }
+  connection.close();
 }
 
 /** A finished process that printed the given output and exited 0. */
