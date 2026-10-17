@@ -397,7 +397,7 @@ function SearchPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="space-y-8">
+    <section className="space-y-4">
       <h1 className="sr-only">Search</h1>
       <SearchBar
         initialQuery={query}
