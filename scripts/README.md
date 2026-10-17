@@ -344,7 +344,7 @@ this repository.
 
 The `cleanup-codebase` action runs after the install, so its two steps are
 commands (which open the databases with the built-in `node:sqlite`, not the
-`sqlite3` binary) of the [publication](../projects/publication) project:
+`sqlite3` binary) of the [integration](../projects/integration) project:
 `verify-task-database` and `keep-task-database` (which keeps only the newest
 database, and warns if there was more than one). The `adopt-task-database`
 command is the same as the script and is tested, ready for the move.
@@ -357,7 +357,7 @@ and a fake id:
 
 ```bash
 NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
-  nx run publication:start:adopt-task-database
+  nx run integration:start:adopt-task-database
 ```
 
 ### Affected Runs
@@ -369,9 +369,11 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 This one stays shell. `setup-codebase` runs it before `pnpm install`, and a job
 may skip the install altogether, so no NestJS command can run in its place.
 
-The other two affected-run steps are commands of the
-[publication](../projects/publication) project, called from the `run-affected`
-composite action and the 📦 Publishable Packages leg:
+The other two affected-run steps are commands, called from the `run-affected`
+composite action and the 📦 Publishable Packages leg. `run-affected` is a
+command of the [integration](../projects/integration) project and
+`publishable-packages-gate` of the [publication](../projects/publication)
+project:
 
 | Command | What it does |
 | ------- | ------------ |
@@ -385,7 +387,7 @@ locally:
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
   bash scripts/nx/bound-base-to-push.sh
 TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
-  nx run publication:start:run-affected
+  nx run integration:start:run-affected
 ```
 
 ## Notepads

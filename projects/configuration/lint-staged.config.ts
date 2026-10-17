@@ -73,7 +73,7 @@ function getStagedFilesFlags(files: string[]): string {
 
 /**
  * Hands `nx affected` the staged changes as two revisions, so it selects
- * projects the way CI's `run-affected` command in `projects/publication` does
+ * projects the way CI's `run-affected` command in `projects/integration` does
  * when it has no change set to correct. The hook does not call that command:
  * its spelling files stay in.
  *

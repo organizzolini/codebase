@@ -1,10 +1,8 @@
-Commands that run in CI: `run-affected` (Nx affected runs over a change set
-corrected for spelling files and conformetry templates),
-`publishable-packages-gate` (runs the publishable-packages check only when an
-ic-suite package is affected), the Nx task-database steps
-`verify-task-database`, `adopt-task-database`, and `keep-task-database`, and the
+Commands that run in CI: `publishable-packages-gate` (runs the
+publishable-packages check only when an ic-suite package is affected) and the
 release steps `version-packages`, `tag-codebase`, `tag-packages`,
-`publish-packages`, and `link-packages`. See
+`publish-packages`, and `link-packages`. The affected run and the Nx
+task-database steps live in the [integration](../integration) project. See
 [AGENTS.md](AGENTS.md).
 
 ## Start
