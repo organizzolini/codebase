@@ -13,7 +13,7 @@ import {
   TEMPLATE_SELECTOR,
 } from "./run-affected.constants";
 
-import type { Environment } from "../../publication.types";
+import type { Environment } from "../../integration.types";
 import type {
   RunAffectedCorrections,
   RunAffectedFailure,

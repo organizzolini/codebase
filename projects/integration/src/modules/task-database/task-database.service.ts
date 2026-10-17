@@ -19,7 +19,7 @@ import {
   UNKNOWN_ROWS,
 } from "./task-database.constants";
 
-import type { Environment } from "../../publication.types";
+import type { Environment } from "../../integration.types";
 import type { AdoptionPlan, TaskDatabaseReport } from "./task-database.types";
 
 /**

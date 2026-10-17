@@ -6,7 +6,7 @@ description: |
   instance when a template changes if `include-templates` is set.
 
   The logic, and why `--stdin` is only its fallback, lives in the
-  `run-affected` command of the `publication` project. It needs the installed
+  `run-affected` command of the `integration` project. It needs the installed
   dependencies, so this runs after `setup-codebase` has installed them.
 
 inputs:
@@ -40,5 +40,5 @@ runs:
         SPELLING_PATHS: ^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/publication.main.ts run-affected
+          projects/integration/src/integration.main.ts run-affected
       shell: bash

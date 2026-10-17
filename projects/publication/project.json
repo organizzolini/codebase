@@ -28,12 +28,6 @@
     "start": {
       "cache": false,
       "configurations": {
-        "adopt-task-database": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts adopt-task-database"
-        },
-        "keep-task-database": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts keep-task-database"
-        },
         "link-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts link-packages"
         },
@@ -43,17 +37,11 @@
         "publishable-packages-gate": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts publishable-packages-gate"
         },
-        "run-affected": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts run-affected"
-        },
         "tag-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts tag-codebase"
         },
         "tag-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts tag-packages"
-        },
-        "verify-task-database": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts verify-task-database"
         },
         "version-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts version-packages"
