@@ -1,5 +1,4 @@
 {
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "name": "meanderaw-web",
   "projectType": "application",
   "sourceRoot": "projects/meanderaw/meanderaw-web/src",

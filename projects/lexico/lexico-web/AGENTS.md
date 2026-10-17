@@ -35,7 +35,7 @@ Generated route tree: [src/routes/routeTree.gen.ts](src/routes/routeTree.gen.ts)
 
 `/search` defines its server function in the route file and calls it from the route loader. The function runs the API's `searchLatin` and `searchEnglish` queries together and merges them. There is no `src/lib/`: code lives in the route, in `src/components/`, or in a generated module.
 
-See the [write-react skill](../../../.agents/skills/write-react/SKILL.md) for route, loader, and server function patterns, and the conformetry generators that scaffold them.
+See the [write-react skill](/.agents/skills/write-react/SKILL.md) for route, loader, and server function patterns, and the conformetry generators that scaffold them.
 
 ## Component Library Integration
 
@@ -45,15 +45,15 @@ Always import shared UI from `@codebase/components` and never duplicate UI code.
 import { Button, Card, Input } from "@codebase/components";
 ```
 
-See the [write-react skill](../../../.agents/skills/write-react/SKILL.md) and [components AGENTS](../../components/AGENTS.md).
+See the [write-react skill](/.agents/skills/write-react/SKILL.md) and [components AGENTS](../../components/AGENTS.md).
 
 ## Testing
 
-See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) for unit/integration/end-to-end patterns.
+See the [testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for unit/integration/end-to-end patterns.
 
 ## Troubleshooting
 
-See the [triage-integration skill](../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
+See the [triage-integration skill](/.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
 
 ## Key Files
 

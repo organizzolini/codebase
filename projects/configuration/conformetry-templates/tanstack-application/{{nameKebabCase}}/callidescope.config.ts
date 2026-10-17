@@ -1,4 +1,4 @@
-import { projectDefaults } from "{{workspaceRelativePrefix}}projects/configuration/callidescope.config.js";
+import { projectDefaults } from "@codebase/configuration/callidescope.config";
 
 /**
  * TODO: Measure this application's stacks and set its limits at what they

@@ -109,9 +109,9 @@ route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
 components are not code-split into lazy chunks under test.
 
-See the [write-react skill]({{workspaceRelativePrefix}}.agents/skills/write-react/SKILL.md) for
+See the [write-react skill](/.agents/skills/write-react/SKILL.md) for
 component conventions and the
-[testing-strategy skill]({{workspaceRelativePrefix}}.agents/skills/testing-strategy/SKILL.md) for
+[testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
 test tiers.
 
 ## Key Files

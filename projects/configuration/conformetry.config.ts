@@ -150,15 +150,10 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       "A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/",
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
-      workspaceRelativePrefix: z
-        .string()
-        .describe(
-          "Relative climb from the project root back to the workspace root, e.g. ../.. two directories down or ../../../ three directories down",
-        ),
     }),
     // Where existing applications live is also where a new one may be
-    // generated. The climb back to the workspace root is read from each
-    // instance during validation, so no group has to state it.
+    // generated. The template reaches the shared configuration by package name,
+    // so it states no climb back to the workspace root and no group has to.
     instances: [
       {
         // The `node_modules` links would otherwise be followed back to the

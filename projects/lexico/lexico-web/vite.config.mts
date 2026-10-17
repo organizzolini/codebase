@@ -17,7 +17,6 @@ export default defineConfig({
       external: ["expo-sqlite"],
     },
   },
-  cacheDir: "../../../node_modules/.vite/projects/lexico-web",
   css: {
     devSourcemap: true,
   },

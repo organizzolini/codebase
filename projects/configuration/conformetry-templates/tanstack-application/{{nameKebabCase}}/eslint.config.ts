@@ -1,4 +1,4 @@
-import baseConfig from "{{workspaceRelativePrefix}}projects/configuration/eslint.config";
+import baseConfig from "@codebase/configuration/eslint.config";
 
 export default [
   // 🛠️ Base Config

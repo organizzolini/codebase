@@ -1,4 +1,4 @@
-import { codometerConfiguration } from "../../../projects/configuration/codometer.config.js";
+import { codometerConfiguration } from "@codebase/configuration/codometer.config";
 
 // 🎯 Targets
 
