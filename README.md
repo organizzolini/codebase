@@ -963,7 +963,6 @@ graph LR
   module_publication_PublishablePackagesGateModule["publication/PublishablePackagesGateModule"]
   module_publication_PublishPackagesModule["publication/PublishPackagesModule"]
   module_publication_ReleaseGroupModule["publication/ReleaseGroupModule"]
-  module_publication_RunAffectedModule["publication/RunAffectedModule"]
   module_publication_TagCodebaseModule["publication/TagCodebaseModule"]
   module_publication_TagPackagesModule["publication/TagPackagesModule"]
   module_publication_TaskDatabaseModule["publication/TaskDatabaseModule"]
@@ -1823,7 +1822,6 @@ graph LR
   module_publication_MainModule --> module_publication_MergeTaskCacheModule
   module_publication_MainModule --> module_publication_PublishablePackagesGateModule
   module_publication_MainModule --> module_publication_PublishPackagesModule
-  module_publication_MainModule --> module_publication_RunAffectedModule
   module_publication_MainModule --> module_publication_TagCodebaseModule
   module_publication_MainModule --> module_publication_TagPackagesModule
   module_publication_MainModule --> module_publication_VerifyTaskDatabaseModule
@@ -1834,7 +1832,6 @@ graph LR
   module_publication_PublishPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_PublishPackagesModule --> module_publication_ReleaseGroupModule
   module_publication_ReleaseGroupModule --> module_publication_ProcessRunnerModule
-  module_publication_RunAffectedModule --> module_publication_ProcessRunnerModule
   module_publication_TagCodebaseModule --> module_publication_MainTipModule
   module_publication_TagCodebaseModule --> module_publication_ProcessRunnerModule
   module_publication_TagPackagesModule --> module_publication_MainTipModule
@@ -5068,14 +5065,6 @@ graph LR
   file_publication_src_modules_release_group_release_group_service_ts["publication/src/modules/release-group/release-group.service.ts"]
   file_publication_src_modules_release_group_release_group_service_unit_test_ts["publication/src/modules/release-group/release-group.service.unit.test.ts"]
   file_publication_src_modules_release_group_release_group_types_ts["publication/src/modules/release-group/release-group.types.ts"]
-  file_publication_src_modules_run_affected_run_affected_command_ts["publication/src/modules/run-affected/run-affected.command.ts"]
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts["publication/src/modules/run-affected/run-affected.command.unit.test.ts"]
-  file_publication_src_modules_run_affected_run_affected_constants_ts["publication/src/modules/run-affected/run-affected.constants.ts"]
-  file_publication_src_modules_run_affected_run_affected_module_ts["publication/src/modules/run-affected/run-affected.module.ts"]
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts["publication/src/modules/run-affected/run-affected.module.unit.test.ts"]
-  file_publication_src_modules_run_affected_run_affected_service_ts["publication/src/modules/run-affected/run-affected.service.ts"]
-  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts["publication/src/modules/run-affected/run-affected.service.unit.test.ts"]
-  file_publication_src_modules_run_affected_run_affected_types_ts["publication/src/modules/run-affected/run-affected.types.ts"]
   file_publication_src_modules_tag_codebase_tag_codebase_command_ts["publication/src/modules/tag-codebase/tag-codebase.command.ts"]
   file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
   file_publication_src_modules_tag_codebase_tag_codebase_constants_ts["publication/src/modules/tag-codebase/tag-codebase.constants.ts"]
@@ -12606,26 +12595,6 @@ graph LR
   file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
   file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_types_ts
   file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_run_affected_run_affected_command_ts --> file_publication_src_modules_run_affected_run_affected_constants_ts
-  file_publication_src_modules_run_affected_run_affected_command_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
-  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_run_affected_run_affected_constants_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_run_affected_run_affected_types_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
   file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
   file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
   file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
@@ -12736,7 +12705,6 @@ graph LR
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
@@ -12748,7 +12716,6 @@ graph LR
   file_publication_src_publication_module_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_verify_task_database_verify_task_database_module_ts
@@ -13265,7 +13232,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-47-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.81_MB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.83_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-63-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-1-3178c6?style=flat-square)
 
@@ -13314,27 +13281,27 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-19-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-3699-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-381-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-200-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1108-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1214-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3716-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-382-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-207-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1117-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1226-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-94-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-95-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-805-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1928-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-817-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1949-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-8-ea580c?style=flat-square)
 
 ### YAML
 
-![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2712-e34c26?style=flat-square)
-![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-375-7c3aed?style=flat-square)
-![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1325-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2515-16a34a?style=flat-square)
+![YAML Files](https://img.shields.io/badge/YAML_Files-16-cb171e?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2683-e34c26?style=flat-square)
+![YAML Documents](https://img.shields.io/badge/YAML_Documents-16-f97316?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-365-7c3aed?style=flat-square)
+![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-58-8b5cf6?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1297-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2468-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
 ![YAML Comments](https://img.shields.io/badge/YAML_Comments-427-64748b?style=flat-square)
@@ -13448,26 +13415,26 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-119-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19102-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-118-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-681-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-512-a78bfa?style=flat-square)
-![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-121-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19417-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-120-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-692-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-528-a78bfa?style=flat-square)
+![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5439-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-849-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4131-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5550-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-881-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4220-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-237-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2042-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-732-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-239-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2056-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-733-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-374-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11244-ef4444?style=flat-square)
-![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
-![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-379-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11504-ef4444?style=flat-square)
+![Block Quotes](https://img.shields.io/badge/Block_Quotes-22-ca8a04?style=flat-square)
+![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->
 
 <!-- callidescope:start -->
@@ -13478,13 +13445,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6618 |
-| Files | 1968 |
-| Calls traced | 7286 |
-| Call stacks | 1813 |
+| Callables | 6599 |
+| Files | 1963 |
+| Calls traced | 7265 |
+| Call stacks | 1810 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
-| Unfollowable calls | 361 |
+| Unfollowable calls | 360 |
 
 ### Projects
 

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.13.1](https://github.com/organizzolini/codebase/compare/v3.13.0...v3.13.1) (2026-10-18)
+
+### ⚡ Performance Improvements
+
+* **configuration,documentation,publication,deployments:** ⚡️ enable task-based affected execution in nx ([#1705](https://github.com/organizzolini/codebase/issues/1705)) ([4e90f36](https://github.com/organizzolini/codebase/commit/4e90f36f62ebcbf956b35b1a8991b7a4434d6df4))
+
 ## [3.13.0](https://github.com/organizzolini/codebase/compare/v3.12.0...v3.13.0) (2026-10-18)
 
 ### ✨ Features

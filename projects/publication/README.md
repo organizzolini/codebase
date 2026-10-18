@@ -31,13 +31,13 @@ Call stacks traced through `projects/publication`, deepest first. Each frame sho
 
 | Measure | Value |
 | --- | --- |
-| Callables | 196 |
-| Files | 89 |
-| Calls traced | 266 |
-| Call stacks | 13 |
+| Callables | 177 |
+| Files | 84 |
+| Calls traced | 245 |
+| Call stacks | 12 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 14 |
+| Unfollowable calls | 13 |
 
 ### Limits
 
@@ -100,7 +100,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>10 more call stacks</summary>
+<summary>9 more call stacks</summary>
 
 **4. `VersionPackagesCommand.run`** — depth 6 · decorated-method
 
@@ -147,22 +147,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> TaskDatabaseService.map(…)(name: string): string [projects/publication/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**7. `RunAffectedCommand.run`** — depth 5 · decorated-method
-
-```text
-🚀 RunAffectedCommand.run(): Promise<void> [projects/publication/src/modules/run-affected/run-affected.command.ts:61]
-   ↳ Plans the affected run, reports what it corrected, and runs it.
-  └─> RunAffectedService.plan(): RunAffectedOutcome [projects/publication/src/modules/run-affected/run-affected.service.ts:237]
-     ↳ Works out the `nx affected` run this environment asks for.
-    └─> RunAffectedService.findCorrections(inputs: RunAffectedInputs): RunAffectedCorrections | RunAffectedFailure [projects/publication/src/modules/run-affected/run-affected.service.ts:90]
-       ↳ Picks out the files that mislead Nx for this target, listing the change set only when the target asks for a correction.
-      └─> RunAffectedService.listChangedFiles(base: string, head: string): RunAffectedFailure | string[] [projects/publication/src/modules/run-affected/run-affected.service.ts:131]
-         ↳ Lists the files changed between two revisions, or why that failed.
-        └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [projects/publication/src/modules/process-runner/process-runner.service.ts:42]
-           ↳ Runs a command to completion and returns what it printed.
-```
-
-**8. `TagPackagesCommand.run`** — depth 5 · decorated-method
+**7. `TagPackagesCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 TagPackagesCommand.run(): Promise<void> [projects/publication/src/modules/tag-packages/tag-packages.command.ts:46]
@@ -177,7 +162,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Runs a command with this process's own output streams, so its output appears as it would from the shell step that used…
 ```
 
-**9. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
+**8. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 KeepTaskDatabaseCommand.run(): Promise<void> [projects/publication/src/modules/keep-task-database/keep-task-database.command.ts:41]
@@ -189,7 +174,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> TaskDatabaseService.map(…)(name: string): string [projects/publication/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**10. `TagCodebaseCommand.run`** — depth 4 · decorated-method
+**9. `TagCodebaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 TagCodebaseCommand.run(): Promise<void> [projects/publication/src/modules/tag-codebase/tag-codebase.command.ts:44]
@@ -202,7 +187,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns what a finished process printed, or fails the way `set -e` failed the shell scripts these commands replace: at…
 ```
 
-**11. `VerifyTaskDatabaseCommand.run`** — depth 4 · decorated-method
+**10. `VerifyTaskDatabaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 VerifyTaskDatabaseCommand.run(): Promise<void> [projects/publication/src/modules/verify-task-database/verify-task-database.command.ts:39]
@@ -214,7 +199,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> TaskDatabaseService.map(…)(name: string): string [projects/publication/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**12. `BoundBaseToPushCommand.run`** — depth 3 · decorated-method
+**11. `BoundBaseToPushCommand.run`** — depth 3 · decorated-method
 
 ```text
 🚀 BoundBaseToPushCommand.run(): Promise<void> [projects/publication/src/modules/bound-base-to-push/bound-base-to-push.command.ts:41]
@@ -225,7 +210,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Reads one variable, an absent one as empty.
 ```
 
-**13. `PublishablePackagesGateCommand.run`** — depth 3 · decorated-method
+**12. `PublishablePackagesGateCommand.run`** — depth 3 · decorated-method
 
 ```text
 🚀 PublishablePackagesGateCommand.run(): Promise<void> [projects/publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49]
@@ -247,7 +232,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PublishPackagesService.run` | 8 | `PublishPackagesService.readInputs`, `PublishPackagesService.map(…)`, `ReleaseGroupService.readGroup`, `PublishPackagesService.refuseUnsealedRehearsal`, `PublishPackagesService.publishToNpm`, `PublishPackagesService.prepareMirrors`, `PublishPackagesService.runInParallel(…)`, `ReleaseGroupService.runInParallel` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:318` |
 
 <details>
-<summary>81 more callables</summary>
+<summary>74 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -265,14 +250,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `BoundBaseToPushService.bound` | 5 | `BoundBaseToPushService.read`, `noPreviousTipMessage`, `ProcessRunnerService.capture`, `notAncestorMessage`, `boundingMessage` | `projects/publication/src/modules/bound-base-to-push/bound-base-to-push.service.ts:59` |
 | `ImportPrTaskCacheService.locate` | 5 | `ImportPrTaskCacheService.findPullRequest`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `artifactQuery`, `noArtifactMessage` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:132` |
 | `PublishPackagesService.mirrorPackage` | 5 | `ReleaseGroupService.readManifest`, `ProcessRunnerService.captureAsync`, `alreadyMirroredMessage`, `PublishPackagesService.packRenamed`, `mirroringMessage` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:62` |
-| `RunAffectedCommand.run` | 5 | `RunAffectedService.plan`, `RunAffectedCommand.report`, `spellingFilesHeading`, `templateFilesHeading`, `RunAffectedService.execute` | `projects/publication/src/modules/run-affected/run-affected.command.ts:61` |
 | `TagPackagesService.tagBaselines` | 5 | `ReleaseGroupService.readManifest`, `requireSuccess`, `ProcessRunnerService.capture`, `TagPackagesService.createTag`, `TagPackagesService.parentOfAddition` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:213` |
 | `TaskDatabaseService.planAdoption` | 4 | `TaskDatabaseService.readMachineId`, `TaskDatabaseService.newest`, `noSchemaMessage`, `TaskDatabaseService.directory` | `projects/publication/src/modules/task-database/task-database.service.ts:253` |
 | `TaskDatabaseService.verify` | 4 | `TaskDatabaseService.list`, `TaskDatabaseService.integrityOf`, `corruptMessage`, `TaskDatabaseService.discard` | `projects/publication/src/modules/task-database/task-database.service.ts:454` |
 | `ImportPrTaskCacheService.findPullRequest` | 4 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `untrustedMessage` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:105` |
 | `PublishPackagesService.refuseUnsealedRehearsal` | 4 | `ReleaseGroupService.isRehearsal`, `ReleaseGroupService.readManifest`, `ReleaseGroupService.npmRegistry`, `unsealedMessage` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:282` |
-| `RunAffectedService.findCorrections` | 4 | `RunAffectedService.listChangedFiles`, `RunAffectedService.pattern`, `RunAffectedService.filter(…)`, `RunAffectedService.filter(…)` | `projects/publication/src/modules/run-affected/run-affected.service.ts:90` |
-| `RunAffectedService.plan` | 4 | `RunAffectedService.readInputs`, `RunAffectedService.findCorrections`, `RunAffectedService.correctedPlan`, `RunAffectedService.revisionsPlan` | `projects/publication/src/modules/run-affected/run-affected.service.ts:237` |
 | `TagCodebaseService.run` | 4 | `MainTipService.head`, `MainTipService.hasMovedFrom`, `MainTipService.stepAsideFrom`, `ProcessRunnerService.stream` | `projects/publication/src/modules/tag-codebase/tag-codebase.service.ts:49` |
 | `TagPackagesService.parentOfAddition` | 4 | `TagPackagesService.findLast(…)`, `requireSuccess`, `ProcessRunnerService.capture`, `noBaselineMessage` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:138` |
 | `TagPackagesService.pushWithRetries` | 4 | `TagPackagesService.retryDelay`, `ProcessRunnerService.stream`, `retryingMessage`, `TagPackagesService.anonymous` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:169` |
@@ -292,7 +274,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LinkPackagesService.tarballDigest` | 2 | `LinkPackagesService.parse`, `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/link-packages/link-packages.service.ts:204` |
 | `LinkPackagesCommand.run` | 2 | `LinkPackagesService.run`, `describeError` | `projects/publication/src/modules/link-packages/link-packages.command.ts:46` |
 | `PublishPackagesCommand.run` | 2 | `PublishPackagesService.run`, `describeError` | `projects/publication/src/modules/publish-packages/publish-packages.command.ts:47` |
-| `RunAffectedService.listChangedFiles` | 2 | `ProcessRunnerService.capture`, `RunAffectedService.filter(…)` | `projects/publication/src/modules/run-affected/run-affected.service.ts:131` |
 | `MainTipService.head` | 2 | `requireSuccess`, `ProcessRunnerService.capture` | `projects/publication/src/modules/main-tip/main-tip.service.ts:73` |
 | `TagCodebaseCommand.run` | 2 | `TagCodebaseService.run`, `describeError` | `projects/publication/src/modules/tag-codebase/tag-codebase.command.ts:44` |
 | `TagPackagesCommand.run` | 2 | `TagPackagesService.run`, `describeError` | `projects/publication/src/modules/tag-packages/tag-packages.command.ts:46` |
@@ -323,9 +304,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PublishPackagesService.runInParallel(…)` | 1 | `PublishPackagesService.mirrorPackage` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:334` |
 | `PublishablePackagesGateService.decide` | 1 | `ProcessRunnerService.capture` | `projects/publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:47` |
 | `PublishablePackagesGateService.execute` | 1 | `ProcessRunnerService.stream` | `projects/publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:92` |
-| `RunAffectedService.correctedPlan` | 1 | `RunAffectedService.filter(…)` | `projects/publication/src/modules/run-affected/run-affected.service.ts:59` |
-| `RunAffectedService.readInputs` | 1 | `RunAffectedService.filter(…)` | `projects/publication/src/modules/run-affected/run-affected.service.ts:174` |
-| `RunAffectedService.execute` | 1 | `ProcessRunnerService.stream` | `projects/publication/src/modules/run-affected/run-affected.service.ts:228` |
 | `MainTipService.hasMovedFrom` | 1 | `ProcessRunnerService.capture` | `projects/publication/src/modules/main-tip/main-tip.service.ts:51` |
 | `TagPackagesService.createTag` | 1 | `ProcessRunnerService.stream` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:110` |
 | `TagPackagesService.mustStream` | 1 | `ProcessRunnerService.stream` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:127` |
@@ -372,7 +350,6 @@ flowchart LR
   PublishablePackagesGateModule
   PublishPackagesModule
   ReleaseGroupModule
-  RunAffectedModule
   TagCodebaseModule
   TagPackagesModule
   TaskDatabaseModule
@@ -394,7 +371,6 @@ flowchart LR
   MainModule --> MergeTaskCacheModule
   MainModule --> PublishablePackagesGateModule
   MainModule --> PublishPackagesModule
-  MainModule --> RunAffectedModule
   MainModule --> TagCodebaseModule
   MainModule --> TagPackagesModule
   MainModule --> VerifyTaskDatabaseModule
@@ -405,7 +381,6 @@ flowchart LR
   PublishPackagesModule --> ProcessRunnerModule
   PublishPackagesModule --> ReleaseGroupModule
   ReleaseGroupModule --> ProcessRunnerModule
-  RunAffectedModule --> ProcessRunnerModule
   TagCodebaseModule --> MainTipModule
   TagCodebaseModule --> ProcessRunnerModule
   TagPackagesModule --> MainTipModule
@@ -508,14 +483,6 @@ graph LR
   file_src_modules_release_group_release_group_service_ts["src/modules/release-group/release-group.service.ts"]
   file_src_modules_release_group_release_group_service_unit_test_ts["src/modules/release-group/release-group.service.unit.test.ts"]
   file_src_modules_release_group_release_group_types_ts["src/modules/release-group/release-group.types.ts"]
-  file_src_modules_run_affected_run_affected_command_ts["src/modules/run-affected/run-affected.command.ts"]
-  file_src_modules_run_affected_run_affected_command_unit_test_ts["src/modules/run-affected/run-affected.command.unit.test.ts"]
-  file_src_modules_run_affected_run_affected_constants_ts["src/modules/run-affected/run-affected.constants.ts"]
-  file_src_modules_run_affected_run_affected_module_ts["src/modules/run-affected/run-affected.module.ts"]
-  file_src_modules_run_affected_run_affected_module_unit_test_ts["src/modules/run-affected/run-affected.module.unit.test.ts"]
-  file_src_modules_run_affected_run_affected_service_ts["src/modules/run-affected/run-affected.service.ts"]
-  file_src_modules_run_affected_run_affected_service_unit_test_ts["src/modules/run-affected/run-affected.service.unit.test.ts"]
-  file_src_modules_run_affected_run_affected_types_ts["src/modules/run-affected/run-affected.types.ts"]
   file_src_modules_tag_codebase_tag_codebase_command_ts["src/modules/tag-codebase/tag-codebase.command.ts"]
   file_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
   file_src_modules_tag_codebase_tag_codebase_constants_ts["src/modules/tag-codebase/tag-codebase.constants.ts"]
@@ -752,26 +719,6 @@ graph LR
   file_src_modules_release_group_release_group_service_unit_test_ts --> file_src_modules_release_group_release_group_service_ts
   file_src_modules_release_group_release_group_service_unit_test_ts --> file_src_modules_release_group_release_group_types_ts
   file_src_modules_release_group_release_group_service_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_run_affected_run_affected_command_ts --> file_src_modules_run_affected_run_affected_constants_ts
-  file_src_modules_run_affected_run_affected_command_ts --> file_src_modules_run_affected_run_affected_service_ts
-  file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_run_affected_run_affected_command_ts
-  file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_run_affected_run_affected_service_ts
-  file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_run_affected_run_affected_module_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_run_affected_run_affected_module_ts --> file_src_modules_run_affected_run_affected_command_ts
-  file_src_modules_run_affected_run_affected_module_ts --> file_src_modules_run_affected_run_affected_service_ts
-  file_src_modules_run_affected_run_affected_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_run_affected_run_affected_module_unit_test_ts --> file_src_modules_run_affected_run_affected_command_ts
-  file_src_modules_run_affected_run_affected_module_unit_test_ts --> file_src_modules_run_affected_run_affected_module_ts
-  file_src_modules_run_affected_run_affected_module_unit_test_ts --> file_src_modules_run_affected_run_affected_service_ts
-  file_src_modules_run_affected_run_affected_service_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_run_affected_run_affected_service_ts --> file_src_modules_run_affected_run_affected_constants_ts
-  file_src_modules_run_affected_run_affected_service_ts --> file_src_modules_run_affected_run_affected_types_ts
-  file_src_modules_run_affected_run_affected_service_ts --> file_src_publication_types_ts
-  file_src_modules_run_affected_run_affected_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_run_affected_run_affected_service_unit_test_ts --> file_src_modules_run_affected_run_affected_service_ts
   file_src_modules_tag_codebase_tag_codebase_command_ts --> file_src_modules_process_runner_process_runner_utilities_ts
   file_src_modules_tag_codebase_tag_codebase_command_ts --> file_src_modules_tag_codebase_tag_codebase_service_ts
   file_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_src_modules_main_tip_main_tip_service_ts
@@ -882,7 +829,6 @@ graph LR
   file_src_publication_main_unit_test_ts --> file_src_modules_link_packages_link_packages_module_ts
   file_src_publication_main_unit_test_ts --> file_src_modules_publish_packages_publish_packages_module_ts
   file_src_publication_main_unit_test_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_src_publication_main_unit_test_ts --> file_src_modules_run_affected_run_affected_module_ts
   file_src_publication_main_unit_test_ts --> file_src_modules_tag_codebase_tag_codebase_module_ts
   file_src_publication_main_unit_test_ts --> file_src_modules_tag_packages_tag_packages_module_ts
   file_src_publication_main_unit_test_ts --> file_src_modules_version_packages_version_packages_module_ts
@@ -894,7 +840,6 @@ graph LR
   file_src_publication_module_ts --> file_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_src_publication_module_ts --> file_src_modules_publish_packages_publish_packages_module_ts
   file_src_publication_module_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_src_publication_module_ts --> file_src_modules_run_affected_run_affected_module_ts
   file_src_publication_module_ts --> file_src_modules_tag_codebase_tag_codebase_module_ts
   file_src_publication_module_ts --> file_src_modules_tag_packages_tag_packages_module_ts
   file_src_publication_module_ts --> file_src_modules_verify_task_database_verify_task_database_module_ts
@@ -913,36 +858,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-11078-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-357.04_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-20-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-140-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10127-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-327.85_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-19-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-132-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-140-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-28-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-132-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-24-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-4-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-57-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-266-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-53-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-243-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-2-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-49-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-46-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-18-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-46-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-577-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-137-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-483-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-231-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-664-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-676-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-185-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-450-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-834-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-43-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-533-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-122-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-449-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-206-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-601-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-636-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-168-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-417-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-762-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -963,16 +908,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-149-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-44-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-146-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-43-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-8-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-101-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-68-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-99-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-67-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-23-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-127-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-125-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -1053,14 +998,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-18-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-13-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-13-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-18-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-18-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-17-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-12-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-12-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-17-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-17-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-2-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-47-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-44-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -1098,7 +1043,7 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-319-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-318-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-16-a78bfa?style=flat-square)
@@ -1110,11 +1055,11 @@ graph LR
 ![List Items](https://img.shields.io/badge/List_Items-28-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-3-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-24-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-23-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-10-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-13-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-155-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-152-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
