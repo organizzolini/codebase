@@ -18,7 +18,7 @@ npm install --save-dev @callidescope/cli
 ```
 
 ```bash
-callidescope --config projects/configuration/callidescope.config.ts
+callidescope --config configuration/callidescope.config.ts
 ```
 
 ```text
@@ -56,10 +56,10 @@ Tracing the workspace is the **default command**, so the flags below sit
 directly on `callidescope`:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts --check depth
+npx callidescope --config configuration/callidescope.config.ts --check depth
 ```
 
-`callidescope callidescope --config projects/configuration/callidescope.config.ts --check depth` is the same run written out, which is
+`callidescope callidescope --config configuration/callidescope.config.ts --check depth` is the same run written out, which is
 what a task runner that always names a command spells. `depth`, `breadth`, and
 `limits` are matched by name before anything falls through to the default, so
 they are unaffected — and a word that names none of them is refused rather than
@@ -153,7 +153,7 @@ same reason. The depth gate is therefore named directly, alongside
 that gate: the
 [🧑‍🔧 Lint Codebase](../../../../.github/workflows/lint-code.yml) workflow, so it
 runs on every pull request, and
-[`projects/configuration/lint-staged.config.ts`](../../../configuration/lint-staged.config.ts),
+[`configuration/lint-staged.config.ts`](../../../configuration/lint-staged.config.ts),
 so it runs on every commit. Depth reads source and needs no build, which is
 what keeps it in the commit path where codometer's limits — read from compiled
 output — cannot go.
@@ -291,15 +291,15 @@ traceback or an ESLint rule id points at a symbol — the file path and the
 qualified name callidescope already prints in every stack, joined by `#`:
 
 ```bash
-callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar
-callidescope breadth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar
+callidescope depth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar
+callidescope breadth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar
 ```
 
 `--addresses` is comma-separated, so one run can report on several callables —
 which is what a rename spanning a handful of them actually needs:
 
 ```bash
-callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar,src/bar.service.ts#BarService.baz
+callidescope depth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar,src/bar.service.ts#BarService.baz
 ```
 
 **Every address has to resolve, or the run prints nothing.** A report covering

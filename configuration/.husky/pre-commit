@@ -1,0 +1,82 @@
+# shellcheck shell=sh
+# Husky runs hooks with sh, so there is no shebang.
+
+set -e
+
+# ⏱️ Log timestamp
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S %z')
+printf '[%s] pre-commit\n' "${TIMESTAMP}"
+
+# 🔐 Check GPG git signing configuration
+REPOSITORY_ROOT="$(git rev-parse --show-toplevel)"
+"${REPOSITORY_ROOT}/scripts/git/check-commit-signing-configuration.sh"
+
+# 🗒️ Clear notepads
+git restore --staged notepads/notepad.jsonc || true
+git restore --staged notepads/notepad.md || true
+git restore --staged notepads/notepad.py || true
+git restore --staged notepads/notepad.sh || true
+git restore --staged notepads/notepad.sql || true
+git restore --staged notepads/notepad.ts || true
+
+EXIT_CODE=0
+
+# `nx sync:check` used to run here. The generator plugin it checked is no longer
+# committed — it is emitted into .conformetry on install — so no commit can
+# stage it out of date. Every conformetry command re-checks the emitted plugin
+# against the configuration and refuses to run against a stale one instead.
+
+# `configuration:codometer:write` used to run here, staging README.md into every
+# commit. It no longer does. Codometer's reports are published on main by the
+# release workflow, so writing them here only made every branch carry badge
+# churn that collides with every other branch on the same block — the reason
+# the workspace aggregate was moved to main in the first place. Nothing checks
+# those reports on a pull request, so a branch is expected to hold stale ones.
+
+# 🧹 Check staged files
+# NODE_OPTIONS deliberately unset: it is inherited by every command lint-staged
+# runs, and a `--import=tsx` loader preempts the transpiler Nx uses for
+# workspace plugins. esbuild emits no `design:paramtypes`, so the conformetry
+# plugin's NestJS constructor injection would silently resolve to `undefined`
+# and the project graph would fail to build. Node reads the TypeScript config
+# natively.
+#
+# In CI it also passes `--verbose`: lint-staged otherwise prints a command's
+# output only when it fails. The release job's log shows this hook only as the
+# file below, so there that output is the one record of what each task ran.
+# Locally it would run to thousands of lines on every commit.
+env -u GIT_INDEX_FILE -u GIT_DIR -u GIT_WORK_TREE -u GIT_PREFIX NX_PERF_LOGGING=false lint-staged --config configuration/lint-staged.config.ts --continue-on-error ${CI:+--verbose} > last-lint-staged-output.log 2>&1 || EXIT_CODE=$?
+
+# 💀 Explain a kill rather than leaving lint-staged's misleading wording
+# Exit 137 is SIGKILL. lint-staged reports every killed command as "Task failed
+# to spawn: undefined" regardless of why it died, so the wording names neither
+# cause. Two produce it here: the analysis run growing past available memory,
+# and Node 26 being killed on an over-long argument before it prints anything.
+if [ "${EXIT_CODE}" = "137" ] || grep -q "Task failed to spawn" last-lint-staged-output.log 2>/dev/null; then
+  NODE_MAJOR_VERSION=$(node --version | sed 's/^v\([0-9]*\).*/\1/')
+  printf '\n⚠️  A check was killed rather than failing.\n'
+  printf '   This is not a spawn error, whatever lint-staged called it.\n'
+  if [ "${NODE_MAJOR_VERSION}" -ge 26 ] 2>/dev/null; then
+    printf '   You are on Node %s. Node 26 is killed by the operating system on\n' "$(node --version)"
+    printf '   any single argument past ~1 KB, which a long staged file list can\n'
+    printf '   reach. Switch to the pinned version and commit again:\n'
+    printf '   nvm use   # %s, per .nvmrc\n\n' "$(cat "${REPOSITORY_ROOT}/.nvmrc")"
+  else
+    printf '   The likely cause is the operating system reclaiming memory.\n'
+    printf '   Free some memory and commit again, or run the analysis directly:\n'
+    printf '   nx affected --target=type-codebase,lint-codebase,tidy-codebase,form-codebase,gate-codebase --configuration=check --parallel=1 --files=<staged path>\n\n'
+  fi
+fi
+
+# 🖨️ Log output
+LAST_LINT_STAGED_OUTPUT=$(grep -vE '\(node:[0-9]+\) Warning: The .NO_COLOR' last-lint-staged-output.log \
+  | grep -vE '\(Use .node --trace-warnings' \
+  | grep -vE 'Your AI agent configuration is outdated' \
+  | perl -pe 's/\x1B\[[0-9;]*[a-zA-Z]//g' \
+  | perl -0777 -pe 's/\n{3,}/\n\n/g')
+
+printf "%s\n" "${LAST_LINT_STAGED_OUTPUT}"
+printf '[%s] pre-commit\n%s\n' "${TIMESTAMP}" "${LAST_LINT_STAGED_OUTPUT}" > last-lint-staged-output.log
+
+# 🚫 Exit
+exit "${EXIT_CODE}"

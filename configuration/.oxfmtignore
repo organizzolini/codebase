@@ -1,0 +1,81 @@
+!**/*.d.ts.map
+**/*.d.ts
+**/.venv
+**/*.md
+**/*.mdx
+**/.next
+**/.nx
+# Nested agent worktrees are not listed: this file's patterns match absolute
+# paths, so `**/.claude/worktrees/**` ignores every file of a checkout that is
+# itself a worktree, and no target here walks into `.claude/` anyway.
+**/.terraform/**
+**/build
+**/coverage
+**/dist
+**/helm/**/templates/**
+**/node_modules
+# OpenWiki's generated pages and its `.last-update.json` bookkeeping, which the
+# generator rewrites on every refresh.
+**/documentation/openwiki/**
+**/out
+**/routeTree.gen.ts
+**/tmp
+*.log
+*.min.css
+*.min.js
+*.tmp
+.git
+.idea
+.next
+.nx
+.nyc_output
+.vscode
+build
+CHANGELOG.md
+coverage
+dist
+**/infrastructure/helm/**/templates/**
+node_modules
+out
+package-lock.json
+**/projects/common/interface/src/components/**
+**/projects/common/interface/src/hooks/**
+**/projects/common/interface/src/lib/**
+**/projects/lexico/lexico-cli/data/**
+**/projects/lexico/lexico-cli/data/library/**
+**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts
+**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts
+**/library.json
+pnpm-lock.yaml
+tmp
+**/conformetry-templates/**
+# Conformetry example fixtures: a template file holds mustache where an
+# identifier belongs, so it is not parseable as the language its extension
+# names. Each example's own conformetry.config.ts is formatted normally.
+**/projects/ic-suite/conformetry/conformetry-examples/examples/*/instances/**
+**/projects/ic-suite/conformetry/conformetry-examples/examples/*/templates/**
+# Emitted from the conformetry configuration; the emitter's output is
+# authoritative, and reformatting it makes every conformetry command fail the
+# drift check after a `format` run.
+**/.conformetry/**
+# Callidescope writes this report and then checks the file back against what a
+# fresh run would produce, byte for byte. Reformatting it makes
+# `callidescope-examples:callidescope` report it stale the moment `format` runs
+# — the same failure mode as the emitted conformetry plugin above.
+**/projects/ic-suite/callidescope/callidescope-examples/output/**
+# The meander draw run writes its index and family pages here, gitignored and
+# gigabytes at the default edge budget, and nothing in it is this formatter's
+# to rewrite. `.prettierignore` excludes it for its own formatter.
+**/projects/meanderaw/meanderaw-cli/output/**
+**/data/wikipedia
+**/data/wiktionary
+yarn.lock
+
+# 🕸️ Every dependency graph codependix writes as JSON. It renders them with
+# `JSON.stringify(…, 2)`, which puts one array element per line; oxfmt collapses
+# a short array onto one. Reformatting one therefore makes the very next
+# `codependix map --check` fail against what `codependix map --write` just wrote — the
+# same conflict this file already resolves for `.conformetry/**`, and the same
+# reason `configuration/eslint.config.ts` turns `jsonc/sort-array-values` off
+# for exactly these files.
+**/codependix-*graph.json

@@ -22,7 +22,7 @@ Determine if this is a local failure or a CI failure.
 ### Option A: Local Submission Failure
 
 ```sh
-NX_PERF_LOGGING=false lint-staged --config projects/configuration/lint-staged.config.ts --continue-on-error
+NX_PERF_LOGGING=false lint-staged --config configuration/lint-staged.config.ts --continue-on-error
 ```
 
 Invoked directly rather than through `nx run configuration:lint-staged`. That target's own command
@@ -34,7 +34,7 @@ project graph would fail to build. Node reads the TypeScript config natively ins
 also measures code (`nx run configuration:codometer:write`) and clears staged notepad files before
 running lint-staged.
 
-lint-staged config: [projects/configuration/lint-staged.config.ts](../../../projects/configuration/lint-staged.config.ts)
+lint-staged config: [configuration/lint-staged.config.ts](../../../configuration/lint-staged.config.ts)
 
 Almost every check reaches the staged files through one `nx affected` run over the
 `lint-code` target:
@@ -56,17 +56,17 @@ single argument past 1011 bytes, and lint-staged reports that as
 
 ### commit-msg hook
 
-File: [projects/configuration/.husky/commit-msg](../../../projects/configuration/.husky/commit-msg)
+File: [configuration/.husky/commit-msg](../../../configuration/.husky/commit-msg)
 
 ```sh
 nx run configuration:commitlint --edit=$1
 # resolves to:
-NODE_OPTIONS='--import=tsx' commitlint --config projects/configuration/commitlint.config.ts --edit <msg-file>
+NODE_OPTIONS='--import=tsx' commitlint --config configuration/commitlint.config.ts --edit <msg-file>
 ```
 
 ### pre-push hook
 
-File: [projects/configuration/.husky/pre-push](../../../projects/configuration/.husky/pre-push)
+File: [configuration/.husky/pre-push](../../../configuration/.husky/pre-push)
 
 ```sh
 nx run configuration:validate-branch-name
@@ -79,7 +79,7 @@ Config: [validate-branch-name.config.cjs](../../../validate-branch-name.config.c
 
 ### lint-staged pattern → command matrix
 
-`projects/configuration/lint-staged.config.ts` declares three patterns, in this order. A
+`configuration/lint-staged.config.ts` declares three patterns, in this order. A
 staged `package.json` matches all three, so all four commands run.
 
 | Staged file pattern                     | Commands lint-staged runs                                                                                                                                                                                      |
@@ -91,7 +91,7 @@ staged `package.json` matches all three, so all four commands run.
 There is deliberately no per-file-type row any more. `lint-code` is an
 `nx:noop` aggregator whose `dependsOn` list holds every static check, and each
 leaf target declares the config files it reads in its own `inputs` — so staging
-`projects/configuration/knip.config.ts` re-runs `knip` and cache-hits the rest, with no
+`configuration/knip.config.ts` re-runs `knip` and cache-hits the rest, with no
 hand-written mapping to drift. Anything the old table routed by hand
 (`vscode-extensions`, `markdown-lint`, `yaml-lint`, `spell-check`) is now
 reached through that `dependsOn` list.
@@ -182,8 +182,8 @@ Both are independent leaf targets that `lint-code` depends on directly.
 
 | Target     | Check command                                                                                                                                                 | Write command       | Config file                                                                                                                                                                                |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `prettier` | `prettier --check --config projects/configuration/prettier.config.ts --ignore-path projects/configuration/.prettierignore {projectRoot}` (cwd: workspaceRoot) | same with `--write` | [projects/configuration/prettier.config.ts](../../../projects/configuration/prettier.config.ts), [projects/configuration/.prettierignore](../../../projects/configuration/.prettierignore) |
-| `oxfmt`    | `oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore --check {projectRoot}` (cwd: workspaceRoot)                | same with `--write` | [projects/configuration/oxfmt.config.ts](../../../projects/configuration/oxfmt.config.ts)                                                                                                  |
+| `prettier` | `prettier --check --config configuration/prettier.config.ts --ignore-path configuration/.prettierignore {projectRoot}` (cwd: workspaceRoot) | same with `--write` | [configuration/prettier.config.ts](../../../configuration/prettier.config.ts), [configuration/.prettierignore](../../../configuration/.prettierignore) |
+| `oxfmt`    | `oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore --check {projectRoot}` (cwd: workspaceRoot)                | same with `--write` | [configuration/oxfmt.config.ts](../../../configuration/oxfmt.config.ts)                                                                                                  |
 
 Python projects run `ruff-format` instead — `uv run ruff format --check .` (cwd: projectRoot),
 config: [pyproject.toml](../../../pyproject.toml)
@@ -194,8 +194,8 @@ Both are independent leaf targets that `lint-code` depends on directly.
 
 | Target   | Check command                                                                                                                                       | Write command     | Config file                                                                                                                          |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `eslint` | `eslint . {args}` (cwd: projectRoot)                                                                                                                | same with `--fix` | project `eslint.config.ts` which extends [projects/configuration/eslint.config.ts](../../../projects/configuration/eslint.config.ts) |
-| `oxlint` | `oxlint --config projects/configuration/oxlint.config.ts --ignore-path projects/configuration/.oxlintignore {projectRoot}/src` (cwd: workspaceRoot) | same with `--fix` | [projects/configuration/oxlint.config.ts](../../../projects/configuration/oxlint.config.ts)                                          |
+| `eslint` | `eslint . {args}` (cwd: projectRoot)                                                                                                                | same with `--fix` | project `eslint.config.ts` which extends [configuration/eslint.config.ts](../../../configuration/eslint.config.ts) |
+| `oxlint` | `oxlint --config configuration/oxlint.config.ts --ignore-path configuration/.oxlintignore {projectRoot}/src` (cwd: workspaceRoot) | same with `--fix` | [configuration/oxlint.config.ts](../../../configuration/oxlint.config.ts)                                          |
 
 Python projects run `ruff-lint` instead — `uv run ruff check .` (cwd: projectRoot), config:
 [pyproject.toml](../../../pyproject.toml)
@@ -204,32 +204,32 @@ Python projects run `ruff-lint` instead — `uv run ruff check .` (cwd: projectR
 
 | Project type       | Command                                   | Config                                                                                                                |
 | ------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| TypeScript         | `tsc --noEmit` (cwd: projectRoot)         | project `tsconfig.json` extends [projects/configuration/tsconfig.json](../../../projects/configuration/tsconfig.json) |
+| TypeScript         | `tsc --noEmit` (cwd: projectRoot)         | project `tsconfig.json` extends [configuration/tsconfig.json](../../../configuration/tsconfig.json) |
 | Python (`pyright`) | `uv run pyright src/` (cwd: projectRoot)  | [pyproject.toml](../../../pyproject.toml)                                                                             |
 | Python (`ty`)      | `uv run ty check src/` (cwd: projectRoot) | [pyproject.toml](../../../pyproject.toml)                                                                             |
 
 #### `spell-check`
 
-Command: `cspell --config projects/configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,...,py,ipynb}' --no-progress --gitignore` (cwd: workspaceRoot)
-Config: [projects/configuration/cspell.config.yaml](../../../projects/configuration/cspell.config.yaml)
+Command: `cspell --config configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,...,py,ipynb}' --no-progress --gitignore` (cwd: workspaceRoot)
+Config: [configuration/cspell.config.yaml](../../../configuration/cspell.config.yaml)
 
 #### `markdown-lint`
 
 |       | Command                                                                                                                         | Config                                                                                                                  |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| check | `markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'` (cwd: workspaceRoot) | [projects/configuration/markdownlint-cli2.config.jsonc](../../../projects/configuration/markdownlint-cli2.config.jsonc) |
+| check | `markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'` (cwd: workspaceRoot) | [configuration/markdownlint-cli2.config.jsonc](../../../configuration/markdownlint-cli2.config.jsonc) |
 | write | same with `--fix`                                                                                                               |                                                                                                                         |
 
 #### `yaml-lint`
 
-Command: `uv run --project configuration yamllint -c projects/configuration/yamllint.yaml '{projectRoot}'` (cwd: workspaceRoot)
-Config: [projects/configuration/yamllint.yaml](../../../projects/configuration/yamllint.yaml)
+Command: `uv run --project configuration yamllint -c configuration/yamllint.yaml '{projectRoot}'` (cwd: workspaceRoot)
+Config: [configuration/yamllint.yaml](../../../configuration/yamllint.yaml)
 
 #### `stylelint`
 
 |       | Command                                                                                                     | Config                                                                                              |
 | ----- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| check | `stylelint --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'` (cwd: projectRoot) | [projects/configuration/stylelint.config.cjs](../../../projects/configuration/stylelint.config.cjs) |
+| check | `stylelint --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'` (cwd: projectRoot) | [configuration/stylelint.config.cjs](../../../configuration/stylelint.config.cjs) |
 | write | same with `--fix`                                                                                           |                                                                                                     |
 
 #### `knip` and `vulture` (dead-code detection — no composite `clean` target exists)
@@ -239,8 +239,8 @@ on any project.
 
 | Target             | Check command                                                                                        | Config                                                                                                                                      |
 | ------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `knip` (TS)        | `knip --config projects/configuration/knip.config.ts --workspace {projectRoot}` (cwd: workspaceRoot) | [projects/configuration/knip.config.ts](../../../projects/configuration/knip.config.ts)                                                     |
-| `vulture` (Python) | `uv run python -m vulture src/ .vulture_whitelist.py --min-confidence 80` (cwd: projectRoot)         | project `.vulture_whitelist.py`, global [projects/configuration/vulture_whitelist.py](../../../projects/configuration/vulture_whitelist.py) |
+| `knip` (TS)        | `knip --config configuration/knip.config.ts --workspace {projectRoot}` (cwd: workspaceRoot) | [configuration/knip.config.ts](../../../configuration/knip.config.ts)                                                     |
+| `vulture` (Python) | `uv run python -m vulture src/ .vulture_whitelist.py --min-confidence 80` (cwd: projectRoot)         | project `.vulture_whitelist.py`, global [configuration/vulture_whitelist.py](../../../configuration/vulture_whitelist.py) |
 
 #### `nbstripout` (affirmancy only — Jupyter notebooks)
 
@@ -249,14 +249,14 @@ Config: [projects/affirmancy/project.json](../../../projects/affirmancy/project.
 
 #### Sync checks
 
-Every synchronization command is its own Nx target on the `synchronization` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `pull-request-template`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no `synchronization:synchronize` aggregate target — those were retired when the work moved into [projects/synchronization](../../../projects/synchronization). `lint-code`'s dependents name each derivation target directly.
+Every synchronization command is its own Nx target on the `synchronization` project — `conformetry-generators`, `conventional-config`, `devcontainer-configuration`, `pull-request-template`, `skill-exclusions`, `vscode-extensions`, and `vscode-settings` — run directly rather than through a shared aggregate, the same way `configuration:codometer` and `configuration:callidescope` are run. There is no `sync-*` target, no `scripts/sync-*.ts` script, and no `synchronization:synchronize` aggregate target — those were retired when the work moved into [synchronization](../../../synchronization). `lint-code`'s dependents name each derivation target directly.
 
 The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per issue #296: [codependix](../../../projects/ic-suite/codependix/codependix-cli) now derives the same NestJS module graphs and Nx neighborhood graphs through its own anchor blocks, gated per project by `codependix-gate` and published by `nx run configuration:codependix:write` instead.
 
 | Check command                                             | Write command                           | What it validates                                                                                                                                                             |
 | --------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `nx run synchronization:conformetry-generators:check`     | `:write`                                | AGENTS.md generators table matches [projects/configuration/conformetry.config.ts](../../../projects/configuration/conformetry.config.ts)                                      |
-| `nx run synchronization:conventional-config:check`        | `:write`                                | Types/scopes consistent across [projects/configuration/conventional.config.cjs](../../../projects/configuration/conventional.config.cjs), `.vscode/settings.json`, skill docs |
+| `nx run synchronization:conformetry-generators:check`     | `:write`                                | AGENTS.md generators table matches [configuration/conformetry.config.ts](../../../configuration/conformetry.config.ts)                                      |
+| `nx run synchronization:conventional-config:check`        | `:write`                                | Types/scopes consistent across [configuration/conventional.config.cjs](../../../configuration/conventional.config.cjs), `.vscode/settings.json`, skill docs |
 | `nx run synchronization:devcontainer-configuration:check` | `:write`                                | Cloud and local devcontainer configs share common fields                                                                                                                      |
 | `nx run synchronization:pull-request-template:check`      | `:write`                                | [.github/PULL_REQUEST_TEMPLATE.md](../../../.github/PULL_REQUEST_TEMPLATE.md) in sync with skills and prompts                                                                 |
 | `nx run synchronization:skill-exclusions:check`           | `:write`                                | Installed-skill exclusion lists match `skills-lock.json`                                                                                                                      |
@@ -265,13 +265,13 @@ The `nestjs-module-graphs` and `nx-project-graphs` targets were retired too, per
 
 A broken dependency boundary is not a sync check. `codependix-gate` is inferred per project and runs inside `guard-code`, so a boundary failure names the project it is charged to — run `pnpm exec nx run <project>:codependix-gate` to reproduce it, and read it with the [codependix-triage](../codependix-triage/SKILL.md) skill. The README blocks in the table are published from the default branch, so a branch has no check on them, and `configuration:codependix:write` is the only way to regenerate one by hand.
 
-> **Lesson**: If sync checks fail, it means a source of truth was edited without updating its counterpart. Example: editing `projects/configuration/conformetry.config.ts` requires regenerating the `AGENTS.md` generators table. Editing `projects/configuration/conventional.config.cjs` requires regenerating `.vscode/settings.json`, the PR template, and the types/scopes tables in AGENTS.md and the branch and commit skills.
+> **Lesson**: If sync checks fail, it means a source of truth was edited without updating its counterpart. Example: editing `configuration/conformetry.config.ts` requires regenerating the `AGENTS.md` generators table. Editing `configuration/conventional.config.cjs` requires regenerating `.vscode/settings.json`, the PR template, and the types/scopes tables in AGENTS.md and the branch and commit skills.
 
 There is no command that regenerates a skills table of contents. The synchronization module that once maintained the `AGENTS.md` skills list was retired along with the list itself: agents are handed the installed skills directly, so reading [.agents/skills](../../../.agents/skills) is what tells you which ones exist. A new skill needs no synchronization run — a skill added to `skills-lock.json` does, because `skill-exclusions` derives the exclusion blocks from it.
 
 #### `lockfile` (package.json / pnpm-workspace.yaml changes)
 
-Command: `validation lockfile`, the [lockfile](../../../projects/validation/src/modules/lockfile/lockfile.command.ts) check
+Command: `validation lockfile`, the [lockfile](../../../validation/src/modules/lockfile/lockfile.command.ts) check
 
 lint-staged runs it as the CLI directly rather than through its `validation:lockfile` Nx target, so one command does not cost another project graph build. Run it by hand through the target:
 
@@ -281,8 +281,8 @@ pnpm exec nx run validation:lockfile
 
 #### `commitlint` (commit-msg hook)
 
-Command: `NODE_OPTIONS='--import=tsx' commitlint --config projects/configuration/commitlint.config.ts --edit <msg-file>`
-Config: [projects/configuration/commitlint.config.ts](../../../projects/configuration/commitlint.config.ts)
+Command: `NODE_OPTIONS='--import=tsx' commitlint --config configuration/commitlint.config.ts --edit <msg-file>`
+Config: [configuration/commitlint.config.ts](../../../configuration/commitlint.config.ts)
 
 ---
 
@@ -362,14 +362,14 @@ pnpm exec nx run synchronization:vscode-extensions:check
 | Failing target                                 | What to do                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `typecheck`                                    | Read the TypeScript/Python errors. **TS**: Use optional chaining `array[0]?.property` for index access, avoid `any`, require explicit function return types, and use `import { type Foo }` for type-only imports. **Python**: Note that `[tool.ty]` config must remain in the project-level `pyproject.toml` (not workspace root).                                                                                                                                                                                                   |
-| `spell-check`                                  | Either fix the typo, or if it's a valid word (false negative), add it to the most relevant dictionary in `projects/configuration/.cspell/` (e.g. `lexico.txt`, `tooling.txt`). If a suitable category doesn't exist, create a new dictionary file in `projects/configuration/.cspell/`, register it in `projects/configuration/cspell.config.yaml`, and refactor existing dictionaries to move any relevant words into the new dictionary. As a fallback, add it directly to `words` in `projects/configuration/cspell.config.yaml`. |
+| `spell-check`                                  | Either fix the typo, or if it's a valid word (false negative), add it to the most relevant dictionary in `configuration/.cspell/` (e.g. `lexico.txt`, `tooling.txt`). If a suitable category doesn't exist, create a new dictionary file in `configuration/.cspell/`, register it in `configuration/cspell.config.yaml`, and refactor existing dictionaries to move any relevant words into the new dictionary. As a fallback, add it directly to `words` in `configuration/cspell.config.yaml`. |
 | `markdown-lint` (`MD024/no-duplicate-heading`) | Check whether duplicate headings also contain duplicate content. If content is verbatim duplicated, remove only the extra block. If content differs, keep both content blocks and rename one heading to a distinct, specific title.                                                                                                                                                                                                                                                                                                  |
-| `yaml-lint`                                    | Fix YAML syntax errors per `projects/configuration/yamllint.yaml` rules.                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `stylelint`                                    | Fix CSS issues per `projects/configuration/stylelint.config.cjs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `yaml-lint`                                    | Fix YAML syntax errors per `configuration/yamllint.yaml` rules.                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `stylelint`                                    | Fix CSS issues per `configuration/stylelint.config.cjs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `lockfile`                                     | Run `pnpm install` to regenerate `pnpm-lock.yaml`. Do NOT stage the lockfile — leave it unstaged for the user to review. **Lesson**: Any manual change to a `package.json` or workspace config often requires this.                                                                                                                                                                                                                                                                                                                  |
 | `commitlint`                                   | Fix the commit message. See format below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `validate-branch-name`                         | Rename the branch with `git branch -m <new-valid-name>`. See format above.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `vulture` (Python)                             | Fix the flagged unused code, or add a `# noqa` comment. The project-local `.vulture_whitelist.py` and global `projects/configuration/vulture_whitelist.py` are both read. Min-confidence is 80.                                                                                                                                                                                                                                                                                                                                      |
+| `vulture` (Python)                             | Fix the flagged unused code, or add a `# noqa` comment. The project-local `.vulture_whitelist.py` and global `configuration/vulture_whitelist.py` are both read. Min-confidence is 80.                                                                                                                                                                                                                                                                                                                                      |
 
 #### Invalid Branch Name (pre-push hook)
 
@@ -399,7 +399,7 @@ Required format: `<type>(<scope>): <gitmoji> <subject>`
 - **subject**: lowercase, imperative mood, no period, max 128 chars total
 - No body or footer — all context in the subject
 
-Read `projects/configuration/commitlint.config.ts` for the full rule set before amending.
+Read `configuration/commitlint.config.ts` for the full rule set before amending.
 
 #### Valid Types and Scopes
 
@@ -504,7 +504,7 @@ Remaining Actions
 | `error  ...  @typescript-eslint/...`      | ESLint rule violation                   | `nx affected --target=eslint,oxlint --configuration=write` or manual fix                                                                                                                                                                                                                                                                                                                                                  |
 | `MD024/no-duplicate-heading`              | Duplicate markdown heading in same file | If duplicated content is identical, remove one block; if content differs, keep both and rename one heading                                                                                                                                                                                                                                                                                                                |
 | `Type 'X' is not assignable to 'Y'`       | TypeScript type error                   | Manual fix — check `tsconfig.json` strict settings                                                                                                                                                                                                                                                                                                                                                                        |
-| `Unknown word` in cspell                  | Unrecognized word                       | Add it to the most relevant dictionary in `projects/configuration/.cspell/` (e.g. `lexico.txt`, `tooling.txt`). If a suitable category doesn't exist, create a new dictionary file, register it in `projects/configuration/cspell.config.yaml`, and refactor existing dictionaries to move any relevant words into the new dictionary. As a fallback, add it to `projects/configuration/cspell.config.yaml` `words` list. |
+| `Unknown word` in cspell                  | Unrecognized word                       | Add it to the most relevant dictionary in `configuration/.cspell/` (e.g. `lexico.txt`, `tooling.txt`). If a suitable category doesn't exist, create a new dictionary file, register it in `configuration/cspell.config.yaml`, and refactor existing dictionaries to move any relevant words into the new dictionary. As a fallback, add it to `configuration/cspell.config.yaml` `words` list. |
 | `lockfile needs update`                   | `pnpm-lock.yaml` out of sync            | `pnpm install` (leave lockfile unstaged for user to review)                                                                                                                                                                                                                                                                                                                                                               |
 | `sync check failed`                       | Generated file is out of date           | Run the corresponding `:write` target                                                                                                                                                                                                                                                                                                                                                                                     |
 | `subject may not be empty`                | commitlint missing subject              | Amend commit message to correct format                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -514,10 +514,10 @@ Remaining Actions
 
 ### Hooks
 
-- [projects/configuration/.husky/pre-commit](../../../projects/configuration/.husky/pre-commit) — runs `lint-staged` directly, bypassing `nx run configuration:lint-staged`
-- [projects/configuration/.husky/commit-msg](../../../projects/configuration/.husky/commit-msg) — runs `nx run configuration:commitlint`
-- [projects/configuration/.husky/pre-push](../../../projects/configuration/.husky/pre-push) — runs `nx run configuration:validate-branch-name`
-- [projects/configuration/lint-staged.config.ts](../../../projects/configuration/lint-staged.config.ts) — file-pattern → Nx target mapping
+- [configuration/.husky/pre-commit](../../../configuration/.husky/pre-commit) — runs `lint-staged` directly, bypassing `nx run configuration:lint-staged`
+- [configuration/.husky/commit-msg](../../../configuration/.husky/commit-msg) — runs `nx run configuration:commitlint`
+- [configuration/.husky/pre-push](../../../configuration/.husky/pre-push) — runs `nx run configuration:validate-branch-name`
+- [configuration/lint-staged.config.ts](../../../configuration/lint-staged.config.ts) — file-pattern → Nx target mapping
 - [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs) — branch name regex, error message, exempt patterns
 - [project.json](../../../project.json) — `lint-staged`, `commitlint`, and `validate-branch-name` target definitions
 - [nx.json](../../../nx.json) — default target definitions for `oxfmt`, `eslint`, `typecheck`, `spell-check`, `knip`, `vulture`, etc.
@@ -526,21 +526,21 @@ Remaining Actions
 
 | Tool                                | Config File                                                                                                                                                                                |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ESLint (base)                       | [projects/configuration/eslint.config.ts](../../../projects/configuration/eslint.config.ts)                                                                                                |
-| oxlint                              | [projects/configuration/oxlint.config.ts](../../../projects/configuration/oxlint.config.ts)                                                                                                |
-| oxfmt                               | [projects/configuration/oxfmt.config.ts](../../../projects/configuration/oxfmt.config.ts)                                                                                                  |
-| Prettier                            | [projects/configuration/prettier.config.ts](../../../projects/configuration/prettier.config.ts), [projects/configuration/.prettierignore](../../../projects/configuration/.prettierignore) |
-| TypeScript (base)                   | [projects/configuration/tsconfig.json](../../../projects/configuration/tsconfig.json)                                                                                                      |
-| cspell                              | [projects/configuration/cspell.config.yaml](../../../projects/configuration/cspell.config.yaml)                                                                                            |
-| markdownlint                        | [projects/configuration/markdownlint-cli2.config.jsonc](../../../projects/configuration/markdownlint-cli2.config.jsonc)                                                                    |
-| yamllint                            | [projects/configuration/yamllint.yaml](../../../projects/configuration/yamllint.yaml)                                                                                                      |
-| stylelint                           | [projects/configuration/stylelint.config.cjs](../../../projects/configuration/stylelint.config.cjs)                                                                                        |
-| knip                                | [projects/configuration/knip.config.ts](../../../projects/configuration/knip.config.ts)                                                                                                    |
+| ESLint (base)                       | [configuration/eslint.config.ts](../../../configuration/eslint.config.ts)                                                                                                |
+| oxlint                              | [configuration/oxlint.config.ts](../../../configuration/oxlint.config.ts)                                                                                                |
+| oxfmt                               | [configuration/oxfmt.config.ts](../../../configuration/oxfmt.config.ts)                                                                                                  |
+| Prettier                            | [configuration/prettier.config.ts](../../../configuration/prettier.config.ts), [configuration/.prettierignore](../../../configuration/.prettierignore) |
+| TypeScript (base)                   | [configuration/tsconfig.json](../../../configuration/tsconfig.json)                                                                                                      |
+| cspell                              | [configuration/cspell.config.yaml](../../../configuration/cspell.config.yaml)                                                                                            |
+| markdownlint                        | [configuration/markdownlint-cli2.config.jsonc](../../../configuration/markdownlint-cli2.config.jsonc)                                                                    |
+| yamllint                            | [configuration/yamllint.yaml](../../../configuration/yamllint.yaml)                                                                                                      |
+| stylelint                           | [configuration/stylelint.config.cjs](../../../configuration/stylelint.config.cjs)                                                                                        |
+| knip                                | [configuration/knip.config.ts](../../../configuration/knip.config.ts)                                                                                                    |
 | Ruff + pyright                      | [pyproject.toml](../../../pyproject.toml)                                                                                                                                                  |
-| commitlint                          | [projects/configuration/commitlint.config.ts](../../../projects/configuration/commitlint.config.ts)                                                                                        |
+| commitlint                          | [configuration/commitlint.config.ts](../../../configuration/commitlint.config.ts)                                                                                        |
 | validate-branch-name                | [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs)                                                                                                                |
-| Conventional commits (types/scopes) | [projects/configuration/conventional.config.cjs](../../../projects/configuration/conventional.config.cjs)                                                                                  |
-| lockfile                            | [projects/validation/src/modules/lockfile/lockfile.constants.ts](../../../projects/validation/src/modules/lockfile/lockfile.constants.ts)                                                  |
+| Conventional commits (types/scopes) | [configuration/conventional.config.cjs](../../../configuration/conventional.config.cjs)                                                                                  |
+| lockfile                            | [validation/src/modules/lockfile/lockfile.constants.ts](../../../validation/src/modules/lockfile/lockfile.constants.ts)                                                  |
 
 ### Git Conventions
 

@@ -1,6 +1,6 @@
 import { Column, Entity, Index } from "typeorm";
 
-import { UpdatableEntity } from "@codebase/database";
+import { UpdatableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../meanderaw-database.constants";
 

@@ -24,7 +24,7 @@ The database name carries the environment; the schema name never does. TypeORM w
 
 **Every project reads only its own `<PROJECT>_POSTGRES_*` variables**: `_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and `_SCHEMA`, for example `LEXICO_POSTGRES_DATABASE`. The last four default from the project's name, so a fresh checkout connects with no `.env` edits. The names are spelled out in full rather than copying the official Postgres image's `POSTGRES_DB` and `POSTGRES_USER`. The root's unprefixed `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` keep the image's own names, because the image and the healthcheck read them: they stay the shared container's admin login, and the root `postgres-data` targets', and no application reads them.
 
-**One shared package, [`@codebase/database`](../../projects/database).** It holds the environment fragment each application spreads into its schema, the TypeORM options factory, `DatabaseModule.forRoot`, the command-line `createDataSource`, the base entities, the Testcontainers harness behind its `testing` entry, the migration SQL extraction script, and the `migration` Nx target defaults.
+**One shared package, [`@codebase/persistence`](../../projects/common/persistence).** It holds the environment fragment each application spreads into its schema, the TypeORM options factory, `DatabaseModule.forRoot`, the command-line `createDataSource`, the base entities, the Testcontainers harness behind its `testing` entry, the migration SQL extraction script, and the `migration` Nx target defaults.
 
 **Migrations everywhere.** `synchronize` is never on: the options factory hard-codes it off, and the test harness builds every schema by running the project's real migrations. Each project keeps its own database module at `src/modules/<project>-database/`, so the class derived from the folder is `<Project>DatabaseModule` and imports the shared `DatabaseModule` with no alias. That folder holds the command-line data source, `data-source.constants.ts`, and the `migrations/` folder. The project declares `"migration": { "options": { "module": "src/modules/<project>-database" } }`, and every configuration of the shared target reads both paths from that one option. Because every connection pins its `search_path`, a migration generated after the pin comes out schema-unqualified, which is correct; meanderaw's and lexico's were generated before it and are qualified, and both forms are fine, so neither is hand-edited to match the other.
 
@@ -40,7 +40,7 @@ The database name carries the environment; the schema name never does. TypeORM w
 - A developer keeping an existing volume runs the same init script by hand instead, once for each domain the volume lacks, after `nx run infrastructure:postgres:up` has recreated the container with the new list. For caelundas:
 
   ```bash
-  docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/databases.sh
+  docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/persistences.sh
   ```
 
   The script stops at the first `CREATE` whose object already exists, so name only the missing domains. Meanderaw's database already exists from [ADR 0020](0020-store-meanders-in-postgres.md)'s init, so it takes the script's statements through `psql`, with an `ALTER DATABASE` in place of the `CREATE DATABASE`:

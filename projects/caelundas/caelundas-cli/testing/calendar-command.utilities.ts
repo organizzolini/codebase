@@ -7,7 +7,7 @@ import { NestFactory } from "@nestjs/core";
 import moment from "moment-timezone";
 import { vi } from "vitest";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "../src/caelundas-cli.constants";
 import { CaelundasCommand } from "../src/modules/caelundas/caelundas.command";

@@ -32,7 +32,7 @@ Register it in `nx.json`:
     {
       "plugin": "@callidescope/nx",
       "options": {
-        "configurationPath": "projects/configuration/callidescope.config.ts"
+        "configurationPath": "configuration/callidescope.config.ts"
       }
     }
   ]
@@ -189,7 +189,7 @@ project's own boundary would measure the wrong thing.
 program for every project the directories it was given transitively import, so
 a call into a dependency resolves to a real frame whether or not Nx is
 involved. Measured on this package,
-`callidescope --config projects/configuration/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
+`callidescope --config configuration/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
 `nx run callidescope-nx:trace` report the same 575 callables across 185 files
 in 7 projects.
 

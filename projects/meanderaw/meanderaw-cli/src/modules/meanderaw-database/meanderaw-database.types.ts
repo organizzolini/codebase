@@ -2,7 +2,7 @@
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type { Meander } from "./entities/meander.entity";
-import type { UpdatableEntity } from "@codebase/database";
+import type { UpdatableEntity } from "@codebase/persistence";
 
 /** How many rows one pattern characteristic holds for at one shape. */
 export interface MeanderPatternShapeCount {

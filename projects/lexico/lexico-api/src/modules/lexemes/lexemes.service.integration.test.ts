@@ -14,11 +14,11 @@ import {
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/database";
+} from "../../../testing/persistence";
 
 import { LexemesService } from "./lexemes.service";
 
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { Repository } from "typeorm";
 
 const UNKNOWN_LEXEME_ID = "00000000-0000-7000-8000-000000000000";

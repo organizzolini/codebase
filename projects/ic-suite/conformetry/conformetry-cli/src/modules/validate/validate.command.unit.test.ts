@@ -5,7 +5,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { ValidateCommand } from "./validate.command";
 
@@ -15,7 +15,7 @@ import type {
   TemplateDefinition,
 } from "@conformetry/configuration";
 
-const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {

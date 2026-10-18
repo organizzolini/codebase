@@ -37,7 +37,7 @@ object types are registered as `ORPHANED_GRAPHQL_TYPES` in
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-graphql-application](../../../projects/configuration/conformetry-templates/nestjs-graphql-application) conformetry template.
+This project was generated from the [nestjs-graphql-application](../../../configuration/conformetry-templates/nestjs-graphql-application) conformetry template.
 
 ## 🕸️ Codependix
 

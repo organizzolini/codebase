@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { DatabaseModule } from "@codebase/database";
+import { DatabaseModule } from "@codebase/persistence";
 
 import {
   DATABASE_ENTITIES,

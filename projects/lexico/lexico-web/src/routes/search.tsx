@@ -10,16 +10,16 @@ import lodash from "lodash";
 import { useCallback } from "react";
 import { z } from "zod";
 
-import { Button } from "@codebase/components";
+import { Button } from "@codebase/interface";
 
-import { SearchBar } from "../components/search-bar";
-import { SearchLanding } from "../components/search-landing";
-import { SearchResults } from "../components/search-results";
+import { SearchBar } from "../interface/search-bar";
+import { SearchLanding } from "../interface/search-landing";
+import { SearchResults } from "../interface/search-results";
 
-import type { LexemeResult } from "../components/lexeme-card";
-import type { LexemeFormRow } from "../components/lexeme-forms";
-import type { LexemeInflection } from "../components/lexeme-header";
-import type { LexemeMatchInfo } from "../components/lexeme-match";
+import type { LexemeResult } from "../interface/lexeme-card";
+import type { LexemeFormRow } from "../interface/lexeme-forms";
+import type { LexemeInflection } from "../interface/lexeme-header";
+import type { LexemeMatchInfo } from "../interface/lexeme-match";
 import type { ReactNode } from "react";
 
 // ♟️ Constants

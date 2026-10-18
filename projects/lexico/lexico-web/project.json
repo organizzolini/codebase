@@ -1,5 +1,5 @@
 {
-  "implicitDependencies": ["components"],
+  "implicitDependencies": ["interface"],
   "name": "lexico-web",
   "projectType": "application",
   "sourceRoot": "projects/lexico/lexico-web/src",

@@ -1,0 +1,48 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "observability",
+  "projectType": "library",
+  "sourceRoot": "projects/common/observability",
+  "tags": [
+    "framework:nestjs",
+    "language:typescript",
+    "name:observability",
+    "type:package"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "assets": [
+          {
+            "glob": "README.md",
+            "input": "projects/common/observability",
+            "output": "."
+          }
+        ],
+        "main": "projects/common/observability/src/index.ts",
+        "outputPath": "projects/common/observability/dist",
+        "tsConfig": "projects/common/observability/tsconfig.build.json"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

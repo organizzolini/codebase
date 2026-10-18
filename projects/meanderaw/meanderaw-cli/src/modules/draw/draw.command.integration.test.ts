@@ -12,8 +12,8 @@ import {
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/database/testing";
-import { LoggerService } from "@codebase/logging";
+} from "@codebase/persistence/testing";
+import { LoggerService } from "@codebase/observability";
 
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";

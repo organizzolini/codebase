@@ -4,7 +4,7 @@ import { brotliCompressSync, gzipSync } from "node:zlib";
 
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   BROTLI_OPTIONS,

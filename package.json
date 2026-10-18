@@ -8,7 +8,7 @@
     "@callidescope/configuration": "workspace:*",
     "@callidescope/nx": "workspace:*",
     "@codebase/configuration": "workspace:*",
-    "@codebase/logging": "workspace:*",
+    "@codebase/observability": "workspace:*",
     "@codependix/configuration": "workspace:*",
     "@codependix/nx": "workspace:*",
     "@codometer/configuration": "workspace:*",
@@ -83,19 +83,19 @@
     "vscode": "^1.22.0"
   },
   "exports": {
-    "./configuration/*": "./projects/configuration/*"
+    "./configuration/*": "./configuration/*"
   },
   "keywords": [],
   "license": "MIT",
   "name": "codebase",
   "packageManager": "pnpm@12.6.0",
   "release": {
-    "extends": "./projects/configuration/release.config.cjs"
+    "extends": "./configuration/release.config.cjs"
   },
   "repository": "organizzolini/codebase.git",
   "scripts": {
-    "postinstall": "conformetry-nx-bootstrap-generators && (NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write || echo \"⚠️  The installed-skills command could not run, so no skill was restored. Retry with 'pnpm exec nx run synchronization:installed-skills:write'\")",
-    "prepare": "husky projects/configuration/.husky",
+    "postinstall": "conformetry-nx-bootstrap-generators && (NODE_OPTIONS='' node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts installed-skills write || echo \"⚠️  The installed-skills command could not run, so no skill was restored. Retry with 'pnpm exec nx run synchronization:installed-skills:write'\")",
+    "prepare": "husky configuration/.husky",
     "semantic-release": "semantic-release",
     "semantic-release:dry-run": "semantic-release --dry-run"
   },

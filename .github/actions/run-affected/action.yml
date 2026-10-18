@@ -37,8 +37,8 @@ runs:
         ARGUMENTS: ${{ inputs.arguments }}
         INCLUDE_SPELLING: ${{ inputs.include-spelling }}
         INCLUDE_TEMPLATES: ${{ inputs.include-templates }}
-        SPELLING_PATHS: ^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$
+        SPELLING_PATHS: ^configuration/\.cspell/|(^|/)cspell\.config\.yaml$
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/integration/src/integration.main.ts run-affected
+          integration/src/integration.main.ts run-affected
       shell: bash

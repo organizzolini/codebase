@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { MajorAspectEventService } from "../major-aspects/major-aspect-event.service";
 import { RetrogradesService } from "../retrogrades/retrogrades.service";

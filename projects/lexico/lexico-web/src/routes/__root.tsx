@@ -24,9 +24,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from "@codebase/components";
+} from "@codebase/interface";
 
-import { Logo } from "../components/layout";
+import { Logo } from "../interface/layout";
 import applicationCss from "../styles/application.css?url";
 
 import type { ReactNode } from "react";

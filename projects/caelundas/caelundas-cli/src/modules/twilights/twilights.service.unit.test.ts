@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
 import { MathService } from "../math/math.service";

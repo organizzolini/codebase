@@ -11,7 +11,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@codebase/components";
+} from "@codebase/interface";
 
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";

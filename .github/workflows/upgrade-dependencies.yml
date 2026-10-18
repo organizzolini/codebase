@@ -107,7 +107,7 @@ jobs:
           # `skills update` skips it; the installation project's
           # `update-reui-skill` command re-fetches and re-pins it.
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/installation/src/installation.main.ts update-reui-skill
+            installation/src/installation.main.ts update-reui-skill
 
       - name: 🔍 Detect Upgrades
         id: check

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarService } from "../calendar/calendar.service";
 import { HORIZON_REFRACTION_DEGREES } from "../ephemeris/ephemeris.constants";

@@ -8,10 +8,10 @@ license: MIT
 
 ## Build Output and Publishing
 
-- **Every build writes into its own project's `dist/`** — `projects/logging/dist`,
+- **Every build writes into its own project's `dist/`** — `projects/common/observability/dist`,
   `projects/caelundas/caelundas-cli/dist` — never a top-level one. `dist` is already
   gitignored and in the folder-structure rule's `ignorePatterns`.
-- **`projects/configuration/tsconfig.json` sets `declaration: true`**, so every build
+- **`configuration/tsconfig.json` sets `declaration: true`**, so every build
   emits `.d.ts` beside its `.js`. Turning it off silently removes the types a
   published package ships.
 - **A package's `main`, `types`, and `exports` point at TypeScript sources**, and

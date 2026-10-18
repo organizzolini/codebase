@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AnnualSolarCycleService } from "../annual-solar-cycle/annual-solar-cycle.service";
 import { AspectsService } from "../aspects/aspects.service";

@@ -25,7 +25,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 
 ## Type
 
-**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs):
+**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../configuration/conventional.config.cjs):
 
 <!-- types-start -->
 
@@ -47,7 +47,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 
 ## Scope
 
-**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs):
+**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../configuration/conventional.config.cjs):
 
 <!-- scopes-start -->
 
@@ -160,10 +160,10 @@ Branch names are validated at multiple stages:
 
 | Stage | Mechanism                                     | Config File                       |
 | ----- | --------------------------------------------- | --------------------------------- |
-| Local | `projects/configuration/.husky/pre-push` hook | `validate-branch-name.config.cjs` |
+| Local | `configuration/.husky/pre-push` hook | `validate-branch-name.config.cjs` |
 | CI    | `.github/workflows/branch-validation.yml`     | Same config                       |
 
-The validation config imports types and scopes from [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs) to ensure consistency with commit message rules.
+The validation config imports types and scopes from [conventional.config.cjs](../../../configuration/conventional.config.cjs) to ensure consistency with commit message rules.
 
 ## Troubleshooting
 
@@ -198,4 +198,4 @@ refactor/codebase-cleanup       # Refactoring
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs) — Validation config
-- [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs) — Types and scopes
+- [conventional.config.cjs](../../../configuration/conventional.config.cjs) — Types and scopes

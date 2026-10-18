@@ -5,7 +5,7 @@ import { ModulesContainer, NestFactory } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MainModule } from "../../../testing/codependix-nestjs-modules.module";
 
@@ -155,7 +155,7 @@ describe(NestjsProjectService, () => {
 
     it("leaves the root module undefined for a project the configuration does not name", () => {
       const project = service.describeProject(
-        "/workspace/packages/logging",
+        "/workspace/packages/observability",
         "logger",
       );
 
@@ -191,7 +191,7 @@ describe(NestjsProjectService, () => {
       const discovered = service.discoverProjects(
         [
           {
-            absoluteRoot: "/workspace/packages/logging",
+            absoluteRoot: "/workspace/packages/observability",
             name: "logger",
             tags: ["framework:nestjs"],
           },
@@ -208,7 +208,7 @@ describe(NestjsProjectService, () => {
 
       expect(discovered).toStrictEqual([
         {
-          absoluteRoot: "/workspace/packages/logging",
+          absoluteRoot: "/workspace/packages/observability",
           name: "logger",
           rootModuleExport: undefined,
           rootModuleFile: undefined,

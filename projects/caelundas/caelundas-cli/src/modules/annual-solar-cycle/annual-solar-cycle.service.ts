@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";

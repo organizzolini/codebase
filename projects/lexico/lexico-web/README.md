@@ -92,7 +92,7 @@ nx run lexico-web:vitest
 
 ## 👔 Conformetry
 
-This project was generated from the [tanstack-application](/projects/configuration/conformetry-templates/tanstack-application) conformetry template.
+This project was generated from the [tanstack-application](/configuration/conformetry-templates/tanstack-application) conformetry template.
 
 ## License
 

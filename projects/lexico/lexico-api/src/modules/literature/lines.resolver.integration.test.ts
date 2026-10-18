@@ -7,7 +7,7 @@ import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/database";
+} from "../../../testing/persistence";
 import { createLiteratureServices } from "../../../testing/literature-services";
 import {
   passageTokensAt,
@@ -21,7 +21,7 @@ import { toLineType } from "./literature.utilities";
 import type { Connection } from "../../lexico-api.types";
 import type { LinesArguments } from "./line-arguments.entities";
 import type { LineType } from "./line.entities";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** A page of lines, reduced to what a reader can observe of it. */
 interface LinesPage {

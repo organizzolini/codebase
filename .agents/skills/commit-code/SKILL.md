@@ -27,7 +27,7 @@ This skill teaches how to write commit messages for this codebase. All commits *
 
 ## Type
 
-**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs) (enforced by `type-enum` rule, error level 2).
+**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../configuration/conventional.config.cjs) (enforced by `type-enum` rule, error level 2).
 
 **Case:** Must be lowercase (`type-case: lower-case`, error level 2)
 
@@ -51,7 +51,7 @@ This skill teaches how to write commit messages for this codebase. All commits *
 
 ### Release Significance
 
-This repository squash-merges pull requests with `PR_TITLE`, so the **pull request title, not any individual commit, is what semantic-release reads**. [release.config.cjs](../../../projects/configuration/release.config.cjs)'s `releaseRules` map each type above to a version bump:
+This repository squash-merges pull requests with `PR_TITLE`, so the **pull request title, not any individual commit, is what semantic-release reads**. [release.config.cjs](../../../configuration/release.config.cjs)'s `releaseRules` map each type above to a version bump:
 
 | Types                                                                   | Bump              |
 | ----------------------------------------------------------------------- | ----------------- |
@@ -60,13 +60,13 @@ This repository squash-merges pull requests with `PR_TITLE`, so the **pull reque
 | `fix`, `perf`, `refactor`, `build`, `revert`, `ci`                      | `patch`           |
 | `docs`, `style`, `test`, `chore`                                        | none — no release |
 
-**Pick the branch's type before its first commit, not after its last.** The [pull-request-release-significance](../../../projects/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check fails the pull request if any commit on the branch is more release-significant than the title ends up being — a `feat` commit on a branch titled `chore` or `ci`, for instance — and separately fails if the title shares no scope overlap with that commit. Since the type only has to be _at least as_ significant, `fix` commits on a `feat`-titled branch are fine; the reverse is not.
+**Pick the branch's type before its first commit, not after its last.** The [pull-request-release-significance](../../../validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check fails the pull request if any commit on the branch is more release-significant than the title ends up being — a `feat` commit on a branch titled `chore` or `ci`, for instance — and separately fails if the title shares no scope overlap with that commit. Since the type only has to be _at least as_ significant, `fix` commits on a `feat`-titled branch are fine; the reverse is not.
 
 Keeping a branch scoped to one project or module (see the root [AGENTS.md](../../../AGENTS.md#work-scope)) is what keeps this easy to satisfy — the fewer concerns a branch carries, the less likely a later commit outranks the type chosen at the start. If one does, either retitle the pull request to the more significant type, or move that commit to its own branch.
 
 ## Scope
 
-**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs) (enforced by `scope-enum` rule, error level 2).
+**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../configuration/conventional.config.cjs) (enforced by `scope-enum` rule, error level 2).
 
 **Case:** Must be lowercase (`scope-case: lower-case`, error level 2)
 
@@ -274,7 +274,7 @@ This is the body"
 
 ## Commitlint Rules Summary
 
-All rules defined in [../commitlint.config.ts](../../../projects/configuration/commitlint.config.ts):
+All rules defined in [../commitlint.config.ts](../../../configuration/commitlint.config.ts):
 
 **Error (level 2) - Will fail commit:**
 
@@ -300,8 +300,8 @@ Commit and signing policies are validated by:
 
 Configuration files:
 
-- [../../../commitlint.config.ts](../../../projects/configuration/commitlint.config.ts) — Complete rules and validation config
-- [../../../projects/configuration/.husky/commit-msg](../../../projects/configuration/.husky/commit-msg) — Git hook script
+- [../../../commitlint.config.ts](../../../configuration/commitlint.config.ts) — Complete rules and validation config
+- [../../../configuration/.husky/commit-msg](../../../configuration/.husky/commit-msg) — Git hook script
 
 ## Quick Reference
 

@@ -44,7 +44,7 @@
       "{workspaceRoot}/uv.lock"
     ],
     "python-tests": ["{projectRoot}/testing/**/*.py"],
-    "shared-globals": ["{workspaceRoot}/projects/configuration/tsconfig.json"],
+    "shared-globals": ["{workspaceRoot}/configuration/tsconfig.json"],
     "typescript-files": [
       "{projectRoot}/**/*.{ts,tsx,mts,cts}",
       "{projectRoot}/**/*.json",
@@ -56,7 +56,7 @@
   "parallel": 2,
   "plugins": [
     {
-      "exclude": ["projects/configuration/**"],
+      "exclude": ["configuration/**"],
       "options": {
         "buildTargetName": "build",
         "devTargetName": "vite-dev",
@@ -65,14 +65,14 @@
       "plugin": "@nx/vite/plugin"
     },
     {
-      "exclude": ["projects/configuration/**"],
+      "exclude": ["configuration/**"],
       "options": {
         "targetName": "eslint"
       },
       "plugin": "@nx/eslint/plugin"
     },
     {
-      "exclude": ["projects/configuration/**"],
+      "exclude": ["configuration/**"],
       "options": {
         "testMode": "run",
         "testTargetName": "vitest"
@@ -81,20 +81,20 @@
     },
     {
       "options": {
-        "configurationPath": "projects/configuration/conformetry.config.ts",
+        "configurationPath": "configuration/conformetry.config.ts",
         "validateTargetName": "conformetry-validate"
       },
       "plugin": "@conformetry/nx"
     },
     {
       "options": {
-        "configurationPath": "projects/configuration/callidescope.config.ts"
+        "configurationPath": "configuration/callidescope.config.ts"
       },
       "plugin": "@callidescope/nx"
     },
     {
       "options": {
-        "configurationPath": "projects/configuration/codependix.config.ts",
+        "configurationPath": "configuration/codependix.config.ts",
         "gateTargetName": "codependix-gate"
       },
       "plugin": "@codependix/nx"
@@ -222,13 +222,13 @@
       {
         "cache": true,
         "dependsOn": ["^build"],
-        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `projects/configuration/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
+        "description": "The `projects/ic-suite/<suite>/` override of the default `build` entry above: every field is identical except the one extra input. Each ic-suite `vite.config.ts` builds from `configuration/vite.library.config.ts`, which belongs to the `configuration` project, so without it a change there neither invalidates a cached build nor makes these packages affected — and Nx release reads that same affected set to decide which packages a commit republishes. Kept as a full second entry because Nx does not merge across matching targetDefaults array entries; the last one whose `filter` matches a project replaces the earlier entry wholesale.",
         "filter": {
           "projects": ["projects/ic-suite/*/*"]
         },
         "inputs": [
           "^production",
-          "{workspaceRoot}/projects/configuration/vite.library.config.ts",
+          "{workspaceRoot}/configuration/vite.library.config.ts",
           "dependency-versions",
           "production"
         ]
@@ -258,14 +258,14 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/projects/configuration/.codometerignore",
-          "{workspaceRoot}/projects/configuration/codometer.config.ts",
+          "{workspaceRoot}/configuration/.codometerignore",
+          "{workspaceRoot}/configuration/codometer.config.ts",
           "production"
         ],
         "options": {
           "cwd": "{projectRoot}",
           "env": {
-            "SWC_NODE_PROJECT": "../../projects/configuration/tsconfig.json"
+            "SWC_NODE_PROJECT": "../../configuration/tsconfig.json"
           }
         },
         "outputs": [
@@ -331,14 +331,14 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/projects/configuration/.codometerignore",
-          "{workspaceRoot}/projects/configuration/codometer.config.ts",
+          "{workspaceRoot}/configuration/.codometerignore",
+          "{workspaceRoot}/configuration/codometer.config.ts",
           "production"
         ],
         "options": {
           "cwd": "{projectRoot}",
           "env": {
-            "SWC_NODE_PROJECT": "../../../../projects/configuration/tsconfig.json"
+            "SWC_NODE_PROJECT": "../../../../configuration/tsconfig.json"
           }
         },
         "outputs": [
@@ -366,14 +366,14 @@
         "inputs": [
           "!{projectRoot}/codometer-report.json",
           "^production",
-          "{workspaceRoot}/projects/configuration/.codometerignore",
-          "{workspaceRoot}/projects/configuration/codometer.config.ts",
+          "{workspaceRoot}/configuration/.codometerignore",
+          "{workspaceRoot}/configuration/codometer.config.ts",
           "production"
         ],
         "options": {
           "cwd": "{projectRoot}",
           "env": {
-            "SWC_NODE_PROJECT": "../../../projects/configuration/tsconfig.json"
+            "SWC_NODE_PROJECT": "../../../configuration/tsconfig.json"
           }
         },
         "outputs": [
@@ -393,14 +393,14 @@
           "^default",
           "{projectRoot}/**/*.ts",
           "{projectRoot}/**/*.tsx",
-          "{workspaceRoot}/projects/configuration/dependency-cruiser.cjs",
+          "{workspaceRoot}/configuration/dependency-cruiser.cjs",
           "default",
           {
             "externalDependencies": ["dependency-cruiser"]
           }
         ],
         "options": {
-          "command": "depcruise {projectRoot}/src --config projects/configuration/dependency-cruiser.cjs",
+          "command": "depcruise {projectRoot}/src --config configuration/dependency-cruiser.cjs",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -443,8 +443,8 @@
         "inputs": [
           "!{projectRoot}/.eslintcache/**",
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/projects/configuration/codebase-structure.json",
-          "{workspaceRoot}/projects/configuration/eslint.config.ts",
+          "{workspaceRoot}/configuration/codebase-structure.json",
+          "{workspaceRoot}/configuration/eslint.config.ts",
           "shared-globals",
           {
             "externalDependencies": [
@@ -485,7 +485,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -503,7 +503,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -521,7 +521,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -539,7 +539,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -557,7 +557,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/projects/configuration/fallow.config.jsonc",
+          "{workspaceRoot}/configuration/fallow.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["fallow"]
@@ -607,10 +607,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "knip --config projects/configuration/knip.config.ts --workspace {projectRoot}"
+            "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}"
           },
           "write": {
-            "command": "knip --fix --config projects/configuration/knip.config.ts --workspace {projectRoot}"
+            "command": "knip --fix --config configuration/knip.config.ts --workspace {projectRoot}"
           }
         },
         "defaultConfiguration": "check",
@@ -619,14 +619,14 @@
           "projects": ["tag:language:typescript"]
         },
         "inputs": [
-          "{workspaceRoot}/projects/configuration/knip.config.ts",
+          "{workspaceRoot}/configuration/knip.config.ts",
           "default",
           {
             "externalDependencies": ["knip", "typescript"]
           }
         ],
         "options": {
-          "command": "knip --config projects/configuration/knip.config.ts --workspace {projectRoot}",
+          "command": "knip --config configuration/knip.config.ts --workspace {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -656,10 +656,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
           },
           "write": {
-            "command": "markdownlint-cli2 --fix --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
+            "command": "markdownlint-cli2 --fix --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'"
           }
         },
         "defaultConfiguration": "check",
@@ -673,14 +673,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.md",
-          "{workspaceRoot}/projects/configuration/markdownlint-cli2.config.jsonc",
+          "{workspaceRoot}/configuration/markdownlint-cli2.config.jsonc",
           "shared-globals",
           {
             "externalDependencies": ["markdownlint-cli2"]
           }
         ],
         "options": {
-          "command": "markdownlint-cli2 --config projects/configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
+          "command": "markdownlint-cli2 --config configuration/markdownlint-cli2.config.jsonc '{projectRoot}/**/*.md'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -689,11 +689,11 @@
       "cache": false,
       "configurations": {
         "extract-sql-all": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/database/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=all",
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/common/persistence/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=all",
           "cwd": "{workspaceRoot}"
         },
         "extract-sql-latest": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/database/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=latest",
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/common/persistence/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=latest",
           "cwd": "{workspaceRoot}"
         },
         "generate": {
@@ -767,15 +767,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/projects/configuration/.oxfmtignore",
-          "{workspaceRoot}/projects/configuration/oxfmt.config.ts",
+          "{workspaceRoot}/configuration/.oxfmtignore",
+          "{workspaceRoot}/configuration/oxfmt.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxfmt"]
           }
         ],
         "options": {
-          "command": "oxfmt -c projects/configuration/oxfmt.config.ts --ignore-path projects/configuration/.oxfmtignore {args} {projectRoot}",
+          "command": "oxfmt -c configuration/oxfmt.config.ts --ignore-path configuration/.oxfmtignore {args} {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -796,15 +796,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-          "{workspaceRoot}/projects/configuration/.oxlintignore",
-          "{workspaceRoot}/projects/configuration/oxlint.config.ts",
+          "{workspaceRoot}/configuration/.oxlintignore",
+          "{workspaceRoot}/configuration/oxlint.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["oxlint"]
           }
         ],
         "options": {
-          "command": "oxlint --config projects/configuration/oxlint.config.ts --ignore-path \"$PWD/projects/configuration/.oxlintignore\" {args} {projectRoot}/src",
+          "command": "oxlint --config configuration/oxlint.config.ts --ignore-path \"$PWD/configuration/.oxlintignore\" {args} {projectRoot}/src",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -844,15 +844,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,html,css,scss,md,mdx,yaml,yml}",
-          "{workspaceRoot}/projects/configuration/.prettierignore",
-          "{workspaceRoot}/projects/configuration/prettier.config.ts",
+          "{workspaceRoot}/configuration/.prettierignore",
+          "{workspaceRoot}/configuration/prettier.config.ts",
           "shared-globals",
           {
             "externalDependencies": ["prettier"]
           }
         ],
         "options": {
-          "command": "prettier {args} --config projects/configuration/prettier.config.ts --ignore-path projects/configuration/.prettierignore {projectRoot}"
+          "command": "prettier {args} --config configuration/prettier.config.ts --ignore-path configuration/.prettierignore {projectRoot}"
         }
       }
     ],
@@ -996,15 +996,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
-          "{workspaceRoot}/projects/configuration/.cspell/**",
-          "{workspaceRoot}/projects/configuration/cspell.config.yaml",
+          "{workspaceRoot}/configuration/.cspell/**",
+          "{workspaceRoot}/configuration/cspell.config.yaml",
           "shared-globals",
           {
             "externalDependencies": ["cspell"]
           }
         ],
         "options": {
-          "command": "cspell --config projects/configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}' --no-progress --gitignore --gitignore-root .",
+          "command": "cspell --config configuration/cspell.config.yaml '{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}' --no-progress --gitignore --gitignore-root .",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1080,14 +1080,14 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/projects/configuration/squawk.toml",
+          "{workspaceRoot}/configuration/squawk.toml",
           "shared-globals",
           {
             "externalDependencies": ["squawk-cli"]
           }
         ],
         "options": {
-          "command": "squawk --config projects/configuration/squawk.toml '{projectRoot}/**/*.sql'",
+          "command": "squawk --config configuration/squawk.toml '{projectRoot}/**/*.sql'",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1127,10 +1127,10 @@
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config projects/configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config projects/configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1140,7 +1140,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/projects/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/configuration/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1151,17 +1151,17 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config projects/configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
+          "command": "stylelint --allow-empty-input --config configuration/stylelint.config.cjs '{projectRoot}/src/**/*.css'"
         }
       },
       {
         "cache": true,
         "configurations": {
           "check": {
-            "command": "stylelint --allow-empty-input --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
           },
           "write": {
-            "command": "stylelint --allow-empty-input --fix --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'"
+            "command": "stylelint --allow-empty-input --fix --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'"
           }
         },
         "defaultConfiguration": "check",
@@ -1179,7 +1179,7 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.css",
-          "{workspaceRoot}/projects/configuration/stylelint.config.cjs",
+          "{workspaceRoot}/configuration/stylelint.config.cjs",
           "shared-globals",
           {
             "externalDependencies": [
@@ -1190,7 +1190,7 @@
           }
         ],
         "options": {
-          "command": "stylelint --allow-empty-input --config ../../../projects/configuration/stylelint.config.cjs 'src/**/*.css'",
+          "command": "stylelint --allow-empty-input --config ../../../configuration/stylelint.config.cjs 'src/**/*.css'",
           "cwd": "{projectRoot}"
         }
       }
@@ -1350,7 +1350,7 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",
-          "{workspaceRoot}/projects/configuration/yamllint.yaml",
+          "{workspaceRoot}/configuration/yamllint.yaml",
           "{workspaceRoot}/pyproject.toml",
           "{workspaceRoot}/uv.lock",
           "shared-globals",
@@ -1359,7 +1359,7 @@
           }
         ],
         "options": {
-          "command": "uv run yamllint -c projects/configuration/yamllint.yaml '{projectRoot}'",
+          "command": "uv run yamllint -c configuration/yamllint.yaml '{projectRoot}'",
           "cwd": "{workspaceRoot}"
         }
       }

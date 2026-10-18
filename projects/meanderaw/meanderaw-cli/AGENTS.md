@@ -139,7 +139,7 @@ Two things that look like defects and are not:
 - **Framework**: NestJS (modules, dependency injection, providers)
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -190,7 +190,7 @@ nx run configuration:codependix:write
 
 ### Logging
 
-`LoggerService` and `LoggerModule` come from `@codebase/logging` — this project does not define its own logger. Add `"@codebase/logging": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
+`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
 
 `LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
 
@@ -231,7 +231,7 @@ or any other — rewrites the database as a side effect. Keep it that way: a `de
 `start` would run a full draw run on every check.
 
 **The database lives in Postgres, not in the repository.** Meanderaw uses the shared convention
-from `@codebase/database`: the local Docker init creates the `meanderaw_development` database,
+from `@codebase/persistence`: the local Docker init creates the `meanderaw_development` database,
 the `meanderaw` schema inside it, and the `meanderaw_username` role that owns both, the defaults
 of `MEANDERAW_POSTGRES_DATABASE`, `MEANDERAW_POSTGRES_SCHEMA`, and `MEANDERAW_POSTGRES_USERNAME`. Every
 meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_*` the root
@@ -249,7 +249,7 @@ data source `src/modules/meanderaw-database/data-source.constants.ts` exports, a
 A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
 [ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start
 their own throwaway `postgres:18-alpine` container, migrated by the real migrations, through
-`startDatabaseTestingModule` from `@codebase/database/testing` against `meanderaw_testing`, so Docker
+`startDatabaseTestingModule` from `@codebase/persistence/testing` against `meanderaw_testing`, so Docker
 must be running to test them. `MeanderawDatabaseModule` is the project's own database module and
 is passed to that helper as `database`.
 
@@ -414,6 +414,6 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/meanderaw-cli.main.ts](src/meanderaw-cli.main.ts): Application bootstrap
 - [src/meanderaw-cli.module.ts](src/meanderaw-cli.module.ts): Root NestJS module
 - [src/meanderaw-cli.constants.ts](src/meanderaw-cli.constants.ts): `environmentSchema` (Zod)
-- `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
+- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template

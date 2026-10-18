@@ -14,7 +14,7 @@ import {
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/database";
+} from "../../../testing/persistence";
 import { createLiteratureServices } from "../../../testing/literature-services";
 import {
   nodesOf,
@@ -28,7 +28,7 @@ import { TextsResolver } from "./texts.resolver";
 import type { Connection } from "../../lexico-api.types";
 import type { LineType } from "./line.entities";
 import type { TextType } from "./text.entities";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** The nodes of a connection, in page order. */
 function nodesIn<Node>(connection: Connection<Node>): Node[] {

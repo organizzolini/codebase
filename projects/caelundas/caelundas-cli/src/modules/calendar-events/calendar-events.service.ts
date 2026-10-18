@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
 
@@ -18,7 +18,7 @@ import type {
   Coordinates,
   FindInRangeParameters,
 } from "./calendar-events.types";
-import type { UpdatableEntity } from "@codebase/database";
+import type { UpdatableEntity } from "@codebase/persistence";
 
 /**
  * Persists the events a run detects and reads them back for rendering.

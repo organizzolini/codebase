@@ -3,12 +3,12 @@
 # one changes; `run-affected.sh` and lint-staged correct that, and the
 # `conformetry-validate` target hashes the template folders from disk, so its
 # cache key still changes.
-projects/configuration/conformetry-templates/**/project.json
-projects/configuration/conformetry-templates/**/package.json
-projects/configuration/conformetry-templates/**/pyproject.toml
-projects/configuration/conformetry-templates/**/vite.config.*
-projects/configuration/conformetry-templates/**/vitest.config.*
-projects/configuration/conformetry-templates/**/eslint.config.*
-projects/configuration/conformetry-templates/**/codometer.config.*
-projects/configuration/conformetry-templates/**/callidescope.config.*
+configuration/conformetry-templates/**/project.json
+configuration/conformetry-templates/**/package.json
+configuration/conformetry-templates/**/pyproject.toml
+configuration/conformetry-templates/**/vite.config.*
+configuration/conformetry-templates/**/vitest.config.*
+configuration/conformetry-templates/**/eslint.config.*
+configuration/conformetry-templates/**/codometer.config.*
+configuration/conformetry-templates/**/callidescope.config.*
 .claude/worktrees

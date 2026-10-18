@@ -8,7 +8,7 @@ import { Author, Line, Text } from "@codebase/lexico-entities";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/database";
+} from "../../../testing/persistence";
 import {
   type LiteratureSearchCorpus,
   seedLiteratureSearchCorpus,
@@ -18,7 +18,7 @@ import {
   type LiteratureSearchPage,
 } from "../../../testing/literature-search-pagination";
 
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
 
 /** A GraphQL response body: data when execution succeeded, errors when not. */

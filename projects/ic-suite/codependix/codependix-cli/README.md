@@ -18,7 +18,7 @@ pnpm add --filter <project> --save-dev @codependix/cli
 ```
 
 ```bash
-codependix map --write --config projects/configuration/codependix.config.ts
+codependix map --write --config configuration/codependix.config.ts
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ One command, `map`, and no per-graph-type subcommand. Which graphs run for a
 project, where its export lands, and which rules judge it is entirely a
 function of the configuration file, which every run names with `--config`
 because nothing searches for it and there is no default; see
-[`projects/configuration/codependix.config.ts`](../../../configuration/codependix.config.ts)
+[`configuration/codependix.config.ts`](../../../configuration/codependix.config.ts)
 for this repository's own.
 
 | Flag | Meaning |

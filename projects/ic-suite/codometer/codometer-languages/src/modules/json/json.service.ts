@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EMPTY_JSON_RESULT } from "./json.constants";
 

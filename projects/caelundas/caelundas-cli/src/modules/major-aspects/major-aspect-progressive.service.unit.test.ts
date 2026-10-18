@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
 import { MathService } from "../math/math.service";

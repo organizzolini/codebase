@@ -26,8 +26,8 @@ PR titles **must** follow the same format as commit messages:
 
 ### Structure Rules
 
-1. **Type**: Required, lowercase, from [allowed types](../../../projects/configuration/conventional.config.cjs)
-2. **Scope**: Required, lowercase, from [allowed scopes](../../../projects/configuration/conventional.config.cjs)
+1. **Type**: Required, lowercase, from [allowed types](../../../configuration/conventional.config.cjs)
+2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/conventional.config.cjs)
 3. **Gitmoji**: Required, emoji at start of subject
 4. **Subject**: Required, lowercase, imperative mood, no period
 
@@ -215,7 +215,7 @@ Adds a user profile page where users can view and edit their information.
 EOF
 
 NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-  projects/validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
+  validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
 ````
 
 #### Using GitHub CLI (preferred)
@@ -354,7 +354,7 @@ This codebase uses **squash merging** by default:
 - All commits in the PR become a single commit on main
 - PR title becomes the commit message
 - Keep PR title clean and following conventions
-- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [pull-request-release-significance](../../../projects/validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check that enforces it
+- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [pull-request-release-significance](../../../validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts) check that enforces it
 
 ## Pre-Flight Checklist
 

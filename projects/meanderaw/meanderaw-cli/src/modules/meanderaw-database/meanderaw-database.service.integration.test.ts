@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/database/testing";
+} from "@codebase/persistence/testing";
 
 import { meanderRecord } from "../../../testing/meanders";
 import { CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";

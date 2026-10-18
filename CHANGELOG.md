@@ -473,7 +473,7 @@ All notable changes to this project will be documented in this file. See [Conven
 
 ### ♻️ Code Refactoring
 
-* **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
+* **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
 
 ## [2.33.3](https://github.com/organizzolini/codebase/compare/v2.33.2...v2.33.3) (2026-10-05)
 

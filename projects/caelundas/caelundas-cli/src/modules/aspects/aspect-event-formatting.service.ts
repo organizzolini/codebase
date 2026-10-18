@@ -6,7 +6,7 @@ import { symbolByBody } from "../caelundas/symbol-caelundas.constants";
 
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { AspectPhase, Body } from "../caelundas/caelundas.types";
-import type { LogData } from "@codebase/logging";
+import type { LogData } from "@codebase/observability";
 import type { Moment } from "moment-timezone";
 
 /**

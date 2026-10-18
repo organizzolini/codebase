@@ -71,7 +71,7 @@ updates:
         update-types: [version-update:semver-major]
       # eslint-plugin-unicorn v68 renamed `prevent-abbreviations` to
       # `name-replacements`, and the majors since add or change dozens of
-      # other rules. See projects/configuration/eslint.config.ts and
+      # other rules. See configuration/eslint.config.ts and
       # .github/workflows/upgrade-dependencies.yml for the incident this
       # ignore rule replaces.
       - dependency-name: eslint-plugin-unicorn
@@ -138,9 +138,9 @@ updates:
         patterns:
           - "*"
 
-  # projects/infrastructure/terraform pins the linode/linode provider version.
+  # infrastructure/terraform pins the linode/linode provider version.
   - package-ecosystem: terraform
-    directory: /projects/infrastructure/terraform
+    directory: /infrastructure/terraform
     schedule:
       interval: weekly
       day: friday

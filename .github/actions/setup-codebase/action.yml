@@ -319,7 +319,7 @@ runs:
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/publication.main.ts bound-base-to-push
+          publication/src/publication.main.ts bound-base-to-push
 
     # A merge group cannot read the pull request's caches, only `main`'s, so
     # its tasks run a second time. The pull request's run uploads its cache as
@@ -336,7 +336,7 @@ runs:
         NX_CACHE_SCOPE: ${{ inputs.nx-cache-scope }}
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/publication.main.ts import-pr-task-cache
+          publication/src/publication.main.ts import-pr-task-cache
 
     # Restored databases can be left structurally valid but page-corrupt by a
     # cancelled save. Nx fails hard on those, so discard them before the first
@@ -348,7 +348,7 @@ runs:
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/publication.main.ts verify-task-database
+          publication/src/publication.main.ts verify-task-database
 
     # Nx names its database after the machine, and a hosted runner may have a
     # fresh id, so the restored one is renamed to this runner's or it is never
@@ -360,4 +360,4 @@ runs:
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/publication.main.ts adopt-task-database
+          publication/src/publication.main.ts adopt-task-database

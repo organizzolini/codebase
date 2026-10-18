@@ -36,7 +36,7 @@ package belongs to one domain or to the workspace.
 
 ## Consequences
 
-- **Removing a scope is not free.** `projects/configuration/conventional.config.cjs` is
+- **Removing a scope is not free.** `configuration/conventional.config.cjs` is
   the single source of truth for commitlint, `validate-branch-name`, the
   release rules, five skill reference tables, `AGENTS.md`, the issue template,
   and `.vscode/settings.json`, all rewritten by

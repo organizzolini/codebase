@@ -4,7 +4,7 @@ import {
   TableBody,
   TableCell,
   TableRow,
-} from "@codebase/components";
+} from "@codebase/interface";
 
 import { ABBREVIATIONS } from "./lexeme-identifiers";
 

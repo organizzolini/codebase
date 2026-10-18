@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import "reflect-metadata";
 
-import { createDataSource } from "@codebase/database";
-import { startPostgresContainer } from "@codebase/database/testing";
+import { createDataSource } from "@codebase/persistence";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import {
   LEXICO_DATABASE_ENTITIES,
@@ -15,7 +15,7 @@ import { Line } from "./literature/Line.entity";
 import { Text } from "./literature/Text.entity";
 import { Token } from "./literature/Token.entity";
 
-import type { StartedPostgresContainer } from "@codebase/database/testing";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 import type { DataSource } from "typeorm";
 
 interface EntityIntegrationExpectation {

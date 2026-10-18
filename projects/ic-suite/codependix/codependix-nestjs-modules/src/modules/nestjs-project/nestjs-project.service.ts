@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { Injectable } from "@nestjs/common";
 import { ModulesContainer, NestFactory } from "@nestjs/core";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { SyntheticRootModule } from "./nestjs-project-synthetic.module";
 import {
@@ -30,7 +30,7 @@ import type {
  * Discovers the workspace's `framework:nestjs` projects and explores each
  * one's container.
  *
- * Ported from `projects/synchronization`'s `nestjs-module-graphs` command (see
+ * Ported from `synchronization`'s `nestjs-module-graphs` command (see
  * issue #242), which this package replaces: exploration still runs the
  * container in NestJS preview mode, which registers every module and
  * provider without instantiating any of them. That is what makes a project

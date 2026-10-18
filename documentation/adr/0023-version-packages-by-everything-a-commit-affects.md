@@ -6,11 +6,11 @@ packages a commit belongs to with the same logic as `nx affected`:
 
 - files inside a package's folder;
 - files in any workspace package it depends on, such as the inlined
-  `@codebase/logging`;
+  `@codebase/observability`;
 - `nx.json`, which Nx treats as touching every project;
 - any `{workspaceRoot}` file a target declares as an input, such as the cspell
-  dictionaries, `projects/configuration/eslint.config.ts` and
-  `projects/configuration/codebase-structure.json`.
+  dictionaries, `configuration/eslint.config.ts` and
+  `configuration/codebase-structure.json`.
 
 So a releasing commit (`feat`, `fix`, `refactor`, `perf` or `build`) that only
 edits a shared lint config gives all 28 packages a patch. We keep that: a
@@ -21,7 +21,7 @@ described packages as versioned by the commits touching their own paths; this
 records what Nx actually does, and that we chose to keep it.
 
 Amended by [ADR 0025](0025-run-the-workspace-tools-from-a-configuration-project.md):
-`projects/configuration` is the exception. It is in the project graph and every
+`configuration` is the exception. It is in the project graph and every
 project depends on it, but the `publication` project's `version-packages` command ignores it for
 the release, so a commit that edits only tooling configuration releases no
 package. Changes to `nx.json`, the lockfile, and other declared inputs still do.

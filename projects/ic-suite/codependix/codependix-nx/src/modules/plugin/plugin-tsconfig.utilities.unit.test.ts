@@ -498,7 +498,7 @@ describe(resolveTsconfigInputs, () => {
       }),
     ).toStrictEqual(
       expect.arrayContaining([
-        "{workspaceRoot}/projects/configuration/tsconfig.json",
+        "{workspaceRoot}/configuration/tsconfig.json",
         "{workspaceRoot}/tsconfig.json",
       ]),
     );

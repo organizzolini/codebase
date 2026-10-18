@@ -7,7 +7,7 @@ import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/database";
+} from "../../../testing/persistence";
 import {
   expectedPage,
   type PageRequest,
@@ -19,7 +19,7 @@ import { toCursor } from "../../lexico-api.utilities";
 import { LiteratureService } from "./literature.service";
 
 import type { Connection } from "../../lexico-api.types";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** Each boundary matrix issues a few hundred queries, which a slow runner needs time for. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;

@@ -27,7 +27,7 @@ only on a finding charged to the project; this plugin adds selection and
 caching, not judgment. It deliberately ships **no CLI of its own**, and it
 depends on `@codependix/cli` and `@codependix/configuration` alone, the second
 only for the check that a configuration path was given — the
-`codependix-nx-layer` rule in `projects/configuration/codependix.config.ts`
+`codependix-nx-layer` rule in `configuration/codependix.config.ts`
 holds it to that.
 
 ## Architecture Overview

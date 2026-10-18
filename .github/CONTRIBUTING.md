@@ -63,7 +63,7 @@ git clone https://github.com/Organizzolini/codebase.git
 cd codebase && bash scripts/installation.sh
 ```
 
-The script is a bootstrap. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
+The script is a bootstrap. It installs what the real setup needs in order to run, then hands over to the [installation](../installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
 
 | Stage | Step                                           | What it does                                                                                                                                   |
 | ----- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -269,7 +269,7 @@ Five workflows run on every pull request. Each maps to targets you can run local
 | Secure Code   | Secrets, Python AST, dependency vulnerabilities, licenses, infrastructure misconfiguration                               | `nx affected --target=secure-code`                |
 | Make Projects | Builds every buildable project and gates its declared bundle size                                                        | `nx affected --target=build-projects`             |
 | Comply Code   | Branch name, pull request title, body, labels, assignees, and release significance                                       | See [Pull Request Process](#pull-request-process) |
-| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `projects/validation/src/validation.main.ts audit-governance`   |
+| Enforce Code  | CODEOWNERS rules and workflow security                                                                                   | `validation/src/validation.main.ts audit-governance`   |
 
 🚀 Continuous Deployment runs post-merge on `main` to release the workspace and to build and verify the dev container image. Builds are verified before merge, in the merge queue, and a pull request that changes the dev container builds and tests it there too.
 
@@ -280,12 +280,12 @@ Five workflows run on every pull request. Each maps to targets you can run local
 - **File naming**: kebab-case; module files take a suffix (`*.service.ts`, `*.command.ts`, `*.module.ts`, `*.constants.ts`, `*.types.ts`, `*.utilities.ts`)
 - **Imports**: Auto-sorted (Node built-ins → external → workspace → parent → sibling → index → types), and alphabetical order is enforced for named imports, object literals, object types, class members, and switch cases
 - **Formatting**: `oxfmt` is the formatter, not Prettier — 80-column width, 2-space indent, double quotes, trailing commas
-- **React**: React 19, TanStack Router, shadcn/ui through `@codebase/components`, Tailwind CSS
+- **React**: React 19, TanStack Router, shadcn/ui through `@codebase/interface`, Tailwind CSS
 - **Documentation**: TSDoc on public APIs where it adds non-obvious context; update docs alongside code
 
 **Never silence an error.** No `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, or `nocheck` comments; no loosening `compilerOptions`; no adding ESLint `ignores` or rule overrides to suppress a specific failure. Triage the root cause instead. Suppression is only acceptable when explicitly requested.
 
-See [projects/configuration/eslint.config.ts](projects/configuration/eslint.config.ts) for the complete rule set, and [projects/configuration/codebase-structure.json](projects/configuration/codebase-structure.json) for the folder and file placement rules — placement is a lint error here, not a preference.
+See [configuration/eslint.config.ts](configuration/eslint.config.ts) for the complete rule set, and [configuration/codebase-structure.json](configuration/codebase-structure.json) for the folder and file placement rules — placement is a lint error here, not a preference.
 
 ### Nx Boundaries
 
@@ -295,11 +295,11 @@ See [projects/configuration/eslint.config.ts](projects/configuration/eslint.conf
 - **`type:package` may never import a `type:application`.**
 - **`framework:react` may not import `framework:nestjs`.**
 - **`domain:lexico` and `domain:caelundas` may never import each other.**
-- **Each toolchain's packages form a strict layered graph** keyed on `name:*` tags, where every package declares exactly which siblings it may import. Read the `depConstraints` list in [projects/configuration/eslint.config.ts](projects/configuration/eslint.config.ts) before wiring a new dependency between them.
+- **Each toolchain's packages form a strict layered graph** keyed on `name:*` tags, where every package declares exactly which siblings it may import. Read the `depConstraints` list in [configuration/eslint.config.ts](configuration/eslint.config.ts) before wiring a new dependency between them.
 
 `@nx/dependency-checks` additionally requires that every imported package is declared in that project's own `package.json` — which is why a dependency goes in through `pnpm add --filter <project>` rather than a hand edit.
 
-Cross-project imports use the workspace package name (`@codebase/logging`), never a relative path out of the project. Inside a project, prefer relative paths over path aliases.
+Cross-project imports use the workspace package name (`@codebase/observability`), never a relative path out of the project. Inside a project, prefer relative paths over path aliases.
 
 ### Size Limits
 
@@ -320,7 +320,7 @@ When a file nears 512 lines, split it along the module file suffixes instead of 
 
 ### Coverage Gates
 
-- **Test coverage: 96%** for branches, functions, lines, and statements, from [projects/configuration/vitest.config.ts](projects/configuration/vitest.config.ts). New code needs tests in the same change.
+- **Test coverage: 96%** for branches, functions, lines, and statements, from [configuration/vitest.config.ts](configuration/vitest.config.ts). New code needs tests in the same change.
 - **Type coverage** is per project, declared as `typeCoverage.atLeast` in that project's `package.json` — most packages sit at 100 with `strict: true`; the workspace root requires 95. Passing `typecheck` proves nothing about this gate, so run both.
 - **Bundle size** is per project, declared in that project's `codometer.config.ts` and gated by its `codometer` target. A breach fails 👷 Make Projects and names the project.
 
@@ -341,18 +341,18 @@ Each is documented in its command-line package — [conformetry-cli](../projects
 
 Conformetry is the one you should reach for deliberately rather than only meet as a failure: **generate rather than hand-craft**, because code written in a shape a template already describes starts life failing conformance. `nx g conformetry:` lists the generators, and `conformetry templates` describes what each one produces.
 
-Every configuration these four read lives in [projects/configuration/](../projects/configuration), one file per toolchain, alongside per-project `codometer.config.ts` files that spread the shared object.
+Every configuration these four read lives in [configuration/](../configuration), one file per toolchain, alongside per-project `codometer.config.ts` files that spread the shared object.
 
 > ⚠️ **Each toolchain ships an `*-examples` package that contains code which is deliberately wrong** — a breaching limit, a `tsconfig.json` the compiler cannot parse, a stack eight frames deep, an instance missing an export. Each is the reproduction of a failure you will hit, and "fixing" one deletes the only place that behavior is demonstrated. Every examples package's `AGENTS.md` lists its own, and maps "the tool said X" to the example that reproduces X in about a second.
 
 ## Git Hooks (Husky)
 
-Three Husky hooks enforce quality gates locally, from [projects/configuration/.husky/](../projects/configuration/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
+Three Husky hooks enforce quality gates locally, from [configuration/.husky/](../configuration/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
 
 | Hook         | Trigger      | What it runs                                                                                                       | Config                                                                |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| `pre-commit` | `git commit` | GPG signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../projects/configuration/lint-staged.config.ts)       |
-| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                          | [commitlint.config.ts](../projects/configuration/commitlint.config.ts)         |
+| `pre-commit` | `git commit` | GPG signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../configuration/lint-staged.config.ts)       |
+| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                          | [commitlint.config.ts](../configuration/commitlint.config.ts)         |
 | `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                    | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs) |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
@@ -489,7 +489,7 @@ This is also why one project or module per pull request is the rule: the fewer c
 
 ## Issues and Planning
 
-Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `projects/configuration/conventional.config.cjs` by a synchronization target:
+Issues and specs live as GitHub issues in [Organizzolini/codebase](https://github.com/Organizzolini/codebase/issues). Blank issues are disabled, so a human-filed issue goes through the single template, whose Type and Scope dropdowns are kept in step with `configuration/conventional.config.cjs` by a synchronization target:
 
 ```bash
 gh issue create --template issue.yml
@@ -521,7 +521,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 6. **Code review**: requires `@JimmyPaolini` approval ([CODEOWNERS](.github/CODEOWNERS))
 7. **Merge**: squash and merge, then delete the branch
 
-Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [projects/configuration/conventional.config.cjs](projects/configuration/conventional.config.cjs) and is never hard-coded elsewhere.
+Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [configuration/conventional.config.cjs](configuration/conventional.config.cjs) and is never hard-coded elsewhere.
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
 
@@ -536,7 +536,7 @@ Releases operate at two distinct tiers:
 1. **Workspace Root (Repository)**: Uses [semantic-release](https://semantic-release.gitbook.io/), fully automated on merge to `main` by the 🦸 Continuous Deployment workflow (`push-releases` target). Versioning is fixed — the whole codebase shares one version — and nothing is published to a package registry.
 2. **IC-Suite Packages (Publishable Packages)**: Uses [Nx Release](https://nx.dev/features/manage-releases) to independently version and publish the 29 publishable packages across the four toolchains (`callidescope`, `codependix`, `codometer`, `conformetry`). Each package is versioned from its own commit history, and upstream bumps automatically cascade patch bumps to internal dependents. The 8 unpublished packages (`*-agents` and `*-examples` across the four suites) are explicitly excluded in `nx.json` (`release.projects`) in addition to their private manifest flags.
 
-**Version bumps**, from `releaseRules` in [release.config.cjs](../projects/configuration/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
+**Version bumps**, from `releaseRules` in [release.config.cjs](../configuration/release.config.cjs) for the codebase and `release.conventionalCommits` in [nx.json](../nx.json) for each package a commit touches:
 
 | Type                                                                      | Codebase | IC-suite package              |
 | ------------------------------------------------------------------------- | -------- | ----------------------------- |
@@ -633,7 +633,7 @@ pnpm add -w <package>
 - [.agents/skills](../.agents/skills) — agent skills, the canonical source for every agent entrypoint
 - [Commit Messages Guide](../.agents/skills/commit-code/SKILL.md)
 - [Code Validation Guide](../.agents/skills/validate-code/SKILL.md)
-- [Semantic Release Config](../projects/configuration/release.config.cjs)
+- [Semantic Release Config](../configuration/release.config.cjs)
 - [GitHub Actions Workflows](./workflows)
 - [Gitmoji Reference](https://gitmoji.dev)
 - [Nx Documentation](https://nx.dev)

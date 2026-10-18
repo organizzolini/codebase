@@ -7,7 +7,7 @@ import { ReportingService } from "@conformetry/output";
 import { ValidationService } from "@conformetry/validation";
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AdapterService } from "../adapter/adapter.service";
 import {

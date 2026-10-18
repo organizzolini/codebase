@@ -17,7 +17,7 @@ A generator name you guess at is rejected, so read the registry rather than
 inferring it:
 
 ```bash
-conformetry templates --config projects/configuration/conformetry.config.ts
+conformetry templates --config configuration/conformetry.config.ts
 ```
 
 Every `conformetry` command requires `--config <path>`; no default file is

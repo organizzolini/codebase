@@ -23,7 +23,7 @@ nx run lexico-cli:start
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Database**: PostgreSQL via TypeORM (`@codebase/lexico-entities`)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -87,7 +87,7 @@ src/modules/
 ### Environment Variables
 
 All validated via `environmentSchema` in `lexico-cli.constants.ts`, which spreads
-`postgresEnvironmentSchema({ project: "lexico" })` from `@codebase/database`.
+`postgresEnvironmentSchema({ project: "lexico" })` from `@codebase/persistence`.
 The root's unprefixed `POSTGRES_*` are the shared container's admin login and
 are never read:
 
@@ -112,7 +112,7 @@ are never read:
 
 ### Logging
 
-`LoggerService` and `LoggerModule` come from `@codebase/logging` — this project does not define its own logger. Add `"@codebase/logging": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
+`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
 
 `LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
 
@@ -162,7 +162,7 @@ Lexico tables move between databases through the database package's command
 line, not this one: `nx run database:start:export|import`, with
 `--schema lexico --table words` (or `--table lexico.words`). Run
 `import --dry-run` before `import --clean`, which never asks. See the
-[database README](../../database/README.md#moving-data-between-databases).
+[database README](../../persistence/README.md#moving-data-between-databases).
 
 ## Writing Modules
 
@@ -307,7 +307,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/modules/lexico-ingestion/lexico-ingestion.command.ts](src/modules/lexico-ingestion/lexico-ingestion.command.ts): Root CLI command
 - [src/lexico-cli.module.ts](src/lexico-cli.module.ts): Root NestJS module
 - [src/lexico-cli.constants.ts](src/lexico-cli.constants.ts): environmentSchema (Zod)
-- `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
+- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template
 

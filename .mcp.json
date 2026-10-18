@@ -5,7 +5,7 @@
       "url": "https://mcp.reui.io"
     },
     "shadcn": {
-      "args": ["-c", "npx shadcn@latest mcp --cwd projects/components"],
+      "args": ["-c", "npx shadcn@latest mcp --cwd projects/common/interface"],
       "command": "bash"
     }
   }

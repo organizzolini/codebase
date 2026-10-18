@@ -182,16 +182,16 @@ Enumerate, measure, and classify greek meander patterns
 **[meanderaw-cli](projects/meanderaw/meanderaw-cli)** - CLI that enumerates Greek meander (key/fret) patterns into a Postgres database, measuring and classifying each by its Code\
 **[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
-**🛠️ [configuration](projects/configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
-**🎨 [components](projects/components)** - Shared React component library using shadcn/ui and Base UI primitives\
-**🐘 [database](projects/database)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
-**🏗️ [infrastructure](projects/infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
-**🛠️ [installation](projects/installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
-**🔁 [integration](projects/integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\
-**🪵 [logging](projects/logging)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
-**📤 [publication](projects/publication)** - NestJS CLI for the CI Nx plumbing steps: the affected run and base, the task cache and its database, and the publishable-packages gate\
-**↔️ [synchronization](projects/synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
-**✅ [validation](projects/validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
+**🛠️ [configuration](configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
+**🎨 [components](projects/common/interface)** - Shared React component library using shadcn/ui and Base UI primitives\
+**🐘 [database](projects/common/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
+**🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
+**🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
+**🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\
+**🪵 [logging](projects/common/observability)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`\
+**📤 [publication](publication)** - NestJS CLI for the CI Nx plumbing steps: the affected run and base, the task cache and its database, and the publishable-packages gate\
+**↔️ [synchronization](synchronization)** - NestJS CLI that regenerates the workspace's derived configuration and documentation, and fails CI when they drift\
+**✅ [validation](validation)** - NestJS CLI for the repository's one-sided checks, the ones with a check and no write, such as the pull request metadata gate\
 **🧑‍💻 [JimmyPaolini](projects/JimmyPaolini)** - GitHub profile site
 
 ## 📖 Documentation
@@ -205,7 +205,7 @@ Enumerate, measure, and classify greek meander patterns
 ### Architecture & Systems
 
 - [CI/CD Workflows](.github/workflows) - GitHub Actions workflows and the shared `setup-codebase` composite action
-- [Infrastructure](projects/infrastructure/README.md) - Helm charts, Terraform, and the Kubernetes deployment pipeline
+- [Infrastructure](infrastructure/README.md) - Helm charts, Terraform, and the Kubernetes deployment pipeline
 - [Dev Container](.devcontainer/README.md) - Containerized development environment
 - [Scripts](scripts/README.md) - Local setup and maintenance scripts
 
@@ -227,7 +227,7 @@ Other important files include [CHANGELOG.md](CHANGELOG.md) and [SECURITY.md](.gi
 
 ## 👔 Conformetry
 
-Template-driven code generation and conformance validation, templates synced from [projects/configuration/conformetry.config.ts](projects/configuration/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
+Template-driven code generation and conformance validation, templates synced from [configuration/conformetry.config.ts](configuration/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
 
 <!-- conformetry:start -->
 | Template | Description |
@@ -13488,7 +13488,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
-| `projects/database` | 7 | 7 | 0 | 7 |
+| `projects/common/persistence` | 7 | 7 | 0 | 7 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
 | `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
@@ -13499,17 +13499,17 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
-| `projects/logging` | 4 | 4 | 0 | 2 |
+| `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
-| `projects/publication` | 6 | 6 | 0 | 8 |
-| `projects/validation` | 8 | 8 | 0 | 9 |
+| `publication` | 6 | 6 | 0 | 8 |
+| `validation` | 8 | 8 | 0 | 9 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
-| `projects/integration` | 5 | 6 | 1 | 6 |
-| `projects/synchronization` | 9 | 10 | 1 | 9 |
-| `projects/components` | 0 | 3 | 3 | 0 |
+| `integration` | 5 | 6 | 1 | 6 |
+| `synchronization` | 9 | 10 | 1 | 9 |
+| `projects/common/interface` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
@@ -13528,9 +13528,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
 | `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
 | `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
-| `projects/installation` | 8 | 17 | 9 | 7 |
+| `installation` | 8 | 17 | 9 | 7 |
 | `projects/lexico/lexico-api` | 8 | 17 | 9 | 10 |
-| `projects/configuration` | 5 | 17 | 12 | 2 |
+| `configuration` | 5 | 17 | 12 | 2 |
 | `projects/ic-suite/conformetry/conformetry-validation` | 0 | 13 | 13 | 10 |
 | `projects/ic-suite/codometer/codometer-measurement` | 0 | 14 | 14 | 9 |
 | `projects/ic-suite/callidescope/callidescope-core` | 0 | 17 | 17 | 0 |

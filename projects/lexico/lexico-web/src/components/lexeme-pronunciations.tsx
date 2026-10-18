@@ -6,7 +6,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@codebase/components";
+} from "@codebase/interface";
 
 import type { ReactNode } from "react";
 

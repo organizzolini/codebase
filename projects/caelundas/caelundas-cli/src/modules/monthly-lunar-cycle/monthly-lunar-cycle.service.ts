@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { lunarPhases } from "../caelundas/caelundas.constants";
 import { isLunarPhase } from "../caelundas/caelundas.types";

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@codebase/components": "workspace:*",
+    "@codebase/interface": "workspace:*",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
     "@tanstack/react-start": "catalog:",

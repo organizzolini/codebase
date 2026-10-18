@@ -1,5 +1,13 @@
 packages:
+  - configuration
+  - infrastructure
+  - installation
+  - integration
+  - publication
+  - synchronization
+  - validation
   - projects/*
+  - projects/common/*
   - projects/caelundas/*
   - "!projects/caelundas"
   - projects/ic-suite/callidescope/*

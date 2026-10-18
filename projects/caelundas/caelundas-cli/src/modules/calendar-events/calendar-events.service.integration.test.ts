@@ -1,8 +1,8 @@
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { startDatabaseTestingModule } from "@codebase/database/testing";
-import { LoggerModule } from "@codebase/logging";
+import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "../../caelundas-cli.constants";
 import { CaelundasDatabaseModule } from "../caelundas-database/caelundas-database.module";
@@ -14,7 +14,7 @@ import { CalendarEventsModule } from "./calendar-events.module";
 import { CalendarEventsService } from "./calendar-events.service";
 
 import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { Repository } from "typeorm";
 
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };

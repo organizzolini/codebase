@@ -208,7 +208,7 @@ nx run codometer-examples:codometer:check
 
 ## Notes on the corpus
 
-- **It is not measured with the repository.** `projects/configuration/.codometerignore`
+- **It is not measured with the repository.** `configuration/.codometerignore`
   excludes it, so twenty-seven sample files in twelve languages do not distort
   the statistics of the repository that happens to hold them.
 - **It is not linted like source.** The samples exist to be counted, and several

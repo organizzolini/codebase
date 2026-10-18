@@ -47,7 +47,7 @@ required** — codometer never searches for a configuration file and has no
 default one, and a run without the flag is refused with an error naming it:
 
 ```bash
-codometer --config projects/configuration/codometer.config.ts --check limits
+codometer --config configuration/codometer.config.ts --check limits
 ```
 
 | Flag | Purpose |
@@ -116,7 +116,7 @@ measured — its own sources, and whatever inputs the configuration declares for
 it:
 
 ```bash
-cd projects/logging && codometer --config codometer.config.ts --check limits
+cd projects/common/observability && codometer --config codometer.config.ts --check limits
 ```
 
 The configuration is exactly the file `--config` names: nothing is searched
@@ -131,7 +131,7 @@ function is not recognized, and falls back to an empty configuration, the
 same way a file exporting `42` does. So a project answering for itself writes
 its own `codometer.config.ts`, typically by importing and spreading a shared
 object a workspace root exports, the way this repository's own projects each
-spread [`projects/configuration/codometer.config.ts`](../../../configuration/codometer.config.ts).
+spread [`configuration/codometer.config.ts`](../../../configuration/codometer.config.ts).
 
 ## What gets measured
 
@@ -276,13 +276,13 @@ A repository that declares its limits one per project has no single file left
 to read them from. `codometer configuration` is that reading:
 
 ```bash
-codometer configuration --limits --config projects/configuration/codometer.config.ts
+codometer configuration --limits --config configuration/codometer.config.ts
 ```
 
 ```text
 | Directory        | Metric                    | Label | Severity | Value   | Declared in                          |
 | ---              | ---                       | ---   | ---      | ---     | ---                                  |
-| projects/logging  | `Compiled JavaScript.size`| —     | fail     | 12.00 kB | `projects/logging/codometer.config.ts`|
+| projects/common/observability  | `Compiled JavaScript.size`| —     | fail     | 12.00 kB | `projects/common/observability/codometer.config.ts`|
 ```
 
 It walks for every configuration file beneath the directory it is given — in
@@ -297,7 +297,7 @@ exclusions the walk honors — a workspace often states its shared configuration
 in a file every project spreads rather than at its own root:
 
 ```bash
-codometer configuration --limits --config projects/configuration/codometer.config.ts
+codometer configuration --limits --config configuration/codometer.config.ts
 ```
 
 Drop `--limits` to list everything each configuration resolved to: its inputs,
@@ -367,7 +367,7 @@ codometer measures comments in, so expressing "every language at one budget,
 except one language at another" means writing the general budget once per
 covered language rather than once for all of them, leaving the exception for
 its own, narrower selector. See
-[`projects/configuration/codometer.config.ts`](../../../configuration/codometer.config.ts)
+[`configuration/codometer.config.ts`](../../../configuration/codometer.config.ts)
 for how this repository derives one selector per language from its own list of
 comment-bearing languages.
 

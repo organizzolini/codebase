@@ -1,11 +1,11 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 import type { GraphQLObjectOf } from "./lexico-api.types";
-import type { DeletableEntity } from "@codebase/database";
+import type { DeletableEntity } from "@codebase/persistence";
 
 /**
  * The shared base columns every soft-deletable entity carries, as GraphQL
- * fields. The entities declare the columns through `@codebase/database`'s
+ * fields. The entities declare the columns through `@codebase/persistence`'s
  * `DeletableEntity`; this type only exposes them.
  */
 @ObjectType({ isAbstract: true })

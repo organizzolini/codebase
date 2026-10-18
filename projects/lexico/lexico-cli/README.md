@@ -65,7 +65,7 @@ This application does not copy tables between databases. The database
 package's command line does, with `nx run database:start:export` and
 `nx run database:start:import`. It has no default schema, so name the Lexico
 schema with `--schema lexico`, or qualify each table as `lexico.words`.
-A relative `--file` resolves from `projects/database`, so this keeps the dump
+A relative `--file` resolves from `projects/common/persistence`, so this keeps the dump
 in this project's `data/` directory, where `*.dump` is gitignored:
 
 ```bash
@@ -125,7 +125,7 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../projects/configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
 
 <!-- callidescope:start -->
 

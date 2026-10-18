@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { postgresEnvironmentKeys } from "@codebase/database";
+import { postgresEnvironmentKeys } from "@codebase/persistence";
 
 import { LexicoNamingStrategy } from "./lexico-database.constants";
 

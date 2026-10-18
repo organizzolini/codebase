@@ -91,9 +91,9 @@ Two options qualify whichever mode was picked, the first of them mandatory:
 | `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |
 
 ```bash
-codependix map --write --config projects/configuration/codependix.config.ts
-codependix map --check boundaries --directory . --config projects/configuration/codependix.config.ts
-codependix map --check reports --directory . --config projects/configuration/codependix.config.ts
+codependix map --write --config configuration/codependix.config.ts
+codependix map --check boundaries --directory . --config configuration/codependix.config.ts
+codependix map --check reports --directory . --config configuration/codependix.config.ts
 ```
 
 ## Codependix reads the Nx project graph
@@ -170,8 +170,8 @@ no NestJS container is absent from the NestJS pass rather than failing it.
 Both take a **comma-separated** list, and both do two things at once:
 
 ```bash
-codependix map --write --projects widgets,tools/reporting --config projects/configuration/codependix.config.ts
-codependix map --write --tags framework:nestjs,language:python --config projects/configuration/codependix.config.ts
+codependix map --write --projects widgets,tools/reporting --config configuration/codependix.config.ts
+codependix map --write --tags framework:nestjs,language:python --config configuration/codependix.config.ts
 ```
 
 **They widen what gets exported.** A project participates when _anything_
@@ -290,7 +290,7 @@ the report is all it prints. Without one of those flags a boundaries-only run
 prints nothing, and a run that also exports prints its graphs as it always did.
 
 ```bash
-codependix map --check boundaries --projects lexico-entities --format json --config projects/configuration/codependix.config.ts
+codependix map --check boundaries --projects lexico-entities --format json --config configuration/codependix.config.ts
 ```
 
 `boundaries.judgedProjects` lists the projects whose findings fail the run.

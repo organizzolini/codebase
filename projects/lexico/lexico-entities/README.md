@@ -20,7 +20,7 @@ import { LexicoDatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 ```
 
 `LexicoDatabaseModule` connects to `lexico_development`.`lexico` as
-`lexico_username` through [`@codebase/database`](../../database/README.md)'s
+`lexico_username` through [`@codebase/persistence`](../../persistence/README.md)'s
 `DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
 `lexicoDataSource`, in `src/modules/lexico-database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
@@ -74,7 +74,7 @@ morphology does not fit one flat row. A form is an `AdjectivalForm`,
 ### Base classes
 
 Every entity but `Inflection` extends
-[`@codebase/database`](../../database/README.md)'s `DeletableEntity` directly. It
+[`@codebase/persistence`](../../persistence/README.md)'s `DeletableEntity` directly. It
 declares the columns — a `uuid` id the database assigns with `uuidv7()`, then
 the created, updated, and soft-deleted timestamps and their nullable `*By`
 columns — so no entity restates them.
@@ -109,7 +109,7 @@ defaults, declared here as
 `"migration": { "options": { "module": "src/modules/lexico-database" } }`,
 which names the folder holding `data-source.constants.ts` and `migrations/`;
 its SQL extraction script lives in
-[`@codebase/database`](../../database/README.md).
+[`@codebase/persistence`](../../persistence/README.md).
 `generate` also extracts the SQL and formats the result, so a generated
 migration lands ready to review. Every migration ships a `-up.sql` and
 `-down.sql` next to its TypeScript, which is what makes a schema change
@@ -140,15 +140,15 @@ maintainer's call once the counts below match.
    run `infrastructure:postgres:recreate`, which deletes the volume:
 
    ```bash
-   docker exec -e POSTGRES_PROJECTS=lexico postgres sh /docker-entrypoint-initdb.d/databases.sh
+   docker exec -e POSTGRES_PROJECTS=lexico postgres sh /docker-entrypoint-initdb.d/persistences.sh
    ```
 
 3. **Dump `public`'s rows alone** with the database command line, naming
    Lexico's tables so TypeORM's own bookkeeping — its metadata and, on a
    volume where the old migration ever ran, its migrations table — stays
    behind; the new migration writes both for `lexico`. The path is relative
-   to `projects/database`, where the command runs. See
-   [Moving data between databases](../../database/README.md#moving-data-between-databases):
+   to `projects/common/persistence`, where the command runs. See
+   [Moving data between databases](../../persistence/README.md#moving-data-between-databases):
 
    ```bash
    pnpm exec nx run database:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
@@ -209,7 +209,7 @@ nx run lexico-entities:vitest:integration   # Against a Testcontainers PostgreSQ
 ```
 
 Integration tests start a throwaway Postgres 18 through
-[`@codebase/database/testing`](../../database/README.md), laid out like local
+[`@codebase/persistence/testing`](../../persistence/README.md), laid out like local
 Docker: `lexico_username` owning `lexico_testing` with a `lexico` schema. The
 schema is built by running the real migrations, never by synchronizing, and
 the suite asserts the entities have nothing left to change, so entity mappings

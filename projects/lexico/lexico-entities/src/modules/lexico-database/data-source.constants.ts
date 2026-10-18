@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { createDataSource } from "@codebase/database";
+import { createDataSource } from "@codebase/persistence";
 
 import { AdjectivalForm } from "../entities/dictionary/form/AdjectivalForm.entity";
 import { AdverbForm } from "../entities/dictionary/form/AdverbForm.entity";

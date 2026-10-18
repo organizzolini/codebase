@@ -2,7 +2,7 @@ import path from "node:path";
 
 import { z } from "zod";
 
-import { postgresEnvironmentSchema } from "@codebase/database";
+import { postgresEnvironmentSchema } from "@codebase/persistence";
 
 // 🌱 Add environment schema fields here
 export const environmentSchema = z.object({

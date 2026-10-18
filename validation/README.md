@@ -1,0 +1,1211 @@
+# ✅ Validation
+
+**Answer whether something conforms, and say what to do when it does not.**
+
+Some checks have only one side. There is nothing to write back: a pull request
+title either agrees with its labels or it does not, a manifest either pins
+`catalog:` or it does not. This is the NestJS CLI that runs those checks,
+collects every failure rather than the first, and prints the command that fixes
+each one.
+
+```bash
+nx run validation:start:pull-request-metadata     # labels and assignees against the title
+nx run validation:start:pull-request-body         # the four headings, each section's shape and length, and no unfilled template comment
+nx run validation:start:catalog-manifests         # catalog:/workspace:* in every manifest
+nx run validation:start:lockfile                  # pnpm-lock.yaml against the manifests
+nx run validation:start:session-branch-name       # the checked-out branch against the naming convention
+nx run validation:start:session-worktree-name     # the linked worktree's directory name and gitignore status
+nx run validation:verify-publishable-packages     # pack ic-suite, install the tarballs, run the plugins
+```
+
+It is the one-sided counterpart to
+[synchronization](../synchronization/README.md): that tool reconciles a
+`check` against a `write`, this one has no `write` to offer.
+
+## Why it lives here
+
+A check belongs here when it has a `check` and no `write`, and when it already
+depends on Node. Both halves matter.
+
+The first half is the boundary against
+[synchronization](../synchronization/README.md), whose whole contract is
+`check`/`write` reconciliation. A check that cannot write has nothing to put on
+the other side of that contract, so modelling it as a synchronization would mean
+a `write` mode that either lies or refuses.
+
+The second half is the boundary against `scripts/git/`. Moving a check into this
+CLI makes it depend on a healthy `node_modules`, which is fine for a check that
+already ran Node and fatal for one that did not. That is why the signing and
+authentication checks stay in shell — see [AGENTS.md](AGENTS.md).
+
+## Checks
+
+| Check | Answers |
+| ----- | ------- |
+| `pull-request-metadata` | Do a pull request's labels and assignees agree with its title? |
+| `pull-request-body` | Does a pull request description carry all four headings, each section non-empty, in its shape, and within its word limit, with no template comment left unfilled? |
+| `catalog-manifests` | Does every workspace manifest pin externals as `catalog:` and internals as `workspace:*`? |
+| `lockfile` | Is `pnpm-lock.yaml` in sync with the manifests? |
+| `publishable-packages` | Do the packed ic-suite packages work when installed by someone else? |
+| `session-branch-name` | Does the checked-out branch follow `<type>/<scope>-<description>`? |
+| `session-worktree-name` | Is the linked worktree named in kebab-case, and gitignored inside the main checkout? |
+
+### `pull-request-metadata`
+
+Checks five things about a pull request, all against its own title: exactly one
+`type:*` label equal to the title's type, exactly the `scope:*` labels named by
+the title's scopes, no `do-not-merge` label, at least one assignee, and exactly
+one `source:*` label declaring who opened it.
+
+Two input modes. Given a pull request number it reads the metadata live through
+`gh pr view`, which is the local mode. Given none it reads
+`PULL_REQUEST_TITLE`, `PULL_REQUEST_LABELS`, `PULL_REQUEST_ASSIGNEES`, and
+`PULL_REQUEST_NUMBER` from the environment, which is the workflow mode: a pure
+function of its inputs, needing no network, no token, and no write permission.
+
+The title's scope group is matched as optional even though the convention
+requires one. commitlint rejects a title with no scope first, so in a workflow
+run this check never sees one; run by hand ahead of any title check it still
+has to say something useful, and one collected failure naming the missing scope
+is more useful than a parse error.
+
+### `pull-request-body`
+
+Checks that all four template headings are present, that each section contains
+actual content, and that no `<!-- … -->` prompt from
+[.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md)
+survives unfilled. The comments are read from the template at runtime rather
+than listed here, so adding a prompt to the template starts it being checked
+with no code change.
+
+Each section is also parsed as CommonMark and held to one shape, with Summary
+and Details capped in words as `wc -w` counts them:
+
+| Section    | Holds                                           | Word limit |
+| ---------- | ----------------------------------------------- | ---------- |
+| 🌰 Summary | Only one paragraph                              | 48         |
+| 📝 Details | Only a bulleted list, one marker throughout     | 512        |
+| 🧪 Testing | Only an ordered list, whose items may hold code | —          |
+| 🔗 Related | A `-` list first, then anything                 | —          |
+
+Blocks that are nothing but comments are ignored. Details takes `-`, `*`, or
+`+` so long as one marker is used throughout, as markdownlint's MD004 does.
+Related is open-ended after its list so that an attribution line or any other
+trailer can close the description. The limits sit near the 75th percentile of
+past Summaries, to keep one readable at a glance, and between the 90th and 95th
+of past Details.
+The shapes and limits live in `SECTION_RULES`, not the template.
+
+### `catalog-manifests`
+
+Every external dependency in every workspace manifest must be `catalog:`, and
+every internal one `workspace:*`. Both directions are checked in every
+dependency section, and every violation is named at once.
+
+### `lockfile`
+
+Runs `pnpm install --frozen-lockfile --lockfile-only` and reports whether the
+manifests and the lockfile still agree. The only check here that shells out to
+something else, for the reason the manifest check does not: what "in sync" means
+is pnpm's answer, not one worth reimplementing. `--lockfile-only` means it never
+writes `node_modules`, so it cannot re-link packages under the tasks the
+pre-commit hook runs beside it.
+
+### `session-branch-name`
+
+The branch-name session hook, `scripts/git/validate-session-branch-name.sh`,
+is a shim over this command. It reads the pattern and the error text from
+[validate-branch-name.config.cjs](../../validate-branch-name.config.cjs), the
+file the pre-push hook enforces, so the two never disagree. A compliant
+branch, a detached HEAD, and a directory outside a repository all print
+nothing and exit 0. Anything else prints the configured error — the format,
+every valid type and scope — then the directive to invoke the rename-branch
+skill, and exits 1.
+
+Its standard output is only that context, never a log line, because the hook
+hands it to the agent word for word; which JSON shape it travels in is the
+hook emitter's business, not this command's.
+
+### `session-worktree-name`
+
+The worktree-name session hook, `scripts/git/validate-session-worktree-name.sh`,
+is a shim over this command, run from the root of the checkout the hook lives
+in. Only a linked worktree is judged: the main checkout, a submodule, a
+directory outside a repository, and a machine without `git` all print nothing
+and exit 0. A linked worktree must have a lowercase kebab-case directory name,
+and one inside the main checkout must be gitignored there, so that its
+contents are never committed. Every problem is printed at once, then the
+directive to invoke the using-git-worktrees skill, with exit 1.
+
+This check used to need nothing but `git`. As a command it needs a healthy
+`node_modules` too, a cost accepted for one way of writing session checks;
+the hook says to run `pnpm install` when that is what stops it.
+
+### `publishable-packages`
+
+Installs every publishable ic-suite package from the tarball `pnpm pack` wrote,
+into a throwaway consumer, and uses it the way a user would: each package's
+import typechecks under the consumer's own TypeScript, each command line runs
+`--help`, the project graph builds with `@callidescope/nx`, `@codependix/nx`,
+and `@conformetry/nx` registered, the conformetry generator writes an instance,
+and one inferred target per plugin passes a healthy fixture and fails a broken
+one with the message only a gate that ran would print. Run it through
+`verify-publishable-packages`, which packs first.
+
+**Where the consumer lives is the whole check.** One beneath this workspace
+resolves this workspace's `node_modules`, so an executor path into `./src`, an
+unshipped schema, or a loader resolved from the wrong root all pass there and
+fail for every real user. The consumer is created under
+`PUBLISHABLE_PACKAGES_CONSUMER_ROOT`, or the system temporary directory, and
+the check refuses either when it, or any directory above it, holds a
+`package.json`, `node_modules`, or `pnpm-workspace.yaml`. CI points it at
+`$RUNNER_TEMP`.
+
+It never publishes: no command it runs writes to a registry. Every command
+runs without a shell, without this workspace's `PATH` entries, Nx variables,
+or registry tokens, and with an empty user `.npmrc`. As a tripwire against a
+publish added here later, a command carrying `publish`, `release`, `login`,
+`dist-tag`, an `nx-release-publish` target, or a similar npm subcommand is
+refused before it starts.
+
+## Start
+
+```bash
+nx run validation:start
+```
+
+## Test
+
+```bash
+nx run validation:vitest
+```
+
+## 👔 Conformetry
+
+This project was generated from the [nestjs-command-project](../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+
+<!-- callidescope:start -->
+
+## 🔭 Callidescope
+
+Call stacks traced through `validation`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+
+| Measure | Value |
+| --- | --- |
+| Callables | 307 |
+| Files | 75 |
+| Calls traced | 369 |
+| Call stacks | 11 |
+| Deepest stack | 8 |
+| Stacks through recursion | 0 |
+| Unfollowable calls | 23 |
+
+### Limits
+
+What this project is judged against, as declared in its own `callidescope.config.ts`.
+
+| Limit | Value |
+| --- | --- |
+| `maximumDepth` | 8 |
+| `maximumBreadth` | 9 |
+
+### Call stacks (depth)
+
+**1. `AuditGovernanceCommand.run`** — depth 8 · decorated-method
+
+```text
+🚀 AuditGovernanceCommand.run(): Promise<void> [validation/src/modules/audit-governance/audit-governance.command.ts:77]
+   ↳ Runs repository governance checks and reports findings.
+  └─> AuditGovernanceService.checkGovernance(workspaceRoot?: string): AuditGovernanceVerdict [validation/src/modules/audit-governance/audit-governance.service.ts:272]
+     ↳ Runs the complete repository governance audit.
+    └─> AuditGovernanceService.checkWorkflows(workspaceRoot?: string): WorkflowVerdict [validation/src/modules/audit-governance/audit-governance.service.ts:286]
+       ↳ Audits GitHub Actions workflow files for explicit permissions, timeouts, and naming.
+      └─> AuditGovernanceService.auditWorkflowContent(file: string, content: string, violations: WorkflowViolation[]): void [validation/src/modules/audit-governance/audit-governance.service.ts:57]
+         ↳ Inspects workflow content lines for name, top-level permissions, and job timeouts.
+        └─> AuditGovernanceService.collectWorkflowJobViolations(…): void [validation/src/modules/audit-governance/audit-governance.service.ts:84]
+           ↳ Scans workflow lines inside jobs section and verifies declarations.
+          └─> AuditGovernanceService.extractJobBlocks(lines: string[]): WorkflowJobDeclaration[] [validation/src/modules/audit-governance/audit-governance.service.ts:142]
+             ↳ Extracts job declaration blocks from workflow lines.
+            └─> AuditGovernanceService.sliceJobsSection(lines: string[]): string[] [validation/src/modules/audit-governance/audit-governance.service.ts:221]
+               ↳ Slices lines starting after the 'jobs:' section header.
+              └─> AuditGovernanceService.findIndex(…)(line: string): boolean [validation/src/modules/audit-governance/audit-governance.service.ts:222]
+```
+
+**2. `IssueMetadataCommand.run`** — depth ≥ 8 · decorated-method
+
+```text
+🚀 IssueMetadataCommand.run(…): Promise<void> [validation/src/modules/issue-metadata/issue-metadata.command.ts:308]
+   ↳ Checks the issue's metadata and exits 0 or 1 on the verdict.
+  └─> IssueMetadataCommand.runBulkAudit(reportLines: string[]): never | void [validation/src/modules/issue-metadata/issue-metadata.command.ts:257]
+     ↳ Sweeps and validates all open issues and their hierarchy relationships.
+    └─> IssueMetadataService.checkBulkIssues(issues: readonly IssueSummary[]): BulkIssuesVerdict [validation/src/modules/issue-metadata/issue-metadata.service.ts:282]
+       ↳ Validates metadata and hierarchy across a batch of open issues.
+      └─> IssueMetadataService.checkHierarchy(issues: readonly IssueSummary[]): readonly HierarchyViolation[] [validation/src/modules/issue-metadata/issue-metadata.service.ts:325]
+         ↳ Checks issue hierarchy rules (release significance and max depth 3).
+        └─> IssueMetadataService.checkReleaseSignificanceViolation(…): void [validation/src/modules/issue-metadata/issue-metadata.service.ts:47]
+           ↳ Checks if a sub-issue exceeds its parent's release level.
+          └─> IssueMetadataService.resolveIssueReleaseLevel(…): { readonly level: string; readonly rank: number; readonly type: string; } [validation/src/modules/issue-metadata/issue-metadata.service.ts:495]
+             ↳ Resolves release level and rank from title, body, and labels.
+            └─> IssueMetadataService.resolveStandardReleaseLevel(…): { readonly level: string; readonly rank: number; readonly type: string; } [validation/src/modules/issue-metadata/issue-metadata.service.ts:260]
+               ↳ Resolves non-breaking release level from type labels or title match.
+              └─> IssueMetadataService.find(…)(name: string): boolean [validation/src/modules/issue-metadata/issue-metadata.service.ts:264]
+```
+
+**3. `PublishablePackagesCommand.run`** — depth 8 · decorated-method
+
+```text
+🚀 PublishablePackagesCommand.run(): Promise<void> [validation/src/modules/publishable-packages/publishable-packages.command.ts:46]
+   ↳ Executes the publishable package tarball verification and exits 0 on success, 1 on failure.
+  └─> PublishablePackagesService.verifyPublishablePackages(workspaceRoot: string): PublishablePackagesVerificationResult [validation/src/modules/publishable-packages/publishable-packages.service.ts:178]
+     ↳ Installs every packed publishable package into a consumer outside the workspace and exercises it: each package's import…
+    └─> PublishablePackagesChecksService.verifyConsumer(…): string[] [validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238]
+       ↳ Runs every check against an installed consumer.
+      └─> PublishablePackagesChecksService.verifyBinaries(…): string[] [validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:62]
+         ↳ Runs each command line's `--help`, which loads its whole command tree.
+        └─> PublishablePackagesChecksService.flatMap(…)(this: undefined, binary: string): string[] [validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:70]
+          └─> PublishablePackagesChecksService.runBinary(…): ConsumerCommandResult [validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49]
+             ↳ Runs one of the consumer's installed executables.
+            └─> PublishablePackagesProcessService.run(context: ConsumerContext, command: ConsumerCommand): ConsumerCommandResult [validation/src/modules/publishable-packages/publishable-packages-process.service.ts:85]
+               ↳ Runs one command in the consumer's directory and returns what it printed.
+              └─> PublishablePackagesProcessService.createEnvironment(context: ConsumerContext): NodeJS.ProcessEnv [validation/src/modules/publishable-packages/publishable-packages-process.service.ts:47]
+                 ↳ Builds the environment a consumer command runs under.
+```
+
+<details>
+<summary>8 more call stacks</summary>
+
+**4. `PullRequestBodyCommand.run`** — depth 8 · decorated-method
+
+```text
+🚀 PullRequestBodyCommand.run(passedParameters: string[]): Promise<void> [validation/src/modules/pull-request-body/pull-request-body.command.ts:143]
+   ↳ Checks the description and exits 0 or 1 on the verdict.
+  └─> PullRequestBodyService.checkBody(…): BodyVerdict [validation/src/modules/pull-request-body/pull-request-body.service.ts:204]
+     ↳ The five lists of failures, from one description and the template's prompts.
+    └─> PullRequestBodyService.findMalformedSections(body: string): string[] [validation/src/modules/pull-request-body/pull-request-body.service.ts:241]
+       ↳ Every section holding a block its shape does not allow.
+      └─> PullRequestBodyService.filter(…)(rule: SectionRule): boolean [validation/src/modules/pull-request-body/pull-request-body.service.ts:244]
+        └─> PullRequestBodyService.holdsShape(…): boolean [validation/src/modules/pull-request-body/pull-request-body.service.ts:100]
+           ↳ Whether a section's blocks have the shape its rule allows.
+          └─> PullRequestBodyService.isDashList(block: RootContent | undefined, content: string): boolean [validation/src/modules/pull-request-body/pull-request-body.service.ts:132]
+             ↳ Whether a list block is unordered with every item marked by `-`.
+            └─> PullRequestBodyService.every(…)(item: ListItem): boolean [validation/src/modules/pull-request-body/pull-request-body.service.ts:136]
+              └─> PullRequestBodyService.sourceOf(node: Node, content: string): string [validation/src/modules/pull-request-body/pull-request-body.service.ts:171]
+                 ↳ The markdown a parsed node was read from, exactly as written.
+```
+
+**5. `PullRequestMetadataCommand.run`** — depth ≥ 8 · decorated-method
+
+```text
+🚀 PullRequestMetadataCommand.run(passedParameters: string[]): Promise<void> [validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264]
+   ↳ Checks the pull request's metadata and exits 0 or 1 on the verdict.
+  └─> PullRequestMetadataCommand.resolveMetadata(…): PullRequestMetadataResolution [validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:214]
+     ↳ Reads the metadata from wherever this invocation says it lives.
+    └─> PullRequestMetadataCommand.readEnvironmentMetadata(reportLines: string[]): PullRequestMetadataResolution [validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:132]
+       ↳ Reads the metadata from the environment, the workflow mode.
+      └─> PullRequestMetadataService.resolveFromEnvironment(…): PullRequestMetadataResolution [validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:332]
+         ↳ Reads the metadata out of the three environment documents.
+        └─> PullRequestMetadataService.readNames(entries: unknown[], propertyName: string): string[] [validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:199]
+           ↳ Every entry's name, with the nameless ones dropped.
+          └─> PullRequestMetadataService.map(…)(entry: unknown): string [validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:201]
+            └─> PullRequestMetadataService.nameOf(entry: unknown, propertyName: string): string [validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:162]
+               ↳ Reads one label or assignee entry, whichever shape it arrived in.
+              └─> PullRequestMetadataService.isRecord(value: unknown): value is Record<string, unknown> [validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:157]
+                 ↳ Whether this value can be read by property name at all.
+```
+
+**6. `PullRequestReleaseSignificanceCommand.run`** — depth 7 · decorated-method
+
+```text
+🚀 PullRequestReleaseSignificanceCommand.run(passedParameters: string[]): Promise<void> [validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212]
+   ↳ Checks the pull request's title against its commits and exits 0 or 1.
+  └─> PullRequestReleaseSignificanceCommand.readLivePullRequest(reportLines: string[], pullRequestNumber: string): PullRequestCommitsResolution [validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:114]
+     ↳ Reads the pull request's title and commits live, through `gh pr view`.
+    └─> PullRequestReleaseSignificanceService.resolveFromDocument(documentText: string): PullRequestCommitsResolution [validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:316]
+       ↳ Reads the title and commits out of a `gh pr view` document.
+      └─> PullRequestReleaseSignificanceService.map(…)(entry: unknown): PullRequestCommit [validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:335]
+        └─> PullRequestReleaseSignificanceService.readRawCommit(entry: unknown): PullRequestCommit [validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:164]
+           ↳ Reads one raw `commits` array entry into a `PullRequestCommit`.
+          └─> PullRequestReleaseSignificanceService.parseConventionalSubject(subject: string, body?: string): ConventionalSubject | undefined [validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:260]
+             ↳ Reads the type, scopes, and breaking marker out of a conventional subject line.
+            └─> PullRequestReleaseSignificanceService.filter(…)(scope: string): boolean [validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:276]
+```
+
+**7. `CatalogManifestsCommand.run`** — depth 5 · decorated-method
+
+```text
+🚀 CatalogManifestsCommand.run(): Promise<void> [validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44]
+   ↳ Checks every workspace manifest and exits 0 or 1 on the verdict.
+  └─> CatalogManifestsCommand.flatMap(…)(this: undefined, manifestPath: string): string[] [validation/src/modules/catalog-manifests/catalog-manifests.command.ts:50]
+    └─> CatalogManifestsService.validateManifestDependencies(manifestPath: string, manifest: PackageManifest): string[] [validation/src/modules/catalog-manifests/catalog-manifests.service.ts:98]
+       ↳ Every mis-pinned dependency in one manifest, in every section.
+      └─> CatalogManifestsService.isInternalWorkspaceDependency(dependencyName: string): boolean [validation/src/modules/catalog-manifests/catalog-manifests.service.ts:67]
+         ↳ Whether this dependency names one of this workspace's own packages.
+        └─> CatalogManifestsService.some(…)(scope: string): boolean [validation/src/modules/catalog-manifests/catalog-manifests.service.ts:68]
+```
+
+**8. `SessionWorktreeNameCommand.run`** — depth 5 · decorated-method
+
+```text
+🚀 SessionWorktreeNameCommand.run(): Promise<void> [validation/src/modules/session-worktree-name/session-worktree-name.command.ts:51]
+   ↳ Judges the worktree, printing the report and setting exit code 1 when it breaks the convention.
+  └─> SessionWorktreeNameService.findViolations(): string[] [validation/src/modules/session-worktree-name/session-worktree-name.service.ts:95]
+     ↳ Every way the current worktree breaks the convention: a directory name that is not lowercase kebab-case, then, for one…
+    └─> SessionWorktreeNameService.findLinkedWorktree(): LinkedWorktree | undefined [validation/src/modules/session-worktree-name/session-worktree-name.service.ts:44]
+       ↳ The linked worktree the current directory is the root of, or undefined when it is not one.
+      └─> SessionWorktreeNameService.readGit(args: readonly string[]): string [validation/src/modules/session-worktree-name/session-worktree-name.service.ts:82]
+         ↳ What `git` printed, trimmed, or an empty string when it failed.
+        └─> SessionWorktreeNameGitService.run(args: readonly string[]): GitResult [validation/src/modules/session-worktree-name/session-worktree-name-git.service.ts:33]
+           ↳ Runs `git` with these arguments in the current working directory.
+```
+
+**9. `SessionBranchNameCommand.run`** — depth 4 · decorated-method
+
+```text
+🚀 SessionBranchNameCommand.run(): Promise<void> [validation/src/modules/session-branch-name/session-branch-name.command.ts:50]
+   ↳ Judges the branch, printing the report and setting exit code 1 when it breaks the convention.
+  └─> SessionBranchNameService.judgeCurrentBranch(): SessionBranchNameResult [validation/src/modules/session-branch-name/session-branch-name.service.ts:50]
+     ↳ Whether the checked-out branch follows the convention, if there is one.
+    └─> SessionBranchNameService.readCurrentBranch(): string [validation/src/modules/session-branch-name/session-branch-name.service.ts:41]
+       ↳ The checked-out branch, or an empty string when there is none to ask about.
+      └─> SessionBranchNameGitService.run(args: readonly string[]): GitResult [validation/src/modules/session-branch-name/session-branch-name-git.service.ts:33]
+         ↳ Runs `git` with these arguments in the current working directory.
+```
+
+**10. `LockfileCommand.run`** — depth 3 · decorated-method
+
+```text
+🚀 LockfileCommand.run(): Promise<void> [validation/src/modules/lockfile/lockfile.command.ts:50]
+   ↳ Checks the lockfile and exits 0 or 1 on pnpm's verdict.
+  └─> LockfileService.checkLockfile(): FrozenInstallResult [validation/src/modules/lockfile/lockfile.service.ts:60]
+     ↳ Runs `pnpm install --frozen-lockfile --lockfile-only`, wherever pnpm is.
+    └─> LockfileService.runFrozenInstall(packageManagerPath: string): FrozenInstallResult [validation/src/modules/lockfile/lockfile.service.ts:33]
+       ↳ Runs one candidate pnpm, merging both of its streams.
+```
+
+**11. `ReadmeProjectsCommand.run`** — depth 3 · decorated-method
+
+```text
+🚀 ReadmeProjectsCommand.run(): Promise<void> [validation/src/modules/readme-projects/readme-projects.command.ts:43]
+   ↳ Checks every workspace project and exits 0 or 1 on the verdict.
+  └─> ReadmeProjectsService.resolveWorkspaceProjectPaths(workspaceRoot: string): string[] [validation/src/modules/readme-projects/readme-projects.service.ts:87]
+     ↳ Every workspace project's scope-relative path, e.g. `projects/common/observability`.
+    └─> ReadmeProjectsService.findProjectPaths(workspaceRoot: string, directoryPath: string): string[] [validation/src/modules/readme-projects/readme-projects.service.ts:43]
+       ↳ Every project path nested under `directoryPath`, at any depth.
+```
+
+</details>
+
+### Breadth
+
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `IssueMetadataCommand.run` | 9 | `IssueMetadataCommand.runBulkAudit`, `IssueMetadataCommand.resolveMetadata`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataCommand.resolveIssueNumber`, `IssueMetadataCommand.reportFailures`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:308` |
+| `PullRequestReleaseSignificanceCommand.run` | 9 | `PullRequestReleaseSignificanceCommand.resolvePullRequestNumber`, `PullRequestReleaseSignificanceCommand.readLivePullRequest`, `PullRequestReleaseSignificanceCommand.failWithMessage`, `PullRequestReleaseSignificanceService.parseConventionalSubject`, `PullRequestReleaseSignificanceService.readReleaseRules`, `PullRequestReleaseSignificanceService.checkSignificance`, `PullRequestReleaseSignificanceCommand.reportFailures`, `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:212` |
+| `PublishablePackagesService.verifyPublishablePackages` | 8 | `PublishablePackagesService.resolvePublishablePackages`, `PublishablePackagesService.filter(…)`, `PublishablePackagesService.findMissingTarballs`, `formatMissingTarballsMessage`, `PublishablePackagesConsumerService.createConsumer`, `PublishablePackagesConsumerService.installConsumer`, `PublishablePackagesChecksService.verifyConsumer`, `PublishablePackagesConsumerService.removeConsumer` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:178` |
+
+<details>
+<summary>142 more callables</summary>
+
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `PullRequestMetadataCommand.run` | 8 | `PullRequestMetadataCommand.resolveMetadata`, `PullRequestMetadataCommand.failWithMessage`, `PullRequestMetadataService.parseTitle`, `PullRequestMetadataService.checkMetadata`, `PullRequestMetadataCommand.resolvePullRequestNumber`, `PullRequestMetadataCommand.reportFailures`, `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:264` |
+| `IssueMetadataCommand.runBulkAudit` | 7 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.listOpenIssues`, `IssueMetadataCommand.failWithMessage`, `IssueMetadataService.checkBulkIssues`, `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:257` |
+| `IssueMetadataService.checkBulkIssues` | 5 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataTypeService.readFromSummary`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:282` |
+| `IssueMetadataService.checkMetadata` | 5 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel`, `IssueMetadataTypeService.check` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:366` |
+| `IssueMetadataCommand.readLiveMetadata` | 5 | `IssueMetadataGithubService.isAvailable`, `IssueMetadataCommand.failWithUsageError`, `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure`, `IssueMetadataService.resolveFromDocument` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:153` |
+| `PublishablePackagesChecksService.verifyConsumer` | 5 | `PublishablePackagesChecksService.verifyTypecheck`, `PublishablePackagesChecksService.verifyBinaries`, `PublishablePackagesChecksService.verifyProjectGraph`, `PublishablePackagesChecksService.verifyGenerator`, `PublishablePackagesChecksService.verifyPluginTarget` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:238` |
+| `PullRequestBodyService.checkBody` | 5 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMalformedSections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findOversizedSections`, `PullRequestBodyService.findUnfilledComments` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:204` |
+| `PullRequestBodyCommand.run` | 5 | `PullRequestBodyCommand.resolveBody`, `PullRequestBodyService.checkBody`, `PullRequestBodyService.extractTemplateComments`, `PullRequestBodyCommand.every(…)`, `PullRequestBodyCommand.reportVerdict` | `validation/src/modules/pull-request-body/pull-request-body.command.ts:143` |
+| `PullRequestMetadataService.checkMetadata` | 5 | `PullRequestMetadataService.groupLabels`, `PullRequestMetadataService.checkTypeLabel`, `PullRequestMetadataService.checkScopeLabels`, `PullRequestMetadataService.record`, `PullRequestMetadataService.checkSourceLabel` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:213` |
+| `PullRequestMetadataCommand.readLiveMetadata` | 5 | `PullRequestMetadataGithubService.isAvailable`, `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataGithubService.run`, `PullRequestMetadataGithubService.describeFailure`, `PullRequestMetadataService.resolveFromDocument` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:154` |
+| `PullRequestReleaseSignificanceService.checkSignificance` | 5 | `PullRequestReleaseSignificanceService.significanceRank`, `PullRequestReleaseSignificanceService.findMostSignificantCommit`, `PullRequestReleaseSignificanceService.findMissingScopes`, `PullRequestReleaseSignificanceService.describeSignificanceFailure`, `PullRequestReleaseSignificanceService.describeMissingScopeFailures` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:215` |
+| `PullRequestReleaseSignificanceCommand.readLivePullRequest` | 5 | `PullRequestReleaseSignificanceGithubService.isAvailable`, `PullRequestReleaseSignificanceCommand.failWithUsageError`, `PullRequestReleaseSignificanceGithubService.run`, `PullRequestReleaseSignificanceGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromDocument` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:114` |
+| `IssueMetadataService.resolveFromDocument` | 4 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataTypeService.readFromDocument`, `IssueMetadataService.readLabelNames` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:435` |
+| `PublishablePackagesConsumerService.createConsumer` | 4 | `PublishablePackagesConsumerService.createTypecheckFiles`, `PublishablePackagesConsumerService.createManifest`, `PublishablePackagesConsumerService.createWorkspaceConfiguration`, `PublishablePackagesConsumerService.writeFiles` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:187` |
+| `SessionWorktreeNameService.findViolations` | 4 | `SessionWorktreeNameService.findLinkedWorktree`, `describeInvalidName`, `SessionWorktreeNameService.isIgnored`, `describeUnignoredWorktree` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:95` |
+| `AuditGovernanceService.auditWorkflowContent` | 3 | `AuditGovernanceService.some(…)`, `AuditGovernanceService.some(…)`, `AuditGovernanceService.collectWorkflowJobViolations` | `validation/src/modules/audit-governance/audit-governance.service.ts:57` |
+| `AuditGovernanceCommand.run` | 3 | `AuditGovernanceService.checkGovernance`, `AuditGovernanceCommand.reportCodeownersVerdict`, `AuditGovernanceCommand.reportWorkflowsVerdict` | `validation/src/modules/audit-governance/audit-governance.command.ts:77` |
+| `IssueMetadataService.checkReleaseSignificanceViolation` | 3 | `IssueMetadataService.resolveIssueReleaseLevel`, `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:47` |
+| `IssueMetadataService.checkTypeLabel` | 3 | `IssueMetadataService.checkTypeLabelPresence`, `IssueMetadataService.map(…)`, `IssueMetadataService.filter(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:131` |
+| `IssueMetadataService.checkHierarchy` | 3 | `IssueMetadataService.extractParentIssueNumber`, `IssueMetadataService.checkReleaseSignificanceViolation`, `IssueMetadataService.computeHierarchyDepth` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:325` |
+| `IssueMetadataService.groupLabels` | 3 | `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)`, `IssueMetadataService.filter(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:409` |
+| `IssueMetadataCommand.resolveMetadata` | 3 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataCommand.readEnvironmentMetadata`, `IssueMetadataCommand.readLiveMetadata` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:229` |
+| `PublishablePackagesChecksService.verifyProjectGraph` | 3 | `PublishablePackagesChecksService.runBinary`, `PublishablePackagesChecksService.every(…)`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:179` |
+| `PublishablePackagesConsumerService.createManifest` | 3 | `PublishablePackagesConsumerService.resolveTarballs`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.readManifest` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:61` |
+| `PublishablePackagesConsumerService.createWorkspaceConfiguration` | 3 | `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.map(…)`, `PublishablePackagesConsumerService.resolveTarballs` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:105` |
+| `PullRequestBodyService.holdsShape` | 3 | `PullRequestBodyService.isDashList`, `PullRequestBodyService.filter(…)`, `PullRequestBodyService.bulletMarkersOf` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:100` |
+| `PullRequestBodyService.findMalformedSections` | 3 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:241` |
+| `PullRequestBodyService.filter(…)` | 3 | `PullRequestBodyService.cleanSectionContent`, `PullRequestBodyService.holdsShape`, `PullRequestBodyService.parseBlocks` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:244` |
+| `PullRequestBodyCommand.reportVerdict` | 3 | `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.map(…)`, `PullRequestBodyCommand.reportList` | `validation/src/modules/pull-request-body/pull-request-body.command.ts:91` |
+| `PullRequestMetadataService.groupLabels` | 3 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.filter(…)` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:254` |
+| `PullRequestMetadataService.resolveFromDocument` | 3 | `PullRequestMetadataService.describeError`, `PullRequestMetadataService.isRecord`, `PullRequestMetadataService.readNames` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:297` |
+| `PullRequestMetadataCommand.resolveMetadata` | 3 | `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataCommand.readEnvironmentMetadata`, `PullRequestMetadataCommand.readLiveMetadata` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:214` |
+| `ReadmeProjectsCommand.run` | 3 | `ReadmeProjectsService.resolveWorkspaceProjectPaths`, `ReadmeProjectsService.readRootReadme`, `ReadmeProjectsService.findUndocumentedProjectPaths` | `validation/src/modules/readme-projects/readme-projects.command.ts:43` |
+| `AuditGovernanceService.collectWorkflowJobViolations` | 2 | `AuditGovernanceService.extractJobBlocks`, `AuditGovernanceService.evaluateJob` | `validation/src/modules/audit-governance/audit-governance.service.ts:84` |
+| `AuditGovernanceService.extractJobBlocks` | 2 | `AuditGovernanceService.sliceJobsSection`, `AuditGovernanceService.applyJobLine` | `validation/src/modules/audit-governance/audit-governance.service.ts:142` |
+| `AuditGovernanceService.parseCodeownersRule` | 2 | `AuditGovernanceService.map(…)`, `AuditGovernanceService.filter(…)` | `validation/src/modules/audit-governance/audit-governance.service.ts:193` |
+| `AuditGovernanceService.checkCodeowners` | 2 | `AuditGovernanceService.find(…)`, `AuditGovernanceService.parseCodeownersLines` | `validation/src/modules/audit-governance/audit-governance.service.ts:230` |
+| `AuditGovernanceService.checkGovernance` | 2 | `AuditGovernanceService.checkCodeowners`, `AuditGovernanceService.checkWorkflows` | `validation/src/modules/audit-governance/audit-governance.service.ts:272` |
+| `AuditGovernanceService.checkWorkflows` | 2 | `AuditGovernanceService.filter(…)`, `AuditGovernanceService.auditWorkflowContent` | `validation/src/modules/audit-governance/audit-governance.service.ts:286` |
+| `CatalogManifestsCommand.run` | 2 | `CatalogManifestsService.resolveWorkspaceManifestPaths`, `CatalogManifestsCommand.flatMap(…)` | `validation/src/modules/catalog-manifests/catalog-manifests.command.ts:44` |
+| `CatalogManifestsCommand.flatMap(…)` | 2 | `CatalogManifestsService.validateManifestDependencies`, `CatalogManifestsService.readManifest` | `validation/src/modules/catalog-manifests/catalog-manifests.command.ts:50` |
+| `IssueMetadataGithubService.listOpenIssues` | 2 | `IssueMetadataGithubService.run`, `IssueMetadataGithubService.describeFailure` | `validation/src/modules/issue-metadata/issue-metadata-github.service.ts:65` |
+| `IssueMetadataTypeService.check` | 2 | `IssueMetadataTypeService.checkSubIssue`, `IssueMetadataTypeService.checkRoot` | `validation/src/modules/issue-metadata/issue-metadata-type.service.ts:82` |
+| `IssueMetadataTypeService.readFromDocument` | 2 | `IssueMetadataTypeService.isRecord`, `IssueMetadataTypeService.hasBodyParent` | `validation/src/modules/issue-metadata/issue-metadata-type.service.ts:101` |
+| `IssueMetadataService.checkSourceLabel` | 2 | `IssueMetadataService.map(…)`, `IssueMetadataService.map(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:100` |
+| `IssueMetadataService.readLabelNames` | 2 | `IssueMetadataService.filter(…)`, `IssueMetadataService.map(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:244` |
+| `IssueMetadataService.resolveFromEnvironment` | 2 | `IssueMetadataService.describeError`, `IssueMetadataService.readLabelNames` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:463` |
+| `IssueMetadataService.resolveIssueReleaseLevel` | 2 | `IssueMetadataService.hasBreakingMarker`, `IssueMetadataService.resolveStandardReleaseLevel` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:495` |
+| `IssueMetadataCommand.failWithMessage` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:79` |
+| `IssueMetadataCommand.failWithUsageError` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:87` |
+| `IssueMetadataCommand.readEnvironmentMetadata` | 2 | `IssueMetadataCommand.failWithUsageError`, `IssueMetadataService.resolveFromEnvironment` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:133` |
+| `IssueMetadataCommand.reportFailures` | 2 | `IssueMetadataCommand.appendToReport`, `IssueMetadataCommand.mirrorToStepSummary` | `validation/src/modules/issue-metadata/issue-metadata.command.ts:183` |
+| `PublishablePackagesProcessService.run` | 2 | `PublishablePackagesProcessService.createEnvironment`, `PublishablePackagesProcessService.filter(…)` | `validation/src/modules/publishable-packages/publishable-packages-process.service.ts:85` |
+| `PublishablePackagesChecksService.verifyBinaries` | 2 | `PublishablePackagesChecksService.flatMap(…)`, `PublishablePackagesChecksService.flatMap(…)` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:62` |
+| `PublishablePackagesChecksService.flatMap(…)` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:70` |
+| `PublishablePackagesChecksService.verifyGenerator` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:86` |
+| `PublishablePackagesChecksService.verifyPluginTarget` | 2 | `PublishablePackagesChecksService.runBinary`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:138` |
+| `PublishablePackagesChecksService.verifyTypecheck` | 2 | `PublishablePackagesProcessService.run`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:205` |
+| `PublishablePackagesConsumerService.installConsumer` | 2 | `PublishablePackagesProcessService.run`, `formatCommandFailure` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:219` |
+| `PublishablePackagesService.findMissingTarballs` | 2 | `PublishablePackagesService.filter(…)`, `PublishablePackagesService.map(…)` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:46` |
+| `PublishablePackagesService.resolvePublishablePackages` | 2 | `PublishablePackagesService.resolveFamilyPackages`, `PublishablePackagesService.toSorted(…)` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:138` |
+| `PublishablePackagesCommand.run` | 2 | `PublishablePackagesService.verifyPublishablePackages`, `formatPublishablePackagesSuccessMessage` | `validation/src/modules/publishable-packages/publishable-packages.command.ts:46` |
+| `PullRequestBodyService.cleanSectionContent` | 2 | `PullRequestBodyService.filter(…)`, `PullRequestBodyService.map(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:74` |
+| `PullRequestBodyService.findEmptySections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.filter(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:225` |
+| `PullRequestBodyService.findMissingHeadings` | 2 | `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:263` |
+| `PullRequestBodyService.findOversizedSections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.flatMap(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:270` |
+| `PullRequestMetadataService.checkSourceLabel` | 2 | `PullRequestMetadataService.map(…)`, `PullRequestMetadataService.map(…)` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:93` |
+| `PullRequestMetadataService.checkTypeLabel` | 2 | `PullRequestMetadataService.map(…)`, `PullRequestMetadataService.filter(…)` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:124` |
+| `PullRequestMetadataService.readNames` | 2 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.map(…)` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:199` |
+| `PullRequestMetadataService.parseTitle` | 2 | `PullRequestMetadataService.filter(…)`, `PullRequestMetadataService.map(…)` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:276` |
+| `PullRequestMetadataService.resolveFromEnvironment` | 2 | `PullRequestMetadataService.parseJsonArray`, `PullRequestMetadataService.readNames` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:332` |
+| `PullRequestMetadataCommand.failWithMessage` | 2 | `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:78` |
+| `PullRequestMetadataCommand.failWithUsageError` | 2 | `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:86` |
+| `PullRequestMetadataCommand.readEnvironmentMetadata` | 2 | `PullRequestMetadataCommand.failWithUsageError`, `PullRequestMetadataService.resolveFromEnvironment` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:132` |
+| `PullRequestMetadataCommand.reportFailures` | 2 | `PullRequestMetadataCommand.appendToReport`, `PullRequestMetadataCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-metadata/pull-request-metadata.command.ts:186` |
+| `PullRequestReleaseSignificanceService.describeSignificanceFailure` | 2 | `PullRequestReleaseSignificanceService.releaseLevelName`, `PullRequestReleaseSignificanceService.find(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:61` |
+| `PullRequestReleaseSignificanceService.readRawCommit` | 2 | `PullRequestReleaseSignificanceService.isRecord`, `PullRequestReleaseSignificanceService.parseConventionalSubject` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:164` |
+| `PullRequestReleaseSignificanceService.parseConventionalSubject` | 2 | `PullRequestReleaseSignificanceService.filter(…)`, `PullRequestReleaseSignificanceService.map(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:260` |
+| `PullRequestReleaseSignificanceService.resolveFromDocument` | 2 | `PullRequestReleaseSignificanceService.describeError`, `PullRequestReleaseSignificanceService.map(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:316` |
+| `PullRequestReleaseSignificanceService.significanceRank` | 2 | `PullRequestReleaseSignificanceService.matchRule`, `PullRequestReleaseSignificanceService.rankOfRelease` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:342` |
+| `PullRequestReleaseSignificanceCommand.failWithMessage` | 2 | `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:73` |
+| `PullRequestReleaseSignificanceCommand.failWithUsageError` | 2 | `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:81` |
+| `PullRequestReleaseSignificanceCommand.reportFailures` | 2 | `PullRequestReleaseSignificanceCommand.appendToReport`, `PullRequestReleaseSignificanceCommand.mirrorToStepSummary` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:146` |
+| `SessionBranchNameService.judgeCurrentBranch` | 2 | `SessionBranchNameService.readCurrentBranch`, `SessionBranchNameService.readBranchNameRules` | `validation/src/modules/session-branch-name/session-branch-name.service.ts:50` |
+| `AuditGovernanceService.parseCodeownersLines` | 1 | `AuditGovernanceService.parseCodeownersRule` | `validation/src/modules/audit-governance/audit-governance.service.ts:172` |
+| `AuditGovernanceService.sliceJobsSection` | 1 | `AuditGovernanceService.findIndex(…)` | `validation/src/modules/audit-governance/audit-governance.service.ts:221` |
+| `CatalogManifestsService.isInternalWorkspaceDependency` | 1 | `CatalogManifestsService.some(…)` | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:67` |
+| `CatalogManifestsService.resolveWorkspaceManifestPaths` | 1 | `CatalogManifestsService.findManifestPaths` | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:81` |
+| `CatalogManifestsService.validateManifestDependencies` | 1 | `CatalogManifestsService.isInternalWorkspaceDependency` | `validation/src/modules/catalog-manifests/catalog-manifests.service.ts:98` |
+| `IssueMetadataGithubService.describeFailure` | 1 | `IssueMetadataGithubService.filter(…)` | `validation/src/modules/issue-metadata/issue-metadata-github.service.ts:51` |
+| `IssueMetadataGithubService.isAvailable` | 1 | `IssueMetadataGithubService.run` | `validation/src/modules/issue-metadata/issue-metadata-github.service.ts:60` |
+| `IssueMetadataTypeService.checkRoot` | 1 | `IssueMetadataTypeService.map(…)` | `validation/src/modules/issue-metadata/issue-metadata-type.service.ts:32` |
+| `IssueMetadataTypeService.readFromSummary` | 1 | `IssueMetadataTypeService.hasBodyParent` | `validation/src/modules/issue-metadata/issue-metadata-type.service.ts:121` |
+| `IssueMetadataService.checkTypeLabelPresence` | 1 | `IssueMetadataService.map(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:166` |
+| `IssueMetadataService.computeHierarchyDepth` | 1 | `IssueMetadataService.extractParentIssueNumber` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:186` |
+| `IssueMetadataService.map(…)` | 1 | `IssueMetadataService.isRecord` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:246` |
+| `IssueMetadataService.resolveStandardReleaseLevel` | 1 | `IssueMetadataService.find(…)` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:260` |
+| `IssueMetadataService.parseFormAnswers` | 1 | `IssueMetadataService.extractFormField` | `validation/src/modules/issue-metadata/issue-metadata.service.ts:424` |
+| `LockfileService.checkLockfile` | 1 | `LockfileService.runFrozenInstall` | `validation/src/modules/lockfile/lockfile.service.ts:60` |
+| `LockfileCommand.run` | 1 | `LockfileService.checkLockfile` | `validation/src/modules/lockfile/lockfile.command.ts:50` |
+| `PublishablePackagesChecksService.runBinary` | 1 | `PublishablePackagesProcessService.run` | `validation/src/modules/publishable-packages/publishable-packages-checks.service.ts:49` |
+| `PublishablePackagesConsumerService.map(…)` | 1 | `PublishablePackagesConsumerService.readToolVersion` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:63` |
+| `PublishablePackagesConsumerService.createTypecheckFiles` | 1 | `PublishablePackagesConsumerService.map(…)` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:83` |
+| `PublishablePackagesConsumerService.readToolVersion` | 1 | `PublishablePackagesConsumerService.readManifest` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:140` |
+| `PublishablePackagesConsumerService.resolveTarballs` | 1 | `PublishablePackagesConsumerService.map(…)` | `validation/src/modules/publishable-packages/publishable-packages-consumer.service.ts:156` |
+| `PublishablePackagesService.resolveFamilyPackages` | 1 | `PublishablePackagesService.parsePackageCandidate` | `validation/src/modules/publishable-packages/publishable-packages.service.ts:112` |
+| `PullRequestBodyService.bulletMarkersOf` | 1 | `PullRequestBodyService.sourceOf` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:46` |
+| `PullRequestBodyService.countWords` | 1 | `PullRequestBodyService.filter(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:86` |
+| `PullRequestBodyService.isDashList` | 1 | `PullRequestBodyService.every(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:132` |
+| `PullRequestBodyService.every(…)` | 1 | `PullRequestBodyService.sourceOf` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:136` |
+| `PullRequestBodyService.parseBlocks` | 1 | `PullRequestBodyService.filter(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:148` |
+| `PullRequestBodyService.splitSections` | 1 | `PullRequestBodyService.map(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:179` |
+| `PullRequestBodyService.extractTemplateComments` | 1 | `PullRequestBodyService.map(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:218` |
+| `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.cleanSectionContent` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:228` |
+| `PullRequestBodyService.flatMap(…)` | 1 | `PullRequestBodyService.countWords` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:273` |
+| `PullRequestBodyService.findUnfilledComments` | 1 | `PullRequestBodyService.filter(…)` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:291` |
+| `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.prefixOf` | `validation/src/modules/pull-request-body/pull-request-body.service.ts:297` |
+| `PullRequestBodyCommand.resolveBody` | 1 | `PullRequestBodyCommand.failWithUsageError` | `validation/src/modules/pull-request-body/pull-request-body.command.ts:118` |
+| `PullRequestMetadataGithubService.describeFailure` | 1 | `PullRequestMetadataGithubService.filter(…)` | `validation/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts:47` |
+| `PullRequestMetadataGithubService.isAvailable` | 1 | `PullRequestMetadataGithubService.run` | `validation/src/modules/pull-request-metadata/pull-request-metadata-github.service.ts:56` |
+| `PullRequestMetadataService.nameOf` | 1 | `PullRequestMetadataService.isRecord` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:162` |
+| `PullRequestMetadataService.parseJsonArray` | 1 | `PullRequestMetadataService.describeError` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:177` |
+| `PullRequestMetadataService.map(…)` | 1 | `PullRequestMetadataService.nameOf` | `validation/src/modules/pull-request-metadata/pull-request-metadata.service.ts:201` |
+| `PullRequestReleaseSignificanceGithubService.describeFailure` | 1 | `PullRequestReleaseSignificanceGithubService.filter(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance-github.service.ts:42` |
+| `PullRequestReleaseSignificanceGithubService.isAvailable` | 1 | `PullRequestReleaseSignificanceGithubService.run` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance-github.service.ts:51` |
+| `PullRequestReleaseSignificanceService.describeMissingScopeFailures` | 1 | `PullRequestReleaseSignificanceService.map(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:51` |
+| `PullRequestReleaseSignificanceService.findMissingScopes` | 1 | `PullRequestReleaseSignificanceService.some(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:84` |
+| `PullRequestReleaseSignificanceService.findMostSignificantCommit` | 1 | `PullRequestReleaseSignificanceService.significanceRank` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:114` |
+| `PullRequestReleaseSignificanceService.matchRule` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:151` |
+| `PullRequestReleaseSignificanceService.find(…)` | 1 | `PullRequestReleaseSignificanceService.ruleMatches` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:155` |
+| `PullRequestReleaseSignificanceService.releaseLevelName` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:183` |
+| `PullRequestReleaseSignificanceService.readReleaseRules` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:294` |
+| `PullRequestReleaseSignificanceService.map(…)` | 1 | `PullRequestReleaseSignificanceService.readRawCommit` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.service.ts:335` |
+| `PullRequestReleaseSignificanceCommand.resolvePullRequestNumber` | 1 | `PullRequestReleaseSignificanceCommand.failWithUsageError` | `validation/src/modules/pull-request-release-significance/pull-request-release-significance.command.ts:173` |
+| `ReadmeProjectsService.findUndocumentedProjectPaths` | 1 | `ReadmeProjectsService.filter(…)` | `validation/src/modules/readme-projects/readme-projects.service.ts:72` |
+| `ReadmeProjectsService.resolveWorkspaceProjectPaths` | 1 | `ReadmeProjectsService.findProjectPaths` | `validation/src/modules/readme-projects/readme-projects.service.ts:87` |
+| `SessionBranchNameService.readCurrentBranch` | 1 | `SessionBranchNameGitService.run` | `validation/src/modules/session-branch-name/session-branch-name.service.ts:41` |
+| `SessionBranchNameCommand.run` | 1 | `SessionBranchNameService.judgeCurrentBranch` | `validation/src/modules/session-branch-name/session-branch-name.command.ts:50` |
+| `SessionWorktreeNameService.findLinkedWorktree` | 1 | `SessionWorktreeNameService.readGit` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:44` |
+| `SessionWorktreeNameService.isIgnored` | 1 | `SessionWorktreeNameGitService.run` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:69` |
+| `SessionWorktreeNameService.readGit` | 1 | `SessionWorktreeNameGitService.run` | `validation/src/modules/session-worktree-name/session-worktree-name.service.ts:82` |
+| `SessionWorktreeNameCommand.run` | 1 | `SessionWorktreeNameService.findViolations` | `validation/src/modules/session-worktree-name/session-worktree-name.command.ts:51` |
+
+</details>
+<!-- callidescope:end -->
+
+## 🕸️ Codependix
+
+Dependency graphs exported by [codependix](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-cli), regenerated by `nx run configuration:codependix:write`.
+
+### Nx Neighborhood
+
+<!-- codependix:start name="codependix-nx-projects" -->
+```mermaid
+graph LR
+  logging["logging"]
+  validation["validation"]
+  validation --> logging
+  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
+  class validation subject
+```
+<!-- codependix:end name="codependix-nx-projects" -->
+
+### NestJS Module Graph
+
+<!-- codependix:start name="codependix-nestjs-modules" -->
+```mermaid
+flowchart LR
+  AuditGovernanceModule
+  CatalogManifestsModule
+  ConfigModule([ConfigModule])
+  DiscoveryModule
+  IssueMetadataModule
+  LockfileModule
+  LoggerModule([LoggerModule])
+  MainModule
+  PublishablePackagesModule
+  PullRequestBodyModule
+  PullRequestMetadataModule
+  PullRequestReleaseSignificanceModule
+  ReadmeProjectsModule
+  SessionBranchNameModule
+  SessionWorktreeNameModule
+  MainModule --> AuditGovernanceModule
+  MainModule --> CatalogManifestsModule
+  MainModule --> DiscoveryModule
+  MainModule --> IssueMetadataModule
+  MainModule --> LockfileModule
+  MainModule --> PublishablePackagesModule
+  MainModule --> PullRequestBodyModule
+  MainModule --> PullRequestMetadataModule
+  MainModule --> PullRequestReleaseSignificanceModule
+  MainModule --> ReadmeProjectsModule
+  MainModule --> SessionBranchNameModule
+  MainModule --> SessionWorktreeNameModule
+```
+
+_Rounded modules are global: every module can inject them, so their edges are left out._
+<!-- codependix:end name="codependix-nestjs-modules" -->
+
+### File Imports
+
+<!-- codependix:start name="codependix-file-imports" -->
+```mermaid
+graph LR
+  file_callidescope_config_ts["callidescope.config.ts"]
+  file_codependix_config_ts["codependix.config.ts"]
+  file_codometer_config_ts["codometer.config.ts"]
+  file_eslint_config_ts["eslint.config.ts"]
+  file_src_modules_audit_governance_audit_governance_command_ts["src/modules/audit-governance/audit-governance.command.ts"]
+  file_src_modules_audit_governance_audit_governance_command_unit_test_ts["src/modules/audit-governance/audit-governance.command.unit.test.ts"]
+  file_src_modules_audit_governance_audit_governance_constants_ts["src/modules/audit-governance/audit-governance.constants.ts"]
+  file_src_modules_audit_governance_audit_governance_module_ts["src/modules/audit-governance/audit-governance.module.ts"]
+  file_src_modules_audit_governance_audit_governance_module_unit_test_ts["src/modules/audit-governance/audit-governance.module.unit.test.ts"]
+  file_src_modules_audit_governance_audit_governance_service_ts["src/modules/audit-governance/audit-governance.service.ts"]
+  file_src_modules_audit_governance_audit_governance_service_unit_test_ts["src/modules/audit-governance/audit-governance.service.unit.test.ts"]
+  file_src_modules_audit_governance_audit_governance_types_ts["src/modules/audit-governance/audit-governance.types.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_command_ts["src/modules/catalog-manifests/catalog-manifests.command.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts["src/modules/catalog-manifests/catalog-manifests.command.unit.test.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_constants_ts["src/modules/catalog-manifests/catalog-manifests.constants.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_module_ts["src/modules/catalog-manifests/catalog-manifests.module.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_module_unit_test_ts["src/modules/catalog-manifests/catalog-manifests.module.unit.test.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_service_ts["src/modules/catalog-manifests/catalog-manifests.service.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_service_unit_test_ts["src/modules/catalog-manifests/catalog-manifests.service.unit.test.ts"]
+  file_src_modules_catalog_manifests_catalog_manifests_types_ts["src/modules/catalog-manifests/catalog-manifests.types.ts"]
+  file_src_modules_issue_metadata_issue_metadata_github_service_ts["src/modules/issue-metadata/issue-metadata-github.service.ts"]
+  file_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts["src/modules/issue-metadata/issue-metadata-github.service.unit.test.ts"]
+  file_src_modules_issue_metadata_issue_metadata_type_service_ts["src/modules/issue-metadata/issue-metadata-type.service.ts"]
+  file_src_modules_issue_metadata_issue_metadata_type_service_unit_test_ts["src/modules/issue-metadata/issue-metadata-type.service.unit.test.ts"]
+  file_src_modules_issue_metadata_issue_metadata_command_ts["src/modules/issue-metadata/issue-metadata.command.ts"]
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts["src/modules/issue-metadata/issue-metadata.command.unit.test.ts"]
+  file_src_modules_issue_metadata_issue_metadata_constants_ts["src/modules/issue-metadata/issue-metadata.constants.ts"]
+  file_src_modules_issue_metadata_issue_metadata_module_ts["src/modules/issue-metadata/issue-metadata.module.ts"]
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts["src/modules/issue-metadata/issue-metadata.module.unit.test.ts"]
+  file_src_modules_issue_metadata_issue_metadata_service_ts["src/modules/issue-metadata/issue-metadata.service.ts"]
+  file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts["src/modules/issue-metadata/issue-metadata.service.unit.test.ts"]
+  file_src_modules_issue_metadata_issue_metadata_types_ts["src/modules/issue-metadata/issue-metadata.types.ts"]
+  file_src_modules_lockfile_lockfile_command_ts["src/modules/lockfile/lockfile.command.ts"]
+  file_src_modules_lockfile_lockfile_command_unit_test_ts["src/modules/lockfile/lockfile.command.unit.test.ts"]
+  file_src_modules_lockfile_lockfile_constants_ts["src/modules/lockfile/lockfile.constants.ts"]
+  file_src_modules_lockfile_lockfile_module_ts["src/modules/lockfile/lockfile.module.ts"]
+  file_src_modules_lockfile_lockfile_module_unit_test_ts["src/modules/lockfile/lockfile.module.unit.test.ts"]
+  file_src_modules_lockfile_lockfile_service_ts["src/modules/lockfile/lockfile.service.ts"]
+  file_src_modules_lockfile_lockfile_service_unit_test_ts["src/modules/lockfile/lockfile.service.unit.test.ts"]
+  file_src_modules_lockfile_lockfile_types_ts["src/modules/lockfile/lockfile.types.ts"]
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts["src/modules/publishable-packages/publishable-packages-checks.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts["src/modules/publishable-packages/publishable-packages-checks.service.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts["src/modules/publishable-packages/publishable-packages-consumer.constants.ts"]
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts["src/modules/publishable-packages/publishable-packages-consumer.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts["src/modules/publishable-packages/publishable-packages-consumer.service.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts["src/modules/publishable-packages/publishable-packages-fixtures.constants.ts"]
+  file_src_modules_publishable_packages_publishable_packages_process_service_ts["src/modules/publishable-packages/publishable-packages-process.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts["src/modules/publishable-packages/publishable-packages-process.service.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_command_ts["src/modules/publishable-packages/publishable-packages.command.ts"]
+  file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts["src/modules/publishable-packages/publishable-packages.command.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_constants_ts["src/modules/publishable-packages/publishable-packages.constants.ts"]
+  file_src_modules_publishable_packages_publishable_packages_module_ts["src/modules/publishable-packages/publishable-packages.module.ts"]
+  file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts["src/modules/publishable-packages/publishable-packages.module.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_service_ts["src/modules/publishable-packages/publishable-packages.service.ts"]
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts["src/modules/publishable-packages/publishable-packages.service.unit.test.ts"]
+  file_src_modules_publishable_packages_publishable_packages_types_ts["src/modules/publishable-packages/publishable-packages.types.ts"]
+  file_src_modules_pull_request_body_pull_request_body_command_ts["src/modules/pull-request-body/pull-request-body.command.ts"]
+  file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts["src/modules/pull-request-body/pull-request-body.command.unit.test.ts"]
+  file_src_modules_pull_request_body_pull_request_body_constants_ts["src/modules/pull-request-body/pull-request-body.constants.ts"]
+  file_src_modules_pull_request_body_pull_request_body_module_ts["src/modules/pull-request-body/pull-request-body.module.ts"]
+  file_src_modules_pull_request_body_pull_request_body_module_unit_test_ts["src/modules/pull-request-body/pull-request-body.module.unit.test.ts"]
+  file_src_modules_pull_request_body_pull_request_body_service_ts["src/modules/pull-request-body/pull-request-body.service.ts"]
+  file_src_modules_pull_request_body_pull_request_body_service_unit_test_ts["src/modules/pull-request-body/pull-request-body.service.unit.test.ts"]
+  file_src_modules_pull_request_body_pull_request_body_types_ts["src/modules/pull-request-body/pull-request-body.types.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts["src/modules/pull-request-metadata/pull-request-metadata-github.service.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_github_service_unit_test_ts["src/modules/pull-request-metadata/pull-request-metadata-github.service.unit.test.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_ts["src/modules/pull-request-metadata/pull-request-metadata.command.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts["src/modules/pull-request-metadata/pull-request-metadata.command.unit.test.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_constants_ts["src/modules/pull-request-metadata/pull-request-metadata.constants.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_ts["src/modules/pull-request-metadata/pull-request-metadata.module.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts["src/modules/pull-request-metadata/pull-request-metadata.module.unit.test.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_service_ts["src/modules/pull-request-metadata/pull-request-metadata.service.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_service_unit_test_ts["src/modules/pull-request-metadata/pull-request-metadata.service.unit.test.ts"]
+  file_src_modules_pull_request_metadata_pull_request_metadata_types_ts["src/modules/pull-request-metadata/pull-request-metadata.types.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts["src/modules/pull-request-release-significance/pull-request-release-significance-github.service.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_unit_test_ts["src/modules/pull-request-release-significance/pull-request-release-significance-github.service.unit.test.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts["src/modules/pull-request-release-significance/pull-request-release-significance.command.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts["src/modules/pull-request-release-significance/pull-request-release-significance.command.unit.test.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts["src/modules/pull-request-release-significance/pull-request-release-significance.constants.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts["src/modules/pull-request-release-significance/pull-request-release-significance.module.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts["src/modules/pull-request-release-significance/pull-request-release-significance.module.unit.test.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts["src/modules/pull-request-release-significance/pull-request-release-significance.service.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_service_unit_test_ts["src/modules/pull-request-release-significance/pull-request-release-significance.service.unit.test.ts"]
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts["src/modules/pull-request-release-significance/pull-request-release-significance.types.ts"]
+  file_src_modules_readme_projects_readme_projects_command_ts["src/modules/readme-projects/readme-projects.command.ts"]
+  file_src_modules_readme_projects_readme_projects_command_unit_test_ts["src/modules/readme-projects/readme-projects.command.unit.test.ts"]
+  file_src_modules_readme_projects_readme_projects_constants_ts["src/modules/readme-projects/readme-projects.constants.ts"]
+  file_src_modules_readme_projects_readme_projects_module_ts["src/modules/readme-projects/readme-projects.module.ts"]
+  file_src_modules_readme_projects_readme_projects_module_unit_test_ts["src/modules/readme-projects/readme-projects.module.unit.test.ts"]
+  file_src_modules_readme_projects_readme_projects_service_ts["src/modules/readme-projects/readme-projects.service.ts"]
+  file_src_modules_readme_projects_readme_projects_service_unit_test_ts["src/modules/readme-projects/readme-projects.service.unit.test.ts"]
+  file_src_modules_readme_projects_readme_projects_types_ts["src/modules/readme-projects/readme-projects.types.ts"]
+  file_src_modules_session_branch_name_session_branch_name_git_service_ts["src/modules/session-branch-name/session-branch-name-git.service.ts"]
+  file_src_modules_session_branch_name_session_branch_name_git_service_unit_test_ts["src/modules/session-branch-name/session-branch-name-git.service.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_command_ts["src/modules/session-branch-name/session-branch-name.command.ts"]
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts["src/modules/session-branch-name/session-branch-name.command.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_constants_ts["src/modules/session-branch-name/session-branch-name.constants.ts"]
+  file_src_modules_session_branch_name_session_branch_name_module_ts["src/modules/session-branch-name/session-branch-name.module.ts"]
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts["src/modules/session-branch-name/session-branch-name.module.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_service_ts["src/modules/session-branch-name/session-branch-name.service.ts"]
+  file_src_modules_session_branch_name_session_branch_name_service_unit_test_ts["src/modules/session-branch-name/session-branch-name.service.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_types_ts["src/modules/session-branch-name/session-branch-name.types.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_ts["src/modules/session-worktree-name/session-worktree-name-git.service.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_unit_test_ts["src/modules/session-worktree-name/session-worktree-name-git.service.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_command_ts["src/modules/session-worktree-name/session-worktree-name.command.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts["src/modules/session-worktree-name/session-worktree-name.command.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_constants_ts["src/modules/session-worktree-name/session-worktree-name.constants.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts["src/modules/session-worktree-name/session-worktree-name.module.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts["src/modules/session-worktree-name/session-worktree-name.module.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts["src/modules/session-worktree-name/session-worktree-name.service.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts["src/modules/session-worktree-name/session-worktree-name.service.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_types_ts["src/modules/session-worktree-name/session-worktree-name.types.ts"]
+  file_src_validation_constants_ts["src/validation.constants.ts"]
+  file_src_validation_main_end_to_end_test_ts["src/validation.main.end-to-end.test.ts"]
+  file_src_validation_main_ts["src/validation.main.ts"]
+  file_src_validation_main_unit_test_ts["src/validation.main.unit.test.ts"]
+  file_src_validation_module_ts["src/validation.module.ts"]
+  file_src_validation_repl_ts["src/validation.repl.ts"]
+  file_src_validation_repl_unit_test_ts["src/validation.repl.unit.test.ts"]
+  file_testing_mocks_ts["testing/mocks.ts"]
+  file_testing_setup_ts["testing/setup.ts"]
+  file_vitest_config_ts["vitest.config.ts"]
+  file_src_modules_audit_governance_audit_governance_command_ts --> file_src_modules_audit_governance_audit_governance_service_ts
+  file_src_modules_audit_governance_audit_governance_command_ts --> file_src_modules_audit_governance_audit_governance_types_ts
+  file_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_src_modules_audit_governance_audit_governance_command_ts
+  file_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_src_modules_audit_governance_audit_governance_service_ts
+  file_src_modules_audit_governance_audit_governance_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_audit_governance_audit_governance_module_ts --> file_src_modules_audit_governance_audit_governance_command_ts
+  file_src_modules_audit_governance_audit_governance_module_ts --> file_src_modules_audit_governance_audit_governance_service_ts
+  file_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_src_modules_audit_governance_audit_governance_command_ts
+  file_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_src_modules_audit_governance_audit_governance_module_ts
+  file_src_modules_audit_governance_audit_governance_module_unit_test_ts --> file_src_modules_audit_governance_audit_governance_service_ts
+  file_src_modules_audit_governance_audit_governance_service_ts --> file_src_modules_audit_governance_audit_governance_constants_ts
+  file_src_modules_audit_governance_audit_governance_service_ts --> file_src_modules_audit_governance_audit_governance_types_ts
+  file_src_modules_audit_governance_audit_governance_service_unit_test_ts --> file_src_modules_audit_governance_audit_governance_service_ts
+  file_src_modules_catalog_manifests_catalog_manifests_command_ts --> file_src_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_catalog_manifests_catalog_manifests_constants_ts --> file_src_modules_catalog_manifests_catalog_manifests_types_ts
+  file_src_modules_catalog_manifests_catalog_manifests_module_ts --> file_src_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_catalog_manifests_catalog_manifests_module_ts --> file_src_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_catalog_manifests_catalog_manifests_module_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_catalog_manifests_catalog_manifests_module_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_modules_catalog_manifests_catalog_manifests_module_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_catalog_manifests_catalog_manifests_service_ts --> file_src_modules_catalog_manifests_catalog_manifests_constants_ts
+  file_src_modules_catalog_manifests_catalog_manifests_service_ts --> file_src_modules_catalog_manifests_catalog_manifests_types_ts
+  file_src_modules_catalog_manifests_catalog_manifests_service_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_catalog_manifests_catalog_manifests_service_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_types_ts
+  file_src_modules_issue_metadata_issue_metadata_github_service_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_github_service_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_github_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_type_service_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_type_service_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_type_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_command_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_command_ts
+  file_src_modules_issue_metadata_issue_metadata_module_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_github_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_command_ts
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
+  file_src_modules_issue_metadata_issue_metadata_module_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
+  file_src_modules_issue_metadata_issue_metadata_service_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
+  file_src_modules_issue_metadata_issue_metadata_service_ts --> file_src_modules_issue_metadata_issue_metadata_constants_ts
+  file_src_modules_issue_metadata_issue_metadata_service_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_type_service_ts
+  file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_service_ts
+  file_src_modules_issue_metadata_issue_metadata_service_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_types_ts
+  file_src_modules_lockfile_lockfile_command_ts --> file_src_modules_lockfile_lockfile_constants_ts
+  file_src_modules_lockfile_lockfile_command_ts --> file_src_modules_lockfile_lockfile_service_ts
+  file_src_modules_lockfile_lockfile_command_unit_test_ts --> file_src_modules_lockfile_lockfile_command_ts
+  file_src_modules_lockfile_lockfile_command_unit_test_ts --> file_src_modules_lockfile_lockfile_service_ts
+  file_src_modules_lockfile_lockfile_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_lockfile_lockfile_module_ts --> file_src_modules_lockfile_lockfile_command_ts
+  file_src_modules_lockfile_lockfile_module_ts --> file_src_modules_lockfile_lockfile_service_ts
+  file_src_modules_lockfile_lockfile_module_unit_test_ts --> file_src_modules_lockfile_lockfile_command_ts
+  file_src_modules_lockfile_lockfile_module_unit_test_ts --> file_src_modules_lockfile_lockfile_module_ts
+  file_src_modules_lockfile_lockfile_module_unit_test_ts --> file_src_modules_lockfile_lockfile_service_ts
+  file_src_modules_lockfile_lockfile_service_ts --> file_src_modules_lockfile_lockfile_constants_ts
+  file_src_modules_lockfile_lockfile_service_ts --> file_src_modules_lockfile_lockfile_types_ts
+  file_src_modules_lockfile_lockfile_service_unit_test_ts --> file_src_modules_lockfile_lockfile_constants_ts
+  file_src_modules_lockfile_lockfile_service_unit_test_ts --> file_src_modules_lockfile_lockfile_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_checks_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_fixtures_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_consumer_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_process_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_command_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_command_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_publishable_packages_publishable_packages_command_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_command_ts
+  file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_publishable_packages_publishable_packages_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_process_service_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_command_ts
+  file_src_modules_publishable_packages_publishable_packages_module_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_command_ts
+  file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
+  file_src_modules_publishable_packages_publishable_packages_module_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_service_ts --> file_src_modules_publishable_packages_publishable_packages_types_ts
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_checks_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_consumer_service_ts
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_constants_ts
+  file_src_modules_publishable_packages_publishable_packages_service_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_service_ts
+  file_src_modules_pull_request_body_pull_request_body_command_ts --> file_src_modules_pull_request_body_pull_request_body_constants_ts
+  file_src_modules_pull_request_body_pull_request_body_command_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
+  file_src_modules_pull_request_body_pull_request_body_command_ts --> file_src_modules_pull_request_body_pull_request_body_types_ts
+  file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_command_ts
+  file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_constants_ts
+  file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
+  file_src_modules_pull_request_body_pull_request_body_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_pull_request_body_pull_request_body_constants_ts --> file_src_modules_pull_request_body_pull_request_body_types_ts
+  file_src_modules_pull_request_body_pull_request_body_module_ts --> file_src_modules_pull_request_body_pull_request_body_command_ts
+  file_src_modules_pull_request_body_pull_request_body_module_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
+  file_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_command_ts
+  file_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
+  file_src_modules_pull_request_body_pull_request_body_module_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
+  file_src_modules_pull_request_body_pull_request_body_service_ts --> file_src_modules_pull_request_body_pull_request_body_constants_ts
+  file_src_modules_pull_request_body_pull_request_body_service_ts --> file_src_modules_pull_request_body_pull_request_body_types_ts
+  file_src_modules_pull_request_body_pull_request_body_service_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_types_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_github_service_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_github_service_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_types_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_command_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_types_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_command_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_github_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_command_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_module_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_service_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_constants_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_service_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_types_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_service_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_service_ts
+  file_src_modules_pull_request_metadata_pull_request_metadata_service_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_types_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_github_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_command_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_module_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_constants_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_service_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_service_ts
+  file_src_modules_pull_request_release_significance_pull_request_release_significance_service_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_types_ts
+  file_src_modules_readme_projects_readme_projects_command_ts --> file_src_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_src_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_src_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_readme_projects_readme_projects_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_readme_projects_readme_projects_module_ts --> file_src_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_readme_projects_readme_projects_module_ts --> file_src_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_readme_projects_readme_projects_module_ts
+  file_src_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_readme_projects_readme_projects_service_ts --> file_src_modules_readme_projects_readme_projects_constants_ts
+  file_src_modules_readme_projects_readme_projects_service_unit_test_ts --> file_src_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_session_branch_name_session_branch_name_git_service_ts --> file_src_modules_session_branch_name_session_branch_name_types_ts
+  file_src_modules_session_branch_name_session_branch_name_git_service_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_ts --> file_src_modules_session_branch_name_session_branch_name_constants_ts
+  file_src_modules_session_branch_name_session_branch_name_command_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_command_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_types_ts
+  file_src_modules_session_branch_name_session_branch_name_module_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_module_ts --> file_src_modules_session_branch_name_session_branch_name_command_ts
+  file_src_modules_session_branch_name_session_branch_name_module_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_command_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_module_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_service_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_service_ts --> file_src_modules_session_branch_name_session_branch_name_constants_ts
+  file_src_modules_session_branch_name_session_branch_name_service_ts --> file_src_modules_session_branch_name_session_branch_name_types_ts
+  file_src_modules_session_branch_name_session_branch_name_service_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_service_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_ts --> file_src_modules_session_worktree_name_session_worktree_name_constants_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_module_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_constants_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_validation_main_end_to_end_test_ts --> file_src_validation_constants_ts
+  file_src_validation_main_ts --> file_src_validation_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_audit_governance_audit_governance_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_lockfile_lockfile_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_readme_projects_readme_projects_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_module_ts
+  file_src_validation_main_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_module_ts
+  file_src_validation_module_ts --> file_src_modules_audit_governance_audit_governance_module_ts
+  file_src_validation_module_ts --> file_src_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_validation_module_ts --> file_src_modules_issue_metadata_issue_metadata_module_ts
+  file_src_validation_module_ts --> file_src_modules_lockfile_lockfile_module_ts
+  file_src_validation_module_ts --> file_src_modules_publishable_packages_publishable_packages_module_ts
+  file_src_validation_module_ts --> file_src_modules_pull_request_body_pull_request_body_module_ts
+  file_src_validation_module_ts --> file_src_modules_pull_request_metadata_pull_request_metadata_module_ts
+  file_src_validation_module_ts --> file_src_modules_pull_request_release_significance_pull_request_release_significance_module_ts
+  file_src_validation_module_ts --> file_src_modules_readme_projects_readme_projects_module_ts
+  file_src_validation_module_ts --> file_src_modules_session_branch_name_session_branch_name_module_ts
+  file_src_validation_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_module_ts
+  file_src_validation_module_ts --> file_src_validation_constants_ts
+  file_src_validation_repl_ts --> file_src_validation_module_ts
+```
+<!-- codependix:end name="codependix-file-imports" -->
+
+<!-- codometer:start -->
+
+## ⏲️ Codometer
+
+### Project
+
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-16122-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-509.50_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-122-3178c6?style=flat-square)
+
+### TypeScript
+
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-122-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-45-0ea5e9?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
+![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-55-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-383-6366f1?style=flat-square)
+![Static Methods](https://img.shields.io/badge/Static_Methods-1-166534?style=flat-square)
+
+### JavaScript
+
+![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-45-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-45-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-837-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-268-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-936-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-169-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-736-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-549-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-213-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-578-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1217-475569?style=flat-square)
+![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
+
+### Python
+
+![Python Files](https://img.shields.io/badge/Python_Files-0-3776ab?style=flat-square)
+![Python Lines](https://img.shields.io/badge/Python_Lines-0-4b8bbe?style=flat-square)
+![Python Classes](https://img.shields.io/badge/Python_Classes-0-7c3aed?style=flat-square)
+![Python Functions](https://img.shields.io/badge/Python_Functions-0-16a34a?style=flat-square)
+![Python Protocols](https://img.shields.io/badge/Python_Protocols-0-0ea5e9?style=flat-square)
+![Python Constants](https://img.shields.io/badge/Python_Constants-0-dc2626?style=flat-square)
+![Python Imports](https://img.shields.io/badge/Python_Imports-0-0284c7?style=flat-square)
+![Python Decorators](https://img.shields.io/badge/Python_Decorators-0-db2777?style=flat-square)
+![Docstrings](https://img.shields.io/badge/Docstrings-0-6366f1?style=flat-square)
+![Docstring Lines](https://img.shields.io/badge/Docstring_Lines-0-818cf8?style=flat-square)
+![Python Comments](https://img.shields.io/badge/Python_Comments-0-64748b?style=flat-square)
+![Python Comment Lines](https://img.shields.io/badge/Python_Comment_Lines-0-475569?style=flat-square)
+
+### JSON
+
+![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-244-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-55-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-19-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-140-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-121-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
+![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-63-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-206-dc2626?style=flat-square)
+![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
+
+### YAML
+
+![YAML Files](https://img.shields.io/badge/YAML_Files-0-cb171e?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-0-e34c26?style=flat-square)
+![YAML Documents](https://img.shields.io/badge/YAML_Documents-0-f97316?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-0-7c3aed?style=flat-square)
+![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-0-8b5cf6?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-0-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-0-16a34a?style=flat-square)
+![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
+![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-0-64748b?style=flat-square)
+![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-0-ea580c?style=flat-square)
+
+### TOML
+
+![TOML Files](https://img.shields.io/badge/TOML_Files-0-9c4221?style=flat-square)
+![TOML Lines](https://img.shields.io/badge/TOML_Lines-0-b45309?style=flat-square)
+![TOML Tables](https://img.shields.io/badge/TOML_Tables-0-7c3aed?style=flat-square)
+![TOML Array Tables](https://img.shields.io/badge/TOML_Array_Tables-0-8b5cf6?style=flat-square)
+![TOML Keys](https://img.shields.io/badge/TOML_Keys-0-0284c7?style=flat-square)
+![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-0-16a34a?style=flat-square)
+![TOML Comments](https://img.shields.io/badge/TOML_Comments-0-64748b?style=flat-square)
+
+### Shell
+
+![Shell Files](https://img.shields.io/badge/Shell_Files-0-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-0-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-0-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-0-0284c7?style=flat-square)
+![Shell Exports](https://img.shields.io/badge/Shell_Exports-0-ea580c?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-0-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-0-8b5cf6?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-0-059669?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-0-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-0-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-0-475569?style=flat-square)
+
+### SQL
+
+![SQL Files](https://img.shields.io/badge/SQL_Files-0-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-0-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-0-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-0-22c55e?style=flat-square)
+![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
+![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-0-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
+![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
+
+### HCL
+
+![HCL Files](https://img.shields.io/badge/HCL_Files-0-844fba?style=flat-square)
+![HCL Lines](https://img.shields.io/badge/HCL_Lines-0-a78bfa?style=flat-square)
+![HCL Blocks](https://img.shields.io/badge/HCL_Blocks-0-7c3aed?style=flat-square)
+![HCL Resources](https://img.shields.io/badge/HCL_Resources-0-0284c7?style=flat-square)
+![HCL Variables](https://img.shields.io/badge/HCL_Variables-0-16a34a?style=flat-square)
+![HCL Outputs](https://img.shields.io/badge/HCL_Outputs-0-059669?style=flat-square)
+![HCL Attributes](https://img.shields.io/badge/HCL_Attributes-0-0ea5e9?style=flat-square)
+![HCL Interpolations](https://img.shields.io/badge/HCL_Interpolations-0-db2777?style=flat-square)
+![HCL Comments](https://img.shields.io/badge/HCL_Comments-0-64748b?style=flat-square)
+
+### CSS
+
+![CSS Files](https://img.shields.io/badge/CSS_Files-0-264de4?style=flat-square)
+![CSS Lines](https://img.shields.io/badge/CSS_Lines-0-2965f1?style=flat-square)
+![CSS Rules](https://img.shields.io/badge/CSS_Rules-0-7c3aed?style=flat-square)
+![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-0-8b5cf6?style=flat-square)
+![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-0-0284c7?style=flat-square)
+![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-0-f97316?style=flat-square)
+![CSS Media Queries](https://img.shields.io/badge/CSS_Media_Queries-0-ea580c?style=flat-square)
+![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-0-16a34a?style=flat-square)
+![CSS Comments](https://img.shields.io/badge/CSS_Comments-0-64748b?style=flat-square)
+
+### Conventions
+
+![Module Files](https://img.shields.io/badge/Module_Files-12-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-20-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-11-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-14-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-11-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
+![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-44-ca8a04?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
+![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
+![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
+![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
+![Python Comment Budget](https://img.shields.io/badge/Python_Comment_Budget-0-db2777?style=flat-square)
+![SQL Comment Budget](https://img.shields.io/badge/SQL_Comment_Budget-0-0ea5e9?style=flat-square)
+![TOML Comment Budget](https://img.shields.io/badge/TOML_Comment_Budget-0-059669?style=flat-square)
+![TypeScript Comment Budget](https://img.shields.io/badge/TypeScript_Comment_Budget-0-ca8a04?style=flat-square)
+![YAML Comment Budget](https://img.shields.io/badge/YAML_Comment_Budget-0-7c3aed?style=flat-square)
+![Shell Comment Budget](https://img.shields.io/badge/Shell_Comment_Budget-0-0284c7?style=flat-square)
+
+### Jupyter
+
+![Notebooks](https://img.shields.io/badge/Notebooks-0-f37626?style=flat-square)
+![Notebook Cells](https://img.shields.io/badge/Notebook_Cells-0-e8a33d?style=flat-square)
+![Code Cells](https://img.shields.io/badge/Code_Cells-0-3776ab?style=flat-square)
+![Markdown Cells](https://img.shields.io/badge/Markdown_Cells-0-083fa1?style=flat-square)
+![Raw Cells](https://img.shields.io/badge/Raw_Cells-0-9ca3af?style=flat-square)
+![Executed Cells](https://img.shields.io/badge/Executed_Cells-0-16a34a?style=flat-square)
+![Cell Outputs](https://img.shields.io/badge/Cell_Outputs-0-059669?style=flat-square)
+![Notebook Code Lines](https://img.shields.io/badge/Notebook_Code_Lines-0-4b8bbe?style=flat-square)
+![Notebook Classes](https://img.shields.io/badge/Notebook_Classes-0-7c3aed?style=flat-square)
+![Notebook Functions](https://img.shields.io/badge/Notebook_Functions-0-22c55e?style=flat-square)
+![Notebook Imports](https://img.shields.io/badge/Notebook_Imports-0-0284c7?style=flat-square)
+![Notebook Decorators](https://img.shields.io/badge/Notebook_Decorators-0-db2777?style=flat-square)
+![Notebook Prose Lines](https://img.shields.io/badge/Notebook_Prose_Lines-0-1f6feb?style=flat-square)
+![Notebook Headings](https://img.shields.io/badge/Notebook_Headings-0-a78bfa?style=flat-square)
+![Notebook Links](https://img.shields.io/badge/Notebook_Links-0-10b981?style=flat-square)
+![Notebook Images](https://img.shields.io/badge/Notebook_Images-0-34d399?style=flat-square)
+![Notebook Code Blocks](https://img.shields.io/badge/Notebook_Code_Blocks-0-dc2626?style=flat-square)
+![Notebook Properties](https://img.shields.io/badge/Notebook_Properties-0-ca8a04?style=flat-square)
+![Notebook Nodes](https://img.shields.io/badge/Notebook_Nodes-0-a16207?style=flat-square)
+![Notebook Max Depth](https://img.shields.io/badge/Notebook_Max_Depth-0-ea580c?style=flat-square)
+
+### Markdown
+
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-288-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-8-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-14-a78bfa?style=flat-square)
+![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
+![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
+![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-55-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-6-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-28-22c55e?style=flat-square)
+![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-3-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-16-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-13-059669?style=flat-square)
+![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-13-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-97-ef4444?style=flat-square)
+![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
+![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
+<!-- codometer:end -->

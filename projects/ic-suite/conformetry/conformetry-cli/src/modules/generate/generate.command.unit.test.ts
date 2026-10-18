@@ -12,13 +12,13 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { GenerateCommand } from "./generate.command";
 
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 
-const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {
