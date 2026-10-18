@@ -182,22 +182,18 @@ describe(PluginService, () => {
       expect.hasAssertions();
 
       const inferred = await service.inferTargets({
-        options: {
-          configurationPath: CONFIGURATION_PATH,
-          traceTargetName: "callidescope-trace",
-        },
+        options: { configurationPath: CONFIGURATION_PATH },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
 
       expect([...inferred.keys()]).toStrictEqual(["packages/alpha"]);
-      // The registration renamed one of them; the other three keep their
-      // defaults, so a workspace only overrides what it needs to.
+      // With no target-name overrides, all four defaults are inferred.
       expect(Object.keys(inferred.get("packages/alpha") ?? {})).toStrictEqual([
-        "breadth",
-        "depth",
+        "callidescope-breadth",
+        "callidescope-depth",
         "callidescope-trace",
-        "gate",
+        "callidescope-gate",
       ]);
     });
 
@@ -207,17 +203,17 @@ describe(PluginService, () => {
       const inferred = await service.inferTargets({
         options: {
           configurationPath: CONFIGURATION_PATH,
-          gateTargetName: "callidescope-gate",
+          gateTargetName: "gate",
         },
         projectConfigurationFiles: ["packages/alpha/project.json"],
         workspaceRoot: "/workspace",
       });
 
       expect(Object.keys(inferred.get("packages/alpha") ?? {})).toStrictEqual([
-        "breadth",
-        "depth",
-        "trace",
-        "callidescope-gate",
+        "callidescope-breadth",
+        "callidescope-depth",
+        "callidescope-trace",
+        "gate",
       ]);
     });
 
@@ -231,19 +227,19 @@ describe(PluginService, () => {
       });
 
       expect(targets.get("packages/alpha")).toStrictEqual({
-        breadth: {
+        "callidescope-breadth": {
           cache: true,
           executor: "@callidescope/nx:breadth",
           inputs: INPUTS,
           options: { configuration: CONFIGURATION_PATH },
         },
-        depth: {
+        "callidescope-depth": {
           cache: true,
           executor: "@callidescope/nx:depth",
           inputs: INPUTS,
           options: { configuration: CONFIGURATION_PATH },
         },
-        gate: {
+        "callidescope-gate": {
           cache: true,
           executor: "@callidescope/nx:gate",
           // The project's own limits join the workspace's, and they join as a
@@ -252,7 +248,7 @@ describe(PluginService, () => {
           inputs: [...INPUTS, "{projectRoot}/callidescope.config.*"],
           options: { configuration: CONFIGURATION_PATH },
         },
-        trace: {
+        "callidescope-trace": {
           cache: true,
           executor: "@callidescope/nx:trace",
           inputs: INPUTS,
@@ -273,7 +269,7 @@ describe(PluginService, () => {
       // Nothing is read from beside the project to decide this: the input
       // glob matches no file, so the target is there and the limits it
       // enforces are the ones the workspace declared.
-      expect(targets.get("packages/beta")?.["gate"]).toBeDefined();
+      expect(targets.get("packages/beta")?.["callidescope-gate"]).toBeDefined();
     });
 
     it("gives a project the configuration excludes no gate target", async () => {
@@ -301,9 +297,15 @@ describe(PluginService, () => {
           targets.get("packages/ic-suite/callidescope/callidescope-examples") ??
             {},
         ),
-      ).toStrictEqual(["breadth", "depth", "trace"]);
+      ).toStrictEqual([
+        "callidescope-breadth",
+        "callidescope-depth",
+        "callidescope-trace",
+      ]);
       // The exclusion is one project's, never the run's.
-      expect(targets.get("packages/alpha")?.["gate"]).toBeDefined();
+      expect(
+        targets.get("packages/alpha")?.["callidescope-gate"],
+      ).toBeDefined();
     });
 
     it("excludes nothing when the configuration cannot be loaded", async () => {
@@ -321,7 +323,9 @@ describe(PluginService, () => {
         workspaceRoot: "/workspace",
       });
 
-      expect(targets.get("packages/alpha")?.["gate"]).toBeDefined();
+      expect(
+        targets.get("packages/alpha")?.["callidescope-gate"],
+      ).toBeDefined();
     });
 
     it("reads the workspace configuration once rather than once per project", async () => {

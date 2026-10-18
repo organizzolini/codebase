@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.11.0](https://github.com/organizzolini/codebase/compare/v3.10.1...v3.11.0) (2026-10-18)
+
+### ✨ Features
+
+* **callidescope:** ✨ prefix inferred nx target defaults ([#1706](https://github.com/organizzolini/codebase/issues/1706)) ([1a54464](https://github.com/organizzolini/codebase/commit/1a54464de655280872d5cc65589d9585af9d273d))
+
+## [3.10.1](https://github.com/organizzolini/codebase/compare/v3.10.0...v3.10.1) (2026-10-18)
+
+### ♻️ Code Refactoring
+
+* **configuration,integration,publication:** ♻️ move CI plumbing from publication into a new integration project ([#1704](https://github.com/organizzolini/codebase/issues/1704)) ([e84044b](https://github.com/organizzolini/codebase/commit/e84044be7ba278ef00a5a6bc4b5d496916902a33)), closes [#1702](https://github.com/organizzolini/codebase/issues/1702) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1702](https://github.com/organizzolini/codebase/issues/1702)
+
+## [3.10.0](https://github.com/organizzolini/codebase/compare/v3.9.13...v3.10.0) (2026-10-18)
+
+### ✨ Features
+
+* **conformetry,configuration,caelundas,lexico,meanderaw,callidescope:** ✨ place generators by instances ([#1670](https://github.com/organizzolini/codebase/issues/1670)) ([78c26e3](https://github.com/organizzolini/codebase/commit/78c26e3f3795333eeee9a52c4a8ae93a65e605fb))
+
+## [3.9.13](https://github.com/organizzolini/codebase/compare/v3.9.12...v3.9.13) (2026-10-18)
+
+### ♻️ Code Refactoring
+
+* **publication,scripts:** ♻️ run the Nx base and cache steps after the install as publication commands ([#1702](https://github.com/organizzolini/codebase/issues/1702)) ([8a2c0c6](https://github.com/organizzolini/codebase/commit/8a2c0c6aead50835e350000de06aacfff516a48b)), closes [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1564](https://github.com/organizzolini/codebase/issues/1564) [#1565](https://github.com/organizzolini/codebase/issues/1565) [#1569](https://github.com/organizzolini/codebase/issues/1569) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1565](https://github.com/organizzolini/codebase/issues/1565)
+
+## [3.9.12](https://github.com/organizzolini/codebase/compare/v3.9.11...v3.9.12) (2026-10-17)
+
+### ♻️ Code Refactoring
+
+* **configuration,installation,scripts:** ♻️ inline the bootstrap into installation.sh and drop the shell helpers ([#1701](https://github.com/organizzolini/codebase/issues/1701)) ([6104702](https://github.com/organizzolini/codebase/commit/61047027c5d873178c2a76476db9c0fed0e9a6f2))
+
 ## [3.9.11](https://github.com/organizzolini/codebase/compare/v3.9.10...v3.9.11) (2026-10-17)
 
 ### 🐛 Bug Fixes

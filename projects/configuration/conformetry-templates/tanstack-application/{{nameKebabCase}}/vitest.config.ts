@@ -1,6 +1,6 @@
 import { defineConfig, mergeConfig } from "vitest/config";
 
-import vitestConfig from "../../projects/configuration/vitest.config.ts";
+import vitestConfig from "@codebase/configuration/vitest.config";
 
 // Deliberately not merged with `vite.config.mts`: the TanStack Start plugin
 // code-splits every route component into a lazy chunk, which a test would then
@@ -18,7 +18,7 @@ export default mergeConfig(
           "src/**/*.test.tsx",
           "src/**/*.functions.ts",
           "src/client.tsx",
-          "src/lib/**",
+          "src/routeTree.gen.ts",
           "src/router.tsx",
           "src/routes/__root.tsx",
         ],

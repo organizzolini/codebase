@@ -1,3 +1,15 @@
+## 0.0.36 (2026-10-18)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
+## 0.0.35 (2026-10-18)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
+## 0.0.34 (2026-10-18)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
 ## 0.0.33 (2026-10-16)
 
 This was a version bump only for codependix-core to align it with other projects, there were no code changes.

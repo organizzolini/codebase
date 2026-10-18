@@ -4,33 +4,35 @@
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
     "@tanstack/react-start": "catalog:",
-    "@vitejs/plugin-react": "catalog:",
     "lodash": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "vite": "catalog:",
-    "vitest": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@nx/eslint-plugin": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/lodash": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "autoprefixer": "catalog:",
+    "jsdom": "catalog:",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:"
   },
   "name": "lexico-web",
   "private": true,
   "type": "module",
   "typeCoverage": {
-    "atLeast": 99.36,
+    "atLeast": 100,
     "ignoreCatch": true,
     "ignoreFiles": [
       "**/*.spec.ts",
@@ -39,7 +41,9 @@
       "**/*.test.tsx",
       "**/routeTree.gen.ts",
       "src/router.tsx",
-      "testing/**"
+      "src/routeTree.gen.ts",
+      "testing/**",
+      "testing/render-route.tsx"
     ],
     "strict": true
   },

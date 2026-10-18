@@ -99,18 +99,6 @@ runs:
       if: inputs.nx-shas == 'true'
       uses: nrwl/nx-set-shas@v5
 
-    # CI only (`nx-base: push-before`): bases a push on its own previous tip
-    # rather than the last green commit, so one red main run cannot widen the
-    # next. `scripts/nx/bound-base-to-push.sh` explains why, and its fallbacks.
-    - name: 🎯 Bound Nx Base To The Push
-      if: |
-        inputs.nx-shas == 'true' && inputs.nx-base == 'push-before'
-        && github.event_name == 'push'
-      env:
-        BEFORE: ${{ github.event.before }}
-      run: bash scripts/nx/bound-base-to-push.sh
-      shell: bash
-
     - name: 🗃️ Configure Nx Cache
       run: |
         echo "NX_DEFAULT_OUTPUT_STYLE=static" >> "$GITHUB_ENV"
@@ -257,39 +245,6 @@ runs:
           'pnpm-lock.yaml') }}-
           nx-cache-${{ inputs.nx-cache-scope }}-${{ runner.os }}-
 
-    # A merge group cannot read the pull request's caches, only `main`'s, so
-    # its tasks run a second time. The pull request's run uploads its cache as
-    # an artifact, which any run can read, and this merges it in before the
-    # steps below tidy the database. See `scripts/nx/import-pr-task-cache.sh`
-    # for why only a pull request from this repository is trusted.
-    - name: 📥 Import Pull Request Nx Cache
-      if: inputs.nx-cache == 'true' && github.event_name == 'merge_group'
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        NX_CACHE_SCOPE: ${{ inputs.nx-cache-scope }}
-      run: bash scripts/nx/import-pr-task-cache.sh
-
-    # Restored databases can be left structurally valid but page-corrupt by a
-    # cancelled save. Nx fails hard on those, so discard them before the first
-    # task reads the cache. This and the adoption below stay shell, before
-    # `pnpm install`, so they follow the merge group's import directly and a
-    # NestJS command cannot run yet. Moving them after the install was measured
-    # without the import, never in a merge group, so it waits on a new
-    # measurement.
-    - name: 🩺 Verify Nx Cache Database
-      if: inputs.nx-cache == 'true'
-      shell: bash
-      run: bash scripts/nx/verify-task-database.sh
-
-    # Nx names its database after the machine, and every hosted runner has a
-    # fresh id, so the restored one is renamed to this runner's or it is never
-    # read. See the script for the full reasoning.
-    - name: 🪪 Adopt Nx Cache Database
-      if: inputs.nx-cache == 'true'
-      shell: bash
-      run: bash scripts/nx/adopt-task-database.sh
-
     - name: 🌌 Setup uv
       if: inputs.uv == 'true'
       uses: astral-sh/setup-uv@v10.3.0
@@ -347,3 +302,65 @@ runs:
       if: inputs.install == 'true'
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
+
+    # The steps below run commands of the `publication` project, so they need
+    # the installed dependencies: a job that skips the install skips them too,
+    # rather than failing a second time. None of them may run before the
+    # install, and the install opens no Nx task database, so nothing reaches
+    # the restored one before the adoption below.
+
+    # CI only (`nx-base: push-before`): bases a push on its own previous tip
+    # rather than the last green commit, so one red main run cannot widen the
+    # next. The `bound-base-to-push` command explains why, and its fallbacks.
+    - name: 🎯 Bound Nx Base To The Push
+      if: |
+        inputs.nx-shas == 'true' && inputs.nx-base == 'push-before'
+        && github.event_name == 'push'
+        && hashFiles('node_modules/.modules.yaml') != ''
+      env:
+        BEFORE: ${{ github.event.before }}
+      shell: bash
+      run: |
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          projects/publication/src/publication.main.ts bound-base-to-push
+
+    # A merge group cannot read the pull request's caches, only `main`'s, so
+    # its tasks run a second time. The pull request's run uploads its cache as
+    # an artifact, which any run can read, and this merges it in before the
+    # steps below tidy the database. See the `import-pr-task-cache` command
+    # for why only a pull request from this repository is trusted.
+    - name: 📥 Import Pull Request Nx Cache
+      if: |
+        inputs.nx-cache == 'true' && github.event_name == 'merge_group'
+        && hashFiles('node_modules/.modules.yaml') != ''
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        NX_CACHE_SCOPE: ${{ inputs.nx-cache-scope }}
+      run: |
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          projects/publication/src/publication.main.ts import-pr-task-cache
+
+    # Restored databases can be left structurally valid but page-corrupt by a
+    # cancelled save. Nx fails hard on those, so discard them before the first
+    # task reads the cache. See the `verify-task-database` command.
+    - name: 🩺 Verify Nx Cache Database
+      if: |
+        inputs.nx-cache == 'true'
+        && hashFiles('node_modules/.modules.yaml') != ''
+      shell: bash
+      run: |
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          projects/publication/src/publication.main.ts verify-task-database
+
+    # Nx names its database after the machine, and a hosted runner may have a
+    # fresh id, so the restored one is renamed to this runner's or it is never
+    # read. See the `adopt-task-database` command for the full reasoning.
+    - name: 🪪 Adopt Nx Cache Database
+      if: |
+        inputs.nx-cache == 'true'
+        && hashFiles('node_modules/.modules.yaml') != ''
+      shell: bash
+      run: |
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          projects/publication/src/publication.main.ts adopt-task-database

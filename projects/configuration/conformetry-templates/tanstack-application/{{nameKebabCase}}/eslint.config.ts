@@ -1,4 +1,4 @@
-import baseConfig from "../../projects/configuration/eslint.config";
+import baseConfig from "@codebase/configuration/eslint.config";
 
 export default [
   // 🛠️ Base Config
@@ -6,7 +6,7 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["src/lib/routeTree.gen.ts"],
+    ignores: ["src/routeTree.gen.ts"],
   },
 
   // 📦 Dependency Checks

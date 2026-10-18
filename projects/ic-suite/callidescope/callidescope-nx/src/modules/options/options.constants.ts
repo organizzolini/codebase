@@ -6,18 +6,19 @@ export const CALLIDESCOPE_NX_PLUGIN_NAME = "@callidescope/nx";
 /**
  * Names of the inferred per-project targets, when the registration names none.
  *
- * Short and unprefixed, so a run reads `nx run callidescope-nx:trace` rather
- * than repeating the tool's name on both sides of the colon. Every one of them
- * is overridable from the `nx.json` registration, which is the escape hatch
- * for a workspace where a name this general would collide.
+ * Prefixed defaults keep inferred tasks grouped and recognizable in Nx task
+ * lists, and avoid collisions with generic names in workspaces carrying
+ * several toolchains.
+ *
+ * Every one of them is overridable from the `nx.json` registration.
  */
-export const DEFAULT_TRACE_TARGET_NAME = "trace";
+export const DEFAULT_TRACE_TARGET_NAME = "callidescope-trace";
 
 /** Name of the inferred per-project depth-lookup target. */
-export const DEFAULT_DEPTH_TARGET_NAME = "depth";
+export const DEFAULT_DEPTH_TARGET_NAME = "callidescope-depth";
 
 /** Name of the inferred per-project breadth-lookup target. */
-export const DEFAULT_BREADTH_TARGET_NAME = "breadth";
+export const DEFAULT_BREADTH_TARGET_NAME = "callidescope-breadth";
 
 /**
  * Name of the inferred per-project gate target.
@@ -27,7 +28,7 @@ export const DEFAULT_BREADTH_TARGET_NAME = "breadth";
  * the target here a pipeline is meant to read an exit code from, so it says
  * `gate`.
  */
-export const DEFAULT_GATE_TARGET_NAME = "gate";
+export const DEFAULT_GATE_TARGET_NAME = "callidescope-gate";
 
 /** Names the plugin option in a refusal of a missing configuration path. */
 export const PLUGIN_CONFIGURATION_SURFACE = `The "configurationPath" option in the nx.json registration of ${CALLIDESCOPE_NX_PLUGIN_NAME}`;

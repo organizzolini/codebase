@@ -1,3 +1,8 @@
+// The plugin ships no types, and this file is typechecked inside every project
+// that imports it by package name, so the declaration travels with the file
+// rather than being mapped in each project's tsconfig `paths`.
+/// <reference path="./types/eslint-plugin-better-max-params/index.d.ts" />
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 

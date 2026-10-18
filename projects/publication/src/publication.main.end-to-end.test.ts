@@ -19,8 +19,11 @@ const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 /** The commands the container must register, each named in the help. */
 const COMMAND_NAMES = [
   "adopt-task-database",
+  "bound-base-to-push",
+  "import-pr-task-cache",
   "keep-task-database",
   "link-packages",
+  "merge-task-cache",
   "publish-packages",
   "publishable-packages-gate",
   "tag-codebase",
@@ -78,6 +81,7 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
         MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
+        NX_CACHE_DIRECTORY: ".nx/cache",
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
       });
     });
@@ -87,10 +91,12 @@ describe("main end-to-end suite", () => {
       expect(
         environmentSchema.parse({
           MACHINE_ID_FILES: "",
+          NX_CACHE_DIRECTORY: "",
           NX_WORKSPACE_DATA_DIRECTORY: "",
         }),
       ).toStrictEqual({
         MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
+        NX_CACHE_DIRECTORY: ".nx/cache",
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
       });
     });

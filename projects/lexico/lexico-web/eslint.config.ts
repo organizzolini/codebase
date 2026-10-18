@@ -1,4 +1,4 @@
-import baseConfig from "../../../projects/configuration/eslint.config";
+import baseConfig from "@codebase/configuration/eslint.config";
 
 export default [
   // 🛠️ Base Config
@@ -6,7 +6,7 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["src/routes/routeTree.gen.ts"],
+    ignores: ["src/routeTree.gen.ts"],
   },
 
   // ⚛️ React Component Complexity Overrides
@@ -24,7 +24,7 @@ export default [
       "max-statements": ["warn", { max: 32 }],
     },
   },
-  // �📦 Dependency Checks
+  // 📦 Dependency Checks
   {
     files: ["**/*.json"],
     rules: {
@@ -36,6 +36,7 @@ export default [
             "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",
             "{projectRoot}/testing/**",
             "{projectRoot}/vite.config.{js,ts,mjs,mts}",
+            "{projectRoot}/vitest.config.{js,ts,mjs,mts}",
           ],
         },
       ],

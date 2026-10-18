@@ -25,10 +25,9 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@codebase/components";
-import applicationCss from "@codebase/components/styles/globals.css?url";
 
 import { Logo } from "../components/layout";
-import lexicoCss from "../styles/application.css?url";
+import applicationCss from "../styles/application.css?url";
 
 import type { ReactNode } from "react";
 
@@ -45,13 +44,17 @@ const navigationItems: NavigationItem[] = [
   { href: "/search", icon: <Search className="h-5 w-5" />, label: "Search" },
 ];
 
+// 🧭 Route
+
+/**
+ * The document shell every other route renders inside.
+ */
 export const Route = createRootRoute({
   component: RootComponent,
   head: () => ({
     links: [
       { href: "/favicon.ico", rel: "icon" },
       { href: applicationCss, rel: "stylesheet" },
-      { href: lexicoCss, rel: "stylesheet" },
     ],
     meta: [
       {
@@ -62,7 +65,7 @@ export const Route = createRootRoute({
         name: "viewport",
       },
       {
-        title: "Lexico - Latin Dictionary & Reader",
+        title: "LexicoWeb",
       },
       {
         content:
@@ -72,15 +75,10 @@ export const Route = createRootRoute({
     ],
   }),
   notFoundComponent: NotFound,
+  shellComponent: RootDocument,
 });
 
-/**
- * Properties for the RootDocument component.
- */
-interface RootDocumentProperties {
-  /** Child elements to render */
-  children: ReactNode;
-}
+// 🧩 Component
 
 /**
  * Application sidebar: a rail that collapses to icons, with the brand in the
@@ -199,22 +197,31 @@ function NotFound(): ReactNode {
 }
 
 /**
- * Root component that wraps the entire application.
- *
+ * Renders the layout every page sits in: the sidebar, and the matched route
+ * inside the main region beside it.
  */
 function RootComponent(): ReactNode {
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <SidebarProvider>
+      <ApplicationSidebar />
+      <SidebarInset>
+        {/* On a phone the sidebar is a sheet with no rail, so this is the only control that opens it */}
+        <SidebarTrigger className="fixed top-3 left-3 z-20 md:hidden" />
+        {/* 16px matches the gap between result cards; the floating sidebar already leaves 8px on its side */}
+        <div className="flex-1 p-4 md:pl-2">
+          <Outlet />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
 
 /**
- * Root document component that provides HTML structure and sidebar.
- *
+ * Renders the HTML document around the matched route.
  */
-function RootDocument(properties: Readonly<RootDocumentProperties>): ReactNode {
+function RootDocument(
+  properties: Readonly<{ children: ReactNode }>,
+): ReactNode {
   const { children } = properties;
 
   return (
@@ -226,16 +233,7 @@ function RootDocument(properties: Readonly<RootDocumentProperties>): ReactNode {
         <HeadContent />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <SidebarProvider>
-          <ApplicationSidebar />
-          <SidebarInset>
-            {/* On a phone the sidebar is a sheet with no rail, so this is the only control that opens it */}
-            <SidebarTrigger className="fixed top-3 left-3 z-20 md:hidden" />
-            {/* Page content */}
-            {/* 16px matches the gap between result cards; the floating sidebar already leaves 8px on its side */}
-            <div className="flex-1 p-4 md:pl-2">{children}</div>
-          </SidebarInset>
-        </SidebarProvider>
+        {children}
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
       </body>

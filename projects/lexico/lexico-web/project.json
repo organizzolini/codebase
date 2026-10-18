@@ -1,5 +1,4 @@
 {
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "implicitDependencies": ["components"],
   "name": "lexico-web",
   "projectType": "application",
@@ -8,6 +7,7 @@
     "domain:lexico",
     "framework:react",
     "framework:tanstack-start",
+    "generator:tanstack-application",
     "language:typescript",
     "type:application"
   ],
@@ -17,7 +17,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "vite build",
-        "cwd": "projects/lexico/lexico-web"
+        "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/dist"]
     },
@@ -35,7 +35,7 @@
     "prettier": {},
     "preview": {
       "dependsOn": ["build"],
-      "description": "Build, then serve the production build",
+      "description": "Serve the production build locally",
       "executor": "nx:run-commands",
       "options": {
         "command": "vite preview",
@@ -46,11 +46,11 @@
     "start": {
       "continuous": true,
       "dependsOn": ["lexico-api:await-health", "lexico-api:start"],
-      "description": "Start development server with hot reload, once the API is ready",
+      "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",
       "options": {
         "command": "vite dev",
-        "cwd": "projects/lexico/lexico-web"
+        "cwd": "{projectRoot}"
       }
     },
     "stop": {

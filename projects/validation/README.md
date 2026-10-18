@@ -1005,7 +1005,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-16122-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-509.39_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-509.50_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-122-3178c6?style=flat-square)
 
@@ -1189,7 +1189,7 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-286-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-288-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-8-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-14-a78bfa?style=flat-square)
@@ -1202,7 +1202,7 @@ graph LR
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-3-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-16-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-12-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-13-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-13-dc2626?style=flat-square)
 ![Inline Code](https://img.shields.io/badge/Inline_Code-97-ef4444?style=flat-square)

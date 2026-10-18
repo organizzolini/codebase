@@ -1,3 +1,30 @@
+## 0.0.38 (2026-10-18)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.37
+- Updated codometer-measurement to 0.0.37
+- Updated codometer-output to 0.0.37
+- Updated codometer-core to 0.0.37
+
+## 0.0.37 (2026-10-18)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.36
+- Updated codometer-measurement to 0.0.36
+- Updated codometer-output to 0.0.36
+- Updated codometer-core to 0.0.36
+
+## 0.0.36 (2026-10-18)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.35
+- Updated codometer-measurement to 0.0.35
+- Updated codometer-output to 0.0.35
+- Updated codometer-core to 0.0.35
+
 ## 0.0.35 (2026-10-16)
 
 ### 🧱 Updated Dependencies

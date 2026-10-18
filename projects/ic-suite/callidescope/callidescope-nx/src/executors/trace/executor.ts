@@ -13,11 +13,11 @@ import type { ExecutorContext } from "@nx/devkit";
  * Traces one selection of Nx projects with callidescope.
  *
  * Inferred onto every project holding a `tsconfig.json`, so
- * `nx run-many -t trace` covers the workspace,
- * `nx run-many -t trace --projects=tag:type:package` covers a category, and
- * `nx affected -t trace` covers only what changed — none of which the
- * workspace-wide command can do, and none of which needs a flag of its own:
- * selecting projects is what the task runner is for.
+ * `nx run-many -t callidescope-trace` covers the workspace,
+ * `nx run-many -t callidescope-trace --projects=tag:type:package` covers a
+ * category, and `nx affected -t callidescope-trace` covers only what changed
+ * — none of which the workspace-wide command can do, and none of which needs
+ * a flag of its own: selecting projects is what the task runner is for.
  *
  * With neither `projects` nor `tags` given, the selection is the project this
  * target belongs to.

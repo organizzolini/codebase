@@ -31,11 +31,20 @@
         "adopt-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts adopt-task-database"
         },
+        "bound-base-to-push": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts bound-base-to-push"
+        },
+        "import-pr-task-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts import-pr-task-cache"
+        },
         "keep-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts keep-task-database"
         },
         "link-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts link-packages"
+        },
+        "merge-task-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts merge-task-cache"
         },
         "publish-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/publication/src/publication.main.ts publish-packages"

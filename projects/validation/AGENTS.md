@@ -43,7 +43,9 @@ anyway. It is whether the check still works when the install is broken.
 
 The full shell floor, the rule behind it, and the bootstrap it extends to are
 decided in
-[ADR 0027](../../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md).
+[ADR 0027](../../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md),
+as amended by
+[ADR 0028](../../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 
 The branch-name and worktree-name session hooks are the opposite case: they
 already needed Node, or are accepted as needing it, so their logic lives here as

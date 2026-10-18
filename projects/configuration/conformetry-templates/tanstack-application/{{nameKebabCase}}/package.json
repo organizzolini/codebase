@@ -29,7 +29,7 @@
     "ignoreFiles": [
       "**/*.test.ts",
       "**/*.test.tsx",
-      "src/lib/routeTree.gen.ts",
+      "src/routeTree.gen.ts",
       "src/router.tsx",
       "testing/render-route.tsx"
     ],

@@ -1,9 +1,4 @@
-import {
-  createRootRoute,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import applicationCss from "../styles/application.css?url";
 
@@ -15,7 +10,6 @@ import type { ReactNode } from "react";
  * The document shell every other route renders inside.
  */
 export const Route = createRootRoute({
-  component: RootComponent,
   head: () => ({
     links: [{ href: applicationCss, rel: "stylesheet" }],
     meta: [
@@ -24,6 +18,7 @@ export const Route = createRootRoute({
       { title: "MeanderawWeb" },
     ],
   }),
+  shellComponent: RootDocument,
 });
 
 // 🧩 Component
@@ -31,16 +26,18 @@ export const Route = createRootRoute({
 /**
  * Renders the HTML document around the matched route.
  */
-function RootComponent(): ReactNode {
+function RootDocument(
+  properties: Readonly<{ children: ReactNode }>,
+): ReactNode {
+  const { children } = properties;
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <main>
-          <Outlet />
-        </main>
+        {children}
         <Scripts />
       </body>
     </html>
