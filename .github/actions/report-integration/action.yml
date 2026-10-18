@@ -62,22 +62,17 @@ runs:
       shell: bash
       run: |
         mkdir -p codometer-baseline
-        shopt -s nullglob
-        reports=(
-          codometer-report.json
-          projects/*/codometer-report.json
-          projects/*/*/codometer-report.json
-          projects/ic-suite/*/*/codometer-report.json
-        )
         copied=0
-        for report in "${reports[@]}"; do
-          if [[ ! -f "${report}" ]]; then
-            continue
-          fi
+        while IFS= read -r report; do
+          report="${report#./}"
           mkdir -p "codometer-baseline/$(dirname "${report}")"
           cp "${report}" "codometer-baseline/${report}"
           copied=1
-        done
+        done < <(
+          find . -type f -name 'codometer-report.json' \
+            ! -path './projects/ic-suite/codometer/codometer-examples/*' \
+            ! -path './codometer-baseline/*'
+        )
         if [[ "${copied}" -eq 0 ]]; then
           echo "ℹ️ No codometer reports were found for this run."
         fi
