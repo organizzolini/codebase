@@ -4,7 +4,7 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: The CI release pipeline as tested commands, plus the publishable-packages gate. The Continuous Integration plumbing (the affected run and the Nx task-cache database) lives in the `integration` project. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
+**Purpose**: The CI release and Nx plumbing steps as tested commands: affected runs, the publishable-packages gate, and the release pipeline. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
 ### Run Locally
 
@@ -40,20 +40,30 @@ one class.
 
 | Command | Module | Called from |
 | ------- | ------ | ----------- |
+| `run-affected` | `src/modules/run-affected` | the `run-affected` composite action |
 | `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 📦 Publishable Packages leg of Continuous Integration |
+| `bound-base-to-push` | `src/modules/bound-base-to-push` | the `setup-codebase` composite action, on a push with `nx-base: push-before` |
+| `import-pr-task-cache` | `src/modules/import-pr-task-cache` | the `setup-codebase` composite action, in a merge group |
+| `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
+| `verify-task-database` | `src/modules/verify-task-database` | the `setup-codebase` and `cleanup-codebase` composite actions |
+| `adopt-task-database` | `src/modules/adopt-task-database` | the `setup-codebase` composite action |
+| `keep-task-database` | `src/modules/keep-task-database` | the `cleanup-codebase` composite action |
 | `version-packages` | `src/modules/version-packages` | 🏷️ Version Packages in Continuous Deployment |
 | `tag-codebase` | `src/modules/tag-codebase` | 🔖 Tag Codebase in Continuous Deployment |
 | `tag-packages` | `src/modules/tag-packages` | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first |
 | `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment |
 | `link-packages` | `src/modules/link-packages` | 🔗 Link Packages in Continuous Deployment |
 
-`src/modules/process-runner` holds the wrapper over `node:child_process`
+`src/modules/process-runner` holds the shared wrapper over `node:child_process`
 (`capture` returns the output, `captureAsync` does so without blocking, and
-`stream` inherits it); the `integration` project keeps its own copy.
-`src/modules/release-group` reads the Nx release group and runs registry calls
-six at a time; `src/modules/main-tip` notices when `main` moved during a
-release run and sets `RELEASE_SUPERSEDED`, which every later release step skips
-on.
+`stream` inherits it, and `captureToFile` writes it to a file byte for byte).
+`src/modules/task-database` holds the service the task-database and cache
+commands share; it reads `NX_WORKSPACE_DATA_DIRECTORY`, `NX_CACHE_DIRECTORY`,
+and `MACHINE_ID_FILES`, and opens the databases with the built-in
+`node:sqlite`, so no `sqlite3` binary is needed. `src/modules/release-group` reads the Nx release
+group and runs registry calls six at a time; `src/modules/main-tip` notices when
+`main` moved during a release run and sets `RELEASE_SUPERSEDED`, which every
+later release step skips on.
 
 ### Release Steps
 
@@ -79,15 +89,19 @@ step appends its tokens to `~/.npmrc`; follow the `publish-release` skill's
 rehearsal guide, and version the packages plainly rather than as prereleases,
 which `npm publish` refuses to mirror without a tag.
 
-The release services print as they go rather than returning a result for the
-command to print: they replace shell steps whose log is read live in CI, and the registry steps print each package's lines
+Unlike `run-affected`, the release services print as they go rather than
+returning a result for the command to print: they replace shell steps whose
+log is read live in CI, and the registry steps print each package's lines
 whole, in order, as its parallel call finishes.
 
 Run one locally with `nx run publication:start:<command>`, setting the
-variables it reads (`NX_BASE`, `NX_HEAD`, and so on).
+variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).
 
-Steps that run before `pnpm install` cannot live here, because a command needs
-the installed dependencies. `scripts/nx/bound-base-to-push.sh` is one.
+A command needs the installed dependencies, so `setup-codebase` runs these
+after `pnpm install`, skipped when no install finished. The install opens no Nx
+task database, which is what lets the adoption wait for it; see
+[ADR 0028](../../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
+A step that must run before the install cannot live here.
 
 ### Directory Layout
 

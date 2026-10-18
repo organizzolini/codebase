@@ -8,10 +8,12 @@ This directory contains shell scripts for:
 
 - **Local setup** - macOS-specific initial codebase configuration (in `local/`)
 - **Shell utilities** - Common terminal operations
-- **Nx** - The CI steps around Nx: its affected runs and the task-result database CI caches (in `nx/`)
+- **Nx** - The two helpers the Nx targets call, `await-health.sh` and `stop-port.sh` (in `nx/`)
 
 > **The shell floor.** Which scripts stay shell, and why, is decided in
-> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md).
+> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md),
+> as amended by
+> [ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 > A script that is not on that floor belongs in a NestJS command.
 
 ## Quick Start
@@ -21,52 +23,47 @@ This directory contains shell scripts for:
 Run the main setup script to configure your local development environment:
 
 ```bash
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 This runs the following in sequence:
 
-1. `software/brew.sh` and `software/node.sh` - Check Homebrew, then install nvm, Node.js, pnpm, and nx
+1. Homebrew is checked, then nvm, Node.js, pnpm, and nx are installed or checked
 2. `pnpm install` - Installs the packages the next step is written in
 3. `projects/installation/src/installation.main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
 
 > **Note:** If using a devcontainer, these scripts are not needed — the devcontainer handles setup automatically via `.devcontainer/scripts/post-create-command.sh`.
 
-## Local Setup Scripts
+## Installation Script
 
-These scripts live in `scripts/local/` and are intended for **macOS local development only**.
+`scripts/installation.sh` is intended for **macOS local development only**.
 The devcontainer handles equivalent setup automatically.
 
-### setup.sh
+### installation.sh
 
 **Purpose:** Bootstrap a machine, then run the installation project's `setup` command
 
 **Usage:**
 
 ```bash
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 **What it does:**
 
 - Validates codebase root directory
 - Sources `utilities.sh` for common functions
-- Sources `software/brew.sh` and `software/node.sh` to install nvm, Node.js (from `.nvmrc`), pnpm, and nx
+- Checks Homebrew (never installs it; exits with an error if it is missing)
+- Installs or checks nvm, Node.js (from `.nvmrc`), pnpm, and nx, and writes Husky's init file
 - Runs `pnpm install`, so the command can start
 - Runs `projects/installation/src/installation.main.ts setup`, which does everything else
+
+It is one file because it installs the Node the TypeScript runs on, so none of it can be a command, and because the environment changes it makes (`nvm use`, `PATH`) must reach the `setup` command.
 
 **Prerequisites:**
 
 - Must be run from codebase root directory
 - Homebrew installed
-
-### software/brew.sh and software/node.sh
-
-**Purpose:** The part of the software step that cannot be TypeScript, because it installs the Node the TypeScript runs on
-
-- **Homebrew** - Checked, never installed; exits with an error if it is missing
-- **nvm, Node.js, pnpm, nx** - Installed or checked; Husky's init file is written
-- `brew_install_or_check` is defined here for `node.sh`
 
 ### The installation project
 
@@ -75,7 +72,7 @@ Everything after Node exists lives in [`projects/installation`](../projects/inst
 | Command               | What it does                                                                                                     |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
-| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion, and shell-helper blocks to `~/.zshrc` or `~/.bashrc`             |
+| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion blocks to your rc file; drops the retired helper                  |
 | `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
 | `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
 | `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
@@ -171,128 +168,6 @@ echo "Timestamp: $timestamp"
 
 ## Shell Utilities
 
-### shell/grep.sh
-
-**Purpose:** Advanced grep with multi-casing support
-
-**Usage:**
-
-```bash
-./scripts/shell/grep.sh <query> [grep_options] [file...]
-```
-
-**Function: `grep_all_cases`**
-
-Searches for a term in all possible casings and spacings:
-
-- camelCase: `myVariableName`
-- PascalCase: `MyVariableName`
-- snake_case: `my_variable_name`
-- kebab-case: `my-variable-name`
-- space-separated: `my variable name`
-
-**Examples:**
-
-Search for "my variable name" in all casings:
-
-```bash
-./scripts/shell/grep.sh "myVariableName" src/
-# Matches: myVariableName, my_variable_name, my-variable-name, etc.
-```
-
-Search with grep options:
-
-```bash
-./scripts/shell/grep.sh "variable" -r -n src/
-# -r: recursive
-# -n: show line numbers
-```
-
-**Standard grep usage:**
-
-```bash
-# Case insensitive
-grep -i "word" file.txt
-
-# Whole word search
-grep -w "word" file.txt
-
-# Recursive search
-grep -r "word" .
-
-# Count matches
-grep -c "word" file.txt
-
-# Find files with matches
-grep -l "word" *
-
-# Invert match (non-matching lines)
-grep -v "word" file.txt
-
-# With pipes
-ps aux | grep "nginx"
-ls -l | grep ".txt"
-```
-
-### shell/killport.sh
-
-**Purpose:** Kill processes running on a specific port
-
-**Usage:**
-
-```bash
-source ./scripts/shell/killport.sh
-killport <port_number>
-```
-
-**Function: `killport(port)`**
-
-Finds and kills all processes listening on the specified port.
-
-**Examples:**
-
-Kill process on port 3000:
-
-```bash
-source ./scripts/shell/killport.sh
-killport 3000
-```
-
-**Output:**
-
-- If no processes: `👍 No processes found running on port 3000`
-- If processes found: Shows process name and PID, then kills them
-
-**Use cases:**
-
-- Free up port for development server
-- Clean up orphaned processes
-- Force restart of services
-
-### shell/netstat.sh
-
-**Purpose:** Network statistics and connection monitoring
-
-**Usage:**
-
-```bash
-./scripts/shell/netstat.sh [options]
-```
-
-See script for specific netstat usage patterns.
-
-### shell/sed.sh
-
-**Purpose:** Stream editor for text transformation
-
-**Usage:**
-
-```bash
-./scripts/shell/sed.sh [options]
-```
-
-See script for specific sed usage patterns and examples.
-
 ### shell/text-to-port.sh
 
 **Purpose:** Derive a project's default port (1000-9999) from its name
@@ -310,31 +185,32 @@ check the other projects' ports for a collision before adopting a new one.
 
 ## Nx Scripts
 
-These scripts live in `scripts/nx/`, and the composite actions in
-`.github/actions/` run them. Each script is its own command. Helpers shared
-between commands live in a sourced file beside them.
+`scripts/nx/` holds only the two helpers the Nx targets call,
+`await-health.sh` and `stop-port.sh`. The CI steps around the Nx task cache
+and the affected base, which used to be shell here, are commands of the
+[publication](../projects/publication) project since
+[ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 
 ### Task-Result Database
 
 Nx decides a cache hit only from its task-result database,
 `.nx/workspace-data/<machine-id>-v<schema>.db`. That file is named after the
-machine, and every hosted runner is a fresh VM, so a restored database goes
+machine, and a hosted runner may be a fresh VM, so a restored database goes
 unread unless it is adopted under the current machine's id.
 
-The `setup-codebase` action restores the cache, imports the pull request's in a
-merge group, then verifies and adopts the database, all before `pnpm install`,
-so those steps are still shell: a NestJS command cannot run before the install.
-Moving verify and adopt after it was measured without the import, never in a
-merge group, so it waits on a new measurement. `merge-task-cache.sh` sources
-`task-database.sh`, which stays with them.
+The `setup-codebase` action restores the cache before `pnpm install`, then,
+after the install, imports the pull request's in a merge group and verifies
+and adopts the database. The install opens no task database, so nothing reads
+the restored one before it is adopted. The `cleanup-codebase` action verifies
+and keeps the database before saving it.
 
-| Script | Runs in | What it does |
-| ------ | ------- | ------------ |
-| `verify-task-database.sh` | setup, after the restore | Discards any database that fails `PRAGMA integrity_check` |
-| `adopt-task-database.sh` | setup, after the restore | Renames the newest restored database to this machine's id and discards the rest |
-| `import-pr-task-cache.sh` | setup, in a merge group, before the verify | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
-| `merge-task-cache.sh` | called by the import | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
-| `task-database.sh` | sourced by the above | Lists, picks, and discards databases along with their `-wal`, `-shm`, and `-journal` files |
+| Command | Runs in | What it does |
+| ------- | ------- | ------------ |
+| `import-pr-task-cache` | setup, in a merge group, after the install | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
+| `merge-task-cache` | called by the import, or by hand with a directory | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
+| `verify-task-database` | setup and cleanup | Discards any database that fails `PRAGMA integrity_check` |
+| `adopt-task-database` | setup | Renames the newest restored database to this machine's id and discards the rest |
+| `keep-task-database` | cleanup | Keeps only the newest database, and warns if there was more than one |
 
 A merge group runs on a ref that reads only `main`'s caches, never the pull
 request's, so without the import it runs again every task the pull request just
@@ -342,41 +218,25 @@ finished. The pull request's run uploads its cache as an artifact in
 `cleanup-codebase`, which any run can read, and only for a pull request from
 this repository.
 
-The `cleanup-codebase` action runs after the install, so its two steps are
-commands (which open the databases with the built-in `node:sqlite`, not the
-`sqlite3` binary) of the [integration](../projects/integration) project:
-`verify-task-database` and `keep-task-database` (which keeps only the newest
-database, and warns if there was more than one). The `adopt-task-database`
-command is the same as the script and is tested, ready for the move.
-
-All of them honour `NX_WORKSPACE_DATA_DIRECTORY`, and the two that touch task
-outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database` also reads
-`MACHINE_ID_FILES`, a space-separated list of files to take the id from, in
-priority order. So they can be exercised locally against a scratch directory
-and a fake id:
+All of them open the databases with the built-in `node:sqlite`, honour
+`NX_WORKSPACE_DATA_DIRECTORY`, and, where they touch task outputs,
+`NX_CACHE_DIRECTORY`. `adopt-task-database` also reads `MACHINE_ID_FILES`, a
+space-separated list of files to take the id from, in priority order. So they
+can be exercised locally against a scratch directory and a fake id:
 
 ```bash
 NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
-  nx run integration:start:adopt-task-database
+  nx run publication:start:adopt-task-database
 ```
 
 ### Affected Runs
 
-| Script | Runs in | What it does |
-| ------ | ------- | ------------ |
-| `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-
-This one stays shell. `setup-codebase` runs it before `pnpm install`, and a job
-may skip the install altogether, so no NestJS command can run in its place.
-
-The other two affected-run steps are commands, called from the `run-affected`
-composite action and the 📦 Publishable Packages leg. `run-affected` is a
-command of the [integration](../projects/integration) project and
-`publishable-packages-gate` of the [publication](../projects/publication)
-project:
+The affected-run steps are commands of the
+[publication](../projects/publication) project too:
 
 | Command | What it does |
 | ------- | ------------ |
+| `bound-base-to-push` | On a CI push with `nx-base: push-before`, after the install, moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
 | `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
 | `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
@@ -385,9 +245,9 @@ locally:
 
 ```bash
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
-  bash scripts/nx/bound-base-to-push.sh
+  nx run publication:start:bound-base-to-push
 TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
-  nx run integration:start:run-affected
+  nx run publication:start:run-affected
 ```
 
 ## Notepads
@@ -418,11 +278,11 @@ See file for specific SQL queries and documentation.
 ```bash
 # ✅ Correct
 cd ~/Personal/codebase
-./scripts/local/setup.sh
+./scripts/installation.sh
 
 # ❌ Wrong
 cd scripts
-./setup.sh
+./installation.sh
 ```
 
 **Make scripts executable:**
@@ -438,7 +298,7 @@ Or use the utilities.sh automatic behavior (makes all `.sh` files executable).
 **Execute scripts** (standalone):
 
 ```bash
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 **Source scripts** (use functions in current shell):
@@ -493,7 +353,7 @@ cp .env.example .env
 # Edit .env with your values
 
 # 3. Run setup
-./scripts/local/setup.sh
+./scripts/installation.sh
 ```
 
 ### Update Dependencies
@@ -534,37 +394,6 @@ If out of sync:
 pnpm install
 git add pnpm-lock.yaml
 git commit -m "chore(dependencies): update lockfile"
-```
-
-### Kill Development Servers
-
-Free up ports for development:
-
-```bash
-source ./scripts/shell/killport.sh
-
-# Kill common development ports
-killport 3000  # React dev server
-killport 5173  # Vite dev server
-killport 54321 # Supabase local API
-killport 54322 # Supabase local PostgreSQL
-killport 54323 # Supabase Studio
-```
-
-### Search Across Codebase
-
-Find code in all casings:
-
-```bash
-# Search for variable in all naming conventions
-./scripts/shell/grep.sh "userName" -r src/
-
-# Matches:
-# - userName
-# - user_name
-# - user-name
-# - UserName
-# - user name
 ```
 
 ## Troubleshooting

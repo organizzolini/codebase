@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
 import type { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
+import type { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import type { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
 import type { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import type { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
@@ -22,6 +23,7 @@ const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
 const publishablePackagesGateModuleMock =
   createMock<PublishablePackagesGateModule>();
+const runAffectedModuleMock = createMock<RunAffectedModule>();
 const tagCodebaseModuleMock = createMock<TagCodebaseModule>();
 const versionPackagesModuleMock = createMock<VersionPackagesModule>();
 const tagPackagesModuleMock = createMock<TagPackagesModule>();
@@ -58,6 +60,36 @@ vi.mock(
     },
   }),
 );
+
+vi.mock("./modules/run-affected/run-affected.module", () => ({
+  RunAffectedModule: function RunAffectedModule() {
+    return runAffectedModuleMock;
+  },
+}));
+
+vi.mock("./modules/verify-task-database/verify-task-database.module", () => ({
+  VerifyTaskDatabaseModule: function VerifyTaskDatabaseModule() {},
+}));
+
+vi.mock("./modules/adopt-task-database/adopt-task-database.module", () => ({
+  AdoptTaskDatabaseModule: function AdoptTaskDatabaseModule() {},
+}));
+
+vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
+  KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
+}));
+
+vi.mock("./modules/bound-base-to-push/bound-base-to-push.module", () => ({
+  BoundBaseToPushModule: function BoundBaseToPushModule() {},
+}));
+
+vi.mock("./modules/import-pr-task-cache/import-pr-task-cache.module", () => ({
+  ImportPrTaskCacheModule: function ImportPrTaskCacheModule() {},
+}));
+
+vi.mock("./modules/merge-task-cache/merge-task-cache.module", () => ({
+  MergeTaskCacheModule: function MergeTaskCacheModule() {},
+}));
 
 vi.mock("./modules/tag-codebase/tag-codebase.module", () => ({
   TagCodebaseModule: function TagCodebaseModule() {
