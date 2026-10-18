@@ -13,7 +13,7 @@ import { SoftwarePythonService } from "./software-python.service";
  * Installs the developer tools that come after Node: Python, Ollama, Docker,
  * GPG, the infrastructure tools, and the database tools.
  *
- * Homebrew, nvm, Node, and pnpm are installed by the bootstrap stub before
+ * Homebrew, nvm, Node, and pnpm are installed by `scripts/installation.sh` before
  * this runs, because this runs on Node. The order here is the order the tools
  * were always installed in.
  */

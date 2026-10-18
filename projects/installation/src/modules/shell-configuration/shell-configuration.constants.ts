@@ -8,8 +8,13 @@ export const MARKERS = {
   nvm: "# codebase: nvm configuration",
   pnpm: "# codebase: pnpm global bin",
   terraform: "# codebase: terraform completion",
-  utilities: "# codebase: shell utility functions",
 } as const;
+
+/** The marker of the block that once sourced the process helper functions. */
+export const LEGACY_PROCESSES_MARKER = "# codebase: shell utility functions";
+
+/** The script that block sourced, deleted since; its line is what is removed. */
+export const LEGACY_PROCESSES_SCRIPT = "scripts/shell/processes.sh";
 
 /** Exports the Node.js memory limit, matching the dev container. */
 export const NODE_OPTIONS_BLOCK =

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { useBreakpoint } from "@codebase/components";
 
 import { LexemeCard } from "./lexeme-card";
@@ -33,6 +35,7 @@ export function SearchResults(
 
   // 🪝 Hooks
   const { is2xl, isLg, isMd } = useBreakpoint();
+  const [isMeasured, setIsMeasured] = useState(false);
 
   // 🏗 Setup
   // One column on a phone, then a column more at the md, lg, and 2xl
@@ -46,6 +49,14 @@ export function SearchResults(
   // 💪 Handlers
 
   // ♻️ Lifecycle
+  // The server cannot know the viewport, so it renders a single column and
+  // the breakpoints only settle once the page hydrates. Keeping the cards
+  // invisible until then stops that stacked layout from flashing on screen.
+  // The breakpoint hooks above set their state in earlier effects, so it is
+  // already current when this flips.
+  useEffect(() => {
+    setIsMeasured(true);
+  }, []);
 
   // 🏁 Early Returns
   if (results.length === 0) {
@@ -67,7 +78,9 @@ export function SearchResults(
       className={className}
       data-testid="search-results"
     >
-      <div className="flex items-start gap-4">
+      <div
+        className={`flex items-start gap-4 ${isMeasured ? "" : "invisible"}`}
+      >
         {columns.map((column) => (
           <div
             key={column.map((result) => result.id).join(",")}

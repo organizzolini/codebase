@@ -135,12 +135,58 @@ describe(ShellConfigurationCommand, () => {
     expect(zshrc).toContain(
       "complete -o nospace -C /usr/local/bin/terraform terraform",
     );
-    expect(zshrc).toContain(`. "${workspace.root}/scripts/shell/processes.sh"`);
+    expect(zshrc).not.toContain("processes.sh");
+    expect(zshrc).not.toContain("shell utility functions");
     expect(report).toStrictEqual([
       "🐚 Configuring shell...",
       `🐚 Configuring shell in ${path.join(workspace.home, ".zshrc")}...`,
       `✅ Shell configuration updated in ${path.join(workspace.home, ".zshrc")}`,
     ]);
+  });
+
+  it("removes the processes.sh block an earlier run wrote, and keeps the rest", async () => {
+    expect.hasAssertions();
+
+    enterWorkspace(workspace, "/bin/zsh");
+    fs.writeFileSync(
+      path.join(workspace.home, ".zshrc"),
+      [
+        "alias ll='ls -l'",
+        "",
+        "# codebase: shell utility functions",
+        '[ -f "/old/checkout/scripts/shell/processes.sh" ] && . "/old/checkout/scripts/shell/processes.sh"',
+        "",
+        "export KEEP=1",
+        "",
+      ].join("\n"),
+    );
+    const subject = await createCommand([]);
+
+    await subject.run();
+    const first = readHomeFile(".zshrc");
+    await subject.run();
+
+    expect(first).not.toContain("processes.sh");
+    expect(first).not.toContain("shell utility functions");
+    expect(first).toMatch(/^alias ll='ls -l'\n\n\nexport KEEP=1\n/u);
+    expect(readHomeFile(".zshrc")).toBe(first);
+  });
+
+  it("leaves a marker alone when the line after it is not the processes.sh one", async () => {
+    expect.hasAssertions();
+
+    enterWorkspace(workspace, "/bin/zsh");
+    fs.writeFileSync(
+      path.join(workspace.home, ".zshrc"),
+      "# codebase: shell utility functions\nexport MINE=1\n",
+    );
+    const subject = await createCommand([]);
+
+    await subject.run();
+
+    expect(readHomeFile(".zshrc")).toContain(
+      "# codebase: shell utility functions\nexport MINE=1\n",
+    );
   });
 
   it("adds nothing the second time it runs", async () => {

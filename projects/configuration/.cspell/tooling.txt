@@ -101,8 +101,6 @@ jupyter
 jupyterlab
 keyid
 keyof
-killallnode
-killallvscodeextensions
 killport
 lemmatizers
 licen
