@@ -60,15 +60,15 @@ git clone https://github.com/Organizzolini/codebase.git
 ```
 
 ```bash
-cd codebase && bash scripts/local/setup.sh
+cd codebase && bash scripts/installation.sh
 ```
 
-The script is a bootstrap stub. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
+The script is a bootstrap. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
 
 | Stage | Step                                           | What it does                                                                                                                                   |
 | ----- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                                                                                |
-| 2     | `scripts/local/software/brew.sh` and `node.sh` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                   |
+| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx`           | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                    |
 | 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                                                                                        |
 | 4     | `installation setup`                           | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync`, and Terraform setup |
 

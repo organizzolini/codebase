@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.13](https://github.com/organizzolini/codebase/compare/v3.9.12...v3.9.13) (2026-10-18)
+
+### ♻️ Code Refactoring
+
+* **publication,scripts:** ♻️ run the Nx base and cache steps after the install as publication commands ([#1702](https://github.com/organizzolini/codebase/issues/1702)) ([8a2c0c6](https://github.com/organizzolini/codebase/commit/8a2c0c6aead50835e350000de06aacfff516a48b)), closes [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1564](https://github.com/organizzolini/codebase/issues/1564) [#1565](https://github.com/organizzolini/codebase/issues/1565) [#1569](https://github.com/organizzolini/codebase/issues/1569) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1565](https://github.com/organizzolini/codebase/issues/1565)
+
+## [3.9.12](https://github.com/organizzolini/codebase/compare/v3.9.11...v3.9.12) (2026-10-17)
+
+### ♻️ Code Refactoring
+
+* **configuration,installation,scripts:** ♻️ inline the bootstrap into installation.sh and drop the shell helpers ([#1701](https://github.com/organizzolini/codebase/issues/1701)) ([6104702](https://github.com/organizzolini/codebase/commit/61047027c5d873178c2a76476db9c0fed0e9a6f2))
+
+## [3.9.11](https://github.com/organizzolini/codebase/compare/v3.9.10...v3.9.11) (2026-10-17)
+
+### 🐛 Bug Fixes
+
+* **lexico:** 🐛 align search page spacing and stop the masonry layout flash ([#1696](https://github.com/organizzolini/codebase/issues/1696)) ([8b4149f](https://github.com/organizzolini/codebase/commit/8b4149fabf4a2542243e81c7cd0a894ebe8212fb))
+
 ## [3.9.10](https://github.com/organizzolini/codebase/compare/v3.9.9...v3.9.10) (2026-10-17)
 
 ### ♻️ Code Refactoring

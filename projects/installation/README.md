@@ -22,9 +22,9 @@ Call stacks traced through `projects/installation`, deepest first. Each frame sh
 
 | Measure | Value |
 | --- | --- |
-| Callables | 117 |
+| Callables | 118 |
 | Files | 54 |
-| Calls traced | 254 |
+| Calls traced | 255 |
 | Call stacks | 6 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
@@ -106,11 +106,11 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 ShellConfigurationCommand.run(): Promise<void> [projects/installation/src/modules/shell-configuration/shell-configuration.command.ts:40]
    ↳ Configures the shell.
-  └─> ShellConfigurationService.configureShell(): void [projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:152]
+  └─> ShellConfigurationService.configureShell(): void [projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:165]
      ↳ Configures the startup files of the shell this process was started from.
-    └─> ShellConfigurationService.configureStartupFile(file: string): void [projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:97]
+    └─> ShellConfigurationService.configureStartupFile(file: string): void [projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:99]
        ↳ Configures one startup file.
-      └─> ShellConfigurationService.findNvmPrefix(): string [projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:122]
+      └─> ShellConfigurationService.findNvmPrefix(): string [projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:118]
          ↳ Where Homebrew put nvm, which its startup script is sourced from.
         └─> ProcessRunnerService.runOrThrow(command: string, args: string[], options?: ProcessOptions): ProcessResult [projects/installation/src/modules/process-runner/process-runner.service.ts:92]
            ↳ Runs a command and throws when it does not exit 0.
@@ -151,12 +151,12 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `ShellConfigurationService.configureStartupFile` | 6 | `ReporterService.print`, `ShellConfigurationService.appendBlock`, `ShellConfigurationService.buildNvmBlock`, `ShellConfigurationService.findNvmPrefix`, `ShellConfigurationService.appendCompletions`, `ShellConfigurationService.appendTerraformCompletion` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:97` |
+| `ShellConfigurationService.configureStartupFile` | 7 | `ReporterService.print`, `ShellConfigurationService.appendBlock`, `ShellConfigurationService.buildNvmBlock`, `ShellConfigurationService.findNvmPrefix`, `ShellConfigurationService.appendCompletions`, `ShellConfigurationService.appendTerraformCompletion`, `ShellConfigurationService.removeProcessesBlock` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:99` |
 | `SoftwareDockerService.installDocker` | 6 | `ReporterService.print`, `ProcessRunnerService.locate`, `ProcessRunnerService.runOrThrow`, `SoftwareDockerService.isRunning`, `SoftwareDockerService.readVersion`, `SoftwareDockerService.startDaemon` | `projects/installation/src/modules/software/software-docker.service.ts:77` |
 | `SoftwareOllamaService.installOllama` | 6 | `SoftwareBrewService.installOrCheck`, `ReporterService.print`, `SoftwareOllamaService.isRunning`, `SoftwareOllamaService.start`, `SoftwareOllamaService.waitUntilReady`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-ollama.service.ts:81` |
 
 <details>
-<summary>62 more callables</summary>
+<summary>63 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -177,16 +177,16 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SoftwareGpgService.installGpg` | 4 | `ReporterService.print`, `ProcessRunnerService.locate`, `ProcessRunnerService.runOrThrow`, `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-gpg.service.ts:124` |
 | `SoftwareOllamaService.start` | 4 | `ReporterService.print`, `ProcessRunnerService.run`, `ProcessRunnerService.runOrThrow`, `ProcessRunnerService.startDetached` | `projects/installation/src/modules/software/software-ollama.service.ts:51` |
 | `DependenciesService.importCluster` | 3 | `ProcessRunnerService.run`, `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:54` |
-| `ShellConfigurationService.appendCompletions` | 3 | `ShellConfigurationService.readStartupFile`, `ShellConfigurationService.map(…)`, `ShellConfigurationService.filter(…)` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:56` |
-| `ShellConfigurationService.configureShell` | 3 | `ReporterService.print`, `ShellConfigurationService.configureStartupFile`, `ShellConfigurationService.printManualInstructions` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:152` |
+| `ShellConfigurationService.appendCompletions` | 3 | `ShellConfigurationService.readStartupFile`, `ShellConfigurationService.map(…)`, `ShellConfigurationService.filter(…)` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:58` |
+| `ShellConfigurationService.configureShell` | 3 | `ReporterService.print`, `ShellConfigurationService.configureStartupFile`, `ShellConfigurationService.printManualInstructions` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:165` |
 | `SoftwareGpgService.configureSigning` | 3 | `ReporterService.print`, `ProcessRunnerService.run`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-gpg.service.ts:69` |
 | `SoftwareInfraService.installInfrastructureTools` | 3 | `SoftwareBrewService.installOrCheck`, `ReporterService.print`, `SoftwareInfraService.buildVersionLines` | `projects/installation/src/modules/software/software-infra.service.ts:108` |
 | `SoftwareOllamaService.waitUntilReady` | 3 | `ReporterService.print`, `SoftwareOllamaService.isRunning`, `ProcessRunnerService.sleep` | `projects/installation/src/modules/software/software-ollama.service.ts:66` |
 | `UpdateReuiSkillService.fetchBundle` | 3 | `UpdateReuiSkillService.map(…)`, `UpdateReuiSkillService.find(…)`, `UpdateReuiSkillService.some(…)` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:59` |
 | `DependenciesService.resetNxCache` | 2 | `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:137` |
 | `EnvironmentFilesService.findTargets` | 2 | `ProcessRunnerService.run`, `EnvironmentFilesService.map(…)` | `projects/installation/src/modules/environment-files/environment-files.service.ts:88` |
-| `ShellConfigurationService.appendTerraformCompletion` | 2 | `ProcessRunnerService.locate`, `ShellConfigurationService.appendBlock` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:73` |
-| `ShellConfigurationService.printManualInstructions` | 2 | `ShellConfigurationService.findNvmPrefix`, `ReporterService.print` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:129` |
+| `ShellConfigurationService.appendTerraformCompletion` | 2 | `ProcessRunnerService.locate`, `ShellConfigurationService.appendBlock` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:75` |
+| `ShellConfigurationService.printManualInstructions` | 2 | `ShellConfigurationService.findNvmPrefix`, `ReporterService.print` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:125` |
 | `SoftwareDatabaseService.hasPostgres18` | 2 | `ProcessRunnerService.locate`, `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-database.service.ts:31` |
 | `SoftwareDatabaseService.installDatabaseTools` | 2 | `SoftwareDatabaseService.installSquawk`, `SoftwareDatabaseService.installPostgres` | `projects/installation/src/modules/software/software-database.service.ts:95` |
 | `SoftwareGpgService.configureAgent` | 2 | `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-gpg.service.ts:40` |
@@ -204,9 +204,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `EnvironmentFilesService.addWorkspaceVariable` | 1 | `ReporterService.print` | `projects/installation/src/modules/environment-files/environment-files.service.ts:49` |
 | `EnvironmentFilesService.createEnvironmentFile` | 1 | `ReporterService.print` | `projects/installation/src/modules/environment-files/environment-files.service.ts:67` |
 | `EnvironmentFilesCommand.run` | 1 | `EnvironmentFilesService.createEnvironmentFiles` | `projects/installation/src/modules/environment-files/environment-files.command.ts:39` |
-| `ShellConfigurationService.appendBlock` | 1 | `ShellConfigurationService.readStartupFile` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:47` |
-| `ShellConfigurationService.filter(…)` | 1 | `ProcessRunnerService.locate` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:63` |
-| `ShellConfigurationService.findNvmPrefix` | 1 | `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:122` |
+| `ShellConfigurationService.appendBlock` | 1 | `ShellConfigurationService.readStartupFile` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:49` |
+| `ShellConfigurationService.filter(…)` | 1 | `ProcessRunnerService.locate` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:65` |
+| `ShellConfigurationService.findNvmPrefix` | 1 | `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:118` |
+| `ShellConfigurationService.removeProcessesBlock` | 1 | `ShellConfigurationService.readStartupFile` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:150` |
 | `ShellConfigurationCommand.run` | 1 | `ShellConfigurationService.configureShell` | `projects/installation/src/modules/shell-configuration/shell-configuration.command.ts:40` |
 | `SoftwareBrewService.listOutdated` | 1 | `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-brew.service.ts:59` |
 | `SoftwareDatabaseService.readVersion` | 1 | `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-database.service.ts:84` |
@@ -607,8 +608,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5718-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-189.54_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5782-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-191.65_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-84-3178c6?style=flat-square)
 
@@ -619,7 +620,7 @@ graph LR
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-36-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-164-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-166-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -628,15 +629,15 @@ graph LR
 ![Test Files](https://img.shields.io/badge/Test_Files-24-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-15-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-31-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-242-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-89-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-212-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-119-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-279-dc2626?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-244-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-90-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-213-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-121-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-285-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-448-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-88-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-305-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-469-475569?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-90-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-307-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-471-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -808,7 +809,7 @@ graph LR
 ![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-13-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-115-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-112-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

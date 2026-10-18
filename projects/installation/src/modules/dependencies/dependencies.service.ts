@@ -30,7 +30,7 @@ import type { EnvironmentVariables } from "./dependencies.types";
  * Terraform, and a kubeconfig for the cluster.
  *
  * Needs `pnpm`, `nx`, `uv`, and `terraform` on `PATH`, which the software step
- * and the bootstrap stub provide.
+ * and `scripts/installation.sh` provide.
  */
 @Injectable()
 export class DependenciesService {

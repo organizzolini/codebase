@@ -90,13 +90,13 @@ Call stacks traced through `projects/lexico/lexico-web`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 126 |
+| Callables | 127 |
 | Files | 28 |
-| Calls traced | 71 |
+| Calls traced | 72 |
 | Call stacks | 21 |
 | Deepest stack | 4 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 13 |
+| Unfollowable calls | 14 |
 
 ### Limits
 
@@ -180,13 +180,13 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> filter(…)(detail: string | null | undefined): detail is string [projects/lexico/lexico-web/src/components/lexeme-header.tsx:117]
 ```
 
-**8. `SearchResults`** — depth 3 · orphan-root
+**8. `SearchResults`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 SearchResults(properties: Readonly<SearchResultsProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-results.tsx:29]
+🚀 SearchResults(properties: Readonly<SearchResultsProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-results.tsx:31]
    ↳ The lexemes a query matched, in a masonry of cards.
-  └─> from(…)(_: unknown, column: number): LexemeResult[] [projects/lexico/lexico-web/src/components/search-results.tsx:42]
-    └─> filter(…)(_result: LexemeResult, index: number): boolean [projects/lexico/lexico-web/src/components/search-results.tsx:43]
+  └─> from(…)(_: unknown, column: number): LexemeResult[] [projects/lexico/lexico-web/src/components/search-results.tsx:45]
+    └─> filter(…)(_result: LexemeResult, index: number): boolean [projects/lexico/lexico-web/src/components/search-results.tsx:46]
 ```
 
 **9. `handler(…)`** — depth 3 · orphan-root
@@ -308,6 +308,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `NounForms` | 3 | `filter(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:47` |
+| `SearchResults` | 3 | `from(…)`, `useEffect(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:31` |
 | `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:40` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:103` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:71` |
@@ -316,8 +317,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `load` | 2 | `catch(…)`, `then(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:103` |
 | `FormsOfKind` | 2 | `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:193` |
 | `LexemeTranslations` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-translations.tsx:37` |
-| `SearchResults` | 2 | `from(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:29` |
-| `map(…)` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:71` |
+| `map(…)` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:84` |
 | `searchLanguage` | 2 | `queryApi`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:211` |
 | `handler(…)` | 2 | `searchLanguage`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:233` |
 | `handler(…)` | 2 | `queryApi`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:284` |
@@ -340,7 +340,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LexemeHeader` | 1 | `describeInflection` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:40` |
 | `describeInflection` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:106` |
 | `LexemePronunciations` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:38` |
-| `from(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:42` |
+| `from(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:45` |
 
 </details>
 <!-- callidescope:end -->
@@ -478,17 +478,17 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4437-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-138.09_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4451-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-138.75_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.76_kB_gzip-6b7280?style=flat-square)
-![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.40_kB_gzip-6b7280?style=flat-square)
-![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.95_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.34_kB_gzip-6b7280?style=flat-square)
+![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.75_kB_gzip-6b7280?style=flat-square)
+![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.43_kB_gzip-6b7280?style=flat-square)
+![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.94_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.38_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -506,15 +506,15 @@ graph LR
 ![Test Files](https://img.shields.io/badge/Test_Files-17-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-15-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-243-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-244-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-224-4ade80?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-225-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-19-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-165-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-180-0284c7?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-166-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-181-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-54-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-295-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-473-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-301-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-479-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
