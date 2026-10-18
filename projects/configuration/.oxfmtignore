@@ -48,7 +48,7 @@ package-lock.json
 **/library.json
 pnpm-lock.yaml
 tmp
-**/conformetry-templates/**
+**/.conformetry/templates/**
 # Conformetry example fixtures: a template file holds mustache where an
 # identifier belongs, so it is not parseable as the language its extension
 # names. Each example's own conformetry.config.ts is formatted normally.

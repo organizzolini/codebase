@@ -28,7 +28,7 @@ import { EnvironmentFilesService } from "./environment-files.service";
 import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
 
 const LISTING_LINE =
-  "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:projects/configuration/conformetry-templates/**";
+  "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:projects/configuration/.conformetry/templates/**";
 
 describe(EnvironmentFilesCommand, () => {
   let command: EnvironmentFilesCommand;

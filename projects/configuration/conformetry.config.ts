@@ -5,7 +5,7 @@ import type { ConformetryNxConfiguration } from "@conformetry/nx";
 
 export const CONFORMETRY_PATTERNS = [
   "projects/configuration/conformetry.config.ts",
-  "projects/configuration/conformetry-templates/**",
+  "projects/configuration/.conformetry/templates/**",
 ] as const;
 
 /**
@@ -61,7 +61,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [{ patterns: ["projects/affirmancy"] }],
     name: "jupyter-notebook-application",
     templatePath:
-      "projects/configuration/conformetry-templates/jupyter-notebook-application",
+      "projects/configuration/.conformetry/templates/jupyter-notebook-application",
   },
   {
     description:
@@ -111,7 +111,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "nestjs-command-project",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-command-project",
+      "projects/configuration/.conformetry/templates/nestjs-command-project",
   },
   {
     description:
@@ -122,7 +122,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [],
     name: "nestjs-graphql-application",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-graphql-application",
+      "projects/configuration/.conformetry/templates/nestjs-graphql-application",
   },
   {
     description:
@@ -143,7 +143,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [],
     name: "nestjs-service-project",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-service-project",
+      "projects/configuration/.conformetry/templates/nestjs-service-project",
   },
   {
     description:
@@ -154,7 +154,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [],
     name: "tanstack-application",
     templatePath:
-      "projects/configuration/conformetry-templates/tanstack-application",
+      "projects/configuration/.conformetry/templates/tanstack-application",
   },
 
   // Groups with tags pick the projects the template suits — which is what
@@ -172,7 +172,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "nestjs-command-module",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-command-module",
+      "projects/configuration/.conformetry/templates/nestjs-command-module",
   },
   {
     description:
@@ -189,7 +189,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "nestjs-dataloader-module",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-dataloader-module",
+      "projects/configuration/.conformetry/templates/nestjs-dataloader-module",
   },
   {
     description:
@@ -206,7 +206,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "nestjs-graphql-module",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-graphql-module",
+      "projects/configuration/.conformetry/templates/nestjs-graphql-module",
   },
   {
     description:
@@ -227,7 +227,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "nestjs-service-file",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-service-file",
+      "projects/configuration/.conformetry/templates/nestjs-service-file",
   },
   {
     description:
@@ -248,7 +248,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "nestjs-resolver-file",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-resolver-file",
+      "projects/configuration/.conformetry/templates/nestjs-resolver-file",
   },
   {
     description:
@@ -260,7 +260,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     instances: [{ patterns: ["src/modules/*"], tags: ["framework:nestjs"] }],
     name: "nestjs-service-module",
     templatePath:
-      "projects/configuration/conformetry-templates/nestjs-service-module",
+      "projects/configuration/.conformetry/templates/nestjs-service-module",
   },
   // The extglob in each frontend source pattern keeps a test file from being
   // read as an instance named after itself. Instances are matched to whichever
@@ -286,7 +286,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "react-component",
     templatePath:
-      "projects/configuration/conformetry-templates/react-component",
+      "projects/configuration/.conformetry/templates/react-component",
   },
   {
     description:
@@ -309,7 +309,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       },
     ],
     name: "react-hook",
-    templatePath: "projects/configuration/conformetry-templates/react-hook",
+    templatePath: "projects/configuration/.conformetry/templates/react-hook",
   },
   {
     description:
@@ -335,7 +335,8 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
       },
     ],
     name: "tanstack-route",
-    templatePath: "projects/configuration/conformetry-templates/tanstack-route",
+    templatePath:
+      "projects/configuration/.conformetry/templates/tanstack-route",
   },
   {
     description:
@@ -349,7 +350,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     ],
     name: "tanstack-server-function",
     templatePath:
-      "projects/configuration/conformetry-templates/tanstack-server-function",
+      "projects/configuration/.conformetry/templates/tanstack-server-function",
   },
 ];
 

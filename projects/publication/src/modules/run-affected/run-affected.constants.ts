@@ -17,7 +17,7 @@ export const DEFAULT_SPELLING_PATHS = String.raw`^projects/configuration/\.cspel
  * `.nxignore` hides some templates from Nx, so a template edit alone selects
  * none of the instance projects generated from it.
  */
-export const DEFAULT_TEMPLATE_PATHS = String.raw`^projects/configuration/conformetry-templates/`;
+export const DEFAULT_TEMPLATE_PATHS = String.raw`^projects/configuration/.conformetry/templates/`;
 
 /**
  * The file added to the change set when a template changed: the conformetry

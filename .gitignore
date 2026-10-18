@@ -38,7 +38,8 @@ crash.log
 .nx/workspace-data
 
 # Conformetry 👔
-.conformetry
+/.conformetry
+projects/configuration/.conformetry/nx-generators
 
 # Output 🛢️
 *.db

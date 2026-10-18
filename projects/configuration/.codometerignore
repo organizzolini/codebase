@@ -43,7 +43,7 @@ projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts
 # 📓 Scratch notes and generator templates
 notepads/
 templates/
-projects/configuration/conformetry-templates/
+projects/configuration/.conformetry/templates/
 
 # 🧪 A sample corpus written to be counted, not to be part of the count.
 # Twenty-seven files across twelve languages exist so `codometer-examples` can

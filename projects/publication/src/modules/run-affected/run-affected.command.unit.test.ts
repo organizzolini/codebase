@@ -329,7 +329,7 @@ describe(RunAffectedCommand, () => {
 
   describe("a change set with templates", () => {
     const TEMPLATE =
-      "projects/configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/AGENTS.md";
+      "projects/configuration/.conformetry/templates/nestjs-command-project/{{nameKebabCase}}/AGENTS.md";
 
     it("adds the conformetry config when INCLUDE_TEMPLATES is true", async () => {
       expect.hasAssertions();

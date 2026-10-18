@@ -122,7 +122,7 @@ const config: KnipConfig = {
         "**/coverage/**",
         "projects/JimmyPaolini/**",
         "pnpm-workspace.yaml", // Catalog dependencies are shared across workspace; knip would flag all as unused in root
-        "projects/configuration/conformetry-templates/**", // Generator templates are placeholder files, not executable workspace code
+        "projects/configuration/.conformetry/templates/**", // Generator templates are placeholder files, not executable workspace code
         "projects/ic-suite/codometer/codometer-examples/examples/compiled/**", // Stand-in build output, committed so a target example has something to measure
         "projects/ic-suite/codometer/codometer-examples/examples/corpus/**", // Sample corpus written to be counted; uncalled and unimported by construction
         // Skill scripts are invoked by the skill framework, not imported in code

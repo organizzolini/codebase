@@ -132,7 +132,7 @@ function getStagedTemplateFlags(files: string[]): string | undefined {
   const stagedTemplates = files.some((file) =>
     path
       .relative(process.cwd(), file)
-      .startsWith("projects/configuration/conformetry-templates/"),
+      .startsWith("projects/configuration/.conformetry/templates/"),
   );
 
   return stagedTemplates
