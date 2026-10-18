@@ -65,12 +65,12 @@ cd codebase && bash scripts/installation.sh
 
 The script is a bootstrap. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
 
-| Stage | Step                                | What it does                                                                                                                                   |
-| ----- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `scripts/utilities.sh`              | Validates the working directory, loads `.env`, enables `set -e`                                                                                |
-| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                   |
-| 3     | `pnpm install`                      | Installs the packages the `setup` command is written in                                                                                        |
-| 4     | `installation setup`                | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync`, and Terraform setup |
+| Stage | Step                                           | What it does                                                                                                                                   |
+| ----- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                                                                                |
+| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx`           | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                    |
+| 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                                                                                        |
+| 4     | `installation setup`                           | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project projects/configuration`, and Terraform setup |
 
 A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`. Run from inside Nx, `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; run `nx reset` yourself.
 
@@ -246,7 +246,7 @@ Always run tasks through Nx rather than the underlying tool, so caching and the 
 
 ### Python Projects
 
-`affirmancy` is a Python project and does not share the TypeScript tool names. It lives in the shared `uv` workspace at the repository root, so its dependencies come from the root `pyproject.toml` and `uv.lock` rather than a manifest of its own.
+`affirmancy` is a Python project and does not share the TypeScript tool names. It lives in the shared `uv` workspace declared in `projects/configuration/pyproject.toml`, so its dependencies come from that workspace config and `projects/configuration/uv.lock` rather than a manifest of its own.
 
 | Concern   | TypeScript                   | Python          |
 | --------- | ---------------------------- | --------------- |

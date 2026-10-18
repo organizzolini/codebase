@@ -250,7 +250,7 @@ runs:
       uses: astral-sh/setup-uv@v10.3.0
       with:
         enable-cache: true
-        cache-dependency-glob: uv.lock
+        cache-dependency-glob: projects/configuration/uv.lock
         add-problem-matchers: "false"
 
     # Guarded on `uv` as well as its own input: `python-dependencies` defaults
@@ -258,10 +258,9 @@ runs:
     # it has no binary to run.
     - name: 🐍 Install Python Dependencies
       if: inputs.uv == 'true' && inputs.python-dependencies == 'true'
-      # Syncs every uv workspace member into the shared root `.venv`. Scoping
-      # this to a single project (`--project`) would prune the other members'
-      # tools out of that shared environment.
-      run: uv sync --frozen --quiet
+      # Syncs every uv workspace member into the shared root `.venv` via the
+      # workspace definition in projects/configuration/pyproject.toml.
+      run: uv sync --frozen --quiet --project projects/configuration
       shell: bash
 
     - name: ♻️ Sync ESLint Cache

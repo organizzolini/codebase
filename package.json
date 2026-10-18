@@ -94,7 +94,7 @@
   },
   "repository": "organizzolini/codebase.git",
   "scripts": {
-    "postinstall": "conformetry-nx-bootstrap-generators && (NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write || echo \"⚠️  The installed-skills command could not run, so no skill was restored. Retry with 'pnpm exec nx run synchronization:installed-skills:write'\")",
+    "postinstall": "conformetry-nx-bootstrap-generators && (NODE_OPTIONS='' SWC_NODE_PROJECT=projects/configuration/tsconfig.workspace.json node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills write || echo \"⚠️  The installed-skills command could not run, so no skill was restored. Retry with 'pnpm exec nx run synchronization:installed-skills:write'\")",
     "prepare": "husky projects/configuration/.husky",
     "semantic-release": "semantic-release",
     "semantic-release:dry-run": "semantic-release --dry-run"
