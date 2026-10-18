@@ -52,6 +52,7 @@ body:
         - documentation
         - infrastructure
         - installation
+        - integration
         - JimmyPaolini
         - lexico
         - components
