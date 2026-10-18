@@ -369,23 +369,19 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 This one stays shell. `setup-codebase` runs it before `pnpm install`, and a job
 may skip the install altogether, so no NestJS command can run in its place.
 
-The other two affected-run steps are commands of the
-[publication](../projects/publication) project, called from the `run-affected`
-composite action and the 📦 Publishable Packages leg:
+The other affected-run step is a command of the
+[publication](../projects/publication) project, called from the 📦 Publishable Packages leg:
 
 | Command | What it does |
 | ------- | ------------ |
-| `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
 | `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
-All three read everything from the environment, so any of them can be run
+Both read everything from the environment, so either can be run
 locally:
 
 ```bash
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
   bash scripts/nx/bound-base-to-push.sh
-TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
-  nx run publication:start:run-affected
 ```
 
 ## Notepads

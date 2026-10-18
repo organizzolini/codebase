@@ -72,10 +72,8 @@ function getStagedFilesFlags(files: string[]): string {
 }
 
 /**
- * Hands `nx affected` the staged changes as two revisions, so it selects
- * projects the way CI's `run-affected` command in `projects/publication` does
- * when it has no change set to correct. The hook does not call that command:
- * its spelling files stay in.
+ * Hands `nx affected` the staged changes as two revisions, selecting projects
+ * the way CI does.
  *
  * Given `--files`, Nx counts a file as changed in full. Given a base and a
  * head, it diffs `package.json` and `pnpm-lock.yaml` field by field. The
