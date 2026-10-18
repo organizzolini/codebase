@@ -13,8 +13,8 @@ import { ProgressiveService } from "../progressive/progressive.service";
 
 import { CaelundasCommand } from "./caelundas.command";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
-import type { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
+import type { DetectedCalendarEvent } from "../database/database.types";
+import type { CalendarEvent } from "../database/entities/calendar-event.entity";
 import type { Input } from "../input/input.types";
 
 const input: Input = {

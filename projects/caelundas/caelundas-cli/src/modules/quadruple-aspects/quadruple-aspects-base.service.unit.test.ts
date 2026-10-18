@@ -8,8 +8,8 @@ import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { QuadrupleAspectsBaseService } from "./quadruple-aspects-base.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(QuadrupleAspectsBaseService, () => {
   let service: QuadrupleAspectsBaseService;

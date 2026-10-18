@@ -4,7 +4,7 @@ import {
   formCaseValues,
   formGenderValues,
   formNumberValues,
-} from "../../../lexico-database/lexico-database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./Form.entity";
 
@@ -12,7 +12,7 @@ import type {
   FormCase,
   FormGender,
   FormNumber,
-} from "../../../lexico-database/lexico-database.types";
+} from "../../../database/database.types";
 
 /** A declined form for an adjective (gender + case + number). */
 @ChildEntity("adjectival")

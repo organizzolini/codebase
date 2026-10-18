@@ -8,7 +8,7 @@ import { DataSource } from "typeorm";
  * `CalendarEventsService`.
  */
 @Injectable()
-export class CaelundasDatabaseService {
+export class DatabaseService {
   // 🏗 Dependency Injection
 
   constructor(

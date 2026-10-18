@@ -1,10 +1,10 @@
 import { ChildEntity, Column } from "typeorm";
 
-import { verbConjugationValues } from "../../../lexico-database/lexico-database.constants";
+import { verbConjugationValues } from "../../../database/database.constants";
 
 import { Inflection } from "./Inflection.entity";
 
-import type { VerbConjugation } from "../../../lexico-database/lexico-database.types";
+import type { VerbConjugation } from "../../../database/database.types";
 
 /**
  * Inflection metadata for verb lexemes.

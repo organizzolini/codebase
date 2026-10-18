@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import { describe, expect, it } from "vitest";
 
-import { createMomentTransformer } from "./caelundas-database.utilities";
+import { createMomentTransformer } from "./database.utilities";
 
 describe("caelundas database utilities", () => {
   describe(createMomentTransformer, () => {

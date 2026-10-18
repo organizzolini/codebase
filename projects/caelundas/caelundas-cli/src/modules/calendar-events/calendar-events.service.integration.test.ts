@@ -5,15 +5,15 @@ import { LoggerModule } from "@codebase/logging";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../../caelundas-cli.constants";
-import { CaelundasDatabaseModule } from "../caelundas-database/caelundas-database.module";
-import { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
-import { Migration1791255787877 } from "../caelundas-database/migrations/1791255787877-migration";
+import { DatabaseModule } from "../database/database.module";
+import { CalendarEvent } from "../database/entities/calendar-event.entity";
+import { Migration1791255787877 } from "../database/migrations/1791255787877-migration";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
 import { CalendarEventsService } from "./calendar-events.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { Repository } from "typeorm";
 
@@ -43,7 +43,7 @@ describe("calendar events service integration", () => {
     // The root's unprefixed variables must never reach the connection.
     vi.stubEnv("POSTGRES_DB", "postgres");
     database = await startDatabaseTestingModule({
-      database: CaelundasDatabaseModule,
+      database: DatabaseModule,
       entities: [CalendarEvent],
       imports: [LoggerModule, CalendarEventsModule],
       migrations: [Migration1791255787877],

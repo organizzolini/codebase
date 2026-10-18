@@ -91,7 +91,7 @@ TypeORM command line finds the file's one `DataSource` export by itself:
 ```ts
 export const meanderawDataSource = createDataSource({
   entities: [Meander],
-  migrations: ["src/modules/meanderaw-database/migrations/*.ts"],
+  migrations: ["src/modules/database/migrations/*.ts"],
   project: "meanderaw",
 });
 ```
@@ -128,7 +128,7 @@ conventional paths from:
 ```jsonc
 // project.json
 "migration": {
-  "options": { "module": "src/modules/meanderaw-database" }
+  "options": { "module": "src/modules/database" }
 }
 ```
 
@@ -156,7 +156,7 @@ The extracted SQL is linted only once the project opts in to it as well: a
 // project.json
 "tags": ["framework:typeorm"],
 "targets": {
-  "migration": { "options": { "module": "src/modules/meanderaw-database" } },
+  "migration": { "options": { "module": "src/modules/database" } },
   "sqlfluff-format": {},
   "sqlfluff-lint": {},
   "squawk": {}

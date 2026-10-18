@@ -1,9 +1,6 @@
 import { createDataSource } from "@codebase/persistence";
 
-import {
-  DATABASE_ENTITIES,
-  DATABASE_PROJECT,
-} from "./caelundas-database.constants";
+import { DATABASE_ENTITIES, DATABASE_PROJECT } from "./database.constants";
 
 /**
  * The `DataSource` the TypeORM command line reads for the `migration`
@@ -12,6 +9,6 @@ import {
  */
 export const caelundasDataSource = createDataSource({
   entities: DATABASE_ENTITIES,
-  migrations: ["src/modules/caelundas-database/migrations/*.ts"],
+  migrations: ["src/modules/database/migrations/*.ts"],
   project: DATABASE_PROJECT,
 });

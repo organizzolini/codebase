@@ -1,10 +1,10 @@
 import { ChildEntity, Column } from "typeorm";
 
-import { formSupineCaseValues } from "../../../lexico-database/lexico-database.constants";
+import { formSupineCaseValues } from "../../../database/database.constants";
 
 import { Form } from "./Form.entity";
 
-import type { FormSupineCase } from "../../../lexico-database/lexico-database.types";
+import type { FormSupineCase } from "../../../database/database.types";
 
 /** A verbal noun supine form (accusative or ablative case). */
 @ChildEntity("supine")

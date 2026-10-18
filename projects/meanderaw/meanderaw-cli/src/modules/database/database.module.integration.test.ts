@@ -9,23 +9,23 @@ import {
 import { meanderRecord } from "../../../testing/meanders";
 import { environmentSchema } from "../../meanderaw-cli.constants";
 
+import { DatabaseModule } from "./database.module";
+import { DatabaseService } from "./database.service";
 import { Meander } from "./entities/meander.entity";
-import { MeanderawDatabaseModule } from "./meanderaw-database.module";
-import { MeanderawDatabaseService } from "./meanderaw-database.service";
 import { Migration1791160950069 } from "./migrations/1791160950069-migration";
 import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
 // 🧪 Tests
 
 /**
- * Boots the real `MeanderawDatabaseModule` from configuration alone, the way the CLI
+ * Boots the real `DatabaseModule` from configuration alone, the way the CLI
  * does, against a throwaway Postgres container standing in for the local
  * one, migrated by the project's real migrations: the server's address,
  * credentials, database, and schema all arrive as `MEANDERAW_POSTGRES_*`
  * variables, while the unprefixed `POSTGRES_DB` the workspace root's `.env`
  * sets for the shared container's admin login is ignored.
  */
-describe(MeanderawDatabaseModule, () => {
+describe(DatabaseModule, () => {
   let database: DatabaseTestingModule;
 
   beforeAll(async () => {
@@ -34,7 +34,7 @@ describe(MeanderawDatabaseModule, () => {
     vi.stubEnv("POSTGRES_DB", "postgres");
 
     database = await startDatabaseTestingModule({
-      database: MeanderawDatabaseModule,
+      database: DatabaseModule,
       entities: [Meander],
       migrations: [Migration1791160950069, Migration1791414023001],
       project: "meanderaw",
@@ -49,7 +49,7 @@ describe(MeanderawDatabaseModule, () => {
 
   it("writes rows into the meanderaw schema, every column in snake case", async () => {
     await database.module
-      .get(MeanderawDatabaseService)
+      .get(DatabaseService)
       .save(meanderRecord({ code: "01x02y0" }));
 
     const columns: { column_name: string }[] = await database.module
@@ -79,7 +79,7 @@ describe(MeanderawDatabaseModule, () => {
 
   it("reads back the row it wrote", async () => {
     await expect(
-      database.module.get(MeanderawDatabaseService).findOneByCode("01x02y0"),
+      database.module.get(DatabaseService).findOneByCode("01x02y0"),
     ).resolves.toMatchObject({ code: "01x02y0", isHardcoded: true });
   });
 

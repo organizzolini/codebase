@@ -2,7 +2,7 @@ import { Column, Entity, Index, Unique } from "typeorm";
 
 import { UpdatableEntity } from "@codebase/persistence";
 
-import { createMomentTransformer } from "../caelundas-database.utilities";
+import { createMomentTransformer } from "../database.utilities";
 
 import type { Moment } from "moment-timezone";
 

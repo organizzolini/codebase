@@ -1,17 +1,17 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LexicoDatabaseService } from "./lexico-database.service";
+import { DatabaseService } from "./database.service";
 
-describe(LexicoDatabaseService, () => {
-  let service: LexicoDatabaseService;
+describe(DatabaseService, () => {
+  let service: DatabaseService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [LexicoDatabaseService],
+      providers: [DatabaseService],
     }).compile();
 
-    service = await module.resolve(LexicoDatabaseService);
+    service = await module.resolve(DatabaseService);
   });
 
   it("is defined", () => {

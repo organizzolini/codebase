@@ -18,7 +18,7 @@ import type {
   nounGender,
   prepositionCase,
   verbConjugation,
-} from "./lexico-database.constants";
+} from "./database.constants";
 
 // 🏷️ Types
 /** Declension class of a Latin adjective (first/second or third). */

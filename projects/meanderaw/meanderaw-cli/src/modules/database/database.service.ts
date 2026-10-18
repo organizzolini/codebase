@@ -2,18 +2,18 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { Meander } from "./entities/meander.entity";
 import {
   MEANDER_INSERT_CHUNK_SIZE,
   MEANDER_READ_BATCH_SIZE,
-} from "./meanderaw-database.constants";
+} from "./database.constants";
+import { Meander } from "./entities/meander.entity";
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
 import type {
   MeanderPatternShapeCount,
   MeanderRecord,
   MeanderShape,
-} from "./meanderaw-database.types";
+} from "./database.types";
 import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
 
 /**
@@ -23,7 +23,7 @@ import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
  * rendering pipeline and TypeORM.
  */
 @Injectable()
-export class MeanderawDatabaseService {
+export class DatabaseService {
   // 🏗 Dependency Injection
 
   constructor(

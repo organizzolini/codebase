@@ -9,7 +9,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { EclipseEventService } from "./eclipse-event.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(EclipseEventService, () => {
   let service: EclipseEventService;

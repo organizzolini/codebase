@@ -7,8 +7,8 @@ import { startPostgresContainer } from "@codebase/persistence/testing";
 import {
   LEXICO_DATABASE_ENTITIES,
   LEXICO_DATABASE_MIGRATIONS,
-} from "../lexico-database/data-source.constants";
-import { LexicoNamingStrategy } from "../lexico-database/lexico-database.constants";
+} from "../database/data-source.constants";
+import { LexicoNamingStrategy } from "../database/database.constants";
 
 import { Author } from "./literature/Author.entity";
 import { Line } from "./literature/Line.entity";

@@ -12,6 +12,6 @@ import { Meander } from "./entities/meander.entity";
  */
 export const meanderawDataSource = createDataSource({
   entities: [Meander],
-  migrations: ["src/modules/meanderaw-database/migrations/*.ts"],
+  migrations: ["src/modules/database/migrations/*.ts"],
   project: "meanderaw",
 });

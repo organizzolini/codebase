@@ -1,5 +1,5 @@
 // 🏷️ Types
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 import type { Input } from "../src/modules/input/input.types";
 import type { DetectorFamily } from "../src/modules/perfective/perfective.types";
 

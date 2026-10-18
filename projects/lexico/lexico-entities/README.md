@@ -16,13 +16,13 @@ lexico-cli, never depends on `@nestjs/graphql`.
 ## Usage
 
 ```ts
-import { LexicoDatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
+import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 ```
 
-`LexicoDatabaseModule` connects to `lexico_development`.`lexico` as
+`DatabaseModule` connects to `lexico_development`.`lexico` as
 `lexico_username` through [`@codebase/persistence`](../../persistence/README.md)'s
 `DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
-`lexicoDataSource`, in `src/modules/lexico-database/data-source.constants.ts`,
+`lexicoDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
 Neither synchronizes nor runs migrations on start, so only the data source and
@@ -106,7 +106,7 @@ nx run lexico-entities:migration:extract-sql-all    # Emit .sql alongside each m
 
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
-`"migration": { "options": { "module": "src/modules/lexico-database" } }`,
+`"migration": { "options": { "module": "src/modules/database" } }`,
 which names the folder holding `data-source.constants.ts` and `migrations/`;
 its SQL extraction script lives in
 [`@codebase/persistence`](../../persistence/README.md).
@@ -287,10 +287,10 @@ graph LR
 flowchart LR
   DatabaseModule
   EntitiesModule
-  LexicoDatabaseModule
+  DatabaseModule
   TypeOrmModule
   DatabaseModule --> TypeOrmModule
-  LexicoDatabaseModule --> DatabaseModule
+  DatabaseModule --> DatabaseModule
 ```
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
@@ -340,14 +340,14 @@ graph LR
   file_src_modules_entities_literature_Line_entity_ts["src/modules/entities/literature/Line.entity.ts"]
   file_src_modules_entities_literature_Text_entity_ts["src/modules/entities/literature/Text.entity.ts"]
   file_src_modules_entities_literature_Token_entity_ts["src/modules/entities/literature/Token.entity.ts"]
-  file_src_modules_lexico_database_data_source_constants_ts["src/modules/lexico-database/data-source.constants.ts"]
-  file_src_modules_lexico_database_data_source_constants_unit_test_ts["src/modules/lexico-database/data-source.constants.unit.test.ts"]
-  file_src_modules_lexico_database_lexico_database_constants_ts["src/modules/lexico-database/lexico-database.constants.ts"]
-  file_src_modules_lexico_database_lexico_database_module_ts["src/modules/lexico-database/lexico-database.module.ts"]
-  file_src_modules_lexico_database_lexico_database_service_ts["src/modules/lexico-database/lexico-database.service.ts"]
-  file_src_modules_lexico_database_lexico_database_service_unit_test_ts["src/modules/lexico-database/lexico-database.service.unit.test.ts"]
-  file_src_modules_lexico_database_lexico_database_types_ts["src/modules/lexico-database/lexico-database.types.ts"]
-  file_src_modules_lexico_database_migrations_1791164926316_migration_ts["src/modules/lexico-database/migrations/1791164926316-migration.ts"]
+  file_src_modules_lexico_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
+  file_src_modules_lexico_database_data_source_constants_unit_test_ts["src/modules/database/data-source.constants.unit.test.ts"]
+  file_src_modules_lexico_database_lexico_database_constants_ts["src/modules/database/database.constants.ts"]
+  file_src_modules_lexico_database_lexico_database_module_ts["src/modules/database/database.module.ts"]
+  file_src_modules_lexico_database_lexico_database_service_ts["src/modules/database/database.service.ts"]
+  file_src_modules_lexico_database_lexico_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
+  file_src_modules_lexico_database_lexico_database_types_ts["src/modules/database/database.types.ts"]
+  file_src_modules_lexico_database_migrations_1791164926316_migration_ts["src/modules/database/migrations/1791164926316-migration.ts"]
   file_testing_entity_definition_assertions_ts["testing/entity-definition-assertions.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]

@@ -16,8 +16,8 @@ import { SpecialtyAspectsEventService } from "./specialty-aspects-event.service"
 import { SpecialtyAspectsProgressiveService } from "./specialty-aspects-progressive.service";
 import { SpecialtyAspectsService } from "./specialty-aspects.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
 vi.mock("fs", () => ({

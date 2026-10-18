@@ -30,7 +30,7 @@ import { Line } from "../entities/literature/Line.entity";
 import { Text } from "../entities/literature/Text.entity";
 import { Token } from "../entities/literature/Token.entity";
 
-import { LexicoNamingStrategy } from "./lexico-database.constants";
+import { LexicoNamingStrategy } from "./database.constants";
 import { Migration1791164926316 } from "./migrations/1791164926316-migration";
 
 export const LEXICO_DATABASE_ENTITIES = [
@@ -69,12 +69,12 @@ export const LEXICO_DATABASE_MIGRATIONS = [Migration1791164926316] as const;
 /**
  * The data source the TypeORM command line reads for
  * `nx run lexico-entities:migration:*`, built from the same options as the
- * runtime `LexicoDatabaseModule`. Reads only `LEXICO_POSTGRES_*`, defaulting to
+ * runtime `DatabaseModule`. Reads only `LEXICO_POSTGRES_*`, defaulting to
  * `lexico_development`.`lexico` as `lexico_username`, and never synchronizes.
  */
 export const lexicoDataSource = createDataSource({
   entities: [...LEXICO_DATABASE_ENTITIES],
-  migrations: ["src/modules/lexico-database/migrations/*.ts"],
+  migrations: ["src/modules/database/migrations/*.ts"],
   namingStrategy: new LexicoNamingStrategy(),
   project: "lexico",
 });

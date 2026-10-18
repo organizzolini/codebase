@@ -13,16 +13,16 @@ import {
 import { environmentSchema } from "../../meanderaw-cli.constants";
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeService } from "../code/code.service";
+import { DatabaseModule } from "../database/database.module";
+import { Meander } from "../database/entities/meander.entity";
+import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
 import { DrawingService } from "../drawing/drawing.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
 import { TileEnumerationService } from "../enumeration/tile-enumeration.service";
 import { GeometryService } from "../geometry/geometry.service";
 import { GraphService } from "../graph/graph.service";
 import { MatrixService } from "../matrix/matrix.service";
-import { Meander } from "../meanderaw-database/entities/meander.entity";
-import { MeanderawDatabaseModule } from "../meanderaw-database/meanderaw-database.module";
-import { Migration1791160950069 } from "../meanderaw-database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../meanderaw-database/migrations/1791414023001-migration";
 import { SvgService } from "../svg/svg.service";
 import { SymmetryService } from "../symmetry/symmetry.service";
 import { TileService } from "../tile/tile.service";
@@ -56,7 +56,7 @@ const DRAW_RUN_TIMEOUT_MILLISECONDS = 300_000;
  * a mocked service graph.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `MeanderawDatabaseModule` at a fresh, isolated database instead of the
+ * `DatabaseModule` at a fresh, isolated database instead of the
  * local one.
  */
 describe(DrawEnumerationService, () => {
@@ -70,7 +70,7 @@ describe(DrawEnumerationService, () => {
       DRAW_WORKERS: DRAW_TEST_WORKERS,
     });
     database = await startDatabaseTestingModule({
-      database: MeanderawDatabaseModule,
+      database: DatabaseModule,
       entities: [Meander],
       imports: [CharacteristicsModule],
       migrations: [Migration1791160950069, Migration1791414023001],

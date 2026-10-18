@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { DatabaseModule } from "@codebase/persistence";
+import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persistence";
 
+import { DatabaseService } from "./database.service";
 import { Meander } from "./entities/meander.entity";
-import { MeanderawDatabaseService } from "./meanderaw-database.service";
 
 /**
  * Wires up the Postgres database every meander is persisted to, through the
@@ -15,17 +15,20 @@ import { MeanderawDatabaseService } from "./meanderaw-database.service";
  *
  * The table is built by the migrations under `./migrations`, run with
  * `nx run meanderaw-cli:migration:run`; the connection never synchronizes and
- * never runs them on start. A test exercising `MeanderawDatabaseService`
+ * never runs them on start. A test exercising `DatabaseService`
  * boots this module against a throwaway Postgres container, migrated by the
  * same migrations, through `startDatabaseTestingModule`.
  */
 @Module({
   controllers: [],
-  exports: [MeanderawDatabaseService, TypeOrmModule],
+  exports: [DatabaseService, TypeOrmModule],
   imports: [
-    DatabaseModule.forRoot({ entities: [Meander], project: "meanderaw" }),
+    PersistenceDatabaseModule.forRoot({
+      entities: [Meander],
+      project: "meanderaw",
+    }),
     TypeOrmModule.forFeature([Meander]),
   ],
-  providers: [MeanderawDatabaseService],
+  providers: [DatabaseService],
 })
-export class MeanderawDatabaseModule {}
+export class DatabaseModule {}

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { postgresEnvironmentKeys } from "@codebase/persistence";
 
-import { LexicoNamingStrategy } from "./lexico-database.constants";
+import { LexicoNamingStrategy } from "./database.constants";
 
 import type { DataSourceOptions } from "typeorm";
 
@@ -92,7 +92,7 @@ describe("lexico data source", () => {
     expect(options.synchronize).toBe(false);
     expect(options.migrationsRun).toBe(false);
     expect(options.migrations).toStrictEqual([
-      "src/modules/lexico-database/migrations/*.ts",
+      "src/modules/database/migrations/*.ts",
     ]);
     expect(options.namingStrategy?.constructor.name).toBe(
       LexicoNamingStrategy.name,

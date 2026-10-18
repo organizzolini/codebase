@@ -3,14 +3,14 @@ import { ChildEntity, Column } from "typeorm";
 import {
   formNonFiniteTenseValues,
   formVoiceValues,
-} from "../../../lexico-database/lexico-database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./Form.entity";
 
 import type {
   FormNonFiniteTense,
   FormVoice,
-} from "../../../lexico-database/lexico-database.types";
+} from "../../../database/database.types";
 
 /** A non-finite infinitive form (voice + tense). */
 @ChildEntity("infinitive")

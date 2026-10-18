@@ -5,17 +5,17 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { meanderRecord } from "../../../testing/meanders";
 
+import { DatabaseService } from "./database.service";
 import { Meander } from "./entities/meander.entity";
-import { MeanderawDatabaseService } from "./meanderaw-database.service";
 
-import type { MeanderRecord } from "./meanderaw-database.types";
+import type { MeanderRecord } from "./database.types";
 import type { EntityManager, Repository } from "typeorm";
 import type { ColumnMetadata } from "typeorm/metadata/ColumnMetadata.js";
 
 // 🧪 Tests
 
-describe(MeanderawDatabaseService, () => {
-  let service: MeanderawDatabaseService;
+describe(DatabaseService, () => {
+  let service: DatabaseService;
   let meanderRepository: Repository<Meander>;
 
   const record: MeanderRecord = meanderRecord({
@@ -32,7 +32,7 @@ describe(MeanderawDatabaseService, () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        MeanderawDatabaseService,
+        DatabaseService,
         {
           provide: getRepositoryToken(Meander),
           useValue: createMock<Repository<Meander>>(),
@@ -40,7 +40,7 @@ describe(MeanderawDatabaseService, () => {
       ],
     }).compile();
 
-    service = await module.resolve(MeanderawDatabaseService);
+    service = await module.resolve(DatabaseService);
     meanderRepository = module.get(getRepositoryToken(Meander));
 
     vi.mocked(meanderRepository.save).mockResolvedValue(savedMeander);

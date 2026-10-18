@@ -5,7 +5,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { QuintupleAspectsComposerService } from "./quintuple-aspects-composer.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Moment } from "moment-timezone";
 
 /**

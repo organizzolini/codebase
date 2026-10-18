@@ -7,34 +7,34 @@ import {
 
 import { meanderRecord } from "../../../testing/meanders";
 
+import { DatabaseModule } from "./database.module";
+import { DatabaseService } from "./database.service";
 import { Meander } from "./entities/meander.entity";
-import { MeanderawDatabaseModule } from "./meanderaw-database.module";
-import { MeanderawDatabaseService } from "./meanderaw-database.service";
 import { Migration1791160950069 } from "./migrations/1791160950069-migration";
 import { Migration1791414023001 } from "./migrations/1791414023001-migration";
 
 // 🧪 Tests
 
 /**
- * Drives `MeanderawDatabaseService`'s pattern queries — how many rows each
+ * Drives `DatabaseService`'s pattern queries — how many rows each
  * pattern characteristic holds for, and those rows a batch at a time —
  * against a real Postgres database `startDatabaseTestingModule` boots,
- * beside `meanderaw-database.service.integration.test.ts`, which covers the
+ * beside `database.service.integration.test.ts`, which covers the
  * rest of the service. They live apart so neither file outgrows the line cap.
  */
-describe(MeanderawDatabaseService, () => {
+describe(DatabaseService, () => {
   let database: DatabaseTestingModule;
-  let service: MeanderawDatabaseService;
+  let service: DatabaseService;
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: MeanderawDatabaseModule,
+      database: DatabaseModule,
       entities: [Meander],
       migrations: [Migration1791160950069, Migration1791414023001],
       project: "meanderaw",
     });
 
-    service = await database.module.resolve(MeanderawDatabaseService);
+    service = await database.module.resolve(DatabaseService);
   });
 
   afterAll(async () => {

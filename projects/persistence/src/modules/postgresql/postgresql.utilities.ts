@@ -58,10 +58,10 @@ export function assertPostgresEnvironmentKeys<Project extends string>(
  * `<PROJECT>_POSTGRES_*` variables, from `process.env` unless given others:
  *
  * ```ts
- * // src/modules/meanderaw-database/data-source.constants.ts
+ * // src/modules/database/data-source.constants.ts
  * export const meanderawDataSource = createDataSource({
  *   entities: [Meander],
- *   migrations: ["src/modules/meanderaw-database/migrations/*.ts"],
+ *   migrations: ["src/modules/database/migrations/*.ts"],
  *   project: "meanderaw",
  * });
  * ```

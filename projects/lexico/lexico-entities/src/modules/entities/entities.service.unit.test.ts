@@ -16,7 +16,7 @@ import {
 import {
   LEXICO_DATABASE_ENTITIES,
   lexicoDataSource,
-} from "../lexico-database/data-source.constants";
+} from "../database/data-source.constants";
 import {
   adjectiveDegreeValues,
   adverbDegrees,
@@ -33,7 +33,7 @@ import {
   nounGenders,
   prepositionCases,
   verbConjugationValues,
-} from "../lexico-database/lexico-database.constants";
+} from "../database/database.constants";
 
 import { partsOfSpeech } from "./dictionary/PartOfSpeech.entity";
 import { pronunciationVariants } from "./dictionary/Pronunciation.entity";

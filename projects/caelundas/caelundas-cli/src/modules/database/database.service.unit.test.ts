@@ -2,21 +2,21 @@ import { Test } from "@nestjs/testing";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { CaelundasDatabaseService } from "./caelundas-database.service";
+import { DatabaseService } from "./database.service";
 
-describe(CaelundasDatabaseService, () => {
+describe(DatabaseService, () => {
   const dataSource = { isInitialized: true };
-  let service: CaelundasDatabaseService;
+  let service: DatabaseService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        CaelundasDatabaseService,
+        DatabaseService,
         { provide: getDataSourceToken(), useValue: dataSource },
       ],
     }).compile();
 
-    service = await module.resolve(CaelundasDatabaseService);
+    service = await module.resolve(DatabaseService);
   });
 
   it("is defined", () => {

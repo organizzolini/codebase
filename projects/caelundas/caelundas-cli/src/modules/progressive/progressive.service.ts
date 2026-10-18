@@ -9,7 +9,7 @@ import { PhasesService } from "../phases/phases.service";
 import { RetrogradesService } from "../retrogrades/retrogrades.service";
 import { TwilightsService } from "../twilights/twilights.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /**
  * Aggregates progressive event detection from all sub-services.

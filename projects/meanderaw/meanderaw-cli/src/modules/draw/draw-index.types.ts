@@ -1,8 +1,8 @@
 // 🏷️ Types
 
 import type { PatternCharacteristicKey } from "../characteristics/characteristics.types";
-import type { Meander } from "../meanderaw-database/entities/meander.entity";
-import type { MeanderPatternShapeCount } from "../meanderaw-database/meanderaw-database.types";
+import type { MeanderPatternShapeCount } from "../database/database.types";
+import type { Meander } from "../database/entities/meander.entity";
 
 /**
  * One page's HTML, a piece at a time: read lazily from the database as it

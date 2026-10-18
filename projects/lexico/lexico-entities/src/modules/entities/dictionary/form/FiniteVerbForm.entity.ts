@@ -6,7 +6,7 @@ import {
   formPersonValues,
   formTenseValues,
   formVoiceValues,
-} from "../../../lexico-database/lexico-database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./Form.entity";
 
@@ -16,7 +16,7 @@ import type {
   FormPerson,
   FormTense,
   FormVoice,
-} from "../../../lexico-database/lexico-database.types";
+} from "../../../database/database.types";
 
 /** A finite verb form (indicative, subjunctive, or imperative). */
 @ChildEntity("finite-verb")

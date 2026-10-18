@@ -1,15 +1,16 @@
 import { Module } from "@nestjs/common";
 
-import { DatabaseModule } from "@codebase/persistence";
+import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persistence";
 
 import { LEXICO_DATABASE_ENTITIES } from "./data-source.constants";
-import { LexicoNamingStrategy } from "./lexico-database.constants";
-import { LexicoDatabaseService } from "./lexico-database.service";
+import { LexicoNamingStrategy } from "./database.constants";
+import { DatabaseService } from "./database.service";
 
 /**
  * Connects lexico to `lexico_development`.`lexico` as `lexico_username`, the
  * way every database-backed project does, through the shared
- * `DatabaseModule.forRoot` and lexico's pluralizing naming strategy. Never
+ * `PersistenceDatabaseModule.forRoot` and lexico's pluralizing naming
+ * strategy. Never
  * synchronizes and never runs migrations on start.
  *
  * Reads `LEXICO_POSTGRES_*` through `ConfigService`, so the importing
@@ -17,14 +18,14 @@ import { LexicoDatabaseService } from "./lexico-database.service";
  */
 @Module({
   controllers: [],
-  exports: [LexicoDatabaseService, DatabaseModule],
+  exports: [DatabaseService, PersistenceDatabaseModule],
   imports: [
-    DatabaseModule.forRoot({
+    PersistenceDatabaseModule.forRoot({
       entities: [...LEXICO_DATABASE_ENTITIES],
       namingStrategy: new LexicoNamingStrategy(),
       project: "lexico",
     }),
   ],
-  providers: [LexicoDatabaseService],
+  providers: [DatabaseService],
 })
-export class LexicoDatabaseModule {}
+export class DatabaseModule {}

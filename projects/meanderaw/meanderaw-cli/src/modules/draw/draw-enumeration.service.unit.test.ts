@@ -2,13 +2,13 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { DatabaseService } from "../database/database.service";
 import { EnumerationService } from "../enumeration/enumeration.service";
-import { MeanderawDatabaseService } from "../meanderaw-database/meanderaw-database.service";
 
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawPoolService } from "./draw-pool.service";
 
-import type { MeanderRecord } from "../meanderaw-database/meanderaw-database.types";
+import type { MeanderRecord } from "../database/database.types";
 
 // 🧪 Tests
 
@@ -21,7 +21,7 @@ import type { MeanderRecord } from "../meanderaw-database/meanderaw-database.typ
  */
 describe(DrawEnumerationService, () => {
   let drawPoolService: DrawPoolService;
-  let databaseService: MeanderawDatabaseService;
+  let databaseService: DatabaseService;
   let enumerationService: EnumerationService;
   let service: DrawEnumerationService;
 
@@ -36,8 +36,8 @@ describe(DrawEnumerationService, () => {
           useValue: createMock<DrawPoolService>(),
         },
         {
-          provide: MeanderawDatabaseService,
-          useValue: createMock<MeanderawDatabaseService>(),
+          provide: DatabaseService,
+          useValue: createMock<DatabaseService>(),
         },
         {
           provide: EnumerationService,
@@ -48,7 +48,7 @@ describe(DrawEnumerationService, () => {
 
     service = await module.resolve(DrawEnumerationService);
     drawPoolService = await module.resolve(DrawPoolService);
-    databaseService = await module.resolve(MeanderawDatabaseService);
+    databaseService = await module.resolve(DatabaseService);
     enumerationService = await module.resolve(EnumerationService);
   });
 
