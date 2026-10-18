@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.10.0](https://github.com/organizzolini/codebase/compare/v3.9.13...v3.10.0) (2026-10-18)
+
+### ✨ Features
+
+* **conformetry,configuration,caelundas,lexico,meanderaw,callidescope:** ✨ place generators by instances ([#1670](https://github.com/organizzolini/codebase/issues/1670)) ([78c26e3](https://github.com/organizzolini/codebase/commit/78c26e3f3795333eeee9a52c4a8ae93a65e605fb))
+
 ## [3.9.13](https://github.com/organizzolini/codebase/compare/v3.9.12...v3.9.13) (2026-10-18)
 
 ### ♻️ Code Refactoring

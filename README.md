@@ -2185,11 +2185,11 @@ graph LR
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
   file_caelundas_web_eslint_config_ts["caelundas-web/eslint.config.ts"]
   file_caelundas_web_src_client_tsx["caelundas-web/src/client.tsx"]
-  file_caelundas_web_src_lib_routeTree_gen_ts["caelundas-web/src/lib/routeTree.gen.ts"]
   file_caelundas_web_src_router_tsx["caelundas-web/src/router.tsx"]
   file_caelundas_web_src_routes___root_tsx["caelundas-web/src/routes/__root.tsx"]
   file_caelundas_web_src_routes_index_integration_test_tsx["caelundas-web/src/routes/index.integration.test.tsx"]
   file_caelundas_web_src_routes_index_tsx["caelundas-web/src/routes/index.tsx"]
+  file_caelundas_web_src_routeTree_gen_ts["caelundas-web/src/routeTree.gen.ts"]
   file_caelundas_web_testing_render_route_tsx["caelundas-web/testing/render-route.tsx"]
   file_caelundas_web_testing_setup_ts["caelundas-web/testing/setup.ts"]
   file_caelundas_web_vite_config_mts["caelundas-web/vite.config.mts"]
@@ -3453,7 +3453,6 @@ graph LR
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___codometer_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/codometer.config.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___eslint_config_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/eslint.config.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_client_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/client.tsx"]
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/lib/routeTree.gen.ts"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/router.tsx"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes___root_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/__root.tsx"]
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx["configuration/conformetry-templates/tanstack-application/{{nameKebabCase}}/src/routes/index.integration.test.tsx"]
@@ -3752,6 +3751,8 @@ graph LR
   file_conformetry_nx_src_modules_paths_paths_service_ts["conformetry-nx/src/modules/paths/paths.service.ts"]
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts["conformetry-nx/src/modules/paths/paths.service.unit.test.ts"]
   file_conformetry_nx_src_modules_paths_paths_types_ts["conformetry-nx/src/modules/paths/paths.types.ts"]
+  file_conformetry_nx_src_modules_paths_paths_utilities_ts["conformetry-nx/src/modules/paths/paths.utilities.ts"]
+  file_conformetry_nx_src_modules_paths_paths_utilities_unit_test_ts["conformetry-nx/src/modules/paths/paths.utilities.unit.test.ts"]
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts["conformetry-nx/src/modules/plugin/plugin-context.utilities.ts"]
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_unit_test_ts["conformetry-nx/src/modules/plugin/plugin-context.utilities.unit.test.ts"]
   file_conformetry_nx_src_modules_plugin_plugin_constants_ts["conformetry-nx/src/modules/plugin/plugin.constants.ts"]
@@ -4428,9 +4429,9 @@ graph LR
   file_lexico_web_src_routes___root_tsx["lexico-web/src/routes/__root.tsx"]
   file_lexico_web_src_routes_index_integration_test_tsx["lexico-web/src/routes/index.integration.test.tsx"]
   file_lexico_web_src_routes_index_tsx["lexico-web/src/routes/index.tsx"]
-  file_lexico_web_src_routes_routeTree_gen_ts["lexico-web/src/routes/routeTree.gen.ts"]
   file_lexico_web_src_routes_search_integration_test_tsx["lexico-web/src/routes/search.integration.test.tsx"]
   file_lexico_web_src_routes_search_tsx["lexico-web/src/routes/search.tsx"]
+  file_lexico_web_src_routeTree_gen_ts["lexico-web/src/routeTree.gen.ts"]
   file_lexico_web_testing_render_route_tsx["lexico-web/testing/render-route.tsx"]
   file_lexico_web_testing_setup_ts["lexico-web/testing/setup.ts"]
   file_lexico_web_vite_config_mts["lexico-web/vite.config.mts"]
@@ -4894,11 +4895,11 @@ graph LR
   file_meanderaw_web_codometer_config_ts["meanderaw-web/codometer.config.ts"]
   file_meanderaw_web_eslint_config_ts["meanderaw-web/eslint.config.ts"]
   file_meanderaw_web_src_client_tsx["meanderaw-web/src/client.tsx"]
-  file_meanderaw_web_src_lib_routeTree_gen_ts["meanderaw-web/src/lib/routeTree.gen.ts"]
   file_meanderaw_web_src_router_tsx["meanderaw-web/src/router.tsx"]
   file_meanderaw_web_src_routes___root_tsx["meanderaw-web/src/routes/__root.tsx"]
   file_meanderaw_web_src_routes_index_integration_test_tsx["meanderaw-web/src/routes/index.integration.test.tsx"]
   file_meanderaw_web_src_routes_index_tsx["meanderaw-web/src/routes/index.tsx"]
+  file_meanderaw_web_src_routeTree_gen_ts["meanderaw-web/src/routeTree.gen.ts"]
   file_meanderaw_web_testing_render_route_tsx["meanderaw-web/testing/render-route.tsx"]
   file_meanderaw_web_testing_setup_ts["meanderaw-web/testing/setup.ts"]
   file_meanderaw_web_vite_config_mts["meanderaw-web/vite.config.mts"]
@@ -6577,12 +6578,12 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
-  file_caelundas_web_src_lib_routeTree_gen_ts --> file_caelundas_web_src_router_tsx
-  file_caelundas_web_src_lib_routeTree_gen_ts --> file_caelundas_web_src_routes___root_tsx
-  file_caelundas_web_src_lib_routeTree_gen_ts --> file_caelundas_web_src_routes_index_tsx
-  file_caelundas_web_src_router_tsx --> file_caelundas_web_src_lib_routeTree_gen_ts
+  file_caelundas_web_src_router_tsx --> file_caelundas_web_src_routeTree_gen_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_routes_index_tsx
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
+  file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_router_tsx
+  file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_routes___root_tsx
+  file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_routes_index_tsx
   file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_src_router_tsx
   file_callidescope_cli_src_callidescope_cli_main_end_to_end_test_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
   file_callidescope_cli_src_callidescope_cli_main_ts --> file_callidescope_cli_src_callidescope_cli_module_ts
@@ -8434,13 +8435,13 @@ graph LR
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___entities_ts
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___types_ts
   file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_unit_test_ts --> file_configuration_conformetry_templates_nestjs_graphql_application___nameKebabCase___src___nameKebabCase___utilities_ts
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes___root_tsx
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx
-  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_lib_routeTree_gen_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___callidescope_config_ts --> file_configuration_callidescope_config_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___codometer_config_ts --> file_configuration_codometer_config_ts
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___eslint_config_ts --> file_configuration_eslint_config_ts
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_tsx
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_routes_index_integration_test_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx
   file_configuration_conformetry_templates_tanstack_application___nameKebabCase___testing_render_route_tsx --> file_configuration_conformetry_templates_tanstack_application___nameKebabCase___src_router_tsx
+  file_configuration_conformetry_templates_tanstack_application___nameKebabCase___vitest_config_ts --> file_configuration_vitest_config_ts
   file_configuration_conformetry_templates_tanstack_route___name___integration_test_tsx --> file_configuration_conformetry_templates_tanstack_route___name___tsx
   file_configuration_eslint_config_ts --> file_configuration_types_eslint_plugin_better_max_params_index_d_ts
   file_conformetry_cli_src_conformetry_cli_main_end_to_end_test_ts --> file_conformetry_cli_src_conformetry_cli_constants_ts
@@ -8815,11 +8816,13 @@ graph LR
   file_conformetry_nx_src_modules_paths_paths_service_ts --> file_conformetry_nx_src_modules_instances_instances_service_ts
   file_conformetry_nx_src_modules_paths_paths_service_ts --> file_conformetry_nx_src_modules_paths_paths_constants_ts
   file_conformetry_nx_src_modules_paths_paths_service_ts --> file_conformetry_nx_src_modules_paths_paths_types_ts
+  file_conformetry_nx_src_modules_paths_paths_service_ts --> file_conformetry_nx_src_modules_paths_paths_utilities_ts
   file_conformetry_nx_src_modules_paths_paths_service_ts --> file_conformetry_nx_src_modules_scope_scope_service_ts
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_instances_instances_service_ts
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_paths_paths_module_ts
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_paths_paths_service_ts
   file_conformetry_nx_src_modules_paths_paths_service_unit_test_ts --> file_conformetry_nx_src_modules_scope_scope_service_ts
+  file_conformetry_nx_src_modules_paths_paths_utilities_unit_test_ts --> file_conformetry_nx_src_modules_paths_paths_utilities_ts
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_conformetry_nx_module_ts
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_modules_generator_generator_service_ts
   file_conformetry_nx_src_modules_plugin_plugin_context_utilities_ts --> file_conformetry_nx_src_modules_options_options_service_ts
@@ -10347,14 +10350,10 @@ graph LR
   file_lexico_web_src_components_verb_forms_tsx --> file_lexico_web_src_components_forms_table_tsx
   file_lexico_web_src_components_verb_forms_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
   file_lexico_web_src_components_verb_forms_unit_test_tsx --> file_lexico_web_src_components_verb_forms_tsx
-  file_lexico_web_src_router_tsx --> file_lexico_web_src_routes_routeTree_gen_ts
+  file_lexico_web_src_router_tsx --> file_lexico_web_src_routeTree_gen_ts
   file_lexico_web_src_routes___root_tsx --> file_lexico_web_src_components_layout_index_ts
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_src_routes_index_tsx
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
-  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_router_tsx
-  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_routes___root_tsx
-  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_routes_index_tsx
-  file_lexico_web_src_routes_routeTree_gen_ts --> file_lexico_web_src_routes_search_tsx
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_routes_search_tsx
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_card_tsx
@@ -10364,6 +10363,10 @@ graph LR
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_bar_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_landing_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_results_tsx
+  file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_router_tsx
+  file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes___root_tsx
+  file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes_index_tsx
+  file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes_search_tsx
   file_lexico_web_testing_render_route_tsx --> file_lexico_web_src_router_tsx
   file_logging_src_lib_conventional_log_message_eslint_rule_ts --> file_logging_src_modules_logger_logger_constants_ts
   file_logging_src_lib_conventional_log_message_eslint_rule_unit_test_ts --> file_logging_src_lib_conventional_log_message_eslint_rule_ts
@@ -12251,12 +12254,12 @@ graph LR
   file_meanderaw_cli_testing_meanders_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_testing_tiles_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_testing_tiles_ts --> file_meanderaw_cli_src_modules_tile_tile_types_ts
-  file_meanderaw_web_src_lib_routeTree_gen_ts --> file_meanderaw_web_src_router_tsx
-  file_meanderaw_web_src_lib_routeTree_gen_ts --> file_meanderaw_web_src_routes___root_tsx
-  file_meanderaw_web_src_lib_routeTree_gen_ts --> file_meanderaw_web_src_routes_index_tsx
-  file_meanderaw_web_src_router_tsx --> file_meanderaw_web_src_lib_routeTree_gen_ts
+  file_meanderaw_web_src_router_tsx --> file_meanderaw_web_src_routeTree_gen_ts
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_src_routes_index_tsx
   file_meanderaw_web_src_routes_index_integration_test_tsx --> file_meanderaw_web_testing_render_route_tsx
+  file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_router_tsx
+  file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_routes___root_tsx
+  file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_routes_index_tsx
   file_meanderaw_web_testing_render_route_tsx --> file_meanderaw_web_src_router_tsx
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
@@ -13153,16 +13156,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-19-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-3709-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3699-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-381-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-200-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1125-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1231-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1109-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1215-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-94-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-805-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1945-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1929-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-8-ea580c?style=flat-square)
 
 ### YAML
@@ -13317,13 +13320,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6533 |
-| Files | 1930 |
-| Calls traced | 7205 |
+| Callables | 6550 |
+| Files | 1931 |
+| Calls traced | 7229 |
 | Call stacks | 1790 |
 | Deepest stack | 17 |
-| Stacks through recursion | 12 |
-| Unfollowable calls | 356 |
+| Stacks through recursion | 13 |
+| Unfollowable calls | 357 |
 
 ### Projects
 

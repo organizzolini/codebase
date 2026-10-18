@@ -1,3 +1,16 @@
+## 0.0.37 (2026-10-18)
+
+### 🚀 Features
+
+- **conformetry,configuration,caelundas,lexico,meanderaw,callidescope:** ✨ place generators by instances ([#1670](https://github.com/organizzolini/codebase/pull/1670))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.36
+- Updated conformetry-generation to 0.0.36
+- Updated conformetry-validation to 0.0.35
+- Updated conformetry-output to 0.0.35
+
 ## 0.0.36 (2026-10-16)
 
 ### 🧱 Updated Dependencies
