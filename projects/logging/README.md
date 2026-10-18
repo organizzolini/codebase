@@ -152,6 +152,7 @@ graph LR
   conformetry_nx["conformetry-nx"]
   database["database"]
   installation["installation"]
+  integration["integration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   logging["logging"]
@@ -176,6 +177,7 @@ graph LR
   conformetry_nx --> logging
   database --> logging
   installation --> logging
+  integration --> logging
   lexico_api --> logging
   lexico_cli --> logging
   meanderaw_cli --> logging

@@ -301,6 +301,7 @@ graph LR
   database["database"]
   infrastructure["infrastructure"]
   installation["installation"]
+  integration["integration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
@@ -413,6 +414,7 @@ graph LR
   conformetry_validation --> conformetry_languages
   database --> logging
   installation --> logging
+  integration --> logging
   lexico_api --> database
   lexico_api --> lexico_entities
   lexico_api --> logging
@@ -855,6 +857,15 @@ graph LR
   module_installation_ShellConfigurationModule["installation/ShellConfigurationModule"]
   module_installation_SoftwareModule["installation/SoftwareModule"]
   module_installation_UpdateReuiSkillModule["installation/UpdateReuiSkillModule"]
+  module_integration_AdoptTaskDatabaseModule["integration/AdoptTaskDatabaseModule"]
+  module_integration_DiscoveryModule["integration/DiscoveryModule"]
+  module_integration_KeepTaskDatabaseModule["integration/KeepTaskDatabaseModule"]
+  module_integration_LoggerModule["integration/LoggerModule"]
+  module_integration_MainModule["integration/MainModule"]
+  module_integration_ProcessRunnerModule["integration/ProcessRunnerModule"]
+  module_integration_RunAffectedModule["integration/RunAffectedModule"]
+  module_integration_TaskDatabaseModule["integration/TaskDatabaseModule"]
+  module_integration_VerifyTaskDatabaseModule["integration/VerifyTaskDatabaseModule"]
   module_lexico_api_DatabaseModule["lexico-api/DatabaseModule"]
   module_lexico_api_GraphQLModule["lexico-api/GraphQLModule"]
   module_lexico_api_GraphQLSchemaBuilderModule["lexico-api/GraphQLSchemaBuilderModule"]
@@ -1648,6 +1659,15 @@ graph LR
   module_installation_SoftwareModule --> module_installation_ProcessRunnerModule
   module_installation_SoftwareModule --> module_installation_ReporterModule
   module_installation_UpdateReuiSkillModule --> module_installation_ReporterModule
+  module_integration_AdoptTaskDatabaseModule --> module_integration_TaskDatabaseModule
+  module_integration_KeepTaskDatabaseModule --> module_integration_TaskDatabaseModule
+  module_integration_MainModule --> module_integration_AdoptTaskDatabaseModule
+  module_integration_MainModule --> module_integration_DiscoveryModule
+  module_integration_MainModule --> module_integration_KeepTaskDatabaseModule
+  module_integration_MainModule --> module_integration_RunAffectedModule
+  module_integration_MainModule --> module_integration_VerifyTaskDatabaseModule
+  module_integration_RunAffectedModule --> module_integration_ProcessRunnerModule
+  module_integration_VerifyTaskDatabaseModule --> module_integration_TaskDatabaseModule
   module_lexico_api_DatabaseModule --> module_lexico_api_TypeOrmModule
   module_lexico_api_GraphQLModule --> module_lexico_api_GraphQLSchemaBuilderModule
   module_lexico_api_LexemesModule --> module_lexico_api_TypeOrmModule
@@ -3996,6 +4016,64 @@ graph LR
   file_installation_testing_setup_ts["installation/testing/setup.ts"]
   file_installation_testing_temporary_workspace_ts["installation/testing/temporary-workspace.ts"]
   file_installation_vitest_config_ts["installation/vitest.config.ts"]
+  file_integration_callidescope_config_ts["integration/callidescope.config.ts"]
+  file_integration_codependix_config_ts["integration/codependix.config.ts"]
+  file_integration_codometer_config_ts["integration/codometer.config.ts"]
+  file_integration_eslint_config_ts["integration/eslint.config.ts"]
+  file_integration_src_integration_constants_ts["integration/src/integration.constants.ts"]
+  file_integration_src_integration_main_end_to_end_test_ts["integration/src/integration.main.end-to-end.test.ts"]
+  file_integration_src_integration_main_ts["integration/src/integration.main.ts"]
+  file_integration_src_integration_main_unit_test_ts["integration/src/integration.main.unit.test.ts"]
+  file_integration_src_integration_module_ts["integration/src/integration.module.ts"]
+  file_integration_src_integration_repl_ts["integration/src/integration.repl.ts"]
+  file_integration_src_integration_repl_unit_test_ts["integration/src/integration.repl.unit.test.ts"]
+  file_integration_src_integration_types_ts["integration/src/integration.types.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts["integration/src/modules/adopt-task-database/adopt-task-database.command.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts["integration/src/modules/adopt-task-database/adopt-task-database.command.unit.test.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_constants_ts["integration/src/modules/adopt-task-database/adopt-task-database.constants.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts["integration/src/modules/adopt-task-database/adopt-task-database.module.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["integration/src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_types_ts["integration/src/modules/adopt-task-database/adopt-task-database.types.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_command_ts["integration/src/modules/keep-task-database/keep-task-database.command.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["integration/src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_constants_ts["integration/src/modules/keep-task-database/keep-task-database.constants.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_module_ts["integration/src/modules/keep-task-database/keep-task-database.module.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["integration/src/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_types_ts["integration/src/modules/keep-task-database/keep-task-database.types.ts"]
+  file_integration_src_modules_process_runner_process_runner_constants_ts["integration/src/modules/process-runner/process-runner.constants.ts"]
+  file_integration_src_modules_process_runner_process_runner_module_ts["integration/src/modules/process-runner/process-runner.module.ts"]
+  file_integration_src_modules_process_runner_process_runner_module_unit_test_ts["integration/src/modules/process-runner/process-runner.module.unit.test.ts"]
+  file_integration_src_modules_process_runner_process_runner_service_integration_test_ts["integration/src/modules/process-runner/process-runner.service.integration.test.ts"]
+  file_integration_src_modules_process_runner_process_runner_service_ts["integration/src/modules/process-runner/process-runner.service.ts"]
+  file_integration_src_modules_process_runner_process_runner_service_unit_test_ts["integration/src/modules/process-runner/process-runner.service.unit.test.ts"]
+  file_integration_src_modules_process_runner_process_runner_types_ts["integration/src/modules/process-runner/process-runner.types.ts"]
+  file_integration_src_modules_process_runner_process_runner_utilities_ts["integration/src/modules/process-runner/process-runner.utilities.ts"]
+  file_integration_src_modules_process_runner_process_runner_utilities_unit_test_ts["integration/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_integration_src_modules_run_affected_run_affected_command_ts["integration/src/modules/run-affected/run-affected.command.ts"]
+  file_integration_src_modules_run_affected_run_affected_command_unit_test_ts["integration/src/modules/run-affected/run-affected.command.unit.test.ts"]
+  file_integration_src_modules_run_affected_run_affected_constants_ts["integration/src/modules/run-affected/run-affected.constants.ts"]
+  file_integration_src_modules_run_affected_run_affected_module_ts["integration/src/modules/run-affected/run-affected.module.ts"]
+  file_integration_src_modules_run_affected_run_affected_module_unit_test_ts["integration/src/modules/run-affected/run-affected.module.unit.test.ts"]
+  file_integration_src_modules_run_affected_run_affected_service_ts["integration/src/modules/run-affected/run-affected.service.ts"]
+  file_integration_src_modules_run_affected_run_affected_service_unit_test_ts["integration/src/modules/run-affected/run-affected.service.unit.test.ts"]
+  file_integration_src_modules_run_affected_run_affected_types_ts["integration/src/modules/run-affected/run-affected.types.ts"]
+  file_integration_src_modules_task_database_task_database_constants_ts["integration/src/modules/task-database/task-database.constants.ts"]
+  file_integration_src_modules_task_database_task_database_module_ts["integration/src/modules/task-database/task-database.module.ts"]
+  file_integration_src_modules_task_database_task_database_module_unit_test_ts["integration/src/modules/task-database/task-database.module.unit.test.ts"]
+  file_integration_src_modules_task_database_task_database_service_ts["integration/src/modules/task-database/task-database.service.ts"]
+  file_integration_src_modules_task_database_task_database_service_unit_test_ts["integration/src/modules/task-database/task-database.service.unit.test.ts"]
+  file_integration_src_modules_task_database_task_database_types_ts["integration/src/modules/task-database/task-database.types.ts"]
+  file_integration_src_modules_task_database_task_database_utilities_ts["integration/src/modules/task-database/task-database.utilities.ts"]
+  file_integration_src_modules_task_database_task_database_utilities_unit_test_ts["integration/src/modules/task-database/task-database.utilities.unit.test.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_command_ts["integration/src/modules/verify-task-database/verify-task-database.command.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["integration/src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_constants_ts["integration/src/modules/verify-task-database/verify-task-database.constants.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_module_ts["integration/src/modules/verify-task-database/verify-task-database.module.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["integration/src/modules/verify-task-database/verify-task-database.module.unit.test.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_types_ts["integration/src/modules/verify-task-database/verify-task-database.types.ts"]
+  file_integration_testing_mocks_ts["integration/testing/mocks.ts"]
+  file_integration_testing_setup_ts["integration/testing/setup.ts"]
+  file_integration_vitest_config_ts["integration/vitest.config.ts"]
   file_lexico_api_callidescope_config_ts["lexico-api/callidescope.config.ts"]
   file_lexico_api_codependix_config_ts["lexico-api/codependix.config.ts"]
   file_lexico_api_codometer_config_ts["lexico-api/codometer.config.ts"]
@@ -9317,6 +9395,83 @@ graph LR
   file_installation_testing_environment_ts --> file_installation_testing_temporary_workspace_ts
   file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_testing_fake_process_runner_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_integration_main_end_to_end_test_ts --> file_integration_src_integration_constants_ts
+  file_integration_src_integration_main_ts --> file_integration_src_integration_module_ts
+  file_integration_src_integration_main_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_integration_constants_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_keep_task_database_keep_task_database_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_verify_task_database_verify_task_database_module_ts
+  file_integration_src_integration_repl_ts --> file_integration_src_integration_module_ts
+  file_integration_src_integration_types_ts --> file_integration_src_integration_constants_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_integration_src_modules_keep_task_database_keep_task_database_command_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_module_ts --> file_integration_src_modules_keep_task_database_keep_task_database_command_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_integration_src_modules_keep_task_database_keep_task_database_command_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_integration_src_modules_keep_task_database_keep_task_database_module_ts
+  file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_process_runner_process_runner_module_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_process_runner_process_runner_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_process_runner_process_runner_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_process_runner_process_runner_service_integration_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_process_runner_process_runner_service_ts --> file_integration_src_modules_process_runner_process_runner_constants_ts
+  file_integration_src_modules_process_runner_process_runner_service_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_process_runner_process_runner_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_process_runner_process_runner_utilities_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_utilities_ts
+  file_integration_src_modules_run_affected_run_affected_command_ts --> file_integration_src_modules_run_affected_run_affected_constants_ts
+  file_integration_src_modules_run_affected_run_affected_command_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
+  file_integration_src_modules_run_affected_run_affected_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_run_affected_run_affected_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_run_affected_run_affected_command_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_command_ts
+  file_integration_src_modules_run_affected_run_affected_command_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
+  file_integration_src_modules_run_affected_run_affected_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_run_affected_run_affected_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_run_affected_run_affected_module_ts --> file_integration_src_modules_run_affected_run_affected_command_ts
+  file_integration_src_modules_run_affected_run_affected_module_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
+  file_integration_src_modules_run_affected_run_affected_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_run_affected_run_affected_module_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_command_ts
+  file_integration_src_modules_run_affected_run_affected_module_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
+  file_integration_src_modules_run_affected_run_affected_module_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
+  file_integration_src_modules_run_affected_run_affected_service_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_run_affected_run_affected_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_run_affected_run_affected_service_ts --> file_integration_src_modules_run_affected_run_affected_constants_ts
+  file_integration_src_modules_run_affected_run_affected_service_ts --> file_integration_src_modules_run_affected_run_affected_types_ts
+  file_integration_src_modules_run_affected_run_affected_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_run_affected_run_affected_service_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
+  file_integration_src_modules_task_database_task_database_module_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_task_database_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_task_database_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_modules_task_database_task_database_constants_ts
+  file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_modules_task_database_task_database_types_ts
+  file_integration_src_modules_task_database_task_database_service_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_task_database_task_database_utilities_ts --> file_integration_src_modules_task_database_task_database_constants_ts
+  file_integration_src_modules_task_database_task_database_utilities_unit_test_ts --> file_integration_src_modules_task_database_task_database_utilities_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_integration_src_modules_verify_task_database_verify_task_database_command_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_module_ts --> file_integration_src_modules_verify_task_database_verify_task_database_command_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_integration_src_modules_verify_task_database_verify_task_database_command_ts
+  file_integration_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_integration_src_modules_verify_task_database_verify_task_database_module_ts
+  file_integration_testing_mocks_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_testing_mocks_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_lexico_api_src_deletable_entities_ts --> file_lexico_api_src_lexico_api_types_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_lexemes_lexemes_module_ts
   file_lexico_api_src_lexico_api_graphql_end_to_end_test_ts --> file_lexico_api_src_modules_literature_literature_module_ts
@@ -13157,7 +13312,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-19-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-3699-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3700-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-381-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-200-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-1109-0284c7?style=flat-square)
@@ -13172,12 +13327,12 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2711-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2712-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-375-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
 ![YAML Keys](https://img.shields.io/badge/YAML_Keys-1325-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2514-16a34a?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2515-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
 ![YAML Comments](https://img.shields.io/badge/YAML_Comments-427-64748b?style=flat-square)
@@ -13292,7 +13447,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-119-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19096-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19102-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-118-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-681-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-512-a78bfa?style=flat-square)
@@ -13304,11 +13459,11 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![List Items](https://img.shields.io/badge/List_Items-4131-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-237-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2036-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2042-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-732-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-374-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11238-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11244-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13321,13 +13476,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6550 |
-| Files | 1931 |
-| Calls traced | 7229 |
-| Call stacks | 1790 |
+| Callables | 6614 |
+| Files | 1968 |
+| Calls traced | 7281 |
+| Call stacks | 1812 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
-| Unfollowable calls | 357 |
+| Unfollowable calls | 361 |
 
 ### Projects
 
@@ -13352,6 +13507,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
+| `projects/integration` | 5 | 6 | 1 | 6 |
 | `projects/synchronization` | 9 | 10 | 1 | 9 |
 | `projects/components` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
@@ -13385,7 +13541,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | --- | --- |
 | over limit | 0 |
 | 0 — at limit | 15 |
-| 1 | 2 |
+| 1 | 3 |
 | 2–3 | 2 |
 | 4+ | 12 |
 | no stacks | 14 |

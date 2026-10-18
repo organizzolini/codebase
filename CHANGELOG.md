@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.10.1](https://github.com/organizzolini/codebase/compare/v3.10.0...v3.10.1) (2026-10-18)
+
+### ♻️ Code Refactoring
+
+* **configuration,integration,publication:** ♻️ move CI plumbing from publication into a new integration project ([#1704](https://github.com/organizzolini/codebase/issues/1704)) ([e84044b](https://github.com/organizzolini/codebase/commit/e84044be7ba278ef00a5a6bc4b5d496916902a33)), closes [#1702](https://github.com/organizzolini/codebase/issues/1702) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1702](https://github.com/organizzolini/codebase/issues/1702)
+
 ## [3.10.0](https://github.com/organizzolini/codebase/compare/v3.9.13...v3.10.0) (2026-10-18)
 
 ### ✨ Features
