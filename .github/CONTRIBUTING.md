@@ -514,7 +514,7 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 ## Pull Request Process
 
 1. **Push and open**: `git push -u origin <branch>`, then `gh pr create` and fill in the template. Do not use `--fill` — it substitutes the commit message for the body and drops the four required headings
-2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies
+2. **Title** follows the commit format — `<type>(<scope>): <gitmoji> <subject>`, checked by the same commitlint configuration, so every commit rule applies. The scope list must include every scope your commits use, since Comply Code's release-significance check compares title scopes to commit scopes.
 3. **Description** must contain all four headings from [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) verbatim — 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related — each in its shape: Summary only a single paragraph of at most 48 words, Details only a bulleted list with one marker throughout and at most 512 words, Testing only an ordered list (a step may hold a code block), and Related opening with a `-` list, after which anything may follow. Comply Code runs `validation pull-request-body` and fails on a missing or empty section, a section in the wrong shape or over its limit, or a template comment left unfilled
 4. **Labels and assignees** must agree with the title: exactly one `type:*` label matching the title's type, exactly the `scope:*` labels the title names and no extras, at least one assignee, and exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened it. The `do-not-merge` label blocks the pull request while present
 5. **Automated checks**: the five workflows in [The Gates](#the-gates) must pass
@@ -524,6 +524,8 @@ See [documentation/agents/issue-tracker.md](../documentation/agents/issue-tracke
 Comply Code creates any label missing from the vocabulary when a pull request is opened or reopened, so a fresh pull request already has the labels it needs. That vocabulary lives in [projects/configuration/conventional.config.cjs](projects/configuration/conventional.config.cjs) and is never hard-coded elsewhere.
 
 Merges go through a merge queue, and the check workflows run again on the queued merge commit — a pull request that was green on its own can still fail there once `main` has moved underneath it.
+
+A practical way to avoid release-significance failures is to keep one pull request focused to one project/scope whenever possible. If a change really spans scopes, name all of them in the title (`type(scope-a,scope-b): …`) or split into separate pull requests.
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 

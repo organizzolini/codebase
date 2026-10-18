@@ -1,6 +1,6 @@
 ## 🌰 Summary
 
-<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why -->
+<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: include every touched scope in the PR title's scope list so release-significance passes. -->
 
 ## 📝 Details
 

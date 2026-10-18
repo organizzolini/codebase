@@ -42,6 +42,13 @@ const CREATE_RECORD =
 /** What npm serves as the given package's tarball, in these tests. */
 const tarballOf = (project: string): string => `tarball of ${project}`;
 
+/** The tarball URL npm metadata lists for the given package and version. */
+const tarballUrlOf = (
+  project: string,
+  version: string,
+  registry: string,
+): string => `${registry}@tool/${project}/-/${project}-${version}.tgz`;
+
 /** The sha256 checksum of the given package's tarball. */
 const checksumOf = (project: string): string =>
   hash("sha256", tarballOf(project));
@@ -67,6 +74,14 @@ describe(LinkPackagesCommand, () => {
   const script = (): Record<string, ScriptedAnswer<CapturedProcess>> => ({
     [CREATE_RECORD]: succeeded("{}"),
     "curl *": succeeded(),
+    "npm view @tool/cli@1.0.0 dist.tarball --registry https://registry.npmjs.org/":
+      succeeded(
+        `${tarballUrlOf("cli", "1.0.0", "https://registry.npmjs.org/")}\n`,
+      ),
+    "npm view @tool/core@2.0.0 dist.tarball --registry https://registry.npmjs.org/":
+      succeeded(
+        `${tarballUrlOf("core", "2.0.0", "https://registry.npmjs.org/")}\n`,
+      ),
     "npm view @tool/core@2.0.0 version --registry https://registry.npmjs.org":
       succeeded("2.0.0\n"),
     "npm view @tool/fresh@0.1.0 version --registry https://registry.npmjs.org":
@@ -225,11 +240,9 @@ describe(LinkPackagesCommand, () => {
     expect(fs.readFileSync(outputFile, "utf8")).toBe("attest=true\n");
     expect(
       runner.lines.some((line) => line.startsWith("npm view @tool/cli@1.0.0")),
-    ).toBe(false);
+    ).toBe(true);
     expect(runner.lines.find((line) => line.startsWith("curl"))).toBe(
-      "curl --silent --show-error --fail --location --retry 48 --retry-all-errors --retry-delay 10 --retry-max-time 480 --output " +
-        `${String(runner.captured.find(({ executable }) => executable === "curl")?.args.at(-2))} ` +
-        "https://registry.npmjs.org/@tool/cli/-/cli-1.0.0.tgz",
+      `curl --silent --show-error --fail --location --retry 48 --retry-all-errors --retry-delay 10 --retry-max-time 480 --output ${String(runner.captured.find(({ executable }) => executable === "curl")?.args.at(-2))} ${tarballUrlOf("cli", "1.0.0", "https://registry.npmjs.org/")}`,
     );
     expect(recordBodies).toStrictEqual([
       {
@@ -305,12 +318,36 @@ describe(LinkPackagesCommand, () => {
     expect(process.exitCode).toBe(1);
   });
 
+  it("falls back to the conventional tarball URL when npm metadata is empty", async () => {
+    expect.hasAssertions();
+
+    const runner = new FakeProcessRunner({
+      ...script(),
+      "npm view @tool/cli@1.0.0 dist.tarball --registry https://registry.npmjs.org/":
+        succeeded("\n"),
+      "npm view @tool/core@2.0.0 dist.tarball --registry https://registry.npmjs.org/":
+        succeeded("\n"),
+    });
+    await runCommand(runner);
+
+    expect(
+      runner.lines.some((line) =>
+        line.endsWith("https://registry.npmjs.org/@tool/cli/-/cli-1.0.0.tgz"),
+      ),
+    ).toBe(true);
+    expect(process.exitCode).toBe(0);
+  });
+
   it("records nothing on GitHub when rehearsing, but still lists what to attest", async () => {
     expect.hasAssertions();
 
     vi.stubEnv("NPM_REGISTRY", "http://localhost:4873");
     const runner = new FakeProcessRunner({
       ...script(),
+      "npm view @tool/cli@1.0.0 dist.tarball --registry http://localhost:4873/":
+        succeeded(
+          `${tarballUrlOf("cli", "1.0.0", "http://localhost:4873/")}\n`,
+        ),
       "npm view @tool/core@2.0.0 version --registry http://localhost:4873":
         failed(),
       "npm view @tool/fresh@0.1.0 version --registry http://localhost:4873":
