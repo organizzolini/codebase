@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import type {
@@ -19,20 +18,23 @@ const conformetryConfiguration: ConformetryConfiguration = [
       "A one-file template whose hooks refuse a bad name and stamp a receipt",
     hooks: {
       // Runs after the template is rendered, and before the formatter. A hook
-      // may write anything; this one records what the run produced.
+      // writes through `context.filesystem`, the adapter the run itself uses,
+      // so the write lands wherever the host sends writes. The path is built
+      // from `configurationDirectoryPath`, so it sits beside this file however
+      // the command was invoked.
       postGenerate: async (context: GeneratorHookContext): Promise<void> => {
         const receiptPath = path.join(
-          context.outputDirectoryPath,
-          context.input["name"] ?? "",
-          "receipt.log",
+          context.configurationDirectoryPath,
+          "receipts",
+          `${context.substitutions["nameKebabCase"] ?? ""}.log`,
         );
 
-        await mkdir(path.dirname(receiptPath), { recursive: true });
-        await writeFile(
+        await context.filesystem.writeFile(
           receiptPath,
           `${context.generatedFilePaths.join("\n")}\n`,
-          "utf8",
         );
+        // Added to the list so the host formats it like a rendered file.
+        context.generatedFilePaths.push(receiptPath);
         process.stdout.write(`Receipt written: ${receiptPath}\n`);
       },
       // Runs before a single file is written, so throwing here leaves the

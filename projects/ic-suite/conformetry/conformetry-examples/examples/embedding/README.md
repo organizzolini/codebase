@@ -49,7 +49,7 @@ Six services do the work:
 | Service | Package | What it is asked for |
 | ------- | ------- | -------------------- |
 | `ConfigurationService` | `@conformetry/configuration` | `loadConformetryConfiguration(path)` |
-| `GenerationService` | `@conformetry/generation` | `runGenerator({ definition, inputs, instancePath })` |
+| `GenerationService` | `@conformetry/generation` | `runGenerator({ configurationDirectoryPath, definition, inputs, instancePath })` |
 | `InstanceDiscoveryService` | `@conformetry/configuration` | `findInstances({ patterns, workingDirectory })` |
 | `TemplateDiscoveryService` | `@conformetry/configuration` | `collectTemplates({ configuration, workingDirectory })` |
 | `ValidationService` | `@conformetry/validation` | `validate({ instances, templates })` |
