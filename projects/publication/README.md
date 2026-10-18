@@ -32,13 +32,13 @@ Call stacks traced through `projects/publication`, deepest first. Each frame sho
 
 | Measure | Value |
 | --- | --- |
-| Callables | 156 |
-| Files | 74 |
-| Calls traced | 207 |
-| Call stacks | 10 |
+| Callables | 196 |
+| Files | 89 |
+| Calls traced | 266 |
+| Call stacks | 13 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 11 |
+| Unfollowable calls | 14 |
 
 ### Limits
 
@@ -51,7 +51,24 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `LinkPackagesCommand.run`** — depth ≥ 6 · decorated-method
+**1. `ImportPrTaskCacheCommand.run`** — depth 6 · decorated-method
+
+```text
+🚀 ImportPrTaskCacheCommand.run(): Promise<void> [projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts:43]
+   ↳ Imports the cache and prints what happened.
+  └─> ImportPrTaskCacheService.import(): TaskDatabaseReport [projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:177]
+     ↳ Imports the pull request's cache when this run is a merge group's.
+    └─> ImportPrTaskCacheService.locate(): ImportStop | LocatedArtifact [projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:132]
+       ↳ Finds the artifact to import, or says why there is none.
+      └─> ImportPrTaskCacheService.findPullRequest(): ImportStop | TrustedPullRequest [projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:105]
+         ↳ Finds the pull request a merge group tests, when it comes from this repository, or says why there is nothing to import.
+        └─> ImportPrTaskCacheService.require(name: "GITHUB_REPOSITORY" | "NX_CACHE_SCOPE"): string [projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:161]
+           ↳ Reads one variable the import cannot do without, or fails the import.
+          └─> ImportPrTaskCacheService.read(…): string [projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:154]
+             ↳ Reads one variable, an absent one as empty.
+```
+
+**2. `LinkPackagesCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
 🚀 LinkPackagesCommand.run(): Promise<void> [projects/publication/src/modules/link-packages/link-packages.command.ts:46]
@@ -67,7 +84,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Reads the name and version of the package in the given directory.
 ```
 
-**2. `PublishPackagesCommand.run`** — depth ≥ 6 · decorated-method
+**3. `PublishPackagesCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
 🚀 PublishPackagesCommand.run(): Promise<void> [projects/publication/src/modules/publish-packages/publish-packages.command.ts:47]
@@ -79,11 +96,14 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Mirrors the package in the given directory to GitHub Packages, unless that version is there already.
         └─> PublishPackagesService.packRenamed(root: string, mirror: string, context: MirrorContext): Promise<CapturedProcess> [projects/publication/src/modules/publish-packages/publish-packages.service.ts:116]
            ↳ Packs a package exactly as npm got it, unpacks it, and renames it into the mirror's scope, dropping its…
-          └─> ProcessRunnerService.captureAsync(executable: string, args: readonly string[]): Promise<CapturedProcess> [projects/publication/src/modules/process-runner/process-runner.service.ts:63]
+          └─> ProcessRunnerService.captureAsync(executable: string, args: readonly string[]): Promise<CapturedProcess> [projects/publication/src/modules/process-runner/process-runner.service.ts:65]
              ↳ Runs a command without blocking, so several can run at once, and returns what it printed once it ends.
 ```
 
-**3. `VersionPackagesCommand.run`** — depth 6 · decorated-method
+<details>
+<summary>10 more call stacks</summary>
+
+**4. `VersionPackagesCommand.run`** — depth 6 · decorated-method
 
 ```text
 🚀 VersionPackagesCommand.run(): Promise<void> [projects/publication/src/modules/version-packages/version-packages.command.ts:45]
@@ -96,28 +116,39 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Commits and pushes any versions semantic-release left uncommitted.
         └─> TagPackagesService.mustStream(executable: string, args: readonly string[]): void [projects/publication/src/modules/tag-packages/tag-packages.service.ts:127]
            ↳ Streams a command, failing the step when it fails.
-          └─> ProcessRunnerService.stream(executable: string, args: readonly string[], input?: string): number [projects/publication/src/modules/process-runner/process-runner.service.ts:105]
+          └─> ProcessRunnerService.stream(executable: string, args: readonly string[], input?: string): number [projects/publication/src/modules/process-runner/process-runner.service.ts:141]
              ↳ Runs a command with this process's own output streams, so its output appears as it would from the shell step that used…
 ```
 
-<details>
-<summary>7 more call stacks</summary>
-
-**4. `AdoptTaskDatabaseCommand.run`** — depth 5 · decorated-method
+**5. `AdoptTaskDatabaseCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 AdoptTaskDatabaseCommand.run(): Promise<void> [projects/publication/src/modules/adopt-task-database/adopt-task-database.command.ts:42]
    ↳ Runs the step and prints what it reports.
-  └─> TaskDatabaseService.adopt(): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:200]
+  └─> TaskDatabaseService.adopt(): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:359]
      ↳ Renames the newest restored database to this machine's id, and discards the rest.
-    └─> TaskDatabaseService.planAdoption(databases: readonly string[]): AdoptionPlan [projects/publication/src/modules/task-database/task-database.service.ts:118]
+    └─> TaskDatabaseService.planAdoption(databases: readonly string[]): AdoptionPlan [projects/publication/src/modules/task-database/task-database.service.ts:253]
        ↳ Decides what adopting would do, or why it should do nothing.
-      └─> TaskDatabaseService.readMachineId(): string [projects/publication/src/modules/task-database/task-database.service.ts:159]
+      └─> TaskDatabaseService.readMachineId(): string [projects/publication/src/modules/task-database/task-database.service.ts:318]
          ↳ This machine's id, from the first readable, non-empty id file.
-        └─> TaskDatabaseService.filter(…)(file: string): boolean [projects/publication/src/modules/task-database/task-database.service.ts:163]
+        └─> TaskDatabaseService.filter(…)(file: string): boolean [projects/publication/src/modules/task-database/task-database.service.ts:322]
 ```
 
-**5. `RunAffectedCommand.run`** — depth 5 · decorated-method
+**6. `MergeTaskCacheCommand.run`** — depth 5 · decorated-method
+
+```text
+🚀 MergeTaskCacheCommand.run(parameters: string[]): Promise<void> [projects/publication/src/modules/merge-task-cache/merge-task-cache.command.ts:45]
+   ↳ Merges the cache the first parameter names, and prints what happened.
+  └─> TaskDatabaseService.merge(source: string): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:419]
+     ↳ Merges another run's Nx cache into this one, so the tasks that run already finished are hits here too.
+    └─> TaskDatabaseService.checkSource(source: string): MergeSource [projects/publication/src/modules/task-database/task-database.service.ts:87]
+       ↳ Finds the database a source would be merged from, or why it cannot be.
+      └─> TaskDatabaseService.list(directory?: string): string[] [projects/publication/src/modules/task-database/task-database.service.ts:209]
+         ↳ Lists every task database in a directory, this cache's by default, in name order, and nothing when there is none.
+        └─> TaskDatabaseService.map(…)(name: string): string [projects/publication/src/modules/task-database/task-database.service.ts:218]
+```
+
+**7. `RunAffectedCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 RunAffectedCommand.run(): Promise<void> [projects/publication/src/modules/run-affected/run-affected.command.ts:61]
@@ -128,11 +159,11 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Picks out the files that mislead Nx for this target, listing the change set only when the target asks for a correction.
       └─> RunAffectedService.listChangedFiles(base: string, head: string): RunAffectedFailure | string[] [projects/publication/src/modules/run-affected/run-affected.service.ts:131]
          ↳ Lists the files changed between two revisions, or why that failed.
-        └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [projects/publication/src/modules/process-runner/process-runner.service.ts:41]
+        └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [projects/publication/src/modules/process-runner/process-runner.service.ts:42]
            ↳ Runs a command to completion and returns what it printed.
 ```
 
-**6. `TagPackagesCommand.run`** — depth 5 · decorated-method
+**8. `TagPackagesCommand.run`** — depth 5 · decorated-method
 
 ```text
 🚀 TagPackagesCommand.run(): Promise<void> [projects/publication/src/modules/tag-packages/tag-packages.command.ts:46]
@@ -143,38 +174,23 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Commits and pushes any versions semantic-release left uncommitted.
       └─> TagPackagesService.mustStream(executable: string, args: readonly string[]): void [projects/publication/src/modules/tag-packages/tag-packages.service.ts:127]
          ↳ Streams a command, failing the step when it fails.
-        └─> ProcessRunnerService.stream(executable: string, args: readonly string[], input?: string): number [projects/publication/src/modules/process-runner/process-runner.service.ts:105]
+        └─> ProcessRunnerService.stream(executable: string, args: readonly string[], input?: string): number [projects/publication/src/modules/process-runner/process-runner.service.ts:141]
            ↳ Runs a command with this process's own output streams, so its output appears as it would from the shell step that used…
 ```
 
-**7. `VerifyTaskDatabaseCommand.run`** — depth 5 · decorated-method
-
-```text
-🚀 VerifyTaskDatabaseCommand.run(): Promise<void> [projects/publication/src/modules/verify-task-database/verify-task-database.command.ts:39]
-   ↳ Runs the step and prints what it reports.
-  └─> TaskDatabaseService.verify(): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:262]
-     ↳ Discards every database that fails `PRAGMA integrity_check`.
-    └─> TaskDatabaseService.integrityOf(database: string): string [projects/publication/src/modules/task-database/task-database.service.ts:81]
-       ↳ Answers what SQLite itself says of a database: `ok` for a sound one, the problems found for a damaged one, or why it…
-      └─> TaskDatabaseService.query(database: string, sql: string): string[] [projects/publication/src/modules/task-database/task-database.service.ts:145]
-         ↳ Runs one query, and returns the first column of every row as text.
-        └─> TaskDatabaseService.map(…)(row: Record<string, SQLOutputValue>): string [projects/publication/src/modules/task-database/task-database.service.ts:152]
-```
-
-**8. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
+**9. `KeepTaskDatabaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 KeepTaskDatabaseCommand.run(): Promise<void> [projects/publication/src/modules/keep-task-database/keep-task-database.command.ts:41]
    ↳ Runs the step and prints what it reports.
-  └─> TaskDatabaseService.keep(): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:232]
+  └─> TaskDatabaseService.keep(): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:391]
      ↳ Keeps only the newest database, warning when there was more than one. `adopt` renames the restored database to this…
-    └─> TaskDatabaseService.list(): string[] [projects/publication/src/modules/task-database/task-database.service.ts:90]
-       ↳ Lists every task database, in name order, and nothing when there is none.
-      └─> TaskDatabaseService.directory(): string [projects/publication/src/modules/task-database/task-database.service.ts:55]
-         ↳ Where Nx keeps the database, honouring the override Nx itself reads.
+    └─> TaskDatabaseService.list(directory?: string): string[] [projects/publication/src/modules/task-database/task-database.service.ts:209]
+       ↳ Lists every task database in a directory, this cache's by default, in name order, and nothing when there is none.
+      └─> TaskDatabaseService.map(…)(name: string): string [projects/publication/src/modules/task-database/task-database.service.ts:218]
 ```
 
-**9. `TagCodebaseCommand.run`** — depth 4 · decorated-method
+**10. `TagCodebaseCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 TagCodebaseCommand.run(): Promise<void> [projects/publication/src/modules/tag-codebase/tag-codebase.command.ts:44]
@@ -187,14 +203,37 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Returns what a finished process printed, or fails the way `set -e` failed the shell scripts these commands replace: at…
 ```
 
-**10. `PublishablePackagesGateCommand.run`** — depth 3 · decorated-method
+**11. `VerifyTaskDatabaseCommand.run`** — depth 4 · decorated-method
+
+```text
+🚀 VerifyTaskDatabaseCommand.run(): Promise<void> [projects/publication/src/modules/verify-task-database/verify-task-database.command.ts:39]
+   ↳ Runs the step and prints what it reports.
+  └─> TaskDatabaseService.verify(): TaskDatabaseReport [projects/publication/src/modules/task-database/task-database.service.ts:454]
+     ↳ Discards every database that fails `PRAGMA integrity_check`.
+    └─> TaskDatabaseService.list(directory?: string): string[] [projects/publication/src/modules/task-database/task-database.service.ts:209]
+       ↳ Lists every task database in a directory, this cache's by default, in name order, and nothing when there is none.
+      └─> TaskDatabaseService.map(…)(name: string): string [projects/publication/src/modules/task-database/task-database.service.ts:218]
+```
+
+**12. `BoundBaseToPushCommand.run`** — depth 3 · decorated-method
+
+```text
+🚀 BoundBaseToPushCommand.run(): Promise<void> [projects/publication/src/modules/bound-base-to-push/bound-base-to-push.command.ts:41]
+   ↳ Bounds the base, prints what it decided, and sets the exit code.
+  └─> BoundBaseToPushService.bound(): BoundBaseReport [projects/publication/src/modules/bound-base-to-push/bound-base-to-push.service.ts:59]
+     ↳ Decides the push's base, and writes a moved one to `GITHUB_ENV` for the later steps of the job.
+    └─> BoundBaseToPushService.read(name: "BEFORE" | "GITHUB_ENV" | "NX_BASE" | "NX_HEAD"): string [projects/publication/src/modules/bound-base-to-push/bound-base-to-push.service.ts:49]
+       ↳ Reads one variable, an absent one as empty.
+```
+
+**13. `PublishablePackagesGateCommand.run`** — depth 3 · decorated-method
 
 ```text
 🚀 PublishablePackagesGateCommand.run(): Promise<void> [projects/publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49]
    ↳ Decides whether the check is affected, then runs it whole or skips it.
   └─> PublishablePackagesGateService.decide(): PublishablePackagesGateOutcome [projects/publication/src/modules/publishable-packages-gate/publishable-packages-gate.service.ts:47]
      ↳ Asks Nx which gated projects the change between `NX_BASE` and `NX_HEAD` affects.
-    └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [projects/publication/src/modules/process-runner/process-runner.service.ts:41]
+    └─> ProcessRunnerService.capture(executable: string, args: readonly string[]): CapturedProcess [projects/publication/src/modules/process-runner/process-runner.service.ts:42]
        ↳ Runs a command to completion and returns what it printed.
 ```
 
@@ -209,21 +248,29 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PublishPackagesService.run` | 8 | `PublishPackagesService.readInputs`, `PublishPackagesService.map(…)`, `ReleaseGroupService.readGroup`, `PublishPackagesService.refuseUnsealedRehearsal`, `PublishPackagesService.publishToNpm`, `PublishPackagesService.prepareMirrors`, `PublishPackagesService.runInParallel(…)`, `ReleaseGroupService.runInParallel` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:318` |
 
 <details>
-<summary>67 more callables</summary>
+<summary>81 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `TagPackagesService.commitLeftoverVersions` | 7 | `TagPackagesService.mustStream`, `TagPackagesService.versionedFiles`, `ProcessRunnerService.capture`, `MainTipService.head`, `ProcessRunnerService.stream`, `MainTipService.hasMovedFrom`, `MainTipService.stepAsideFrom` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:68` |
 | `TagPackagesService.run` | 7 | `TagPackagesService.commitLeftoverVersions`, `ReleaseGroupService.readGroup`, `TagPackagesService.tagBaselines`, `TagPackagesService.tagNewVersions`, `pushingMessage`, `TagPackagesService.map(…)`, `TagPackagesService.pushWithRetries` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:285` |
-| `TaskDatabaseService.adopt` | 6 | `TaskDatabaseService.list`, `TaskDatabaseService.planAdoption`, `TaskDatabaseService.discardOthers`, `TaskDatabaseService.rename`, `adoptedMessage`, `TaskDatabaseService.countCachedResults` | `projects/publication/src/modules/task-database/task-database.service.ts:200` |
+| `TaskDatabaseService.planMerge` | 6 | `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.directory`, `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `schemaOf`, `schemaMismatchReason` | `projects/publication/src/modules/task-database/task-database.service.ts:280` |
+| `TaskDatabaseService.adopt` | 6 | `TaskDatabaseService.list`, `TaskDatabaseService.planAdoption`, `TaskDatabaseService.discardOthers`, `TaskDatabaseService.rename`, `adoptedMessage`, `TaskDatabaseService.countCachedResults` | `projects/publication/src/modules/task-database/task-database.service.ts:359` |
+| `ImportPrTaskCacheService.import` | 6 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.locate`, `ImportPrTaskCacheService.download`, `importingMessage`, `TaskDatabaseService.merge`, `couldNotImportMessage` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:177` |
 | `PublishPackagesService.publishToNpm` | 6 | `ReleaseGroupService.npmRegistry`, `authenticationLine`, `ProcessRunnerService.stream`, `PublishPackagesService.flatMap(…)`, `ReleaseGroupService.isRehearsal`, `PublishPackagesService.map(…)` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:201` |
 | `VersionPackagesService.run` | 6 | `VersionPackagesService.pointRemoteAtToken`, `MainTipService.head`, `MainTipService.hasMovedFrom`, `MainTipService.stepAsideFrom`, `TagPackagesService.run`, `VersionPackagesService.releaseWithoutConfiguration` | `projects/publication/src/modules/version-packages/version-packages.service.ts:117` |
-| `TaskDatabaseService.keep` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.discardOthers`, `duplicateMessage`, `TaskDatabaseService.map(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:232` |
+| `TaskDatabaseService.checkSource` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.integrityOf`, `TaskDatabaseService.query`, `TaskDatabaseService.every(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:87` |
+| `TaskDatabaseService.mergeRows` | 5 | `TaskDatabaseService.query`, `TaskDatabaseService.copyMissingOutputs`, `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.insertRows`, `mergedMessage` | `projects/publication/src/modules/task-database/task-database.service.ts:227` |
+| `TaskDatabaseService.keep` | 5 | `TaskDatabaseService.list`, `TaskDatabaseService.newest`, `TaskDatabaseService.discardOthers`, `duplicateMessage`, `TaskDatabaseService.map(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:391` |
+| `TaskDatabaseService.merge` | 5 | `TaskDatabaseService.checkSource`, `notMergingMessage`, `TaskDatabaseService.planMerge`, `TaskDatabaseService.adoptSource`, `TaskDatabaseService.mergeRows` | `projects/publication/src/modules/task-database/task-database.service.ts:419` |
+| `BoundBaseToPushService.bound` | 5 | `BoundBaseToPushService.read`, `noPreviousTipMessage`, `ProcessRunnerService.capture`, `notAncestorMessage`, `boundingMessage` | `projects/publication/src/modules/bound-base-to-push/bound-base-to-push.service.ts:59` |
+| `ImportPrTaskCacheService.locate` | 5 | `ImportPrTaskCacheService.findPullRequest`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `artifactQuery`, `noArtifactMessage` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:132` |
 | `PublishPackagesService.mirrorPackage` | 5 | `ReleaseGroupService.readManifest`, `ProcessRunnerService.captureAsync`, `alreadyMirroredMessage`, `PublishPackagesService.packRenamed`, `mirroringMessage` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:62` |
 | `RunAffectedCommand.run` | 5 | `RunAffectedService.plan`, `RunAffectedCommand.report`, `spellingFilesHeading`, `templateFilesHeading`, `RunAffectedService.execute` | `projects/publication/src/modules/run-affected/run-affected.command.ts:61` |
 | `TagPackagesService.tagBaselines` | 5 | `ReleaseGroupService.readManifest`, `requireSuccess`, `ProcessRunnerService.capture`, `TagPackagesService.createTag`, `TagPackagesService.parentOfAddition` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:213` |
-| `TaskDatabaseService.planAdoption` | 4 | `TaskDatabaseService.readMachineId`, `TaskDatabaseService.newest`, `noSchemaMessage`, `TaskDatabaseService.directory` | `projects/publication/src/modules/task-database/task-database.service.ts:118` |
-| `TaskDatabaseService.verify` | 4 | `TaskDatabaseService.list`, `TaskDatabaseService.integrityOf`, `corruptMessage`, `TaskDatabaseService.discard` | `projects/publication/src/modules/task-database/task-database.service.ts:262` |
+| `TaskDatabaseService.planAdoption` | 4 | `TaskDatabaseService.readMachineId`, `TaskDatabaseService.newest`, `noSchemaMessage`, `TaskDatabaseService.directory` | `projects/publication/src/modules/task-database/task-database.service.ts:253` |
+| `TaskDatabaseService.verify` | 4 | `TaskDatabaseService.list`, `TaskDatabaseService.integrityOf`, `corruptMessage`, `TaskDatabaseService.discard` | `projects/publication/src/modules/task-database/task-database.service.ts:454` |
+| `ImportPrTaskCacheService.findPullRequest` | 4 | `ImportPrTaskCacheService.read`, `ImportPrTaskCacheService.require`, `ImportPrTaskCacheService.api`, `untrustedMessage` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:105` |
 | `PublishPackagesService.refuseUnsealedRehearsal` | 4 | `ReleaseGroupService.isRehearsal`, `ReleaseGroupService.readManifest`, `ReleaseGroupService.npmRegistry`, `unsealedMessage` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:282` |
 | `RunAffectedService.findCorrections` | 4 | `RunAffectedService.listChangedFiles`, `RunAffectedService.pattern`, `RunAffectedService.filter(…)`, `RunAffectedService.filter(…)` | `projects/publication/src/modules/run-affected/run-affected.service.ts:90` |
 | `RunAffectedService.plan` | 4 | `RunAffectedService.readInputs`, `RunAffectedService.findCorrections`, `RunAffectedService.correctedPlan`, `RunAffectedService.revisionsPlan` | `projects/publication/src/modules/run-affected/run-affected.service.ts:237` |
@@ -231,12 +278,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TagPackagesService.parentOfAddition` | 4 | `TagPackagesService.findLast(…)`, `requireSuccess`, `ProcessRunnerService.capture`, `noBaselineMessage` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:138` |
 | `TagPackagesService.pushWithRetries` | 4 | `TagPackagesService.retryDelay`, `ProcessRunnerService.stream`, `retryingMessage`, `TagPackagesService.anonymous` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:169` |
 | `VersionPackagesService.pointRemoteAtToken` | 4 | `requireVariable`, `requireSuccess`, `ProcessRunnerService.capture`, `authenticatedRemote` | `projects/publication/src/modules/version-packages/version-packages.service.ts:65` |
-| `TaskDatabaseService.list` | 3 | `TaskDatabaseService.directory`, `TaskDatabaseService.map(…)`, `TaskDatabaseService.filter(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:90` |
+| `TaskDatabaseService.adoptSource` | 3 | `TaskDatabaseService.cacheDirectory`, `TaskDatabaseService.directory`, `nothingToMergeIntoMessage` | `projects/publication/src/modules/task-database/task-database.service.ts:67` |
 | `ReleaseGroupService.membersFrom` | 3 | `requireSuccess`, `ProcessRunnerService.capture`, `ReleaseGroupService.map(…)` | `projects/publication/src/modules/release-group/release-group.service.ts:68` |
 | `ReleaseGroupService.map(…)` | 3 | `ReleaseGroupService.acquire`, `ReleaseGroupService.settle`, `ReleaseGroupService.release` | `projects/publication/src/modules/release-group/release-group.service.ts:237` |
 | `PublishablePackagesGateCommand.run` | 3 | `PublishablePackagesGateService.decide`, `affectedMessage`, `PublishablePackagesGateService.execute` | `projects/publication/src/modules/publishable-packages-gate/publishable-packages-gate.command.ts:49` |
 | `MainTipService.stepAsideFrom` | 3 | `requireVariable`, `ProcessRunnerService.capture`, `superseded` | `projects/publication/src/modules/main-tip/main-tip.service.ts:86` |
 | `TagPackagesService.tagNewVersions` | 3 | `ReleaseGroupService.readManifest`, `ProcessRunnerService.capture`, `TagPackagesService.createTag` | `projects/publication/src/modules/tag-packages/tag-packages.service.ts:243` |
+| `TaskDatabaseService.list` | 2 | `TaskDatabaseService.map(…)`, `TaskDatabaseService.filter(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:209` |
+| `ImportPrTaskCacheService.download` | 2 | `ProcessRunnerService.captureToFile`, `ProcessRunnerService.capture` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:73` |
 | `ReleaseGroupService.isOnNpm` | 2 | `ProcessRunnerService.captureAsync`, `ReleaseGroupService.npmRegistry` | `projects/publication/src/modules/release-group/release-group.service.ts:120` |
 | `ReleaseGroupService.readGroup` | 2 | `ReleaseGroupService.membersFrom`, `describeError` | `projects/publication/src/modules/release-group/release-group.service.ts:169` |
 | `LinkPackagesService.createStorageRecord` | 2 | `LinkPackagesService.parse`, `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/link-packages/link-packages.service.ts:69` |
@@ -249,13 +298,16 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TagCodebaseCommand.run` | 2 | `TagCodebaseService.run`, `describeError` | `projects/publication/src/modules/tag-codebase/tag-codebase.command.ts:44` |
 | `TagPackagesCommand.run` | 2 | `TagPackagesService.run`, `describeError` | `projects/publication/src/modules/tag-packages/tag-packages.command.ts:46` |
 | `VersionPackagesCommand.run` | 2 | `VersionPackagesService.run`, `describeError` | `projects/publication/src/modules/version-packages/version-packages.command.ts:45` |
-| `TaskDatabaseService.countCachedResults` | 1 | `TaskDatabaseService.query` | `projects/publication/src/modules/task-database/task-database.service.ts:46` |
-| `TaskDatabaseService.discardOthers` | 1 | `TaskDatabaseService.discard` | `projects/publication/src/modules/task-database/task-database.service.ts:69` |
-| `TaskDatabaseService.integrityOf` | 1 | `TaskDatabaseService.query` | `projects/publication/src/modules/task-database/task-database.service.ts:81` |
-| `TaskDatabaseService.newest` | 1 | `TaskDatabaseService.reduce(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:110` |
-| `TaskDatabaseService.query` | 1 | `TaskDatabaseService.map(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:145` |
-| `TaskDatabaseService.readMachineId` | 1 | `TaskDatabaseService.filter(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:159` |
+| `TaskDatabaseService.countCachedResults` | 1 | `TaskDatabaseService.query` | `projects/publication/src/modules/task-database/task-database.service.ts:141` |
+| `TaskDatabaseService.discardOthers` | 1 | `TaskDatabaseService.discard` | `projects/publication/src/modules/task-database/task-database.service.ts:164` |
+| `TaskDatabaseService.integrityOf` | 1 | `TaskDatabaseService.query` | `projects/publication/src/modules/task-database/task-database.service.ts:197` |
+| `TaskDatabaseService.newest` | 1 | `TaskDatabaseService.reduce(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:244` |
+| `TaskDatabaseService.readMachineId` | 1 | `TaskDatabaseService.filter(…)` | `projects/publication/src/modules/task-database/task-database.service.ts:318` |
 | `AdoptTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.adopt` | `projects/publication/src/modules/adopt-task-database/adopt-task-database.command.ts:42` |
+| `BoundBaseToPushCommand.run` | 1 | `BoundBaseToPushService.bound` | `projects/publication/src/modules/bound-base-to-push/bound-base-to-push.command.ts:41` |
+| `ImportPrTaskCacheService.api` | 1 | `ProcessRunnerService.capture` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:62` |
+| `ImportPrTaskCacheService.require` | 1 | `ImportPrTaskCacheService.read` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts:161` |
+| `ImportPrTaskCacheCommand.run` | 1 | `ImportPrTaskCacheService.import` | `projects/publication/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts:43` |
 | `KeepTaskDatabaseCommand.run` | 1 | `TaskDatabaseService.keep` | `projects/publication/src/modules/keep-task-database/keep-task-database.command.ts:41` |
 | `ReleaseGroupService.settle` | 1 | `describeError` | `projects/publication/src/modules/release-group/release-group.service.ts:49` |
 | `ReleaseGroupService.isRehearsal` | 1 | `ReleaseGroupService.npmRegistry` | `projects/publication/src/modules/release-group/release-group.service.ts:138` |
@@ -265,6 +317,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LinkPackagesService.readInputs` | 1 | `LinkPackagesService.read` | `projects/publication/src/modules/link-packages/link-packages.service.ts:185` |
 | `LinkPackagesService.read` | 1 | `requireVariable` | `projects/publication/src/modules/link-packages/link-packages.service.ts:186` |
 | `LinkPackagesService.runInParallel(…)` | 1 | `LinkPackagesService.linkPackage` | `projects/publication/src/modules/link-packages/link-packages.service.ts:273` |
+| `MergeTaskCacheCommand.run` | 1 | `TaskDatabaseService.merge` | `projects/publication/src/modules/merge-task-cache/merge-task-cache.command.ts:45` |
 | `PublishPackagesService.packRenamed` | 1 | `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:116` |
 | `PublishPackagesService.prepareMirrors` | 1 | `authenticationLine` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:172` |
 | `PublishPackagesService.readInputs` | 1 | `requireVariable` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:247` |
@@ -307,12 +360,15 @@ graph LR
 ```mermaid
 flowchart LR
   AdoptTaskDatabaseModule
+  BoundBaseToPushModule
   DiscoveryModule
+  ImportPrTaskCacheModule
   KeepTaskDatabaseModule
   LinkPackagesModule
   LoggerModule([LoggerModule])
   MainModule
   MainTipModule
+  MergeTaskCacheModule
   ProcessRunnerModule
   PublishablePackagesGateModule
   PublishPackagesModule
@@ -324,13 +380,19 @@ flowchart LR
   VerifyTaskDatabaseModule
   VersionPackagesModule
   AdoptTaskDatabaseModule --> TaskDatabaseModule
+  BoundBaseToPushModule --> ProcessRunnerModule
+  ImportPrTaskCacheModule --> ProcessRunnerModule
+  ImportPrTaskCacheModule --> TaskDatabaseModule
   KeepTaskDatabaseModule --> TaskDatabaseModule
   LinkPackagesModule --> ProcessRunnerModule
   LinkPackagesModule --> ReleaseGroupModule
   MainModule --> AdoptTaskDatabaseModule
+  MainModule --> BoundBaseToPushModule
   MainModule --> DiscoveryModule
+  MainModule --> ImportPrTaskCacheModule
   MainModule --> KeepTaskDatabaseModule
   MainModule --> LinkPackagesModule
+  MainModule --> MergeTaskCacheModule
   MainModule --> PublishablePackagesGateModule
   MainModule --> PublishPackagesModule
   MainModule --> RunAffectedModule
@@ -339,6 +401,7 @@ flowchart LR
   MainModule --> VerifyTaskDatabaseModule
   MainModule --> VersionPackagesModule
   MainTipModule --> ProcessRunnerModule
+  MergeTaskCacheModule --> TaskDatabaseModule
   PublishablePackagesGateModule --> ProcessRunnerModule
   PublishPackagesModule --> ProcessRunnerModule
   PublishPackagesModule --> ReleaseGroupModule
@@ -373,6 +436,22 @@ graph LR
   file_src_modules_adopt_task_database_adopt_task_database_module_ts["src/modules/adopt-task-database/adopt-task-database.module.ts"]
   file_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
   file_src_modules_adopt_task_database_adopt_task_database_types_ts["src/modules/adopt-task-database/adopt-task-database.types.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_ts["src/modules/bound-base-to-push/bound-base-to-push.command.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts["src/modules/bound-base-to-push/bound-base-to-push.command.unit.test.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_constants_ts["src/modules/bound-base-to-push/bound-base-to-push.constants.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_ts["src/modules/bound-base-to-push/bound-base-to-push.module.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts["src/modules/bound-base-to-push/bound-base-to-push.module.unit.test.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_ts["src/modules/bound-base-to-push/bound-base-to-push.service.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts["src/modules/bound-base-to-push/bound-base-to-push.service.unit.test.ts"]
+  file_src_modules_bound_base_to_push_bound_base_to_push_types_ts["src/modules/bound-base-to-push/bound-base-to-push.types.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts["src/modules/import-pr-task-cache/import-pr-task-cache.command.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts["src/modules/import-pr-task-cache/import-pr-task-cache.command.unit.test.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts["src/modules/import-pr-task-cache/import-pr-task-cache.constants.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts["src/modules/import-pr-task-cache/import-pr-task-cache.module.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts["src/modules/import-pr-task-cache/import-pr-task-cache.module.unit.test.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts["src/modules/import-pr-task-cache/import-pr-task-cache.service.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts["src/modules/import-pr-task-cache/import-pr-task-cache.service.unit.test.ts"]
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts["src/modules/import-pr-task-cache/import-pr-task-cache.types.ts"]
   file_src_modules_keep_task_database_keep_task_database_command_ts["src/modules/keep-task-database/keep-task-database.command.ts"]
   file_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
   file_src_modules_keep_task_database_keep_task_database_constants_ts["src/modules/keep-task-database/keep-task-database.constants.ts"]
@@ -393,6 +472,12 @@ graph LR
   file_src_modules_main_tip_main_tip_service_ts["src/modules/main-tip/main-tip.service.ts"]
   file_src_modules_main_tip_main_tip_service_unit_test_ts["src/modules/main-tip/main-tip.service.unit.test.ts"]
   file_src_modules_main_tip_main_tip_types_ts["src/modules/main-tip/main-tip.types.ts"]
+  file_src_modules_merge_task_cache_merge_task_cache_command_ts["src/modules/merge-task-cache/merge-task-cache.command.ts"]
+  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts["src/modules/merge-task-cache/merge-task-cache.command.unit.test.ts"]
+  file_src_modules_merge_task_cache_merge_task_cache_constants_ts["src/modules/merge-task-cache/merge-task-cache.constants.ts"]
+  file_src_modules_merge_task_cache_merge_task_cache_module_ts["src/modules/merge-task-cache/merge-task-cache.module.ts"]
+  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts["src/modules/merge-task-cache/merge-task-cache.module.unit.test.ts"]
+  file_src_modules_merge_task_cache_merge_task_cache_types_ts["src/modules/merge-task-cache/merge-task-cache.types.ts"]
   file_src_modules_process_runner_process_runner_constants_ts["src/modules/process-runner/process-runner.constants.ts"]
   file_src_modules_process_runner_process_runner_module_ts["src/modules/process-runner/process-runner.module.ts"]
   file_src_modules_process_runner_process_runner_module_unit_test_ts["src/modules/process-runner/process-runner.module.unit.test.ts"]
@@ -454,6 +539,8 @@ graph LR
   file_src_modules_task_database_task_database_service_ts["src/modules/task-database/task-database.service.ts"]
   file_src_modules_task_database_task_database_service_unit_test_ts["src/modules/task-database/task-database.service.unit.test.ts"]
   file_src_modules_task_database_task_database_types_ts["src/modules/task-database/task-database.types.ts"]
+  file_src_modules_task_database_task_database_utilities_ts["src/modules/task-database/task-database.utilities.ts"]
+  file_src_modules_task_database_task_database_utilities_unit_test_ts["src/modules/task-database/task-database.utilities.unit.test.ts"]
   file_src_modules_verify_task_database_verify_task_database_command_ts["src/modules/verify-task-database/verify-task-database.command.ts"]
   file_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
   file_src_modules_verify_task_database_verify_task_database_constants_ts["src/modules/verify-task-database/verify-task-database.constants.ts"]
@@ -488,6 +575,49 @@ graph LR
   file_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_src_modules_adopt_task_database_adopt_task_database_command_ts
   file_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_src_modules_adopt_task_database_adopt_task_database_module_ts
   file_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_command_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_command_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_command_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_module_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_constants_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_types_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_src_publication_types_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_src_modules_task_database_task_database_types_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_src_publication_types_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_keep_task_database_keep_task_database_command_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_src_modules_keep_task_database_keep_task_database_command_ts
   file_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
@@ -539,10 +669,21 @@ graph LR
   file_src_modules_main_tip_main_tip_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_main_tip_main_tip_service_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_modules_main_tip_main_tip_service_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_src_modules_merge_task_cache_merge_task_cache_constants_ts
+  file_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_src_modules_merge_task_cache_merge_task_cache_command_ts
+  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_src_modules_merge_task_cache_merge_task_cache_command_ts
+  file_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_merge_task_cache_merge_task_cache_command_ts
+  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_merge_task_cache_merge_task_cache_module_ts
+  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
   file_src_modules_process_runner_process_runner_module_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
   file_src_modules_process_runner_process_runner_module_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_service_integration_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_process_runner_process_runner_service_integration_test_ts --> file_testing_mocks_ts
   file_src_modules_process_runner_process_runner_service_ts --> file_src_modules_process_runner_process_runner_constants_ts
   file_src_modules_process_runner_process_runner_service_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_modules_process_runner_process_runner_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
@@ -692,8 +833,11 @@ graph LR
   file_src_modules_task_database_task_database_module_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_task_database_task_database_service_ts --> file_src_modules_task_database_task_database_constants_ts
   file_src_modules_task_database_task_database_service_ts --> file_src_modules_task_database_task_database_types_ts
+  file_src_modules_task_database_task_database_service_ts --> file_src_modules_task_database_task_database_utilities_ts
   file_src_modules_task_database_task_database_service_ts --> file_src_publication_types_ts
   file_src_modules_task_database_task_database_service_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_task_database_task_database_utilities_ts --> file_src_modules_task_database_task_database_constants_ts
+  file_src_modules_task_database_task_database_utilities_unit_test_ts --> file_src_modules_task_database_task_database_utilities_ts
   file_src_modules_verify_task_database_verify_task_database_command_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_src_modules_verify_task_database_verify_task_database_command_ts
@@ -744,8 +888,11 @@ graph LR
   file_src_publication_main_unit_test_ts --> file_src_modules_tag_packages_tag_packages_module_ts
   file_src_publication_main_unit_test_ts --> file_src_modules_version_packages_version_packages_module_ts
   file_src_publication_module_ts --> file_src_modules_adopt_task_database_adopt_task_database_module_ts
+  file_src_publication_module_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_module_ts
+  file_src_publication_module_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
   file_src_publication_module_ts --> file_src_modules_keep_task_database_keep_task_database_module_ts
   file_src_publication_module_ts --> file_src_modules_link_packages_link_packages_module_ts
+  file_src_publication_module_ts --> file_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_src_publication_module_ts --> file_src_modules_publish_packages_publish_packages_module_ts
   file_src_publication_module_ts --> file_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
   file_src_publication_module_ts --> file_src_modules_run_affected_run_affected_module_ts
@@ -767,36 +914,36 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-8840-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-286.54_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-17-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-116-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-11078-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-357.04_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-20-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-140-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-116-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-24-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-140-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-28-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-4-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-46-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-213-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-57-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-266-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-2-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-40-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-49-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-18-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-38-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-464-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-115-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-390-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-189-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-514-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-550-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-140-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-361-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-674-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-46-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-577-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-137-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-483-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-231-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-664-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-676-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-185-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-450-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-834-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -817,16 +964,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-140-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-41-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-149-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-44-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-8-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-95-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-65-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-101-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-68-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-23-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-121-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-127-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -907,14 +1054,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-15-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-11-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-10-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-15-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-15-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-1-0ea5e9?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-18-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-13-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-13-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-18-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-18-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-2-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-38-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-47-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-1-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -952,7 +1099,7 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-312-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-319-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-7-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-16-a78bfa?style=flat-square)
@@ -964,11 +1111,11 @@ graph LR
 ![List Items](https://img.shields.io/badge/List_Items-28-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-3-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-21-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-24-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-10-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-13-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-143-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-155-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

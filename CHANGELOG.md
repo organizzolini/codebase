@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.13](https://github.com/organizzolini/codebase/compare/v3.9.12...v3.9.13) (2026-10-18)
+
+### ♻️ Code Refactoring
+
+* **publication,scripts:** ♻️ run the Nx base and cache steps after the install as publication commands ([#1702](https://github.com/organizzolini/codebase/issues/1702)) ([8a2c0c6](https://github.com/organizzolini/codebase/commit/8a2c0c6aead50835e350000de06aacfff516a48b)), closes [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1564](https://github.com/organizzolini/codebase/issues/1564) [#1565](https://github.com/organizzolini/codebase/issues/1565) [#1569](https://github.com/organizzolini/codebase/issues/1569) [#1699](https://github.com/organizzolini/codebase/issues/1699) [#1565](https://github.com/organizzolini/codebase/issues/1565)
+
 ## [3.9.12](https://github.com/organizzolini/codebase/compare/v3.9.11...v3.9.12) (2026-10-17)
 
 ### ♻️ Code Refactoring
