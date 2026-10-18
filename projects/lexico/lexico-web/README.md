@@ -226,9 +226,9 @@ What this project is judged against, as declared in its own `callidescope.config
 **11. `SearchBar`** — depth 2 · orphan-root
 
 ```text
-🚀 SearchBar(properties: Readonly<SearchBarProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-bar.tsx:40]
+🚀 SearchBar(properties: Readonly<SearchBarProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-bar.tsx:41]
    ↳ The search field. It searches as you type, once typing pauses, and at once when the form is submitted.
-  └─> useMemo(…)(): lodash.DebouncedFunc<(query: string) => void> [projects/lexico/lexico-web/src/components/search-bar.tsx:55]
+  └─> useMemo(…)(): lodash.DebouncedFunc<(query: string) => void> [projects/lexico/lexico-web/src/components/search-bar.tsx:56]
 ```
 
 **12. `anonymous`** — depth 2 · orphan-root
@@ -325,7 +325,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | --- | --- | --- | --- |
 | `NounForms` | 3 | `filter(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:47` |
 | `SearchResults` | 3 | `from(…)`, `useEffect(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:31` |
-| `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:40` |
+| `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:41` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:103` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:71` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:175` |
@@ -494,17 +494,17 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4469-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-142.66_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4472-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-142.92_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
 ### Measured Targets
 
 ![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.72_kB_gzip-6b7280?style=flat-square)
-![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.44_kB_gzip-6b7280?style=flat-square)
-![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.88_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.51_kB_gzip-6b7280?style=flat-square)
+![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.47_kB_gzip-6b7280?style=flat-square)
+![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.92_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.54_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -630,13 +630,13 @@ graph LR
 ### CSS
 
 ![CSS Files](https://img.shields.io/badge/CSS_Files-1-264de4?style=flat-square)
-![CSS Lines](https://img.shields.io/badge/CSS_Lines-33-2965f1?style=flat-square)
+![CSS Lines](https://img.shields.io/badge/CSS_Lines-38-2965f1?style=flat-square)
 ![CSS Rules](https://img.shields.io/badge/CSS_Rules-3-7c3aed?style=flat-square)
 ![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-4-8b5cf6?style=flat-square)
-![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-10-0284c7?style=flat-square)
+![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-14-0284c7?style=flat-square)
 ![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-2-f97316?style=flat-square)
 ![CSS Media Queries](https://img.shields.io/badge/CSS_Media_Queries-0-ea580c?style=flat-square)
-![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-10-16a34a?style=flat-square)
+![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-14-16a34a?style=flat-square)
 ![CSS Comments](https://img.shields.io/badge/CSS_Comments-2-64748b?style=flat-square)
 
 ### Conventions

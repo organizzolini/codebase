@@ -86,11 +86,11 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 DependenciesCommand.run(): Promise<void> [projects/installation/src/modules/dependencies/dependencies.command.ts:40]
    ↳ Installs the dependencies.
-  └─> DependenciesService.installDependencies(): void [projects/installation/src/modules/dependencies/dependencies.service.ts:192]
+  └─> DependenciesService.installDependencies(): void [projects/installation/src/modules/dependencies/dependencies.service.ts:193]
      ↳ Installs every dependency and initializes Terraform and kubeconfig.
-    └─> DependenciesService.writeKubeconfig(workspaceRoot: string): void [projects/installation/src/modules/dependencies/dependencies.service.ts:159]
+    └─> DependenciesService.writeKubeconfig(workspaceRoot: string): void [projects/installation/src/modules/dependencies/dependencies.service.ts:160]
        ↳ Writes `~/.kube/config` from the cluster Terraform manages, when there is none.
-      └─> DependenciesService.importCluster(…): void [projects/installation/src/modules/dependencies/dependencies.service.ts:54]
+      └─> DependenciesService.importCluster(…): void [projects/installation/src/modules/dependencies/dependencies.service.ts:55]
          ↳ Imports the cluster into Terraform's state when it does not track it yet.
         └─> ProcessRunnerService.runOrThrow(command: string, args: string[], options?: ProcessOptions): ProcessResult [projects/installation/src/modules/process-runner/process-runner.service.ts:92]
            ↳ Runs a command and throws when it does not exit 0.
@@ -162,28 +162,28 @@ What this project is judged against, as declared in its own `callidescope.config
 | --- | --- | --- | --- |
 | `SoftwareService.installSoftware` | 6 | `SoftwarePythonService.installPython`, `SoftwareOllamaService.installOllama`, `SoftwareDockerService.installDocker`, `SoftwareGpgService.installGpgSigning`, `SoftwareInfraService.installInfrastructureTools`, `SoftwareDatabaseService.installDatabaseTools` | `projects/installation/src/modules/software/software.service.ts:45` |
 | `UpdateReuiSkillService.refresh` | 6 | `UpdateReuiSkillService.fetchBundle`, `UpdateReuiSkillService.readLock`, `UpdateReuiSkillService.hashFiles`, `UpdateReuiSkillService.readInstalledFiles`, `ReporterService.print`, `UpdateReuiSkillService.install` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:158` |
-| `DependenciesService.writeKubeconfig` | 5 | `ReporterService.print`, `DependenciesService.readEnvironmentFile`, `DependenciesService.importCluster`, `DependenciesService.toClusterId`, `DependenciesService.readKubeconfig` | `projects/installation/src/modules/dependencies/dependencies.service.ts:159` |
+| `DependenciesService.writeKubeconfig` | 5 | `ReporterService.print`, `DependenciesService.readEnvironmentFile`, `DependenciesService.importCluster`, `DependenciesService.toClusterId`, `DependenciesService.readKubeconfig` | `projects/installation/src/modules/dependencies/dependencies.service.ts:160` |
 | `SoftwareDockerService.startDaemon` | 5 | `ReporterService.print`, `ProcessRunnerService.runOrThrow`, `SoftwareDockerService.isRunning`, `ProcessRunnerService.sleep`, `SoftwareDockerService.readVersion` | `projects/installation/src/modules/software/software-docker.service.ts:49` |
 | `SoftwareGpgService.installGpgSigning` | 5 | `SoftwareGpgService.installGpg`, `SoftwareGpgService.configureAgent`, `ReporterService.print`, `SoftwareGpgService.findSigningKeyId`, `SoftwareGpgService.configureSigning` | `projects/installation/src/modules/software/software-gpg.service.ts:151` |
 | `SoftwareInfraService.buildVersionLines` | 5 | `SoftwareInfraService.read`, `SoftwareInfraService.readMerged`, `SoftwareInfraService.readTerraformVersion`, `SoftwareInfraService.readTrivyVersion`, `SoftwareInfraService.readKubectlVersion` | `projects/installation/src/modules/software/software-infra.service.ts:35` |
 | `SoftwarePythonService.installUv` | 5 | `ReporterService.print`, `ProcessRunnerService.locate`, `ProcessRunnerService.runOrThrow`, `SoftwarePythonService.readUvVersion`, `SoftwareBrewService.listOutdated` | `projects/installation/src/modules/software/software-python.service.ts:48` |
 | `SoftwarePythonService.installPython` | 5 | `SoftwarePythonService.installUv`, `ReporterService.print`, `SoftwarePythonService.hasSupportedPython`, `ProcessRunnerService.run`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-python.service.ts:80` |
 | `SetupService.setUp` | 5 | `ShellConfigurationService.configureShell`, `SoftwareService.installSoftware`, `EnvironmentFilesService.createEnvironmentFiles`, `DependenciesService.installDependencies`, `SetupService.printCompletion` | `projects/installation/src/modules/setup/setup.service.ts:71` |
-| `DependenciesService.installDependencies` | 4 | `ReporterService.print`, `ProcessRunnerService.runOrThrow`, `DependenciesService.resetNxCache`, `DependenciesService.writeKubeconfig` | `projects/installation/src/modules/dependencies/dependencies.service.ts:192` |
+| `DependenciesService.installDependencies` | 4 | `ReporterService.print`, `ProcessRunnerService.runOrThrow`, `DependenciesService.resetNxCache`, `DependenciesService.writeKubeconfig` | `projects/installation/src/modules/dependencies/dependencies.service.ts:193` |
 | `EnvironmentFilesService.createEnvironmentFiles` | 4 | `ReporterService.print`, `EnvironmentFilesService.findTargets`, `EnvironmentFilesService.createEnvironmentFile`, `EnvironmentFilesService.addWorkspaceVariable` | `projects/installation/src/modules/environment-files/environment-files.service.ts:113` |
 | `SoftwareBrewService.installOrCheck` | 4 | `ReporterService.print`, `ProcessRunnerService.locate`, `ProcessRunnerService.runOrThrow`, `SoftwareBrewService.listOutdated` | `projects/installation/src/modules/software/software-brew.service.ts:38` |
 | `SoftwareDatabaseService.installPostgres` | 4 | `ReporterService.print`, `SoftwareDatabaseService.hasPostgres18`, `ProcessRunnerService.runOrThrow`, `SoftwareDatabaseService.readVersion` | `projects/installation/src/modules/software/software-database.service.ts:41` |
 | `SoftwareDatabaseService.installSquawk` | 4 | `ReporterService.print`, `ProcessRunnerService.locate`, `ProcessRunnerService.runOrThrow`, `SoftwareDatabaseService.readVersion` | `projects/installation/src/modules/software/software-database.service.ts:69` |
 | `SoftwareGpgService.installGpg` | 4 | `ReporterService.print`, `ProcessRunnerService.locate`, `ProcessRunnerService.runOrThrow`, `ProcessRunnerService.run` | `projects/installation/src/modules/software/software-gpg.service.ts:124` |
 | `SoftwareOllamaService.start` | 4 | `ReporterService.print`, `ProcessRunnerService.run`, `ProcessRunnerService.runOrThrow`, `ProcessRunnerService.startDetached` | `projects/installation/src/modules/software/software-ollama.service.ts:51` |
-| `DependenciesService.importCluster` | 3 | `ProcessRunnerService.run`, `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:54` |
+| `DependenciesService.importCluster` | 3 | `ProcessRunnerService.run`, `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:55` |
 | `ShellConfigurationService.appendCompletions` | 3 | `ShellConfigurationService.readStartupFile`, `ShellConfigurationService.map(…)`, `ShellConfigurationService.filter(…)` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:58` |
 | `ShellConfigurationService.configureShell` | 3 | `ReporterService.print`, `ShellConfigurationService.configureStartupFile`, `ShellConfigurationService.printManualInstructions` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:165` |
 | `SoftwareGpgService.configureSigning` | 3 | `ReporterService.print`, `ProcessRunnerService.run`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/software/software-gpg.service.ts:69` |
 | `SoftwareInfraService.installInfrastructureTools` | 3 | `SoftwareBrewService.installOrCheck`, `ReporterService.print`, `SoftwareInfraService.buildVersionLines` | `projects/installation/src/modules/software/software-infra.service.ts:108` |
 | `SoftwareOllamaService.waitUntilReady` | 3 | `ReporterService.print`, `SoftwareOllamaService.isRunning`, `ProcessRunnerService.sleep` | `projects/installation/src/modules/software/software-ollama.service.ts:66` |
 | `UpdateReuiSkillService.fetchBundle` | 3 | `UpdateReuiSkillService.map(…)`, `UpdateReuiSkillService.find(…)`, `UpdateReuiSkillService.some(…)` | `projects/installation/src/modules/update-reui-skill/update-reui-skill.service.ts:59` |
-| `DependenciesService.resetNxCache` | 2 | `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:137` |
+| `DependenciesService.resetNxCache` | 2 | `ReporterService.print`, `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:138` |
 | `EnvironmentFilesService.findTargets` | 2 | `ProcessRunnerService.run`, `EnvironmentFilesService.map(…)` | `projects/installation/src/modules/environment-files/environment-files.service.ts:88` |
 | `ShellConfigurationService.appendTerraformCompletion` | 2 | `ProcessRunnerService.locate`, `ShellConfigurationService.appendBlock` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:75` |
 | `ShellConfigurationService.printManualInstructions` | 2 | `ShellConfigurationService.findNvmPrefix`, `ReporterService.print` | `projects/installation/src/modules/shell-configuration/shell-configuration.service.ts:125` |
@@ -199,7 +199,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ProcessRunnerService.runOrThrow` | 1 | `ProcessRunnerService.run` | `projects/installation/src/modules/process-runner/process-runner.service.ts:92` |
 | `ProcessRunnerService.sleep` | 1 | `ProcessRunnerService.anonymous` | `projects/installation/src/modules/process-runner/process-runner.service.ts:109` |
 | `ProcessRunnerService.startDetached` | 1 | `ProcessRunnerService.on(…)` | `projects/installation/src/modules/process-runner/process-runner.service.ts:116` |
-| `DependenciesService.readKubeconfig` | 1 | `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:108` |
+| `DependenciesService.readKubeconfig` | 1 | `ProcessRunnerService.runOrThrow` | `projects/installation/src/modules/dependencies/dependencies.service.ts:109` |
 | `DependenciesCommand.run` | 1 | `DependenciesService.installDependencies` | `projects/installation/src/modules/dependencies/dependencies.command.ts:40` |
 | `EnvironmentFilesService.addWorkspaceVariable` | 1 | `ReporterService.print` | `projects/installation/src/modules/environment-files/environment-files.service.ts:49` |
 | `EnvironmentFilesService.createEnvironmentFile` | 1 | `ReporterService.print` | `projects/installation/src/modules/environment-files/environment-files.service.ts:67` |
@@ -608,8 +608,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5782-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-191.65_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5795-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-191.92_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-84-3178c6?style=flat-square)
 
@@ -620,7 +620,7 @@ graph LR
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-36-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-166-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-167-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -633,11 +633,11 @@ graph LR
 ![Methods](https://img.shields.io/badge/Methods-90-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-213-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-121-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-285-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-286-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-448-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-90-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-307-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-471-475569?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-91-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-308-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-472-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
