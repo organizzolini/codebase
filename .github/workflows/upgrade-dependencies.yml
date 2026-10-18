@@ -109,6 +109,9 @@ jobs:
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             projects/installation/src/installation.main.ts update-reui-skill
 
+      - name: 🎨 Upgrade Impeccable
+        run: npx impeccable update
+
       - name: 🔍 Detect Upgrades
         id: check
         run: |
@@ -160,6 +163,7 @@ jobs:
             - Update Python to latest stable 3.x
             - Update Python dependencies across all projects
             - Update vendored skills from their upstream sources
+            - Update the Impeccable skill bundle to the latest release
 
             ## 🧪 Testing
 
