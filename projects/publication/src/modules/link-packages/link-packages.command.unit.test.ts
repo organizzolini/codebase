@@ -318,6 +318,26 @@ describe(LinkPackagesCommand, () => {
     expect(process.exitCode).toBe(1);
   });
 
+  it("falls back to the conventional tarball URL when npm metadata is empty", async () => {
+    expect.hasAssertions();
+
+    const runner = new FakeProcessRunner({
+      ...script(),
+      "npm view @tool/cli@1.0.0 dist.tarball --registry https://registry.npmjs.org/":
+        succeeded("\n"),
+      "npm view @tool/core@2.0.0 dist.tarball --registry https://registry.npmjs.org/":
+        succeeded("\n"),
+    });
+    await runCommand(runner);
+
+    expect(
+      runner.lines.some((line) =>
+        line.endsWith("https://registry.npmjs.org/@tool/cli/-/cli-1.0.0.tgz"),
+      ),
+    ).toBe(true);
+    expect(process.exitCode).toBe(0);
+  });
+
   it("records nothing on GitHub when rehearsing, but still lists what to attest", async () => {
     expect.hasAssertions();
 
