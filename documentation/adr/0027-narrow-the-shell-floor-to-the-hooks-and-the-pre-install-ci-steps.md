@@ -2,6 +2,8 @@
 
 Supersedes [ADR 0026](0026-keep-a-small-shell-floor-under-the-scripts.md). Its rule stands: a script stays shell when it must work while `node_modules` is missing or broken. Its table does not.
 
+Superseded in part by [ADR 0028](0028-run-the-nx-ci-steps-after-the-install-as-commands.md), which takes the six `scripts/nx/` CI steps off the floor: they run after `pnpm install` as `publication` commands. The rule and every other floor entry stand.
+
 ## Context
 
 [ADR 0026](0026-keep-a-small-shell-floor-under-the-scripts.md) listed the scripts that stay shell and said that removing an entry needs a new ADR. Several entries no longer hold. Some scripts have no reason to be in `scripts/`, some bootstrap steps are the same step spread over three files, and the CI steps that run before `pnpm install` were left outside the table with a conditional note.

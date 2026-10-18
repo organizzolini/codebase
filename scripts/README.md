@@ -6,12 +6,14 @@ Utility scripts for codebase setup, maintenance, and development workflows.
 
 This directory contains shell scripts for:
 
-- **Installation** - macOS-specific initial codebase configuration (`installation.sh`)
-- **Shell utilities** - The port-derivation helper (in `shell/`)
-- **Nx** - The CI steps around Nx: its affected runs and the task-result database CI caches (in `nx/`)
+- **Local setup** - macOS-specific initial codebase configuration (in `local/`)
+- **Shell utilities** - Common terminal operations
+- **Nx** - The two helpers the Nx targets call, `await-health.sh` and `stop-port.sh` (in `nx/`)
 
 > **The shell floor.** Which scripts stay shell, and why, is decided in
-> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md).
+> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md),
+> as amended by
+> [ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 > A script that is not on that floor belongs in a NestJS command.
 
 ## Quick Start
@@ -183,31 +185,32 @@ check the other projects' ports for a collision before adopting a new one.
 
 ## Nx Scripts
 
-These scripts live in `scripts/nx/`, and the composite actions in
-`.github/actions/` run them. Each script is its own command. Helpers shared
-between commands live in a sourced file beside them.
+`scripts/nx/` holds only the two helpers the Nx targets call,
+`await-health.sh` and `stop-port.sh`. The CI steps around the Nx task cache
+and the affected base, which used to be shell here, are commands of the
+[publication](../projects/publication) project since
+[ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 
 ### Task-Result Database
 
 Nx decides a cache hit only from its task-result database,
 `.nx/workspace-data/<machine-id>-v<schema>.db`. That file is named after the
-machine, and every hosted runner is a fresh VM, so a restored database goes
+machine, and a hosted runner may be a fresh VM, so a restored database goes
 unread unless it is adopted under the current machine's id.
 
-The `setup-codebase` action restores the cache, imports the pull request's in a
-merge group, then verifies and adopts the database, all before `pnpm install`,
-so those steps are still shell: a NestJS command cannot run before the install.
-Moving verify and adopt after it was measured without the import, never in a
-merge group, so it waits on a new measurement. `merge-task-cache.sh` sources
-`task-database.sh`, which stays with them.
+The `setup-codebase` action restores the cache before `pnpm install`, then,
+after the install, imports the pull request's in a merge group and verifies
+and adopts the database. The install opens no task database, so nothing reads
+the restored one before it is adopted. The `cleanup-codebase` action verifies
+and keeps the database before saving it.
 
-| Script | Runs in | What it does |
-| ------ | ------- | ------------ |
-| `verify-task-database.sh` | setup, after the restore | Discards any database that fails `PRAGMA integrity_check` |
-| `adopt-task-database.sh` | setup, after the restore | Renames the newest restored database to this machine's id and discards the rest |
-| `import-pr-task-cache.sh` | setup, in a merge group, before the verify | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
-| `merge-task-cache.sh` | called by the import | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
-| `task-database.sh` | sourced by the above | Lists, picks, and discards databases along with their `-wal`, `-shm`, and `-journal` files |
+| Command | Runs in | What it does |
+| ------- | ------- | ------------ |
+| `import-pr-task-cache` | setup, in a merge group, after the install | Downloads the cache artifact the pull request's own run uploaded and merges it in; a fork's artifact, a missing one, or any failure leaves a cold cache |
+| `merge-task-cache` | called by the import, or by hand with a directory | Copies the other cache's outputs this one lacks, then inserts its database rows, and skips rather than fails on an unreadable or unfamiliar source |
+| `verify-task-database` | setup and cleanup | Discards any database that fails `PRAGMA integrity_check` |
+| `adopt-task-database` | setup | Renames the newest restored database to this machine's id and discards the rest |
+| `keep-task-database` | cleanup | Keeps only the newest database, and warns if there was more than one |
 
 A merge group runs on a ref that reads only `main`'s caches, never the pull
 request's, so without the import it runs again every task the pull request just
@@ -215,18 +218,11 @@ finished. The pull request's run uploads its cache as an artifact in
 `cleanup-codebase`, which any run can read, and only for a pull request from
 this repository.
 
-The `cleanup-codebase` action runs after the install, so its two steps are
-commands (which open the databases with the built-in `node:sqlite`, not the
-`sqlite3` binary) of the [publication](../projects/publication) project:
-`verify-task-database` and `keep-task-database` (which keeps only the newest
-database, and warns if there was more than one). The `adopt-task-database`
-command is the same as the script and is tested, ready for the move.
-
-All of them honour `NX_WORKSPACE_DATA_DIRECTORY`, and the two that touch task
-outputs honour `NX_CACHE_DIRECTORY`. `adopt-task-database` also reads
-`MACHINE_ID_FILES`, a space-separated list of files to take the id from, in
-priority order. So they can be exercised locally against a scratch directory
-and a fake id:
+All of them open the databases with the built-in `node:sqlite`, honour
+`NX_WORKSPACE_DATA_DIRECTORY`, and, where they touch task outputs,
+`NX_CACHE_DIRECTORY`. `adopt-task-database` also reads `MACHINE_ID_FILES`, a
+space-separated list of files to take the id from, in priority order. So they
+can be exercised locally against a scratch directory and a fake id:
 
 ```bash
 NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
@@ -235,19 +231,12 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 
 ### Affected Runs
 
-| Script | Runs in | What it does |
-| ------ | ------- | ------------ |
-| `bound-base-to-push.sh` | setup, after `nx-set-shas`, on a CI push with `nx-base: push-before` | Moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-
-This one stays shell. `setup-codebase` runs it before `pnpm install`, and a job
-may skip the install altogether, so no NestJS command can run in its place.
-
-The other two affected-run steps are commands of the
-[publication](../projects/publication) project, called from the `run-affected`
-composite action and the 📦 Publishable Packages leg:
+The affected-run steps are commands of the
+[publication](../projects/publication) project too:
 
 | Command | What it does |
 | ------- | ------------ |
+| `bound-base-to-push` | On a CI push with `nx-base: push-before`, after the install, moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
 | `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
 | `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
@@ -256,7 +245,7 @@ locally:
 
 ```bash
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
-  bash scripts/nx/bound-base-to-push.sh
+  nx run publication:start:bound-base-to-push
 TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
   nx run publication:start:run-affected
 ```
