@@ -42,14 +42,14 @@ Register it in `nx.json`:
 | Option | Meaning |
 | ------ | ------- |
 | `configurationPath` | Required. Where the workspace callidescope configuration lives. Nothing is searched for: a registration that omits it is refused, naming this option. The refusal is decided by `@callidescope/configuration`, which every surface shares |
-| `traceTargetName` | Name of the inferred trace target. `trace` when omitted |
-| `depthTargetName` | Name of the inferred depth target. `depth` when omitted |
-| `breadthTargetName` | Name of the inferred breadth target. `breadth` when omitted |
-| `gateTargetName` | Name of the inferred gate target. `gate` when omitted |
+| `traceTargetName` | Name of the inferred trace target. `callidescope-trace` when omitted |
+| `depthTargetName` | Name of the inferred depth target. `callidescope-depth` when omitted |
+| `breadthTargetName` | Name of the inferred breadth target. `callidescope-breadth` when omitted |
+| `gateTargetName` | Name of the inferred gate target. `callidescope-gate` when omitted |
 
-The target names are short because they read better on the command line than
-repeating the tool's name on both sides of the colon. Rename any of them from
-the registration if a workspace already uses one.
+All inferred targets default to `callidescope-*` names to avoid generic task
+labels in Nx lists. Rename any of them from the registration if a workspace
+already uses one.
 
 ## Usage
 
@@ -57,26 +57,26 @@ Four targets are inferred onto every project holding a `tsconfig.json`, so
 selection is Nx's job rather than a flag of this package's own:
 
 ```bash
-nx run callidescope-nx:trace                      # one project, with its dependencies
-nx run-many -t trace                              # the workspace
-nx run-many -t trace --projects=tag:type:package  # a category
-nx affected -t trace                              # only what changed
+nx run callidescope-nx:callidescope-trace                      # one project, with its dependencies
+nx run-many -t callidescope-trace                              # the workspace
+nx run-many -t callidescope-trace --projects=tag:type:package  # a category
+nx affected -t callidescope-trace                              # only what changed
 ```
 
 ```bash
-nx run callidescope-nx:depth --addresses="projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts#ProjectsService.resolveDependencyClosure"
-nx run callidescope-nx:breadth --addresses="src/foo.service.ts#FooService.bar"
+nx run callidescope-nx:callidescope-depth --addresses="projects/ic-suite/callidescope/callidescope-nx/src/modules/projects/projects.service.ts#ProjectsService.resolveDependencyClosure"
+nx run callidescope-nx:callidescope-breadth --addresses="src/foo.service.ts#FooService.bar"
 
 # Several at once, which is what a rename spanning a handful of them needs
-nx run callidescope-nx:depth --addresses="src/a.service.ts#A.b,src/c.service.ts#C.d"
+nx run callidescope-nx:callidescope-depth --addresses="src/a.service.ts#A.b,src/c.service.ts#C.d"
 ```
 
 | Target | Answers |
 | ------ | ------- |
-| `gate` | Whether anything in the project broke the limits it is held to |
-| `trace` | Every call stack in the project, and which ones broke a limit |
-| `depth` | Every stack above and below each callable — callers up to a root, callees down to a leaf |
-| `breadth` | Each callable's direct callers and callees, side by side |
+| `callidescope-gate` | Whether anything in the project broke the limits it is held to |
+| `callidescope-trace` | Every call stack in the project, and which ones broke a limit |
+| `callidescope-depth` | Every stack above and below each callable — callers up to a root, callees down to a leaf |
+| `callidescope-breadth` | Each callable's direct callers and callees, side by side |
 
 `depth` and `breadth` take the same `<file>#<qualified-name>` addresses the
 `callidescope` command does — the form every printed stack already uses — and
