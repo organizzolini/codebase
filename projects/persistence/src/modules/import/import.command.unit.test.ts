@@ -10,7 +10,7 @@ import { LoggerService } from "@codebase/logging";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
-import { PostgresClientService } from "../postgres-client/postgres-client.service";
+import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import { ImportCommand } from "./import.command";
 
@@ -89,8 +89,8 @@ describe(ImportCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PostgresClientService,
-          useValue: createMock<PostgresClientService>(),
+          provide: PostgresqlUtilitiesService,
+          useValue: createMock<PostgresqlUtilitiesService>(),
         },
       ],
     }).compile();
@@ -115,8 +115,8 @@ describe(ImportCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PostgresClientService,
-          useValue: createMock<PostgresClientService>(),
+          provide: PostgresqlUtilitiesService,
+          useValue: createMock<PostgresqlUtilitiesService>(),
         },
       ],
     }).compile();
@@ -352,21 +352,21 @@ describe(ImportCommand, () => {
   });
 
   it("passes on a failure that is not pg_restore's own unchanged, claiming no rollback", async () => {
-    const postgresClient = createMock<PostgresClientService>({
+    const postgresClient = createMock<PostgresqlUtilitiesService>({
       list: vi
-        .fn<PostgresClientService["list"]>()
+        .fn<PostgresqlUtilitiesService["list"]>()
         .mockResolvedValue([
           { dependencies: [], id: 221, kind: "data", table: "fixture.widgets" },
         ]),
       restore: vi
-        .fn<PostgresClientService["restore"]>()
+        .fn<PostgresqlUtilitiesService["restore"]>()
         .mockRejectedValue(new Error("ENOSPC: no space left on device")),
     });
     const module = await Test.createTestingModule({
       providers: [
         ImportCommand,
         { provide: LoggerService, useValue: createMock<LoggerService>() },
-        { provide: PostgresClientService, useValue: postgresClient },
+        { provide: PostgresqlUtilitiesService, useValue: postgresClient },
       ],
     }).compile();
     const importCommand = await module.resolve(ImportCommand);

@@ -3,7 +3,7 @@
 import type {
   PostgresContent,
   PostgresUriConnection,
-} from "../postgres-client/postgres-client.types";
+} from "../postgresql-utilities/postgresql-utilities.types";
 
 /**
  * The options `import` receives, as nest-commander parsed them. Every one

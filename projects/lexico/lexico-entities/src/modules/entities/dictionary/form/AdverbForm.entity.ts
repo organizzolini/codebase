@@ -1,11 +1,10 @@
 import { ChildEntity, Column } from "typeorm";
 
-import {
-  type FormDegree,
-  formDegreeValues,
-} from "../../../lexico-database/lexico-database.constants";
+import { formDegreeValues } from "../../../lexico-database/lexico-database.constants";
 
 import { Form } from "./Form.entity";
+
+import type { FormDegree } from "../../../lexico-database/lexico-database.types";
 
 /** An adverb form at a specific degree (positive, comparative, superlative). */
 @ChildEntity("adverb")

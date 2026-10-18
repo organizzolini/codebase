@@ -10,10 +10,10 @@ import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
-} from "../../../testing/fixture-database";
-import { startPostgresContainer } from "../database/postgres-container.utilities";
+} from "../../../testing/fixture-persistence";
+import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
-import type { StartedPostgresContainer } from "../database/postgres-container.types";
+import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
 
 const PASSWORD = "hunter2-secret";
 

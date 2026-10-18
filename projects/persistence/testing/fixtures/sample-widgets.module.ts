@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { FixtureDatabaseModule } from "./fixture-database.module";
+import { FixtureDatabaseModule } from "./fixture-persistence.module";
 import { SampleWidgetsService } from "./sample-widgets.service";
 import { Widget } from "./widget.entity";
 

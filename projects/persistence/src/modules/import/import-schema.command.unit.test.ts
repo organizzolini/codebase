@@ -6,7 +6,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
-import { PostgresClientService } from "../postgres-client/postgres-client.service";
+import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
@@ -127,7 +127,7 @@ describe("import --schema", () => {
   it("truncates the tables --schema resolved before a --clean --data restore", async () => {
     mockProcesses({ list: { stdout: LISTING } });
     const truncate = vi
-      .spyOn(PostgresClientService.prototype, "truncate")
+      .spyOn(PostgresqlUtilitiesService.prototype, "truncate")
       .mockResolvedValue();
 
     try {

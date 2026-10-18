@@ -13,8 +13,7 @@ export const formCase = {
 } as const;
 
 /** Grammatical case of a Latin inflected form. */
-export type FormCase = (typeof formCase)[keyof typeof formCase];
-export const formCaseValues = Object.values(formCase) as FormCase[];
+export const formCaseValues = Object.values(formCase);
 
 export const formNumber = {
   plural: "plural",
@@ -22,8 +21,7 @@ export const formNumber = {
 } as const;
 
 /** Grammatical number of an inflected Latin form. */
-export type FormNumber = (typeof formNumber)[keyof typeof formNumber];
-export const formNumberValues = Object.values(formNumber) as FormNumber[];
+export const formNumberValues = Object.values(formNumber);
 
 export const formGender = {
   feminine: "feminine",
@@ -32,8 +30,7 @@ export const formGender = {
 } as const;
 
 /** Grammatical gender of an inflected Latin form. */
-export type FormGender = (typeof formGender)[keyof typeof formGender];
-export const formGenderValues = Object.values(formGender) as FormGender[];
+export const formGenderValues = Object.values(formGender);
 
 export const formMood = {
   imperative: "imperative",
@@ -42,8 +39,7 @@ export const formMood = {
 } as const;
 
 /** Mood of a finite Latin verb form. */
-export type FormMood = (typeof formMood)[keyof typeof formMood];
-export const formMoodValues = Object.values(formMood) as FormMood[];
+export const formMoodValues = Object.values(formMood);
 
 export const formVoice = {
   active: "active",
@@ -51,8 +47,7 @@ export const formVoice = {
 } as const;
 
 /** Voice of a Latin verb form. */
-export type FormVoice = (typeof formVoice)[keyof typeof formVoice];
-export const formVoiceValues = Object.values(formVoice) as FormVoice[];
+export const formVoiceValues = Object.values(formVoice);
 
 export const formTense = {
   future: "future",
@@ -64,8 +59,7 @@ export const formTense = {
 } as const;
 
 /** Tense of a finite Latin verb form. */
-export type FormTense = (typeof formTense)[keyof typeof formTense];
-export const formTenseValues = Object.values(formTense) as FormTense[];
+export const formTenseValues = Object.values(formTense);
 
 export const formPerson = {
   first: "first",
@@ -74,8 +68,7 @@ export const formPerson = {
 } as const;
 
 /** Grammatical person of a finite Latin verb form. */
-export type FormPerson = (typeof formPerson)[keyof typeof formPerson];
-export const formPersonValues = Object.values(formPerson) as FormPerson[];
+export const formPersonValues = Object.values(formPerson);
 
 export const formDegree = {
   comparative: "comparative",
@@ -84,8 +77,7 @@ export const formDegree = {
 } as const;
 
 /** Degree of comparison of a Latin adjective or adverb form. */
-export type FormDegree = (typeof formDegree)[keyof typeof formDegree];
-export const formDegreeValues = Object.values(formDegree) as FormDegree[];
+export const formDegreeValues = Object.values(formDegree);
 
 export const formNonFiniteTense = {
   future: "future",
@@ -97,12 +89,8 @@ export const formNonFiniteTense = {
  * Temporal aspect of a non-finite verb form (infinitives, participles, gerunds, supines).
  * Restricted to future, perfect, and present — unlike the fuller tense set available to finite forms.
  */
-export type FormNonFiniteTense =
-  (typeof formNonFiniteTense)[keyof typeof formNonFiniteTense];
 
-export const formNonFiniteTenseValues = Object.values(
-  formNonFiniteTense,
-) as FormNonFiniteTense[];
+export const formNonFiniteTenseValues = Object.values(formNonFiniteTense);
 
 export const formGerundCase = {
   ablative: "ablative",
@@ -115,12 +103,8 @@ export const formGerundCase = {
  * Grammatical case of a Latin gerund.
  * Gerunds only appear in the four oblique cases — nominative and vocative are excluded.
  */
-export type FormGerundCase =
-  (typeof formGerundCase)[keyof typeof formGerundCase];
 
-export const formGerundCaseValues = Object.values(
-  formGerundCase,
-) as FormGerundCase[];
+export const formGerundCaseValues = Object.values(formGerundCase);
 
 export const formSupineCase = {
   ablative: "ablative",
@@ -131,12 +115,8 @@ export const formSupineCase = {
  * Case of a Latin supine form.
  * Supines occur only in the accusative (to express purpose) and ablative (to express respect).
  */
-export type FormSupineCase =
-  (typeof formSupineCase)[keyof typeof formSupineCase];
 
-export const formSupineCaseValues = Object.values(
-  formSupineCase,
-) as FormSupineCase[];
+export const formSupineCaseValues = Object.values(formSupineCase);
 
 export const nounDeclension = {
   fifth: "fifth",
@@ -148,12 +128,8 @@ export const nounDeclension = {
 } as const;
 
 /** Declension class of a Latin noun, which determines its inflectional endings. */
-export type NounDeclension =
-  (typeof nounDeclension)[keyof typeof nounDeclension];
 
-export const nounDeclensionValues = Object.values(
-  nounDeclension,
-) as NounDeclension[];
+export const nounDeclensionValues = Object.values(nounDeclension);
 
 export const adjectiveDeclension = {
   firstSecond: "first/second",
@@ -162,12 +138,8 @@ export const adjectiveDeclension = {
 } as const;
 
 /** Declension class of a Latin adjective (first/second or third). */
-export type AdjectiveDeclension =
-  (typeof adjectiveDeclension)[keyof typeof adjectiveDeclension];
 
-export const adjectiveDeclensionValues = Object.values(
-  adjectiveDeclension,
-) as AdjectiveDeclension[];
+export const adjectiveDeclensionValues = Object.values(adjectiveDeclension);
 
 export const inflectionDeclension = {
   ...nounDeclension,
@@ -185,8 +157,7 @@ export const nounGender = {
 } as const;
 
 /** Grammatical gender of a Latin noun, including `masc/fem` for nouns whose gender varies by referent. */
-export type NounGender = (typeof nounGender)[keyof typeof nounGender];
-export const nounGenders = Object.values(nounGender) as NounGender[];
+export const nounGenders = Object.values(nounGender);
 
 export const adjectiveDegree = {
   comparative: "comparative",
@@ -195,12 +166,8 @@ export const adjectiveDegree = {
 } as const;
 
 /** Degree of comparison of a Latin adjective. */
-export type AdjectiveDegree =
-  (typeof adjectiveDegree)[keyof typeof adjectiveDegree];
 
-export const adjectiveDegreeValues = Object.values(
-  adjectiveDegree,
-) as AdjectiveDegree[];
+export const adjectiveDegreeValues = Object.values(adjectiveDegree);
 
 export const adverbType = {
   conjunctional: "conjunctional",
@@ -212,8 +179,7 @@ export const adverbType = {
  * Functional classification of a Latin adverb.
  * Descriptive adverbs modify a verb or adjective; conjunctional adverbs link clauses.
  */
-export type AdverbType = (typeof adverbType)[keyof typeof adverbType];
-export const adverbTypes = Object.values(adverbType) as AdverbType[];
+export const adverbTypes = Object.values(adverbType);
 
 export const adverbDegree = {
   comparative: "comparative",
@@ -222,8 +188,7 @@ export const adverbDegree = {
 } as const;
 
 /** Degree of comparison of a Latin adverb. */
-export type AdverbDegree = (typeof adverbDegree)[keyof typeof adverbDegree];
-export const adverbDegrees = Object.values(adverbDegree) as AdverbDegree[];
+export const adverbDegrees = Object.values(adverbDegree);
 
 export const verbConjugation = {
   first: "first",
@@ -235,12 +200,8 @@ export const verbConjugation = {
 } as const;
 
 /** Conjugation class of a Latin verb, which determines its inflectional stem and personal endings. */
-export type VerbConjugation =
-  (typeof verbConjugation)[keyof typeof verbConjugation];
 
-export const verbConjugationValues = Object.values(
-  verbConjugation,
-) as VerbConjugation[];
+export const verbConjugationValues = Object.values(verbConjugation);
 
 export const prepositionCase = {
   ablative: "ablative",
@@ -249,19 +210,15 @@ export const prepositionCase = {
 } as const;
 
 /** Grammatical case governed by a Latin preposition. */
-export type PrepositionCase =
-  (typeof prepositionCase)[keyof typeof prepositionCase];
 
-export const prepositionCases = Object.values(
-  prepositionCase,
-) as PrepositionCase[];
+export const prepositionCases = Object.values(prepositionCase);
 
 /**
  * Custom TypeORM naming strategy that extends SnakeNamingStrategy with:
  * - Automatic pluralization of table names
  * - Join table names formed from the two table names combined alphabetically in snake_case.
  */
-export class LexicoNamingStrategy extends SnakeNamingStrategy {
+export const LexicoNamingStrategy: new () => SnakeNamingStrategy = class extends SnakeNamingStrategy {
   /**
    * Builds a deterministic join table name from both entity table names.
    */
@@ -287,4 +244,4 @@ export class LexicoNamingStrategy extends SnakeNamingStrategy {
     const tableName = pluralize(baseTableName);
     return tableName;
   }
-}
+};

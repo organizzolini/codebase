@@ -12,9 +12,9 @@
   ],
   "extends": "./tsconfig.json",
   "files": [
-    "testing/database-testing.types.ts",
-    "testing/database-testing.utilities.ts",
-    "testing/index.ts"
+    "testing/index.ts",
+    "testing/persistence-testing.types.ts",
+    "testing/persistence-testing.utilities.ts"
   ],
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

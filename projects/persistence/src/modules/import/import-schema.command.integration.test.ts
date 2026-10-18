@@ -18,9 +18,9 @@ import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-database";
+} from "../../../testing/fixture-persistence";
 
-import type { FixtureDatabase } from "../../../testing/fixture-database";
+import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 
 // 🎯 The real execFile, wrapped so a test can see whether any client tool
 // was started at all.

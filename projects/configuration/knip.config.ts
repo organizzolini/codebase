@@ -227,13 +227,13 @@ const config: KnipConfig = {
     // persistence: Shared Postgres package and its command line. The migration
     // SQL extraction script is run by name from the `migration` target
     // defaults in nx.json rather than imported, and `start` and `repl` run
-    // `src/database.main.ts` and `src/database.repl.ts` by path, so knip is
+    // `src/persistence.main.ts` and `src/persistence.repl.ts` by path, so knip is
     // told all three are entry points.
     "projects/persistence": {
       entry: [
         "scripts/**/*.ts",
-        "src/database.main.ts",
-        "src/database.repl.ts",
+        "src/persistence.main.ts",
+        "src/persistence.repl.ts",
       ],
       project: ["src/**/*.ts", "scripts/**/*.ts"],
     },

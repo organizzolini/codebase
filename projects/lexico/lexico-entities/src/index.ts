@@ -50,12 +50,13 @@ export {
   formTenseValues,
   formVoiceValues,
   inflectionDeclensionValues,
-  LexicoNamingStrategy,
   nounDeclensionValues,
   nounGenders,
   prepositionCases,
   verbConjugationValues,
 } from "./modules/lexico-database/lexico-database.constants";
+export { LexicoNamingStrategy } from "./modules/lexico-database/lexico-database.constants";
+export { LexicoDatabaseModule } from "./modules/lexico-database/lexico-database.module";
 export type {
   AdjectiveDeclension,
   AdjectiveDegree,
@@ -76,7 +77,6 @@ export type {
   NounGender,
   PrepositionCase,
   VerbConjugation,
-} from "./modules/lexico-database/lexico-database.constants";
-export { LexicoDatabaseModule } from "./modules/lexico-database/lexico-database.module";
+} from "./modules/lexico-database/lexico-database.types";
 export { InjectRepository, TypeOrmModule } from "@nestjs/typeorm";
 export { DataSource, In, Repository } from "typeorm";

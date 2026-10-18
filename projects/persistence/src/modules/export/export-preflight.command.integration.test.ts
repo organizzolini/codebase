@@ -5,7 +5,7 @@ import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-database";
+import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
 
 const SETUP_SCRIPT = "scripts/local/software/database.sh";
 

@@ -1,13 +1,16 @@
 import { ChildEntity, Column } from "typeorm";
 
 import {
-  type FormNonFiniteTense,
   formNonFiniteTenseValues,
-  type FormVoice,
   formVoiceValues,
 } from "../../../lexico-database/lexico-database.constants";
 
 import { Form } from "./Form.entity";
+
+import type {
+  FormNonFiniteTense,
+  FormVoice,
+} from "../../../lexico-database/lexico-database.types";
 
 /** A non-finite participial form (voice + tense). */
 @ChildEntity("participle")

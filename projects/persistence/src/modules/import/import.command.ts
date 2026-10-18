@@ -5,19 +5,19 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/logging";
 
+import { dumpedTables } from "../postgresql-utilities/postgresql-dump.utilities";
 import {
   PostgresClientError,
   PostgresReferencedTablesError,
   PostgresTruncateError,
-} from "../postgres-client/postgres-client.constants";
-import { PostgresClientService } from "../postgres-client/postgres-client.service";
+} from "../postgresql-utilities/postgresql-utilities.constants";
+import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 import {
   describePostgresContent,
   maskPostgresCredentials,
   parsePostgresUri,
   qualifyTableNames,
-} from "../postgres-client/postgres-client.utilities";
-import { dumpedTables } from "../postgres-client/postgres-dump.utilities";
+} from "../postgresql-utilities/postgresql-utilities.utilities";
 
 import {
   dryRunMessages,
@@ -37,7 +37,7 @@ import {
 import type {
   PostgresContent,
   PostgresDumpEntry,
-} from "../postgres-client/postgres-client.types";
+} from "../postgresql-utilities/postgresql-utilities.types";
 import type { ImportCommandOptions, ImportPlan } from "./import.types";
 
 /**
@@ -59,7 +59,7 @@ export class ImportCommand extends CommandRunner {
 
   constructor(
     private readonly logger: LoggerService,
-    private readonly postgresClient: PostgresClientService,
+    private readonly postgresClient: PostgresqlUtilitiesService,
   ) {
     super();
     this.logger.setContext(ImportCommand.name);

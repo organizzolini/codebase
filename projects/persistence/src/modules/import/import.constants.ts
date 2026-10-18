@@ -1,8 +1,8 @@
 // ♟️ Constants
 
-import { describePostgresContent } from "../postgres-client/postgres-client.utilities";
+import { describePostgresContent } from "../postgresql-utilities/postgresql-utilities.utilities";
 
-import type { PostgresContent } from "../postgres-client/postgres-client.types";
+import type { PostgresContent } from "../postgresql-utilities/postgresql-utilities.types";
 import type { ImportPlan } from "./import.types";
 
 /**

@@ -32,18 +32,18 @@ already depend on it; lexico-entities gains it only transitively.
 ```text
 src/
   index.ts                          # Public API, the library only
-  database.main.ts                  # The command line's entry point
-  database.module.ts                # MainModule: the command line's root, not DatabaseModule
-  database.repl.ts                  # NestJS REPL over MainModule
+  persistence.main.ts               # The command line's entry point
+  persistence.module.ts             # MainModule: the command line's root, not PostgresqlModule
+  persistence.repl.ts               # NestJS REPL over MainModule
   modules/
     database/
-      database.constants.ts         # Variable suffixes and connection defaults
-      database.module.ts            # DatabaseModule.forRoot over TypeOrmModule.forRootAsync
-      database.service.ts           # The TypeORM options factory forRoot hands TypeORM
-      database.types.ts
-      database.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
+      postgresql.constants.ts         # Variable suffixes and connection defaults
+      postgresql.module.ts            # PostgresqlModule.forRoot over TypeOrmModule.forRootAsync
+      postgresql.service.ts           # The TypeORM options factory forRoot hands TypeORM
+      postgresql.types.ts
+      postgresql.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
       entities/                     # identifiable → creatable → updatable → deletable
-      postgres-container.*.ts       # startPostgresContainer, the testing entry's harness
+      postgresql-container.*.ts       # startPostgresContainer, the testing entry's harness
     export/                         # The export command: options, plan, dry run, atomic write
     import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
@@ -51,9 +51,9 @@ scripts/
   extract-migration-sql.ts          # Run by every project's migration:extract-sql-* target
 testing/
   index.ts                          # The @codebase/persistence/testing entry
-  database-testing.*.ts             # startDatabaseTestingModule, the entry's Nest helper
+  persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
-  fixture-database.ts               # A migrated container for the command line's integration tests
+  fixture-persistence.ts            # A migrated container for the command line's integration tests
   fixtures/                         # Entities, modules, and the widgets and parts migrations
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
@@ -67,7 +67,7 @@ testing/
 - **Never let `synchronize` or `migrationsRun` be configured on.** The schema
   changes only through reviewed migrations, run as their own step.
 - **Never name a schema in code.** It comes from `<PROJECT>_POSTGRES_SCHEMA`.
-- **Never run migrations from `DatabaseModule.forRoot`.** It takes none;
+- **Never run migrations from `PostgresqlModule.forRoot`.** It takes none;
   `createDataSource` and `startPostgresContainer` do.
 - **Keep the testing entry under `testing/`.** It imports `@nestjs/testing`,
   and dependency-cruiser's `no-test-imports-in-app` allows test tooling only
@@ -76,7 +76,7 @@ testing/
 - **Never name a real project in this package's tests.** Use `fixture`, and
   `sample` where a second is needed.
 - **Keep the command line connectionless.** `MainModule` holds no
-  `DatabaseModule`, TypeORM, or `ConfigModule`, so it needs no
+  `PostgresqlModule`, TypeORM, or `ConfigModule`, so it needs no
   `<PROJECT>_POSTGRES_*` variable and opens no connection at startup. Never
   export `MainModule` from `src/index.ts` or `testing/index.ts`.
 - **Pass credentials to client tools only through `PG*` environment

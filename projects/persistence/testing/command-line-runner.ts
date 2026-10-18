@@ -3,7 +3,7 @@ import { vi } from "vitest";
 
 import { LoggerService } from "@codebase/logging";
 
-import { MainModule } from "../src/database.module";
+import { MainModule } from "../src/persistence.module";
 
 import type { DynamicModule, Type } from "@nestjs/common";
 
@@ -37,7 +37,7 @@ interface RunCliCommandLineOptions {
    */
   readonly env?: Readonly<Record<string, string | undefined>>;
 
-  /** The root module; `database.main.ts`'s own unless a test narrows it. */
+  /** The root module; `persistence.main.ts`'s own unless a test narrows it. */
   readonly module?: DynamicModule | Type<unknown>;
 }
 
@@ -49,13 +49,13 @@ const LOGGER_LEVELS = ["debug", "error", "info", "verbose", "warn"] as const;
 
 /**
  * Runs `argv` through the real nest-commander runner and module graph, as
- * `database.main.ts` does, and reports what happened rather than exiting the
+ * `persistence.main.ts` does, and reports what happened rather than exiting the
  * process.
  *
  * Standard output, standard error, and the application's `LoggerService` are
  * captured for the run and restored after, so nothing reaches the console.
  * Every message still passes through the real `LoggerService`, whose logging
- * convention fails the run as it fails `database.main.ts`; the vitest
+ * convention fails the run as it fails `persistence.main.ts`; the vitest
  * configuration's `LOG_LEVEL=silent` keeps the lines themselves quiet.
  * Output a spawned process writes to its own descriptors is not captured:
  * the command must surface it through its logger or its error.

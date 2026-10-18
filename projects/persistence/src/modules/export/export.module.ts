@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { PostgresClientModule } from "../postgres-client/postgres-client.module";
+import { PostgresqlUtilitiesModule } from "../postgresql-utilities/postgresql-utilities.module";
 
 import { ExportCommand } from "./export.command";
 
@@ -11,7 +11,7 @@ import { ExportCommand } from "./export.command";
 @Module({
   controllers: [],
   exports: [ExportCommand],
-  imports: [PostgresClientModule],
+  imports: [PostgresqlUtilitiesModule],
   providers: [ExportCommand],
 })
 export class ExportModule {}

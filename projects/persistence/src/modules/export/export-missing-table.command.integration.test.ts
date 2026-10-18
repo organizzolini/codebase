@@ -9,9 +9,9 @@ import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-database";
+} from "../../../testing/fixture-persistence";
 
-import type { FixtureDatabase } from "../../../testing/fixture-database";
+import type { FixtureDatabase } from "../../../testing/fixture-persistence";
 
 describe("export of a table that does not exist", () => {
   let source: FixtureDatabase;
