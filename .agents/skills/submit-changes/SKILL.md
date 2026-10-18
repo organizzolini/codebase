@@ -120,7 +120,9 @@ git push --set-upstream origin <branch>
 gh pr list --head <branch> --state open
 ```
 
-1. Title: Same format as the commit message — `<type>(<scope>): <gitmoji> <subject>`
+1. Title: Same format as the commit message — `<type>(<scope>): <gitmoji> <subject>`.
+   Keep it under 128 characters, and target about 115 or less so merge-queue
+   suffixes do not push the queued commit subject over the limit.
 2. Body: Auto-generate from the diff using the PR template structure (all 4 sections are mandatory and non-empty):
    - **🌰 Summary**: Overall purpose as one plain paragraph of at most 48 words
    - **📝 Details**: Only a bulleted list of meaningful changes, one marker throughout, at most 512 words
@@ -137,15 +139,22 @@ gh pr list --head <branch> --state open
      projects/validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
    ```
 
-   Fix any reported issues (e.g. missing headings or leftover template comments) before proceeding.
+   Fix any reported issues (e.g. missing headings or leftover template comments)
+   before proceeding.
 
-4. Assignee and labels — Validate Conventions rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
+4. Pre-flight gate title scopes before creating the PR:
+   - Read the commit subjects in this branch and list their scopes.
+   - Make sure the proposed PR title scopes include every scope used by those
+     commits. If that would create an unwieldy title, split the branch into
+     narrower pull requests instead of forcing one broad multi-scope title.
+
+5. Assignee and labels — Validate Conventions rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
    - **Assignee**: `--assignee @me`. A pull request with no assignee fails validation.
    - **Type label**: Exactly one `type:*` label, matching the title's type. Never more than one, never a mismatch.
    - **Scope label(s)**: One `scope:*` label per scope named in the title — if the title carries more than one scope (`type(scope-one,scope-two): …`), add a `--label scope:<name>` for each of them, and no extra `scope:*` label beyond what the title names.
    - **Source label**: Exactly one `source:*` label. This skill is agent-driven, so use `source:agent` — never `source:human`, and never both.
    - **Never** apply `do-not-merge` — it blocks the pull request while present, and this workflow is opening one for immediate review, not staging a draft.
-5. Create the PR:
+6. Create the PR:
 
    ```bash
    gh pr create \
@@ -161,7 +170,19 @@ gh pr list --head <branch> --state open
 
    Repeat `--label scope:<name>` for each additional scope the title names.
 
-6. Confirm the metadata actually landed — a label GitHub silently drops (typo, not-yet-created) fails CI just as surely as never adding it:
+7. Hard gate before finishing: validate release significance for the created PR.
+
+   ```bash
+   pr_number="$(gh pr view <branch> --json number --jq .number)"
+   NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+     projects/validation/src/validation.main.ts pull-request-release-significance \
+     "${pr_number}"
+   ```
+
+   If this fails, fix the title scopes/type or split the pull request, then rerun
+   this command before proceeding.
+
+8. Confirm the metadata actually landed — a label GitHub silently drops (typo, not-yet-created) fails CI just as surely as never adding it:
 
    ```bash
    gh pr view <branch> --json number,labels,assignees
@@ -176,7 +197,7 @@ For complete PR conventions and description guidelines, see [create-pull-request
 After completing all phases, print a summary table:
 
 | Phase    | Result                                                    |
-|----------|-----------------------------------------------------------|
+| -------- | --------------------------------------------------------- |
 | Branch   | Created `<branch>` / Already on `<branch>`                |
 | Commit   | `<type>(<scope>): <gitmoji> <subject>` / Skipped (clean)  |
 | PR       | Created `<url>` / Already exists `<url>`                  |
