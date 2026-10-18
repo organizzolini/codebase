@@ -82,13 +82,8 @@ export class PathsService {
       return;
     }
 
-    const subject =
-      args.generatorName === undefined
-        ? "This generator"
-        : `Generator ${args.generatorName}`;
-
     throw new InputError(
-      `${subject} cannot generate into ${relativeDirectory === "" ? "the workspace root" : relativeDirectory}. Allowed directories: ${args.allowedDirectories.patterns.join(", ")}.`,
+      `Generator ${args.generatorName} cannot generate into ${relativeDirectory === "" ? "the workspace root" : relativeDirectory}. Allowed directories: ${args.allowedDirectories.patterns.join(", ")}.`,
     );
   }
 
@@ -414,7 +409,7 @@ export class PathsService {
       return this.requireModulePath({
         instances,
         moduleName,
-        projectName: args.inputs[PROJECT_INPUT_NAME] ?? "",
+        projectName,
       });
     }
 

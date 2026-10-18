@@ -349,6 +349,47 @@ describe(PathsService, () => {
         /cannot generate into packages\. Allowed directories: projects\/\*\*\./u,
       );
     });
+
+    it("refuses placing into the workspace root when a generator narrows directories", async () => {
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: directoriesPath,
+          generatorName: "web",
+          inputs: { directory: ".", name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).rejects.toThrow(/cannot generate into the workspace root/u);
+    });
+
+    it("ignores instance groups without patterns when resolving allowed directories", async () => {
+      const mixedPath = path.join(
+        workspaceRoot,
+        "mixed-directories.config.json",
+      );
+
+      await writeFile(
+        mixedPath,
+        JSON.stringify([
+          {
+            instances: [{}, { patterns: ["projects/**/*-web"] }],
+            name: "web",
+            templatePath: "templates/web",
+          },
+        ]),
+        "utf8",
+      );
+
+      await expect(
+        service.resolveGenerationPath({
+          configurationPath: mixedPath,
+          generatorName: "web",
+          inputs: { directory: "projects/caelundas", name: "my-web" },
+          tree,
+          workspaceRoot,
+        }),
+      ).resolves.toBe(path.join(workspaceRoot, "projects/caelundas"));
+    });
   });
 
   describe("resolveGenerationPath with literal instance paths", () => {
