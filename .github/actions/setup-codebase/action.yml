@@ -100,7 +100,10 @@ runs:
       uses: nrwl/nx-set-shas@v5
 
     - name: 🗃️ Configure Nx Cache
-      run: echo "NX_DEFAULT_OUTPUT_STYLE=static" >> "$GITHUB_ENV"
+      run: |
+        echo "NX_DEFAULT_OUTPUT_STYLE=static" >> "$GITHUB_ENV"
+        echo "NX_LEGACY_AFFECTED=false" >> "$GITHUB_ENV"
+        echo "NX_PREFER_NODE_STRIP_TYPES=false" >> "$GITHUB_ENV"
       shell: bash
 
     # `Homebrew/actions/setup-homebrew` clones the `Homebrew/brew` git

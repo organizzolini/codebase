@@ -77,7 +77,7 @@ const EXPECTATIONS: Record<string, ExampleExpectation> = {
   "hello-template": { exitCode: 0, present: ["All checked files conform."] },
   hooks: {
     exitCode: 0,
-    present: ["Receipt written:", "hooks/mars/mars.txt"],
+    present: ["Receipt written:", "hooks/mars/mars.txt", "receipts/mars.log"],
   },
   "language-validators": {
     exitCode: 0,
@@ -366,22 +366,39 @@ describe("the examples this package ships", () => {
       "conformetry-examples",
       "hooks-test",
     );
+    // Beside the configuration, not the output: the hook builds this path from
+    // `configurationDirectoryPath`, so the file landing here is what proves the
+    // directory the command derived is the one that holds the configuration.
+    const receiptsDirectory = path.join(examplesDirectory, "hooks", "receipts");
 
     afterEach(() => {
       fs.rmSync(runDirectory, { force: true, recursive: true });
+      fs.rmSync(receiptsDirectory, { force: true, recursive: true });
     });
 
-    it("leaves the file its postGenerate hook wrote beside the generated one", () => {
+    it("writes its receipt beside the configuration, through the filesystem adapter", () => {
       const { exitCode, output } = runHooksExample("mars", runDirectory);
 
       expect(output).toContain("Receipt written:");
       expect(exitCode).toBe(0);
+      // Only the rendered file: a receipt written beside the output, wherever
+      // in it, would show up here as an extra entry.
+      expect(readFileTree(runDirectory)).toStrictEqual({
+        [path.join("mars", "mars.txt")]: "Receipt for mars.\n",
+      });
       expect(
-        fs.readFileSync(path.join(runDirectory, "mars", "mars.txt"), "utf8"),
-      ).toBe("Receipt for mars.\n");
-      expect(
-        fs.readFileSync(path.join(runDirectory, "mars", "receipt.log"), "utf8"),
+        fs.readFileSync(path.join(receiptsDirectory, "mars.log"), "utf8"),
       ).toContain("mars.txt");
+    });
+
+    it("lists the receipt among the files the run produced", () => {
+      const { output } = runHooksExample("mars", runDirectory);
+
+      // The command prints each listed path on its own line, indented two
+      // spaces; the hook's own "Receipt written:" line must not satisfy this.
+      expect(output).toContain(
+        `\n  ${path.join(receiptsDirectory, "mars.log")}\n`,
+      );
     });
 
     it("writes nothing when its preGenerate hook refuses the input", () => {

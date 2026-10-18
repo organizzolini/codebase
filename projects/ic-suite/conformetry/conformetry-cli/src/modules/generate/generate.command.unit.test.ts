@@ -66,6 +66,10 @@ describe(GenerateCommand, () => {
   // are re-applied here rather than alongside the module.
   beforeEach(() => {
     process.exitCode = undefined;
+    vi.mocked(configurationService.resolveConfigurationPath).mockImplementation(
+      async (configurationPath: string) =>
+        await Promise.resolve(`/workspace/${configurationPath}`),
+    );
     vi.mocked(
       configurationService.loadConformetryConfiguration,
     ).mockResolvedValue(CONFIGURATION);
@@ -126,6 +130,37 @@ describe(GenerateCommand, () => {
         }),
       );
       expect(generationService.runGenerator).toHaveBeenCalledTimes(1);
+    });
+
+    it("hands the runtime the absolute directory of the resolved configuration", async () => {
+      // The resolution is the service's: it falls back to the workspace root,
+      // so a relative `--config` and the directory it names can disagree with
+      // anything the command could work out from the flag alone.
+      vi.mocked(
+        configurationService.resolveConfigurationPath,
+      ).mockResolvedValue(
+        "/workspace/projects/configuration/conformetry.config.ts",
+      );
+
+      await command.run([], {
+        config: CONFIGURATION_PATH,
+        directory: "/tmp/out",
+        template: "widget",
+      });
+
+      expect(
+        configurationService.resolveConfigurationPath,
+      ).toHaveBeenCalledWith(CONFIGURATION_PATH);
+      expect(
+        configurationService.loadConformetryConfiguration,
+      ).toHaveBeenCalledWith(
+        "/workspace/projects/configuration/conformetry.config.ts",
+      );
+      expect(generationService.runGenerator).toHaveBeenCalledWith(
+        expect.objectContaining({
+          configurationDirectoryPath: "/workspace/projects/configuration",
+        }),
+      );
     });
 
     it("forwards the hooks a generator declares to the runtime", async () => {
@@ -193,7 +228,7 @@ describe(GenerateCommand, () => {
 
       expect(
         configurationService.loadConformetryConfiguration,
-      ).toHaveBeenCalledWith("custom/conformetry.config.ts");
+      ).toHaveBeenCalledWith("/workspace/custom/conformetry.config.ts");
     });
 
     it("names the available templates when asked for an unknown one", async () => {
