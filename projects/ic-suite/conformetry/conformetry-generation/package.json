@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@conformetry/configuration": "workspace:*",
+    "@conformetry/core": "workspace:*",
     "@nestjs/common": "catalog:ic-suite",
     "reflect-metadata": "catalog:"
   },
