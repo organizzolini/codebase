@@ -151,7 +151,17 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     inputs: defineInputs({
       name: z.string().describe("Application name in kebab-case"),
     }),
-    instances: [],
+    // Where existing applications live is also where a new one may be
+    // generated. The template reaches the shared configuration by package name,
+    // so it states no climb back to the workspace root and no group has to.
+    instances: [
+      {
+        // The `node_modules` links would otherwise be followed back to the
+        // packages they point at.
+        exclude: ["projects/**/node_modules/**"],
+        patterns: ["projects/**/*-web"],
+      },
+    ],
     name: "tanstack-application",
     templatePath:
       "projects/configuration/conformetry-templates/tanstack-application",

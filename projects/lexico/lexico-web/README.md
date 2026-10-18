@@ -47,8 +47,8 @@ src/
 ├── routes/              # File-based routing (TanStack Router)
 │   ├── __root.tsx       # Root layout and sidebar
 │   ├── index.tsx        # / (redirects to /search)
-│   ├── search.tsx       # /search — loader, server function, page
-│   └── routeTree.gen.ts # Generated route tree, never edited
+│   └── search.tsx       # /search — loader, server function, page
+├── routeTree.gen.ts     # Generated route tree, never edited
 ├── components/          # One component and its test per file
 ├── styles/              # Lexico's accent color over the shadcn tokens
 ├── client.tsx           # Client entry
@@ -77,6 +77,22 @@ for Latin and English matches at once and merges them, best first; set
 - [AGENTS.md](AGENTS.md) — architecture and development patterns
 - [Codebase AGENTS.md](../../../AGENTS.md) — workspace conventions and Nx workflows
 - [TanStack Start](https://tanstack.com/router/latest/docs/framework/react/start/overview)
+
+## Develop
+
+```bash
+nx run lexico-web:start
+```
+
+## Test
+
+```bash
+nx run lexico-web:vitest
+```
+
+## 👔 Conformetry
+
+This project was generated from the [tanstack-application](/projects/configuration/conformetry-templates/tanstack-application) conformetry template.
 
 ## License
 

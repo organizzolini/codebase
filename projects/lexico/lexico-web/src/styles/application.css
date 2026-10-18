@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@import "@codebase/components/styles/globals.css";
+
 /*
  * Lexico's accent color, laid over the shadcn tokens in components's
  * stylesheet. That one is written by the shadcn CLI and not ours to edit, so

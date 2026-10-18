@@ -207,7 +207,7 @@ function AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode {
   return (
     <Tabs
       className="-mx-4 gap-0"
-      onValueChange={(next) => {
+      onValueChange={(next: unknown) => {
         onChange(String(next));
       }}
       value={value}

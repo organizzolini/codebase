@@ -48,6 +48,10 @@ const config: KnipConfig = {
     // node_modules/.bin, which it does only for root dependencies. Nothing
     // imports it.
     "@conformetry/cli",
+    // Depended on so that every project resolves it by package name, by walking
+    // up to the root's node_modules. The imports sit in each project's config
+    // files, which knip does not treat as root code.
+    "@codebase/configuration",
     "@commitlint/config-conventional", // commitlint preset, referenced as string in extends array
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration
@@ -167,11 +171,7 @@ const config: KnipConfig = {
     // The client entry and the generated route tree are named by the TanStack
     // Start plugin rather than imported, so knip is told where they are.
     "projects/lexico/lexico-web": {
-      entry: [
-        "src/client.tsx",
-        "src/router.tsx",
-        "src/routes/routeTree.gen.ts",
-      ],
+      entry: ["src/client.tsx", "src/router.tsx", "src/routeTree.gen.ts"],
       ignoreDependencies: [
         "vitest", // Used by tests and Vitest config; Knip may miss it when test sources are excluded
       ],

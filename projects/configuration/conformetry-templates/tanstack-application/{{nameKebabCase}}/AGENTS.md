@@ -4,8 +4,6 @@
 
 **Type**: Server-rendered web application (TanStack Start)
 
-**Purpose**: <!-- Briefly describe what this application is for -->
-
 ### Run Locally
 
 ```bash
@@ -27,8 +25,7 @@ nx run {{nameKebabCase}}:start
 src/
   client.tsx                     # Client entry, hydrates the document
   router.tsx                     # Creates the router; TanStack Start requires it here
-  lib/
-    routeTree.gen.ts             # Generated route tree — never edit
+  routeTree.gen.ts               # Generated route tree — never edit
   routes/
     __root.tsx                   # Document shell every route renders inside
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
@@ -65,9 +62,9 @@ nx g conformetry:react-hook --name=use-<hook> --project={{nameKebabCase}}
 A route's name is its file stem — `index`, `search`, `word.$id` — and its route
 path is the URL it serves: `/`, `/search`, `/word/$id`. TanStack's route
 generator rewrites the path argument to match the file whenever they disagree,
-and regenerates `src/lib/routeTree.gen.ts` on every `start` or `build`. Each page is a `<section>` with an `<h1>`, named after its
-route — `word.$id` renders `WordIdPage` — inside the `<main>` the root layout
-renders.
+and regenerates `src/routeTree.gen.ts` on every `start` or `build`. Each page
+is a `<section>` with an `<h1>`, named after its route — `word.$id` renders
+`WordIdPage` — inside the layout the root route renders.
 
 Keep a route file to its `Route` and the page it renders. Reusable pieces belong
 in `src/components/`, stateful logic in `src/hooks/`, and anything that runs on
@@ -92,7 +89,7 @@ pnpm add --filter {{nameKebabCase}} zod
 ### Key Commands
 
 ```bash
-nx run {{nameKebabCase}}:start      # Development server on http://localhost:3000
+nx run {{nameKebabCase}}:start      # Development server
 nx run {{nameKebabCase}}:build        # Production build into dist/
 nx run {{nameKebabCase}}:preview      # Serve the production build
 nx run {{nameKebabCase}}:vitest       # Unit tests
@@ -109,9 +106,9 @@ route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
 components are not code-split into lazy chunks under test.
 
-See the [write-react skill](../../.agents/skills/write-react/SKILL.md) for
+See the [write-react skill](/.agents/skills/write-react/SKILL.md) for
 component conventions and the
-[testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) for
+[testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
 test tiers.
 
 ## Key Files

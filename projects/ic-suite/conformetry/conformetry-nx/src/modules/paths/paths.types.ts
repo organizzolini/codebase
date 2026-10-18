@@ -2,6 +2,17 @@
 
 import type { Tree } from "@nx/devkit";
 
+/** Where a generator's instances live, as the directories new ones may go. */
+export interface AllowedDirectories {
+  /**
+   * Whether a destination outside `patterns` is refused. False when the
+   * instances are literal paths, which name known projects rather than a rule.
+   */
+  readonly enforced: boolean;
+  /** Workspace-relative globs, where `*` stands for one folder name. */
+  readonly patterns: string[];
+}
+
 /** Arguments for deciding where a generator writes. */
 export interface ResolveGenerationPathArguments {
   readonly configurationPath: string;

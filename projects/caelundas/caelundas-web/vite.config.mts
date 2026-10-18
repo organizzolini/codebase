@@ -4,17 +4,14 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  cacheDir: "../../../node_modules/.vite/applications/caelundas/caelundas-web",
   plugins: [
     tailwindcss(),
-    // The generated route tree lives under `lib/`, because
-    // `codebase-structure.json` refuses its camel-cased name at the `src/`
-    // root; the path resolves relative to `srcDirectory`, so a leading `src/`
-    // would write to `src/src/`. Test files sit beside the routes they test, so
-    // the route generator is told to skip them rather than treat them as routes.
+    // The generated route tree lives under `src/`. Test files sit beside the
+    // routes they test, so the route generator is told to skip them rather than
+    // treat them as routes.
     tanstackStart({
       router: {
-        generatedRouteTree: "lib/routeTree.gen.ts",
+        generatedRouteTree: "routeTree.gen.ts",
         routeFileIgnorePattern: String.raw`\.test\.`,
       },
     }),

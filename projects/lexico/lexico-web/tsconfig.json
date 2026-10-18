@@ -11,11 +11,7 @@
     "outDir": "../../../dist/out-tsc",
     "paths": {
       "@/*": ["../../components/src/*"],
-      "@codebase/components": ["../../components/src/index.ts"],
-      "codebase/configuration/*": ["../../../projects/configuration/*"],
-      "eslint-plugin-better-max-params": [
-        "../../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
-      ]
+      "@codebase/components": ["../../components/src/index.ts"]
     },
     "strict": true,
     "target": "ES2022",
@@ -26,8 +22,8 @@
       "vite/client"
     ]
   },
-  "exclude": [],
-  "extends": "../../../projects/configuration/tsconfig.json",
+  "exclude": ["dist", "node_modules", "output"],
+  "extends": "@codebase/configuration/tsconfig.json",
   "include": [
     "callidescope.config.ts",
     "codependix.config.ts",

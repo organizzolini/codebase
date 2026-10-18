@@ -62,6 +62,15 @@ import type { CallidescopeConfiguration } from "@callidescope/configuration";
  * genuine per-project configuration this package can demonstrate.
  */
 const callidescopeConfiguration: CallidescopeConfiguration = {
+  /**
+   * The workspace configuration project is not a project configuration.
+   *
+   * Its `callidescope.config.ts` is this run's own file and sets workspace-only
+   * fields (`excludeCallees`, `excludeFrom`, `write.json`) that a project file
+   * must not set. When the closure reaches `projects/configuration`, excluding
+   * it here keeps the run scoped to fixture code and toolchain dependencies.
+   */
+  exclude: ["projects/configuration/**"],
   limits: {
     /**
      * The tool's own default, so the deliberately deep fixtures are findings.
