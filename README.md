@@ -13320,11 +13320,11 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Shell
 
 ![Shell Files](https://img.shields.io/badge/Shell_Files-20-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1664-4eaa25?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1662-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-14-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-152-0284c7?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-151-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-118-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-117-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-20-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-42-059669?style=flat-square)
 ![Shebangs](https://img.shields.io/badge/Shebangs-21-6b7280?style=flat-square)
@@ -13432,7 +13432,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Links](https://img.shields.io/badge/Links-733-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-379-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11504-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11503-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-22-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->

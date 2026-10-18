@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.13.2](https://github.com/organizzolini/codebase/compare/v3.13.1...v3.13.2) (2026-10-18)
+
+### ♻️ Code Refactoring
+
+* **configuration:** ♻️ consolidate node version pin to nvmrc ([#1709](https://github.com/organizzolini/codebase/issues/1709)) ([07ca0f6](https://github.com/organizzolini/codebase/commit/07ca0f6080e6ae99d53a94d49b7fd4f3dd58b289))
+
 ## [3.13.1](https://github.com/organizzolini/codebase/compare/v3.13.0...v3.13.1) (2026-10-18)
 
 ### ⚡ Performance Improvements
