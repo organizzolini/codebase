@@ -1,3 +1,14 @@
+## 0.0.39 (2026-10-18)
+
+### 💅 Refactors
+
+- **conformetry:** ♻️ move the hook and filesystem types to the core package ([#1692](https://github.com/organizzolini/codebase/pull/1692), [#1673](https://github.com/organizzolini/codebase/issues/1673))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.39
+- Updated conformetry-core to 0.0.38
+
 ## 0.0.38 (2026-10-18)
 
 ### 🧱 Updated Dependencies

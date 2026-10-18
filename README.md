@@ -400,6 +400,7 @@ graph LR
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
   conformetry_generation --> conformetry_configuration
+  conformetry_generation --> conformetry_core
   conformetry_languages --> conformetry_configuration
   conformetry_languages --> conformetry_core
   conformetry_nx --> conformetry_configuration
@@ -3622,6 +3623,7 @@ graph LR
   file_conformetry_examples_examples_embedding_embed_ts["conformetry-examples/examples/embedding/embed.ts"]
   file_conformetry_examples_examples_failure_modes_conformetry_config_ts["conformetry-examples/examples/failure-modes/conformetry.config.ts"]
   file_conformetry_examples_examples_hello_template_conformetry_config_ts["conformetry-examples/examples/hello-template/conformetry.config.ts"]
+  file_conformetry_examples_examples_hooks_conformetry_config_ts["conformetry-examples/examples/hooks/conformetry.config.ts"]
   file_conformetry_examples_examples_language_validators_conformetry_config_ts["conformetry-examples/examples/language-validators/conformetry.config.ts"]
   file_conformetry_examples_examples_nx_host_conformetry_config_ts["conformetry-examples/examples/nx-host/conformetry.config.ts"]
   file_conformetry_examples_examples_scoring_thresholds_conformetry_config_ts["conformetry-examples/examples/scoring-thresholds/conformetry.config.ts"]
@@ -13476,10 +13478,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6614 |
+| Callables | 6617 |
 | Files | 1968 |
-| Calls traced | 7281 |
-| Call stacks | 1812 |
+| Calls traced | 7283 |
+| Call stacks | 1813 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
 | Unfollowable calls | 361 |

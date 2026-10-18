@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.12.0](https://github.com/organizzolini/codebase/compare/v3.11.0...v3.12.0) (2026-10-18)
+
+### ✨ Features
+
+* **conformetry:** ✨ run configured generator hooks from the command line ([#1693](https://github.com/organizzolini/codebase/issues/1693)) ([c840dc1](https://github.com/organizzolini/codebase/commit/c840dc1c23efd56055b87dfd7eb2daf0e6b76726)), closes [#1692](https://github.com/organizzolini/codebase/issues/1692) [#1675](https://github.com/organizzolini/codebase/issues/1675) [#1676](https://github.com/organizzolini/codebase/issues/1676) [#1677](https://github.com/organizzolini/codebase/issues/1677) [#1678](https://github.com/organizzolini/codebase/issues/1678) [#1671](https://github.com/organizzolini/codebase/issues/1671) [#1692](https://github.com/organizzolini/codebase/issues/1692)
+
+### ♻️ Code Refactoring
+
+* **conformetry:** ♻️ move the hook and filesystem types to the core package ([#1692](https://github.com/organizzolini/codebase/issues/1692)) ([613b87f](https://github.com/organizzolini/codebase/commit/613b87fb22513f17ca365120afe710bd5b1fe5ef)), closes [#1673](https://github.com/organizzolini/codebase/issues/1673) [#1674](https://github.com/organizzolini/codebase/issues/1674) [#1672](https://github.com/organizzolini/codebase/issues/1672) [#1671](https://github.com/organizzolini/codebase/issues/1671)
+
 ## [3.11.0](https://github.com/organizzolini/codebase/compare/v3.10.1...v3.11.0) (2026-10-18)
 
 ### ✨ Features

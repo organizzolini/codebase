@@ -1,3 +1,17 @@
+## 0.0.39 (2026-10-18)
+
+### 🚀 Features
+
+- **conformetry:** ✨ run configured generator hooks from the command line ([#1693](https://github.com/organizzolini/codebase/pull/1693), [#1675](https://github.com/organizzolini/codebase/issues/1675))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.39
+- Updated conformetry-generation to 0.0.39
+- Updated conformetry-validation to 0.0.38
+- Updated conformetry-output to 0.0.38
+- Updated conformetry-core to 0.0.38
+
 ## 0.0.38 (2026-10-18)
 
 ### 🧱 Updated Dependencies
