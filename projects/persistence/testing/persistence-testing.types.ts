@@ -4,7 +4,7 @@ import type {
   PostgresContainerOptions,
   StartedPostgresContainer,
 } from "../src/modules/postgresql/postgresql-container.types";
-import type { DatabaseModuleOptions } from "../src/modules/postgresql/postgresql.types";
+import type { PostgresqlModuleOptions } from "../src/modules/postgresql/postgresql.types";
 import type { ModuleMetadata } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import type { TypeOrmModule } from "@nestjs/typeorm";
@@ -37,7 +37,7 @@ export type DatabaseTestingConnection =
       readonly database?: never;
 
       /** Replaces snake case on the helper's own `PostgresqlModule.forRoot`. */
-      readonly namingStrategy?: DatabaseModuleOptions["namingStrategy"];
+      readonly namingStrategy?: PostgresqlModuleOptions["namingStrategy"];
     };
 
 /** A testing module connected to a migrated throwaway database. */
@@ -67,7 +67,7 @@ export type DatabaseTestingModuleOptions = DatabaseTestingConnection &
 /** Every option but how the testing module connects. */
 export interface DatabaseTestingModuleSettings
   extends
-    Omit<DatabaseModuleOptions, "entities" | "namingStrategy">,
+    Omit<PostgresqlModuleOptions, "entities" | "namingStrategy">,
     PostgresContainerOptions {
   /**
    * The entity classes to register repositories for, and to connect when no

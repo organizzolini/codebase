@@ -11,7 +11,6 @@ import {
 } from "./postgresql.constants";
 
 import type {
-  DatabaseOptions,
   PostgresConnection,
   PostgresConnectionField,
   PostgresConnectionSource,
@@ -20,6 +19,7 @@ import type {
   PostgresEnvironmentShape,
   PostgresEnvironmentSource,
   PostgresProject,
+  PostgresqlOptions,
   PostgresSettingsShape,
 } from "./postgresql.types";
 
@@ -67,7 +67,7 @@ export function assertPostgresEnvironmentKeys<Project extends string>(
  * ```
  */
 export function createDataSource(
-  { project, ...settings }: DatabaseOptions,
+  { project, ...settings }: PostgresqlOptions,
   environment: Readonly<Record<string, unknown>> = process.env,
 ): DataSource {
   return new DataSource(

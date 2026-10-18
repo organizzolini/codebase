@@ -29,6 +29,8 @@ export type {
   PostgresEnvironmentSource,
   PostgresEnvironmentSuffix,
   PostgresProject,
+  PostgresqlModuleOptions,
+  PostgresqlOptions,
 } from "./modules/postgresql/postgresql.types";
 export {
   createDataSource,

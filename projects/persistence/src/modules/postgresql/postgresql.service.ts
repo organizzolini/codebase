@@ -9,9 +9,9 @@ import {
 } from "./postgresql.utilities";
 
 import type {
-  DatabaseModuleOptions,
   PostgresConnection,
   PostgresDataSourceOptions,
+  PostgresqlModuleOptions,
 } from "./postgresql.types";
 import type { TypeOrmOptionsFactory } from "@nestjs/typeorm";
 
@@ -31,7 +31,7 @@ export class PostgresqlService implements TypeOrmOptionsFactory {
     private readonly configurationService: ConfigService,
     @Inject(DATABASE_OPTIONS)
     @Optional()
-    private readonly options?: DatabaseModuleOptions,
+    private readonly options?: PostgresqlModuleOptions,
   ) {}
 
   // 🔐 Private Fields
@@ -45,7 +45,7 @@ export class PostgresqlService implements TypeOrmOptionsFactory {
    * module still boots for a dependency graph; using it without them is a
    * mistake this names.
    */
-  private databaseOptions(): DatabaseModuleOptions {
+  private databaseOptions(): PostgresqlModuleOptions {
     if (this.options === undefined) {
       throw new Error(
         "PostgresqlService has no options: import PostgresqlModule.forRoot({ project, entities }) rather than PostgresqlModule.",

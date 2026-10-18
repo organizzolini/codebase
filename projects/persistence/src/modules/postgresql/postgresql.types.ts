@@ -4,16 +4,11 @@ import type { POSTGRES_ENVIRONMENT_SUFFIXES } from "./postgresql.constants";
 import type { DataSourceOptions, NamingStrategyInterface } from "typeorm";
 import type { z } from "zod";
 
-/**
- * What `PostgresqlModule.forRoot` is given: the project, and its code's part
- * of the connection. No migrations, which the runtime never runs.
- */
-export interface DatabaseModuleOptions
-  extends Omit<PostgresDataSourceSettings, "migrations">, PostgresProject {}
+/** Backward-compatible alias for {@link PostgresqlModuleOptions}. */
+export type DatabaseModuleOptions = PostgresqlModuleOptions;
 
-/** What `createDataSource` is given: the module's options, and the migrations the TypeORM command line runs. */
-export interface DatabaseOptions
-  extends DatabaseModuleOptions, PostgresDataSourceSettings {}
+/** Backward-compatible alias for {@link PostgresqlOptions}. */
+export type DatabaseOptions = PostgresqlOptions;
 
 /** Where a project's database is, who to sign in as, and which schema holds its tables. */
 export interface PostgresConnection {
@@ -24,7 +19,6 @@ export interface PostgresConnection {
   readonly schema: string;
   readonly username: string;
 }
-
 /** A connection field one of the six variables fills. */
 export type PostgresConnectionField =
   keyof typeof POSTGRES_ENVIRONMENT_SUFFIXES;
@@ -77,6 +71,17 @@ export type PostgresEnvironmentSuffix =
 export interface PostgresProject<Project extends string = string> {
   readonly project: Project;
 }
+
+/**
+ * What `PostgresqlModule.forRoot` is given: the project, and its code's part
+ * of the connection. No migrations, which the runtime never runs.
+ */
+export interface PostgresqlModuleOptions
+  extends Omit<PostgresDataSourceSettings, "migrations">, PostgresProject {}
+
+/** What `createDataSource` is given: the module's options, and the migrations the TypeORM command line runs. */
+export interface PostgresqlOptions
+  extends PostgresDataSourceSettings, PostgresqlModuleOptions {}
 
 /** The zod schema each connection field is validated by. */
 export type PostgresSettingsShape = Readonly<

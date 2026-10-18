@@ -4,7 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DATABASE_OPTIONS } from "./postgresql.constants";
 import { PostgresqlService } from "./postgresql.service";
 
-import type { DatabaseModuleOptions } from "./postgresql.types";
+import type { PostgresqlModuleOptions } from "./postgresql.types";
 import type { DynamicModule } from "@nestjs/common";
 
 /**
@@ -32,7 +32,7 @@ import type { DynamicModule } from "@nestjs/common";
 })
 export class PostgresqlModule {
   /** Connects the importing application as `options.project`. */
-  static forRoot(options: DatabaseModuleOptions): DynamicModule {
+  static forRoot(options: PostgresqlModuleOptions): DynamicModule {
     const optionsProvider = { provide: DATABASE_OPTIONS, useValue: options };
 
     return {
