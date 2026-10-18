@@ -175,7 +175,8 @@ export class ImportPrTaskCacheService {
    * throws: every failure is the warning that the run goes on cold.
    */
   public import(): TaskDatabaseReport {
-    const parent = this.read("RUNNER_TEMP") || os.tmpdir();
+    const runnerTemporary = this.read("RUNNER_TEMP");
+    const parent = runnerTemporary === "" ? os.tmpdir() : runnerTemporary;
     let work: string | undefined;
 
     try {

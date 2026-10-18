@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "affected": {
+    "legacy": false
+  },
   "analytics": false,
   "bail": false,
   "cacheDirectory": ".nx/cache",
@@ -24,7 +27,10 @@
   },
   "namedInputs": {
     "default": [
+      "!{projectRoot}/.cspell/**",
       "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
       "{projectRoot}/**/*",
       "shared-globals"
     ],
@@ -238,7 +244,8 @@
       "cache": false,
       "dependsOn": ["build", "codometer"],
       "description": "Build every buildable project and measure it. An nx:noop aggregator; `build` carries its own ^build dependency, and `codometer` gates each project's declared limit.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["production"]
     },
     "codometer": [
       {
@@ -423,7 +430,8 @@
         "vulture"
       ],
       "description": "Aggregator for deprecate-code",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "eslint": [
       {
@@ -581,7 +589,12 @@
         "yaml-lint"
       ],
       "description": "Aggregator for format-code",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": [
+        "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
+        "{workspaceRoot}/projects/configuration/.cspell/**",
+        "{workspaceRoot}/projects/configuration/cspell.config.yaml"
+      ]
     },
     "guard-code": {
       "cache": false,
@@ -600,7 +613,8 @@
         "vscode-extensions"
       ],
       "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "knip": [
       {
@@ -649,7 +663,8 @@
         "stylelint"
       ],
       "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config creates the gitignored root .env from .env.default when it is missing.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "markdown-lint": [
       {
@@ -1205,7 +1220,8 @@
       "defaultConfiguration": "coverage",
       "dependsOn": ["pytest", "vitest"],
       "description": "Dynamic code analysis: the tests, which execute the source. An nx:noop aggregator. The configuration propagates down dependsOn, so test-code:coverage reaches test:coverage.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "ty": [
       {
@@ -1287,7 +1303,8 @@
       "defaultConfiguration": "check",
       "dependsOn": ["type-coverage", "typecheck"],
       "description": "Aggregator for typecheck-code",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["typescript-files"]
     },
     "vitest": {
       "configurations": {

@@ -26,7 +26,6 @@ const COMMAND_NAMES = [
   "merge-task-cache",
   "publish-packages",
   "publishable-packages-gate",
-  "run-affected",
   "tag-codebase",
   "tag-packages",
   "verify-task-database",
