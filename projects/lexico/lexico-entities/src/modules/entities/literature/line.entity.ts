@@ -4,9 +4,9 @@ import { DeletableEntity } from "@codebase/database";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../entities.constants";
 
-import type { Author } from "./Author.entity";
-import type { Text } from "./Text.entity";
-import type { Token } from "./Token.entity";
+import type { Author } from "./author.entity";
+import type { Text } from "./text.entity";
+import type { Token } from "./token.entity";
 import type { Relation } from "typeorm";
 
 /**

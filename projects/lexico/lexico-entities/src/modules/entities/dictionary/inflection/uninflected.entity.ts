@@ -1,6 +1,6 @@
 import { ChildEntity } from "typeorm";
 
-import { Inflection } from "./Inflection.entity";
+import { Inflection } from "./inflection.entity";
 
 /**
  * Inflection marker for lexemes that do not vary by inflection.

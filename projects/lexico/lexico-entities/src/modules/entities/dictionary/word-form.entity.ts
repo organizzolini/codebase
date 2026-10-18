@@ -2,9 +2,9 @@ import { Entity, Index, ManyToOne } from "typeorm";
 
 import { DeletableEntity } from "@codebase/database";
 
-import { Form } from "./form/Form.entity";
+import { Form } from "./form/form.entity";
 
-import type { Word } from "./Word.entity";
+import type { Word } from "./word.entity";
 import type { Relation } from "typeorm";
 
 /**

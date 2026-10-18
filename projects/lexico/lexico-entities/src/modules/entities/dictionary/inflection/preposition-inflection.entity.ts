@@ -5,7 +5,7 @@ import {
   prepositionCases,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Inflection } from "./Inflection.entity";
+import { Inflection } from "./inflection.entity";
 
 /**
  * Inflection metadata for preposition lexemes.

@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
 import { DeletableEntity } from "@codebase/database";
 
-import type { Lexeme } from "./Lexeme.entity";
+import type { Lexeme } from "./lexeme.entity";
 
 /**
  * A single English translation linked to a lexeme.

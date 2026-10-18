@@ -7,7 +7,7 @@ import {
   formNumberValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** A declined form for a noun, pronoun, or determiner (case + number). */
 @ChildEntity("nominal")

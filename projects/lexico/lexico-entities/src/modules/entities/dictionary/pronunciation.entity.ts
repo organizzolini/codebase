@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from "typeorm";
 
 import { DeletableEntity } from "@codebase/database";
 
-import type { Lexeme } from "./Lexeme.entity";
+import type { Lexeme } from "./lexeme.entity";
 
 export const pronunciationVariant = {
   classical: "classical",

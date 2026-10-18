@@ -5,7 +5,7 @@ import {
   formDegreeValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** An adverb form at a specific degree (positive, comparative, superlative). */
 @ChildEntity("adverb")

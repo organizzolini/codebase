@@ -5,7 +5,7 @@ import {
   formGerundCaseValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** A verbal noun gerund form (genitive, dative, accusative, or ablative case). */
 @ChildEntity("gerund")

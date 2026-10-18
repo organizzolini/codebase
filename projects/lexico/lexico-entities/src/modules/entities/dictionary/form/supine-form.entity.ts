@@ -5,7 +5,7 @@ import {
   formSupineCaseValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** A verbal noun supine form (accusative or ablative case). */
 @ChildEntity("supine")

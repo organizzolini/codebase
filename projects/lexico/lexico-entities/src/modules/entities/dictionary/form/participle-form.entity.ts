@@ -7,7 +7,7 @@ import {
   formVoiceValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** A non-finite participial form (voice + tense). */
 @ChildEntity("participle")

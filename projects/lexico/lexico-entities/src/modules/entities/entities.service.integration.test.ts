@@ -10,10 +10,10 @@ import {
 } from "../lexico-database/data-source.constants";
 import { LexicoNamingStrategy } from "../lexico-database/lexico-database.constants";
 
-import { Author } from "./literature/Author.entity";
-import { Line } from "./literature/Line.entity";
-import { Text } from "./literature/Text.entity";
-import { Token } from "./literature/Token.entity";
+import { Author } from "./literature/author.entity";
+import { Line } from "./literature/line.entity";
+import { Text } from "./literature/text.entity";
+import { Token } from "./literature/token.entity";
 
 import type { StartedPostgresContainer } from "@codebase/database/testing";
 import type { DataSource } from "typeorm";

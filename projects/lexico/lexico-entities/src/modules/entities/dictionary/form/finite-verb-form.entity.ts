@@ -13,7 +13,7 @@ import {
   formVoiceValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** A finite verb form (indicative, subjunctive, or imperative). */
 @ChildEntity("finite-verb")

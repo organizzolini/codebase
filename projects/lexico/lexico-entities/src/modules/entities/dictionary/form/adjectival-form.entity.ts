@@ -9,7 +9,7 @@ import {
   formNumberValues,
 } from "../../../lexico-database/lexico-database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 /** A declined form for an adjective (gender + case + number). */
 @ChildEntity("adjectival")

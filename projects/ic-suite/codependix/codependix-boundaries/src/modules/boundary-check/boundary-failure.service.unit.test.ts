@@ -128,7 +128,7 @@ describe(BoundaryFailureService, () => {
   it("names the project owning the first frame of a file URL stack", () => {
     const failure = collect(
       buildError([
-        "file:///workspace/packages/lexico-entities/src/WordForm.entity.ts:12:3",
+        "file:///workspace/packages/lexico-entities/src/word-form.entity.ts:12:3",
         "ModuleJob.run (node:internal/modules/esm/module_job:271:25)",
       ]),
     );
@@ -195,7 +195,7 @@ describe(BoundaryFailureService, () => {
   it("names no owner when the owner is a project already charged", () => {
     const failure = collect(
       buildError([
-        "/workspace/packages/lexico-entities/src/WordForm.entity.ts:12:3",
+        "/workspace/packages/lexico-entities/src/word-form.entity.ts:12:3",
       ]),
       ["lexico-entities"],
     );
@@ -221,7 +221,7 @@ describe(BoundaryFailureService, () => {
     const failure = collect(
       buildError([
         "/workspace/packages/ic-suite/codependix/codependix-file-imports/src/index.ts:1:1",
-        "file:///workspace/packages/lexico-entities/src/WordForm.entity.ts:12:3",
+        "file:///workspace/packages/lexico-entities/src/word-form.entity.ts:12:3",
       ]),
     );
 
@@ -242,7 +242,7 @@ describe(BoundaryFailureService, () => {
   it("reads no file from a frame missing its line and column", () => {
     const failure = collect(
       buildError([
-        "/workspace/packages/lexico-entities/src/WordForm.entity.ts",
+        "/workspace/packages/lexico-entities/src/word-form.entity.ts",
         "Word (/workspace/packages/lexico-entities/src/word.entity.ts:x:1)",
         "Word (/workspace/packages/lexico-entities/src/word.entity.ts:1:)",
       ]),
