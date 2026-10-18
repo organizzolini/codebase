@@ -288,9 +288,9 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Synchronizes the generators table and reports success without exiting.
     └─> ConformetryGeneratorsCommand.readGenerators(): Promise<ConformetryGeneratorMetadata[]> [projects/synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111]
        ↳ Reads projects/configuration/conformetry.config.ts and returns the list of generator metadata.
-      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:265]
+      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:237]
          ↳ Loads, validates, and normalizes a conformetry configuration file.
-        └─> ConfigurationService.map(…)(…): ConformetryGeneratorDefinition [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:281]
+        └─> ConfigurationService.map(…)(…): ConformetryGeneratorDefinition [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:253]
           └─> ConfigurationService.applyGeneratorDefaults(definition: ParsedGeneratorEntry): ConformetryGeneratorDefinition [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:89]
              ↳ Fills in the optional halves of one parsed generator entry.
             └─> ConfigurationService.applyHookDefaults(hooks: NonNullable<ParsedGeneratorEntry["hooks"]>): GeneratorHooks [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:116]

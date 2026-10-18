@@ -13478,9 +13478,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6617 |
+| Callables | 6618 |
 | Files | 1968 |
-| Calls traced | 7283 |
+| Calls traced | 7286 |
 | Call stacks | 1813 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
@@ -13497,7 +13497,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
 | `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
-| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 8 |
+| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
