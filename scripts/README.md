@@ -69,13 +69,16 @@ It is one file because it installs the Node the TypeScript runs on, so none of i
 
 Everything after Node exists lives in [`projects/installation`](../projects/installation/AGENTS.md), one command each. Run any of them on its own with `nx run installation:start:<command>`.
 
-| Command               | What it does                                                                                                     |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
-| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion blocks to your rc file; drops the retired helper                  |
-| `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
-| `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
-| `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
+- `setup` — Runs the four below in order, then says how to activate the new
+  shell configuration
+- `shell-configuration` — Writes nvm, pnpm, GPG, Node memory, completion
+  blocks to your rc file; drops the retired helper
+- `software` — Installs uv, Python, Ollama, Docker, GPG signing, Terraform and
+  the other infrastructure tools, and squawk
+- `environment-files` — Creates `.env` from every `.env.default` (excluding
+  the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER`
+- `dependencies` — Runs `pnpm install`, `nx reset`, `uv sync --project
+  projects/configuration`, `terraform init`, and writes kubeconfig
 
 ### VS Code extensions and settings
 

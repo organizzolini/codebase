@@ -41,7 +41,7 @@
       "{projectRoot}/**/*.ipynb",
       "{projectRoot}/**/*.py",
       "{projectRoot}/pyproject.toml",
-      "{workspaceRoot}/uv.lock"
+      "{workspaceRoot}/projects/configuration/uv.lock"
     ],
     "python-tests": ["{projectRoot}/testing/**/*.py"],
     "shared-globals": ["{workspaceRoot}/projects/configuration/tsconfig.json"],
@@ -200,12 +200,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run bandit -c pyproject.toml -r src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" bandit -c pyproject.toml -r src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -740,11 +740,11 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.ipynb",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock"
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock"
         ],
         "options": {
-          "command": "find src -name '*.ipynb' -exec uv run nbstripout {args} {} +",
+          "command": "find src -name '*.ipynb' -exec uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" nbstripout {args} {} +",
           "cwd": "{projectRoot}"
         }
       }
@@ -864,12 +864,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run pyright src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" pyright src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -879,16 +879,16 @@
         "cache": true,
         "configurations": {
           "coverage": {
-            "command": "uv run pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
           },
           "integration": {
-            "command": "uv run pytest -m integration"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" pytest -m integration"
           },
           "unit": {
-            "command": "uv run pytest -m unit"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" pytest -m unit"
           },
           "watch": {
-            "command": "uv run pytest-watch"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" pytest-watch"
           }
         },
         "executor": "nx:run-commands",
@@ -896,13 +896,13 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source",
           "python-tests"
         ],
         "options": {
-          "command": "uv run pytest",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" pytest",
           "cwd": "{projectRoot}"
         }
       }
@@ -936,12 +936,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run ruff format {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" ruff format {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -961,12 +961,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run ruff check {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" ruff check {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -1027,15 +1027,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run sqlfluff {args} --config pyproject.toml {projectRoot}",
+          "command": "uv run --project projects/configuration sqlfluff {args} --config projects/configuration/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1058,15 +1058,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run sqlfluff {args} --config pyproject.toml {projectRoot}",
+          "command": "uv run --project projects/configuration sqlfluff {args} --config projects/configuration/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1215,12 +1215,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run ty check src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" ty check src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -1324,15 +1324,15 @@
         },
         "inputs": [
           "{projectRoot}/.vulture_whitelist.py",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "python-source",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run python -m vulture src/ .vulture_whitelist.py --min-confidence 80",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/projects/configuration\" python -m vulture src/ .vulture_whitelist.py --min-confidence 80",
           "cwd": "{projectRoot}"
         }
       }
@@ -1350,16 +1350,16 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",
+          "{workspaceRoot}/projects/configuration/pyproject.toml",
+          "{workspaceRoot}/projects/configuration/uv.lock",
           "{workspaceRoot}/projects/configuration/yamllint.yaml",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run yamllint -c projects/configuration/yamllint.yaml '{projectRoot}'",
+          "command": "uv run --project projects/configuration yamllint -c projects/configuration/yamllint.yaml '{projectRoot}'",
           "cwd": "{workspaceRoot}"
         }
       }

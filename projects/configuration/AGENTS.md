@@ -53,9 +53,8 @@ name its tool does not auto-discover, and pass the path.
 ## What stays at the repository root
 
 Only files a tool insists on finding there: `nx.json`, `package.json`,
-`pnpm-workspace.yaml`, `pnpm-lock.yaml`, `pyproject.toml` and `uv.lock` (the uv
-workspace root), `tsconfig.json` (the typecheck scope `configuration` runs),
-`.gitignore`, `.gitattributes`, `.gitmodules`, `.editorconfig`, `.nxignore`,
+`pnpm-workspace.yaml`, `pnpm-lock.yaml`, `.gitignore`,
+`.gitattributes`, `.gitmodules`, `.editorconfig`, `.nxignore`,
 `.openwikiignore`, `.node-version`, `.nvmrc`, `skills-lock.json`, and
 `validate-branch-name.config.cjs`, whose tool takes no config path.
 

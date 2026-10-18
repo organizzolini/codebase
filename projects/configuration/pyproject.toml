@@ -10,7 +10,7 @@
 # project to this list.
 
 [tool.uv.workspace]
-members = ["projects/affirmancy"]
+members = ["../affirmancy"]
 
 # Tools the workspace-root Nx targets invoke, over files outside any project.
 [dependency-groups]
@@ -22,7 +22,7 @@ dev = [
 ]
 
 # Python projects extend the settings below via
-# [tool.ruff] extend = "../../pyproject.toml"
+# [tool.ruff] extend = "../configuration/pyproject.toml"
 
 [tool.ruff]
 target-version = "py314"
@@ -67,7 +67,6 @@ indent_width = 2
 max_line_length = 120
 # PostgreSQL and Supabase use quoted identifiers with special chars in policy/function names
 exclude_rules = ["RF05"]
-ignore_paths = ["projects/lexico/lexico-entities/src/modules/lexico-database/migrations/"]
 
 [tool.sqlfluff.rules.capitalisation.keywords]
 capitalisation_policy = "lower"
