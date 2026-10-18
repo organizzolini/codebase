@@ -33,7 +33,7 @@ Call stacks traced through `projects/publication`, deepest first. Each frame sho
 | --- | --- |
 | Callables | 177 |
 | Files | 84 |
-| Calls traced | 245 |
+| Calls traced | 246 |
 | Call stacks | 12 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
@@ -72,9 +72,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 LinkPackagesCommand.run(): Promise<void> [projects/publication/src/modules/link-packages/link-packages.command.ts:46]
    ↳ Links the release group, and exits with the outcome.
-  └─> LinkPackagesService.run(): Promise<number> [projects/publication/src/modules/link-packages/link-packages.service.ts:241]
+  └─> LinkPackagesService.run(): Promise<number> [projects/publication/src/modules/link-packages/link-packages.service.ts:252]
      ↳ Records every published release-group version that has no record yet, and lists the ones this run published in a…
-    └─> LinkPackagesService.runInParallel(…)(root: string): Promise<ParallelOutcome> [projects/publication/src/modules/link-packages/link-packages.service.ts:273]
+    └─> LinkPackagesService.runInParallel(…)(root: string): Promise<ParallelOutcome> [projects/publication/src/modules/link-packages/link-packages.service.ts:284]
       └─> LinkPackagesService.linkPackage(root: string, context: LinkContext): Promise<ParallelOutcome> [projects/publication/src/modules/link-packages/link-packages.service.ts:144]
          ↳ Links the package in the given directory: a version this run published is added to the attestation subjects, a version…
         └─> ReleaseGroupService.specifier(root: string): string [projects/publication/src/modules/release-group/release-group.service.ts:267]
@@ -228,7 +228,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `LinkPackagesService.linkPackage` | 8 | `ReleaseGroupService.specifier`, `LinkPackagesService.tarballDigest`, `ReleaseGroupService.isOnNpm`, `rehearsalMessage`, `LinkPackagesService.hasStorageRecord`, `alreadyLinkedMessage`, `LinkPackagesService.createStorageRecord`, `linkingMessage` | `projects/publication/src/modules/link-packages/link-packages.service.ts:144` |
-| `LinkPackagesService.run` | 8 | `LinkPackagesService.readInputs`, `LinkPackagesService.map(…)`, `ReleaseGroupService.readGroup`, `LinkPackagesService.filter(…)`, `ReleaseGroupService.npmRegistry`, `ReleaseGroupService.isRehearsal`, `LinkPackagesService.runInParallel(…)`, `ReleaseGroupService.runInParallel` | `projects/publication/src/modules/link-packages/link-packages.service.ts:241` |
+| `LinkPackagesService.run` | 8 | `LinkPackagesService.readInputs`, `LinkPackagesService.map(…)`, `ReleaseGroupService.readGroup`, `LinkPackagesService.filter(…)`, `ReleaseGroupService.npmRegistry`, `ReleaseGroupService.isRehearsal`, `LinkPackagesService.runInParallel(…)`, `ReleaseGroupService.runInParallel` | `projects/publication/src/modules/link-packages/link-packages.service.ts:252` |
 | `PublishPackagesService.run` | 8 | `PublishPackagesService.readInputs`, `PublishPackagesService.map(…)`, `ReleaseGroupService.readGroup`, `PublishPackagesService.refuseUnsealedRehearsal`, `PublishPackagesService.publishToNpm`, `PublishPackagesService.prepareMirrors`, `PublishPackagesService.runInParallel(…)`, `ReleaseGroupService.runInParallel` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:318` |
 
 <details>
@@ -271,7 +271,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ReleaseGroupService.readGroup` | 2 | `ReleaseGroupService.membersFrom`, `describeError` | `projects/publication/src/modules/release-group/release-group.service.ts:169` |
 | `LinkPackagesService.createStorageRecord` | 2 | `LinkPackagesService.parse`, `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/link-packages/link-packages.service.ts:69` |
 | `LinkPackagesService.hasStorageRecord` | 2 | `ProcessRunnerService.captureAsync`, `LinkPackagesService.some(…)` | `projects/publication/src/modules/link-packages/link-packages.service.ts:119` |
-| `LinkPackagesService.tarballDigest` | 2 | `LinkPackagesService.parse`, `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/link-packages/link-packages.service.ts:204` |
+| `LinkPackagesService.tarballDigest` | 2 | `LinkPackagesService.parse`, `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/link-packages/link-packages.service.ts:205` |
 | `LinkPackagesCommand.run` | 2 | `LinkPackagesService.run`, `describeError` | `projects/publication/src/modules/link-packages/link-packages.command.ts:46` |
 | `PublishPackagesCommand.run` | 2 | `PublishPackagesService.run`, `describeError` | `projects/publication/src/modules/publish-packages/publish-packages.command.ts:47` |
 | `MainTipService.head` | 2 | `requireSuccess`, `ProcessRunnerService.capture` | `projects/publication/src/modules/main-tip/main-tip.service.ts:73` |
@@ -296,7 +296,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `ReleaseGroupService.specifier` | 1 | `ReleaseGroupService.readManifest` | `projects/publication/src/modules/release-group/release-group.service.ts:267` |
 | `LinkPackagesService.readInputs` | 1 | `LinkPackagesService.read` | `projects/publication/src/modules/link-packages/link-packages.service.ts:185` |
 | `LinkPackagesService.read` | 1 | `requireVariable` | `projects/publication/src/modules/link-packages/link-packages.service.ts:186` |
-| `LinkPackagesService.runInParallel(…)` | 1 | `LinkPackagesService.linkPackage` | `projects/publication/src/modules/link-packages/link-packages.service.ts:273` |
+| `LinkPackagesService.runInParallel(…)` | 1 | `LinkPackagesService.linkPackage` | `projects/publication/src/modules/link-packages/link-packages.service.ts:284` |
 | `MergeTaskCacheCommand.run` | 1 | `TaskDatabaseService.merge` | `projects/publication/src/modules/merge-task-cache/merge-task-cache.command.ts:45` |
 | `PublishPackagesService.packRenamed` | 1 | `ProcessRunnerService.captureAsync` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:116` |
 | `PublishPackagesService.prepareMirrors` | 1 | `authenticationLine` | `projects/publication/src/modules/publish-packages/publish-packages.service.ts:172` |
@@ -858,8 +858,8 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10127-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-327.85_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10175-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-329.64_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-19-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-132-3178c6?style=flat-square)
 
@@ -879,11 +879,11 @@ graph LR
 ![Test Files](https://img.shields.io/badge/Test_Files-46-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-18-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-43-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-533-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-536-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-122-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-449-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-206-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-601-dc2626?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-451-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-207-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-606-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-636-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-168-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-417-64748b?style=flat-square)

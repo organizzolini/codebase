@@ -13296,7 +13296,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-16-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2687-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2693-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-16-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-366-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-58-8b5cf6?style=flat-square)
@@ -13416,23 +13416,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-121-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19417-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19453-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-120-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-692-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-528-a78bfa?style=flat-square)
+![H3](https://img.shields.io/badge/H3-529-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5550-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-881-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4220-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5561-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-883-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4228-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-239-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2056-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-733-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-379-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11503-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-380-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11506-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-22-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13447,7 +13447,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | --- | --- |
 | Callables | 6599 |
 | Files | 1963 |
-| Calls traced | 7265 |
+| Calls traced | 7266 |
 | Call stacks | 1810 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
