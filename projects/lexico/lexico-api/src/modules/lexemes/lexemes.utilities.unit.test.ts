@@ -93,18 +93,30 @@ describe("lexemes utilities suite", () => {
       const mapped = toLexemeType(createLexeme());
 
       expect(mapped).toBeInstanceOf(LexemeType);
-      expect(mapped).toStrictEqual(
+      expect(mapped).toMatchObject(
         Object.assign(new LexemeType(), {
           ...BASE_COLUMNS,
           disambiguator: 0,
           etymology: undefined,
-          forms: [
-            Object.assign(new NominalFormType(), {
-              case: "nominative",
-              id: "form-1",
-              number: "singular",
-            }),
-          ],
+          forms: {
+            edges: [
+              {
+                cursor: expect.any(String),
+                node: Object.assign(new NominalFormType(), {
+                  case: "nominative",
+                  id: "form-1",
+                  number: "singular",
+                }),
+              },
+            ],
+            pageInfo: {
+              endCursor: expect.any(String),
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: expect.any(String),
+            },
+            totalCount: 1,
+          },
           id: "lexeme-1",
           inflection: Object.assign(new NounInflectionType(), {
             declension: "first",
@@ -113,31 +125,67 @@ describe("lexemes utilities suite", () => {
           }),
           lemma: "puella",
           partOfSpeech: "noun",
-          principalParts: [
-            Object.assign(new PrincipalPartType(), {
-              ...BASE_COLUMNS,
-              id: "part-1",
-              name: "nominative",
-              text: ["puella"],
-            }),
-          ],
-          pronunciations: [
-            Object.assign(new PronunciationType(), {
-              ...BASE_COLUMNS,
-              id: "pronunciation-1",
-              phonemes: null,
-              phonemic: "/ˈpu.el.la/",
-              phonetic: null,
-              variant: "classical",
-            }),
-          ],
-          translations: [
-            Object.assign(new TranslationType(), {
-              ...BASE_COLUMNS,
-              data: "girl",
-              id: "translation-1",
-            }),
-          ],
+          principalParts: {
+            edges: [
+              {
+                cursor: expect.any(String),
+                node: Object.assign(new PrincipalPartType(), {
+                  ...BASE_COLUMNS,
+                  id: "part-1",
+                  name: "nominative",
+                  text: ["puella"],
+                }),
+              },
+            ],
+            pageInfo: {
+              endCursor: expect.any(String),
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: expect.any(String),
+            },
+            totalCount: 1,
+          },
+          pronunciations: {
+            edges: [
+              {
+                cursor: expect.any(String),
+                node: Object.assign(new PronunciationType(), {
+                  ...BASE_COLUMNS,
+                  id: "pronunciation-1",
+                  phonemes: null,
+                  phonemic: "/ˈpu.el.la/",
+                  phonetic: null,
+                  variant: "classical",
+                }),
+              },
+            ],
+            pageInfo: {
+              endCursor: expect.any(String),
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: expect.any(String),
+            },
+            totalCount: 1,
+          },
+          translations: {
+            edges: [
+              {
+                cursor: expect.any(String),
+                node: Object.assign(new TranslationType(), {
+                  ...BASE_COLUMNS,
+                  data: "girl",
+                  id: "translation-1",
+                }),
+              },
+            ],
+            pageInfo: {
+              endCursor: expect.any(String),
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: expect.any(String),
+            },
+            totalCount: 1,
+          },
         }),
       );
     });

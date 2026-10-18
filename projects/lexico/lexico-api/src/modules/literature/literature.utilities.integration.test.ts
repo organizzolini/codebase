@@ -438,7 +438,10 @@ describe("literature pagination integration suite", () => {
       expect(lineHits.totalCount).toBe(7);
       expect(lineHits.edges.map((edge) => edge.node.id)).toStrictEqual(armaIds);
       await expect(service.searchLiterature("arma")).resolves.toMatchObject({
-        lines: armaIds.map((id) => ({ id })),
+        lines: {
+          edges: armaIds.map((id) => ({ node: { id } })),
+          totalCount: armaIds.length,
+        },
       });
       expect(georgicsHits.edges.map((edge) => edge.node.data)).toStrictEqual([
         "arma quid faciat laetas segetes",

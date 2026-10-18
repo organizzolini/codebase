@@ -4,6 +4,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import {
+  AdjectivalForm,
   FiniteVerbForm,
   type Form,
   Lexeme,
@@ -288,6 +289,73 @@ describe("search service integration suite", () => {
     expect(result.edges[0]?.node.lexeme.id).toBe(voco.id);
     expect(result.edges[0]?.node.identifiers).toContain(
       "third person plural imperfect active indicative",
+    );
+  });
+
+  it("keeps morphological identifiers scoped to the lexeme they belong to", async () => {
+    expect.hasAssertions();
+
+    const verbalForm = new FiniteVerbForm();
+    verbalForm.mood = "indicative";
+    verbalForm.number = "singular";
+    verbalForm.person = "second";
+    verbalForm.tense = "present";
+    verbalForm.voice = "passive";
+    const amo = await seedLexeme({
+      forms: [verbalForm],
+      lemma: "amo2",
+      meanings: ["love"],
+      partOfSpeech: "verb",
+    });
+
+    const adjectivalForm = new AdjectivalForm();
+    adjectivalForm.case = "nominative";
+    adjectivalForm.gender = "masculine";
+    adjectivalForm.number = "singular";
+    const adjective = await seedLexeme({
+      forms: [adjectivalForm],
+      lemma: "bonus2",
+      meanings: ["bitter"],
+      partOfSpeech: "adjective",
+    });
+
+    const sharedWord = await database
+      .repository(Word)
+      .save(Object.assign(new Word(), { data: "amare2" }));
+    await database
+      .repository(WordForm)
+      .save(
+        Object.assign(new WordForm(), { form: verbalForm, word: sharedWord }),
+      );
+    await database.repository(WordForm).save(
+      Object.assign(new WordForm(), {
+        form: adjectivalForm,
+        word: sharedWord,
+      }),
+    );
+    await database
+      .repository(WordLexeme)
+      .save(Object.assign(new WordLexeme(), { lexeme: amo, word: sharedWord }));
+    await database.repository(WordLexeme).save(
+      Object.assign(new WordLexeme(), {
+        lexeme: adjective,
+        word: sharedWord,
+      }),
+    );
+
+    const result = await service.searchLatin("amare2");
+    const nodes = new Map(
+      result.edges.map((edge) => [edge.node.lexeme.id, edge.node]),
+    );
+
+    expect(nodes.get(amo.id)?.identifiers).toContain(
+      "second person singular present passive indicative",
+    );
+    expect(nodes.get(adjective.id)?.identifiers).toStrictEqual([
+      "nominative singular masculine",
+    ]);
+    expect(nodes.get(adjective.id)?.identifiers).not.toContain(
+      "second person singular present passive indicative",
     );
   });
 

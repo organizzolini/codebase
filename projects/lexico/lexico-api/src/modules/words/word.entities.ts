@@ -2,10 +2,14 @@ import { Field, ObjectType } from "@nestjs/graphql";
 
 import { DeletableType } from "../../deletable.entities";
 
+import {
+  WordFormConnectionType,
+  WordLexemeConnectionType,
+} from "./word-connection.entities";
 import { WordFormType } from "./word-form.entities";
 import { WordLexemeType } from "./word-lexeme.entities";
 
-import type { GraphQLObjectOf } from "../../lexico-api.types";
+import type { Connection, GraphQLObjectOf } from "../../lexico-api.types";
 import type { WordRelationField } from "./words.types";
 import type { Word } from "@codebase/lexico-entities";
 
@@ -19,10 +23,10 @@ export class WordType
   public data!: string;
 
   /** Every morphological form this word can surface as. */
-  @Field(() => [WordFormType])
-  public wordForms!: WordFormType[];
+  @Field(() => WordFormConnectionType)
+  public wordForms!: Connection<WordFormType>;
 
   /** Every lexeme this word can represent. */
-  @Field(() => [WordLexemeType])
-  public wordLexemes!: WordLexemeType[];
+  @Field(() => WordLexemeConnectionType)
+  public wordLexemes!: Connection<WordLexemeType>;
 }

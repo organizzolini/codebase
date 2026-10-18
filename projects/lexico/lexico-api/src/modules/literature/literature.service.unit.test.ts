@@ -280,12 +280,20 @@ describe(LiteratureService, () => {
     const result = await service.searchLiterature("vir", "author-1");
     const resultWithoutAuthor = await service.searchLiterature("vir");
 
-    expect(result.authors).toStrictEqual([author]);
-    expect(result.texts).toStrictEqual([text]);
-    expect(result.lines).toStrictEqual([line]);
-    expect(resultWithoutAuthor.authors).toStrictEqual([author]);
-    expect(resultWithoutAuthor.texts).toStrictEqual([text]);
-    expect(resultWithoutAuthor.lines).toStrictEqual([line]);
+    expect(result.authors.edges.map((edge) => edge.node)).toStrictEqual([
+      author,
+    ]);
+    expect(result.texts.edges.map((edge) => edge.node)).toStrictEqual([text]);
+    expect(result.lines.edges.map((edge) => edge.node)).toStrictEqual([line]);
+    expect(
+      resultWithoutAuthor.authors.edges.map((edge) => edge.node),
+    ).toStrictEqual([author]);
+    expect(
+      resultWithoutAuthor.texts.edges.map((edge) => edge.node),
+    ).toStrictEqual([text]);
+    expect(
+      resultWithoutAuthor.lines.edges.map((edge) => edge.node),
+    ).toStrictEqual([line]);
   });
 
   it("handles empty queries and null lookups across literature search helpers", async () => {
@@ -321,10 +329,10 @@ describe(LiteratureService, () => {
     });
     await expect(
       service.searchLiterature("   ", "author-1"),
-    ).resolves.toStrictEqual({
-      authors: [],
-      lines: [],
-      texts: [],
+    ).resolves.toMatchObject({
+      authors: expect.objectContaining({ edges: [], totalCount: 0 }),
+      lines: expect.objectContaining({ edges: [], totalCount: 0 }),
+      texts: expect.objectContaining({ edges: [], totalCount: 0 }),
     });
   });
 
@@ -420,17 +428,17 @@ describe(LiteratureService, () => {
     });
     await expect(
       service.searchLiterature(" ", "author-1"),
-    ).resolves.toStrictEqual({
-      authors: [],
-      lines: [],
-      texts: [],
+    ).resolves.toMatchObject({
+      authors: { edges: [], totalCount: 0 },
+      lines: { edges: [], totalCount: 0 },
+      texts: { edges: [], totalCount: 0 },
     });
     await expect(
       service.searchLiterature("arma", "author-1"),
-    ).resolves.toStrictEqual({
-      authors: [],
-      lines: [line],
-      texts: [],
+    ).resolves.toMatchObject({
+      authors: { edges: [], totalCount: 0 },
+      lines: { edges: [{ node: line }], totalCount: 1 },
+      texts: { edges: [], totalCount: 0 },
     });
   });
 });
