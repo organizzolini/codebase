@@ -2,6 +2,7 @@
 
 import type { ConformetryInstanceGroup } from "../instance-group/instance-group.types";
 import type { conformetryConfigurationSchema } from "./configuration.constants";
+import type { GeneratorHooks } from "@conformetry/core";
 import type { z } from "zod";
 
 /**
@@ -15,6 +16,13 @@ export type ConformetryConfiguration = ConformetryGeneratorDefinition[];
 /** One generator, with the template it renders and the instances it governs. */
 export interface ConformetryGeneratorDefinition {
   description?: string;
+  /**
+   * Functions run around generation: `preGenerate` before anything is written,
+   * `postGenerate` after the template is rendered. Optional, and left off the
+   * loaded definition when a generator declares none, so a host forwards
+   * exactly what the configuration said.
+   */
+  hooks?: GeneratorHooks;
   /**
    * The values this generator substitutes, as JSON Schema fragments. Named for
    * what the implementation calls them everywhere else — a generator takes

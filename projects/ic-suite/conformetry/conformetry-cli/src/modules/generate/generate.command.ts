@@ -104,6 +104,9 @@ export class GenerateCommand extends CommandRunner {
 
     const result = await this.generationService.runGenerator({
       definition: {
+        // Forwarded only when declared, so a generator with none reaches the
+        // runtime exactly as it did before hooks existed.
+        ...(definition.hooks === undefined ? {} : { hooks: definition.hooks }),
         name: definition.name,
         templateDirectoryPath: definition.templatePath,
       },
