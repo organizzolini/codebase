@@ -7,7 +7,7 @@
     "**/.git/**",
     "**/.github/skills/**",
     "**/.nx/**",
-    "**/.conformetry/templates/**",
+    "**/conformetry-templates/**",
     "**/coverage/**",
     "**/dist/**",
     "**/node_modules/**",

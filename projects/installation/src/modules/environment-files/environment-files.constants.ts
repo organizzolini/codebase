@@ -15,7 +15,7 @@ export const ENVIRONMENT_FILE_NAME = ".env";
 export const DEFAULT_FILE_PATTERNS = [
   ".env.default",
   "*/.env.default",
-  ":!:projects/configuration/.conformetry/templates/**",
+  ":!:projects/configuration/conformetry-templates/**",
 ];
 
 /** The variable docker-compose volume mounts resolve against on the host. */

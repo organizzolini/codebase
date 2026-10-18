@@ -40,7 +40,6 @@ one class.
 
 | Command | Module | Called from |
 | ------- | ------ | ----------- |
-| `run-affected` | `src/modules/run-affected` | the `run-affected` composite action |
 | `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 📦 Publishable Packages leg of Continuous Integration |
 | `verify-task-database` | `src/modules/verify-task-database` | the `cleanup-codebase` composite action |
 | `adopt-task-database` | `src/modules/adopt-task-database` | nothing yet: `setup-codebase` runs it before install, as `scripts/nx/adopt-task-database.sh` |

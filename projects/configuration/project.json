@@ -72,8 +72,8 @@
       "!{workspaceRoot}/.agents/skills/writing-skills/**"
     ],
     "workspace-files": [
-      "!{projectRoot}/.conformetry/**",
       "!{projectRoot}/.cspell/**",
+      "!{projectRoot}/conformetry-templates/**",
       "!{projectRoot}/cspell.config.yaml",
       "{projectRoot}/**/*",
       "workspace-unowned"
@@ -212,8 +212,8 @@
       "description": "Lint workspace root files with ESLint — config files, scripts, documentation, the infrastructure project (named explicitly rather than given its own eslint target, which would need a tsconfig just to lint an eslint.config.ts), and every markdown file in the workspace. That trailing `**/*.md` is what gives `project-structure/folder-structure` reach over markdown paths, and it is a workspace-wide glob rather than a list of directories on purpose: an enumerated list only judges the directories somebody remembered to add, so it would not have caught openwiki/ — the undeclared directory that motivated the rule — and would not catch the next one. Markdown inside a project is judged twice, here and by that project's own eslint target, which costs a second and reports the same answer.",
       "executor": "nx:run-commands",
       "inputs": [
-        "!{projectRoot}/.conformetry/**",
         "!{projectRoot}/.cspell/**",
+        "!{projectRoot}/conformetry-templates/**",
         "!{projectRoot}/cspell.config.yaml",
         "!{workspaceRoot}/.eslintcache/**",
         "{projectRoot}/**/*",

@@ -1,5 +1,4 @@
-Commands that run in CI: `run-affected` (Nx affected runs over a change set
-corrected for spelling files and conformetry templates),
+Commands that run in CI:
 `publishable-packages-gate` (runs the publishable-packages check only when an
 ic-suite package is affected), the Nx task-database steps
 `verify-task-database`, `adopt-task-database`, and `keep-task-database`, and the

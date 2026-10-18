@@ -266,7 +266,7 @@
     "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts",
     "**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts",
     "**/build/**",
-    "**/.conformetry/templates/**",
+    "**/conformetry-templates/**",
     // 🕸️ Codependix example subjects: input to be graphed, unreachable from any
     // entry point by construction. One carries a `tsconfig.json` the compiler is
     // meant to refuse, and another a module that throws the moment it is

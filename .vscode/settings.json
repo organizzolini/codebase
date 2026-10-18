@@ -849,7 +849,7 @@
   },
   "ruff.configuration": "/pyproject.toml",
   "ruff.configurationPreference": "editorOnly",
-  "ruff.exclude": ["projects/configuration/.conformetry/templates/**"],
+  "ruff.exclude": ["projects/configuration/conformetry-templates/**"],
   "ruff.interpreter": ["${workspaceFolder}/.venv/bin/python"],
   "ruff.nativeServer": "auto",
   "ruff.organizeImports": true,

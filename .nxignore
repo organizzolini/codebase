@@ -1,11 +1,11 @@
 # Ignore conformetry templates from project inference
-projects/configuration/.conformetry/templates/**/project.json
-projects/configuration/.conformetry/templates/**/package.json
-projects/configuration/.conformetry/templates/**/pyproject.toml
-projects/configuration/.conformetry/templates/**/vite.config.*
-projects/configuration/.conformetry/templates/**/vitest.config.*
-projects/configuration/.conformetry/templates/**/eslint.config.*
-projects/configuration/.conformetry/templates/**/codometer.config.*
-projects/configuration/.conformetry/templates/**/callidescope.config.*
+projects/configuration/conformetry-templates/**/project.json
+projects/configuration/conformetry-templates/**/package.json
+projects/configuration/conformetry-templates/**/pyproject.toml
+projects/configuration/conformetry-templates/**/vite.config.*
+projects/configuration/conformetry-templates/**/vitest.config.*
+projects/configuration/conformetry-templates/**/eslint.config.*
+projects/configuration/conformetry-templates/**/codometer.config.*
+projects/configuration/conformetry-templates/**/callidescope.config.*
 .claude/worktrees
 

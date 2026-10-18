@@ -23,7 +23,6 @@ const COMMAND_NAMES = [
   "link-packages",
   "publish-packages",
   "publishable-packages-gate",
-  "run-affected",
   "tag-codebase",
   "tag-packages",
   "verify-task-database",

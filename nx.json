@@ -27,9 +27,9 @@
   },
   "namedInputs": {
     "default": [
-      "!{projectRoot}/.conformetry/**",
       "!{projectRoot}/.cspell/**",
       "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
       "!{projectRoot}/cspell.config.yaml",
       "{projectRoot}/**/*",
       "shared-globals"

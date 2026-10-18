@@ -5,7 +5,7 @@
 
 # Template sources. These are not compiled as part of any project, and the
 # mustache placeholders in their paths are not valid TypeScript identifiers.
-projects/configuration/.conformetry/templates/
+projects/configuration/conformetry-templates/
 
 # Planning and prose.
 notepads/

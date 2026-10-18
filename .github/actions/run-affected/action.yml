@@ -1,13 +1,11 @@
 name: 🎯 Run Affected
 description: |
   Run `nx affected` for one target between `NX_BASE` and `NX_HEAD` (requires
-  `setup-codebase` with `nx-shas`), dropping spelling files from the change
-  set unless `include-spelling` is set, and selecting every conformetry
-  instance when a template changes if `include-templates` is set.
+  `setup-codebase` with `nx-shas`).
 
-  The logic, and why `--stdin` is only its fallback, lives in the
-  `run-affected` command of the `publication` project. It needs the installed
-  dependencies, so this runs after `setup-codebase` has installed them.
+  When `include-templates` is set (for `guard-code`), checks whether any
+  conformetry templates were touched in git and passes `conformetry.config.ts`
+  to ensure all instance projects run `conformetry-validate`.
 
 inputs:
   target:
@@ -17,9 +15,7 @@ inputs:
     description: Extra `nx affected` flags, space separated
     default: ""
   include-spelling:
-    description: |
-      Keep spelling files in the changed file list. Set it only for the
-      target whose `dependsOn` runs `spell-check`.
+    description: Deprecated legacy flag; spelling inputs are now isolated natively
     default: "false"
   include-templates:
     description: |
@@ -32,13 +28,20 @@ runs:
   using: composite
   steps:
     - name: 🎯 Run Affected
-      env:
-        TARGET: ${{ inputs.target }}
-        ARGUMENTS: ${{ inputs.arguments }}
-        INCLUDE_SPELLING: ${{ inputs.include-spelling }}
-        INCLUDE_TEMPLATES: ${{ inputs.include-templates }}
-        SPELLING_PATHS: ^projects/configuration/\.cspell/|(^|/)cspell\.config\.yaml$
-      run: |
-        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/publication/src/publication.main.ts run-affected
       shell: bash
+      run: |
+        EXTRA_ARGS=()
+        if [ "${{ inputs.include-templates }}" = "true" ]; then
+          MERGE_BASE=$(git merge-base "${NX_BASE}" "${NX_HEAD}" 2>/dev/null || echo "${NX_BASE}")
+          if git diff --name-only --relative "${MERGE_BASE}" "${NX_HEAD}" | grep -q '^projects/configuration/conformetry-templates/'; then
+            EXTRA_ARGS+=(--files=projects/configuration/conformetry.config.ts)
+          fi
+        fi
+
+        pnpm exec nx affected \
+          --base="${NX_BASE}" \
+          --head="${NX_HEAD}" \
+          --target="${{ inputs.target }}" \
+          ${{ inputs.arguments }} \
+          "${EXTRA_ARGS[@]}"
+

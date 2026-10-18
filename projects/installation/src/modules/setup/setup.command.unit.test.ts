@@ -124,7 +124,7 @@ describe(SetupCommand, () => {
     fs.writeFileSync(path.join(workspace.root, ".env.default"), "ROOT=1\n");
     const { command: subject, commands } = await createCommand({
       responses: {
-        "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:projects/configuration/.conformetry/templates/**":
+        "git ls-files --cached --others --exclude-standard -- .env.default */.env.default :!:projects/configuration/conformetry-templates/**":
           { stdout: ".env.default\n" },
       },
     });
