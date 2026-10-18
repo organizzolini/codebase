@@ -231,7 +231,7 @@ or any other — rewrites the database as a side effect. Keep it that way: a `de
 `start` would run a full draw run on every check.
 
 **The database lives in Postgres, not in the repository.** Meanderaw uses the shared convention
-from `@codebase/database`: the local Docker init creates the `meanderaw_development` database,
+from `@codebase/persistence`: the local Docker init creates the `meanderaw_development` database,
 the `meanderaw` schema inside it, and the `meanderaw_username` role that owns both, the defaults
 of `MEANDERAW_POSTGRES_DATABASE`, `MEANDERAW_POSTGRES_SCHEMA`, and `MEANDERAW_POSTGRES_USERNAME`. Every
 meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_*` the root
@@ -249,7 +249,7 @@ data source `src/modules/meanderaw-database/data-source.constants.ts` exports, a
 A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
 [ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start
 their own throwaway `postgres:18-alpine` container, migrated by the real migrations, through
-`startDatabaseTestingModule` from `@codebase/database/testing` against `meanderaw_testing`, so Docker
+`startDatabaseTestingModule` from `@codebase/persistence/testing` against `meanderaw_testing`, so Docker
 must be running to test them. `MeanderawDatabaseModule` is the project's own database module and
 is passed to that helper as `database`.
 

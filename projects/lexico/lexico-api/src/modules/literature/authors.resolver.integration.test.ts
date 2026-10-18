@@ -22,7 +22,7 @@ import {
 import { AuthorsResolver } from "./authors.resolver";
 import { toAuthorType } from "./literature.utilities";
 
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /**
  * Resolves authors against a real `lexico_testing` database built by lexico's

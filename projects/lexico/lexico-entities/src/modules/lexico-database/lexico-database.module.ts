@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { DatabaseModule } from "@codebase/database";
+import { DatabaseModule } from "@codebase/persistence";
 
 import { LEXICO_DATABASE_ENTITIES } from "./data-source.constants";
 import { LexicoNamingStrategy } from "./lexico-database.constants";

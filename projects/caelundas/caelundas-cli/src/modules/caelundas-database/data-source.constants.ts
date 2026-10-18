@@ -1,4 +1,4 @@
-import { createDataSource } from "@codebase/database";
+import { createDataSource } from "@codebase/persistence";
 
 import {
   DATABASE_ENTITIES,

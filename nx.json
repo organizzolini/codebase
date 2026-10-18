@@ -704,11 +704,11 @@
       "cache": false,
       "configurations": {
         "extract-sql-all": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/database/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=all",
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/persistence/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=all",
           "cwd": "{workspaceRoot}"
         },
         "extract-sql-latest": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/database/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=latest",
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/persistence/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=latest",
           "cwd": "{workspaceRoot}"
         },
         "generate": {

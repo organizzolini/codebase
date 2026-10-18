@@ -1,6 +1,6 @@
 import { Column, Entity, Index, Unique } from "typeorm";
 
-import { UpdatableEntity } from "@codebase/database";
+import { UpdatableEntity } from "@codebase/persistence";
 
 import { createMomentTransformer } from "../caelundas-database.utilities";
 

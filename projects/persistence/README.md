@@ -1,4 +1,4 @@
-# 🐘 Database
+# 🐘 Persistence
 
 The shared Postgres package every database-backed project connects through, and a command line that moves tables between databases.
 
@@ -17,16 +17,24 @@ role are written once:
 The schema carries no environment, so a migration generated locally applies
 anywhere unchanged.
 
-| Export                       | Responsibility                                                                                 |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- |
-| `postgresEnvironmentSchema`  | The zod fragment for a project's six `<PROJECT>_POSTGRES_*` variables, with defaults           |
-| `postgresConnection`         | The connection those variables describe, read from any environment record                      |
-| `postgresDataSourceOptions`  | TypeORM options: snake case, schema as search path, `synchronize` and `migrationsRun` off      |
-| `DatabaseModule.forRoot`     | The NestJS module wiring TypeORM from those variables through `ConfigService`                  |
-| `createDataSource`           | The `DataSource` a project's TypeORM command-line entry exports, from the same options         |
-| `IdentifiableEntity` …       | Base entities: a `uuidv7()` id, then created, updated, and soft-deleted columns                |
-| `startPostgresContainer`     | From `@codebase/database/testing`: a migrated Postgres 18 container laid out like local Docker |
-| `startDatabaseTestingModule` | From `@codebase/database/testing`: a Nest testing module connected to such a container         |
+Key exports and responsibilities:
+
+- `postgresEnvironmentSchema`: The zod fragment for a project's six
+  `<PROJECT>_POSTGRES_*` variables, with defaults
+- `postgresConnection`: The connection those variables describe, read from any
+  environment record
+- `postgresDataSourceOptions`: TypeORM options: snake case, schema as search
+  path, `synchronize` and `migrationsRun` off
+- `DatabaseModule.forRoot`: The NestJS module wiring TypeORM from those
+  variables through `ConfigService`
+- `createDataSource`: The `DataSource` a project's TypeORM command-line entry
+  exports, from the same options
+- `IdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
+  updated, and soft-deleted columns
+- `startPostgresContainer`: From `@codebase/persistence/testing`: a migrated
+  Postgres 18 container laid out like local Docker
+- `startDatabaseTestingModule`: From `@codebase/persistence/testing`: a Nest
+  testing module connected to such a container
 
 ## Usage
 
@@ -35,7 +43,7 @@ variable is prefixed with the project's name, so the root's unprefixed
 `POSTGRES_*` — the shared container's admin login — never reach it:
 
 ```ts
-import { postgresEnvironmentSchema } from "@codebase/database";
+import { postgresEnvironmentSchema } from "@codebase/persistence";
 
 export const environmentSchema = z.object({
   ...postgresEnvironmentSchema({ project: "lexico" }),
@@ -179,7 +187,7 @@ generated column or view:
 
 ### Integration tests
 
-`@codebase/database/testing` starts a throwaway `postgres:18-alpine`, falling
+`@codebase/persistence/testing` starts a throwaway `postgres:18-alpine`, falling
 back to Google's mirror of Docker Hub, laid out the way the local container
 is: a `<project>_username` role owning a `<project>_testing` database with a
 `<project>` schema in it. It then builds the schema by running the project's
@@ -192,7 +200,7 @@ connected to it, the container's `<PROJECT>_POSTGRES_*` set on `process.env`
 over any already there:
 
 ```ts
-import { startDatabaseTestingModule } from "@codebase/database/testing";
+import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 const database = await startDatabaseTestingModule({
   entities: [Meander],
@@ -231,7 +239,7 @@ it as `database` too, or the testing module connects twice; `database` and
 `startPostgresContainer` alone suits a suite that needs no Nest module:
 
 ```ts
-import { startPostgresContainer } from "@codebase/database/testing";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 const container = await startPostgresContainer({
   migrations: [InitialMigration1767225600000],
@@ -261,12 +269,12 @@ The package is also a command line, `database`, that copies selected tables
 between two Postgres databases through `pg_dump` and `pg_restore`. Each
 command names its database by URI, so it needs no `<PROJECT>_POSTGRES_*`
 variable and opens no connection at startup. Run it through Nx; `start` runs
-with the working directory at `projects/database`, so a relative `--file`
+with the working directory at `projects/persistence`, so a relative `--file`
 resolves from there, and `*.dump` is gitignored there:
 
 ```bash
-pnpm exec nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
-pnpm exec nx run database:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Options
@@ -332,7 +340,7 @@ sequences behind them.
 Both commands need the PostgreSQL 18 client tools, `pg_dump` for export and
 `pg_restore` for import, and check their version before any database work. A
 missing tool or another major version fails with the setup script to run:
-`scripts/local/software/database.sh` installs them with Homebrew, and the
+`scripts/local/software/persistence.sh` installs them with Homebrew, and the
 devcontainer installs them too.
 
 ### Credentials
@@ -348,7 +356,7 @@ therefore not reachable through these commands today.
 ## Test
 
 ```bash
-nx run database:vitest
+nx run persistence:vitest
 ```
 
 ## 👔 Conformetry
@@ -414,31 +422,31 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_scripts_extract_migration_sql_ts["scripts/extract-migration-sql.ts"]
-  file_src_database_main_end_to_end_test_ts["src/database.main.end-to-end.test.ts"]
-  file_src_database_main_ts["src/database.main.ts"]
-  file_src_database_main_unit_test_ts["src/database.main.unit.test.ts"]
-  file_src_database_module_ts["src/database.module.ts"]
-  file_src_database_module_unit_test_ts["src/database.module.unit.test.ts"]
-  file_src_database_repl_ts["src/database.repl.ts"]
-  file_src_database_repl_unit_test_ts["src/database.repl.unit.test.ts"]
+  file_src_database_main_end_to_end_test_ts["src/persistence.main.end-to-end.test.ts"]
+  file_src_database_main_ts["src/persistence.main.ts"]
+  file_src_database_main_unit_test_ts["src/persistence.main.unit.test.ts"]
+  file_src_database_module_ts["src/persistence.module.ts"]
+  file_src_database_module_unit_test_ts["src/persistence.module.unit.test.ts"]
+  file_src_database_repl_ts["src/persistence.repl.ts"]
+  file_src_database_repl_unit_test_ts["src/persistence.repl.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_modules_database_database_testing_utilities_integration_test_ts["src/modules/database/database-testing.utilities.integration.test.ts"]
-  file_src_modules_database_database_constants_ts["src/modules/database/database.constants.ts"]
-  file_src_modules_database_database_module_integration_test_ts["src/modules/database/database.module.integration.test.ts"]
-  file_src_modules_database_database_module_ts["src/modules/database/database.module.ts"]
-  file_src_modules_database_database_service_ts["src/modules/database/database.service.ts"]
-  file_src_modules_database_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
-  file_src_modules_database_database_types_ts["src/modules/database/database.types.ts"]
-  file_src_modules_database_database_utilities_ts["src/modules/database/database.utilities.ts"]
-  file_src_modules_database_database_utilities_unit_test_ts["src/modules/database/database.utilities.unit.test.ts"]
-  file_src_modules_database_entities_creatable_entity_ts["src/modules/database/entities/creatable.entity.ts"]
-  file_src_modules_database_entities_deletable_entity_ts["src/modules/database/entities/deletable.entity.ts"]
-  file_src_modules_database_entities_identifiable_entity_ts["src/modules/database/entities/identifiable.entity.ts"]
-  file_src_modules_database_entities_updatable_entity_ts["src/modules/database/entities/updatable.entity.ts"]
-  file_src_modules_database_postgres_container_constants_ts["src/modules/database/postgres-container.constants.ts"]
-  file_src_modules_database_postgres_container_types_ts["src/modules/database/postgres-container.types.ts"]
-  file_src_modules_database_postgres_container_utilities_integration_test_ts["src/modules/database/postgres-container.utilities.integration.test.ts"]
-  file_src_modules_database_postgres_container_utilities_ts["src/modules/database/postgres-container.utilities.ts"]
+  file_src_modules_database_database_testing_utilities_integration_test_ts["src/modules/persistence/database-testing.utilities.integration.test.ts"]
+  file_src_modules_database_database_constants_ts["src/modules/persistence/persistence.constants.ts"]
+  file_src_modules_database_database_module_integration_test_ts["src/modules/persistence/persistence.module.integration.test.ts"]
+  file_src_modules_database_database_module_ts["src/modules/persistence/persistence.module.ts"]
+  file_src_modules_database_database_service_ts["src/modules/persistence/persistence.service.ts"]
+  file_src_modules_database_database_service_unit_test_ts["src/modules/persistence/persistence.service.unit.test.ts"]
+  file_src_modules_database_database_types_ts["src/modules/persistence/persistence.types.ts"]
+  file_src_modules_database_database_utilities_ts["src/modules/persistence/persistence.utilities.ts"]
+  file_src_modules_database_database_utilities_unit_test_ts["src/modules/persistence/persistence.utilities.unit.test.ts"]
+  file_src_modules_database_entities_creatable_entity_ts["src/modules/persistence/entities/creatable.entity.ts"]
+  file_src_modules_database_entities_deletable_entity_ts["src/modules/persistence/entities/deletable.entity.ts"]
+  file_src_modules_database_entities_identifiable_entity_ts["src/modules/persistence/entities/identifiable.entity.ts"]
+  file_src_modules_database_entities_updatable_entity_ts["src/modules/persistence/entities/updatable.entity.ts"]
+  file_src_modules_database_postgres_container_constants_ts["src/modules/persistence/postgres-container.constants.ts"]
+  file_src_modules_database_postgres_container_types_ts["src/modules/persistence/postgres-container.types.ts"]
+  file_src_modules_database_postgres_container_utilities_integration_test_ts["src/modules/persistence/postgres-container.utilities.integration.test.ts"]
+  file_src_modules_database_postgres_container_utilities_ts["src/modules/persistence/postgres-container.utilities.ts"]
   file_src_modules_export_export_arguments_command_integration_test_ts["src/modules/export/export-arguments.command.integration.test.ts"]
   file_src_modules_export_export_dry_run_command_integration_test_ts["src/modules/export/export-dry-run.command.integration.test.ts"]
   file_src_modules_export_export_dry_run_command_unit_test_ts["src/modules/export/export-dry-run.command.unit.test.ts"]
@@ -683,7 +691,7 @@ graph LR
 
 ## 🔭 Callidescope
 
-Call stacks traced through `projects/database`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+Call stacks traced through `projects/persistence`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
 | Measure | Value |
 | --- | --- |
@@ -709,43 +717,43 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `ImportCommand.run`** — depth ≥ 7 · decorated-method
 
 ```text
-🚀 ImportCommand.run(_passedParameters: string[], options: ImportCommandOptions): Promise<void> [projects/database/src/modules/import/import.command.ts:343]
+🚀 ImportCommand.run(_passedParameters: string[], options: ImportCommandOptions): Promise<void> [projects/persistence/src/modules/import/import.command.ts:343]
    ↳ Validates the options, checks pg_restore and the dump's contents, applies any `--clean`, then restores the selected…
-  └─> ImportCommand.check(…): Promise<{ readonly contents: readonly PostgresDumpEntry[]; readonly plan: ImportPlan; }> [projects/database/src/modules/import/import.command.ts:79]
+  └─> ImportCommand.check(…): Promise<{ readonly contents: readonly PostgresDumpEntry[]; readonly plan: ImportPlan; }> [projects/persistence/src/modules/import/import.command.ts:79]
      ↳ Every check a real import and a `--dry-run` share, none of which connects to the target: the options, the pg_restore…
-    └─> PostgresClientService.list(file: string): Promise<PostgresDumpEntry[]> [projects/database/src/modules/postgres-client/postgres-client.service.ts:181]
+    └─> PostgresClientService.list(file: string): Promise<PostgresDumpEntry[]> [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:181]
        ↳ Reads the table of contents of the dump at `file` with `pg_restore --list`, which connects to no database, so an…
-      └─> PostgresClientService.run(…): Promise<PostgresClientOutput> [projects/database/src/modules/postgres-client/postgres-client.service.ts:64]
+      └─> PostgresClientService.run(…): Promise<PostgresClientOutput> [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:64]
          ↳ Runs `tool` with `args`, connected to `connection` through its environment, or to nothing when there is none, and…
-        └─> PostgresClientService.anonymous(…): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:69]
-          └─> PostgresClientService.execFile(…)(error: ExecException | null, stdout: string, stderr: string): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:77]
-            └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/database/src/modules/postgres-client/postgres-client.constants.ts:47]
+        └─> PostgresClientService.anonymous(…): void [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:69]
+          └─> PostgresClientService.execFile(…)(error: ExecException | null, stdout: string, stderr: string): void [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:77]
+            └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/persistence/src/modules/postgres-client/postgres-client.constants.ts:47]
 ```
 
 **2. `ExportCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
-🚀 ExportCommand.run(_passedParameters: string[], options: ExportCommandOptions): Promise<void> [projects/database/src/modules/export/export.command.ts:230]
+🚀 ExportCommand.run(_passedParameters: string[], options: ExportCommandOptions): Promise<void> [projects/persistence/src/modules/export/export.command.ts:230]
    ↳ Validates the options, then dumps the selected tables to the file.
-  └─> PostgresClientService.dump({ connection, content, file, tables, }: PostgresDumpOptions): Promise<void> [projects/database/src/modules/postgres-client/postgres-client.service.ts:105]
+  └─> PostgresClientService.dump({ connection, content, file, tables, }: PostgresDumpOptions): Promise<void> [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:105]
      ↳ Dumps exactly `tables` from `connection` to a custom-format `file`. `--strict-names` makes a table that does not exist…
-    └─> PostgresClientService.run(…): Promise<PostgresClientOutput> [projects/database/src/modules/postgres-client/postgres-client.service.ts:64]
+    └─> PostgresClientService.run(…): Promise<PostgresClientOutput> [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:64]
        ↳ Runs `tool` with `args`, connected to `connection` through its environment, or to nothing when there is none, and…
-      └─> PostgresClientService.anonymous(…): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:69]
-        └─> PostgresClientService.execFile(…)(error: ExecException | null, stdout: string, stderr: string): void [projects/database/src/modules/postgres-client/postgres-client.service.ts:77]
-          └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/database/src/modules/postgres-client/postgres-client.constants.ts:47]
+      └─> PostgresClientService.anonymous(…): void [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:69]
+        └─> PostgresClientService.execFile(…)(error: ExecException | null, stdout: string, stderr: string): void [projects/persistence/src/modules/postgres-client/postgres-client.service.ts:77]
+          └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/persistence/src/modules/postgres-client/postgres-client.constants.ts:47]
 ```
 
 **3. `postgresEnvironmentSchema`** — depth 4 · orphan-root
 
 ```text
-🚀 postgresEnvironmentSchema(…): PostgresEnvironmentShape<Project> [projects/database/src/modules/database/database.utilities.ts:200]
+🚀 postgresEnvironmentSchema(…): PostgresEnvironmentShape<Project> [projects/persistence/src/modules/persistence/persistence.utilities.ts:200]
    ↳ The zod fragment for a project's `<PROJECT>_POSTGRES_*` variables, which each application spreads into its own…
-  └─> assertPostgresEnvironmentKeys(…): void [projects/database/src/modules/database/database.utilities.ts:35]
+  └─> assertPostgresEnvironmentKeys(…): void [projects/persistence/src/modules/persistence/persistence.utilities.ts:35]
      ↳ Holds `shape` to having a key for every one of `project`'s `<PROJECT>_POSTGRES_*` variables, which is what types {@link…
-    └─> postgresEnvironmentKeys(project: string): string[] [projects/database/src/modules/database/database.utilities.ts:176]
+    └─> postgresEnvironmentKeys(project: string): string[] [projects/persistence/src/modules/persistence/persistence.utilities.ts:176]
        ↳ The `<PROJECT>_POSTGRES_*` variable names a project reads.
-      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/database/src/modules/database/database.utilities.ts:162]
+      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/persistence/src/modules/persistence/persistence.utilities.ts:162]
          ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
@@ -755,63 +763,63 @@ What this project is judged against, as declared in its own `callidescope.config
 **4. `DatabaseService.createTypeOrmOptions`** — depth 4 · orphan-root
 
 ```text
-🚀 DatabaseService.createTypeOrmOptions(): PostgresDataSourceOptions [projects/database/src/modules/database/database.service.ts:76]
+🚀 DatabaseService.createTypeOrmOptions(): PostgresDataSourceOptions [projects/persistence/src/modules/persistence/persistence.service.ts:76]
    ↳ TypeORM's options for the project's connection, with no migrations: the runtime never runs them.
-  └─> DatabaseService.connection(): PostgresConnection [projects/database/src/modules/database/database.service.ts:61]
+  └─> DatabaseService.connection(): PostgresConnection [projects/persistence/src/modules/persistence/persistence.service.ts:61]
      ↳ Where the project's database is, read from its prefixed variables and defaulted from its name.
-    └─> postgresConnection({ environment, project, }: PostgresConnectionSource): PostgresConnection [projects/database/src/modules/database/database.utilities.ts:86]
+    └─> postgresConnection({ environment, project, }: PostgresConnectionSource): PostgresConnection [projects/persistence/src/modules/persistence/persistence.utilities.ts:86]
        ↳ The connection a project's prefixed variables describe, defaulted the way `postgresEnvironmentSchema` defaults them.
-      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/database/src/modules/database/database.utilities.ts:162]
+      └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/persistence/src/modules/persistence/persistence.utilities.ts:162]
          ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
 **5. `main`** — depth 3 · orphan-root
 
 ```text
-🚀 main(): Promise<void> [projects/database/scripts/extract-migration-sql.ts:172]
+🚀 main(): Promise<void> [projects/persistence/scripts/extract-migration-sql.ts:172]
    ↳ Main.
-  └─> parseMode(): Mode [projects/database/scripts/extract-migration-sql.ts:211]
+  └─> parseMode(): Mode [projects/persistence/scripts/extract-migration-sql.ts:211]
      ↳ Parse mode.
-    └─> find(…)(argument: string): boolean [projects/database/scripts/extract-migration-sql.ts:212]
+    └─> find(…)(argument: string): boolean [projects/persistence/scripts/extract-migration-sql.ts:212]
 ```
 
 **6. `createDataSource`** — depth 3 · orphan-root
 
 ```text
-🚀 createDataSource(…): DataSource [projects/database/src/modules/database/database.utilities.ts:69]
+🚀 createDataSource(…): DataSource [projects/persistence/src/modules/persistence/persistence.utilities.ts:69]
    ↳ The `DataSource` a project's TypeORM command-line entry exports, built from the same options as…
-  └─> postgresDataSourceOptions(…): PostgresDataSourceOptions [projects/database/src/modules/database/database.utilities.ts:116]
+  └─> postgresDataSourceOptions(…): PostgresDataSourceOptions [projects/persistence/src/modules/persistence/persistence.utilities.ts:116]
      ↳ The TypeORM options for `connection`, shared by every runtime module and command-line data source so a generated…
-    └─> postgresSearchPathOption(schema: string): string [projects/database/src/modules/database/database.utilities.ts:230]
+    └─> postgresSearchPathOption(schema: string): string [projects/persistence/src/modules/persistence/persistence.utilities.ts:230]
        ↳ The startup parameter pg sends as `options` on each pooled connection, setting the session's `search_path` to `schema`…
 ```
 
 **7. `startPostgresContainer`** — depth 3 · orphan-root
 
 ```text
-🚀 startPostgresContainer(…): Promise<StartedPostgresContainer> [projects/database/src/modules/database/postgres-container.utilities.ts:33]
+🚀 startPostgresContainer(…): Promise<StartedPostgresContainer> [projects/persistence/src/modules/persistence/postgres-container.utilities.ts:33]
    ↳ Starts a throwaway Postgres 18 laid out the way the local Docker one is — a `<project>_username` role owning a…
-  └─> postgresConnection({ environment, project, }: PostgresConnectionSource): PostgresConnection [projects/database/src/modules/database/database.utilities.ts:86]
+  └─> postgresConnection({ environment, project, }: PostgresConnectionSource): PostgresConnection [projects/persistence/src/modules/persistence/persistence.utilities.ts:86]
      ↳ The connection a project's prefixed variables describe, defaulted the way `postgresEnvironmentSchema` defaults them.
-    └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/database/src/modules/database/database.utilities.ts:162]
+    └─> postgresEnvironmentKey(project: string, field: PostgresConnectionField): string [projects/persistence/src/modules/persistence/persistence.utilities.ts:162]
        ↳ The variable a project reads `field` from, for example `LEXICO_POSTGRES_DATABASE` for lexico's `database`.
 ```
 
 **8. `visit`** — depth 2 · orphan-root
 
 ```text
-🚀 visit(node: ts.Node): void [projects/database/scripts/extract-migration-sql.ts:71]
+🚀 visit(node: ts.Node): void [projects/persistence/scripts/extract-migration-sql.ts:71]
    ↳ Visit.
-  └─> extractSqlFromLiteral(argument: ts.Expression, sourceFile: ts.SourceFile): string | undefined [projects/database/scripts/extract-migration-sql.ts:42]
+  └─> extractSqlFromLiteral(argument: ts.Expression, sourceFile: ts.SourceFile): string | undefined [projects/persistence/scripts/extract-migration-sql.ts:42]
      ↳ Extract sql from literal.
 ```
 
 **9. `visit`** — depth 2 · orphan-root
 
 ```text
-🚀 visit(node: ts.Node): void [projects/database/scripts/extract-migration-sql.ts:118]
+🚀 visit(node: ts.Node): void [projects/persistence/scripts/extract-migration-sql.ts:118]
    ↳ Visit.
-  └─> extractSqlFromMethod(method: ts.MethodDeclaration, sourceFile: ts.SourceFile): string[] [projects/database/scripts/extract-migration-sql.ts:62]
+  └─> extractSqlFromMethod(method: ts.MethodDeclaration, sourceFile: ts.SourceFile): string[] [projects/persistence/scripts/extract-migration-sql.ts:62]
      ↳ Extract sql from method.
 ```
 
@@ -821,72 +829,72 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `ExportCommand.plan` | 7 | `ExportCommand.requireOption`, `ExportCommand.selectContent`, `parsePostgresUri`, `ExportOptionsError.constructor`, `existingFileMessage`, `maskPostgresCredentials`, `qualifyTableNames` | `projects/database/src/modules/export/export.command.ts:91` |
-| `ImportCommand.plan` | 7 | `ImportCommand.requireOption`, `ImportCommand.selectContent`, `parsePostgresUri`, `ImportOptionsError.constructor`, `missingFileMessage`, `qualifyTableNames`, `maskPostgresCredentials` | `projects/database/src/modules/import/import.command.ts:142` |
-| `ExportCommand.run` | 6 | `ExportCommand.plan`, `PostgresClientService.ensureTool`, `ExportCommand.logDryRun`, `describePostgresContent`, `PostgresClientService.dump`, `ExportCommand.explain` | `projects/database/src/modules/export/export.command.ts:230` |
+| `ExportCommand.plan` | 7 | `ExportCommand.requireOption`, `ExportCommand.selectContent`, `parsePostgresUri`, `ExportOptionsError.constructor`, `existingFileMessage`, `maskPostgresCredentials`, `qualifyTableNames` | `projects/persistence/src/modules/export/export.command.ts:91` |
+| `ImportCommand.plan` | 7 | `ImportCommand.requireOption`, `ImportCommand.selectContent`, `parsePostgresUri`, `ImportOptionsError.constructor`, `missingFileMessage`, `qualifyTableNames`, `maskPostgresCredentials` | `projects/persistence/src/modules/import/import.command.ts:142` |
+| `ExportCommand.run` | 6 | `ExportCommand.plan`, `PostgresClientService.ensureTool`, `ExportCommand.logDryRun`, `describePostgresContent`, `PostgresClientService.dump`, `ExportCommand.explain` | `projects/persistence/src/modules/export/export.command.ts:230` |
 
 <details>
 <summary>57 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `ImportCommand.run` | 5 | `ImportCommand.check`, `ImportCommand.logDryRun`, `describePostgresContent`, `ImportCommand.truncate`, `ImportCommand.restore` | `projects/database/src/modules/import/import.command.ts:343` |
-| `main` | 4 | `parseMode`, `parseDirectory`, `findMigrationFiles`, `processMigrationFile` | `projects/database/scripts/extract-migration-sql.ts:172` |
-| `selectPostgresDumpEntries` | 4 | `map(…)`, `every(…)`, `filter(…)`, `every(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:85` |
-| `truncatePostgresTables` | 4 | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:31` |
-| `PostgresClientService.restore` | 4 | `PostgresClientService.map(…)`, `selectPostgresDumpEntries`, `PostgresClientService.run`, `postgresContentFlags` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:200` |
-| `PostgresClientService.truncate` | 4 | `PostgresClientService.truncatePostgresTables(…)`, `truncatePostgresTables`, `PostgresTruncateError.constructor`, `maskPostgresCredentials` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:251` |
-| `ImportCommand.check` | 4 | `ImportCommand.plan`, `PostgresClientService.ensureTool`, `PostgresClientService.list`, `ImportCommand.ensureContents` | `projects/database/src/modules/import/import.command.ts:79` |
-| `ImportCommand.restore` | 4 | `PostgresClientService.restore`, `ImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage` | `projects/database/src/modules/import/import.command.ts:194` |
-| `ImportCommand.truncate` | 4 | `PostgresClientService.truncate`, `ImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage` | `projects/database/src/modules/import/import.command.ts:232` |
-| `DatabaseService.connection` | 4 | `DatabaseService.databaseOptions`, `postgresConnection`, `DatabaseService.map(…)`, `postgresEnvironmentKeys` | `projects/database/src/modules/database/database.service.ts:61` |
-| `startPostgresContainer` | 4 | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment` | `projects/database/src/modules/database/postgres-container.utilities.ts:33` |
-| `qualifyTableNames` | 3 | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)` | `projects/database/src/modules/postgres-client/postgres-client.utilities.ts:136` |
-| `PostgresClientService.dump` | 3 | `PostgresClientService.run`, `postgresContentFlags`, `PostgresClientService.map(…)` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:105` |
-| `PostgresClientService.ensureTool` | 3 | `PostgresClientService.anonymous`, `PostgresClientToolError.constructor`, `parsePostgresMajorVersion` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:134` |
-| `ExportCommand.explain` | 3 | `missingDumpTables`, `ExportTableError.constructor`, `missingTablesMessage` | `projects/database/src/modules/export/export.command.ts:64` |
-| `ImportCommand.ensureContents` | 3 | `ImportCommand.missing`, `ImportContentsError.constructor`, `missingContentsMessage` | `projects/database/src/modules/import/import.command.ts:96` |
-| `ImportCommand.logDryRun` | 3 | `dumpedTables`, `ImportCommand.map(…)`, `dryRunMessages` | `projects/database/src/modules/import/import.command.ts:118` |
-| `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/database/src/modules/database/database.utilities.ts:200` |
-| `DatabaseService.createTypeOrmOptions` | 3 | `postgresDataSourceOptions`, `DatabaseService.connection`, `DatabaseService.databaseOptions` | `projects/database/src/modules/database/database.service.ts:76` |
-| `findMigrationFiles` | 2 | `filter(…)`, `map(…)` | `projects/database/scripts/extract-migration-sql.ts:147` |
-| `parsePostgresUri` | 2 | `PostgresUriError.constructor`, `postgresUriProblem` | `projects/database/src/modules/postgres-client/postgres-client.utilities.ts:63` |
-| `parsePostgresDumpContents` | 2 | `describeEntry`, `dependencyIds` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:46` |
-| `PostgresClientService.anonymous` | 2 | `PostgresClientService.execFile(…)`, `postgresProcessEnvironment` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:69` |
-| `PostgresClientService.execFile(…)` | 2 | `PostgresClientError.constructor`, `maskPostgresCredentials` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:77` |
-| `PostgresClientService.list` | 2 | `PostgresClientService.run`, `parsePostgresDumpContents` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:181` |
-| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/export/export.constants.ts:66` |
-| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/database/src/modules/import/import.constants.ts:122` |
-| `ImportCommand.missing` | 2 | `dumpedTables`, `ImportCommand.filter(…)` | `projects/database/src/modules/import/import.command.ts:100` |
-| `createDataSource` | 2 | `postgresDataSourceOptions`, `postgresConnection` | `projects/database/src/modules/database/database.utilities.ts:69` |
-| `postgresConnection` | 2 | `postgresEnvironmentKey`, `postgresSettingsSchema` | `projects/database/src/modules/database/database.utilities.ts:86` |
-| `visit` | 1 | `extractSqlFromLiteral` | `projects/database/scripts/extract-migration-sql.ts:71` |
-| `visit` | 1 | `extractSqlFromMethod` | `projects/database/scripts/extract-migration-sql.ts:118` |
-| `parseDirectory` | 1 | `find(…)` | `projects/database/scripts/extract-migration-sql.ts:197` |
-| `parseMode` | 1 | `find(…)` | `projects/database/scripts/extract-migration-sql.ts:211` |
-| `processMigrationFile` | 1 | `extractSqlFromMigration` | `projects/database/scripts/extract-migration-sql.ts:221` |
-| `postgresProcessEnvironment` | 1 | `filter(…)` | `projects/database/src/modules/postgres-client/postgres-client.utilities.ts:106` |
-| `dumpedTables` | 1 | `flatMap(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:21` |
-| `missingDumpTables` | 1 | `map(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:36` |
-| `dependencyIds` | 1 | `filter(…)` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:112` |
-| `describeEntry` | 1 | `tableEntry` | `projects/database/src/modules/postgres-client/postgres-dump.utilities.ts:120` |
-| `quotePostgresTable` | 1 | `map(…)` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:16` |
-| `map(…)` | 1 | `quotePostgresTable` | `projects/database/src/modules/postgres-client/postgres-truncate.utilities.ts:35` |
-| `PostgresClientService.run` | 1 | `PostgresClientService.anonymous` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:64` |
-| `PostgresClientService.anonymous` | 1 | `PostgresClientService.execFile(…)` | `projects/database/src/modules/postgres-client/postgres-client.service.ts:139` |
-| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/export/export.constants.ts:77` |
-| `ExportCommand.logDryRun` | 1 | `dryRunMessages` | `projects/database/src/modules/export/export.command.ts:76` |
-| `ExportCommand.requireOption` | 1 | `ExportOptionsError.constructor` | `projects/database/src/modules/export/export.command.ts:125` |
-| `ExportCommand.selectContent` | 1 | `ExportOptionsError.constructor` | `projects/database/src/modules/export/export.command.ts:138` |
-| `referencedTablesMessage` | 1 | `map(…)` | `projects/database/src/modules/import/import.constants.ts:93` |
-| `map(…)` | 1 | `describePostgresContent` | `projects/database/src/modules/import/import.constants.ts:134` |
-| `ImportCommand.requireOption` | 1 | `ImportOptionsError.constructor` | `projects/database/src/modules/import/import.command.ts:178` |
-| `ImportCommand.selectContent` | 1 | `ImportOptionsError.constructor` | `projects/database/src/modules/import/import.command.ts:216` |
-| `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/database/src/modules/database/database.utilities.ts:35` |
-| `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/database/src/modules/database/database.utilities.ts:116` |
-| `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/database/src/modules/database/database.utilities.ts:142` |
-| `postgresEnvironmentKeys` | 1 | `postgresEnvironmentKey` | `projects/database/src/modules/database/database.utilities.ts:176` |
-| `startFirstAvailableImage` | 1 | `postgresInitializationSql` | `projects/database/src/modules/database/postgres-container.utilities.ts:104` |
+| `ImportCommand.run` | 5 | `ImportCommand.check`, `ImportCommand.logDryRun`, `describePostgresContent`, `ImportCommand.truncate`, `ImportCommand.restore` | `projects/persistence/src/modules/import/import.command.ts:343` |
+| `main` | 4 | `parseMode`, `parseDirectory`, `findMigrationFiles`, `processMigrationFile` | `projects/persistence/scripts/extract-migration-sql.ts:172` |
+| `selectPostgresDumpEntries` | 4 | `map(…)`, `every(…)`, `filter(…)`, `every(…)` | `projects/persistence/src/modules/postgres-client/postgres-dump.utilities.ts:85` |
+| `truncatePostgresTables` | 4 | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor` | `projects/persistence/src/modules/postgres-client/postgres-truncate.utilities.ts:31` |
+| `PostgresClientService.restore` | 4 | `PostgresClientService.map(…)`, `selectPostgresDumpEntries`, `PostgresClientService.run`, `postgresContentFlags` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:200` |
+| `PostgresClientService.truncate` | 4 | `PostgresClientService.truncatePostgresTables(…)`, `truncatePostgresTables`, `PostgresTruncateError.constructor`, `maskPostgresCredentials` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:251` |
+| `ImportCommand.check` | 4 | `ImportCommand.plan`, `PostgresClientService.ensureTool`, `PostgresClientService.list`, `ImportCommand.ensureContents` | `projects/persistence/src/modules/import/import.command.ts:79` |
+| `ImportCommand.restore` | 4 | `PostgresClientService.restore`, `ImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage` | `projects/persistence/src/modules/import/import.command.ts:194` |
+| `ImportCommand.truncate` | 4 | `PostgresClientService.truncate`, `ImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage` | `projects/persistence/src/modules/import/import.command.ts:232` |
+| `DatabaseService.connection` | 4 | `DatabaseService.databaseOptions`, `postgresConnection`, `DatabaseService.map(…)`, `postgresEnvironmentKeys` | `projects/persistence/src/modules/persistence/persistence.service.ts:61` |
+| `startPostgresContainer` | 4 | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment` | `projects/persistence/src/modules/persistence/postgres-container.utilities.ts:33` |
+| `qualifyTableNames` | 3 | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)` | `projects/persistence/src/modules/postgres-client/postgres-client.utilities.ts:136` |
+| `PostgresClientService.dump` | 3 | `PostgresClientService.run`, `postgresContentFlags`, `PostgresClientService.map(…)` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:105` |
+| `PostgresClientService.ensureTool` | 3 | `PostgresClientService.anonymous`, `PostgresClientToolError.constructor`, `parsePostgresMajorVersion` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:134` |
+| `ExportCommand.explain` | 3 | `missingDumpTables`, `ExportTableError.constructor`, `missingTablesMessage` | `projects/persistence/src/modules/export/export.command.ts:64` |
+| `ImportCommand.ensureContents` | 3 | `ImportCommand.missing`, `ImportContentsError.constructor`, `missingContentsMessage` | `projects/persistence/src/modules/import/import.command.ts:96` |
+| `ImportCommand.logDryRun` | 3 | `dumpedTables`, `ImportCommand.map(…)`, `dryRunMessages` | `projects/persistence/src/modules/import/import.command.ts:118` |
+| `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:200` |
+| `DatabaseService.createTypeOrmOptions` | 3 | `postgresDataSourceOptions`, `DatabaseService.connection`, `DatabaseService.databaseOptions` | `projects/persistence/src/modules/persistence/persistence.service.ts:76` |
+| `findMigrationFiles` | 2 | `filter(…)`, `map(…)` | `projects/persistence/scripts/extract-migration-sql.ts:147` |
+| `parsePostgresUri` | 2 | `PostgresUriError.constructor`, `postgresUriProblem` | `projects/persistence/src/modules/postgres-client/postgres-client.utilities.ts:63` |
+| `parsePostgresDumpContents` | 2 | `describeEntry`, `dependencyIds` | `projects/persistence/src/modules/postgres-client/postgres-dump.utilities.ts:46` |
+| `PostgresClientService.anonymous` | 2 | `PostgresClientService.execFile(…)`, `postgresProcessEnvironment` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:69` |
+| `PostgresClientService.execFile(…)` | 2 | `PostgresClientError.constructor`, `maskPostgresCredentials` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:77` |
+| `PostgresClientService.list` | 2 | `PostgresClientService.run`, `parsePostgresDumpContents` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:181` |
+| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/persistence/src/modules/export/export.constants.ts:66` |
+| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/persistence/src/modules/import/import.constants.ts:122` |
+| `ImportCommand.missing` | 2 | `dumpedTables`, `ImportCommand.filter(…)` | `projects/persistence/src/modules/import/import.command.ts:100` |
+| `createDataSource` | 2 | `postgresDataSourceOptions`, `postgresConnection` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:69` |
+| `postgresConnection` | 2 | `postgresEnvironmentKey`, `postgresSettingsSchema` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:86` |
+| `visit` | 1 | `extractSqlFromLiteral` | `projects/persistence/scripts/extract-migration-sql.ts:71` |
+| `visit` | 1 | `extractSqlFromMethod` | `projects/persistence/scripts/extract-migration-sql.ts:118` |
+| `parseDirectory` | 1 | `find(…)` | `projects/persistence/scripts/extract-migration-sql.ts:197` |
+| `parseMode` | 1 | `find(…)` | `projects/persistence/scripts/extract-migration-sql.ts:211` |
+| `processMigrationFile` | 1 | `extractSqlFromMigration` | `projects/persistence/scripts/extract-migration-sql.ts:221` |
+| `postgresProcessEnvironment` | 1 | `filter(…)` | `projects/persistence/src/modules/postgres-client/postgres-client.utilities.ts:106` |
+| `dumpedTables` | 1 | `flatMap(…)` | `projects/persistence/src/modules/postgres-client/postgres-dump.utilities.ts:21` |
+| `missingDumpTables` | 1 | `map(…)` | `projects/persistence/src/modules/postgres-client/postgres-dump.utilities.ts:36` |
+| `dependencyIds` | 1 | `filter(…)` | `projects/persistence/src/modules/postgres-client/postgres-dump.utilities.ts:112` |
+| `describeEntry` | 1 | `tableEntry` | `projects/persistence/src/modules/postgres-client/postgres-dump.utilities.ts:120` |
+| `quotePostgresTable` | 1 | `map(…)` | `projects/persistence/src/modules/postgres-client/postgres-truncate.utilities.ts:16` |
+| `map(…)` | 1 | `quotePostgresTable` | `projects/persistence/src/modules/postgres-client/postgres-truncate.utilities.ts:35` |
+| `PostgresClientService.run` | 1 | `PostgresClientService.anonymous` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:64` |
+| `PostgresClientService.anonymous` | 1 | `PostgresClientService.execFile(…)` | `projects/persistence/src/modules/postgres-client/postgres-client.service.ts:139` |
+| `map(…)` | 1 | `describePostgresContent` | `projects/persistence/src/modules/export/export.constants.ts:77` |
+| `ExportCommand.logDryRun` | 1 | `dryRunMessages` | `projects/persistence/src/modules/export/export.command.ts:76` |
+| `ExportCommand.requireOption` | 1 | `ExportOptionsError.constructor` | `projects/persistence/src/modules/export/export.command.ts:125` |
+| `ExportCommand.selectContent` | 1 | `ExportOptionsError.constructor` | `projects/persistence/src/modules/export/export.command.ts:138` |
+| `referencedTablesMessage` | 1 | `map(…)` | `projects/persistence/src/modules/import/import.constants.ts:93` |
+| `map(…)` | 1 | `describePostgresContent` | `projects/persistence/src/modules/import/import.constants.ts:134` |
+| `ImportCommand.requireOption` | 1 | `ImportOptionsError.constructor` | `projects/persistence/src/modules/import/import.command.ts:178` |
+| `ImportCommand.selectContent` | 1 | `ImportOptionsError.constructor` | `projects/persistence/src/modules/import/import.command.ts:216` |
+| `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:35` |
+| `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:116` |
+| `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:142` |
+| `postgresEnvironmentKeys` | 1 | `postgresEnvironmentKey` | `projects/persistence/src/modules/persistence/persistence.utilities.ts:176` |
+| `startFirstAvailableImage` | 1 | `postgresInitializationSql` | `projects/persistence/src/modules/persistence/postgres-container.utilities.ts:104` |
 
 </details>
 <!-- callidescope:end -->

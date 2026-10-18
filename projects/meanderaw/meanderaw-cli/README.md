@@ -7,7 +7,7 @@ nx run meanderaw-cli:start
 ```
 
 Meanderaw follows the workspace's shared Postgres convention, from
-[`@codebase/database`](../../database/README.md): the `meanderaw_development`
+[`@codebase/persistence`](../../persistence/README.md): the `meanderaw_development`
 database holds a `meanderaw` schema, both owned by the `meanderaw_username` role. The local
 Postgres container creates all three the first time its volume starts empty; on a volume that
 predates that, [ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)

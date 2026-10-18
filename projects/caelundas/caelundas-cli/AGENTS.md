@@ -23,7 +23,7 @@ nx run caelundas-cli:start
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Database**: Postgres via TypeORM and `@codebase/database` (the `calendar_events` table)
+- **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events` table)
 - **Language**: Strict TypeScript
 
 ### Execution Flow

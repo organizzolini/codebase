@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from "typeorm";
 
-import { DeletableEntity } from "@codebase/database";
+import { DeletableEntity } from "@codebase/persistence";
 
 import { WordForm } from "./WordForm.entity";
 import { WordLexeme } from "./WordLexeme.entity";

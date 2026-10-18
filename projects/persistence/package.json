@@ -37,7 +37,7 @@
     "README.md"
   ],
   "main": "src/index.ts",
-  "name": "@codebase/database",
+  "name": "@codebase/persistence",
   "private": true,
   "publishConfig": {
     "exports": {

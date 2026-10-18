@@ -18,7 +18,7 @@ import type {
   Coordinates,
   FindInRangeParameters,
 } from "./calendar-events.types";
-import type { UpdatableEntity } from "@codebase/database";
+import type { UpdatableEntity } from "@codebase/persistence";
 
 /**
  * Persists the events a run detects and reads them back for rendering.

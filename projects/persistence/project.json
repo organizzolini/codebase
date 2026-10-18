@@ -1,14 +1,14 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "database",
+  "name": "persistence",
   "projectType": "library",
-  "sourceRoot": "projects/database",
+  "sourceRoot": "projects/persistence",
   "tags": [
     "framework:nest-commander",
     "framework:nestjs",
     "generator:nestjs-service-project",
     "language:typescript",
-    "name:database",
+    "name:persistence",
     "type:package"
   ],
   "targets": {
@@ -18,14 +18,14 @@
         "assets": [
           {
             "glob": "README.md",
-            "input": "projects/database",
+            "input": "projects/persistence",
             "output": "."
           }
         ],
         "generatePackageJson": false,
-        "main": "projects/database/src/index.ts",
-        "outputPath": "projects/database/dist",
-        "tsConfig": "projects/database/tsconfig.build.json"
+        "main": "projects/persistence/src/index.ts",
+        "outputPath": "projects/persistence/dist",
+        "tsConfig": "projects/persistence/tsconfig.build.json"
       },
       "outputs": ["{options.outputPath}"]
     },

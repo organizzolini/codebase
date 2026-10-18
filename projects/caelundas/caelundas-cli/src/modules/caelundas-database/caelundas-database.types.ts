@@ -1,6 +1,6 @@
 // 🏷️ Types
 import type { CalendarEvent } from "./entities/calendar-event.entity";
-import type { UpdatableEntity } from "@codebase/database";
+import type { UpdatableEntity } from "@codebase/persistence";
 
 /**
  * A {@link CalendarEvent} as a detector builds it and a writer reads it:

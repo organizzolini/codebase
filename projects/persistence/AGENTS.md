@@ -1,8 +1,8 @@
-# Database: Shared Postgres Package
+# Persistence: Shared Postgres Package
 
 ## Quick Start
 
-**Type**: NestJS library package (`@codebase/database`) and nest-commander
+**Type**: NestJS library package (`@codebase/persistence`) and nest-commander
 command line (`export` and `import`)
 
 **Purpose**: Two jobs. The library is the one way a database-backed project
@@ -50,7 +50,7 @@ src/
 scripts/
   extract-migration-sql.ts          # Run by every project's migration:extract-sql-* target
 testing/
-  index.ts                          # The @codebase/database/testing entry
+  index.ts                          # The @codebase/persistence/testing entry
   database-testing.*.ts             # startDatabaseTestingModule, the entry's Nest helper
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
   fixture-database.ts               # A migrated container for the command line's integration tests
@@ -88,11 +88,11 @@ testing/
 ### Key Commands
 
 ```bash
-nx run database:typecheck-code,lint-code,format-code,deprecate-code,guard-code
-nx run database:vitest:unit
-nx run database:type-coverage
-nx run database:start:export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
-nx run database:start:import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:typecheck-code,lint-code,format-code,deprecate-code,guard-code
+nx run persistence:vitest:unit
+nx run persistence:type-coverage
+nx run persistence:start:export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:start:import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
 ```
 
 `import --clean` never prompts and has no `--yes`; the preview is
@@ -100,7 +100,7 @@ nx run database:start:import --args="--target-uri <uri> --table <schema.table> -
 first.
 
 The `start` configurations run the command line with the working directory at
-`projects/database`. Both commands need the PostgreSQL 18 client tools; see
+`projects/persistence`. Both commands need the PostgreSQL 18 client tools; see
 the README's [Moving data between databases](README.md#moving-data-between-databases).
 
 See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)

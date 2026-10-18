@@ -9,11 +9,11 @@ import {
   vi,
 } from "vitest";
 
+import { LoggerService } from "@codebase/logging";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/database/testing";
-import { LoggerService } from "@codebase/logging";
+} from "@codebase/persistence/testing";
 
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";
