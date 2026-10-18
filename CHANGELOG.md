@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.11.0](https://github.com/organizzolini/codebase/compare/v3.10.1...v3.11.0) (2026-10-18)
+
+### ✨ Features
+
+* **callidescope:** ✨ prefix inferred nx target defaults ([#1706](https://github.com/organizzolini/codebase/issues/1706)) ([1a54464](https://github.com/organizzolini/codebase/commit/1a54464de655280872d5cc65589d9585af9d273d))
+
 ## [3.10.1](https://github.com/organizzolini/codebase/compare/v3.10.0...v3.10.1) (2026-10-18)
 
 ### ♻️ Code Refactoring
