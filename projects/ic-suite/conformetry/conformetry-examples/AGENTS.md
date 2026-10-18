@@ -1,6 +1,6 @@
 # 👔 Conformetry Examples — Agent Guide
 
-Eleven runnable examples of [Conformetry](../conformetry-cli/README.md). Every
+Twelve runnable examples of [Conformetry](../conformetry-cli/README.md). Every
 one is self-contained and executes in about a second, so **reproduce the
 behavior here before reasoning about it in a real project**. A conformance
 report against real code mixes the tool's behavior with that project's
@@ -22,7 +22,7 @@ pnpm exec nx run conformetry-examples:<example-directory-name>
 The target name is the directory name. Some exit non-zero on purpose; the table
 below says which.
 
-To run all eleven and have every exit code and quoted line checked:
+To run all twelve and have every exit code and quoted line checked:
 
 ```bash
 pnpm exec nx run conformetry-examples:examples

@@ -28,7 +28,131 @@ const result = await generationService.runGenerator({
 ```
 
 The lifecycle is `preGenerate` → render → `postGenerate` → format, and the
-returned file paths are sorted.
+rendered file paths are sorted. A path a hook pushes onto the list is appended
+after the sort.
+
+## Hooks
+
+A generator may declare two functions that run around generation. The
+[hooks example](../conformetry-examples/examples/hooks/README.md) runs both.
+
+| Hook           | Runs                                              | `generatedFilePaths` holds    |
+| -------------- | ------------------------------------------------- | ----------------------------- |
+| `preGenerate`  | Before anything is written                        | Nothing: it is an empty array |
+| `postGenerate` | After the template is rendered, before formatting | Every rendered path, sorted   |
+
+Each hook receives one `GeneratorHookContext`, may be sync or async, and is
+awaited. Hooks are plain functions, so a configuration cannot declare them in
+JSON, which cannot carry a function; any JavaScript or TypeScript configuration
+can. Import the types from
+`@conformetry/configuration`, which re-exports `GeneratorHook`,
+`GeneratorHookContext`, and `GeneratorHooks` from `@conformetry/core`; a
+configuration needs no other dependency to type its hooks.
+
+```ts
+import path from "node:path";
+
+import type {
+  ConformetryConfiguration,
+  GeneratorHookContext,
+} from "@conformetry/configuration";
+
+const configuration: ConformetryConfiguration = [
+  {
+    hooks: {
+      postGenerate: async (context: GeneratorHookContext): Promise<void> => {
+        const receiptPath = path.join(
+          context.configurationDirectoryPath,
+          "receipts",
+          `${context.substitutions["nameKebabCase"] ?? ""}.log`,
+        );
+
+        await context.filesystem.writeFile(receiptPath, "generated\n");
+        context.generatedFilePaths.push(receiptPath);
+      },
+    },
+    name: "receipt",
+    templatePath: "templates/receipt",
+  },
+];
+
+export default configuration;
+```
+
+### The context
+
+| Field                        | What it holds                                                                |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `definition`                 | The generator's runtime definition: `name`, `templateDirectoryPath`, `hooks` |
+| `input`                      | The input values the run was given, by input name                            |
+| `substitutions`              | What the template renders with: the name variants, then inputs over them     |
+| `outputDirectoryPath`        | Where the run writes, exactly as the host passed it                          |
+| `generatedFilePaths`         | The list described above. It is mutable, and what the formatter receives     |
+| `filesystem`                 | The adapter the run itself reads and writes through                          |
+| `configurationDirectoryPath` | Absolute directory of the configuration file that declared the generator     |
+
+Paths differ by host:
+
+- **`outputDirectoryPath` and `generatedFilePaths`** are whatever the host
+  passed. Under the command line that is the form `--directory` was given in,
+  so possibly relative. Under Nx they are absolute.
+- **`filesystem` takes absolute paths only.** Build them from
+  `configurationDirectoryPath`, never from the working directory, so a hook
+  behaves the same however the command was started.
+- **`configurationDirectoryPath` is absolute under both hosts**, taken from
+  the file that was actually loaded.
+- **`definition.templateDirectoryPath`** is the configuration's `templatePath`
+  as written, so workspace-relative, under the command line. Under Nx it is
+  resolved against the workspace root, so absolute.
+
+There is no `replaceInFile` helper. A hook that edits a rendered file reads it
+with `filesystem.readFile`, changes the text, and writes it back.
+
+### Writing from a hook
+
+Write through `context.filesystem`, not `node:fs`. Under the command line the
+adapter writes to disk. Under Nx it writes to the generator's virtual tree, so
+the write appears in the change list, `--dry-run` previews it, and nothing
+reaches disk until Nx flushes. A write made with `node:fs` skips the tree: it
+lands immediately, even under `--dry-run`, and stays when the run later fails.
+
+**Write only inside the workspace.** The Nx adapter maps an absolute path
+inside the workspace to a tree path. It cannot do that for a path outside, so
+the write is silently re-rooted inside the workspace instead, while a read of
+the same path falls back to disk. Build every path from
+`configurationDirectoryPath`.
+
+`makeDirectory` does nothing under Nx; writing a file creates its directories.
+Reads through the Nx adapter look in the tree first, so a hook sees files
+rendered earlier in the same run.
+
+### The format list
+
+The formatter receives `context.generatedFilePaths` after `postGenerate`. A
+file the hook wrote is not on that list, so push its path to have it formatted:
+
+```ts
+context.generatedFilePaths.push(receiptPath);
+```
+
+The command-line host formats nothing by default, so the list there only
+decides what the run reports. The Nx host formats every file changed in the
+tree, hook writes included, whether or not it was pushed; push it anyway so
+both hosts report the same files.
+
+### When a hook throws
+
+The run stops at the throw and the error propagates.
+
+| Host         | `preGenerate` throws  | `postGenerate` throws                                                       |
+| ------------ | --------------------- | --------------------------------------------------------------------------- |
+| Command line | Nothing was written   | The rendered files **stay on disk**; the formatter does not run             |
+| Nx           | The tree is untouched | Rendered files sit in the tree, and `nx g` flushes nothing for a failed run |
+
+The command line prints a hook's error with its stack trace and exits non-zero.
+It does not say which hook threw, so put the generator and hook name in the
+message. Under Nx the run is atomic on disk for both hooks, but only for writes
+made through `context.filesystem`.
 
 ## Rendering
 
@@ -75,9 +199,9 @@ the reason above.
 
 ## Exports
 
-`GenerationService`, `RenderingService`, their modules, and the
-`FileSystemAdapter`, `FormatterAdapter`, `GeneratorDefinition`, and
-`Substitutions` types.
+`GenerationService`, `GenerationModule`, and the `DirectoryEntry`,
+`FileSystemAdapter`, `FormatterAdapter`, and `GeneratorDefinition` types. The
+hook types are re-exported for configurations from `@conformetry/configuration`.
 
 ## Test
 

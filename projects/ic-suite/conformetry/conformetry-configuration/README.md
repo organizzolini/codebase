@@ -61,6 +61,7 @@ export default conformetryConfiguration;
 | `inputs` | | The values it substitutes, as JSON Schema fragments |
 | `instances` | | Where this generator's output already lives |
 | `description` | | Shown when a host lists or prompts for generators |
+| `hooks` | | `preGenerate` and `postGenerate` functions run around the render; see [`@conformetry/generation`](../conformetry-generation/README.md) |
 
 Both `inputs` and `instances` may be omitted. A generator with neither renders
 a fixed template nobody validates, which is legal.
@@ -81,6 +82,10 @@ problem in one pass:
 - **A key the schema does not declare.** The generator object is strict, so a
   misspelled field — or `aliases`, which was removed outright — is rejected
   rather than stripped and left reading as though it took effect.
+- **A hook that is not a function, or an unknown key under `hooks`.** A
+  string or object where a function was meant is named by its hook, and
+  `hooks` is strict for the same reason the generator is: a misspelt hook name
+  would otherwise be stripped and the hook silently never run.
 
 ## Instances
 
@@ -248,6 +253,7 @@ asserting that these paths _are_ instances:
 | `ConfigurationPathRequiredError` | Thrown by `ConfigurationService.requireConfigurationPath` for an absent or blank path, naming the flag or option the caller passed as the surface |
 | `ConformetryConfiguration` | The loaded configuration type — author your config as this |
 | `ConformetryInstanceGroup`, `ConformetryGeneratorDefinition` | Field-level types for the above |
+| `GeneratorHook`, `GeneratorHookContext`, `GeneratorHooks` | The hook types, re-exported from `@conformetry/core` so a config file can type its hooks from this package |
 
 **One service and one module, and no other collaborator** — the same pair
 `@callidescope/configuration`, `@codependix/configuration` and
