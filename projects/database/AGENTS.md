@@ -44,9 +44,10 @@ src/
       database.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
       entities/                     # identifiable → creatable → updatable → deletable
       postgres-container.*.ts       # startPostgresContainer, the testing entry's harness
-    export/                         # The export command: options, plan, dry run, atomic write
+    export/                         # The export command: options, plan, dry run, atomic write, --sqlite routing
     import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
+    sqlite-export/                  # export --sqlite: node:sqlite writer, column type mapping, no client tools
 scripts/
   extract-migration-sql.ts          # Run by every project's migration:extract-sql-* target
 testing/
