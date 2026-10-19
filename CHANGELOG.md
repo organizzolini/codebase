@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.13.5](https://github.com/organizzolini/codebase/compare/v3.13.4...v3.13.5) (2026-10-18)
+
+### 🐛 Bug Fixes
+
+* **lexico:** 🐛 align search and sidebar surface styling ([#1715](https://github.com/organizzolini/codebase/issues/1715)) ([cf32c55](https://github.com/organizzolini/codebase/commit/cf32c555ea20202b9b3db1a7bdd650f9569811b2))
+
+### ♻️ Code Refactoring
+
+* **configuration,deployments:** ♻️ relocate workspace config files and explicit tool paths ([#1710](https://github.com/organizzolini/codebase/issues/1710)) ([a2fee75](https://github.com/organizzolini/codebase/commit/a2fee753f9596665dd391aef1ce802cbf05213ee))
+
 ## [3.13.4](https://github.com/organizzolini/codebase/compare/v3.13.3...v3.13.4) (2026-10-18)
 
 ### 🐛 Bug Fixes
