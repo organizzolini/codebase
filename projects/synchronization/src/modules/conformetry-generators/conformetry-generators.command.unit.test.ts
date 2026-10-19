@@ -218,6 +218,27 @@ describe(ConformetryGeneratorsCommand, () => {
     );
   });
 
+  it("renders empty descriptions when a generator omits one", async () => {
+    currentConformetryConfiguration = [{ name: "alpha" }];
+    fileContents.set(
+      readmeFile,
+      [
+        "# Header",
+        "<!-- conformetry:start -->",
+        "stale",
+        "<!-- conformetry:end -->",
+      ].join("\n"),
+    );
+
+    await command.run(["write"]);
+
+    expect(writeFileSync).toHaveBeenCalledWith(
+      readmeFile,
+      expect.stringContaining("| `alpha` |  |"),
+      "utf8",
+    );
+  });
+
   it("exits on invalid mode", async () => {
     fileContents.set(
       agentsFile,

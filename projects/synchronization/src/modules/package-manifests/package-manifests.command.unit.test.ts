@@ -163,5 +163,19 @@ describe(PackageManifestsCommand, () => {
         expect.stringContaining("File read error"),
       );
     });
+
+    it("handles thrown service errors and returns false", async () => {
+      vi.mocked(packageManifestsService.checkAll).mockImplementation(() => {
+        throw new Error("boom");
+      });
+
+      const result = await command.synchronize("check");
+
+      expect(result).toBe(false);
+      expect(logger.error).toHaveBeenCalledWith(
+        "💥 Failed synchronizing package manifest metadata",
+        expect.stringContaining("boom"),
+      );
+    });
   });
 });

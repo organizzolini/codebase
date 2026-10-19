@@ -468,6 +468,71 @@ describe(TypeormMigrationSqlExtractorService, () => {
     );
   });
 
+  it("throws when only project-root is provided without module", async () => {
+    await expect(
+      service.targets({ projectRoot: "projects/lexico/lexico-entities" }),
+    ).rejects.toThrow(
+      "Pass --directory <path>, or pass both --project-root <path> and --module <path>, or pass --project <name>.",
+    );
+  });
+
+  it("derives project name from project-root when module is provided", async () => {
+    const workspaceRoot = await createTempDirectory("typeorm-sql-workspace-");
+    const projectRoot = path.join(workspaceRoot, "projects", "alpha");
+    const modulePath = "src/modules/database";
+    const migrationsDirectory = path.join(
+      projectRoot,
+      modulePath,
+      "migrations",
+    );
+    await mkdir(migrationsDirectory, { recursive: true });
+    await writeMigrationFile({
+      directory: migrationsDirectory,
+      downSql: ["DROP TABLE alpha"],
+      fileName: "1791255787877-migration.ts",
+      upSql: ["CREATE TABLE alpha (id int)"],
+    });
+    process.chdir(workspaceRoot);
+
+    const result = await service.synchronize({
+      logger,
+      mode: "write",
+      options: {
+        migration: "1791255787877-migration.ts",
+        module: modulePath,
+        projectRoot,
+      },
+    });
+
+    expect(result).toBe(true);
+    expect(logger.info).toHaveBeenCalledWith(
+      "🧾 Wrote extracted SQL files",
+      undefined,
+      expect.objectContaining({ projectName: "alpha" }),
+    );
+  });
+
+  it("returns false when latest selection runs with no migration files", async () => {
+    const migrationsDirectory = await createTempDirectory("typeorm-empty-");
+
+    const result = await service.synchronize({
+      logger,
+      mode: "check",
+      options: {
+        directory: migrationsDirectory,
+        selection: "latest",
+      },
+    });
+
+    expect(result).toBe(false);
+    expect(logger.error).toHaveBeenCalledWith(
+      "💥 Failed synchronizing extracted TypeORM migration SQL",
+      expect.stringContaining(
+        `No migration files found in ${migrationsDirectory}.`,
+      ),
+    );
+  });
+
   it("stringifies non-error failures caught during synchronization", async () => {
     vi.spyOn(service, "targets").mockRejectedValueOnce("boom");
 
