@@ -48,9 +48,9 @@ export const SQLITE_EXPORT_ROW_SCHEMA = z.record(z.string(), z.unknown());
 /** The name of the cursor a table's rows are read through. */
 export const SQLITE_EXPORT_CURSOR = "sqlite_export_cursor";
 
-/** A SQLite value for an ISO-8601 instant, or the text of anything else. */
+/** The ISO-8601 text of the instant the driver parsed into a `Date`. */
 const toIsoText = (value: unknown): string =>
-  value instanceof Date ? value.toISOString() : String(value);
+  z.date().parse(value).toISOString();
 
 /** A value as JSON text: how an array or a JSON document is stored. */
 const toJsonText = (value: unknown): string => JSON.stringify(value);
@@ -73,6 +73,16 @@ const JSON_MAPPING: SqliteTypeMapping = {
   convert: toJsonText,
 };
 
+/**
+ * An array of any element type, selected through `to_json` so the driver
+ * parses every element as JSON rather than guessing at its text.
+ */
+const ARRAY_MAPPING: SqliteTypeMapping = {
+  affinity: "TEXT",
+  cast: "json",
+  convert: toJsonText,
+};
+
 /** A number the driver already parsed. */
 const NUMBER_MAPPING: SqliteTypeMapping = {
   affinity: "INTEGER",
@@ -92,7 +102,7 @@ const REAL_MAPPING: SqliteTypeMapping = { affinity: "REAL", convert: toNumber };
 export const SQLITE_TYPE_MAPPINGS: Readonly<
   Record<string, SqliteTypeMapping | undefined>
 > = {
-  ARRAY: JSON_MAPPING,
+  ARRAY: ARRAY_MAPPING,
   bigint: {
     affinity: "INTEGER",
     convert: (value: unknown): bigint => BigInt(String(value)),

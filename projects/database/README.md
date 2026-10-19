@@ -310,8 +310,8 @@ driver and writes them with `node:sqlite`. It never starts `pg_dump`, needs
 none of the PostgreSQL client tools, and adds no native SQLite dependency, so
 it runs anywhere Node 24 runs. `--source-uri`, `--table`, `--schema`,
 `--file`, `--overwrite`, and `--dry-run` mean what they mean for the default
-export, except that `--dry-run` checks no client tool, and so do the overwrite
-guard and the missing-table error. The service
+export, and the overwrite guard and the missing-table error behave as they do
+there; only `--dry-run` differs, in checking no client tool. The service
 names no table of its own, so any table in any schema can be exported:
 
 ```bash
@@ -319,13 +319,16 @@ pnpm exec nx run database:start:export --args="--sqlite --source-uri postgresql:
 ```
 
 `--ddl` writes each table's definition: its columns, `NOT NULL` where the
-source forbids null, and its primary key. `--data` writes its rows. A SQLite
+source forbids null, and its primary key, which Postgres shows only for a
+table the role owns or can write to, so a read-only role gets none. `--data`
+writes its rows. A SQLite
 file cannot hold rows without their table, so `--data` alone still creates the
 tables, with the same definition. Indexes, foreign keys, defaults, and
 comments are not carried over; create what a reader needs afterwards. Each
 table takes its name without its schema, and two tables that would share a
-name fail the export. Rows are read through a cursor, a thousand at a time,
-and written in one SQLite transaction, to a `.partial` file that replaces
+name fail the export. Every table is read from one snapshot, as `pg_dump`
+reads, through a cursor a thousand rows at a time, and written in one SQLite
+transaction, to a `.partial` file that replaces
 `--file` only once the export succeeds.
 
 Postgres column types become SQLite types a browser can query:

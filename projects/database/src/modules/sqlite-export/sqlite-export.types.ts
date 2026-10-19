@@ -62,8 +62,11 @@ export interface SqliteTypeMapping {
   /** The SQLite storage class the column is declared with. */
   readonly affinity: "INTEGER" | "REAL" | "TEXT";
 
-  /** Select the column cast to this type, so the driver does not parse it. */
-  readonly cast?: "text";
+  /**
+   * Select the column as `text` or through `to_json`, so the driver does
+   * not parse it into a value that loses what Postgres holds.
+   */
+  readonly cast?: "json" | "text";
 
   /** A SQLite value for a non-null value the driver returned. */
   readonly convert: (value: unknown) => SQLInputValue;

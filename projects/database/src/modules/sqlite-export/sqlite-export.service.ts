@@ -60,13 +60,15 @@ export class SqliteExportService {
   ): Promise<SqliteTable[]> {
     const missing = await missingPostgresTables(query, tables);
     if (missing.length > 0) throw new SqliteExportTablesError(missing);
-    return sqliteTables(tables, await postgresColumns(query, tables));
+    return sqliteTables(await postgresColumns(query, tables));
   }
 
   /**
    * Writes `tables` to a new SQLite `file` in one transaction: each
-   * table's definition, then, with `data`, its rows. A failure closes the
-   * file uncommitted, so it holds nothing.
+   * table's definition, then, with `data`, its rows, all read from one
+   * Postgres snapshot, as `pg_dump` reads. A failure closes the file
+   * uncommitted, so it holds nothing, and the connection's transaction
+   * ends with it.
    */
   private async write(
     query: PostgresQuery,
@@ -75,6 +77,7 @@ export class SqliteExportService {
     const database = new DatabaseSync(file);
     try {
       database.exec("BEGIN");
+      await query("BEGIN READ ONLY ISOLATION LEVEL REPEATABLE READ");
       for (const table of tables) {
         database.exec(createSqliteTableSql(table));
         if (!data) continue;
@@ -82,6 +85,7 @@ export class SqliteExportService {
           insertSqliteRows(database, table, rows);
         }
       }
+      await query("COMMIT");
       database.exec("COMMIT");
     } finally {
       database.close();

@@ -76,6 +76,16 @@ describe("export --sqlite tables", () => {
         ('00000000-0000-0000-0000-000000000001', '2025-03-20T14:46:00Z', 12.5, ARRAY['fire','cardinal'], true, '2025-03-20', 7, 9007199254740993, '{"a":[1,2]}'),
         ('00000000-0000-0000-0000-000000000002', '2025-03-21T00:00:00+02', NULL, NULL, false, NULL, NULL, NULL, NULL)`,
     );
+    await source.query("CREATE TYPE mood AS ENUM ('calm', 'fierce')");
+    await source.query(
+      "CREATE TABLE array_samples (id integer PRIMARY KEY, moods mood[], weights numeric[], seen timestamptz[])",
+    );
+    await source.query(
+      "INSERT INTO array_samples VALUES (1, ARRAY['calm', 'fierce']::mood[], ARRAY[1.5, 2], ARRAY['2025-03-20T14:46:00Z']::timestamptz[])",
+    );
+    await source.query(
+      "CREATE TABLE keyed_samples (first_part text, second_part text, PRIMARY KEY (second_part, first_part))",
+    );
     await source.query(
       "CREATE TABLE unmapped_samples (id uuid PRIMARY KEY, span interval)",
     );
@@ -159,6 +169,27 @@ describe("export --sqlite tables", () => {
     );
 
     it(
+      "stores an array of any element type as exact JSON text",
+      async () => {
+        expect.hasAssertions();
+
+        const result = await runExport(["array_samples"], "--data");
+
+        expect(result.exitCode).toBe(0);
+        expect(
+          readBack("SELECT moods, weights, seen FROM array_samples"),
+        ).toStrictEqual([
+          {
+            moods: '["calm","fierce"]',
+            seen: '["2025-03-20T14:46:00+00:00"]',
+            weights: "[1.5,2]",
+          },
+        ]);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it(
       "fails naming the column of a type with no mapping, and writes nothing",
       async () => {
         expect.hasAssertions();
@@ -229,6 +260,26 @@ describe("export --sqlite tables", () => {
         expect(
           readBack("SELECT count(*) AS total FROM mapped_samples"),
         ).toStrictEqual([{ total: 0 }]);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it(
+      "writes a composite primary key in the key's own column order",
+      async () => {
+        expect.hasAssertions();
+
+        await runExport(["keyed_samples"], "--ddl");
+
+        expect(
+          readBack(
+            "SELECT sql FROM sqlite_master WHERE name = 'keyed_samples'",
+          ),
+        ).toStrictEqual([
+          {
+            sql: 'CREATE TABLE "keyed_samples" ("first_part" TEXT NOT NULL, "second_part" TEXT NOT NULL, PRIMARY KEY ("second_part", "first_part"))',
+          },
+        ]);
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
     );
