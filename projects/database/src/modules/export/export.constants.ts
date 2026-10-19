@@ -68,11 +68,12 @@ export const dryRunMessages = (
     connection: { database, host },
     content,
     file,
+    sqlite,
     tables,
-  }: Pick<ExportPlan, "connection" | "content" | "file" | "tables">,
+  }: Pick<ExportPlan, "connection" | "content" | "file" | "sqlite" | "tables">,
   exists: boolean,
 ): string[] => [
-  `🔍 Planning export of ${describePostgresContent(content)} from database "${database}" on ${host} to ${file}; nothing was connected to or changed`,
+  `🔍 Planning export of ${describePostgresContent(content)} from database "${database}" on ${host} to ${file}${sqlite ? " as SQLite" : ""}; nothing was connected to or changed`,
   ...tables.map(
     (table) =>
       `🔍 Planning to export ${describePostgresContent(content)} of ${table}`,

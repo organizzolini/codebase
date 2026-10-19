@@ -15,6 +15,8 @@ import {
   qualifyTableNames,
 } from "../postgres-client/postgres-client.utilities";
 import { missingDumpTables } from "../postgres-client/postgres-dump.utilities";
+import { SqliteExportTablesError } from "../sqlite-export/sqlite-export.constants";
+import { SqliteExportService } from "../sqlite-export/sqlite-export.service";
 
 import {
   dryRunMessages,
@@ -30,8 +32,9 @@ import type { ExportCommandOptions, ExportPlan } from "./export.types";
 
 /**
  * Dumps selected tables from the database a URI names into one
- * custom-format file, through `pg_dump`. Every option is validated before
- * the dump starts, and the password reaches `pg_dump` only through its
+ * custom-format file, through `pg_dump`, or with `--sqlite` into a SQLite
+ * file, through `SqliteExportService`. Every option is validated before
+ * the export starts, and the password reaches `pg_dump` only through its
  * environment.
  */
 @Command({
@@ -46,6 +49,7 @@ export class ExportCommand extends CommandRunner {
   constructor(
     private readonly logger: LoggerService,
     private readonly postgresClient: PostgresClientService,
+    private readonly sqliteExport: SqliteExportService,
   ) {
     super();
     this.logger.setContext(ExportCommand.name);
@@ -59,9 +63,13 @@ export class ExportCommand extends CommandRunner {
 
   /**
    * `error`, or an `ExportTableError` naming the tables when it is
-   * `pg_dump` reporting that `--table` matched nothing in `source`.
+   * `pg_dump` or the SQLite export reporting that `--table` matched
+   * nothing in `source`.
    */
   private explain(error: unknown, source: string): unknown {
+    if (error instanceof SqliteExportTablesError) {
+      return new ExportTableError(missingTablesMessage(error.tables, source));
+    }
     if (!(error instanceof PostgresClientError)) return error;
     const missing = missingDumpTables(error.detail);
     return missing.length === 0
@@ -111,6 +119,7 @@ export class ExportCommand extends CommandRunner {
       content,
       file,
       source: maskPostgresCredentials(sourceUri, connection.password),
+      sqlite: options.sqlite === true,
       // One table named twice, once resolved in --schema, is dumped once.
       tables: [...new Set(qualifyTableNames(tables, options.schema))],
     };
@@ -212,6 +221,16 @@ export class ExportCommand extends CommandRunner {
     return value;
   }
 
+  /** Parses the boolean `--sqlite` flag. */
+  @Option({
+    description:
+      "Write a SQLite file instead of a custom-format dump, through the Postgres driver, needing no Postgres client tools",
+    flags: "--sqlite",
+  })
+  parseSqlite(): boolean {
+    return true;
+  }
+
   /** Collects each repeated `--table` into one list. */
   @Option({
     description: "Table to export; repeat for several",
@@ -226,13 +245,14 @@ export class ExportCommand extends CommandRunner {
    * existing file is refused without `--overwrite`, before any process
    * starts; a dump that fails leaves --file exactly as it was. `--dry-run`
    * stops once `pg_dump` is checked, printing the plan instead of dumping.
+   * `--sqlite` checks and starts no Postgres client tool.
    */
   async run(
     _passedParameters: string[],
     options: ExportCommandOptions,
   ): Promise<void> {
     const plan = this.plan(options);
-    await this.postgresClient.ensureTool("pg_dump");
+    if (!plan.sqlite) await this.postgresClient.ensureTool("pg_dump");
     if (options.dryRun === true) {
       this.logDryRun(plan);
       return;
@@ -246,7 +266,9 @@ export class ExportCommand extends CommandRunner {
     // beside --file and the result replaces it only once the dump succeeded.
     const partial = `${plan.file}.${randomUUID()}.partial`;
     try {
-      await this.postgresClient.dump({ ...plan, file: partial });
+      await (plan.sqlite
+        ? this.sqliteExport.export({ ...plan, file: partial })
+        : this.postgresClient.dump({ ...plan, file: partial }));
       fs.renameSync(partial, plan.file);
     } catch (error) {
       fs.rmSync(partial, { force: true });
