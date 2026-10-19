@@ -4,14 +4,18 @@ import { DataSource } from "typeorm";
 import { maskPostgresCredentials } from "../postgres-client/postgres-client.utilities";
 
 import {
+  SqliteExportColumnError,
   SqliteExportError,
   SqliteExportTablesError,
 } from "./sqlite-export.constants";
 import {
   createSqliteFile,
+  mapSqliteColumns,
   missingPostgresTables,
+  postgresColumns,
 } from "./sqlite-export.utilities";
 
+import type { PostgresQuery } from "../postgres-client/postgres-client.types";
 import type { SqliteExportOptions } from "./sqlite-export.types";
 
 /**
@@ -38,7 +42,8 @@ export class SqliteExportService {
    * Writes `tables` from `connection` to a new SQLite `file`.
    *
    * @throws SqliteExportTablesError naming every table the source lacks,
-   * or SqliteExportError when the source cannot be read.
+   * SqliteExportColumnError naming a column whose type has no SQLite
+   * mapping, or SqliteExportError when the source cannot be read.
    */
   async export({
     connection,
@@ -59,15 +64,20 @@ export class SqliteExportService {
 
     try {
       await dataSource.initialize();
-      const missing = await missingPostgresTables(
-        async (sql, parameters = []) =>
-          dataSource.query<unknown[]>(sql, [...parameters]),
-        tables,
-      );
+      const query: PostgresQuery = async (sql, parameters = []) =>
+        dataSource.query<unknown[]>(sql, [...parameters]);
+      const missing = await missingPostgresTables(query, tables);
       if (missing.length > 0) throw new SqliteExportTablesError(missing);
+      const columns = await postgresColumns(query, tables);
+      for (const table of tables) mapSqliteColumns(columns.get(table) ?? []);
       createSqliteFile(file);
     } catch (error) {
-      if (error instanceof SqliteExportTablesError) throw error;
+      if (
+        error instanceof SqliteExportTablesError ||
+        error instanceof SqliteExportColumnError
+      ) {
+        throw error;
+      }
       const detail = error instanceof Error ? error.message : String(error);
       throw new SqliteExportError(maskPostgresCredentials(detail, password));
     } finally {
