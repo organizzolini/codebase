@@ -1,23 +1,70 @@
-import { DatabaseSync } from "node:sqlite";
-
 import { z } from "zod";
+
+import { quotePostgresTable } from "../postgres-client/postgres-truncate.utilities";
 
 import {
   SQLITE_EXPORT_COLUMNS_SQL,
+  SQLITE_EXPORT_CURSOR,
   SQLITE_EXPORT_EXISTING_TABLES_SQL,
+  SQLITE_EXPORT_FETCH_SIZE,
+  SQLITE_EXPORT_ROW_SCHEMA,
   SQLITE_TYPE_MAPPINGS,
   SqliteExportColumnError,
+  SqliteExportNameError,
 } from "./sqlite-export.constants";
 
 import type { PostgresQuery } from "../postgres-client/postgres-client.types";
-import type { PostgresColumn, SqliteColumn } from "./sqlite-export.types";
+import type {
+  PostgresColumn,
+  SqliteColumn,
+  SqliteTable,
+} from "./sqlite-export.types";
+import type { DatabaseSync } from "node:sqlite";
 
 // 🌎 Utilities
 
-/** Creates an empty SQLite database at `file`, which must not exist. */
-export function createSqliteFile(file: string): void {
-  const database = new DatabaseSync(file);
-  database.close();
+/**
+ * The `CREATE TABLE` statement for `table`: each column with its mapped
+ * storage class, `NOT NULL` where the source forbids null, and the
+ * source's primary key.
+ */
+export function createSqliteTableSql({ columns, name }: SqliteTable): string {
+  const definitions = columns.map(
+    ({ mapping, name: column, nullable }) =>
+      `${quoteIdentifier(column)} ${mapping.affinity}${nullable ? "" : " NOT NULL"}`,
+  );
+  const key = columns
+    .filter(({ primaryKey }) => primaryKey !== null)
+    .toSorted((a, b) => (a.primaryKey ?? 0) - (b.primaryKey ?? 0))
+    .map(({ name: column }) => quoteIdentifier(column));
+  if (key.length > 0) definitions.push(`PRIMARY KEY (${key.join(", ")})`);
+  return `CREATE TABLE ${quoteIdentifier(name)} (${definitions.join(", ")})`;
+}
+
+/**
+ * Inserts `rows`, as the Postgres driver returned them, into `table`,
+ * converting each value to its SQLite type; a missing value is null.
+ */
+export function insertSqliteRows(
+  database: DatabaseSync,
+  { columns, name }: SqliteTable,
+  rows: readonly Record<string, unknown>[],
+): void {
+  const names = columns.map((column) => quoteIdentifier(column.name));
+  const placeholders = columns.map(() => "?");
+  const statement = database.prepare(
+    `INSERT INTO ${quoteIdentifier(name)} (${names.join(", ")}) VALUES (${placeholders.join(", ")})`,
+  );
+  for (const row of rows) {
+    statement.run(
+      ...columns.map(({ mapping, name: column }) => {
+        const value = row[column];
+        return value === null || value === undefined
+          ? null
+          : mapping.convert(value);
+      }),
+    );
+  }
 }
 
 /**
@@ -30,13 +77,15 @@ export function createSqliteFile(file: string): void {
 export function mapSqliteColumns(
   columns: readonly PostgresColumn[],
 ): SqliteColumn[] {
-  return columns.map((column) => {
+  const mapped: SqliteColumn[] = [];
+  for (const column of columns) {
     const mapping = SQLITE_TYPE_MAPPINGS[column.type];
     if (mapping === undefined) {
       throw new SqliteExportColumnError(column.table, column.name, column.type);
     }
-    return { ...column, mapping };
-  });
+    mapped.push({ ...column, mapping });
+  }
+  return mapped;
 }
 
 /**
@@ -78,4 +127,77 @@ export async function postgresColumns(
   );
   for (const row of rows) grouped.get(row.table)?.push(row);
   return grouped;
+}
+
+/**
+ * The rows of `table`, in batches of one fetch, read through a cursor in
+ * one read-only transaction so the table is never held whole in memory.
+ */
+export async function* readPostgresRows(
+  query: PostgresQuery,
+  { columns, table }: SqliteTable,
+): AsyncGenerator<Record<string, unknown>[]> {
+  const select = columns
+    .map(({ mapping, name }) =>
+      mapping.cast === undefined
+        ? quoteIdentifier(name)
+        : `${quoteIdentifier(name)}::${mapping.cast} AS ${quoteIdentifier(name)}`,
+    )
+    .join(", ");
+
+  await query("BEGIN READ ONLY");
+  try {
+    await query(
+      `DECLARE ${SQLITE_EXPORT_CURSOR} NO SCROLL CURSOR FOR SELECT ${select} FROM ${quotePostgresTable(table)}`,
+    );
+    for (;;) {
+      const rows = z
+        .array(SQLITE_EXPORT_ROW_SCHEMA)
+        .parse(
+          await query(
+            `FETCH ${String(SQLITE_EXPORT_FETCH_SIZE)} FROM ${SQLITE_EXPORT_CURSOR}`,
+          ),
+        );
+      if (rows.length === 0) return;
+      yield rows;
+    }
+  } finally {
+    await query("ROLLBACK");
+  }
+}
+
+/**
+ * Pairs each of `tables` with its columns, mapped to SQLite types, and
+ * the name it takes in the file: its name without its schema.
+ *
+ * @throws SqliteExportColumnError naming a column whose type has no
+ * mapping, or SqliteExportNameError when two tables share a name.
+ */
+export function sqliteTables(
+  tables: readonly string[],
+  columns: ReadonlyMap<string, readonly PostgresColumn[]>,
+): SqliteTable[] {
+  const described: SqliteTable[] = [];
+  for (const table of tables) {
+    described.push({
+      columns: mapSqliteColumns(columns.get(table) ?? []),
+      name: table.slice(table.indexOf(".") + 1),
+      table,
+    });
+  }
+  for (const { name } of described) {
+    const sharing = described.filter((other) => other.name === name);
+    if (sharing.length > 1) {
+      throw new SqliteExportNameError(
+        name,
+        sharing.map(({ table }) => table),
+      );
+    }
+  }
+  return described;
+}
+
+/** `name` as a quoted SQL identifier, doubling any quote inside it. */
+function quoteIdentifier(name: string): string {
+  return `"${name.replaceAll('"', '""')}"`;
 }

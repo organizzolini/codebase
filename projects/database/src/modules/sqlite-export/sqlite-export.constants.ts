@@ -1,5 +1,7 @@
 // ♟️ Constants
 
+import { z } from "zod";
+
 import type { SqliteTypeMapping } from "./sqlite-export.types";
 
 /** Which of the `$1` schema-qualified names are tables, as `schema.table`. */
@@ -36,6 +38,15 @@ LEFT JOIN (
   AND keys.column_name = columns.column_name
 WHERE columns.table_schema || '.' || columns.table_name = ANY($1::text[])
 ORDER BY columns.table_schema, columns.table_name, columns.ordinal_position`;
+
+/** How many rows one `FETCH` reads, so a large table is never held whole. */
+export const SQLITE_EXPORT_FETCH_SIZE = 1000;
+
+/** One row as the driver returns it: values by column name. */
+export const SQLITE_EXPORT_ROW_SCHEMA = z.record(z.string(), z.unknown());
+
+/** The name of the cursor a table's rows are read through. */
+export const SQLITE_EXPORT_CURSOR = "sqlite_export_cursor";
 
 /** A SQLite value for an ISO-8601 instant, or the text of anything else. */
 const toIsoText = (value: unknown): string =>
@@ -123,6 +134,19 @@ export class SqliteExportError extends Error {
   constructor(message: string) {
     super(message);
     this.name = SqliteExportError.name;
+  }
+}
+
+/**
+ * Tables from different schemas that would share one SQLite name. A SQLite
+ * file has no schemas, so each table is written under its own name alone.
+ */
+export class SqliteExportNameError extends Error {
+  constructor(name: string, tables: readonly string[]) {
+    super(
+      `${tables.join(" and ")} would both be written as "${name}" in one SQLite file; export them to separate files`,
+    );
+    this.name = SqliteExportNameError.name;
   }
 }
 
