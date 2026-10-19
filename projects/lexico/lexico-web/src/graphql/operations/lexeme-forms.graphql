@@ -1,0 +1,44 @@
+query LexemeForms($id: ID!) {
+  lexeme(id: $id) {
+    wordForms {
+      id
+      word
+      form {
+        __typename
+        ... on AdjectivalForm {
+          case
+          gender
+          number
+        }
+        ... on AdverbForm {
+          degree
+        }
+        ... on FiniteVerbForm {
+          mood
+          number
+          person
+          tense
+          voice
+        }
+        ... on GerundForm {
+          case
+        }
+        ... on InfinitiveForm {
+          tense
+          voice
+        }
+        ... on NominalForm {
+          case
+          number
+        }
+        ... on ParticipleForm {
+          tense
+          voice
+        }
+        ... on SupineForm {
+          case
+        }
+      }
+    }
+  }
+}

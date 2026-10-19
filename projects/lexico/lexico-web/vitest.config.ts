@@ -22,6 +22,7 @@ export default mergeConfig(
           "src/**/*.test.ts",
           "src/**/*.test.tsx",
           "src/**/*.functions.ts",
+          "src/graphql/generated/**",
           "src/client.tsx",
           "src/routeTree.gen.ts",
           "src/router.tsx",

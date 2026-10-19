@@ -118,6 +118,7 @@ module.exports = {
         "__[a-zA-Z]+__",
         // Auto-generated files may have circular deps
         String.raw`\.gen\.(ts|tsx|js|jsx)$`,
+        String.raw`^projects/.+/src/graphql/generated/`,
         // Vendored shadcn and ReUI source, refreshed by `shadcn add`
         String.raw`^projects/components/src/(components|hooks|lib)/`,
       ],
