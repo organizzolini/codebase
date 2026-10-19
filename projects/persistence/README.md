@@ -147,7 +147,8 @@ conventional paths from:
 | `nx run <project>:migration:extract-sql-all`    | Extracts every migration's SQL                                  |
 
 Migrations never run on application start; running them is its own step.
-The extraction script is `scripts/extract-migration-sql.ts`.
+SQL extraction now runs through the `synchronization` command:
+`extract-typeorm-migration-sql`.
 
 The extracted SQL is linted only once the project opts in to it as well: a
 `framework:typeorm` tag, and three more empty entries beside `migration`:

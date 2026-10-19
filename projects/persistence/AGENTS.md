@@ -47,8 +47,6 @@ src/
     export/                         # The export command: options, plan, dry run, atomic write
     import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
-scripts/
-  extract-migration-sql.ts          # Run by every project's migration:extract-sql-* target
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
