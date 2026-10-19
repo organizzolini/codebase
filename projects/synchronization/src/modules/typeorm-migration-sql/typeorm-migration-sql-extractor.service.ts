@@ -21,9 +21,7 @@ import type {
 } from "./typeorm-migration-sql.types";
 import type { LoggerService } from "@codebase/logging";
 
-/**
- * TODO: Document the typeormMigrationSqlExtractor service.
- */
+/** Extracts TypeORM migration SQL files for synchronization checks. */
 @Injectable()
 export class TypeormMigrationSqlExtractorService {
   // 🏗 Dependency Injection
@@ -120,6 +118,13 @@ export class TypeormMigrationSqlExtractorService {
         this.latestMigrationEntry(migrationEntries, options.directory),
       ),
     ];
+  }
+
+  /** Builds an optional migration argument without passing explicit undefined. */
+  private migrationOption(migration: string | undefined): {
+    migration?: string;
+  } {
+    return migration === undefined ? {} : { migration };
   }
 
   /** The SQL output file paths paired with one migration source file. */
@@ -430,9 +435,7 @@ export class TypeormMigrationSqlExtractorService {
       for (const target of targets) {
         const migrationFiles = await this.migrationFiles({
           directory: target.migrationsDirectory,
-          ...(options.options.migration === undefined
-            ? {}
-            : { migration: options.options.migration }),
+          ...this.migrationOption(options.options.migration),
           selection,
         });
         options.logger.info(

@@ -16,6 +16,7 @@ import { TypeormMigrationSqlCommand } from "./typeorm-migration-sql.command";
 
 describe(TypeormMigrationSqlCommand, () => {
   let command: TypeormMigrationSqlCommand;
+  let extractorService: TypeormMigrationSqlExtractorService;
   let logger: LoggerService;
   let tempDirectories: string[] = [];
 
@@ -41,6 +42,9 @@ describe(TypeormMigrationSqlCommand, () => {
     }).compile();
 
     command = await module.resolve(TypeormMigrationSqlCommand);
+    extractorService = await module.resolve(
+      TypeormMigrationSqlExtractorService,
+    );
     logger = await module.resolve(LoggerService);
   });
 
@@ -56,6 +60,24 @@ describe(TypeormMigrationSqlCommand, () => {
 
   it("is defined", () => {
     expect(command).toBeDefined();
+  });
+
+  it("parses scalar command options unchanged", () => {
+    expect(command.parseDirectory("dir")).toBe("dir");
+    expect(command.parseMigration("migration.ts")).toBe("migration.ts");
+    expect(command.parseModule("src/modules/database")).toBe(
+      "src/modules/database",
+    );
+    expect(command.parseProject("lexico-entities")).toBe("lexico-entities");
+    expect(command.parseProjectRoot("projects/lexico/lexico-entities")).toBe(
+      "projects/lexico/lexico-entities",
+    );
+  });
+
+  it("parses selection as all only when explicitly requested", () => {
+    expect(command.parseSelection("all")).toBe("all");
+    expect(command.parseSelection("latest")).toBe("latest");
+    expect(command.parseSelection("unknown")).toBe("latest");
   });
 
   it("sets logger context", async () => {
@@ -155,5 +177,24 @@ describe(TypeormMigrationSqlCommand, () => {
       undefined,
       expect.any(Object),
     );
+  });
+
+  it("delegates synchronize() to extractor service", async () => {
+    vi.spyOn(extractorService, "synchronize").mockResolvedValueOnce(true);
+
+    const result = await command.synchronize("check", {
+      directory:
+        "projects/lexico/lexico-entities/src/modules/database/migrations",
+    });
+
+    expect(result).toBe(true);
+    expect(extractorService.synchronize).toHaveBeenCalledWith({
+      logger,
+      mode: "check",
+      options: {
+        directory:
+          "projects/lexico/lexico-entities/src/modules/database/migrations",
+      },
+    });
   });
 });
