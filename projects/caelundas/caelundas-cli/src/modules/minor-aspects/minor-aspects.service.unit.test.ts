@@ -17,8 +17,8 @@ import { MinorAspectsEventService } from "./minor-aspects-event.service";
 import { MinorAspectsProgressiveService } from "./minor-aspects-progressive.service";
 import { MinorAspectsService } from "./minor-aspects.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
 vi.mock("fs", () => ({

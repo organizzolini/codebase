@@ -1,6 +1,6 @@
 import { Entity, Index, ManyToOne, OneToMany, TableInheritance } from "typeorm";
 
-import { DeletableEntity } from "@codebase/database";
+import { DeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "../Lexeme.entity";
 import type { WordForm } from "../WordForm.entity";

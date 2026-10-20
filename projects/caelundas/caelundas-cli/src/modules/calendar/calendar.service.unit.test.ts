@@ -12,7 +12,7 @@ import { mockDates } from "../../../testing/mocks";
 
 import { CalendarService } from "./calendar.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 vi.mock("node:fs/promises", () => ({
   mkdir: vi.fn<typeof mkdir>(),

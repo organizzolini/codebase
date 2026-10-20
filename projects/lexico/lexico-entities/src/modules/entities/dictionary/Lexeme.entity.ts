@@ -1,6 +1,6 @@
 import { Column, Entity, Index, OneToMany, OneToOne, Unique } from "typeorm";
 
-import { DeletableEntity } from "@codebase/database";
+import { DeletableEntity } from "@codebase/persistence";
 
 import { Form } from "./form/Form.entity";
 import { Inflection } from "./inflection/Inflection.entity";

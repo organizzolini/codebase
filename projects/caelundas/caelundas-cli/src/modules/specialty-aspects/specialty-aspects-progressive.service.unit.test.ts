@@ -11,7 +11,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { SpecialtyAspectsProgressiveService } from "./specialty-aspects-progressive.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(SpecialtyAspectsProgressiveService, () => {
   let service: SpecialtyAspectsProgressiveService;

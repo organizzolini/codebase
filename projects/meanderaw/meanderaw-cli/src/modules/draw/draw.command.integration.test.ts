@@ -9,23 +9,23 @@ import {
   vi,
 } from "vitest";
 
+import { LoggerService } from "@codebase/logging";
 import {
   type DatabaseTestingModule,
   startDatabaseTestingModule,
-} from "@codebase/database/testing";
-import { LoggerService } from "@codebase/logging";
+} from "@codebase/persistence/testing";
 
 import { CharacteristicsModule } from "../characteristics/characteristics.module";
 import { CodeModule } from "../code/code.module";
 import { CorpusService } from "../corpus/corpus.service";
+import { DatabaseModule } from "../database/database.module";
+import { Meander } from "../database/entities/meander.entity";
+import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
 import { DrawingModule } from "../drawing/drawing.module";
 import { GeometryService } from "../geometry/geometry.service";
 import { GraphService } from "../graph/graph.service";
 import { MatrixModule } from "../matrix/matrix.module";
-import { Meander } from "../meanderaw-database/entities/meander.entity";
-import { MeanderawDatabaseModule } from "../meanderaw-database/meanderaw-database.module";
-import { Migration1791160950069 } from "../meanderaw-database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../meanderaw-database/migrations/1791414023001-migration";
 import { SvgService } from "../svg/svg.service";
 import { TileService } from "../tile/tile.service";
 
@@ -45,7 +45,7 @@ import type { Repository } from "typeorm";
  * graph.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `MeanderawDatabaseModule` at a fresh, migrated schema instead of the
+ * `DatabaseModule` at a fresh, migrated schema instead of the
  * local database.
  */
 describe("drawCommand --code mode", () => {
@@ -55,7 +55,7 @@ describe("drawCommand --code mode", () => {
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: MeanderawDatabaseModule,
+      database: DatabaseModule,
       entities: [Meander],
       imports: [CharacteristicsModule, CodeModule, DrawingModule, MatrixModule],
       migrations: [Migration1791160950069, Migration1791414023001],

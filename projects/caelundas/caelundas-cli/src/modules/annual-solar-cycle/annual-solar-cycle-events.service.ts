@@ -10,7 +10,7 @@ import {
   SOLAR_CYCLE_LONGITUDE_THRESHOLDS,
 } from "./annual-solar-cycle.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   BuildSolarCycleEventArguments,
   SolarCycleLongitudes,

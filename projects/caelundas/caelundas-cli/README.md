@@ -197,7 +197,7 @@ Postgres returns `numeric` columns as strings, so compare coordinates as such.
 The schema comes from a generated migration: `nx run caelundas-cli:migration:run`
 applies it and `nx run caelundas-cli:migration:generate` creates the next one.
 Both read the data source and migrations from
-`src/modules/caelundas-database/`, the folder the `migration` target's
+`src/modules/database/`, the folder the `migration` target's
 `module` option names.
 
 ## Structure
@@ -212,7 +212,7 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── caelundas-database/  # Postgres connection, CalendarEvent entity, migrations
+    ├── database/  # Postgres connection, CalendarEvent entity, migrations
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── calendar/            # iCalendar and JSON rendering and output
     ├── datetime/, math/     # Time stepping and angular arithmetic
@@ -2147,7 +2147,7 @@ flowchart LR
   AnnualSolarCycleModule
   AspectsModule
   AspectsUtilitiesModule
-  CaelundasDatabaseModule
+  DatabaseModule
   CaelundasModule
   CalendarEventsModule
   CalendarModule
@@ -2191,11 +2191,11 @@ flowchart LR
   AspectsModule --> TripleAspectsModule
   AspectsUtilitiesModule --> EphemerisModule
   AspectsUtilitiesModule --> MathModule
-  CaelundasDatabaseModule --> DatabaseModule
-  CaelundasDatabaseModule --> TypeOrmModule
+  DatabaseModule --> DatabaseModule
+  DatabaseModule --> TypeOrmModule
   CaelundasModule --> AnnualSolarCycleModule
   CaelundasModule --> AspectsModule
-  CaelundasModule --> CaelundasDatabaseModule
+  CaelundasModule --> DatabaseModule
   CaelundasModule --> CalendarEventsModule
   CaelundasModule --> CalendarModule
   CaelundasModule --> DailyCyclesModule
@@ -2218,7 +2218,7 @@ flowchart LR
   CaelundasModule --> StelliumModule
   CaelundasModule --> TripleAspectsModule
   CaelundasModule --> TwilightsModule
-  CalendarEventsModule --> CaelundasDatabaseModule
+  CalendarEventsModule --> DatabaseModule
   DailyCyclesModule --> CalendarModule
   DailyCyclesModule --> EphemerisModule
   DailyCyclesModule --> MathModule
@@ -2331,16 +2331,16 @@ graph LR
   file_src_modules_aspects_compound_phase_service_unit_test_ts["src/modules/aspects/compound-phase.service.unit.test.ts"]
   file_src_modules_aspects_progressive_compound_event_service_ts["src/modules/aspects/progressive-compound-event.service.ts"]
   file_src_modules_aspects_progressive_compound_event_service_unit_test_ts["src/modules/aspects/progressive-compound-event.service.unit.test.ts"]
-  file_src_modules_caelundas_database_caelundas_database_constants_ts["src/modules/caelundas-database/caelundas-database.constants.ts"]
-  file_src_modules_caelundas_database_caelundas_database_module_ts["src/modules/caelundas-database/caelundas-database.module.ts"]
-  file_src_modules_caelundas_database_caelundas_database_service_ts["src/modules/caelundas-database/caelundas-database.service.ts"]
-  file_src_modules_caelundas_database_caelundas_database_service_unit_test_ts["src/modules/caelundas-database/caelundas-database.service.unit.test.ts"]
-  file_src_modules_caelundas_database_caelundas_database_types_ts["src/modules/caelundas-database/caelundas-database.types.ts"]
-  file_src_modules_caelundas_database_caelundas_database_utilities_ts["src/modules/caelundas-database/caelundas-database.utilities.ts"]
-  file_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts["src/modules/caelundas-database/caelundas-database.utilities.unit.test.ts"]
-  file_src_modules_caelundas_database_data_source_constants_ts["src/modules/caelundas-database/data-source.constants.ts"]
-  file_src_modules_caelundas_database_entities_calendar_event_entity_ts["src/modules/caelundas-database/entities/calendar-event.entity.ts"]
-  file_src_modules_caelundas_database_migrations_1791255787877_migration_ts["src/modules/caelundas-database/migrations/1791255787877-migration.ts"]
+  file_src_modules_caelundas_database_caelundas_database_constants_ts["src/modules/database/database.constants.ts"]
+  file_src_modules_caelundas_database_caelundas_database_module_ts["src/modules/database/database.module.ts"]
+  file_src_modules_caelundas_database_caelundas_database_service_ts["src/modules/database/database.service.ts"]
+  file_src_modules_caelundas_database_caelundas_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
+  file_src_modules_caelundas_database_caelundas_database_types_ts["src/modules/database/database.types.ts"]
+  file_src_modules_caelundas_database_caelundas_database_utilities_ts["src/modules/database/database.utilities.ts"]
+  file_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts["src/modules/database/database.utilities.unit.test.ts"]
+  file_src_modules_caelundas_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
+  file_src_modules_caelundas_database_entities_calendar_event_entity_ts["src/modules/database/entities/calendar-event.entity.ts"]
+  file_src_modules_caelundas_database_migrations_1791255787877_migration_ts["src/modules/database/migrations/1791255787877-migration.ts"]
   file_src_modules_caelundas_caelundas_command_ts["src/modules/caelundas/caelundas.command.ts"]
   file_src_modules_caelundas_caelundas_command_unit_test_ts["src/modules/caelundas/caelundas.command.unit.test.ts"]
   file_src_modules_caelundas_caelundas_constants_ts["src/modules/caelundas/caelundas.constants.ts"]

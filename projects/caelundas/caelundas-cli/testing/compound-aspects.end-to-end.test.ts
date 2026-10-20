@@ -5,7 +5,7 @@ import { bodies } from "../src/modules/caelundas/caelundas.constants";
 import { PIPELINE_TEST_TIMEOUT_MILLISECONDS } from "./pipeline-window.constants";
 import { runPipelineWindow } from "./pipeline-window.functions";
 
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 
 /**
  * Philadelphia, 8–10 October 2026. Ceres comes into opposition with the Lunar

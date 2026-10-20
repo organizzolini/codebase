@@ -14,8 +14,8 @@ import { TripleAspectsDetectorService } from "./triple-aspects-detector.service"
 import { TripleAspectsService } from "./triple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { AspectPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /** Builds a Lunar Apogee–Moon–Venus T-square boundary event, Venus focal. */
 function buildTSquareBoundary(

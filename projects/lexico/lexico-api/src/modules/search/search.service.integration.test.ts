@@ -33,8 +33,8 @@ import { SearchService } from "./search.service";
 
 import type { Connection } from "../../lexico-api.types";
 import type { LexemeSearchMatch } from "./search.types";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
 import type { LoggerService } from "@codebase/logging";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** One headword to seed, with the English senses it translates to. */
 interface SeededLexeme {

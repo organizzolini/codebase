@@ -11,13 +11,13 @@ import {
 } from "../caelundas/symbol-caelundas.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   Aspect,
   AspectPhase,
   Body,
   QuadrupleAspect,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { GetQuadrupleAspectEventArguments } from "./quadruple-aspects.types";
 
 /** Primitive helper methods for quadruple-aspect pattern detection and event shaping. */

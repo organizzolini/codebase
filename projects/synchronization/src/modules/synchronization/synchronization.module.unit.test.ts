@@ -9,6 +9,7 @@ import { InstalledSkillsModule } from "../installed-skills/installed-skills.modu
 import { PullRequestLabelsModule } from "../pull-request-labels/pull-request-labels.module";
 import { PullRequestTemplateModule } from "../pull-request-template/pull-request-template.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
+import { TypeormMigrationSqlModule } from "../typeorm-migration-sql/typeorm-migration-sql.module";
 import { VscodeExtensionsModule } from "../vscode-extensions/vscode-extensions.module";
 import { VscodeSettingsModule } from "../vscode-settings/vscode-settings.module";
 
@@ -35,6 +36,7 @@ describe(SynchronizationModule, () => {
     expect(imports).toContain(PullRequestLabelsModule);
     expect(imports).toContain(PullRequestTemplateModule);
     expect(imports).toContain(SkillExclusionsModule);
+    expect(imports).toContain(TypeormMigrationSqlModule);
     expect(imports).toContain(VscodeExtensionsModule);
     expect(imports).toContain(VscodeSettingsModule);
 
