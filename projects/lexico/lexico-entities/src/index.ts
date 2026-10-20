@@ -77,9 +77,9 @@ export {
 } from "./modules/entities/dictionary/pronunciation.entity";
 export type { PronunciationVariant } from "./modules/entities/dictionary/pronunciation.entity";
 export { Translation } from "./modules/entities/dictionary/translation.entity";
-export { Word } from "./modules/entities/dictionary/word.entity";
 export { WordForm } from "./modules/entities/dictionary/word-form.entity";
 export { WordLexeme } from "./modules/entities/dictionary/word-lexeme.entity";
+export { Word } from "./modules/entities/dictionary/word.entity";
 export { EntitiesModule } from "./modules/entities/entities.module";
 export { Author } from "./modules/entities/literature/author.entity";
 export { Line } from "./modules/entities/literature/line.entity";
