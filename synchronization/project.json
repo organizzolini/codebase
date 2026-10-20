@@ -150,6 +150,31 @@
       }
     },
     "prettier": {},
+    "project-ports": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts project-ports check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts project-ports write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Makes the port of every `*-api` and `*-web` application the one its project name hashes to. `check` reports an application whose port differs; `write` rewrites the port on every line about a port across the application's domain folder, so a web application's default API address and an API's allowed origin follow.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/projects/**/*-api/.env.default",
+        "{workspaceRoot}/projects/**/*-api/project.json",
+        "{workspaceRoot}/projects/**/*-web/project.json",
+        "{workspaceRoot}/projects/**/*-web/vite.config.mts",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "pull-request-labels": {
       "configurations": {
         "check": {
