@@ -4,10 +4,10 @@ import { DeletableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../entities.constants";
 
-import type { Word } from "../dictionary/Word.entity";
-import type { Author } from "./Author.entity";
-import type { Line } from "./Line.entity";
-import type { Text } from "./Text.entity";
+import type { Word } from "../dictionary/word.entity";
+import type { Author } from "./author.entity";
+import type { Line } from "./line.entity";
+import type { Text } from "./text.entity";
 import type { Relation } from "typeorm";
 
 /**

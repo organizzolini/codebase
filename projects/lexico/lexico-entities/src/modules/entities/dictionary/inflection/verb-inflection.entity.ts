@@ -2,7 +2,7 @@ import { ChildEntity, Column } from "typeorm";
 
 import { verbConjugationValues } from "../../../database/database.constants";
 
-import { Inflection } from "./Inflection.entity";
+import { Inflection } from "./inflection.entity";
 
 import type { VerbConjugation } from "../../../database/database.types";
 

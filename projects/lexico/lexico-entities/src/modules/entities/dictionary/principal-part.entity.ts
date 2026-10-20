@@ -2,7 +2,7 @@ import { Column, Entity, Index, ManyToOne } from "typeorm";
 
 import { DeletableEntity } from "@codebase/persistence";
 
-import type { Lexeme } from "./Lexeme.entity";
+import type { Lexeme } from "./lexeme.entity";
 
 /**
  * A named principal part associated with a lexeme.

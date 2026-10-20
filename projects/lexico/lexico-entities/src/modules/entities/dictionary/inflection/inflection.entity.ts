@@ -7,7 +7,7 @@ import {
   TableInheritance,
 } from "typeorm";
 
-import type { Lexeme } from "../Lexeme.entity";
+import type { Lexeme } from "../lexeme.entity";
 
 /**
  * Base single-table-inheritance entity for inflection metadata.

@@ -2,8 +2,8 @@ import { Column, Entity, OneToMany } from "typeorm";
 
 import { DeletableEntity } from "@codebase/persistence";
 
-import { WordForm } from "./WordForm.entity";
-import { WordLexeme } from "./WordLexeme.entity";
+import { WordForm } from "./word-form.entity";
+import { WordLexeme } from "./word-lexeme.entity";
 
 /**
  * A distinct written Latin word linked to forms and lexemes.

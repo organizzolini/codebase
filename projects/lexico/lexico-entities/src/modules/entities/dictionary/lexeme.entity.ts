@@ -2,13 +2,13 @@ import { Column, Entity, Index, OneToMany, OneToOne, Unique } from "typeorm";
 
 import { DeletableEntity } from "@codebase/persistence";
 
-import { Form } from "./form/Form.entity";
-import { Inflection } from "./inflection/Inflection.entity";
-import { type PartOfSpeech, partsOfSpeech } from "./PartOfSpeech.entity";
-import { PrincipalPart } from "./PrincipalPart.entity";
-import { Pronunciation } from "./Pronunciation.entity";
-import { Translation } from "./Translation.entity";
-import { WordLexeme } from "./WordLexeme.entity";
+import { Form } from "./form/form.entity";
+import { Inflection } from "./inflection/inflection.entity";
+import { type PartOfSpeech, partsOfSpeech } from "./part-of-speech.entity";
+import { PrincipalPart } from "./principal-part.entity";
+import { Pronunciation } from "./pronunciation.entity";
+import { Translation } from "./translation.entity";
+import { WordLexeme } from "./word-lexeme.entity";
 
 /**
  * A normalized Latin dictionary entry and its related linguistic data.

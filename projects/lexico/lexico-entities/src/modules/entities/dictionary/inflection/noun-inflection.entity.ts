@@ -5,7 +5,7 @@ import {
   nounGenders,
 } from "../../../database/database.constants";
 
-import { Inflection } from "./Inflection.entity";
+import { Inflection } from "./inflection.entity";
 
 import type {
   NounDeclension,

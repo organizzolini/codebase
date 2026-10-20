@@ -2,7 +2,7 @@ import { ChildEntity, Column } from "typeorm";
 
 import { formGerundCaseValues } from "../../../database/database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 import type { FormGerundCase } from "../../../database/database.types";
 

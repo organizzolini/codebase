@@ -5,7 +5,7 @@ import {
   formNumberValues,
 } from "../../../database/database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 import type { FormCase, FormNumber } from "../../../database/database.types";
 

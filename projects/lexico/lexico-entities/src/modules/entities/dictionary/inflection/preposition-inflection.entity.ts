@@ -2,7 +2,7 @@ import { ChildEntity, Column } from "typeorm";
 
 import { prepositionCases } from "../../../database/database.constants";
 
-import { Inflection } from "./Inflection.entity";
+import { Inflection } from "./inflection.entity";
 
 import type { PrepositionCase } from "../../../database/database.types";
 

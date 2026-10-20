@@ -5,18 +5,18 @@ import {
   formVoiceValues,
 } from "../../../database/database.constants";
 
-import { Form } from "./Form.entity";
+import { Form } from "./form.entity";
 
 import type {
   FormNonFiniteTense,
   FormVoice,
 } from "../../../database/database.types";
 
-/** A non-finite infinitive form (voice + tense). */
-@ChildEntity("infinitive")
-export class InfinitiveForm extends Form {
+/** A non-finite participial form (voice + tense). */
+@ChildEntity("participle")
+export class ParticipleForm extends Form {
   @Column({
-    comment: "Tense of the infinitive (present, perfect, future)",
+    comment: "Tense of the participle (present, perfect, future)",
     enum: formNonFiniteTenseValues,
     type: "enum",
   })
