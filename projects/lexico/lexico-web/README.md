@@ -370,9 +370,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  components["components"]
+  presentation["presentation"]
   lexico_web["lexico-web"]
-  lexico_web --> components
+  lexico_web --> presentation
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_web subject
 ```

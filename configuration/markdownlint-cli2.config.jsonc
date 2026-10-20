@@ -123,9 +123,9 @@
     "dist/**",
     "documentation/planning/**",
     "node_modules/**",
-    "projects/common/components/src/components/**",
-    "projects/common/components/src/hooks/use-mobile.tsx",
-    "projects/common/components/src/lib/utils.ts",
+    "projects/common/presentation/src/components/**",
+    "projects/common/presentation/src/hooks/use-mobile.tsx",
+    "projects/common/presentation/src/lib/utils.ts",
     "pnpm-lock.yaml",
   ],
 }

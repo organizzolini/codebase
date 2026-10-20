@@ -150,13 +150,13 @@ graph LR
   codometer_output["codometer-output"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
-  database["database"]
   installation["installation"]
   integration["integration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   logging["logging"]
   meanderaw_cli["meanderaw-cli"]
+  persistence["persistence"]
   publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
@@ -175,12 +175,12 @@ graph LR
   codometer_output --> logging
   conformetry_cli --> logging
   conformetry_nx --> logging
-  database --> logging
   installation --> logging
   integration --> logging
   lexico_api --> logging
   lexico_cli --> logging
   meanderaw_cli --> logging
+  persistence --> logging
   publication --> logging
   synchronization --> logging
   validation --> logging

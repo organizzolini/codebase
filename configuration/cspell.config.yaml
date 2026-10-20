@@ -117,9 +117,9 @@ ignorePaths:
   - "**/.agents/skills/writing-skills/**"
   # installed-skills-end
   - "**/node_modules"
-  - "**/projects/common/components/src/components/**"
-  - "**/projects/common/components/src/hooks/**"
-  - "**/projects/common/components/src/lib/**"
+  - "**/projects/common/presentation/src/components/**"
+  - "**/projects/common/presentation/src/hooks/**"
+  - "**/projects/common/presentation/src/lib/**"
   - "**/pnpm-lock.yaml"
   - "**/routeTree.gen.ts"
   - "**/terraform.tfstate*"

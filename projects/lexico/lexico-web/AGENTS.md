@@ -20,7 +20,7 @@ nx run lexico-web:start
 - **Routing**: TanStack Router, file-based, from `src/routes/`
 - **UI**: React 19 with Tailwind CSS 4
 - **Testing**: Vitest and React Testing Library under jsdom
-- **Components**: shadcn/ui, from [@codebase/components](../../common/components)
+- **Components**: shadcn/ui, from [@codebase/presentation](../../common/presentation)
 
 ### Directory Layout
 
@@ -57,17 +57,17 @@ here: code lives in the route, in `src/components/`, or in a generated module.
 
 ### Component Library Integration
 
-Always import shared UI from `@codebase/components` and never duplicate UI code.
+Always import shared UI from `@codebase/presentation` and never duplicate UI code.
 
 ```tsx
-import { Button, Card, Input } from "@codebase/components";
+import { Button, Card, Input } from "@codebase/presentation";
 ```
 
 The root route lays every page out in the shared sidebar, and
 `src/styles/application.css` layers this application's accent color over the
-shadcn tokens that `@codebase/components` ships. See the
+shadcn tokens that `@codebase/presentation` ships. See the
 [write-react skill](/.agents/skills/write-react/SKILL.md) and
-[components AGENTS](../../common/components/AGENTS.md).
+[components AGENTS](../../common/presentation/AGENTS.md).
 
 ## Development
 

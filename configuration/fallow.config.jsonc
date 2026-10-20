@@ -38,9 +38,9 @@
     // and mostly not imported by anything yet. Each file is an entry point so
     // none reads as unused, and the packages it imports still count as used —
     // excluding it outright would hide those imports. knip does the same.
-    "projects/common/components/src/components/**/*.{ts,tsx}",
-    "projects/common/components/src/hooks/**/*.{ts,tsx}",
-    "projects/common/components/src/lib/**/*.ts",
+    "projects/common/presentation/src/components/**/*.{ts,tsx}",
+    "projects/common/presentation/src/hooks/**/*.{ts,tsx}",
+    "projects/common/presentation/src/lib/**/*.ts",
     "projects/**/src/modules/**/*.module.ts",
     // Nx resolves these from executors.json and generators.json, which is not
     // an import, so nothing reaches them through the module graph.

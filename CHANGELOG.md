@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.13.6](https://github.com/organizzolini/codebase/compare/v3.13.5...v3.13.6) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **database/synchronization/integration:** ♻️ rename database project to persistence ([#1707](https://github.com/organizzolini/codebase/issues/1707)) ([bc4fbfd](https://github.com/organizzolini/codebase/commit/bc4fbfd0f38018c33728ae1d797d316bbc243218))
+
 ## [3.13.5](https://github.com/organizzolini/codebase/compare/v3.13.4...v3.13.5) (2026-10-18)
 
 ### 🐛 Bug Fixes

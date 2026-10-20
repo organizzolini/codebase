@@ -854,13 +854,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  database["database"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
   logging["logging"]
-  lexico_cli --> database
+  persistence["persistence"]
   lexico_cli --> lexico_entities
   lexico_cli --> logging
+  lexico_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_cli subject
 ```
@@ -882,7 +882,6 @@ flowchart LR
   FormsModule
   LatinLibraryModule
   LexemesModule
-  LexicoDatabaseModule
   LexicoIngestionModule
   LibraryModule
   LiteratureModule
@@ -892,15 +891,16 @@ flowchart LR
   NumeralsModule
   PartOfSpeechModule
   PerseusModule
+  PostgresqlModule
   PrincipalPartsModule
   PronunciationModule
   TranslationsModule
   TypeOrmModule
   WiktionaryModule
   WordsModule
-  ClearModule --> LexicoDatabaseModule
+  ClearModule --> DatabaseModule
   ClearModule --> TypeOrmModule
-  DatabaseModule --> TypeOrmModule
+  DatabaseModule --> PostgresqlModule
   DictionaryModule --> FormsModule
   DictionaryModule --> LexemesModule
   DictionaryModule --> ManualModule
@@ -918,20 +918,19 @@ flowchart LR
   LexemesModule --> TranslationsModule
   LexemesModule --> TypeOrmModule
   LexemesModule --> WordsModule
-  LexicoDatabaseModule --> DatabaseModule
   LexicoIngestionModule --> ClearModule
   LexicoIngestionModule --> CorpusScriptorumEcclesiasticorumLatinorumModule
+  LexicoIngestionModule --> DatabaseModule
   LexicoIngestionModule --> DictionaryModule
   LexicoIngestionModule --> EpigraphikDatenbankClaussSlabyModule
   LexicoIngestionModule --> LatinLibraryModule
-  LexicoIngestionModule --> LexicoDatabaseModule
   LexicoIngestionModule --> LibraryModule
   LexicoIngestionModule --> LiteratureModule
   LexicoIngestionModule --> ManualModule
   LexicoIngestionModule --> PerseusModule
   LexicoIngestionModule --> WiktionaryModule
   LexicoIngestionModule --> WordsModule
-  LiteratureModule --> LexicoDatabaseModule
+  LiteratureModule --> DatabaseModule
   LiteratureModule --> NumeralsModule
   LiteratureModule --> TypeOrmModule
   MainModule --> DiscoveryModule
@@ -939,6 +938,7 @@ flowchart LR
   ManualModule --> NumeralsModule
   ManualModule --> TypeOrmModule
   ManualModule --> WordsModule
+  PostgresqlModule --> TypeOrmModule
   PrincipalPartsModule --> TypeOrmModule
   PronunciationModule --> TypeOrmModule
   TranslationsModule --> TypeOrmModule

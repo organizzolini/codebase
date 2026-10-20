@@ -119,7 +119,7 @@ module.exports = {
         // Auto-generated files may have circular deps
         String.raw`\.gen\.(ts|tsx|js|jsx)$`,
         // Vendored shadcn and ReUI source, refreshed by `shadcn add`
-        String.raw`^projects/common/components/src/(components|hooks|lib)/`,
+        String.raw`^projects/common/presentation/src/(components|hooks|lib)/`,
       ],
     },
     reporterOptions: {

@@ -38,9 +38,9 @@ dist
 node_modules
 out
 package-lock.json
-**/projects/common/components/src/components/**
-**/projects/common/components/src/hooks/**
-**/projects/common/components/src/lib/**
+**/projects/common/presentation/src/components/**
+**/projects/common/presentation/src/hooks/**
+**/projects/common/presentation/src/lib/**
 **/projects/lexico/lexico-cli/data/**
 **/projects/lexico/lexico-cli/data/library/**
 **/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts

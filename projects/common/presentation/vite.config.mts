@@ -17,7 +17,7 @@ export default defineConfig(() => ({
       entry: "src/index.ts",
       fileName: "index",
       formats: ["es" as const],
-      name: "components",
+      name: "presentation",
     },
     outDir: "../../dist/packages/components",
     reportCompressedSize: true,
@@ -31,7 +31,7 @@ export default defineConfig(() => ({
       },
     },
   },
-  cacheDir: "../../node_modules/.vite/projects/common/components",
+  cacheDir: "../../node_modules/.vite/projects/common/presentation",
   plugins: [
     react(),
     tsconfigPaths(),

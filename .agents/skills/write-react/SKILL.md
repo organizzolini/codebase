@@ -115,12 +115,12 @@ All UI components come from the shared component library. **Never duplicate UI c
 
 ```typescript
 // ✅ CORRECT
-import { Button, Card, Input, Label, cn } from "@codebase/components";
+import { Button, Card, Input, Label, cn } from "@codebase/presentation";
 
 // ❌ WRONG: Copying component code into lexico
 ```
 
-Never modify files in `projects/common/components/src/components/ui/` (shadcn-generated). Compose custom components in `projects/common/components/src/components/` instead.
+Never modify files in `projects/common/presentation/src/components/ui/` (shadcn-generated). Compose custom components in `projects/common/presentation/src/components/` instead.
 
 ## Styling with Tailwind CSS
 
@@ -149,7 +149,7 @@ Use CSS variables for themed colors to support dark mode:
 ### Conditional Classes with `cn()`
 
 ```typescript
-import { cn } from "@codebase/components";
+import { cn } from "@codebase/presentation";
 
 <button
   className={cn(

@@ -30,8 +30,8 @@ This package is already available in the codebase via workspace protocol. Import
 
 ```tsx
 // In projects/lexico/lexico-web/src/routes/example.tsx
-import { Button, Card, Input } from "@codebase/components";
-import "@codebase/components/styles/globals.css"; // Import once in root layout
+import { Button, Card, Input } from "@codebase/presentation";
+import "@codebase/presentation/styles/globals.css"; // Import once in root layout
 
 function ExamplePage() {
   return (
@@ -54,7 +54,7 @@ Add global CSS import to your root layout:
 
 ```tsx
 // projects/lexico/lexico-web/src/routes/__root.tsx
-import "@codebase/components/styles/globals.css";
+import "@codebase/presentation/styles/globals.css";
 ```
 
 ## Component Categories
@@ -112,7 +112,7 @@ import "@codebase/components/styles/globals.css";
 
 ```bash
 # Navigate to package directory
-cd projects/common/components
+cd projects/common/presentation
 
 # Add component
 pnpx shadcn@latest add <component-name>
@@ -262,7 +262,7 @@ The 512 KB limit is a ratchet against the measured size, not a design target —
 ### Form with Validation
 
 ```tsx
-import { Input, Label, Button } from "@codebase/components";
+import { Input, Label, Button } from "@codebase/presentation";
 
 function LoginForm() {
   return (
@@ -298,7 +298,7 @@ import {
   DialogTitle,
   DialogTrigger,
   Button,
-} from "@codebase/components";
+} from "@codebase/presentation";
 
 function ConfirmDialog() {
   return (
@@ -325,7 +325,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Button,
-} from "@codebase/components";
+} from "@codebase/presentation";
 
 function UserMenu() {
   return (
@@ -392,7 +392,7 @@ Built on Base UI primitives which handle complex accessibility patterns automati
 Import global CSS in your root layout:
 
 ```tsx
-import "@codebase/components/styles/globals.css";
+import "@codebase/presentation/styles/globals.css";
 ```
 
 ### Import Errors
@@ -403,7 +403,7 @@ Verify TypeScript path mapping in `tsconfig.json`:
 {
   "compilerOptions": {
     "paths": {
-      "@codebase/components": [
+      "@codebase/presentation": [
         "../components/src/index.ts"
       ]
     }
@@ -437,7 +437,7 @@ See [LICENSE](../../LICENSE) for licensing information.
 
 ## 🔭 Callidescope
 
-Call stacks traced through `projects/common/components`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+Call stacks traced through `projects/common/presentation`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
 | Measure | Value |
 | --- | --- |
@@ -476,9 +476,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  components["components"]
+  presentation["presentation"]
   lexico_web["lexico-web"]
-  lexico_web --> components
+  lexico_web --> presentation
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class components subject
 ```
