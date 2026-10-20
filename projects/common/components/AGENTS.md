@@ -9,7 +9,7 @@
 ### Add a shadcn Component
 
 ```bash
-cd projects/common/interface
+cd projects/common/components
 pnpx shadcn@latest add <component-name>
 ```
 
@@ -17,7 +17,7 @@ Then export it in [src/index.ts](src/index.ts).
 
 ReUI components come from the `@reui` registry declared in
 [components.json](components.json): `pnpx shadcn@latest add @reui/<name>`. They
-land in `src/interface/reui/`. The style is `base-nova`, so everything is Base UI:
+land in `src/components/reui/`. The style is `base-nova`, so everything is Base UI:
 render a different element with the `render` property (and `nativeButton={false}` when
 a button renders as a link), never Radix's `asChild`. reui.io rate-limits (HTTP
 429), so add them a few at a time.
@@ -42,7 +42,7 @@ After every `shadcn add`, re-apply the typecheck exclusion — the CLI strips th
 header from each file it rewrites:
 
 ```bash
-for f in $(find src/interface src/hooks src/lib -name '*.ts' -o -name '*.tsx'); do
+for f in $(find src/components src/hooks src/lib -name '*.ts' -o -name '*.tsx'); do
   head -1 "$f" | grep -q '@ts-nocheck' || { printf '// @ts-nocheck\n' | cat - "$f" > "$f.tmp" && mv "$f.tmp" "$f"; }
 done
 ```
@@ -75,12 +75,12 @@ to refresh it sooner. Never edit the folder by hand.
 
 ### Component Ownership Model
 
-- **`src/interface/ui/`**: **Never modify** (shadcn-generated)
-- **`src/interface/reui/`**: **Never modify** (ReUI-generated)
-- **`src/interface/examples/`**: **Never modify** (ReUI demo blocks)
+- **`src/components/ui/`**: **Never modify** (shadcn-generated)
+- **`src/components/reui/`**: **Never modify** (ReUI-generated)
+- **`src/components/examples/`**: **Never modify** (ReUI demo blocks)
 - **`src/hooks/`**, **`src/lib/`**: Vendored with the components (`cn()`, ReUI hooks)
 
-**Rule**: `src/interface`, `src/hooks`, `src/lib`, and `src/styles/globals.css` are
+**Rule**: `src/components`, `src/hooks`, `src/lib`, and `src/styles/globals.css` are
 vendored. Every check skips them: typecheck through the `// @ts-nocheck` header, and
 type-coverage, ESLint, oxlint, oxfmt, prettier, stylelint, knip, codometer,
 callidescope, dependency-cruiser, and spell-check through their ignore lists. Keep
@@ -97,7 +97,7 @@ See the [write-react skill](../../.agents/skills/write-react/SKILL.md) for themi
 ## Usage in Apps
 
 ```tsx
-import { Button, Card, Input } from "@codebase/interface";
+import { Button, Card, Input } from "@codebase/components";
 ```
 
 Never duplicate UI code in apps. Always import from this package.
@@ -107,7 +107,7 @@ Never duplicate UI code in apps. Always import from this package.
 ### Add Custom Components
 
 ```bash
-cd projects/common/interface/src/interface
+cd projects/common/components/src/components
 touch word-card.tsx
 ```
 
@@ -115,18 +115,18 @@ touch word-card.tsx
 
 ```ts
 // src/index.ts
-export * from "./interface/word-card";
+export * from "./components/word-card";
 ```
 
 ## Troubleshooting
 
-- **shadcn updates overwriting `ui/` files** — never edit `src/interface/ui/` directly; compose those primitives in `src/interface/` instead, so `pnpx shadcn@latest add <component>` stays safe to re-run.
+- **shadcn updates overwriting `ui/` files** — never edit `src/components/ui/` directly; compose those primitives in `src/components/` instead, so `pnpx shadcn@latest add <component>` stays safe to re-run.
 - **Theme tokens not updating** — CSS variables in [src/styles/globals.css](src/styles/globals.css) must be bare HSL values (`--primary: 0 0% 9%`), not `hsl(...)` wrapped. Clear `node_modules/.vite` and restart the dev server after changing them.
 
 ## Key Files
 
-- [src/interface/ui/](src/interface/ui/): shadcn-generated components
-- [src/interface/](src/interface/): custom components
+- [src/components/ui/](src/components/ui/): shadcn-generated components
+- [src/components/](src/components/): custom components
 - [src/hooks/](src/hooks/): shared hooks
 - [src/lib/utils.ts](src/lib/utils.ts): `cn()` utility
 - [src/styles/globals.css](src/styles/globals.css): theme tokens

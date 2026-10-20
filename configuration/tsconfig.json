@@ -30,9 +30,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     // 🗺️ Codebase Path Aliases
-    // Enables `import { Button } from "@codebase/interface"` across projects
+    // Enables `import { Button } from "@codebase/components"` across projects
     "paths": {
-      "@codebase/interface": ["../projects/common/interface/src/index.ts"],
+      "@codebase/components": ["../projects/common/components/src/index.ts"],
       "codebase/configuration/*": ["./*"],
       "eslint-plugin-better-max-params": [
         "./types/eslint-plugin-better-max-params/index.d.ts"

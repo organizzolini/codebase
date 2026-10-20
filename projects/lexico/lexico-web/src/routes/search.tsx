@@ -10,7 +10,7 @@ import lodash from "lodash";
 import { useCallback } from "react";
 import { z } from "zod";
 
-import { Button } from "@codebase/interface";
+import { Button } from "@codebase/components";
 
 import { SearchBar } from "../components/search-bar";
 import { SearchLanding } from "../components/search-landing";

@@ -210,7 +210,7 @@ const config: KnipConfig = {
     // The shadcn and ReUI source is vendored: `shadcn add` writes it, and most
     // of it nothing here imports yet. Every file under it is an entry point, so
     // none reads as unused and the packages it imports still count as used.
-    "projects/common/interface": {
+    "projects/common/components": {
       entry: [
         "src/components/**/*.{ts,tsx}",
         "src/hooks/**/*.{ts,tsx}",

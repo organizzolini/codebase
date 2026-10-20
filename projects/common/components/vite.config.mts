@@ -31,7 +31,7 @@ export default defineConfig(() => ({
       },
     },
   },
-  cacheDir: "../../node_modules/.vite/projects/common/interface",
+  cacheDir: "../../node_modules/.vite/projects/common/components",
   plugins: [
     react(),
     tsconfigPaths(),

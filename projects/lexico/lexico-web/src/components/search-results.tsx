@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useBreakpoint } from "@codebase/interface";
+import { useBreakpoint } from "@codebase/components";
 
 import { LexemeCard } from "./lexeme-card";
 

@@ -9,7 +9,7 @@ import {
   InputGroupButton,
   InputGroupInput,
   Spinner,
-} from "@codebase/interface";
+} from "@codebase/components";
 
 import type { ReactNode, SyntheticEvent } from "react";
 

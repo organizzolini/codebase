@@ -13,7 +13,7 @@ export default mergeConfig(
   defineConfig({
     resolve: {
       alias: {
-        "@": `${import.meta.dirname}/../../../projects/common/interface/src`,
+        "@": `${import.meta.dirname}/../../../projects/common/components/src`,
       },
     },
     test: {

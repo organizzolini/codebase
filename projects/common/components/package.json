@@ -52,7 +52,7 @@
     "src"
   ],
   "main": "./src/index.ts",
-  "name": "@codebase/interface",
+  "name": "@codebase/components",
   "peerDependencies": {
     "react": "catalog:",
     "react-dom": "catalog:"
@@ -66,8 +66,8 @@
     "atLeast": 99.84,
     "ignoreCatch": true,
     "ignoreFiles": [
+      "src/components/**",
       "src/hooks/**",
-      "src/interface/**",
       "src/lib/**"
     ],
     "strict": true

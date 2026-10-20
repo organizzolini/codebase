@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Tabs, TabsList, TabsTrigger } from "@codebase/interface";
+import { Tabs, TabsList, TabsTrigger } from "@codebase/components";
 
 import { FormsTable } from "./forms-table";
 import { ABBREVIATIONS } from "./lexeme-identifiers";

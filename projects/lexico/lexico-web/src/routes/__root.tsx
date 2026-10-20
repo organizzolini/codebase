@@ -24,7 +24,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from "@codebase/interface";
+} from "@codebase/components";
 
 import { Logo } from "../components/layout";
 import applicationCss from "../styles/application.css?url";

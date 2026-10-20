@@ -183,7 +183,7 @@ Enumerate, measure, and classify greek meander patterns
 **[meanderaw-web](projects/meanderaw/meanderaw-web)** - TanStack Start SSR web application for showing and exploring the meanders meanderaw-cli generates
 
 **🛠️ [configuration](configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
-**🎨 [components](projects/common/interface)** - Shared React component library using shadcn/ui and Base UI primitives\
+**🎨 [components](projects/common/components)** - Shared React component library using shadcn/ui and Base UI primitives\
 **🐘 [persistence](projects/common/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
@@ -13478,7 +13478,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
 | `integration` | 5 | 6 | 1 | 6 |
 | `synchronization` | 9 | 10 | 1 | 9 |
-| `projects/common/interface` | 0 | 3 | 3 | 0 |
+| `projects/common/components` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |

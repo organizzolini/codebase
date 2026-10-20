@@ -17,7 +17,7 @@ the file by hand:
 
 | Shape | Generator | Lands in |
 | ----- | --------- | -------- |
-| Component | `nx g conformetry:react-component --name=user-card --project=<project>` | `src/interface/user-card.tsx` |
+| Component | `nx g conformetry:react-component --name=user-card --project=<project>` | `src/components/user-card.tsx` |
 | Hook | `nx g conformetry:react-hook --name=use-user --project=<project>` | `src/hooks/use-user.ts` |
 | Route | `nx g conformetry:tanstack-route --name=word.$id --path=/word/$id --project=<project>` | `src/routes/word.$id.tsx` |
 | Server functions | `nx g conformetry:tanstack-server-function --name=bookmarks --project=<project>` | `src/modules/bookmarks/` |
@@ -46,7 +46,7 @@ its section is empty:
 | Markup | 🎨 | The JSX return |
 
 ```typescript
-// src/interface/user-card.tsx
+// src/components/user-card.tsx
 import { useEffect, useState } from "react";
 
 import type { ReactNode } from "react";
@@ -115,12 +115,12 @@ All UI components come from the shared component library. **Never duplicate UI c
 
 ```typescript
 // ✅ CORRECT
-import { Button, Card, Input, Label, cn } from "@codebase/interface";
+import { Button, Card, Input, Label, cn } from "@codebase/components";
 
 // ❌ WRONG: Copying component code into lexico
 ```
 
-Never modify files in `projects/common/interface/src/interface/ui/` (shadcn-generated). Compose custom components in `projects/common/interface/src/interface/` instead.
+Never modify files in `projects/common/components/src/components/ui/` (shadcn-generated). Compose custom components in `projects/common/components/src/components/` instead.
 
 ## Styling with Tailwind CSS
 
@@ -149,7 +149,7 @@ Use CSS variables for themed colors to support dark mode:
 ### Conditional Classes with `cn()`
 
 ```typescript
-import { cn } from "@codebase/interface";
+import { cn } from "@codebase/components";
 
 <button
   className={cn(
@@ -166,7 +166,7 @@ import { cn } from "@codebase/interface";
 Routes are files in `src/routes/`, named the way TanStack Router names them:
 `index.tsx` serves `/`, `word.$id.tsx` serves `/word/$id`. A route file holds
 its `Route` under a `// 🧭 Route` marker and the page it renders. Reusable
-pieces belong in `src/interface/`, stateful logic in `src/hooks/`, and
+pieces belong in `src/components/`, stateful logic in `src/hooks/`, and
 anything that runs on the server in `src/modules/`.
 
 ```typescript

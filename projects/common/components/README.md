@@ -30,8 +30,8 @@ This package is already available in the codebase via workspace protocol. Import
 
 ```tsx
 // In projects/lexico/lexico-web/src/routes/example.tsx
-import { Button, Card, Input } from "@codebase/interface";
-import "@codebase/interface/styles/globals.css"; // Import once in root layout
+import { Button, Card, Input } from "@codebase/components";
+import "@codebase/components/styles/globals.css"; // Import once in root layout
 
 function ExamplePage() {
   return (
@@ -54,7 +54,7 @@ Add global CSS import to your root layout:
 
 ```tsx
 // projects/lexico/lexico-web/src/routes/__root.tsx
-import "@codebase/interface/styles/globals.css";
+import "@codebase/components/styles/globals.css";
 ```
 
 ## Component Categories
@@ -112,7 +112,7 @@ import "@codebase/interface/styles/globals.css";
 
 ```bash
 # Navigate to package directory
-cd projects/common/interface
+cd projects/common/components
 
 # Add component
 pnpx shadcn@latest add <component-name>
@@ -128,16 +128,16 @@ pnpx shadcn@latest add sonner
 After adding a component, export it in [src/index.ts](src/index.ts):
 
 ```typescript
-export * from "./interface/ui/dropdown-menu";
+export * from "./components/ui/dropdown-menu";
 ```
 
 ### Create Custom Components
 
-For project-specific components, create in `src/interface/` (not `ui/`):
+For project-specific components, create in `src/components/` (not `ui/`):
 
 ```tsx
-// src/interface/word-card.tsx
-import { Card, CardContent, CardHeader, CardTitle } from "@/interface/ui/card";
+// src/components/word-card.tsx
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export interface WordCardProps {
   word: string;
@@ -158,7 +158,7 @@ export function WordCard({ word, definition }: WordCardProps) {
 }
 ```
 
-**⚠️ Important**: Never modify files in `src/interface/ui/` directly - they are managed by shadcn CLI and will be overwritten on updates.
+**⚠️ Important**: Never modify files in `src/components/ui/` directly - they are managed by shadcn CLI and will be overwritten on updates.
 
 ## Theming
 
@@ -262,7 +262,7 @@ The 512 KB limit is a ratchet against the measured size, not a design target —
 ### Form with Validation
 
 ```tsx
-import { Input, Label, Button } from "@codebase/interface";
+import { Input, Label, Button } from "@codebase/components";
 
 function LoginForm() {
   return (
@@ -298,7 +298,7 @@ import {
   DialogTitle,
   DialogTrigger,
   Button,
-} from "@codebase/interface";
+} from "@codebase/components";
 
 function ConfirmDialog() {
   return (
@@ -325,7 +325,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Button,
-} from "@codebase/interface";
+} from "@codebase/components";
 
 function UserMenu() {
   return (
@@ -365,7 +365,7 @@ Extends shared Tailwind configuration with component-specific patterns:
 ```js
 content: [
   "./src/**/*.{ts,tsx}",
-  "../interface/src/**/*.{ts,tsx}",
+  "../components/src/**/*.{ts,tsx}",
 ];
 ```
 
@@ -392,7 +392,7 @@ Built on Base UI primitives which handle complex accessibility patterns automati
 Import global CSS in your root layout:
 
 ```tsx
-import "@codebase/interface/styles/globals.css";
+import "@codebase/components/styles/globals.css";
 ```
 
 ### Import Errors
@@ -403,8 +403,8 @@ Verify TypeScript path mapping in `tsconfig.json`:
 {
   "compilerOptions": {
     "paths": {
-      "@codebase/interface": [
-        "../interface/src/index.ts"
+      "@codebase/components": [
+        "../components/src/index.ts"
       ]
     }
   }
@@ -437,7 +437,7 @@ See [LICENSE](../../LICENSE) for licensing information.
 
 ## 🔭 Callidescope
 
-Call stacks traced through `projects/common/interface`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
+Call stacks traced through `projects/common/components`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
 | Measure | Value |
 | --- | --- |
@@ -493,142 +493,142 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_components_examples_c_sidebar_1_tsx["src/interface/examples/c-sidebar-1.tsx"]
-  file_src_components_reui_alert_tsx["src/interface/reui/alert.tsx"]
-  file_src_components_reui_autocomplete_tsx["src/interface/reui/autocomplete.tsx"]
-  file_src_components_reui_badge_tsx["src/interface/reui/badge.tsx"]
-  file_src_components_reui_cascader_cascader_async_tsx["src/interface/reui/cascader/cascader-async.tsx"]
-  file_src_components_reui_cascader_cascader_columns_tsx["src/interface/reui/cascader/cascader-columns.tsx"]
-  file_src_components_reui_cascader_cascader_context_tsx["src/interface/reui/cascader/cascader-context.tsx"]
-  file_src_components_reui_cascader_cascader_footer_tsx["src/interface/reui/cascader/cascader-footer.tsx"]
-  file_src_components_reui_cascader_cascader_i18n_tsx["src/interface/reui/cascader/cascader-i18n.tsx"]
-  file_src_components_reui_cascader_cascader_item_tsx["src/interface/reui/cascader/cascader-item.tsx"]
-  file_src_components_reui_cascader_cascader_lib_tsx["src/interface/reui/cascader/cascader-lib.tsx"]
-  file_src_components_reui_cascader_cascader_nav_tsx["src/interface/reui/cascader/cascader-nav.tsx"]
-  file_src_components_reui_cascader_cascader_types_tsx["src/interface/reui/cascader/cascader-types.tsx"]
-  file_src_components_reui_cascader_cascader_virtual_tsx["src/interface/reui/cascader/cascader-virtual.tsx"]
-  file_src_components_reui_cascader_cascader_tsx["src/interface/reui/cascader/cascader.tsx"]
-  file_src_components_reui_code_block_code_block_highlight_tsx["src/interface/reui/code-block/code-block-highlight.tsx"]
-  file_src_components_reui_code_block_code_block_tsx["src/interface/reui/code-block/code-block.tsx"]
-  file_src_components_reui_color_picker_tsx["src/interface/reui/color-picker.tsx"]
-  file_src_components_reui_data_grid_data_grid_cell_selection_tsx["src/interface/reui/data-grid/data-grid-cell-selection.tsx"]
-  file_src_components_reui_data_grid_data_grid_column_filter_tsx["src/interface/reui/data-grid/data-grid-column-filter.tsx"]
-  file_src_components_reui_data_grid_data_grid_column_header_tsx["src/interface/reui/data-grid/data-grid-column-header.tsx"]
-  file_src_components_reui_data_grid_data_grid_column_visibility_tsx["src/interface/reui/data-grid/data-grid-column-visibility.tsx"]
-  file_src_components_reui_data_grid_data_grid_i18n_tsx["src/interface/reui/data-grid/data-grid-i18n.tsx"]
-  file_src_components_reui_data_grid_data_grid_pagination_tsx["src/interface/reui/data-grid/data-grid-pagination.tsx"]
-  file_src_components_reui_data_grid_data_grid_scroll_area_tsx["src/interface/reui/data-grid/data-grid-scroll-area.tsx"]
-  file_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx["src/interface/reui/data-grid/data-grid-table-dnd-rows.tsx"]
-  file_src_components_reui_data_grid_data_grid_table_dnd_tsx["src/interface/reui/data-grid/data-grid-table-dnd.tsx"]
-  file_src_components_reui_data_grid_data_grid_table_virtual_tsx["src/interface/reui/data-grid/data-grid-table-virtual.tsx"]
-  file_src_components_reui_data_grid_data_grid_table_tsx["src/interface/reui/data-grid/data-grid-table.tsx"]
-  file_src_components_reui_data_grid_data_grid_tsx["src/interface/reui/data-grid/data-grid.tsx"]
-  file_src_components_reui_date_selector_tsx["src/interface/reui/date-selector.tsx"]
-  file_src_components_reui_emoji_picker_tsx["src/interface/reui/emoji-picker.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx["src/interface/reui/event-calendar/event-calendar-agenda-view.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_content_tsx["src/interface/reui/event-calendar/event-calendar-content.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_dnd_tsx["src/interface/reui/event-calendar/event-calendar-dnd.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_event_tsx["src/interface/reui/event-calendar/event-calendar-event.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_i18n_tsx["src/interface/reui/event-calendar/event-calendar-i18n.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_lib_tsx["src/interface/reui/event-calendar/event-calendar-lib.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_month_view_tsx["src/interface/reui/event-calendar/event-calendar-month-view.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_nav_tsx["src/interface/reui/event-calendar/event-calendar-nav.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_recurrence_tsx["src/interface/reui/event-calendar/event-calendar-recurrence.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx["src/interface/reui/event-calendar/event-calendar-resource-view.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx["src/interface/reui/event-calendar/event-calendar-time-grid.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_types_tsx["src/interface/reui/event-calendar/event-calendar-types.tsx"]
-  file_src_components_reui_event_calendar_event_calendar_tsx["src/interface/reui/event-calendar/event-calendar.tsx"]
-  file_src_components_reui_file_type_tsx["src/interface/reui/file-type.tsx"]
-  file_src_components_reui_filters_filters_advanced_tsx["src/interface/reui/filters/filters-advanced.tsx"]
-  file_src_components_reui_filters_filters_builder_tsx["src/interface/reui/filters/filters-builder.tsx"]
-  file_src_components_reui_filters_filters_chip_tsx["src/interface/reui/filters/filters-chip.tsx"]
-  file_src_components_reui_filters_filters_context_tsx["src/interface/reui/filters/filters-context.tsx"]
-  file_src_components_reui_filters_filters_date_tsx["src/interface/reui/filters/filters-date.tsx"]
-  file_src_components_reui_filters_filters_dnd_tsx["src/interface/reui/filters/filters-dnd.tsx"]
-  file_src_components_reui_filters_filters_draft_tsx["src/interface/reui/filters/filters-draft.tsx"]
-  file_src_components_reui_filters_filters_editors_tsx["src/interface/reui/filters/filters-editors.tsx"]
-  file_src_components_reui_filters_filters_i18n_tsx["src/interface/reui/filters/filters-i18n.tsx"]
-  file_src_components_reui_filters_filters_lib_tsx["src/interface/reui/filters/filters-lib.tsx"]
-  file_src_components_reui_filters_filters_operators_tsx["src/interface/reui/filters/filters-operators.tsx"]
-  file_src_components_reui_filters_filters_query_tsx["src/interface/reui/filters/filters-query.tsx"]
-  file_src_components_reui_filters_filters_types_tsx["src/interface/reui/filters/filters-types.tsx"]
-  file_src_components_reui_filters_filters_tsx["src/interface/reui/filters/filters.tsx"]
-  file_src_components_reui_frame_tsx["src/interface/reui/frame.tsx"]
-  file_src_components_reui_gantt_gantt_bar_tsx["src/interface/reui/gantt/gantt-bar.tsx"]
-  file_src_components_reui_gantt_gantt_dnd_tsx["src/interface/reui/gantt/gantt-dnd.tsx"]
-  file_src_components_reui_gantt_gantt_i18n_tsx["src/interface/reui/gantt/gantt-i18n.tsx"]
-  file_src_components_reui_gantt_gantt_lib_tsx["src/interface/reui/gantt/gantt-lib.tsx"]
-  file_src_components_reui_gantt_gantt_nav_tsx["src/interface/reui/gantt/gantt-nav.tsx"]
-  file_src_components_reui_gantt_gantt_recurrence_tsx["src/interface/reui/gantt/gantt-recurrence.tsx"]
-  file_src_components_reui_gantt_gantt_types_tsx["src/interface/reui/gantt/gantt-types.tsx"]
-  file_src_components_reui_gantt_gantt_view_tsx["src/interface/reui/gantt/gantt-view.tsx"]
-  file_src_components_reui_gantt_gantt_tsx["src/interface/reui/gantt/gantt.tsx"]
-  file_src_components_reui_icon_stack_tsx["src/interface/reui/icon-stack.tsx"]
-  file_src_components_reui_icon_tile_tsx["src/interface/reui/icon-tile.tsx"]
-  file_src_components_reui_kanban_tsx["src/interface/reui/kanban.tsx"]
-  file_src_components_reui_number_field_tsx["src/interface/reui/number-field.tsx"]
-  file_src_components_reui_phone_input_tsx["src/interface/reui/phone-input.tsx"]
-  file_src_components_reui_rating_tsx["src/interface/reui/rating.tsx"]
-  file_src_components_reui_scrollspy_tsx["src/interface/reui/scrollspy.tsx"]
-  file_src_components_reui_signature_pad_tsx["src/interface/reui/signature-pad.tsx"]
-  file_src_components_reui_sortable_tsx["src/interface/reui/sortable.tsx"]
-  file_src_components_reui_stepper_tsx["src/interface/reui/stepper.tsx"]
-  file_src_components_reui_time_picker_tsx["src/interface/reui/time-picker.tsx"]
-  file_src_components_reui_timeline_tsx["src/interface/reui/timeline.tsx"]
-  file_src_components_reui_tree_tsx["src/interface/reui/tree.tsx"]
-  file_src_components_ui_accordion_tsx["src/interface/ui/accordion.tsx"]
-  file_src_components_ui_alert_dialog_tsx["src/interface/ui/alert-dialog.tsx"]
-  file_src_components_ui_alert_tsx["src/interface/ui/alert.tsx"]
-  file_src_components_ui_aspect_ratio_tsx["src/interface/ui/aspect-ratio.tsx"]
-  file_src_components_ui_avatar_tsx["src/interface/ui/avatar.tsx"]
-  file_src_components_ui_badge_tsx["src/interface/ui/badge.tsx"]
-  file_src_components_ui_breadcrumb_tsx["src/interface/ui/breadcrumb.tsx"]
-  file_src_components_ui_button_group_tsx["src/interface/ui/button-group.tsx"]
-  file_src_components_ui_button_tsx["src/interface/ui/button.tsx"]
-  file_src_components_ui_calendar_tsx["src/interface/ui/calendar.tsx"]
-  file_src_components_ui_card_tsx["src/interface/ui/card.tsx"]
-  file_src_components_ui_carousel_tsx["src/interface/ui/carousel.tsx"]
-  file_src_components_ui_chart_tsx["src/interface/ui/chart.tsx"]
-  file_src_components_ui_checkbox_tsx["src/interface/ui/checkbox.tsx"]
-  file_src_components_ui_collapsible_tsx["src/interface/ui/collapsible.tsx"]
-  file_src_components_ui_combobox_tsx["src/interface/ui/combobox.tsx"]
-  file_src_components_ui_command_tsx["src/interface/ui/command.tsx"]
-  file_src_components_ui_context_menu_tsx["src/interface/ui/context-menu.tsx"]
-  file_src_components_ui_dialog_tsx["src/interface/ui/dialog.tsx"]
-  file_src_components_ui_drawer_tsx["src/interface/ui/drawer.tsx"]
-  file_src_components_ui_dropdown_menu_tsx["src/interface/ui/dropdown-menu.tsx"]
-  file_src_components_ui_empty_tsx["src/interface/ui/empty.tsx"]
-  file_src_components_ui_field_tsx["src/interface/ui/field.tsx"]
-  file_src_components_ui_hover_card_tsx["src/interface/ui/hover-card.tsx"]
-  file_src_components_ui_input_group_tsx["src/interface/ui/input-group.tsx"]
-  file_src_components_ui_input_otp_tsx["src/interface/ui/input-otp.tsx"]
-  file_src_components_ui_input_tsx["src/interface/ui/input.tsx"]
-  file_src_components_ui_item_tsx["src/interface/ui/item.tsx"]
-  file_src_components_ui_kbd_tsx["src/interface/ui/kbd.tsx"]
-  file_src_components_ui_label_tsx["src/interface/ui/label.tsx"]
-  file_src_components_ui_menubar_tsx["src/interface/ui/menubar.tsx"]
-  file_src_components_ui_navigation_menu_tsx["src/interface/ui/navigation-menu.tsx"]
-  file_src_components_ui_pagination_tsx["src/interface/ui/pagination.tsx"]
-  file_src_components_ui_popover_tsx["src/interface/ui/popover.tsx"]
-  file_src_components_ui_progress_tsx["src/interface/ui/progress.tsx"]
-  file_src_components_ui_radio_group_tsx["src/interface/ui/radio-group.tsx"]
-  file_src_components_ui_resizable_tsx["src/interface/ui/resizable.tsx"]
-  file_src_components_ui_scroll_area_tsx["src/interface/ui/scroll-area.tsx"]
-  file_src_components_ui_select_tsx["src/interface/ui/select.tsx"]
-  file_src_components_ui_separator_tsx["src/interface/ui/separator.tsx"]
-  file_src_components_ui_sheet_tsx["src/interface/ui/sheet.tsx"]
-  file_src_components_ui_sidebar_tsx["src/interface/ui/sidebar.tsx"]
-  file_src_components_ui_skeleton_tsx["src/interface/ui/skeleton.tsx"]
-  file_src_components_ui_slider_tsx["src/interface/ui/slider.tsx"]
-  file_src_components_ui_sonner_tsx["src/interface/ui/sonner.tsx"]
-  file_src_components_ui_spinner_tsx["src/interface/ui/spinner.tsx"]
-  file_src_components_ui_switch_tsx["src/interface/ui/switch.tsx"]
-  file_src_components_ui_table_tsx["src/interface/ui/table.tsx"]
-  file_src_components_ui_tabs_tsx["src/interface/ui/tabs.tsx"]
-  file_src_components_ui_textarea_tsx["src/interface/ui/textarea.tsx"]
-  file_src_components_ui_toggle_group_tsx["src/interface/ui/toggle-group.tsx"]
-  file_src_components_ui_toggle_tsx["src/interface/ui/toggle.tsx"]
-  file_src_components_ui_tooltip_tsx["src/interface/ui/tooltip.tsx"]
+  file_src_components_examples_c_sidebar_1_tsx["src/components/examples/c-sidebar-1.tsx"]
+  file_src_components_reui_alert_tsx["src/components/reui/alert.tsx"]
+  file_src_components_reui_autocomplete_tsx["src/components/reui/autocomplete.tsx"]
+  file_src_components_reui_badge_tsx["src/components/reui/badge.tsx"]
+  file_src_components_reui_cascader_cascader_async_tsx["src/components/reui/cascader/cascader-async.tsx"]
+  file_src_components_reui_cascader_cascader_columns_tsx["src/components/reui/cascader/cascader-columns.tsx"]
+  file_src_components_reui_cascader_cascader_context_tsx["src/components/reui/cascader/cascader-context.tsx"]
+  file_src_components_reui_cascader_cascader_footer_tsx["src/components/reui/cascader/cascader-footer.tsx"]
+  file_src_components_reui_cascader_cascader_i18n_tsx["src/components/reui/cascader/cascader-i18n.tsx"]
+  file_src_components_reui_cascader_cascader_item_tsx["src/components/reui/cascader/cascader-item.tsx"]
+  file_src_components_reui_cascader_cascader_lib_tsx["src/components/reui/cascader/cascader-lib.tsx"]
+  file_src_components_reui_cascader_cascader_nav_tsx["src/components/reui/cascader/cascader-nav.tsx"]
+  file_src_components_reui_cascader_cascader_types_tsx["src/components/reui/cascader/cascader-types.tsx"]
+  file_src_components_reui_cascader_cascader_virtual_tsx["src/components/reui/cascader/cascader-virtual.tsx"]
+  file_src_components_reui_cascader_cascader_tsx["src/components/reui/cascader/cascader.tsx"]
+  file_src_components_reui_code_block_code_block_highlight_tsx["src/components/reui/code-block/code-block-highlight.tsx"]
+  file_src_components_reui_code_block_code_block_tsx["src/components/reui/code-block/code-block.tsx"]
+  file_src_components_reui_color_picker_tsx["src/components/reui/color-picker.tsx"]
+  file_src_components_reui_data_grid_data_grid_cell_selection_tsx["src/components/reui/data-grid/data-grid-cell-selection.tsx"]
+  file_src_components_reui_data_grid_data_grid_column_filter_tsx["src/components/reui/data-grid/data-grid-column-filter.tsx"]
+  file_src_components_reui_data_grid_data_grid_column_header_tsx["src/components/reui/data-grid/data-grid-column-header.tsx"]
+  file_src_components_reui_data_grid_data_grid_column_visibility_tsx["src/components/reui/data-grid/data-grid-column-visibility.tsx"]
+  file_src_components_reui_data_grid_data_grid_i18n_tsx["src/components/reui/data-grid/data-grid-i18n.tsx"]
+  file_src_components_reui_data_grid_data_grid_pagination_tsx["src/components/reui/data-grid/data-grid-pagination.tsx"]
+  file_src_components_reui_data_grid_data_grid_scroll_area_tsx["src/components/reui/data-grid/data-grid-scroll-area.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_dnd_rows_tsx["src/components/reui/data-grid/data-grid-table-dnd-rows.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_dnd_tsx["src/components/reui/data-grid/data-grid-table-dnd.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_virtual_tsx["src/components/reui/data-grid/data-grid-table-virtual.tsx"]
+  file_src_components_reui_data_grid_data_grid_table_tsx["src/components/reui/data-grid/data-grid-table.tsx"]
+  file_src_components_reui_data_grid_data_grid_tsx["src/components/reui/data-grid/data-grid.tsx"]
+  file_src_components_reui_date_selector_tsx["src/components/reui/date-selector.tsx"]
+  file_src_components_reui_emoji_picker_tsx["src/components/reui/emoji-picker.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_agenda_view_tsx["src/components/reui/event-calendar/event-calendar-agenda-view.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_content_tsx["src/components/reui/event-calendar/event-calendar-content.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_dnd_tsx["src/components/reui/event-calendar/event-calendar-dnd.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_event_tsx["src/components/reui/event-calendar/event-calendar-event.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_i18n_tsx["src/components/reui/event-calendar/event-calendar-i18n.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_lib_tsx["src/components/reui/event-calendar/event-calendar-lib.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_month_view_tsx["src/components/reui/event-calendar/event-calendar-month-view.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_nav_tsx["src/components/reui/event-calendar/event-calendar-nav.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_recurrence_tsx["src/components/reui/event-calendar/event-calendar-recurrence.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_resource_view_tsx["src/components/reui/event-calendar/event-calendar-resource-view.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_time_grid_tsx["src/components/reui/event-calendar/event-calendar-time-grid.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_types_tsx["src/components/reui/event-calendar/event-calendar-types.tsx"]
+  file_src_components_reui_event_calendar_event_calendar_tsx["src/components/reui/event-calendar/event-calendar.tsx"]
+  file_src_components_reui_file_type_tsx["src/components/reui/file-type.tsx"]
+  file_src_components_reui_filters_filters_advanced_tsx["src/components/reui/filters/filters-advanced.tsx"]
+  file_src_components_reui_filters_filters_builder_tsx["src/components/reui/filters/filters-builder.tsx"]
+  file_src_components_reui_filters_filters_chip_tsx["src/components/reui/filters/filters-chip.tsx"]
+  file_src_components_reui_filters_filters_context_tsx["src/components/reui/filters/filters-context.tsx"]
+  file_src_components_reui_filters_filters_date_tsx["src/components/reui/filters/filters-date.tsx"]
+  file_src_components_reui_filters_filters_dnd_tsx["src/components/reui/filters/filters-dnd.tsx"]
+  file_src_components_reui_filters_filters_draft_tsx["src/components/reui/filters/filters-draft.tsx"]
+  file_src_components_reui_filters_filters_editors_tsx["src/components/reui/filters/filters-editors.tsx"]
+  file_src_components_reui_filters_filters_i18n_tsx["src/components/reui/filters/filters-i18n.tsx"]
+  file_src_components_reui_filters_filters_lib_tsx["src/components/reui/filters/filters-lib.tsx"]
+  file_src_components_reui_filters_filters_operators_tsx["src/components/reui/filters/filters-operators.tsx"]
+  file_src_components_reui_filters_filters_query_tsx["src/components/reui/filters/filters-query.tsx"]
+  file_src_components_reui_filters_filters_types_tsx["src/components/reui/filters/filters-types.tsx"]
+  file_src_components_reui_filters_filters_tsx["src/components/reui/filters/filters.tsx"]
+  file_src_components_reui_frame_tsx["src/components/reui/frame.tsx"]
+  file_src_components_reui_gantt_gantt_bar_tsx["src/components/reui/gantt/gantt-bar.tsx"]
+  file_src_components_reui_gantt_gantt_dnd_tsx["src/components/reui/gantt/gantt-dnd.tsx"]
+  file_src_components_reui_gantt_gantt_i18n_tsx["src/components/reui/gantt/gantt-i18n.tsx"]
+  file_src_components_reui_gantt_gantt_lib_tsx["src/components/reui/gantt/gantt-lib.tsx"]
+  file_src_components_reui_gantt_gantt_nav_tsx["src/components/reui/gantt/gantt-nav.tsx"]
+  file_src_components_reui_gantt_gantt_recurrence_tsx["src/components/reui/gantt/gantt-recurrence.tsx"]
+  file_src_components_reui_gantt_gantt_types_tsx["src/components/reui/gantt/gantt-types.tsx"]
+  file_src_components_reui_gantt_gantt_view_tsx["src/components/reui/gantt/gantt-view.tsx"]
+  file_src_components_reui_gantt_gantt_tsx["src/components/reui/gantt/gantt.tsx"]
+  file_src_components_reui_icon_stack_tsx["src/components/reui/icon-stack.tsx"]
+  file_src_components_reui_icon_tile_tsx["src/components/reui/icon-tile.tsx"]
+  file_src_components_reui_kanban_tsx["src/components/reui/kanban.tsx"]
+  file_src_components_reui_number_field_tsx["src/components/reui/number-field.tsx"]
+  file_src_components_reui_phone_input_tsx["src/components/reui/phone-input.tsx"]
+  file_src_components_reui_rating_tsx["src/components/reui/rating.tsx"]
+  file_src_components_reui_scrollspy_tsx["src/components/reui/scrollspy.tsx"]
+  file_src_components_reui_signature_pad_tsx["src/components/reui/signature-pad.tsx"]
+  file_src_components_reui_sortable_tsx["src/components/reui/sortable.tsx"]
+  file_src_components_reui_stepper_tsx["src/components/reui/stepper.tsx"]
+  file_src_components_reui_time_picker_tsx["src/components/reui/time-picker.tsx"]
+  file_src_components_reui_timeline_tsx["src/components/reui/timeline.tsx"]
+  file_src_components_reui_tree_tsx["src/components/reui/tree.tsx"]
+  file_src_components_ui_accordion_tsx["src/components/ui/accordion.tsx"]
+  file_src_components_ui_alert_dialog_tsx["src/components/ui/alert-dialog.tsx"]
+  file_src_components_ui_alert_tsx["src/components/ui/alert.tsx"]
+  file_src_components_ui_aspect_ratio_tsx["src/components/ui/aspect-ratio.tsx"]
+  file_src_components_ui_avatar_tsx["src/components/ui/avatar.tsx"]
+  file_src_components_ui_badge_tsx["src/components/ui/badge.tsx"]
+  file_src_components_ui_breadcrumb_tsx["src/components/ui/breadcrumb.tsx"]
+  file_src_components_ui_button_group_tsx["src/components/ui/button-group.tsx"]
+  file_src_components_ui_button_tsx["src/components/ui/button.tsx"]
+  file_src_components_ui_calendar_tsx["src/components/ui/calendar.tsx"]
+  file_src_components_ui_card_tsx["src/components/ui/card.tsx"]
+  file_src_components_ui_carousel_tsx["src/components/ui/carousel.tsx"]
+  file_src_components_ui_chart_tsx["src/components/ui/chart.tsx"]
+  file_src_components_ui_checkbox_tsx["src/components/ui/checkbox.tsx"]
+  file_src_components_ui_collapsible_tsx["src/components/ui/collapsible.tsx"]
+  file_src_components_ui_combobox_tsx["src/components/ui/combobox.tsx"]
+  file_src_components_ui_command_tsx["src/components/ui/command.tsx"]
+  file_src_components_ui_context_menu_tsx["src/components/ui/context-menu.tsx"]
+  file_src_components_ui_dialog_tsx["src/components/ui/dialog.tsx"]
+  file_src_components_ui_drawer_tsx["src/components/ui/drawer.tsx"]
+  file_src_components_ui_dropdown_menu_tsx["src/components/ui/dropdown-menu.tsx"]
+  file_src_components_ui_empty_tsx["src/components/ui/empty.tsx"]
+  file_src_components_ui_field_tsx["src/components/ui/field.tsx"]
+  file_src_components_ui_hover_card_tsx["src/components/ui/hover-card.tsx"]
+  file_src_components_ui_input_group_tsx["src/components/ui/input-group.tsx"]
+  file_src_components_ui_input_otp_tsx["src/components/ui/input-otp.tsx"]
+  file_src_components_ui_input_tsx["src/components/ui/input.tsx"]
+  file_src_components_ui_item_tsx["src/components/ui/item.tsx"]
+  file_src_components_ui_kbd_tsx["src/components/ui/kbd.tsx"]
+  file_src_components_ui_label_tsx["src/components/ui/label.tsx"]
+  file_src_components_ui_menubar_tsx["src/components/ui/menubar.tsx"]
+  file_src_components_ui_navigation_menu_tsx["src/components/ui/navigation-menu.tsx"]
+  file_src_components_ui_pagination_tsx["src/components/ui/pagination.tsx"]
+  file_src_components_ui_popover_tsx["src/components/ui/popover.tsx"]
+  file_src_components_ui_progress_tsx["src/components/ui/progress.tsx"]
+  file_src_components_ui_radio_group_tsx["src/components/ui/radio-group.tsx"]
+  file_src_components_ui_resizable_tsx["src/components/ui/resizable.tsx"]
+  file_src_components_ui_scroll_area_tsx["src/components/ui/scroll-area.tsx"]
+  file_src_components_ui_select_tsx["src/components/ui/select.tsx"]
+  file_src_components_ui_separator_tsx["src/components/ui/separator.tsx"]
+  file_src_components_ui_sheet_tsx["src/components/ui/sheet.tsx"]
+  file_src_components_ui_sidebar_tsx["src/components/ui/sidebar.tsx"]
+  file_src_components_ui_skeleton_tsx["src/components/ui/skeleton.tsx"]
+  file_src_components_ui_slider_tsx["src/components/ui/slider.tsx"]
+  file_src_components_ui_sonner_tsx["src/components/ui/sonner.tsx"]
+  file_src_components_ui_spinner_tsx["src/components/ui/spinner.tsx"]
+  file_src_components_ui_switch_tsx["src/components/ui/switch.tsx"]
+  file_src_components_ui_table_tsx["src/components/ui/table.tsx"]
+  file_src_components_ui_tabs_tsx["src/components/ui/tabs.tsx"]
+  file_src_components_ui_textarea_tsx["src/components/ui/textarea.tsx"]
+  file_src_components_ui_toggle_group_tsx["src/components/ui/toggle-group.tsx"]
+  file_src_components_ui_toggle_tsx["src/components/ui/toggle.tsx"]
+  file_src_components_ui_tooltip_tsx["src/components/ui/tooltip.tsx"]
   file_src_hooks_use_copy_to_clipboard_ts["src/hooks/use-copy-to-clipboard.ts"]
   file_src_hooks_use_file_upload_ts["src/hooks/use-file-upload.ts"]
   file_src_hooks_use_media_query_ts["src/hooks/use-media-query.ts"]

@@ -1,4 +1,4 @@
-import { CardDescription, CardHeader, CardTitle } from "@codebase/interface";
+import { CardDescription, CardHeader, CardTitle } from "@codebase/components";
 
 import type { ReactNode } from "react";
 

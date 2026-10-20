@@ -20,7 +20,7 @@ nx run lexico-web:start
 - **Routing**: TanStack Router, file-based, from `src/routes/`
 - **UI**: React 19 with Tailwind CSS 4
 - **Testing**: Vitest and React Testing Library under jsdom
-- **Components**: shadcn/ui, from [@codebase/interface](../../interface)
+- **Components**: shadcn/ui, from [@codebase/components](../../common/components)
 
 ### Directory Layout
 
@@ -53,21 +53,21 @@ testing/
 `/search` defines its server function in the route file and calls it from the
 route loader. The function runs the API's `searchLatin` and `searchEnglish`
 queries together and merges them. There is no `src/modules/` or `src/hooks/`
-here: code lives in the route, in `src/interface/`, or in a generated module.
+here: code lives in the route, in `src/components/`, or in a generated module.
 
 ### Component Library Integration
 
-Always import shared UI from `@codebase/interface` and never duplicate UI code.
+Always import shared UI from `@codebase/components` and never duplicate UI code.
 
 ```tsx
-import { Button, Card, Input } from "@codebase/interface";
+import { Button, Card, Input } from "@codebase/components";
 ```
 
 The root route lays every page out in the shared sidebar, and
 `src/styles/application.css` layers this application's accent color over the
-shadcn tokens that `@codebase/interface` ships. See the
+shadcn tokens that `@codebase/components` ships. See the
 [write-react skill](/.agents/skills/write-react/SKILL.md) and
-[components AGENTS](../../common/interface/AGENTS.md).
+[components AGENTS](../../common/components/AGENTS.md).
 
 ## Development
 
@@ -91,7 +91,7 @@ is a `<section>` with an `<h1>`, named after its route — `word.$id` renders
 `WordIdPage` — inside the layout the root route renders.
 
 Keep a route file to its `Route` and the page it renders. Reusable pieces belong
-in `src/interface/`, stateful logic in `src/hooks/`, and anything that runs on
+in `src/components/`, stateful logic in `src/hooks/`, and anything that runs on
 the server in `src/modules/`.
 
 ### Loaders and Actions
@@ -147,4 +147,4 @@ for lint and git hook failures.
 - [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
 - [vitest.config.ts](vitest.config.ts): Test configuration
 - [src/routes/](src/routes/): File-based routes
-- [src/interface/](src/interface/): One component and its test per file
+- [src/components/](src/components/): One component and its test per file

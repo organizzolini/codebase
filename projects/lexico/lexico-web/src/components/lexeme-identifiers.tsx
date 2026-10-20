@@ -1,4 +1,4 @@
-import { Badge, cn } from "@codebase/interface";
+import { Badge, cn } from "@codebase/components";
 
 import type { ReactNode } from "react";
 

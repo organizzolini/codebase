@@ -1,8 +1,8 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "interface",
+  "name": "components",
   "projectType": "library",
-  "sourceRoot": "projects/common/interface/src",
+  "sourceRoot": "projects/common/components/src",
   "tags": [
     "domain:lexico",
     "framework:react",
@@ -14,7 +14,7 @@
       "executor": "@nx/vite:build",
       "options": {
         "generatePackageJson": false,
-        "outputPath": "projects/common/interface/dist"
+        "outputPath": "projects/common/components/dist"
       },
       "outputs": ["{options.outputPath}"]
     },

@@ -29,9 +29,9 @@ CHANGELOG.md
 .claude/CLAUDE.md
 .github/copilot-instructions.md
 lint-staged.config.ts
-**/projects/common/interface/src/components/**
-**/projects/common/interface/src/hooks/**
-**/projects/common/interface/src/lib/**
+**/projects/common/components/src/components/**
+**/projects/common/components/src/hooks/**
+**/projects/common/components/src/lib/**
 
 # Templates and data
 **/helm/**/templates/**
