@@ -128,7 +128,7 @@ catalog:
   fallow: ^3.24.1
   graphql: ^16.11.0
   husky: ^9.1.7
-  ignore: 7.0.12
+  ignore: 7.0.13
   input-otp: ^1.4.2
   jiti: ^2.7.0
   jsdom: ^30.0.1
