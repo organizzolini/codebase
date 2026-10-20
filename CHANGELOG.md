@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.14.0](https://github.com/organizzolini/codebase/compare/v3.13.6...v3.14.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts:** ✨ accept ssh commit signing ([#1728](https://github.com/organizzolini/codebase/issues/1728)) ([62e37ca](https://github.com/organizzolini/codebase/commit/62e37cacb6f86084256d70aaa67d3cf39491f33d))
+
 ## [3.13.6](https://github.com/organizzolini/codebase/compare/v3.13.5...v3.13.6) (2026-10-20)
 
 ### ♻️ Code Refactoring
