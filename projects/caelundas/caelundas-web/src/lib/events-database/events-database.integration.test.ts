@@ -64,7 +64,7 @@ function runBuildScript(
 }
 
 /**
- * Writes a file holding the tables `database export --sqlite` writes from
+ * Writes a file holding the tables `persistence export --sqlite` writes from
  * the `caelundas` schema, filled with the seed, and no views.
  */
 function writeExportedFile(file: string): void {

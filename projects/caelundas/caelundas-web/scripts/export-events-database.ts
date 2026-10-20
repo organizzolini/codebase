@@ -4,7 +4,7 @@ import { connect } from "node:net";
 import path from "node:path";
 
 // Exports the tables `caelundas-cli` ingests into from Postgres to a raw
-// SQLite file, through `database export --sqlite`. The connection is read
+// SQLite file, through `persistence export --sqlite`. The connection is read
 // from the same `CAELUNDAS_POSTGRES_*` variables ingestion reads, so both
 // reach one database: the shell's values win, then `caelundas-cli/.env`,
 // then the local Docker defaults its `.env.default` documents.
@@ -16,8 +16,13 @@ const ingestionEnvironmentPath = path.join(
   "caelundas-cli",
   ".env",
 );
-// The `database` project's `start` target runs its command line from here.
-const databaseProjectRoot = path.join(projectRoot, "..", "..", "database");
+// The `persistence` project's `start` target runs its command line from here.
+const persistenceProjectRoot = path.join(
+  projectRoot,
+  "..",
+  "..",
+  "persistence",
+);
 
 /** The highest TCP port. */
 const MAXIMUM_PORT = 65_535;
@@ -47,7 +52,7 @@ interface PostgresConnection {
  * Exports the ingested tables to a new SQLite `file`. The export writes
  * beside it and replaces any file already there only once it succeeds.
  *
- * The `database` command line runs directly rather than through `nx run`,
+ * The `persistence` command line runs directly rather than through `nx run`,
  * so its arguments are passed as a list no shell reads, and the password in
  * the source URI is never echoed: the command masks it in what it logs.
  *
@@ -81,11 +86,11 @@ export async function exportEventsDatabase(file: string): Promise<void> {
     [
       "--import",
       "@swc-node/register/esm-register",
-      "src/database.main.ts",
+      "src/persistence.main.ts",
       "export",
       ...toExportArguments(connection, file),
     ],
-    { cwd: databaseProjectRoot, stdio: "inherit" },
+    { cwd: persistenceProjectRoot, stdio: "inherit" },
   );
 
   if (result.status !== 0) {
@@ -138,7 +143,7 @@ function readConnection(): PostgresConnection {
   };
 }
 
-/** The `database export` arguments that write the tables to `file`. */
+/** The `persistence export` arguments that write the tables to `file`. */
 function toExportArguments(
   connection: PostgresConnection,
   file: string,

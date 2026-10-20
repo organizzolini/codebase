@@ -27,7 +27,7 @@ but that file:
    `data/events-seed.sql`, which is what tests, CI and `start` use. With its
    `export` configuration (`build:export`, `start:export` and
    `preview:export` pass it down) `scripts/export-events-database.ts` runs
-   `database export --sqlite` over the `caelundas` schema's
+   `persistence export --sqlite` over the `caelundas` schema's
    `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` into
    `output/events-export.sqlite`, connecting through the same
    `CAELUNDAS_POSTGRES_*` variables and `caelundas-cli/.env` ingestion reads.
@@ -112,7 +112,7 @@ data/
   events-views.sql               # Views applied over the export
 scripts/
   build-events-database.ts       # Writes output/events.sqlite, from the seed or --export
-  export-events-database.ts      # Runs database export --sqlite against Postgres
+  export-events-database.ts      # Runs persistence export --sqlite against Postgres
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over data/*.sql

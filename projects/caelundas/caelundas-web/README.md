@@ -33,7 +33,7 @@ nx run caelundas-web:preview:export   # or start:export for the dev server
 ```
 
 The `export` configuration of `build-database`, which `build`, `start` and
-`preview` pass down, runs `database export --sqlite` over the
+`preview` pass down, runs `persistence export --sqlite` over the
 `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` tables
 into `output/events-export.sqlite`, then applies `data/events-views.sql` over
 a copy of it. It connects as ingestion does: the `CAELUNDAS_POSTGRES_*`

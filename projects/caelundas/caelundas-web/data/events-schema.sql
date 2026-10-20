@@ -1,4 +1,4 @@
--- The tables `database export --sqlite` writes from the `caelundas` schema:
+-- The tables `persistence export --sqlite` writes from the `caelundas` schema:
 -- the events, the tag tree as a closure table, and the join between them.
 -- Timestamps are ISO 8601 text in UTC, the way the export maps
 -- `timestamptz`. Only tests and the development build create them from

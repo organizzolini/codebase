@@ -15,7 +15,7 @@ import { exportEventsDatabase } from "./export-events-database.ts";
 //
 // By default it creates the tables from the committed SQL text, the schema
 // and the seed the tests load. With `--export` it starts instead from the
-// tables `database export --sqlite` writes from the Postgres database
+// tables `persistence export --sqlite` writes from the Postgres database
 // `caelundas-cli` ingested into, and with `--from <file>` from a file that
 // export already wrote. Either way the views come last, applied over
 // whatever wrote the tables. `--output <file>` writes somewhere other than
