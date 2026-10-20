@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.16.0](https://github.com/organizzolini/codebase/compare/v3.15.2...v3.16.0) (2026-10-20)
+
+### ✨ Features
+
+* **lexico:** ✨ add relay connections for relationship fields ([#1714](https://github.com/organizzolini/codebase/issues/1714)) ([9e99709](https://github.com/organizzolini/codebase/commit/9e997098ac1bf6f6b00bf9dcbd31bd8dccfd0d5e))
+
 ## [3.15.2](https://github.com/organizzolini/codebase/compare/v3.15.1...v3.15.2) (2026-10-20)
 
 ### ♻️ Code Refactoring
