@@ -8,6 +8,39 @@ The dev and preview servers listen on port 8967, derived from the project name
 with `scripts/shell/text-to-port.sh caelundas-web` as every other application's
 is, and `nx run caelundas-web:stop` frees it.
 
+This serves the committed seed: a handful of events from `data/events-seed.sql`.
+
+## Build with real events
+
+The app bundles one SQLite file, `output/events.sqlite`, which is gitignored
+and rebuilt before every build. To fill it with the events `caelundas-cli`
+calculates instead of the seed:
+
+```bash
+# 1. Start the local Postgres container, which creates the caelundas role,
+#    database and schema on an empty volume (it reads the root .env)
+nx run infrastructure:postgres:up
+
+# 2. Ingest events into the caelundas schema (see caelundas-cli's README)
+nx run caelundas-cli:download-ephemeris
+cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
+nx run caelundas-cli:migration:run
+nx run caelundas-cli:start
+
+# 3. Export those tables, apply the app's views, and build
+nx run caelundas-web:build:export
+nx run caelundas-web:preview:export   # or start:export for the dev server
+```
+
+The `export` configuration of `build-database`, which `build`, `start` and
+`preview` pass down, runs `database export --sqlite` over the
+`calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` tables
+into `output/events-export.sqlite`, then applies `data/events-views.sql` over
+a copy of it. It connects as ingestion does: the `CAELUNDAS_POSTGRES_*`
+variables in the shell, then those in `caelundas-cli/.env`, then the local
+defaults. When nothing answers at that address it stops, naming it, and the
+last built file is left in place.
+
 ## Test
 
 ```bash
