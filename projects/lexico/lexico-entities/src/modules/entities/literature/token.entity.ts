@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
-import { DeletableEntity } from "@codebase/database";
+import { DeletableEntity } from "@codebase/persistence";
 
 import { BIGINT_NUMBER_TRANSFORMER } from "../entities.constants";
 

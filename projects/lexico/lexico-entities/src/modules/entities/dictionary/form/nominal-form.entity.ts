@@ -1,13 +1,13 @@
 import { ChildEntity, Column } from "typeorm";
 
 import {
-  type FormCase,
   formCaseValues,
-  type FormNumber,
   formNumberValues,
-} from "../../../lexico-database/lexico-database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./form.entity";
+
+import type { FormCase, FormNumber } from "../../../database/database.types";
 
 /** A declined form for a noun, pronoun, or determiner (case + number). */
 @ChildEntity("nominal")

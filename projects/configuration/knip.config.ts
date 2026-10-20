@@ -157,8 +157,8 @@ const config: KnipConfig = {
       // The data source and the migrations are read by the TypeORM command
       // line the `migration` target runs, by path rather than by import.
       entry: [
-        "src/modules/caelundas-database/data-source.constants.ts",
-        "src/modules/caelundas-database/migrations/**/*.ts",
+        "src/modules/database/data-source.constants.ts",
+        "src/modules/database/migrations/**/*.ts",
       ],
       ignore: [
         "output/**", // Generated calendar output files
@@ -224,16 +224,16 @@ const config: KnipConfig = {
       project: ["src/**/*.ts", "src/**/*.tsx"],
     },
 
-    // database: Shared Postgres package and its command line. The migration
+    // persistence: Shared Postgres package and its command line. The migration
     // SQL extraction script is run by name from the `migration` target
     // defaults in nx.json rather than imported, and `start` and `repl` run
-    // `src/database.main.ts` and `src/database.repl.ts` by path, so knip is
+    // `src/persistence.main.ts` and `src/persistence.repl.ts` by path, so knip is
     // told all three are entry points.
-    "projects/database": {
+    "projects/persistence": {
       entry: [
         "scripts/**/*.ts",
-        "src/database.main.ts",
-        "src/database.repl.ts",
+        "src/persistence.main.ts",
+        "src/persistence.repl.ts",
       ],
       project: ["src/**/*.ts", "scripts/**/*.ts"],
     },
@@ -242,8 +242,8 @@ const config: KnipConfig = {
     "projects/lexico/lexico-entities": {
       entry: [
         "src/index.ts",
-        "src/modules/lexico-database/data-source.constants.ts",
-        "src/modules/lexico-database/migrations/**/*.ts",
+        "src/modules/database/data-source.constants.ts",
+        "src/modules/database/migrations/**/*.ts",
       ],
       ignore: [
         "src/modules/entities/entities.module.ts", // Conformance-generated module stub, not yet exported
@@ -273,8 +273,8 @@ const config: KnipConfig = {
         "src/meanderaw-cli.main.ts",
         "src/meanderaw-cli.repl.ts",
         "src/worker.ts",
-        "src/modules/meanderaw-database/data-source.constants.ts",
-        "src/modules/meanderaw-database/migrations/**/*.ts",
+        "src/modules/database/data-source.constants.ts",
+        "src/modules/database/migrations/**/*.ts",
       ],
       project: "src/**/*.ts",
     },

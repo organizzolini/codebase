@@ -5,13 +5,13 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { meanderRecord } from "../../../testing/meanders";
 import { PATTERN_CHARACTERISTIC_KEYS } from "../characteristics/characteristics.constants";
 import { CodeService } from "../code/code.service";
+import { DatabaseService } from "../database/database.service";
 import { DrawingService } from "../drawing/drawing.service";
 import { GeometryService } from "../geometry/geometry.service";
-import { MeanderawDatabaseService } from "../meanderaw-database/meanderaw-database.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { Meander } from "../meanderaw-database/entities/meander.entity";
+import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 
 /**
@@ -22,7 +22,7 @@ import type { MeanderPageContent } from "./draw-index.types";
  * `draw-index.service.integration.test.ts` covers `build` against a real one.
  */
 describe(DrawIndexService, () => {
-  let databaseService: MeanderawDatabaseService;
+  let databaseService: DatabaseService;
   let service: DrawIndexService;
 
   /** Every field a fixture row does not care about, defaulted so a case only spells out what it means to test. */
@@ -42,8 +42,8 @@ describe(DrawIndexService, () => {
         DrawIndexService,
         GeometryService,
         {
-          provide: MeanderawDatabaseService,
-          useValue: createMock<MeanderawDatabaseService>(),
+          provide: DatabaseService,
+          useValue: createMock<DatabaseService>(),
         },
         {
           provide: CodeService,
@@ -63,7 +63,7 @@ describe(DrawIndexService, () => {
     }).compile();
 
     service = await module.resolve(DrawIndexService);
-    databaseService = await module.resolve(MeanderawDatabaseService);
+    databaseService = await module.resolve(DatabaseService);
   });
 
   it("is defined", () => {

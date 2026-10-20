@@ -235,6 +235,28 @@
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},
+    "typeorm-migration-sql": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts extract-typeorm-migration-sql check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Extracts SQL from TypeORM migration files and reconciles sibling `-up.sql` and `-down.sql` outputs. `check` reports drift for CI; `write` updates generated SQL files.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/projects/**/src/modules/database/migrations/*.ts",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "vscode-extensions": {
       "cache": true,
       "configurations": {

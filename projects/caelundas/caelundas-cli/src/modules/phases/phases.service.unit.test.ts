@@ -9,7 +9,7 @@ import { MercurianPhaseService } from "./mercurian-phase.service";
 import { PhasesService } from "./phases.service";
 import { VenusianPhaseService } from "./venusian-phase.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DetectPlanetaryEventsArguments } from "./phases.types";
 
 const createEvent = (

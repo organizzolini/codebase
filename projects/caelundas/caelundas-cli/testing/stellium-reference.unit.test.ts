@@ -22,7 +22,7 @@ import {
 } from "./reference-longitudes.constants";
 
 import type { AspectBodies } from "../src/modules/aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 import type { z } from "zod";
 
 /** A body the stellium step considers. */

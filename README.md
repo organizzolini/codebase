@@ -184,7 +184,7 @@ Enumerate, measure, and classify greek meander patterns
 
 **🛠️ [configuration](projects/configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
 **🎨 [components](projects/components)** - Shared React component library using shadcn/ui and Base UI primitives\
-**🐘 [database](projects/database)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
+**🐘 [persistence](projects/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
 **🏗️ [infrastructure](projects/infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](projects/installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🔁 [integration](projects/integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\
@@ -298,7 +298,6 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
-  database["database"]
   infrastructure["infrastructure"]
   installation["installation"]
   integration["integration"]
@@ -309,11 +308,12 @@ graph LR
   logging["logging"]
   meanderaw_cli["meanderaw-cli"]
   meanderaw_web["meanderaw-web"]
+  persistence["persistence"]
   publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
-  caelundas_cli --> database
   caelundas_cli --> logging
+  caelundas_cli --> persistence
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
@@ -413,19 +413,19 @@ graph LR
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
-  database --> logging
   installation --> logging
   integration --> logging
-  lexico_api --> database
   lexico_api --> lexico_entities
   lexico_api --> logging
-  lexico_cli --> database
+  lexico_api --> persistence
   lexico_cli --> lexico_entities
   lexico_cli --> logging
-  lexico_entities --> database
+  lexico_cli --> persistence
+  lexico_entities --> persistence
   lexico_web --> components
-  meanderaw_cli --> database
   meanderaw_cli --> logging
+  meanderaw_cli --> persistence
+  persistence --> logging
   publication --> logging
   synchronization --> conformetry_configuration
   synchronization --> logging
@@ -443,7 +443,6 @@ graph LR
   module_caelundas_cli_AnnualSolarCycleModule["caelundas-cli/AnnualSolarCycleModule"]
   module_caelundas_cli_AspectsModule["caelundas-cli/AspectsModule"]
   module_caelundas_cli_AspectsUtilitiesModule["caelundas-cli/AspectsUtilitiesModule"]
-  module_caelundas_cli_CaelundasDatabaseModule["caelundas-cli/CaelundasDatabaseModule"]
   module_caelundas_cli_CaelundasModule["caelundas-cli/CaelundasModule"]
   module_caelundas_cli_CalendarEventsModule["caelundas-cli/CalendarEventsModule"]
   module_caelundas_cli_CalendarModule["caelundas-cli/CalendarModule"]
@@ -464,6 +463,7 @@ graph LR
   module_caelundas_cli_MonthlyLunarCycleModule["caelundas-cli/MonthlyLunarCycleModule"]
   module_caelundas_cli_PerfectiveModule["caelundas-cli/PerfectiveModule"]
   module_caelundas_cli_PhasesModule["caelundas-cli/PhasesModule"]
+  module_caelundas_cli_PostgresqlModule["caelundas-cli/PostgresqlModule"]
   module_caelundas_cli_ProgressiveModule["caelundas-cli/ProgressiveModule"]
   module_caelundas_cli_ProgressiveUtilitiesModule["caelundas-cli/ProgressiveUtilitiesModule"]
   module_caelundas_cli_QuadrupleAspectsModule["caelundas-cli/QuadrupleAspectsModule"]
@@ -840,13 +840,6 @@ graph LR
   module_conformetry_validation_TextModule["conformetry-validation/TextModule"]
   module_conformetry_validation_TypescriptModule["conformetry-validation/TypescriptModule"]
   module_conformetry_validation_ValidationModule["conformetry-validation/ValidationModule"]
-  module_database_DatabaseModule["database/DatabaseModule"]
-  module_database_DiscoveryModule["database/DiscoveryModule"]
-  module_database_ExportModule["database/ExportModule"]
-  module_database_ImportModule["database/ImportModule"]
-  module_database_LoggerModule["database/LoggerModule"]
-  module_database_MainModule["database/MainModule"]
-  module_database_PostgresClientModule["database/PostgresClientModule"]
   module_installation_DependenciesModule["installation/DependenciesModule"]
   module_installation_DiscoveryModule["installation/DiscoveryModule"]
   module_installation_EnvironmentFilesModule["installation/EnvironmentFilesModule"]
@@ -873,10 +866,10 @@ graph LR
   module_lexico_api_HealthModule["lexico-api/HealthModule"]
   module_lexico_api_LexemesModule["lexico-api/LexemesModule"]
   module_lexico_api_LexicoApiModule["lexico-api/LexicoApiModule"]
-  module_lexico_api_LexicoDatabaseModule["lexico-api/LexicoDatabaseModule"]
   module_lexico_api_LiteratureModule["lexico-api/LiteratureModule"]
   module_lexico_api_LoggerModule["lexico-api/LoggerModule"]
   module_lexico_api_MacronsModule["lexico-api/MacronsModule"]
+  module_lexico_api_PostgresqlModule["lexico-api/PostgresqlModule"]
   module_lexico_api_SearchModule["lexico-api/SearchModule"]
   module_lexico_api_TypeOrmModule["lexico-api/TypeOrmModule"]
   module_lexico_api_WordsModule["lexico-api/WordsModule"]
@@ -891,7 +884,6 @@ graph LR
   module_lexico_cli_FormsModule["lexico-cli/FormsModule"]
   module_lexico_cli_LatinLibraryModule["lexico-cli/LatinLibraryModule"]
   module_lexico_cli_LexemesModule["lexico-cli/LexemesModule"]
-  module_lexico_cli_LexicoDatabaseModule["lexico-cli/LexicoDatabaseModule"]
   module_lexico_cli_LexicoIngestionModule["lexico-cli/LexicoIngestionModule"]
   module_lexico_cli_LibraryModule["lexico-cli/LibraryModule"]
   module_lexico_cli_LiteratureModule["lexico-cli/LiteratureModule"]
@@ -901,6 +893,7 @@ graph LR
   module_lexico_cli_NumeralsModule["lexico-cli/NumeralsModule"]
   module_lexico_cli_PartOfSpeechModule["lexico-cli/PartOfSpeechModule"]
   module_lexico_cli_PerseusModule["lexico-cli/PerseusModule"]
+  module_lexico_cli_PostgresqlModule["lexico-cli/PostgresqlModule"]
   module_lexico_cli_PrincipalPartsModule["lexico-cli/PrincipalPartsModule"]
   module_lexico_cli_PronunciationModule["lexico-cli/PronunciationModule"]
   module_lexico_cli_TranslationsModule["lexico-cli/TranslationsModule"]
@@ -909,7 +902,7 @@ graph LR
   module_lexico_cli_WordsModule["lexico-cli/WordsModule"]
   module_lexico_entities_DatabaseModule["lexico-entities/DatabaseModule"]
   module_lexico_entities_EntitiesModule["lexico-entities/EntitiesModule"]
-  module_lexico_entities_LexicoDatabaseModule["lexico-entities/LexicoDatabaseModule"]
+  module_lexico_entities_PostgresqlModule["lexico-entities/PostgresqlModule"]
   module_lexico_entities_TypeOrmModule["lexico-entities/TypeOrmModule"]
   module_logging_LoggerModule["logging/LoggerModule"]
   module_meanderaw_cli_CharacteristicsModule["meanderaw-cli/CharacteristicsModule"]
@@ -934,10 +927,10 @@ graph LR
   module_meanderaw_cli_LoggerModule["meanderaw-cli/LoggerModule"]
   module_meanderaw_cli_MainModule["meanderaw-cli/MainModule"]
   module_meanderaw_cli_MatrixModule["meanderaw-cli/MatrixModule"]
-  module_meanderaw_cli_MeanderawDatabaseModule["meanderaw-cli/MeanderawDatabaseModule"]
   module_meanderaw_cli_PathUtilitiesModule["meanderaw-cli/PathUtilitiesModule"]
   module_meanderaw_cli_PatternCharacteristicsModule["meanderaw-cli/PatternCharacteristicsModule"]
   module_meanderaw_cli_PointCharacteristicsModule["meanderaw-cli/PointCharacteristicsModule"]
+  module_meanderaw_cli_PostgresqlModule["meanderaw-cli/PostgresqlModule"]
   module_meanderaw_cli_RectangleCharacteristicsModule["meanderaw-cli/RectangleCharacteristicsModule"]
   module_meanderaw_cli_RunCharacteristicsModule["meanderaw-cli/RunCharacteristicsModule"]
   module_meanderaw_cli_StructureCharacteristicsModule["meanderaw-cli/StructureCharacteristicsModule"]
@@ -949,6 +942,13 @@ graph LR
   module_meanderaw_cli_TopologyCharacteristicsModule["meanderaw-cli/TopologyCharacteristicsModule"]
   module_meanderaw_cli_TurnCharacteristicsModule["meanderaw-cli/TurnCharacteristicsModule"]
   module_meanderaw_cli_TypeOrmModule["meanderaw-cli/TypeOrmModule"]
+  module_persistence_DiscoveryModule["persistence/DiscoveryModule"]
+  module_persistence_ExportModule["persistence/ExportModule"]
+  module_persistence_ImportModule["persistence/ImportModule"]
+  module_persistence_LoggerModule["persistence/LoggerModule"]
+  module_persistence_MainModule["persistence/MainModule"]
+  module_persistence_PostgresqlModule["persistence/PostgresqlModule"]
+  module_persistence_PostgresqlUtilitiesModule["persistence/PostgresqlUtilitiesModule"]
   module_publication_AdoptTaskDatabaseModule["publication/AdoptTaskDatabaseModule"]
   module_publication_BoundBaseToPushModule["publication/BoundBaseToPushModule"]
   module_publication_DiscoveryModule["publication/DiscoveryModule"]
@@ -988,6 +988,7 @@ graph LR
   module_synchronization_SkillExclusionsModule["synchronization/SkillExclusionsModule"]
   module_synchronization_SynchronizationModule["synchronization/SynchronizationModule"]
   module_synchronization_TemplateDiscoveryModule["synchronization/TemplateDiscoveryModule"]
+  module_synchronization_TypeormMigrationSqlModule["synchronization/TypeormMigrationSqlModule"]
   module_synchronization_VscodeExtensionsModule["synchronization/VscodeExtensionsModule"]
   module_synchronization_VscodeSettingsModule["synchronization/VscodeSettingsModule"]
   module_validation_AuditGovernanceModule["validation/AuditGovernanceModule"]
@@ -1017,14 +1018,12 @@ graph LR
   module_caelundas_cli_AspectsModule --> module_caelundas_cli_TripleAspectsModule
   module_caelundas_cli_AspectsUtilitiesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_AspectsUtilitiesModule --> module_caelundas_cli_MathModule
-  module_caelundas_cli_CaelundasDatabaseModule --> module_caelundas_cli_DatabaseModule
-  module_caelundas_cli_CaelundasDatabaseModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_AnnualSolarCycleModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_AspectsModule
-  module_caelundas_cli_CaelundasModule --> module_caelundas_cli_CaelundasDatabaseModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_CalendarEventsModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_CalendarModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_DailyCyclesModule
+  module_caelundas_cli_CaelundasModule --> module_caelundas_cli_DatabaseModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_EclipsesModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_IngressesModule
@@ -1044,10 +1043,11 @@ graph LR
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_StelliumModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_TripleAspectsModule
   module_caelundas_cli_CaelundasModule --> module_caelundas_cli_TwilightsModule
-  module_caelundas_cli_CalendarEventsModule --> module_caelundas_cli_CaelundasDatabaseModule
+  module_caelundas_cli_CalendarEventsModule --> module_caelundas_cli_DatabaseModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_CalendarModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_MathModule
+  module_caelundas_cli_DatabaseModule --> module_caelundas_cli_PostgresqlModule
   module_caelundas_cli_DatabaseModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_EclipsesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_EclipsesModule --> module_caelundas_cli_MathModule
@@ -1078,6 +1078,7 @@ graph LR
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_MathModule
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_ProgressiveUtilitiesModule
+  module_caelundas_cli_PostgresqlModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_AnnualSolarCycleModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_AspectsModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_EclipsesModule
@@ -1632,11 +1633,6 @@ graph LR
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_LanguagesModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_RunnerModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_ScoringModule
-  module_database_ExportModule --> module_database_PostgresClientModule
-  module_database_ImportModule --> module_database_PostgresClientModule
-  module_database_MainModule --> module_database_DiscoveryModule
-  module_database_MainModule --> module_database_ExportModule
-  module_database_MainModule --> module_database_ImportModule
   module_installation_DependenciesModule --> module_installation_ProcessRunnerModule
   module_installation_DependenciesModule --> module_installation_ReporterModule
   module_installation_EnvironmentFilesModule --> module_installation_ProcessRunnerModule
@@ -1668,24 +1664,24 @@ graph LR
   module_integration_MainModule --> module_integration_VerifyTaskDatabaseModule
   module_integration_RunAffectedModule --> module_integration_ProcessRunnerModule
   module_integration_VerifyTaskDatabaseModule --> module_integration_TaskDatabaseModule
-  module_lexico_api_DatabaseModule --> module_lexico_api_TypeOrmModule
+  module_lexico_api_DatabaseModule --> module_lexico_api_PostgresqlModule
   module_lexico_api_GraphQLModule --> module_lexico_api_GraphQLSchemaBuilderModule
   module_lexico_api_LexemesModule --> module_lexico_api_TypeOrmModule
+  module_lexico_api_LexicoApiModule --> module_lexico_api_DatabaseModule
   module_lexico_api_LexicoApiModule --> module_lexico_api_GraphQLModule
   module_lexico_api_LexicoApiModule --> module_lexico_api_HealthModule
   module_lexico_api_LexicoApiModule --> module_lexico_api_LexemesModule
-  module_lexico_api_LexicoApiModule --> module_lexico_api_LexicoDatabaseModule
   module_lexico_api_LexicoApiModule --> module_lexico_api_LiteratureModule
   module_lexico_api_LexicoApiModule --> module_lexico_api_SearchModule
   module_lexico_api_LexicoApiModule --> module_lexico_api_WordsModule
-  module_lexico_api_LexicoDatabaseModule --> module_lexico_api_DatabaseModule
   module_lexico_api_LiteratureModule --> module_lexico_api_TypeOrmModule
+  module_lexico_api_PostgresqlModule --> module_lexico_api_TypeOrmModule
   module_lexico_api_SearchModule --> module_lexico_api_MacronsModule
   module_lexico_api_SearchModule --> module_lexico_api_TypeOrmModule
   module_lexico_api_WordsModule --> module_lexico_api_TypeOrmModule
-  module_lexico_cli_ClearModule --> module_lexico_cli_LexicoDatabaseModule
+  module_lexico_cli_ClearModule --> module_lexico_cli_DatabaseModule
   module_lexico_cli_ClearModule --> module_lexico_cli_TypeOrmModule
-  module_lexico_cli_DatabaseModule --> module_lexico_cli_TypeOrmModule
+  module_lexico_cli_DatabaseModule --> module_lexico_cli_PostgresqlModule
   module_lexico_cli_DictionaryModule --> module_lexico_cli_FormsModule
   module_lexico_cli_DictionaryModule --> module_lexico_cli_LexemesModule
   module_lexico_cli_DictionaryModule --> module_lexico_cli_ManualModule
@@ -1703,20 +1699,19 @@ graph LR
   module_lexico_cli_LexemesModule --> module_lexico_cli_TranslationsModule
   module_lexico_cli_LexemesModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_LexemesModule --> module_lexico_cli_WordsModule
-  module_lexico_cli_LexicoDatabaseModule --> module_lexico_cli_DatabaseModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_ClearModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_CorpusScriptorumEcclesiasticorumLatinorumModule
+  module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_DatabaseModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_DictionaryModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_EpigraphikDatenbankClaussSlabyModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_LatinLibraryModule
-  module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_LexicoDatabaseModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_LibraryModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_LiteratureModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_ManualModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_PerseusModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_WiktionaryModule
   module_lexico_cli_LexicoIngestionModule --> module_lexico_cli_WordsModule
-  module_lexico_cli_LiteratureModule --> module_lexico_cli_LexicoDatabaseModule
+  module_lexico_cli_LiteratureModule --> module_lexico_cli_DatabaseModule
   module_lexico_cli_LiteratureModule --> module_lexico_cli_NumeralsModule
   module_lexico_cli_LiteratureModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_MainModule --> module_lexico_cli_DiscoveryModule
@@ -1724,13 +1719,14 @@ graph LR
   module_lexico_cli_ManualModule --> module_lexico_cli_NumeralsModule
   module_lexico_cli_ManualModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_ManualModule --> module_lexico_cli_WordsModule
+  module_lexico_cli_PostgresqlModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_PrincipalPartsModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_PronunciationModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_TranslationsModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_WiktionaryModule --> module_lexico_cli_TypeOrmModule
   module_lexico_cli_WordsModule --> module_lexico_cli_TypeOrmModule
-  module_lexico_entities_DatabaseModule --> module_lexico_entities_TypeOrmModule
-  module_lexico_entities_LexicoDatabaseModule --> module_lexico_entities_DatabaseModule
+  module_lexico_entities_DatabaseModule --> module_lexico_entities_PostgresqlModule
+  module_lexico_entities_PostgresqlModule --> module_lexico_entities_TypeOrmModule
   module_meanderaw_cli_CharacteristicsModule --> module_meanderaw_cli_CodeModule
   module_meanderaw_cli_CharacteristicsModule --> module_meanderaw_cli_CornerCharacteristicsModule
   module_meanderaw_cli_CharacteristicsModule --> module_meanderaw_cli_CrossCharacteristicsModule
@@ -1755,9 +1751,10 @@ graph LR
   module_meanderaw_cli_CornerCharacteristicsModule --> module_meanderaw_cli_SubmatrixUtilitiesModule
   module_meanderaw_cli_CorpusModule --> module_meanderaw_cli_CharacteristicsModule
   module_meanderaw_cli_CorpusModule --> module_meanderaw_cli_CodeModule
+  module_meanderaw_cli_CorpusModule --> module_meanderaw_cli_DatabaseModule
   module_meanderaw_cli_CorpusModule --> module_meanderaw_cli_EnumerationModule
-  module_meanderaw_cli_CorpusModule --> module_meanderaw_cli_MeanderawDatabaseModule
   module_meanderaw_cli_CrossCharacteristicsModule --> module_meanderaw_cli_SubmatrixUtilitiesModule
+  module_meanderaw_cli_DatabaseModule --> module_meanderaw_cli_PostgresqlModule
   module_meanderaw_cli_DatabaseModule --> module_meanderaw_cli_TypeOrmModule
   module_meanderaw_cli_DrawingModule --> module_meanderaw_cli_CodeModule
   module_meanderaw_cli_DrawingModule --> module_meanderaw_cli_GeometryModule
@@ -1765,10 +1762,10 @@ graph LR
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_CharacteristicsModule
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_CodeModule
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_CorpusModule
+  module_meanderaw_cli_DrawModule --> module_meanderaw_cli_DatabaseModule
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_DrawingModule
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_EnumerationModule
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_GeometryModule
-  module_meanderaw_cli_DrawModule --> module_meanderaw_cli_MeanderawDatabaseModule
   module_meanderaw_cli_DrawModule --> module_meanderaw_cli_SymmetryModule
   module_meanderaw_cli_EmbeddedCharacteristicsModule --> module_meanderaw_cli_SubmatrixUtilitiesModule
   module_meanderaw_cli_EndCharacteristicsModule --> module_meanderaw_cli_ConnectivityModule
@@ -1782,8 +1779,6 @@ graph LR
   module_meanderaw_cli_MainModule --> module_meanderaw_cli_DrawModule
   module_meanderaw_cli_MainModule --> module_meanderaw_cli_MatrixModule
   module_meanderaw_cli_MatrixModule --> module_meanderaw_cli_CodeModule
-  module_meanderaw_cli_MeanderawDatabaseModule --> module_meanderaw_cli_DatabaseModule
-  module_meanderaw_cli_MeanderawDatabaseModule --> module_meanderaw_cli_TypeOrmModule
   module_meanderaw_cli_PatternCharacteristicsModule --> module_meanderaw_cli_CompoundUtilitiesModule
   module_meanderaw_cli_PatternCharacteristicsModule --> module_meanderaw_cli_CornerCharacteristicsModule
   module_meanderaw_cli_PatternCharacteristicsModule --> module_meanderaw_cli_CrossCharacteristicsModule
@@ -1797,6 +1792,7 @@ graph LR
   module_meanderaw_cli_PatternCharacteristicsModule --> module_meanderaw_cli_TopologyCharacteristicsModule
   module_meanderaw_cli_PatternCharacteristicsModule --> module_meanderaw_cli_TurnCharacteristicsModule
   module_meanderaw_cli_PointCharacteristicsModule --> module_meanderaw_cli_SubmatrixUtilitiesModule
+  module_meanderaw_cli_PostgresqlModule --> module_meanderaw_cli_TypeOrmModule
   module_meanderaw_cli_RectangleCharacteristicsModule --> module_meanderaw_cli_SubmatrixUtilitiesModule
   module_meanderaw_cli_StructureCharacteristicsModule --> module_meanderaw_cli_CompoundUtilitiesModule
   module_meanderaw_cli_StructureCharacteristicsModule --> module_meanderaw_cli_TopologyCharacteristicsModule
@@ -1806,6 +1802,11 @@ graph LR
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_ConnectivityModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PathUtilitiesModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PointCharacteristicsModule
+  module_persistence_ExportModule --> module_persistence_PostgresqlUtilitiesModule
+  module_persistence_ImportModule --> module_persistence_PostgresqlUtilitiesModule
+  module_persistence_MainModule --> module_persistence_DiscoveryModule
+  module_persistence_MainModule --> module_persistence_ExportModule
+  module_persistence_MainModule --> module_persistence_ImportModule
   module_publication_AdoptTaskDatabaseModule --> module_publication_TaskDatabaseModule
   module_publication_BoundBaseToPushModule --> module_publication_ProcessRunnerModule
   module_publication_ImportPrTaskCacheModule --> module_publication_ProcessRunnerModule
@@ -1861,6 +1862,7 @@ graph LR
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestLabelsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestTemplateModule
   module_synchronization_SynchronizationModule --> module_synchronization_SkillExclusionsModule
+  module_synchronization_SynchronizationModule --> module_synchronization_TypeormMigrationSqlModule
   module_synchronization_SynchronizationModule --> module_synchronization_VscodeExtensionsModule
   module_synchronization_SynchronizationModule --> module_synchronization_VscodeSettingsModule
   module_synchronization_TemplateDiscoveryModule --> module_synchronization_RenderingModule
@@ -1939,16 +1941,6 @@ graph LR
   file_caelundas_cli_src_modules_aspects_compound_phase_service_unit_test_ts["caelundas-cli/src/modules/aspects/compound-phase.service.unit.test.ts"]
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts["caelundas-cli/src/modules/aspects/progressive-compound-event.service.ts"]
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_unit_test_ts["caelundas-cli/src/modules/aspects/progressive-compound-event.service.unit.test.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_constants_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.constants.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.module.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.service.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_unit_test_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.service.unit.test.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.types.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.utilities.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.utilities.unit.test.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_data_source_constants_ts["caelundas-cli/src/modules/caelundas-database/data-source.constants.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts["caelundas-cli/src/modules/caelundas-database/entities/calendar-event.entity.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_migrations_1791255787877_migration_ts["caelundas-cli/src/modules/caelundas-database/migrations/1791255787877-migration.ts"]
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts["caelundas-cli/src/modules/caelundas/caelundas.command.ts"]
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts["caelundas-cli/src/modules/caelundas/caelundas.command.unit.test.ts"]
   file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts["caelundas-cli/src/modules/caelundas/caelundas.constants.ts"]
@@ -1978,6 +1970,16 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts"]
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.service.unit.test.ts"]
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_types_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.types.ts"]
+  file_caelundas_cli_src_modules_database_data_source_constants_ts["caelundas-cli/src/modules/database/data-source.constants.ts"]
+  file_caelundas_cli_src_modules_database_database_constants_ts["caelundas-cli/src/modules/database/database.constants.ts"]
+  file_caelundas_cli_src_modules_database_database_module_ts["caelundas-cli/src/modules/database/database.module.ts"]
+  file_caelundas_cli_src_modules_database_database_service_ts["caelundas-cli/src/modules/database/database.service.ts"]
+  file_caelundas_cli_src_modules_database_database_service_unit_test_ts["caelundas-cli/src/modules/database/database.service.unit.test.ts"]
+  file_caelundas_cli_src_modules_database_database_types_ts["caelundas-cli/src/modules/database/database.types.ts"]
+  file_caelundas_cli_src_modules_database_database_utilities_ts["caelundas-cli/src/modules/database/database.utilities.ts"]
+  file_caelundas_cli_src_modules_database_database_utilities_unit_test_ts["caelundas-cli/src/modules/database/database.utilities.unit.test.ts"]
+  file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event.entity.ts"]
+  file_caelundas_cli_src_modules_database_migrations_1791255787877_migration_ts["caelundas-cli/src/modules/database/migrations/1791255787877-migration.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_constants_ts["caelundas-cli/src/modules/datetime/datetime.constants.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_module_ts["caelundas-cli/src/modules/datetime/datetime.module.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_service_ts["caelundas-cli/src/modules/datetime/datetime.service.ts"]
@@ -3844,93 +3846,6 @@ graph LR
   file_conformetry_validation_testing_setup_ts["conformetry-validation/testing/setup.ts"]
   file_conformetry_validation_vite_config_ts["conformetry-validation/vite.config.ts"]
   file_conformetry_validation_vitest_config_ts["conformetry-validation/vitest.config.ts"]
-  file_database_callidescope_config_ts["database/callidescope.config.ts"]
-  file_database_codependix_config_ts["database/codependix.config.ts"]
-  file_database_codometer_config_ts["database/codometer.config.ts"]
-  file_database_eslint_config_ts["database/eslint.config.ts"]
-  file_database_scripts_extract_migration_sql_ts["database/scripts/extract-migration-sql.ts"]
-  file_database_src_database_main_end_to_end_test_ts["database/src/database.main.end-to-end.test.ts"]
-  file_database_src_database_main_ts["database/src/database.main.ts"]
-  file_database_src_database_main_unit_test_ts["database/src/database.main.unit.test.ts"]
-  file_database_src_database_module_ts["database/src/database.module.ts"]
-  file_database_src_database_module_unit_test_ts["database/src/database.module.unit.test.ts"]
-  file_database_src_database_repl_ts["database/src/database.repl.ts"]
-  file_database_src_database_repl_unit_test_ts["database/src/database.repl.unit.test.ts"]
-  file_database_src_index_ts["database/src/index.ts"]
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts["database/src/modules/database/database-testing.utilities.integration.test.ts"]
-  file_database_src_modules_database_database_constants_ts["database/src/modules/database/database.constants.ts"]
-  file_database_src_modules_database_database_module_integration_test_ts["database/src/modules/database/database.module.integration.test.ts"]
-  file_database_src_modules_database_database_module_ts["database/src/modules/database/database.module.ts"]
-  file_database_src_modules_database_database_service_ts["database/src/modules/database/database.service.ts"]
-  file_database_src_modules_database_database_service_unit_test_ts["database/src/modules/database/database.service.unit.test.ts"]
-  file_database_src_modules_database_database_types_ts["database/src/modules/database/database.types.ts"]
-  file_database_src_modules_database_database_utilities_ts["database/src/modules/database/database.utilities.ts"]
-  file_database_src_modules_database_database_utilities_unit_test_ts["database/src/modules/database/database.utilities.unit.test.ts"]
-  file_database_src_modules_database_entities_creatable_entity_ts["database/src/modules/database/entities/creatable.entity.ts"]
-  file_database_src_modules_database_entities_deletable_entity_ts["database/src/modules/database/entities/deletable.entity.ts"]
-  file_database_src_modules_database_entities_identifiable_entity_ts["database/src/modules/database/entities/identifiable.entity.ts"]
-  file_database_src_modules_database_entities_updatable_entity_ts["database/src/modules/database/entities/updatable.entity.ts"]
-  file_database_src_modules_database_postgres_container_constants_ts["database/src/modules/database/postgres-container.constants.ts"]
-  file_database_src_modules_database_postgres_container_types_ts["database/src/modules/database/postgres-container.types.ts"]
-  file_database_src_modules_database_postgres_container_utilities_integration_test_ts["database/src/modules/database/postgres-container.utilities.integration.test.ts"]
-  file_database_src_modules_database_postgres_container_utilities_ts["database/src/modules/database/postgres-container.utilities.ts"]
-  file_database_src_modules_export_export_arguments_command_integration_test_ts["database/src/modules/export/export-arguments.command.integration.test.ts"]
-  file_database_src_modules_export_export_dry_run_command_integration_test_ts["database/src/modules/export/export-dry-run.command.integration.test.ts"]
-  file_database_src_modules_export_export_dry_run_command_unit_test_ts["database/src/modules/export/export-dry-run.command.unit.test.ts"]
-  file_database_src_modules_export_export_log_convention_command_unit_test_ts["database/src/modules/export/export-log-convention.command.unit.test.ts"]
-  file_database_src_modules_export_export_missing_table_command_integration_test_ts["database/src/modules/export/export-missing-table.command.integration.test.ts"]
-  file_database_src_modules_export_export_missing_table_command_unit_test_ts["database/src/modules/export/export-missing-table.command.unit.test.ts"]
-  file_database_src_modules_export_export_preflight_command_integration_test_ts["database/src/modules/export/export-preflight.command.integration.test.ts"]
-  file_database_src_modules_export_export_schema_command_unit_test_ts["database/src/modules/export/export-schema.command.unit.test.ts"]
-  file_database_src_modules_export_export_command_integration_test_ts["database/src/modules/export/export.command.integration.test.ts"]
-  file_database_src_modules_export_export_command_ts["database/src/modules/export/export.command.ts"]
-  file_database_src_modules_export_export_command_unit_test_ts["database/src/modules/export/export.command.unit.test.ts"]
-  file_database_src_modules_export_export_constants_ts["database/src/modules/export/export.constants.ts"]
-  file_database_src_modules_export_export_module_ts["database/src/modules/export/export.module.ts"]
-  file_database_src_modules_export_export_types_ts["database/src/modules/export/export.types.ts"]
-  file_database_src_modules_import_import_clean_data_command_integration_test_ts["database/src/modules/import/import-clean-data.command.integration.test.ts"]
-  file_database_src_modules_import_import_clean_data_command_unit_test_ts["database/src/modules/import/import-clean-data.command.unit.test.ts"]
-  file_database_src_modules_import_import_clean_command_integration_test_ts["database/src/modules/import/import-clean.command.integration.test.ts"]
-  file_database_src_modules_import_import_clean_command_unit_test_ts["database/src/modules/import/import-clean.command.unit.test.ts"]
-  file_database_src_modules_import_import_dry_run_command_integration_test_ts["database/src/modules/import/import-dry-run.command.integration.test.ts"]
-  file_database_src_modules_import_import_dry_run_command_unit_test_ts["database/src/modules/import/import-dry-run.command.unit.test.ts"]
-  file_database_src_modules_import_import_preflight_command_integration_test_ts["database/src/modules/import/import-preflight.command.integration.test.ts"]
-  file_database_src_modules_import_import_schema_command_integration_test_ts["database/src/modules/import/import-schema.command.integration.test.ts"]
-  file_database_src_modules_import_import_schema_command_unit_test_ts["database/src/modules/import/import-schema.command.unit.test.ts"]
-  file_database_src_modules_import_import_command_integration_test_ts["database/src/modules/import/import.command.integration.test.ts"]
-  file_database_src_modules_import_import_command_ts["database/src/modules/import/import.command.ts"]
-  file_database_src_modules_import_import_command_unit_test_ts["database/src/modules/import/import.command.unit.test.ts"]
-  file_database_src_modules_import_import_constants_ts["database/src/modules/import/import.constants.ts"]
-  file_database_src_modules_import_import_module_ts["database/src/modules/import/import.module.ts"]
-  file_database_src_modules_import_import_types_ts["database/src/modules/import/import.types.ts"]
-  file_database_src_modules_postgres_client_postgres_client_constants_ts["database/src/modules/postgres-client/postgres-client.constants.ts"]
-  file_database_src_modules_postgres_client_postgres_client_module_ts["database/src/modules/postgres-client/postgres-client.module.ts"]
-  file_database_src_modules_postgres_client_postgres_client_service_ts["database/src/modules/postgres-client/postgres-client.service.ts"]
-  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts["database/src/modules/postgres-client/postgres-client.service.unit.test.ts"]
-  file_database_src_modules_postgres_client_postgres_client_types_ts["database/src/modules/postgres-client/postgres-client.types.ts"]
-  file_database_src_modules_postgres_client_postgres_client_utilities_ts["database/src/modules/postgres-client/postgres-client.utilities.ts"]
-  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-client.utilities.unit.test.ts"]
-  file_database_src_modules_postgres_client_postgres_dump_utilities_ts["database/src/modules/postgres-client/postgres-dump.utilities.ts"]
-  file_database_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-dump.utilities.unit.test.ts"]
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts["database/src/modules/postgres-client/postgres-truncate.utilities.ts"]
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-truncate.utilities.unit.test.ts"]
-  file_database_testing_command_line_runner_ts["database/testing/command-line-runner.ts"]
-  file_database_testing_database_testing_types_ts["database/testing/database-testing.types.ts"]
-  file_database_testing_database_testing_utilities_ts["database/testing/database-testing.utilities.ts"]
-  file_database_testing_fixture_database_ts["database/testing/fixture-database.ts"]
-  file_database_testing_fixtures_fixture_database_module_ts["database/testing/fixtures/fixture-database.module.ts"]
-  file_database_testing_fixtures_gadget_entity_ts["database/testing/fixtures/gadget.entity.ts"]
-  file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts["database/testing/fixtures/migrations/1767225600000-create-widgets.ts"]
-  file_database_testing_fixtures_migrations_1767225600001_create_parts_ts["database/testing/fixtures/migrations/1767225600001-create-parts.ts"]
-  file_database_testing_fixtures_sample_greeting_constants_ts["database/testing/fixtures/sample-greeting.constants.ts"]
-  file_database_testing_fixtures_sample_greeting_module_ts["database/testing/fixtures/sample-greeting.module.ts"]
-  file_database_testing_fixtures_sample_widgets_module_ts["database/testing/fixtures/sample-widgets.module.ts"]
-  file_database_testing_fixtures_sample_widgets_service_ts["database/testing/fixtures/sample-widgets.service.ts"]
-  file_database_testing_fixtures_widget_entity_ts["database/testing/fixtures/widget.entity.ts"]
-  file_database_testing_index_ts["database/testing/index.ts"]
-  file_database_testing_mocks_ts["database/testing/mocks.ts"]
-  file_database_testing_setup_ts["database/testing/setup.ts"]
-  file_database_vitest_config_ts["database/vitest.config.ts"]
   file_installation_callidescope_config_ts["installation/callidescope.config.ts"]
   file_installation_codependix_config_ts["installation/codependix.config.ts"]
   file_installation_codometer_config_ts["installation/codometer.config.ts"]
@@ -4419,6 +4334,14 @@ graph LR
   file_lexico_entities_codometer_config_ts["lexico-entities/codometer.config.ts"]
   file_lexico_entities_eslint_config_ts["lexico-entities/eslint.config.ts"]
   file_lexico_entities_src_index_ts["lexico-entities/src/index.ts"]
+  file_lexico_entities_src_modules_database_data_source_constants_ts["lexico-entities/src/modules/database/data-source.constants.ts"]
+  file_lexico_entities_src_modules_database_data_source_constants_unit_test_ts["lexico-entities/src/modules/database/data-source.constants.unit.test.ts"]
+  file_lexico_entities_src_modules_database_database_constants_ts["lexico-entities/src/modules/database/database.constants.ts"]
+  file_lexico_entities_src_modules_database_database_module_ts["lexico-entities/src/modules/database/database.module.ts"]
+  file_lexico_entities_src_modules_database_database_service_ts["lexico-entities/src/modules/database/database.service.ts"]
+  file_lexico_entities_src_modules_database_database_service_unit_test_ts["lexico-entities/src/modules/database/database.service.unit.test.ts"]
+  file_lexico_entities_src_modules_database_database_types_ts["lexico-entities/src/modules/database/database.types.ts"]
+  file_lexico_entities_src_modules_database_migrations_1791164926316_migration_ts["lexico-entities/src/modules/database/migrations/1791164926316-migration.ts"]
   file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts["lexico-entities/src/modules/entities/dictionary/form/adjectival-form.entity.ts"]
   file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts["lexico-entities/src/modules/entities/dictionary/form/adverb-form.entity.ts"]
   file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts["lexico-entities/src/modules/entities/dictionary/form/finite-verb-form.entity.ts"]
@@ -4455,14 +4378,6 @@ graph LR
   file_lexico_entities_src_modules_entities_literature_Line_entity_ts["lexico-entities/src/modules/entities/literature/line.entity.ts"]
   file_lexico_entities_src_modules_entities_literature_Text_entity_ts["lexico-entities/src/modules/entities/literature/text.entity.ts"]
   file_lexico_entities_src_modules_entities_literature_Token_entity_ts["lexico-entities/src/modules/entities/literature/token.entity.ts"]
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts["lexico-entities/src/modules/lexico-database/data-source.constants.ts"]
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_unit_test_ts["lexico-entities/src/modules/lexico-database/data-source.constants.unit.test.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts["lexico-entities/src/modules/lexico-database/lexico-database.constants.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts["lexico-entities/src/modules/lexico-database/lexico-database.module.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts["lexico-entities/src/modules/lexico-database/lexico-database.service.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_service_unit_test_ts["lexico-entities/src/modules/lexico-database/lexico-database.service.unit.test.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_types_ts["lexico-entities/src/modules/lexico-database/lexico-database.types.ts"]
-  file_lexico_entities_src_modules_lexico_database_migrations_1791164926316_migration_ts["lexico-entities/src/modules/lexico-database/migrations/1791164926316-migration.ts"]
   file_lexico_entities_testing_entity_definition_assertions_ts["lexico-entities/testing/entity-definition-assertions.ts"]
   file_lexico_entities_testing_setup_ts["lexico-entities/testing/setup.ts"]
   file_lexico_entities_vitest_config_ts["lexico-entities/vitest.config.ts"]
@@ -4876,6 +4791,18 @@ graph LR
   file_meanderaw_cli_src_modules_corpus_historical_corpus_8_constants_ts["meanderaw-cli/src/modules/corpus/historical-corpus-8.constants.ts"]
   file_meanderaw_cli_src_modules_corpus_historical_corpus_9_constants_ts["meanderaw-cli/src/modules/corpus/historical-corpus-9.constants.ts"]
   file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts["meanderaw-cli/src/modules/corpus/historical-corpus.constants.ts"]
+  file_meanderaw_cli_src_modules_database_data_source_constants_ts["meanderaw-cli/src/modules/database/data-source.constants.ts"]
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts["meanderaw-cli/src/modules/database/database-patterns.service.integration.test.ts"]
+  file_meanderaw_cli_src_modules_database_database_constants_ts["meanderaw-cli/src/modules/database/database.constants.ts"]
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts["meanderaw-cli/src/modules/database/database.module.integration.test.ts"]
+  file_meanderaw_cli_src_modules_database_database_module_ts["meanderaw-cli/src/modules/database/database.module.ts"]
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts["meanderaw-cli/src/modules/database/database.service.integration.test.ts"]
+  file_meanderaw_cli_src_modules_database_database_service_ts["meanderaw-cli/src/modules/database/database.service.ts"]
+  file_meanderaw_cli_src_modules_database_database_service_unit_test_ts["meanderaw-cli/src/modules/database/database.service.unit.test.ts"]
+  file_meanderaw_cli_src_modules_database_database_types_ts["meanderaw-cli/src/modules/database/database.types.ts"]
+  file_meanderaw_cli_src_modules_database_entities_meander_entity_ts["meanderaw-cli/src/modules/database/entities/meander.entity.ts"]
+  file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts["meanderaw-cli/src/modules/database/migrations/1791160950069-migration.ts"]
+  file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts["meanderaw-cli/src/modules/database/migrations/1791414023001-migration.ts"]
   file_meanderaw_cli_src_modules_draw_draw_code_service_ts["meanderaw-cli/src/modules/draw/draw-code.service.ts"]
   file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts["meanderaw-cli/src/modules/draw/draw-code.service.unit.test.ts"]
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts["meanderaw-cli/src/modules/draw/draw-enumeration.service.integration.test.ts"]
@@ -4930,18 +4857,6 @@ graph LR
   file_meanderaw_cli_src_modules_matrix_matrix_service_ts["meanderaw-cli/src/modules/matrix/matrix.service.ts"]
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts["meanderaw-cli/src/modules/matrix/matrix.service.unit.test.ts"]
   file_meanderaw_cli_src_modules_matrix_matrix_types_ts["meanderaw-cli/src/modules/matrix/matrix.types.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_data_source_constants_ts["meanderaw-cli/src/modules/meanderaw-database/data-source.constants.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts["meanderaw-cli/src/modules/meanderaw-database/entities/meander.entity.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database-patterns.service.integration.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_constants_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.constants.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.module.integration.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.module.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.integration.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.unit.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.types.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts["meanderaw-cli/src/modules/meanderaw-database/migrations/1791160950069-migration.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts["meanderaw-cli/src/modules/meanderaw-database/migrations/1791414023001-migration.ts"]
   file_meanderaw_cli_src_modules_svg_svg_constants_ts["meanderaw-cli/src/modules/svg/svg.constants.ts"]
   file_meanderaw_cli_src_modules_svg_svg_module_ts["meanderaw-cli/src/modules/svg/svg.module.ts"]
   file_meanderaw_cli_src_modules_svg_svg_service_ts["meanderaw-cli/src/modules/svg/svg.service.ts"]
@@ -4982,6 +4897,92 @@ graph LR
   file_meanderaw_web_testing_setup_ts["meanderaw-web/testing/setup.ts"]
   file_meanderaw_web_vite_config_mts["meanderaw-web/vite.config.mts"]
   file_meanderaw_web_vitest_config_ts["meanderaw-web/vitest.config.ts"]
+  file_persistence_callidescope_config_ts["persistence/callidescope.config.ts"]
+  file_persistence_codependix_config_ts["persistence/codependix.config.ts"]
+  file_persistence_codometer_config_ts["persistence/codometer.config.ts"]
+  file_persistence_eslint_config_ts["persistence/eslint.config.ts"]
+  file_persistence_src_index_ts["persistence/src/index.ts"]
+  file_persistence_src_modules_export_export_arguments_command_integration_test_ts["persistence/src/modules/export/export-arguments.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_dry_run_command_integration_test_ts["persistence/src/modules/export/export-dry-run.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_dry_run_command_unit_test_ts["persistence/src/modules/export/export-dry-run.command.unit.test.ts"]
+  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts["persistence/src/modules/export/export-log-convention.command.unit.test.ts"]
+  file_persistence_src_modules_export_export_missing_table_command_integration_test_ts["persistence/src/modules/export/export-missing-table.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_missing_table_command_unit_test_ts["persistence/src/modules/export/export-missing-table.command.unit.test.ts"]
+  file_persistence_src_modules_export_export_preflight_command_integration_test_ts["persistence/src/modules/export/export-preflight.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_schema_command_unit_test_ts["persistence/src/modules/export/export-schema.command.unit.test.ts"]
+  file_persistence_src_modules_export_export_command_integration_test_ts["persistence/src/modules/export/export.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_command_ts["persistence/src/modules/export/export.command.ts"]
+  file_persistence_src_modules_export_export_command_unit_test_ts["persistence/src/modules/export/export.command.unit.test.ts"]
+  file_persistence_src_modules_export_export_constants_ts["persistence/src/modules/export/export.constants.ts"]
+  file_persistence_src_modules_export_export_module_ts["persistence/src/modules/export/export.module.ts"]
+  file_persistence_src_modules_export_export_types_ts["persistence/src/modules/export/export.types.ts"]
+  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts["persistence/src/modules/import/import-clean-data.command.integration.test.ts"]
+  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts["persistence/src/modules/import/import-clean-data.command.unit.test.ts"]
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts["persistence/src/modules/import/import-clean.command.integration.test.ts"]
+  file_persistence_src_modules_import_import_clean_command_unit_test_ts["persistence/src/modules/import/import-clean.command.unit.test.ts"]
+  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts["persistence/src/modules/import/import-dry-run.command.integration.test.ts"]
+  file_persistence_src_modules_import_import_dry_run_command_unit_test_ts["persistence/src/modules/import/import-dry-run.command.unit.test.ts"]
+  file_persistence_src_modules_import_import_preflight_command_integration_test_ts["persistence/src/modules/import/import-preflight.command.integration.test.ts"]
+  file_persistence_src_modules_import_import_schema_command_integration_test_ts["persistence/src/modules/import/import-schema.command.integration.test.ts"]
+  file_persistence_src_modules_import_import_schema_command_unit_test_ts["persistence/src/modules/import/import-schema.command.unit.test.ts"]
+  file_persistence_src_modules_import_import_command_integration_test_ts["persistence/src/modules/import/import.command.integration.test.ts"]
+  file_persistence_src_modules_import_import_command_ts["persistence/src/modules/import/import.command.ts"]
+  file_persistence_src_modules_import_import_command_unit_test_ts["persistence/src/modules/import/import.command.unit.test.ts"]
+  file_persistence_src_modules_import_import_constants_ts["persistence/src/modules/import/import.constants.ts"]
+  file_persistence_src_modules_import_import_module_ts["persistence/src/modules/import/import.module.ts"]
+  file_persistence_src_modules_import_import_types_ts["persistence/src/modules/import/import.types.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts["persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_unit_test_ts["persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.unit.test.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts["persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_unit_test_ts["persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.unit.test.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.constants.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.module.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_unit_test_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.service.unit.test.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.types.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts"]
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_unit_test_ts["persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.unit.test.ts"]
+  file_persistence_src_modules_postgresql_entities_creatable_entity_ts["persistence/src/modules/postgresql/entities/creatable.entity.ts"]
+  file_persistence_src_modules_postgresql_entities_deletable_entity_ts["persistence/src/modules/postgresql/entities/deletable.entity.ts"]
+  file_persistence_src_modules_postgresql_entities_identifiable_entity_ts["persistence/src/modules/postgresql/entities/identifiable.entity.ts"]
+  file_persistence_src_modules_postgresql_entities_updatable_entity_ts["persistence/src/modules/postgresql/entities/updatable.entity.ts"]
+  file_persistence_src_modules_postgresql_postgresql_container_constants_ts["persistence/src/modules/postgresql/postgresql-container.constants.ts"]
+  file_persistence_src_modules_postgresql_postgresql_container_types_ts["persistence/src/modules/postgresql/postgresql-container.types.ts"]
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts["persistence/src/modules/postgresql/postgresql-container.utilities.integration.test.ts"]
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts["persistence/src/modules/postgresql/postgresql-container.utilities.ts"]
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts["persistence/src/modules/postgresql/postgresql-testing.utilities.integration.test.ts"]
+  file_persistence_src_modules_postgresql_postgresql_constants_ts["persistence/src/modules/postgresql/postgresql.constants.ts"]
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts["persistence/src/modules/postgresql/postgresql.module.integration.test.ts"]
+  file_persistence_src_modules_postgresql_postgresql_module_ts["persistence/src/modules/postgresql/postgresql.module.ts"]
+  file_persistence_src_modules_postgresql_postgresql_service_ts["persistence/src/modules/postgresql/postgresql.service.ts"]
+  file_persistence_src_modules_postgresql_postgresql_service_unit_test_ts["persistence/src/modules/postgresql/postgresql.service.unit.test.ts"]
+  file_persistence_src_modules_postgresql_postgresql_types_ts["persistence/src/modules/postgresql/postgresql.types.ts"]
+  file_persistence_src_modules_postgresql_postgresql_utilities_ts["persistence/src/modules/postgresql/postgresql.utilities.ts"]
+  file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts["persistence/src/modules/postgresql/postgresql.utilities.unit.test.ts"]
+  file_persistence_src_persistence_main_end_to_end_test_ts["persistence/src/persistence.main.end-to-end.test.ts"]
+  file_persistence_src_persistence_main_ts["persistence/src/persistence.main.ts"]
+  file_persistence_src_persistence_main_unit_test_ts["persistence/src/persistence.main.unit.test.ts"]
+  file_persistence_src_persistence_module_ts["persistence/src/persistence.module.ts"]
+  file_persistence_src_persistence_module_unit_test_ts["persistence/src/persistence.module.unit.test.ts"]
+  file_persistence_src_persistence_repl_ts["persistence/src/persistence.repl.ts"]
+  file_persistence_src_persistence_repl_unit_test_ts["persistence/src/persistence.repl.unit.test.ts"]
+  file_persistence_testing_command_line_runner_ts["persistence/testing/command-line-runner.ts"]
+  file_persistence_testing_fixture_persistence_ts["persistence/testing/fixture-persistence.ts"]
+  file_persistence_testing_fixtures_fixture_persistence_module_ts["persistence/testing/fixtures/fixture-persistence.module.ts"]
+  file_persistence_testing_fixtures_gadget_entity_ts["persistence/testing/fixtures/gadget.entity.ts"]
+  file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts["persistence/testing/fixtures/migrations/1767225600000-create-widgets.ts"]
+  file_persistence_testing_fixtures_migrations_1767225600001_create_parts_ts["persistence/testing/fixtures/migrations/1767225600001-create-parts.ts"]
+  file_persistence_testing_fixtures_sample_greeting_constants_ts["persistence/testing/fixtures/sample-greeting.constants.ts"]
+  file_persistence_testing_fixtures_sample_greeting_module_ts["persistence/testing/fixtures/sample-greeting.module.ts"]
+  file_persistence_testing_fixtures_sample_widgets_module_ts["persistence/testing/fixtures/sample-widgets.module.ts"]
+  file_persistence_testing_fixtures_sample_widgets_service_ts["persistence/testing/fixtures/sample-widgets.service.ts"]
+  file_persistence_testing_fixtures_widget_entity_ts["persistence/testing/fixtures/widget.entity.ts"]
+  file_persistence_testing_index_ts["persistence/testing/index.ts"]
+  file_persistence_testing_mocks_ts["persistence/testing/mocks.ts"]
+  file_persistence_testing_persistence_testing_types_ts["persistence/testing/persistence-testing.types.ts"]
+  file_persistence_testing_persistence_testing_utilities_ts["persistence/testing/persistence-testing.utilities.ts"]
+  file_persistence_testing_setup_ts["persistence/testing/setup.ts"]
+  file_persistence_vitest_config_ts["persistence/vitest.config.ts"]
   file_publication_callidescope_config_ts["publication/callidescope.config.ts"]
   file_publication_codependix_config_ts["publication/codependix.config.ts"]
   file_publication_codometer_config_ts["publication/codometer.config.ts"]
@@ -5196,6 +5197,13 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_service_ts["synchronization/src/modules/synchronization/synchronization.service.ts"]
   file_synchronization_src_modules_synchronization_synchronization_service_unit_test_ts["synchronization/src/modules/synchronization/synchronization.service.unit.test.ts"]
   file_synchronization_src_modules_synchronization_synchronization_types_ts["synchronization/src/modules/synchronization/synchronization.types.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_unit_test_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.unit.test.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.unit.test.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_constants_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.constants.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.module.ts"]
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_types_ts["synchronization/src/modules/typeorm-migration-sql/typeorm-migration-sql.types.ts"]
   file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts"]
   file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_unit_test_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.command.unit.test.ts"]
   file_synchronization_src_modules_vscode_extensions_vscode_extensions_constants_ts["synchronization/src/modules/vscode-extensions/vscode-extensions.constants.ts"]
@@ -5352,10 +5360,10 @@ graph LR
   file_affirmancy_testing_test_services_py --> file_affirmancy_src_services_py
   file_affirmancy_testing_test_subjects_py --> file_affirmancy_src_subjects_py
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_migrations_1791255787877_migration_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_module_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_migrations_1791255787877_migration_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
@@ -5372,7 +5380,7 @@ graph LR
   file_caelundas_cli_src_caelundas_cli_repl_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
-  file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_unit_test_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
@@ -5381,14 +5389,14 @@ graph LR
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
-  file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
-  file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
+  file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
@@ -5404,9 +5412,9 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
-  file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
@@ -5455,9 +5463,9 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspects_module_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_constants_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
@@ -5469,8 +5477,8 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts
@@ -5498,33 +5506,24 @@ graph LR
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_caelundas_cli_src_modules_aspects_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts
-  file_caelundas_cli_src_modules_aspects_aspects_types_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_aspects_aspects_types_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_aspects_aspects_types_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_aspects_compound_phase_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_calculation_support_service_ts
   file_caelundas_cli_src_modules_aspects_compound_phase_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_aspects_compound_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_constants_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_constants_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_ts
-  file_caelundas_cli_src_modules_caelundas_database_data_source_constants_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_constants_ts
-  file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_perfective_perfective_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_progressive_progressive_service_ts
-  file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
-  file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_command_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_perfective_perfective_service_ts
@@ -5533,11 +5532,11 @@ graph LR
   file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_aspects_aspects_module_ts
-  file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_command_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_calendar_calendar_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_daily_cycles_daily_cycles_module_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_database_database_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_module_ts
@@ -5561,36 +5560,36 @@ graph LR
   file_caelundas_cli_src_modules_caelundas_caelundas_types_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts --> file_caelundas_cli_src_modules_database_database_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_migrations_1791255787877_migration_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_module_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_migrations_1791255787877_migration_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts
   file_caelundas_cli_src_modules_calendar_calendar_module_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
-  file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_constants_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_types_ts
+  file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_input_input_types_ts
-  file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_unit_test_ts --> file_caelundas_cli_testing_mocks_ts
-  file_caelundas_cli_src_modules_calendar_calendar_types_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
-  file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_calendar_calendar_types_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
@@ -5603,8 +5602,8 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_module_ts --> file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_module_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_module_ts --> file_caelundas_cli_src_modules_math_math_module_ts
-  file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts --> file_caelundas_cli_src_modules_daily_cycles_daily_cycles_builder_service_ts
+  file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
@@ -5613,10 +5612,19 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
+  file_caelundas_cli_src_modules_database_data_source_constants_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_service_ts
+  file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_database_database_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_service_ts
+  file_caelundas_cli_src_modules_database_database_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_database_database_utilities_unit_test_ts --> file_caelundas_cli_src_modules_database_database_utilities_ts
+  file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts --> file_caelundas_cli_src_modules_database_database_utilities_ts
   file_caelundas_cli_src_modules_datetime_datetime_module_ts --> file_caelundas_cli_src_modules_datetime_datetime_service_ts
   file_caelundas_cli_src_modules_datetime_datetime_service_unit_test_ts --> file_caelundas_cli_src_modules_datetime_datetime_service_ts
-  file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_classification_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_ts
@@ -5625,8 +5633,8 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
-  file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_classification_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
@@ -5644,12 +5652,12 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipse_classification_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_classification_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_classification_service_unit_test_ts --> file_caelundas_cli_testing_eclipse_test_utilities_ts
-  file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_constants_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_event_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_constants_ts
@@ -5660,8 +5668,8 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_unit_test_ts --> file_caelundas_cli_testing_eclipse_test_utilities_ts
-  file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_constants_ts
@@ -5669,7 +5677,7 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts --> file_caelundas_cli_src_modules_math_math_types_ts
-  file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_geometry_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_topocentric_service_ts
@@ -5687,13 +5695,13 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipses_module_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_module_ts --> file_caelundas_cli_src_modules_math_math_module_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_module_ts
-  file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
-  file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_service_ts
@@ -5784,10 +5792,10 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_types_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
-  file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
@@ -5795,9 +5803,9 @@ graph LR
   file_caelundas_cli_src_modules_ingresses_ingresses_module_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_module_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_module_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
-  file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -5808,14 +5816,14 @@ graph LR
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_integration_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
-  file_caelundas_cli_src_modules_ingresses_ingresses_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_ingresses_ingresses_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts
-  file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_service_unit_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts
@@ -5832,21 +5840,21 @@ graph LR
   file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_modules_input_input_types_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_unit_test_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
-  file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -5873,9 +5881,9 @@ graph LR
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts
   file_caelundas_cli_src_modules_major_aspects_major_aspects_service_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_progressive_service_ts
@@ -5899,10 +5907,10 @@ graph LR
   file_caelundas_cli_src_modules_math_math_service_ts --> file_caelundas_cli_src_modules_math_math_types_ts
   file_caelundas_cli_src_modules_math_math_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
-  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_minor_aspects_minor_aspects_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_composer_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
@@ -5912,22 +5920,22 @@ graph LR
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts
-  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
@@ -5952,9 +5960,9 @@ graph LR
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_minor_aspects_minor_aspects_event_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_ts --> file_caelundas_cli_src_modules_minor_aspects_minor_aspects_progressive_service_ts
@@ -5962,9 +5970,9 @@ graph LR
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_ephemeris_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -5975,12 +5983,12 @@ graph LR
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_minor_aspects_minor_aspects_types_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
-  file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_constants_ts
-  file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_unit_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_constants_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
@@ -5994,20 +6002,20 @@ graph LR
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_integration_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_integration_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_integration_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
-  file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_lunar_apsides_service_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_constants_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_types_ts
-  file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -6029,9 +6037,9 @@ graph LR
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts
+  file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_datetime_datetime_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
@@ -6047,8 +6055,8 @@ graph LR
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_ts
+  file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_datetime_datetime_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
@@ -6061,29 +6069,29 @@ graph LR
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
   file_caelundas_cli_src_modules_perfective_perfective_types_ts --> file_caelundas_cli_src_modules_perfective_perfective_constants_ts
-  file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_martian_phase_service_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_martian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_mercurian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
@@ -6095,8 +6103,8 @@ graph LR
   file_caelundas_cli_src_modules_phases_phase_calculation_service_integration_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_phases_phase_calculation_service_integration_test_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_phase_calculation_service_integration_test_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
-  file_caelundas_cli_src_modules_phases_phase_calculation_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_phase_calculation_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_phase_calculation_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_phase_calculation_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_phases_phase_calculation_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_phases_phase_calculation_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -6122,42 +6130,42 @@ graph LR
   file_caelundas_cli_src_modules_phases_phases_service_integration_test_ts --> file_caelundas_cli_src_modules_phases_phases_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_integration_test_ts --> file_caelundas_cli_src_modules_phases_venusian_phase_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_phases_martian_phase_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
   file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_phases_service_ts --> file_caelundas_cli_src_modules_phases_venusian_phase_service_ts
-  file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_martian_phase_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_mercurian_phase_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_service_ts
   file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_phases_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_venusian_phase_service_ts
   file_caelundas_cli_src_modules_phases_phases_types_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
-  file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phase_calculation_service_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_constants_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_phases_types_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_phases_venusian_phase_service_ts
   file_caelundas_cli_src_modules_phases_venusian_phase_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_types_ts
-  file_caelundas_cli_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_aspect_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_utilities_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_utilities_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
-  file_caelundas_cli_src_modules_progressive_progressive_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_utilities_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_module_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_module_ts
   file_caelundas_cli_src_modules_progressive_progressive_module_ts --> file_caelundas_cli_src_modules_aspects_aspects_module_ts
@@ -6168,7 +6176,7 @@ graph LR
   file_caelundas_cli_src_modules_progressive_progressive_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_module_ts --> file_caelundas_cli_src_modules_retrogrades_retrogrades_module_ts
   file_caelundas_cli_src_modules_progressive_progressive_module_ts --> file_caelundas_cli_src_modules_twilights_twilights_module_ts
-  file_caelundas_cli_src_modules_progressive_progressive_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_integration_test_ts --> file_caelundas_cli_src_modules_major_aspects_major_aspect_event_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_module_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_service_ts
@@ -6176,7 +6184,7 @@ graph LR
   file_caelundas_cli_src_modules_progressive_progressive_service_integration_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_service_ts
-  file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
@@ -6185,7 +6193,7 @@ graph LR
   file_caelundas_cli_src_modules_progressive_progressive_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_service_ts
-  file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
   file_caelundas_cli_src_modules_progressive_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
@@ -6197,30 +6205,30 @@ graph LR
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_unit_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
@@ -6233,22 +6241,22 @@ graph LR
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_base_service_ts
   file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_quadruple_aspects_quadruple_aspects_composer_service_ts
@@ -6258,10 +6266,10 @@ graph LR
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
@@ -6279,20 +6287,20 @@ graph LR
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_ts --> file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_quintuple_aspects_quintuple_aspects_composer_service_ts
@@ -6310,17 +6318,17 @@ graph LR
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_integration_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_integration_test_ts --> file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts
-  file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_retrogrades_retrogrades_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -6329,10 +6337,10 @@ graph LR
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
@@ -6347,15 +6355,15 @@ graph LR
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
@@ -6364,41 +6372,41 @@ graph LR
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_service_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_types_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_sextuple_aspects_sextuple_aspects_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
-  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_composer_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_unit_test_ts --> file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts
-  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_unit_test_ts --> file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts
@@ -6410,17 +6418,17 @@ graph LR
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_module_ts --> file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_event_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_ts --> file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_progressive_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_event_formatting_service_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_specialty_aspects_specialty_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -6436,42 +6444,42 @@ graph LR
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_stellium_stellium_constants_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_ts --> file_caelundas_cli_src_modules_stellium_stellium_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_stellium_stellium_service_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
@@ -6490,38 +6498,38 @@ graph LR
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_integration_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
-  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_phase_emoji_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_compound_phase_service_ts
-  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_composer_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_detector_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_unit_test_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_service_ts
   file_caelundas_cli_src_modules_triple_aspects_triple_aspects_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
-  file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
-  file_caelundas_cli_src_modules_twilights_twilights_builder_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_builder_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_builder_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts
-  file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts
-  file_caelundas_cli_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_composer_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts
-  file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts
@@ -6537,14 +6545,14 @@ graph LR
   file_caelundas_cli_src_modules_twilights_twilights_module_ts --> file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_module_ts --> file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_module_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
-  file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_builder_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_ts --> file_caelundas_cli_src_modules_twilights_twilights_types_ts
-  file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
@@ -6553,30 +6561,30 @@ graph LR
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_composer_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_detector_service_ts
   file_caelundas_cli_src_modules_twilights_twilights_service_unit_test_ts --> file_caelundas_cli_src_modules_twilights_twilights_service_ts
-  file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_aspect_test_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
-  file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_command_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_calendar_calendar_module_ts
+  file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_input_input_module_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_perfective_perfective_service_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_progressive_progressive_service_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_testing_calendar_command_types_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_utilities_service_ts
-  file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_constants_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_functions_ts
   file_caelundas_cli_testing_compound_aspect_seeding_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_module_ts
-  file_caelundas_cli_testing_compound_aspects_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_compound_aspects_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
+  file_caelundas_cli_testing_compound_aspects_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_compound_aspects_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_constants_ts
   file_caelundas_cli_testing_compound_aspects_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_functions_ts
   file_caelundas_cli_testing_eclipse_test_utilities_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_types_ts
@@ -6590,7 +6598,7 @@ graph LR
   file_caelundas_cli_testing_major_aspects_utilities_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_testing_major_aspects_utilities_ts --> file_caelundas_cli_src_modules_progressive_progressive_aspect_service_ts
   file_caelundas_cli_testing_major_aspects_utilities_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
-  file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_src_modules_monthly_lunar_cycle_monthly_lunar_cycle_service_ts
   file_caelundas_cli_testing_moon_phases_reference_end_to_end_test_ts --> file_caelundas_cli_testing_pipeline_window_constants_ts
@@ -6615,7 +6623,7 @@ graph LR
   file_caelundas_cli_testing_pipeline_window_functions_ts --> file_caelundas_cli_testing_pipeline_window_types_ts
   file_caelundas_cli_testing_pipeline_window_module_ts --> file_caelundas_cli_src_modules_perfective_perfective_module_ts
   file_caelundas_cli_testing_pipeline_window_module_ts --> file_caelundas_cli_src_modules_progressive_progressive_module_ts
-  file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_testing_pipeline_window_types_ts --> file_caelundas_cli_src_modules_perfective_perfective_types_ts
   file_caelundas_cli_testing_reference_families_constants_ts --> file_caelundas_cli_src_modules_perfective_perfective_types_ts
@@ -6624,12 +6632,12 @@ graph LR
   file_caelundas_cli_testing_reference_families_utilities_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
   file_caelundas_cli_testing_reference_families_utilities_unit_test_ts --> file_caelundas_cli_testing_reference_families_utilities_ts
   file_caelundas_cli_testing_reference_families_utilities_unit_test_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
-  file_caelundas_cli_testing_reference_fixtures_types_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_testing_reference_fixtures_types_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_reference_fixtures_types_ts --> file_caelundas_cli_testing_reference_fixtures_constants_ts
-  file_caelundas_cli_testing_reference_fixtures_utilities_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_testing_reference_fixtures_utilities_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_reference_fixtures_utilities_ts --> file_caelundas_cli_testing_reference_fixtures_constants_ts
   file_caelundas_cli_testing_reference_fixtures_utilities_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
-  file_caelundas_cli_testing_reference_fixtures_utilities_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
+  file_caelundas_cli_testing_reference_fixtures_utilities_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_reference_fixtures_utilities_unit_test_ts --> file_caelundas_cli_testing_reference_fixtures_types_ts
   file_caelundas_cli_testing_reference_fixtures_utilities_unit_test_ts --> file_caelundas_cli_testing_reference_fixtures_utilities_ts
   file_caelundas_cli_testing_reference_longitudes_constants_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
@@ -6643,8 +6651,8 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspect_graph_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_aspects_aspects_types_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
-  file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
+  file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
@@ -8983,186 +8991,6 @@ graph LR
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_module_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_service_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_types_ts
-  file_database_src_database_main_ts --> file_database_src_database_module_ts
-  file_database_src_database_module_ts --> file_database_src_modules_export_export_module_ts
-  file_database_src_database_module_ts --> file_database_src_modules_import_import_module_ts
-  file_database_src_database_module_unit_test_ts --> file_database_src_database_module_ts
-  file_database_src_database_module_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_database_repl_ts --> file_database_src_database_module_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_src_modules_database_database_utilities_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_database_testing_types_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_database_testing_utilities_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_fixture_database_module_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_sample_greeting_constants_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_sample_greeting_module_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_sample_widgets_module_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_sample_widgets_service_ts
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts --> file_database_testing_fixtures_widget_entity_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_src_modules_database_database_module_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_src_modules_database_database_utilities_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_testing_fixtures_gadget_entity_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_database_src_modules_database_database_module_integration_test_ts --> file_database_testing_fixtures_widget_entity_ts
-  file_database_src_modules_database_database_module_ts --> file_database_src_modules_database_database_constants_ts
-  file_database_src_modules_database_database_module_ts --> file_database_src_modules_database_database_service_ts
-  file_database_src_modules_database_database_module_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_database_database_service_ts --> file_database_src_modules_database_database_constants_ts
-  file_database_src_modules_database_database_service_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_database_database_service_ts --> file_database_src_modules_database_database_utilities_ts
-  file_database_src_modules_database_database_service_unit_test_ts --> file_database_src_modules_database_database_constants_ts
-  file_database_src_modules_database_database_service_unit_test_ts --> file_database_src_modules_database_database_service_ts
-  file_database_src_modules_database_database_types_ts --> file_database_src_modules_database_database_constants_ts
-  file_database_src_modules_database_database_utilities_ts --> file_database_src_modules_database_database_constants_ts
-  file_database_src_modules_database_database_utilities_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_database_database_utilities_unit_test_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_database_database_utilities_unit_test_ts --> file_database_src_modules_database_database_utilities_ts
-  file_database_src_modules_database_entities_creatable_entity_ts --> file_database_src_modules_database_entities_identifiable_entity_ts
-  file_database_src_modules_database_entities_deletable_entity_ts --> file_database_src_modules_database_entities_updatable_entity_ts
-  file_database_src_modules_database_entities_updatable_entity_ts --> file_database_src_modules_database_entities_creatable_entity_ts
-  file_database_src_modules_database_postgres_container_types_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_database_postgres_container_utilities_integration_test_ts --> file_database_src_modules_database_postgres_container_constants_ts
-  file_database_src_modules_database_postgres_container_utilities_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_database_postgres_container_utilities_integration_test_ts --> file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_database_utilities_ts
-  file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_postgres_container_constants_ts
-  file_database_src_modules_database_postgres_container_utilities_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_export_export_arguments_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_arguments_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_export_export_dry_run_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_dry_run_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_export_export_dry_run_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_dry_run_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_export_export_log_convention_command_unit_test_ts --> file_database_src_modules_export_export_constants_ts
-  file_database_src_modules_export_export_log_convention_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_log_convention_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_export_export_missing_table_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_missing_table_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_export_export_missing_table_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_missing_table_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_export_export_preflight_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_preflight_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_export_export_schema_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_schema_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_database_database_types_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_export_export_constants_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_export_export_types_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_export_export_command_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
-  file_database_src_modules_export_export_command_unit_test_ts --> file_database_src_modules_export_export_command_ts
-  file_database_src_modules_export_export_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_export_export_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_export_export_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_export_export_constants_ts --> file_database_src_modules_export_export_types_ts
-  file_database_src_modules_export_export_constants_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_export_export_module_ts --> file_database_src_modules_export_export_command_ts
-  file_database_src_modules_export_export_module_ts --> file_database_src_modules_postgres_client_postgres_client_module_ts
-  file_database_src_modules_export_export_types_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_clean_data_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_clean_data_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_import_import_clean_command_integration_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_import_import_clean_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_clean_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_dry_run_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_import_import_dry_run_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_dry_run_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_import_import_preflight_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_preflight_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_import_import_schema_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_schema_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_import_import_schema_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_import_import_schema_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_schema_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_import_import_command_integration_test_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_src_modules_import_import_command_integration_test_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_src_modules_import_import_command_integration_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_command_integration_test_ts --> file_database_testing_fixture_database_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_import_import_constants_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_import_import_types_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_import_import_command_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
-  file_database_src_modules_import_import_command_unit_test_ts --> file_database_src_modules_import_import_command_ts
-  file_database_src_modules_import_import_command_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_import_import_command_unit_test_ts --> file_database_testing_command_line_runner_ts
-  file_database_src_modules_import_import_command_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_import_import_constants_ts --> file_database_src_modules_import_import_types_ts
-  file_database_src_modules_import_import_constants_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_import_import_constants_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_import_import_module_ts --> file_database_src_modules_import_import_command_ts
-  file_database_src_modules_import_import_module_ts --> file_database_src_modules_postgres_client_postgres_client_module_ts
-  file_database_src_modules_import_import_types_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_client_constants_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_client_module_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
-  file_database_src_modules_postgres_client_postgres_client_service_ts --> file_database_src_modules_postgres_client_postgres_truncate_utilities_ts
-  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_service_ts
-  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts --> file_database_testing_mocks_ts
-  file_database_src_modules_postgres_client_postgres_client_utilities_ts --> file_database_src_modules_database_database_constants_ts
-  file_database_src_modules_postgres_client_postgres_client_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_client_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_utilities_ts
-  file_database_src_modules_postgres_client_postgres_dump_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_dump_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_dump_utilities_ts
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_constants_ts
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_client_types_ts
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts --> file_database_src_modules_postgres_client_postgres_truncate_utilities_ts
-  file_database_testing_command_line_runner_ts --> file_database_src_database_module_ts
-  file_database_testing_database_testing_types_ts --> file_database_src_modules_database_database_types_ts
-  file_database_testing_database_testing_types_ts --> file_database_src_modules_database_postgres_container_types_ts
-  file_database_testing_database_testing_utilities_ts --> file_database_src_modules_database_database_module_ts
-  file_database_testing_database_testing_utilities_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_testing_database_testing_utilities_ts --> file_database_testing_database_testing_types_ts
-  file_database_testing_fixture_database_ts --> file_database_src_modules_database_database_types_ts
-  file_database_testing_fixture_database_ts --> file_database_src_modules_database_postgres_container_utilities_ts
-  file_database_testing_fixture_database_ts --> file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts
-  file_database_testing_fixture_database_ts --> file_database_testing_fixtures_migrations_1767225600001_create_parts_ts
-  file_database_testing_fixtures_fixture_database_module_ts --> file_database_src_modules_database_database_module_ts
-  file_database_testing_fixtures_fixture_database_module_ts --> file_database_testing_fixtures_widget_entity_ts
-  file_database_testing_fixtures_gadget_entity_ts --> file_database_src_modules_database_entities_identifiable_entity_ts
-  file_database_testing_fixtures_sample_greeting_module_ts --> file_database_testing_fixtures_sample_greeting_constants_ts
-  file_database_testing_fixtures_sample_widgets_module_ts --> file_database_testing_fixtures_fixture_database_module_ts
-  file_database_testing_fixtures_sample_widgets_module_ts --> file_database_testing_fixtures_sample_widgets_service_ts
-  file_database_testing_fixtures_sample_widgets_module_ts --> file_database_testing_fixtures_widget_entity_ts
-  file_database_testing_fixtures_sample_widgets_service_ts --> file_database_testing_fixtures_widget_entity_ts
-  file_database_testing_fixtures_widget_entity_ts --> file_database_src_modules_database_entities_deletable_entity_ts
   file_installation_src_installation_main_end_to_end_test_ts --> file_installation_src_installation_constants_ts
   file_installation_src_installation_main_ts --> file_installation_src_installation_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_installation_constants_ts
@@ -10354,36 +10182,85 @@ graph LR
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_src_modules_lexico_ingestion_lexico_ingestion_constants_ts
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_src_modules_words_words_service_ts
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_testing_mocks_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_migrations_1791164926316_migration_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_GerundForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_NominalForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_ParticipleForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_SupineForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_NounInflection_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Uninflected_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_PrincipalPart_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Pronunciation_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Translation_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Word_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_WordForm_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_WordLexeme_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Author_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Line_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Text_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Token_entity_ts
+  file_lexico_entities_src_modules_database_data_source_constants_unit_test_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
+  file_lexico_entities_src_modules_database_data_source_constants_unit_test_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_database_database_module_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
+  file_lexico_entities_src_modules_database_database_module_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_database_database_module_ts --> file_lexico_entities_src_modules_database_database_service_ts
+  file_lexico_entities_src_modules_database_database_service_unit_test_ts --> file_lexico_entities_src_modules_database_database_service_ts
+  file_lexico_entities_src_modules_database_database_types_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts
   file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_WordForm_entity_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_Uninflected_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_lexico_entities_src_modules_database_database_constants_ts
+  file_lexico_entities_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_lexico_entities_src_modules_database_database_types_ts
   file_lexico_entities_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_lexico_entities_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
   file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
   file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_PartOfSpeech_entity_ts
@@ -10402,17 +10279,17 @@ graph LR
   file_lexico_entities_src_modules_entities_dictionary_WordLexeme_entity_ts --> file_lexico_entities_src_modules_entities_dictionary_Word_entity_ts
   file_lexico_entities_src_modules_entities_entities_constants_unit_test_ts --> file_lexico_entities_src_modules_entities_entities_constants_ts
   file_lexico_entities_src_modules_entities_entities_module_ts --> file_lexico_entities_src_modules_entities_entities_service_ts
+  file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
+  file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_Author_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_Line_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_Text_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_entities_literature_Token_entity_ts
-  file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_lexico_database_data_source_constants_ts
-  file_lexico_entities_src_modules_entities_entities_service_integration_test_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
+  file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_database_data_source_constants_ts
+  file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_entities_dictionary_PartOfSpeech_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_entities_dictionary_Pronunciation_entity_ts
   file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_entities_entities_service_ts
-  file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_lexico_database_data_source_constants_ts
-  file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
   file_lexico_entities_src_modules_entities_entities_service_unit_test_ts --> file_lexico_entities_testing_entity_definition_assertions_ts
   file_lexico_entities_src_modules_entities_literature_Author_entity_ts --> file_lexico_entities_src_modules_entities_literature_Text_entity_ts
   file_lexico_entities_src_modules_entities_literature_Line_entity_ts --> file_lexico_entities_src_modules_entities_entities_constants_ts
@@ -10426,41 +10303,6 @@ graph LR
   file_lexico_entities_src_modules_entities_literature_Token_entity_ts --> file_lexico_entities_src_modules_entities_literature_Author_entity_ts
   file_lexico_entities_src_modules_entities_literature_Token_entity_ts --> file_lexico_entities_src_modules_entities_literature_Line_entity_ts
   file_lexico_entities_src_modules_entities_literature_Token_entity_ts --> file_lexico_entities_src_modules_entities_literature_Text_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_AdverbForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_Form_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_GerundForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_NominalForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_ParticipleForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_SupineForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_NounInflection_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_Uninflected_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Lexeme_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_PrincipalPart_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Pronunciation_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Translation_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_Word_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_WordForm_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_WordLexeme_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Author_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Line_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Text_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_literature_Token_entity_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_ts --> file_lexico_entities_src_modules_lexico_database_migrations_1791164926316_migration_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_unit_test_ts --> file_lexico_entities_src_modules_lexico_database_data_source_constants_ts
-  file_lexico_entities_src_modules_lexico_database_data_source_constants_unit_test_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
-  file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts --> file_lexico_entities_src_modules_lexico_database_data_source_constants_ts
-  file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts
-  file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts
-  file_lexico_entities_src_modules_lexico_database_lexico_database_service_unit_test_ts --> file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts
   file_lexico_web_src_components_adjective_forms_tsx --> file_lexico_web_src_components_forms_table_tsx
   file_lexico_web_src_components_adjective_forms_unit_test_tsx --> file_lexico_web_src_components_adjective_forms_tsx
   file_lexico_web_src_components_forms_table_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
@@ -12005,24 +11847,24 @@ graph LR
   file_meanderaw_cli_src_modules_corpus_corpus_module_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_corpus_corpus_module_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_corpus_corpus_module_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
+  file_meanderaw_cli_src_modules_corpus_corpus_module_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
   file_meanderaw_cli_src_modules_corpus_corpus_module_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts
-  file_meanderaw_cli_src_modules_corpus_corpus_module_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_corpus_corpus_constants_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_corpus_corpus_types_ts
+  file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_corpus_corpus_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_corpus_corpus_constants_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_corpus_corpus_types_ts
+  file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_src_modules_tile_tile_types_ts
   file_meanderaw_cli_src_modules_corpus_corpus_service_unit_test_ts --> file_meanderaw_cli_testing_meanders_ts
   file_meanderaw_cli_src_modules_corpus_historical_corpus_1_constants_ts --> file_meanderaw_cli_src_modules_corpus_corpus_types_ts
@@ -12048,18 +11890,59 @@ graph LR
   file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_7_constants_ts
   file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_8_constants_ts
   file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_9_constants_ts
+  file_meanderaw_cli_src_modules_database_data_source_constants_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
+  file_meanderaw_cli_src_modules_database_database_patterns_service_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
+  file_meanderaw_cli_src_modules_database_database_module_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
+  file_meanderaw_cli_src_modules_database_database_module_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_database_database_module_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_constants_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
+  file_meanderaw_cli_src_modules_database_database_service_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
+  file_meanderaw_cli_src_modules_database_database_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
+  file_meanderaw_cli_src_modules_database_database_service_ts --> file_meanderaw_cli_src_modules_database_database_constants_ts
+  file_meanderaw_cli_src_modules_database_database_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_database_database_service_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_database_database_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_database_database_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_database_service_unit_test_ts --> file_meanderaw_cli_testing_meanders_ts
+  file_meanderaw_cli_src_modules_database_database_types_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
+  file_meanderaw_cli_src_modules_database_database_types_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_database_entities_meander_entity_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
+  file_meanderaw_cli_src_modules_database_entities_meander_entity_ts --> file_meanderaw_cli_src_modules_database_database_constants_ts
+  file_meanderaw_cli_src_modules_draw_draw_code_service_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_code_service_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_code_service_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
   file_meanderaw_cli_src_modules_draw_draw_code_service_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_code_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_code_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_code_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
@@ -12071,32 +11954,28 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_geometry_geometry_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_graph_graph_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_svg_svg_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_integration_test_ts --> file_meanderaw_cli_testing_draw_run_budget_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
   file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_drawing_drawing_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_geometry_geometry_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_svg_svg_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_integration_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
@@ -12104,51 +11983,51 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_draw_draw_index_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_draw_draw_index_types_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_drawing_drawing_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_geometry_geometry_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_index_types_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_drawing_drawing_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_geometry_geometry_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
   file_meanderaw_cli_src_modules_draw_draw_index_service_unit_test_ts --> file_meanderaw_cli_testing_meanders_ts
   file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_index_types_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
+  file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_service_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_drawing_drawing_module_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_integration_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_module_ts
+  file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_service_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_draw_draw_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_pool_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_service_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
   file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_pool_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_record_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_service_ts
   file_meanderaw_cli_src_modules_draw_draw_record_service_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_record_service_ts --> file_meanderaw_cli_src_modules_code_code_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_record_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_record_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_record_service_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_record_service_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_record_service_unit_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_service_ts
@@ -12160,8 +12039,8 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_run_collision_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_run_collision_command_integration_test_ts --> file_meanderaw_cli_testing_draw_run_ts
   file_meanderaw_cli_src_modules_draw_draw_run_collision_command_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
+  file_meanderaw_cli_src_modules_draw_draw_run_regeneration_command_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_run_regeneration_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_run_regeneration_command_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_run_regeneration_command_integration_test_ts --> file_meanderaw_cli_testing_draw_run_ts
   file_meanderaw_cli_src_modules_draw_draw_run_command_integration_test_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_run_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
@@ -12175,20 +12054,24 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_module_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_module_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_worker_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_worker_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_record_service_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_service_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_draw_draw_worker_service_unit_test_ts --> file_meanderaw_cli_testing_tiles_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
@@ -12198,32 +12081,29 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_geometry_geometry_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_graph_graph_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_svg_svg_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_integration_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_code_code_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_corpus_historical_corpus_constants_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_draw_draw_constants_ts
   file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_service_ts
+  file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
   file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_index_types_ts
   file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_command_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_draw_draw_command_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_corpus_corpus_module_ts
+  file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_draw_draw_code_service_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
@@ -12234,9 +12114,8 @@ graph LR
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_drawing_drawing_module_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_geometry_geometry_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
   file_meanderaw_cli_src_modules_draw_draw_module_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_module_ts
-  file_meanderaw_cli_src_modules_draw_draw_types_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
+  file_meanderaw_cli_src_modules_draw_draw_types_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_drawing_drawing_module_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_src_modules_drawing_drawing_module_ts --> file_meanderaw_cli_src_modules_drawing_drawing_service_ts
   file_meanderaw_cli_src_modules_drawing_drawing_module_ts --> file_meanderaw_cli_src_modules_geometry_geometry_module_ts
@@ -12261,10 +12140,10 @@ graph LR
   file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_module_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts --> file_meanderaw_cli_src_modules_tile_tile_module_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
+  file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_types_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_enumeration_tile_enumeration_service_ts
-  file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_code_code_service_ts
   file_meanderaw_cli_src_modules_enumeration_enumeration_service_unit_test_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts
@@ -12306,43 +12185,6 @@ graph LR
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_matrix_matrix_types_ts
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_service_ts
   file_meanderaw_cli_src_modules_matrix_matrix_service_unit_test_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_data_source_constants_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_constants_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_constants_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts --> file_meanderaw_cli_testing_meanders_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_constants_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts --> file_meanderaw_cli_testing_meanders_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
   file_meanderaw_cli_src_modules_svg_svg_module_ts --> file_meanderaw_cli_src_modules_svg_svg_service_ts
   file_meanderaw_cli_src_modules_svg_svg_service_ts --> file_meanderaw_cli_src_modules_svg_svg_constants_ts
   file_meanderaw_cli_src_modules_svg_svg_service_ts --> file_meanderaw_cli_src_modules_svg_svg_types_ts
@@ -12365,12 +12207,16 @@ graph LR
   file_meanderaw_cli_src_worker_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_module_ts
   file_meanderaw_cli_src_worker_ts --> file_meanderaw_cli_src_modules_draw_draw_worker_service_ts
   file_meanderaw_cli_src_worker_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
+  file_meanderaw_cli_src_worker_unit_test_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_src_worker_unit_test_ts --> file_meanderaw_cli_src_modules_draw_draw_types_ts
-  file_meanderaw_cli_src_worker_unit_test_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_module_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_code_code_module_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_corpus_corpus_service_ts
+  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_database_database_module_ts
+  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_database_entities_meander_entity_ts
+  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_database_migrations_1791160950069_migration_ts
+  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_draw_draw_enumeration_service_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_draw_draw_index_service_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_draw_draw_pool_service_ts
@@ -12381,10 +12227,6 @@ graph LR
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_module_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_service_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_geometry_geometry_module_ts
-  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts
-  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts
-  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts
-  file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_src_modules_symmetry_symmetry_module_ts
   file_meanderaw_cli_testing_draw_run_ts --> file_meanderaw_cli_testing_draw_run_budget_ts
   file_meanderaw_cli_testing_letters_ts --> file_meanderaw_cli_src_modules_characteristics_characteristic_context_service_ts
@@ -12398,7 +12240,7 @@ graph LR
   file_meanderaw_cli_testing_meanders_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_constants_ts
   file_meanderaw_cli_testing_meanders_ts --> file_meanderaw_cli_src_modules_characteristics_characteristics_types_ts
   file_meanderaw_cli_testing_meanders_ts --> file_meanderaw_cli_src_modules_code_code_types_ts
-  file_meanderaw_cli_testing_meanders_ts --> file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts
+  file_meanderaw_cli_testing_meanders_ts --> file_meanderaw_cli_src_modules_database_database_types_ts
   file_meanderaw_cli_testing_tiles_ts --> file_meanderaw_cli_src_modules_tile_tile_service_ts
   file_meanderaw_cli_testing_tiles_ts --> file_meanderaw_cli_src_modules_tile_tile_types_ts
   file_meanderaw_web_src_router_tsx --> file_meanderaw_web_src_routeTree_gen_ts
@@ -12408,6 +12250,186 @@ graph LR
   file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_routes___root_tsx
   file_meanderaw_web_src_routeTree_gen_ts --> file_meanderaw_web_src_routes_index_tsx
   file_meanderaw_web_testing_render_route_tsx --> file_meanderaw_web_src_router_tsx
+  file_persistence_src_modules_export_export_arguments_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_arguments_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts --> file_persistence_src_modules_export_export_constants_ts
+  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_log_convention_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_export_export_missing_table_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_missing_table_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_missing_table_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_missing_table_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_export_export_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_export_export_constants_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_export_export_types_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_export_export_command_ts
+  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_export_export_constants_ts --> file_persistence_src_modules_export_export_types_ts
+  file_persistence_src_modules_export_export_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_export_export_command_ts
+  file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_persistence_src_modules_export_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_clean_data_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_clean_command_integration_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_clean_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_clean_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_dry_run_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_dry_run_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_dry_run_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_preflight_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_schema_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_schema_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_import_import_constants_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_import_import_types_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_import_import_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_src_modules_import_import_command_ts
+  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_constants_ts --> file_persistence_src_modules_import_import_types_ts
+  file_persistence_src_modules_import_import_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_import_import_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_import_import_module_ts --> file_persistence_src_modules_import_import_command_ts
+  file_persistence_src_modules_import_import_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_persistence_src_modules_import_import_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_dump_utilities_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_constants_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_postgresql_entities_creatable_entity_ts --> file_persistence_src_modules_postgresql_entities_identifiable_entity_ts
+  file_persistence_src_modules_postgresql_entities_deletable_entity_ts --> file_persistence_src_modules_postgresql_entities_updatable_entity_ts
+  file_persistence_src_modules_postgresql_entities_updatable_entity_ts --> file_persistence_src_modules_postgresql_entities_creatable_entity_ts
+  file_persistence_src_modules_postgresql_postgresql_container_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_container_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_container_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_fixture_persistence_module_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_greeting_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_greeting_module_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_widgets_module_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_sample_widgets_service_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_persistence_testing_types_ts
+  file_persistence_src_modules_postgresql_postgresql_testing_utilities_integration_test_ts --> file_persistence_testing_persistence_testing_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_fixtures_gadget_entity_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_persistence_src_modules_postgresql_postgresql_module_integration_test_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_src_modules_postgresql_postgresql_module_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_module_ts --> file_persistence_src_modules_postgresql_postgresql_service_ts
+  file_persistence_src_modules_postgresql_postgresql_module_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_service_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_service_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_service_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_src_modules_postgresql_postgresql_service_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_service_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_service_ts
+  file_persistence_src_modules_postgresql_postgresql_types_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_constants_ts
+  file_persistence_src_modules_postgresql_postgresql_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_src_persistence_main_ts --> file_persistence_src_persistence_module_ts
+  file_persistence_src_persistence_module_ts --> file_persistence_src_modules_export_export_module_ts
+  file_persistence_src_persistence_module_ts --> file_persistence_src_modules_import_import_module_ts
+  file_persistence_src_persistence_module_unit_test_ts --> file_persistence_src_persistence_module_ts
+  file_persistence_src_persistence_module_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_persistence_repl_ts --> file_persistence_src_persistence_module_ts
+  file_persistence_testing_command_line_runner_ts --> file_persistence_src_persistence_module_ts
+  file_persistence_testing_fixture_persistence_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_testing_fixture_persistence_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_testing_fixture_persistence_ts --> file_persistence_testing_fixtures_migrations_1767225600000_create_widgets_ts
+  file_persistence_testing_fixture_persistence_ts --> file_persistence_testing_fixtures_migrations_1767225600001_create_parts_ts
+  file_persistence_testing_fixtures_fixture_persistence_module_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
+  file_persistence_testing_fixtures_fixture_persistence_module_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_testing_fixtures_gadget_entity_ts --> file_persistence_src_modules_postgresql_entities_identifiable_entity_ts
+  file_persistence_testing_fixtures_sample_greeting_module_ts --> file_persistence_testing_fixtures_sample_greeting_constants_ts
+  file_persistence_testing_fixtures_sample_widgets_module_ts --> file_persistence_testing_fixtures_fixture_persistence_module_ts
+  file_persistence_testing_fixtures_sample_widgets_module_ts --> file_persistence_testing_fixtures_sample_widgets_service_ts
+  file_persistence_testing_fixtures_sample_widgets_module_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_testing_fixtures_sample_widgets_service_ts --> file_persistence_testing_fixtures_widget_entity_ts
+  file_persistence_testing_fixtures_widget_entity_ts --> file_persistence_src_modules_postgresql_entities_deletable_entity_ts
+  file_persistence_testing_persistence_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
+  file_persistence_testing_persistence_testing_types_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
+  file_persistence_testing_persistence_testing_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
+  file_persistence_testing_persistence_testing_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_module_ts
+  file_persistence_testing_persistence_testing_utilities_ts --> file_persistence_testing_persistence_testing_types_ts
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
@@ -12892,6 +12914,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_command_ts
@@ -12904,6 +12927,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts
   file_synchronization_src_modules_synchronization_synchronization_command_unit_test_ts --> file_synchronization_testing_mocks_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
@@ -12916,6 +12940,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conformetry_generators_conformetry_generators_module_ts
@@ -12928,10 +12953,26 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_command_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_vscode_settings_vscode_settings_module_ts
   file_synchronization_src_modules_synchronization_synchronization_service_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
   file_synchronization_src_modules_synchronization_synchronization_service_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_constants_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_types_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_unit_test_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_types_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts --> file_synchronization_testing_mocks_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts --> file_synchronization_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
   file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
   file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
   file_synchronization_src_modules_vscode_extensions_vscode_extensions_command_ts --> file_synchronization_src_modules_vscode_extensions_vscode_extensions_constants_ts
@@ -13281,22 +13322,22 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-19-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-3716-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-382-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3686-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-383-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-207-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1117-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1226-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1118-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1227-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-95-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-817-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1949-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1951-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-8-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-16-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2687-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2699-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-16-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-366-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-58-8b5cf6?style=flat-square)
@@ -13309,13 +13350,13 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### TOML
 
-![TOML Files](https://img.shields.io/badge/TOML_Files-1-9c4221?style=flat-square)
-![TOML Lines](https://img.shields.io/badge/TOML_Lines-82-b45309?style=flat-square)
-![TOML Tables](https://img.shields.io/badge/TOML_Tables-11-7c3aed?style=flat-square)
+![TOML Files](https://img.shields.io/badge/TOML_Files-0-9c4221?style=flat-square)
+![TOML Lines](https://img.shields.io/badge/TOML_Lines-0-b45309?style=flat-square)
+![TOML Tables](https://img.shields.io/badge/TOML_Tables-0-7c3aed?style=flat-square)
 ![TOML Array Tables](https://img.shields.io/badge/TOML_Array_Tables-0-8b5cf6?style=flat-square)
-![TOML Keys](https://img.shields.io/badge/TOML_Keys-34-0284c7?style=flat-square)
-![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-8-16a34a?style=flat-square)
-![TOML Comments](https://img.shields.io/badge/TOML_Comments-19-64748b?style=flat-square)
+![TOML Keys](https://img.shields.io/badge/TOML_Keys-0-0284c7?style=flat-square)
+![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-0-16a34a?style=flat-square)
+![TOML Comments](https://img.shields.io/badge/TOML_Comments-0-64748b?style=flat-square)
 
 ### Shell
 
@@ -13416,23 +13457,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-121-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19417-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19457-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-120-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-692-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-528-a78bfa?style=flat-square)
+![H3](https://img.shields.io/badge/H3-529-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5550-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-881-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4220-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5566-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-884-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4233-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-239-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2056-0ea5e9?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-238-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2050-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-733-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-379-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11503-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-380-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11506-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-22-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13445,19 +13486,18 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6599 |
-| Files | 1963 |
-| Calls traced | 7265 |
-| Call stacks | 1810 |
+| Callables | 6634 |
+| Files | 1967 |
+| Calls traced | 7296 |
+| Call stacks | 1818 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
-| Unfollowable calls | 360 |
+| Unfollowable calls | 362 |
 
 ### Projects
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
-| `projects/database` | 7 | 7 | 0 | 7 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
 | `projects/ic-suite/callidescope/callidescope-nx` | 17 | 17 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-boundaries` | 12 | 12 | 0 | 7 |
@@ -13470,14 +13510,15 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |
 | `projects/logging` | 4 | 4 | 0 | 2 |
 | `projects/meanderaw/meanderaw-cli` | 16 | 16 | 0 | 12 |
+| `projects/persistence` | 7 | 7 | 0 | 7 |
 | `projects/publication` | 6 | 6 | 0 | 8 |
+| `projects/synchronization` | 10 | 10 | 0 | 9 |
 | `projects/validation` | 8 | 8 | 0 | 9 |
 | `projects/caelundas/caelundas-cli` | 15 | 16 | 1 | 12 |
 | `projects/ic-suite/codependix/codependix-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/codometer/codometer-core` | 0 | 1 | 1 | 0 |
 | `projects/ic-suite/conformetry/conformetry-core` | 0 | 1 | 1 | 0 |
 | `projects/integration` | 5 | 6 | 1 | 6 |
-| `projects/synchronization` | 9 | 10 | 1 | 9 |
 | `projects/components` | 0 | 3 | 3 | 0 |
 | `projects/ic-suite/callidescope/callidescope-configuration` | 5 | 8 | 3 | 7 |
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
@@ -13509,8 +13550,8 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 15 |
-| 1 | 3 |
+| 0 — at limit | 16 |
+| 1 | 2 |
 | 2–3 | 2 |
 | 4+ | 12 |
 | no stacks | 14 |

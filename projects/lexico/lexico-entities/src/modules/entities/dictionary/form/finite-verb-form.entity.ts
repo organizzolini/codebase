@@ -1,19 +1,22 @@
 import { ChildEntity, Column } from "typeorm";
 
 import {
-  type FormMood,
   formMoodValues,
-  type FormNumber,
   formNumberValues,
-  type FormPerson,
   formPersonValues,
-  type FormTense,
   formTenseValues,
-  type FormVoice,
   formVoiceValues,
-} from "../../../lexico-database/lexico-database.constants";
+} from "../../../database/database.constants";
 
 import { Form } from "./form.entity";
+
+import type {
+  FormMood,
+  FormNumber,
+  FormPerson,
+  FormTense,
+  FormVoice,
+} from "../../../database/database.types";
 
 /** A finite verb form (indicative, subjunctive, or imperative). */
 @ChildEntity("finite-verb")

@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from "typeorm";
 
-import { DeletableEntity } from "@codebase/database";
+import { DeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "./lexeme.entity";
 

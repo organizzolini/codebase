@@ -5,13 +5,13 @@
 
 ## Setup
 
-This application is a member of the uv workspace declared in the root
-`pyproject.toml`, sharing the root `uv.lock` and `.venv`. Sync from the
-repository root — running `uv sync` inside this directory prunes the other
-members out of the shared venv.
+This application is a member of the uv workspace declared in
+`projects/configuration/pyproject.toml`, sharing
+`projects/configuration/uv.lock` and the root `.venv`. Sync from the
+repository root and point uv at that workspace config.
 
 ```bash
-uv sync
+uv sync --project projects/configuration
 ```
 
 ## Run tests

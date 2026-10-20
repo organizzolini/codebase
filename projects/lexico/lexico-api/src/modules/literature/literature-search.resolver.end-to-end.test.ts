@@ -18,7 +18,7 @@ import {
   type LiteratureSearchPage,
 } from "../../../testing/literature-search-pagination";
 
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
 
 /** A GraphQL response body: data when execution succeeded, errors when not. */

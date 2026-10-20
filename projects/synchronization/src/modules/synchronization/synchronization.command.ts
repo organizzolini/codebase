@@ -11,6 +11,7 @@ import { PackageManifestsCommand } from "../package-manifests/package-manifests.
 import { PullRequestLabelsCommand } from "../pull-request-labels/pull-request-labels.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
+import { TypeormMigrationSqlCommand } from "../typeorm-migration-sql/typeorm-migration-sql.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
 import { SynchronizationService } from "./synchronization.service";
@@ -58,6 +59,7 @@ export class SynchronizationCommand extends CommandRunner {
     private readonly pullRequestTemplateCommand: PullRequestTemplateCommand,
     private readonly skillExclusionsCommand: SkillExclusionsCommand,
     private readonly synchronizationModeService: SynchronizationService,
+    private readonly typeormMigrationSqlCommand: TypeormMigrationSqlCommand,
     private readonly vscodeExtensionsCommand: VscodeExtensionsCommand,
   ) {
     super();
@@ -90,6 +92,7 @@ export class SynchronizationCommand extends CommandRunner {
       this.pullRequestLabelsCommand,
       this.pullRequestTemplateCommand,
       this.skillExclusionsCommand,
+      this.typeormMigrationSqlCommand,
       this.vscodeExtensionsCommand,
     ];
   }

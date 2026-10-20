@@ -88,9 +88,9 @@
     "projects/lexico/lexico-web/src/client.tsx",
     "projects/lexico/lexico-web/src/routeTree.gen.ts",
     "projects/lexico/lexico-web/src/router.tsx",
-    "projects/caelundas/caelundas-cli/src/modules/caelundas-database/migrations/**/*.ts",
-    "projects/lexico/lexico-entities/src/modules/lexico-database/migrations/**/*.ts",
-    "projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/migrations/**/*.ts",
+    "projects/caelundas/caelundas-cli/src/modules/database/migrations/**/*.ts",
+    "projects/lexico/lexico-entities/src/modules/database/migrations/**/*.ts",
+    "projects/meanderaw/meanderaw-cli/src/modules/database/migrations/**/*.ts",
     "projects/configuration/release.config.cjs",
     "validate-branch-name.config.cjs",
   ],
@@ -103,7 +103,7 @@
       "**/.conformetry/**",
       "**/coverage/**",
       "**/dist/**",
-      "**/src/lib/database.types.ts",
+      "**/src/lib/postgresql.types.ts",
       "**/routeTree.gen.ts",
     ],
     "maxCognitive": 12,
@@ -226,7 +226,7 @@
     },
     {
       "exports": ["*"],
-      "file": "**/src/lib/database.types.ts",
+      "file": "**/src/lib/postgresql.types.ts",
     },
     {
       "exports": ["*"],
@@ -234,7 +234,7 @@
     },
     {
       "exports": ["*"],
-      "file": "**/src/modules/database/database.module.ts",
+      "file": "**/src/modules/postgresql/postgresql.module.ts",
     },
     {
       "exports": ["*"],
@@ -285,7 +285,7 @@
     "**/projects/ic-suite/conformetry/conformetry-examples/examples/*/instances/**",
     "**/projects/ic-suite/conformetry/conformetry-examples/examples/*/templates/**",
     "**/pnpm-lock.yaml",
-    "**/src/lib/database.types.ts",
+    "**/src/lib/postgresql.types.ts",
     "**/routeTree.gen.ts",
     "**/tmp/**",
     "**/vite.config.*.timestamp*",

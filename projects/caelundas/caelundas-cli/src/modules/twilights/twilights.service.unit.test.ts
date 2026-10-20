@@ -13,7 +13,7 @@ import { TwilightsComposerService } from "./twilights-composer.service";
 import { TwilightsDetectorService } from "./twilights-detector.service";
 import { TwilightsService } from "./twilights.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { AzimuthElevationEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 

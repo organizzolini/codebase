@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 
-import { DeletableEntity } from "@codebase/database";
+import { DeletableEntity } from "@codebase/persistence";
 
 import type { Author } from "./author.entity";
 import type { Line } from "./line.entity";

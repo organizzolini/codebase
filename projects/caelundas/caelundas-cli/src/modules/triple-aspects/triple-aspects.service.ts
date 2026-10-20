@@ -7,8 +7,8 @@ import { TripleAspectsComposerService } from "./triple-aspects-composer.service"
 import { TripleAspectsDetectorService } from "./triple-aspects-detector.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Moment } from "moment-timezone";
 
 /**

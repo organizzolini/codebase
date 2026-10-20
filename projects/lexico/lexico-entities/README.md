@@ -16,13 +16,13 @@ lexico-cli, never depends on `@nestjs/graphql`.
 ## Usage
 
 ```ts
-import { LexicoDatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
+import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 ```
 
-`LexicoDatabaseModule` connects to `lexico_development`.`lexico` as
-`lexico_username` through [`@codebase/database`](../../database/README.md)'s
+`DatabaseModule` connects to `lexico_development`.`lexico` as
+`lexico_username` through [`@codebase/persistence`](../../persistence/README.md)'s
 `DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
-`lexicoDataSource`, in `src/modules/lexico-database/data-source.constants.ts`,
+`lexicoDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
 Neither synchronizes nor runs migrations on start, so only the data source and
@@ -74,7 +74,7 @@ morphology does not fit one flat row. A form is an `AdjectivalForm`,
 ### Base classes
 
 Every entity but `Inflection` extends
-[`@codebase/database`](../../database/README.md)'s `DeletableEntity` directly. It
+[`@codebase/persistence`](../../persistence/README.md)'s `DeletableEntity` directly. It
 declares the columns — a `uuid` id the database assigns with `uuidv7()`, then
 the created, updated, and soft-deleted timestamps and their nullable `*By`
 columns — so no entity restates them.
@@ -106,10 +106,10 @@ nx run lexico-entities:migration:extract-sql-all    # Emit .sql alongside each m
 
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
-`"migration": { "options": { "module": "src/modules/lexico-database" } }`,
+`"migration": { "options": { "module": "src/modules/database" } }`,
 which names the folder holding `data-source.constants.ts` and `migrations/`;
 its SQL extraction script lives in
-[`@codebase/database`](../../database/README.md).
+[`@codebase/persistence`](../../persistence/README.md).
 `generate` also extracts the SQL and formats the result, so a generated
 migration lands ready to review. Every migration ships a `-up.sql` and
 `-down.sql` next to its TypeScript, which is what makes a schema change
@@ -147,11 +147,11 @@ maintainer's call once the counts below match.
    Lexico's tables so TypeORM's own bookkeeping — its metadata and, on a
    volume where the old migration ever ran, its migrations table — stays
    behind; the new migration writes both for `lexico`. The path is relative
-   to `projects/database`, where the command runs. See
-   [Moving data between databases](../../database/README.md#moving-data-between-databases):
+   to `projects/persistence`, where the command runs. See
+   [Moving data between databases](../../persistence/README.md#moving-data-between-databases):
 
    ```bash
-   pnpm exec nx run database:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
+   pnpm exec nx run persistence:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
    ```
 
 4. **Build the empty schema** with the migration, as `lexico_username`:
@@ -209,7 +209,7 @@ nx run lexico-entities:vitest:integration   # Against a Testcontainers PostgreSQ
 ```
 
 Integration tests start a throwaway Postgres 18 through
-[`@codebase/database/testing`](../../database/README.md), laid out like local
+[`@codebase/persistence/testing`](../../persistence/README.md), laid out like local
 Docker: `lexico_username` owning `lexico_testing` with a `lexico` schema. The
 schema is built by running the real migrations, never by synchronizing, and
 the suite asserts the entities have nothing left to change, so entity mappings
@@ -268,13 +268,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  database["database"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
+  persistence["persistence"]
   lexico_api --> lexico_entities
   lexico_cli --> lexico_entities
-  lexico_entities --> database
+  lexico_entities --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_entities subject
 ```
@@ -287,10 +287,10 @@ graph LR
 flowchart LR
   DatabaseModule
   EntitiesModule
-  LexicoDatabaseModule
+  PostgresqlModule
   TypeOrmModule
-  DatabaseModule --> TypeOrmModule
-  LexicoDatabaseModule --> DatabaseModule
+  DatabaseModule --> PostgresqlModule
+  PostgresqlModule --> TypeOrmModule
 ```
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
@@ -304,6 +304,14 @@ graph LR
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
   file_src_index_ts["src/index.ts"]
+  file_src_modules_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
+  file_src_modules_database_data_source_constants_unit_test_ts["src/modules/database/data-source.constants.unit.test.ts"]
+  file_src_modules_database_database_constants_ts["src/modules/database/database.constants.ts"]
+  file_src_modules_database_database_module_ts["src/modules/database/database.module.ts"]
+  file_src_modules_database_database_service_ts["src/modules/database/database.service.ts"]
+  file_src_modules_database_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
+  file_src_modules_database_database_types_ts["src/modules/database/database.types.ts"]
+  file_src_modules_database_migrations_1791164926316_migration_ts["src/modules/database/migrations/1791164926316-migration.ts"]
   file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts["src/modules/entities/dictionary/form/adjectival-form.entity.ts"]
   file_src_modules_entities_dictionary_form_AdverbForm_entity_ts["src/modules/entities/dictionary/form/adverb-form.entity.ts"]
   file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts["src/modules/entities/dictionary/form/finite-verb-form.entity.ts"]
@@ -340,47 +348,88 @@ graph LR
   file_src_modules_entities_literature_Line_entity_ts["src/modules/entities/literature/line.entity.ts"]
   file_src_modules_entities_literature_Text_entity_ts["src/modules/entities/literature/text.entity.ts"]
   file_src_modules_entities_literature_Token_entity_ts["src/modules/entities/literature/token.entity.ts"]
-  file_src_modules_lexico_database_data_source_constants_ts["src/modules/lexico-database/data-source.constants.ts"]
-  file_src_modules_lexico_database_data_source_constants_unit_test_ts["src/modules/lexico-database/data-source.constants.unit.test.ts"]
-  file_src_modules_lexico_database_lexico_database_constants_ts["src/modules/lexico-database/lexico-database.constants.ts"]
-  file_src_modules_lexico_database_lexico_database_module_ts["src/modules/lexico-database/lexico-database.module.ts"]
-  file_src_modules_lexico_database_lexico_database_service_ts["src/modules/lexico-database/lexico-database.service.ts"]
-  file_src_modules_lexico_database_lexico_database_service_unit_test_ts["src/modules/lexico-database/lexico-database.service.unit.test.ts"]
-  file_src_modules_lexico_database_lexico_database_types_ts["src/modules/lexico-database/lexico-database.types.ts"]
-  file_src_modules_lexico_database_migrations_1791164926316_migration_ts["src/modules/lexico-database/migrations/1791164926316-migration.ts"]
   file_testing_entity_definition_assertions_ts["testing/entity-definition-assertions.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1791164926316_migration_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_AdverbForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_GerundForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_NominalForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_ParticipleForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_SupineForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_NounInflection_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_Uninflected_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Lexeme_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_PrincipalPart_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Pronunciation_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Translation_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Word_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_WordForm_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_WordLexeme_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_Author_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_Line_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_Text_entity_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_literature_Token_entity_ts
+  file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_data_source_constants_ts
+  file_src_modules_database_data_source_constants_unit_test_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_database_module_ts --> file_src_modules_database_data_source_constants_ts
+  file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
+  file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
+  file_src_modules_database_database_types_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_AdverbForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
   file_src_modules_entities_dictionary_form_Form_entity_ts --> file_src_modules_entities_dictionary_Lexeme_entity_ts
   file_src_modules_entities_dictionary_form_Form_entity_ts --> file_src_modules_entities_dictionary_WordForm_entity_ts
+  file_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_GerundForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_NominalForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_ParticipleForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_entities_dictionary_form_SupineForm_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
   file_src_modules_entities_dictionary_inflection_Inflection_entity_ts --> file_src_modules_entities_dictionary_Lexeme_entity_ts
+  file_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_src_modules_entities_dictionary_inflection_NounInflection_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
   file_src_modules_entities_dictionary_inflection_Uninflected_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
+  file_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_src_modules_database_database_types_ts
   file_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
   file_src_modules_entities_dictionary_Lexeme_entity_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
   file_src_modules_entities_dictionary_Lexeme_entity_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
   file_src_modules_entities_dictionary_Lexeme_entity_ts --> file_src_modules_entities_dictionary_PartOfSpeech_entity_ts
@@ -399,17 +448,17 @@ graph LR
   file_src_modules_entities_dictionary_WordLexeme_entity_ts --> file_src_modules_entities_dictionary_Word_entity_ts
   file_src_modules_entities_entities_constants_unit_test_ts --> file_src_modules_entities_entities_constants_ts
   file_src_modules_entities_entities_module_ts --> file_src_modules_entities_entities_service_ts
+  file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_database_data_source_constants_ts
+  file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_Author_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_Line_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_Text_entity_ts
   file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_entities_literature_Token_entity_ts
-  file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_lexico_database_data_source_constants_ts
-  file_src_modules_entities_entities_service_integration_test_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
+  file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_database_data_source_constants_ts
+  file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_entities_dictionary_PartOfSpeech_entity_ts
   file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_entities_dictionary_Pronunciation_entity_ts
   file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_entities_entities_service_ts
-  file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_lexico_database_data_source_constants_ts
-  file_src_modules_entities_entities_service_unit_test_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
   file_src_modules_entities_entities_service_unit_test_ts --> file_testing_entity_definition_assertions_ts
   file_src_modules_entities_literature_Author_entity_ts --> file_src_modules_entities_literature_Text_entity_ts
   file_src_modules_entities_literature_Line_entity_ts --> file_src_modules_entities_entities_constants_ts
@@ -423,41 +472,6 @@ graph LR
   file_src_modules_entities_literature_Token_entity_ts --> file_src_modules_entities_literature_Author_entity_ts
   file_src_modules_entities_literature_Token_entity_ts --> file_src_modules_entities_literature_Line_entity_ts
   file_src_modules_entities_literature_Token_entity_ts --> file_src_modules_entities_literature_Text_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_AdjectivalForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_AdverbForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_FiniteVerbForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_Form_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_GerundForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_InfinitiveForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_NominalForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_ParticipleForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_SupineForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_AdjectiveInflection_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_AdverbInflection_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_Inflection_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_NounInflection_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_PrepositionInflection_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_Uninflected_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_inflection_VerbInflection_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Lexeme_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_PrincipalPart_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Pronunciation_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Translation_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_Word_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_WordForm_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_dictionary_WordLexeme_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_literature_Author_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_literature_Line_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_literature_Text_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_entities_literature_Token_entity_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
-  file_src_modules_lexico_database_data_source_constants_ts --> file_src_modules_lexico_database_migrations_1791164926316_migration_ts
-  file_src_modules_lexico_database_data_source_constants_unit_test_ts --> file_src_modules_lexico_database_data_source_constants_ts
-  file_src_modules_lexico_database_data_source_constants_unit_test_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
-  file_src_modules_lexico_database_lexico_database_module_ts --> file_src_modules_lexico_database_data_source_constants_ts
-  file_src_modules_lexico_database_lexico_database_module_ts --> file_src_modules_lexico_database_lexico_database_constants_ts
-  file_src_modules_lexico_database_lexico_database_module_ts --> file_src_modules_lexico_database_lexico_database_service_ts
-  file_src_modules_lexico_database_lexico_database_service_unit_test_ts --> file_src_modules_lexico_database_lexico_database_service_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -467,14 +481,14 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4821-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-207.68_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4900-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-209.46_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-52-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-25.38_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-25.80_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
@@ -483,7 +497,7 @@ graph LR
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-151-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-82-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-101-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -496,11 +510,11 @@ graph LR
 ![Methods](https://img.shields.io/badge/Methods-18-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-187-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-26-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-150-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-194-0284c7?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-151-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-208-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-110-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-111-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-201-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-130-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-229-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-3-ca8a04?style=flat-square)
 
 ### Python
@@ -574,7 +588,7 @@ graph LR
 ### SQL
 
 ![SQL Files](https://img.shields.io/badge/SQL_Files-2-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-362-f29111?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-363-f29111?style=flat-square)
 ![SQL Statements](https://img.shields.io/badge/SQL_Statements-325-7c3aed?style=flat-square)
 ![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
 ![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-31-22c55e?style=flat-square)

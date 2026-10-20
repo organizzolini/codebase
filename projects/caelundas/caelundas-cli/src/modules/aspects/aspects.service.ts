@@ -11,8 +11,8 @@ import {
   SIMPLE_ASPECT_DETECTORS_TOKEN,
 } from "./aspects.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type {
   AspectBodies,

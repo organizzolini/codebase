@@ -11,12 +11,12 @@ import {
   symbolByMajorAspect,
 } from "../caelundas/symbol-caelundas.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   AspectPhase,
   Body,
   MajorAspect,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Moment } from "moment-timezone";
 
 /**
