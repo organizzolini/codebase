@@ -51,7 +51,7 @@
     "lint-code": {},
     "markdown-lint": {},
     "migration": {
-      "options": { "module": "src/modules/caelundas-database" }
+      "options": { "module": "src/modules/database" }
     },
     "oxfmt": {},
     "oxlint": {},

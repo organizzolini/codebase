@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/logging";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Moment } from "moment-timezone";
 
 /**

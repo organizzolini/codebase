@@ -9,7 +9,7 @@ import type {
   Edge,
   GraphQLFields,
 } from "./lexico-api.types";
-import type { DeletableEntity } from "@codebase/database";
+import type { DeletableEntity } from "@codebase/persistence";
 
 /**
  * Creates a Relay Connection containing edges, page info, and total count.

@@ -13,13 +13,13 @@ import {
 import { MathService } from "../math/math.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   Aspect,
   AspectPhase,
   Body,
   QuintupleAspect,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   BuildQuintupleEventParameters,
   ComposePentagramsArguments,

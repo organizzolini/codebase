@@ -87,7 +87,7 @@ src/modules/
 ### Environment Variables
 
 All validated via `environmentSchema` in `lexico-cli.constants.ts`, which spreads
-`postgresEnvironmentSchema({ project: "lexico" })` from `@codebase/database`.
+`postgresEnvironmentSchema({ project: "lexico" })` from `@codebase/persistence`.
 The root's unprefixed `POSTGRES_*` are the shared container's admin login and
 are never read:
 
@@ -159,10 +159,10 @@ See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.
 ## Moving Data Between Databases
 
 Lexico tables move between databases through the database package's command
-line, not this one: `nx run database:start:export|import`, with
+line, not this one: `nx run persistence:start:export|import`, with
 `--schema lexico --table words` (or `--table lexico.words`). Run
 `import --dry-run` before `import --clean`, which never asks. See the
-[database README](../../database/README.md#moving-data-between-databases).
+[database README](../../persistence/README.md#moving-data-between-databases).
 
 ## Writing Modules
 

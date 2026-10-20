@@ -23,7 +23,7 @@ nx run caelundas-cli:start
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Database**: Postgres via TypeORM and `@codebase/database` (the `calendar_events` table)
+- **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events` table)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -73,7 +73,7 @@ testing/                            # Shared test utilities
 src/modules/
   input/                               # Zod environmentSchema and config parsing
   calendar/                            # ICS and JSON file output formatting
-  caelundas-database/                  # Postgres connection, CalendarEvent entity, migrations
+  database/                  # Postgres connection, CalendarEvent entity, migrations
   calendar-events/                     # Upsert and range queries over the calendar_events table
   ephemeris/                           # Swiss Ephemeris access
   perfective/                          # Exact moment event detection (aspects, phases)
@@ -86,7 +86,7 @@ src/modules/
 
 - **Input Validation** ([input.constants.ts](src/modules/input/input.constants.ts)): Zod schema for environment variables
 - **Ephemeris Retrieval** ([ephemeris/](src/modules/ephemeris/)): Swiss Ephemeris, computed locally
-- **Event Storage** ([calendar-events/](src/modules/calendar-events/) and [caelundas-database/](src/modules/caelundas-database/)): Upserts detected events into Postgres and reads them back by range and location
+- **Event Storage** ([calendar-events/](src/modules/calendar-events/) and [database/](src/modules/database/)): Upserts detected events into Postgres and reads them back by range and location
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events
 - **Output** ([calendar/](src/modules/calendar/)): iCal and JSON files, rendered from the stored rows
@@ -186,11 +186,11 @@ Postgres, in the `caelundas_development` database and `caelundas` schema, with o
 
 `CalendarEvent` is caelundas' only event type: detectors build it, `CalendarEventsService` stores and reads it, and the writers render it, with no mapper between them. Its shape differences from the table are settled in the entity, not at the call sites:
 
-- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `caelundas-database.utilities.ts`, which reads them back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
+- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `database.utilities.ts`, which reads them back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
 - **Color and location**: optional as well as nullable (`color?: null | string`), so a detector leaves them out and a stored row reads back `null`; the writers treat the two alike.
 - **Coordinates**: `latitude`/`longitude` stay `numeric` strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
 
-A detected event, which has no id, audit columns, or coordinates yet, is `DetectedCalendarEvent` in `caelundas-database.types.ts`, an `Omit` of the entity rather than a second type. A stored row is assignable to it, so the writers take it too.
+A detected event, which has no id, audit columns, or coordinates yet, is `DetectedCalendarEvent` in `database.types.ts`, an `Omit` of the entity rather than a second type. A stored row is assignable to it, so the writers take it too.
 
 Connection variables are `CAELUNDAS_POSTGRES_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and `_SCHEMA`; the unprefixed `POSTGRES_*` are never read. Postgres returns `numeric` as strings, so compare coordinates as strings.
 
@@ -199,7 +199,7 @@ nx run caelundas-cli:migration:run        # Apply pending migrations
 nx run caelundas-cli:migration:generate   # Generate the next migration from the entities
 ```
 
-The `migration` target reads its data source and migrations from `src/modules/caelundas-database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` batches rows under Postgres's 65,535-parameter limit and uses `ON CONFLICT … DO UPDATE`.
+The `migration` target reads its data source and migrations from `src/modules/database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` batches rows under Postgres's 65,535-parameter limit and uses `ON CONFLICT … DO UPDATE`.
 
 Inspect: `docker exec -it postgres psql -U caelundas_username -d caelundas_development`
 

@@ -15,7 +15,7 @@ import { QuintupleAspectsComposerService } from "./quintuple-aspects-composer.se
 import { QuintupleAspectsService } from "./quintuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /** Builds one pentagram boundary event for the shared progressive-step tests. */
 function buildPentagramBoundary(

@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 
 import { LoggerService } from "@codebase/logging";
 
-import { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
+import { CalendarEvent } from "../database/entities/calendar-event.entity";
 
 import {
   CALENDAR_EVENT_BATCH_SIZE,
@@ -13,12 +13,12 @@ import {
 } from "./calendar-events.constants";
 import { formatCoordinate } from "./calendar-events.utilities";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   Coordinates,
   FindInRangeParameters,
 } from "./calendar-events.types";
-import type { UpdatableEntity } from "@codebase/database";
+import type { UpdatableEntity } from "@codebase/persistence";
 
 /**
  * Persists the events a run detects and reads them back for rendering.

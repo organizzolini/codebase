@@ -1,4 +1,4 @@
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 // 🏷️ Types
 import type { referenceFixtureSchema } from "./reference-fixtures.constants";
 import type { z } from "zod";
