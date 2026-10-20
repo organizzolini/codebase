@@ -24,9 +24,28 @@ function answer(field: string, found: [string, number][]): Response {
               inflection: { declension: "first", gender: "feminine" },
               lemma: id,
               partOfSpeech: "noun",
-              principalParts: [{ text: [id] }],
-              pronunciations: [{ phonetic: `[${id}]`, variant: "classical" }],
-              translations: [{ data: `${id} means` }],
+              principalParts: { edges: [{ node: { text: [id] } }] },
+              pronunciations: {
+                edges: [
+                  { node: { phonetic: `[${id}]`, variant: "classical" } },
+                ],
+              },
+              translations: { edges: [{ node: { data: `${id} means` } }] },
+              wordForms: {
+                edges: [
+                  {
+                    node: {
+                      form: {
+                        __typename: "NominalForm",
+                        case: "genitive",
+                        number: "plural",
+                      },
+                      id: `${id}-form`,
+                      word: `${id}rum`,
+                    },
+                  },
+                ],
+              },
             },
             score,
             source: "LEMMA_EXACT",
@@ -123,7 +142,7 @@ describe("search", () => {
     expect(screen.getByText("Etymology")).toBeDefined();
   });
 
-  it("loads a card's forms only when its table is opened", async () => {
+  it("opens a card's forms without making another API request", async () => {
     stubApi([["rosa", 2]], []);
     const fetchMock = vi.mocked(fetch);
 
@@ -132,28 +151,9 @@ describe("search", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
 
-    fetchMock.mockResolvedValueOnce(
-      Response.json({
-        data: {
-          lexeme: {
-            wordForms: [
-              {
-                form: {
-                  __typename: "NominalForm",
-                  case: "genitive",
-                  number: "plural",
-                },
-                id: "1",
-                word: "rosarum",
-              },
-            ],
-          },
-        },
-      }),
-    );
     fireEvent.click(declension);
 
     await expect(screen.findByText("rosarum")).resolves.toBeDefined();
-    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

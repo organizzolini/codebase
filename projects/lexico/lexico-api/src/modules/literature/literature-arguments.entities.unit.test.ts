@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { createConnection, createEdge } from "../../lexico-api.utilities";
+
 import { AuthorArguments } from "./author-argument.entities";
 import { AuthorLookupInput } from "./author-lookup-input.entities";
 import { AuthorType } from "./author.entities";
@@ -163,14 +165,32 @@ describe("literature arguments and entities suite", () => {
   it("instantiates LiteratureSearchResult and connection types", () => {
     expect.hasAssertions();
 
+    const author = new AuthorType();
+    const line = new LineType();
+    const text = new TextType();
     const searchResult = new LiteratureSearchResult();
-    searchResult.authors = [new AuthorType()];
-    searchResult.texts = [new TextType()];
-    searchResult.lines = [new LineType()];
+    searchResult.authors = createConnection({
+      edges: [createEdge(author, "author-1")],
+      hasNextPage: false,
+      hasPreviousPage: false,
+      totalCount: 1,
+    });
+    searchResult.texts = createConnection({
+      edges: [createEdge(text, "text-1")],
+      hasNextPage: false,
+      hasPreviousPage: false,
+      totalCount: 1,
+    });
+    searchResult.lines = createConnection({
+      edges: [createEdge(line, "line-1")],
+      hasNextPage: false,
+      hasPreviousPage: false,
+      totalCount: 1,
+    });
 
-    expect(searchResult.authors).toHaveLength(1);
-    expect(searchResult.texts).toHaveLength(1);
-    expect(searchResult.lines).toHaveLength(1);
+    expect(searchResult.authors.edges).toHaveLength(1);
+    expect(searchResult.texts.edges).toHaveLength(1);
+    expect(searchResult.lines.edges).toHaveLength(1);
 
     expect(AuthorConnectionType).toBeDefined();
     expect(LineConnectionType).toBeDefined();
