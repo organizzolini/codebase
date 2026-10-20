@@ -17,7 +17,7 @@ import { InputModule } from "../src/modules/input/input.module";
 import { PerfectiveService } from "../src/modules/perfective/perfective.service";
 import { ProgressiveService } from "../src/modules/progressive/progressive.service";
 
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 import type { Input } from "../src/modules/input/input.types";
 import type {
   CalendarCommandOutput,

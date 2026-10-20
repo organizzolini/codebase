@@ -34,4 +34,12 @@ describe(ImportPrTaskCacheService, () => {
     expect.hasAssertions();
     expect(service).toBeDefined();
   });
+
+  it("handles missing GITHUB_REPOSITORY gracefully in require", () => {
+    expect.hasAssertions();
+
+    const outcome = service.import();
+
+    expect(outcome.lines[0]).toContain("Could not import");
+  });
 });

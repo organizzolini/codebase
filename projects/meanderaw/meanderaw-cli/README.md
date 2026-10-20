@@ -7,7 +7,7 @@ nx run meanderaw-cli:start
 ```
 
 Meanderaw follows the workspace's shared Postgres convention, from
-[`@codebase/persistence`](../../persistence/README.md): the `meanderaw_development`
+[`@codebase/persistence`](../../common/persistence/README.md): the `meanderaw_development`
 database holds a `meanderaw` schema, both owned by the `meanderaw_username` role. The local
 Postgres container creates all three the first time its volume starts empty; on a volume that
 predates that, [ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)
@@ -2650,7 +2650,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ```text
 🚀 DrawIndexService.rows(…): AsyncGenerator<Meander[], any, any> [projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:355]
-  └─> MeanderawDatabaseService.patternRows(key: PatternCharacteristicKey, batchSize?: number): AsyncGenerator<Meander[]> [projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:110]
+  └─> DatabaseService.patternRows(key: PatternCharacteristicKey, batchSize?: number): AsyncGenerator<Meander[]> [projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:110]
      ↳ The rows one pattern characteristic holds for, in batches of `batchSize`, ordered by rows, then columns, then Code —…
 ```
 
@@ -2660,7 +2660,7 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `CorpusService.ingestOne` | 12 | `CodeService.parse`, `CorpusService.canonicalPhase(…)`, `CodeService.canonicalPhase`, `CharacteristicsService.compute`, `CharacteristicsService.isReducible`, `CodeService.format`, `MeanderawDatabaseService.findOneByCode`, `MeanderawDatabaseService.save`, `CharacteristicsService.stored`, `CorpusService.symmetricalCodes(…)`, `CodeService.symmetricalCodes`, `DuplicateCorpusCodeError.constructor` | `projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts:76` |
+| `CorpusService.ingestOne` | 12 | `CodeService.parse`, `CorpusService.canonicalPhase(…)`, `CodeService.canonicalPhase`, `CharacteristicsService.compute`, `CharacteristicsService.isReducible`, `CodeService.format`, `DatabaseService.findOneByCode`, `DatabaseService.save`, `CharacteristicsService.stored`, `CorpusService.symmetricalCodes(…)`, `CodeService.symmetricalCodes`, `DuplicateCorpusCodeError.constructor` | `projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts:76` |
 | `IsForkCharacteristicService.compute` | 7 | `BettiNumber0CountCharacteristicService.compute`, `BettiNumber1CountCharacteristicService.compute`, `ForkCountCharacteristicService.compute`, `CrossCountCharacteristicService.compute`, `FreeEndCountCharacteristicService.compute`, `DotCountCharacteristicService.compute`, `IsCombCharacteristicService.compute` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/compound/pattern/is-fork-characteristic.service.ts:64` |
 | `IsPureTreeCharacteristicService.compute` | 7 | `BettiNumber0CountCharacteristicService.compute`, `BettiNumber1CountCharacteristicService.compute`, `ForkCountCharacteristicService.compute`, `CrossCountCharacteristicService.compute`, `DotCountCharacteristicService.compute`, `IsCombCharacteristicService.compute`, `IsArcadeCharacteristicService.compute` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/compound/pattern/is-pure-tree-characteristic.service.ts:64` |
 
@@ -2685,9 +2685,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LetterUtilitiesService.orientation` | 5 | `LetterUtilitiesService.parse`, `LetterUtilitiesService.flips`, `LetterUtilitiesService.reduce(…)`, `LetterUtilitiesService.turnClockwise`, `SubmatrixUtilitiesService.glyphWindow` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/submatrix/letter/letter-utilities.service.ts:208` |
 | `RectangleUtilitiesService.ringCloses` | 5 | `RectangleUtilitiesService.from(…)`, `RectangleUtilitiesService.from(…)`, `SubmatrixUtilitiesService.pointDigitAt`, `RectangleUtilitiesService.every(…)`, `RectangleUtilitiesService.every(…)` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/submatrix/rectangle/rectangle-utilities.service.ts:73` |
 | `DrawingService.render` | 5 | `GeometryService.compute`, `DrawingService.codeSegments`, `GeometryService.borderPath`, `SvgService.render`, `DrawingService.format` | `projects/meanderaw/meanderaw-cli/src/modules/drawing/drawing.service.ts:125` |
-| `DrawEnumerationService.persist` | 5 | `MeanderawDatabaseService.codes`, `DrawPoolService.batches`, `MeanderawDatabaseService.saveAll`, `DrawEnumerationService.filter(…)`, `DrawPoolService.close` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-enumeration.service.ts:67` |
+| `DrawEnumerationService.persist` | 5 | `DatabaseService.codes`, `DrawPoolService.batches`, `DatabaseService.saveAll`, `DrawEnumerationService.filter(…)`, `DrawPoolService.close` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-enumeration.service.ts:67` |
 | `DrawIndexService.shapeSections` | 5 | `DrawIndexService.reduce(…)`, `DrawIndexService.map(…)`, `DrawIndexService.sectionHead`, `DrawIndexService.renderFigure`, `DrawIndexService.shapeHead` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:301` |
-| `DrawCommand.drawAll` | 5 | `MeanderawDatabaseService.clear`, `CorpusService.ingest`, `DrawCommand.map(…)`, `DrawEnumerationService.drawAll`, `DrawCommand.writePages` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw.command.ts:109` |
+| `DrawCommand.drawAll` | 5 | `DatabaseService.clear`, `CorpusService.ingest`, `DrawCommand.map(…)`, `DrawEnumerationService.drawAll`, `DrawCommand.writePages` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw.command.ts:109` |
 | `SymmetryService.transform` | 4 | `TileService.edges`, `TileService.blankEdges`, `SymmetryService.place`, `TileService.build` | `projects/meanderaw/meanderaw-cli/src/modules/symmetry/symmetry.service.ts:177` |
 | `CodeService.symmetricalCodes` | 4 | `CodeService.format`, `CodeService.map(…)`, `SymmetryService.reflections`, `CodeService.tile` | `projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts:339` |
 | `ConnectivityService.connectivity` | 4 | `ConnectivityService.edges`, `ConnectivityService.adjacency`, `GraphService.components`, `ConnectivityService.freeEnds` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/connectivity/connectivity.service.ts:133` |
@@ -2708,7 +2708,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `StrandUtilitiesService.isWrappingReversal` | 4 | `TileCrossingCountCharacteristicService.compute`, `ReversesAtItsTightestTurnCharacteristicService.compute`, `EndsOnBorderRulesCharacteristicService.compute`, `StrandUtilitiesService.isFullInkWithoutDots` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/compound/pattern/strand-utilities.service.ts:67` |
 | `IsParallelCharacteristicService.compute` | 4 | `CompoundUtilitiesService.isJunctionFree`, `DotCountCharacteristicService.compute`, `EdgeCountCharacteristicService.compute`, `MaxMonotonicTurnLengthCharacteristicService.compute` | `projects/meanderaw/meanderaw-cli/src/modules/characteristics/compound/pattern/is-parallel-characteristic.service.ts:55` |
 | `TileEnumerationService.tile` | 4 | `TileService.blankEdges`, `TileEnumerationService.edges`, `TileEnumerationService.set`, `TileService.build` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/tile-enumeration.service.ts:282` |
-| `MeanderawDatabaseService.saveAll` | 4 | `MeanderawDatabaseService.filter(…)`, `MeanderawDatabaseService.map(…)`, `MeanderawDatabaseService.map(…)`, `MeanderawDatabaseService.transaction(…)` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:229` |
+| `DatabaseService.saveAll` | 4 | `DatabaseService.filter(…)`, `DatabaseService.map(…)`, `DatabaseService.map(…)`, `DatabaseService.transaction(…)` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:229` |
 | `DrawWorkerService.map(…)` | 4 | `DrawRecordService.record`, `CodeService.spell`, `SymmetryService.canonicalTile`, `TileEnumerationService.tile` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-worker.service.ts:52` |
 | `DrawPoolService.batches` | 4 | `DrawPoolService.batchesOf`, `TileEnumerationService.orbitMinima`, `DrawWorkerService.records`, `DrawPoolService.waves` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-pool.service.ts:189` |
 | `CodeService.parse` | 3 | `CodeService.parseFormatted`, `CodeService.parseBare`, `InvalidCodeFormatError.constructor` | `projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts:215` |
@@ -2790,11 +2790,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TileEnumerationService.set` | 2 | `TileEnumerationService.address`, `TileService.mark` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/tile-enumeration.service.ts:141` |
 | `EnumerationService.enumerate` | 2 | `EnumerationService.map(…)`, `TileEnumerationService.enumerate` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/enumeration.service.ts:98` |
 | `EnumerationService.shapes` | 2 | `EnumerationService.isAdmitted`, `TileEnumerationService.maximumColumns` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/enumeration.service.ts:130` |
-| `MeanderawDatabaseService.transaction(…)` | 2 | `MeanderawDatabaseService.flatMap(…)`, `MeanderawDatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:242` |
+| `DatabaseService.transaction(…)` | 2 | `DatabaseService.flatMap(…)`, `DatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:242` |
 | `CorpusService.ingest` | 2 | `CorpusService.filter(…)`, `CorpusService.ingestOne` | `projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts:126` |
 | `DrawingService.codeSegments` | 2 | `CodeService.directionsAt`, `DrawingService.pointSegments` | `projects/meanderaw/meanderaw-cli/src/modules/drawing/drawing.service.ts:54` |
 | `DrawingService.pointSegments` | 2 | `DrawingService.format`, `DrawingService.isBare` | `projects/meanderaw/meanderaw-cli/src/modules/drawing/drawing.service.ts:95` |
-| `DrawCodeService.draw` | 2 | `MeanderawDatabaseService.save`, `DrawRecordService.record` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-code.service.ts:43` |
+| `DrawCodeService.draw` | 2 | `DatabaseService.save`, `DrawRecordService.record` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-code.service.ts:43` |
 | `DrawPoolService.wave` | 2 | `DrawPoolService.flatMap(…)`, `DrawPoolService.spawn` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-pool.service.ts:135` |
 | `DrawEnumerationService.drawAll` | 2 | `DrawEnumerationService.persist`, `EnumerationService.shapes` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-enumeration.service.ts:45` |
 | `DrawIndexService.caption` | 2 | `DrawIndexService.filter(…)`, `DrawIndexService.escape` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:76` |
@@ -2802,7 +2802,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `DrawIndexService.indexPage` | 2 | `DrawIndexService.map(…)`, `DrawIndexService.documentHead` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:163` |
 | `DrawIndexService.patternPage` | 2 | `DrawIndexService.documentHead`, `DrawIndexService.shapeSections` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:213` |
 | `DrawIndexService.renderFigure` | 2 | `DrawIndexService.renderBand`, `DrawIndexService.caption` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:264` |
-| `DrawIndexService.build` | 2 | `MeanderawDatabaseService.patternShapeCounts`, `DrawIndexService.pages` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:348` |
+| `DrawIndexService.build` | 2 | `DatabaseService.patternShapeCounts`, `DrawIndexService.pages` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:348` |
 | `DrawIndexService.render` | 2 | `DrawIndexService.pages`, `DrawIndexService.collect` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:363` |
 | `DrawCommand.runCodeDrawing` | 2 | `IncompleteCodeDrawingError.constructor`, `DrawCodeService.draw` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw.command.ts:142` |
 | `DrawCommand.run` | 2 | `DrawCommand.drawAll`, `DrawCommand.runCodeDrawing` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw.command.ts:218` |
@@ -3001,11 +3001,11 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TileEnumerationService.every(…)` | 1 | `TileEnumerationService.image` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/tile-enumeration.service.ts:269` |
 | `EnumerationService.map(…)` | 1 | `CodeService.spell` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/enumeration.service.ts:101` |
 | `EnumerationService.isAdmitted` | 1 | `TileEnumerationService.isAdmitted` | `projects/meanderaw/meanderaw-cli/src/modules/enumeration/enumeration.service.ts:109` |
-| `MeanderawDatabaseService.codes` | 1 | `MeanderawDatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:83` |
-| `MeanderawDatabaseService.patternShapeCounts` | 1 | `MeanderawDatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:154` |
-| `MeanderawDatabaseService.flatMap(…)` | 1 | `MeanderawDatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:249` |
-| `MeanderawDatabaseService.map(…)` | 1 | `MeanderawDatabaseService.persistentValue` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:250` |
-| `MeanderawDatabaseService.map(…)` | 1 | `MeanderawDatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts:253` |
+| `DatabaseService.codes` | 1 | `DatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:83` |
+| `DatabaseService.patternShapeCounts` | 1 | `DatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:154` |
+| `DatabaseService.flatMap(…)` | 1 | `DatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:249` |
+| `DatabaseService.map(…)` | 1 | `DatabaseService.persistentValue` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:250` |
+| `DatabaseService.map(…)` | 1 | `DatabaseService.map(…)` | `projects/meanderaw/meanderaw-cli/src/modules/database/database.service.ts:253` |
 | `CorpusService.canonicalPhase(…)` | 1 | `CharacteristicsService.tileCrossingComponentDeltaCount` | `projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts:79` |
 | `CorpusService.symmetricalCodes(…)` | 1 | `CharacteristicsService.tileCrossingComponentDeltaCount` | `projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts:106` |
 | `CorpusService.filter(…)` | 1 | `CorpusService.isPreserved` | `projects/meanderaw/meanderaw-cli/src/modules/corpus/corpus.service.ts:127` |
@@ -3026,7 +3026,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `DrawIndexService.renderRepeats` | 1 | `DrawIndexService.from(…)` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:269` |
 | `DrawIndexService.from(…)` | 1 | `DrawIndexService.format` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:272` |
 | `DrawIndexService.shapeHead` | 1 | `DrawIndexService.sectionHead` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:286` |
-| `DrawIndexService.rows` | 1 | `MeanderawDatabaseService.patternRows` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:355` |
+| `DrawIndexService.rows` | 1 | `DatabaseService.patternRows` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:355` |
 | `DrawIndexService.rows` | 1 | `DrawIndexService.heldRows` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw-index.service.ts:383` |
 | `DrawCommand.writePages` | 1 | `DrawIndexService.build` | `projects/meanderaw/meanderaw-cli/src/modules/draw/draw.command.ts:168` |
 | `bootstrap` | 1 | `on(…)` | `projects/meanderaw/meanderaw-cli/src/worker.ts:24` |
@@ -3081,7 +3081,7 @@ flowchart LR
   LoggerModule([LoggerModule])
   MainModule
   MatrixModule
-  MeanderawDatabaseModule
+  DatabaseModule
   PathUtilitiesModule
   PatternCharacteristicsModule
   PointCharacteristicsModule
@@ -3121,7 +3121,7 @@ flowchart LR
   CorpusModule --> CharacteristicsModule
   CorpusModule --> CodeModule
   CorpusModule --> EnumerationModule
-  CorpusModule --> MeanderawDatabaseModule
+  CorpusModule --> DatabaseModule
   CrossCharacteristicsModule --> SubmatrixUtilitiesModule
   DatabaseModule --> TypeOrmModule
   DrawingModule --> CodeModule
@@ -3133,7 +3133,7 @@ flowchart LR
   DrawModule --> DrawingModule
   DrawModule --> EnumerationModule
   DrawModule --> GeometryModule
-  DrawModule --> MeanderawDatabaseModule
+  DrawModule --> DatabaseModule
   DrawModule --> SymmetryModule
   EmbeddedCharacteristicsModule --> SubmatrixUtilitiesModule
   EndCharacteristicsModule --> ConnectivityModule
@@ -3147,8 +3147,8 @@ flowchart LR
   MainModule --> DrawModule
   MainModule --> MatrixModule
   MatrixModule --> CodeModule
-  MeanderawDatabaseModule --> DatabaseModule
-  MeanderawDatabaseModule --> TypeOrmModule
+  DatabaseModule --> DatabaseModule
+  DatabaseModule --> TypeOrmModule
   PatternCharacteristicsModule --> CompoundUtilitiesModule
   PatternCharacteristicsModule --> CornerCharacteristicsModule
   PatternCharacteristicsModule --> CrossCharacteristicsModule
@@ -3581,18 +3581,18 @@ graph LR
   file_src_modules_matrix_matrix_service_ts["src/modules/matrix/matrix.service.ts"]
   file_src_modules_matrix_matrix_service_unit_test_ts["src/modules/matrix/matrix.service.unit.test.ts"]
   file_src_modules_matrix_matrix_types_ts["src/modules/matrix/matrix.types.ts"]
-  file_src_modules_meanderaw_database_data_source_constants_ts["src/modules/meanderaw-database/data-source.constants.ts"]
-  file_src_modules_meanderaw_database_entities_meander_entity_ts["src/modules/meanderaw-database/entities/meander.entity.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts["src/modules/meanderaw-database/meanderaw-database-patterns.service.integration.test.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_constants_ts["src/modules/meanderaw-database/meanderaw-database.constants.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts["src/modules/meanderaw-database/meanderaw-database.module.integration.test.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_module_ts["src/modules/meanderaw-database/meanderaw-database.module.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts["src/modules/meanderaw-database/meanderaw-database.service.integration.test.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_service_ts["src/modules/meanderaw-database/meanderaw-database.service.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts["src/modules/meanderaw-database/meanderaw-database.service.unit.test.ts"]
-  file_src_modules_meanderaw_database_meanderaw_database_types_ts["src/modules/meanderaw-database/meanderaw-database.types.ts"]
-  file_src_modules_meanderaw_database_migrations_1791160950069_migration_ts["src/modules/meanderaw-database/migrations/1791160950069-migration.ts"]
-  file_src_modules_meanderaw_database_migrations_1791414023001_migration_ts["src/modules/meanderaw-database/migrations/1791414023001-migration.ts"]
+  file_src_modules_meanderaw_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
+  file_src_modules_meanderaw_database_entities_meander_entity_ts["src/modules/database/entities/meander.entity.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts["src/modules/database/database-patterns.service.integration.test.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_constants_ts["src/modules/database/database.constants.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts["src/modules/database/database.module.integration.test.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_module_ts["src/modules/database/database.module.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts["src/modules/database/database.service.integration.test.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_service_ts["src/modules/database/database.service.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
+  file_src_modules_meanderaw_database_meanderaw_database_types_ts["src/modules/database/database.types.ts"]
+  file_src_modules_meanderaw_database_migrations_1791160950069_migration_ts["src/modules/database/migrations/1791160950069-migration.ts"]
+  file_src_modules_meanderaw_database_migrations_1791414023001_migration_ts["src/modules/database/migrations/1791414023001-migration.ts"]
   file_src_modules_svg_svg_constants_ts["src/modules/svg/svg.constants.ts"]
   file_src_modules_svg_svg_module_ts["src/modules/svg/svg.module.ts"]
   file_src_modules_svg_svg_service_ts["src/modules/svg/svg.service.ts"]

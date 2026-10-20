@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -8,13 +8,13 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { GenerationService } from "./generation.service";
 
+import type { FormatterAdapter } from "./generation.types";
 import type {
   DirectoryEntry,
   FileSystemAdapter,
-  FormatterAdapter,
   GeneratorDefinition,
   GeneratorHookContext,
-} from "./generation.types";
+} from "@conformetry/core";
 
 class MockFileSystemAdapter implements FileSystemAdapter {
   private readonly directoryEntries = new Map<string, DirectoryEntry[]>();
@@ -132,6 +132,7 @@ describe(GenerationService, () => {
     };
 
     const result = await service.runGenerator({
+      configurationDirectoryPath: "/workspace/configuration",
       definition,
       filesystem,
       formatter,
@@ -170,6 +171,7 @@ describe(GenerationService, () => {
     filesystem.seedDirectory("/templates", []);
 
     await service.runGenerator({
+      configurationDirectoryPath: "/workspace/configuration",
       definition: {
         hooks: {
           preGenerate: (context) => {
@@ -194,6 +196,7 @@ describe(GenerationService, () => {
     filesystem.seedDirectory("/templates", []);
 
     await service.runGenerator({
+      configurationDirectoryPath: "/workspace/configuration",
       definition: {
         hooks: {
           preGenerate: (context) => {
@@ -220,6 +223,7 @@ describe(GenerationService, () => {
     );
 
     const result = await service.runGenerator({
+      configurationDirectoryPath: "/workspace/configuration",
       definition: { name: "fallback-name", templateDirectoryPath },
       instancePath: "/output",
     });
@@ -255,6 +259,7 @@ describe(GenerationService, () => {
     );
 
     const result = await service.runGenerator({
+      configurationDirectoryPath: "/workspace/configuration",
       definition: { name: "fallback-name", templateDirectoryPath },
       inputs: { name: "nested-template" },
       instancePath,
@@ -276,5 +281,174 @@ describe(GenerationService, () => {
     await expect(readFile(renderedNestedPath, "utf8")).resolves.toBe(
       "nested-template",
     );
+  });
+
+  describe("the hook context", () => {
+    const CONFIGURATION_DIRECTORY_PATH = "/workspace/configuration";
+
+    it("hands both hooks the adapter in use and the configuration directory", async () => {
+      const filesystem = new MockFileSystemAdapter();
+      const received: Record<string, GeneratorHookContext> = {};
+
+      filesystem.seedDirectory("/templates", []);
+
+      await service.runGenerator({
+        configurationDirectoryPath: CONFIGURATION_DIRECTORY_PATH,
+        definition: {
+          hooks: {
+            postGenerate: (context) => {
+              received["postGenerate"] = context;
+            },
+            preGenerate: (context) => {
+              received["preGenerate"] = context;
+            },
+          },
+          name: "alpha-module",
+          templateDirectoryPath: "/templates",
+        },
+        filesystem,
+        inputs: { name: "alpha-module" },
+        instancePath: "/output",
+      });
+
+      for (const hookName of ["preGenerate", "postGenerate"]) {
+        expect(received[hookName]?.filesystem).toBe(filesystem);
+        expect(received[hookName]?.configurationDirectoryPath).toBe(
+          CONFIGURATION_DIRECTORY_PATH,
+        );
+      }
+    });
+
+    it("hands the hooks the disk adapter when the host supplied none", async () => {
+      const templateDirectoryPath = await mkdtemp(
+        path.join(tmpdir(), "conformetry-generation-hook-default-"),
+      );
+      let hookContext: GeneratorHookContext | undefined;
+
+      await service.runGenerator({
+        configurationDirectoryPath: CONFIGURATION_DIRECTORY_PATH,
+        definition: {
+          hooks: {
+            preGenerate: (context) => {
+              hookContext = context;
+            },
+          },
+          name: "alpha-module",
+          templateDirectoryPath,
+        },
+        instancePath: "/output",
+      });
+
+      try {
+        await expect(
+          hookContext?.filesystem.listDirectory(templateDirectoryPath),
+        ).resolves.toStrictEqual([]);
+      } finally {
+        await rm(templateDirectoryPath, { force: true, recursive: true });
+      }
+    });
+
+    it("writes nothing and formats nothing when preGenerate throws", async () => {
+      const filesystem = new MockFileSystemAdapter();
+      const formatter = new MockFormatterAdapter();
+      const writeFileSpy = vi.spyOn(filesystem, "writeFile");
+
+      filesystem.seedDirectory("/templates", [
+        { isDirectory: false, name: "README.md" },
+      ]);
+      filesystem.seedFile("/templates/README.md", "# {{namePascalCase}}\n");
+
+      await expect(
+        service.runGenerator({
+          configurationDirectoryPath: CONFIGURATION_DIRECTORY_PATH,
+          definition: {
+            hooks: {
+              preGenerate: () => {
+                throw new Error("refused before rendering");
+              },
+            },
+            name: "alpha-module",
+            templateDirectoryPath: "/templates",
+          },
+          filesystem,
+          formatter,
+          inputs: { name: "alpha-module" },
+          instancePath: "/output",
+        }),
+      ).rejects.toThrow("refused before rendering");
+
+      expect(writeFileSpy).not.toHaveBeenCalled();
+      expect(formatter.formattedFiles).toStrictEqual([]);
+    });
+
+    it("aborts before formatting when postGenerate throws", async () => {
+      const filesystem = new MockFileSystemAdapter();
+      const formatter = new MockFormatterAdapter();
+
+      filesystem.seedDirectory("/templates", []);
+
+      await expect(
+        service.runGenerator({
+          configurationDirectoryPath: CONFIGURATION_DIRECTORY_PATH,
+          definition: {
+            hooks: {
+              postGenerate: () => {
+                throw new Error("refused after rendering");
+              },
+            },
+            name: "alpha-module",
+            templateDirectoryPath: "/templates",
+          },
+          filesystem,
+          formatter,
+          inputs: { name: "alpha-module" },
+          instancePath: "/output",
+        }),
+      ).rejects.toThrow("refused after rendering");
+
+      expect(formatter.formattedFiles).toStrictEqual([]);
+    });
+
+    it("formats a file a hook added to the generated list", async () => {
+      const filesystem = new MockFileSystemAdapter();
+      const formatter = new MockFormatterAdapter();
+
+      filesystem.seedDirectory("/templates", [
+        { isDirectory: false, name: "README.md" },
+      ]);
+      filesystem.seedFile("/templates/README.md", "# {{namePascalCase}}\n");
+
+      const result = await service.runGenerator({
+        configurationDirectoryPath: CONFIGURATION_DIRECTORY_PATH,
+        definition: {
+          hooks: {
+            postGenerate: async (context) => {
+              const hookWrittenPath = path.join(
+                context.configurationDirectoryPath,
+                "receipt.log",
+              );
+
+              await context.filesystem.writeFile(hookWrittenPath, "receipt\n");
+              context.generatedFilePaths.push(hookWrittenPath);
+            },
+          },
+          name: "alpha-module",
+          templateDirectoryPath: "/templates",
+        },
+        filesystem,
+        formatter,
+        inputs: { name: "alpha-module" },
+        instancePath: "/output",
+      });
+
+      expect(formatter.formattedFiles).toStrictEqual([
+        "/output/README.md",
+        "/workspace/configuration/receipt.log",
+      ]);
+      expect(result.generatedFilePaths).toStrictEqual(formatter.formattedFiles);
+      await expect(
+        filesystem.readFile("/workspace/configuration/receipt.log"),
+      ).resolves.toBe("receipt\n");
+    });
   });
 });

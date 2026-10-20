@@ -9,7 +9,7 @@ import { LoggerService } from "@codebase/observability";
 import { CODE_FORMAT_PATTERN } from "../code/code.constants";
 import { CorpusService } from "../corpus/corpus.service";
 import { HISTORICAL_CORPUS } from "../corpus/historical-corpus.constants";
-import { MeanderawDatabaseService } from "../meanderaw-database/meanderaw-database.service";
+import { DatabaseService } from "../database/database.service";
 
 import { DrawCodeService } from "./draw-code.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";
@@ -77,8 +77,8 @@ export class DrawCommand extends CommandRunner {
     private readonly drawIndexService: DrawIndexService,
     @Inject(CorpusService)
     private readonly corpusService: CorpusService,
-    @Inject(MeanderawDatabaseService)
-    private readonly databaseService: MeanderawDatabaseService,
+    @Inject(DatabaseService)
+    private readonly databaseService: DatabaseService,
   ) {
     super();
     this.logger.setContext(DrawCommand.name);

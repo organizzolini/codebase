@@ -14,7 +14,7 @@ import {
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/persistence";
+} from "../../../testing/database";
 
 import { LexemesService } from "./lexemes.service";
 

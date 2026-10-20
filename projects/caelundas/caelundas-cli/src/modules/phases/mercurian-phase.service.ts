@@ -23,8 +23,8 @@ import {
   PHASE_EVENT_TIMEZONE,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { MercurianPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   BuildPlanetPhaseEventArguments,
   MercurianPhaseEventArguments,

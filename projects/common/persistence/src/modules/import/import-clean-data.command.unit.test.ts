@@ -6,8 +6,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
-import { PostgresReferencedTablesError } from "../postgres-client/postgres-client.constants";
-import { PostgresClientService } from "../postgres-client/postgres-client.service";
+import { PostgresReferencedTablesError } from "../postgresql-utilities/postgresql-utilities.constants";
+import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import type { SpawnedProcess } from "../../../testing/mocks";
 
@@ -63,7 +63,7 @@ describe("import --clean --data", () => {
 
   /** Makes the truncate succeed, or fail with `error`, without a database. */
   const stubTruncate = (error?: Error): void => {
-    const truncate = vi.spyOn(PostgresClientService.prototype, "truncate");
+    const truncate = vi.spyOn(PostgresqlUtilitiesService.prototype, "truncate");
     if (error === undefined) truncate.mockResolvedValue();
     else truncate.mockRejectedValue(error);
   };
@@ -80,7 +80,7 @@ describe("import --clean --data", () => {
 
   it("empties and refills the rows without asking", async () => {
     stubTruncate();
-    const truncate = vi.spyOn(PostgresClientService.prototype, "truncate");
+    const truncate = vi.spyOn(PostgresqlUtilitiesService.prototype, "truncate");
     const spawned = mockProcesses({ list: { stdout: LISTING } });
 
     const result = await run();

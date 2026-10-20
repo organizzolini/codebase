@@ -15,8 +15,8 @@ import { SextupleAspectsComposerService } from "./sextuple-aspects-composer.serv
 import { SextupleAspectsService } from "./sextuple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /** Builds one hexagram boundary event for the shared progressive-step tests. */
 function buildHexagramBoundary(

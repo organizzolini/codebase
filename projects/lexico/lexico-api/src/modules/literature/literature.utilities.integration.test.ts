@@ -7,7 +7,7 @@ import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/persistence";
+} from "../../../testing/database";
 import {
   expectedPage,
   type PageRequest,

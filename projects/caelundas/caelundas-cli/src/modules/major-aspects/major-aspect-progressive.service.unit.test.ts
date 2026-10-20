@@ -13,7 +13,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { MajorAspectEventService } from "./major-aspect-event.service";
 import { MajorAspectProgressiveService } from "./major-aspect-progressive.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 vi.mock("fs", () => ({
   default: {

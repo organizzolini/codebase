@@ -19,7 +19,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
-import { PostgresClientService } from "../postgres-client/postgres-client.service";
+import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
 
 import { ExportCommand } from "./export.command";
 
@@ -69,8 +69,8 @@ describe(ExportCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PostgresClientService,
-          useValue: createMock<PostgresClientService>(),
+          provide: PostgresqlUtilitiesService,
+          useValue: createMock<PostgresqlUtilitiesService>(),
         },
       ],
     }).compile();
@@ -99,8 +99,8 @@ describe(ExportCommand, () => {
           useValue: createMock<LoggerService>(),
         },
         {
-          provide: PostgresClientService,
-          useValue: createMock<PostgresClientService>(),
+          provide: PostgresqlUtilitiesService,
+          useValue: createMock<PostgresqlUtilitiesService>(),
         },
       ],
     }).compile();

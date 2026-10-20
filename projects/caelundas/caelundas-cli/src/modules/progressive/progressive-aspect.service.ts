@@ -5,7 +5,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { TypedAspectParts } from "./progressive.types";
 
 /**

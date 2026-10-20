@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "affected": {
+    "legacy": false
+  },
   "analytics": false,
   "bail": false,
   "cacheDirectory": ".nx/cache",
@@ -24,7 +27,10 @@
   },
   "namedInputs": {
     "default": [
+      "!{projectRoot}/.cspell/**",
       "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
       "{projectRoot}/**/*",
       "shared-globals"
     ],
@@ -41,7 +47,7 @@
       "{projectRoot}/**/*.ipynb",
       "{projectRoot}/**/*.py",
       "{projectRoot}/pyproject.toml",
-      "{workspaceRoot}/uv.lock"
+      "{workspaceRoot}/configuration/uv.lock"
     ],
     "python-tests": ["{projectRoot}/testing/**/*.py"],
     "shared-globals": ["{workspaceRoot}/configuration/tsconfig.json"],
@@ -200,12 +206,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run bandit -c pyproject.toml -r src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" bandit -c pyproject.toml -r src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -238,7 +244,8 @@
       "cache": false,
       "dependsOn": ["build", "codometer"],
       "description": "Build every buildable project and measure it. An nx:noop aggregator; `build` carries its own ^build dependency, and `codometer` gates each project's declared limit.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["production"]
     },
     "codometer": [
       {
@@ -423,7 +430,8 @@
         "vulture"
       ],
       "description": "Aggregator for deprecate-code",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "eslint": [
       {
@@ -581,7 +589,12 @@
         "yaml-lint"
       ],
       "description": "Aggregator for format-code",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": [
+        "{projectRoot}/**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,json,jsonc,json5,css,scss,html,yaml,yml,md,mdx,py,ipynb,sql}",
+        "{workspaceRoot}/configuration/.cspell/**",
+        "{workspaceRoot}/configuration/cspell.config.yaml"
+      ]
     },
     "guard-code": {
       "cache": false,
@@ -600,7 +613,8 @@
         "vscode-extensions"
       ],
       "description": "Aggregator for guard-code. `callidescope-gate` and `codependix-gate` are the inferred per-project gates, call-stack depth and dependency boundaries; neither has configurations, so the one `guard-code` is run with falls through to their defaults. `codependix-gate` builds its graphs over the project it is run for and that project's dependencies, charges each finding to the project that owns it, and fails only for a finding charged to that project, so `nx affected` scopes it to the projects a change touched. The workspace-wide `configuration:codependix` target is not reachable from here: it is write-only, and the release workflow runs it on the default branch.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "knip": [
       {
@@ -649,7 +663,8 @@
         "stylelint"
       ],
       "description": "Aggregator for lint-code. `helm-lint` and `compose-config` are defined only by the infrastructure project, so Nx skips them everywhere else. They shell out to helm and docker compose, which the GitHub-hosted ubuntu runners and the devcontainer ship; compose-config creates the gitignored root .env from .env.default when it is missing.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "markdown-lint": [
       {
@@ -689,16 +704,16 @@
       "cache": false,
       "configurations": {
         "extract-sql-all": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/common/persistence/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=all",
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --module={args.module} --selection=all",
           "cwd": "{workspaceRoot}"
         },
         "extract-sql-latest": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && pnpm exec tsx projects/common/persistence/scripts/extract-migration-sql.ts --directory={projectRoot}/{args.module}/migrations --mode=latest",
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts extract-typeorm-migration-sql write --project-root={projectRoot} --module={args.module} --selection=latest",
           "cwd": "{workspaceRoot}"
         },
         "generate": {
           "commands": [
-            "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:generate {args.module}/migrations/migration -d {args.module}/data-source.constants.ts",
+            "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:generate {args.module}/migrations/migration -d {args.module}/data-source.constants.ts",
             "nx run {projectName}:migration:extract-sql-latest",
             "nx run {projectName}:lint-code:write",
             "nx run {projectName}:format-code:write"
@@ -706,16 +721,16 @@
           "parallel": false
         },
         "revert": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:revert -d {args.module}/data-source.constants.ts"
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:revert -d {args.module}/data-source.constants.ts"
         },
         "run": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:run -d {args.module}/data-source.constants.ts"
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:run -d {args.module}/data-source.constants.ts"
         },
         "show": {
-          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/<project>-database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:show -d {args.module}/data-source.constants.ts"
+          "command": "test -n \"{args.module}\" || { echo 'migration: set options.module to the project database module folder, for example src/modules/database' >&2; exit 1; } && node --import @swc-node/register/esm-register node_modules/typeorm/cli.js migration:show -d {args.module}/data-source.constants.ts"
         }
       },
-      "description": "Generate, run, revert, or show a database project's TypeORM migrations, or extract their SQL for sqlfluff and squawk. A project opts in with `\"migration\": { \"options\": { \"module\": \"src/modules/<project>-database\" } }`, naming the folder of its own database module, which holds the command-line data source at `data-source.constants.ts` and the migrations under `migrations/`; every configuration fails with a message when it is unset. Extra command-line flags are not forwarded to the commands. Never cached: every configuration reads or changes a live database.",
+      "description": "Generate, run, revert, or show a database project's TypeORM migrations, or extract their SQL for sqlfluff and squawk. A project opts in with `\"migration\": { \"options\": { \"module\": \"src/modules/database\" } }`, naming the folder of its own database module, which holds the command-line data source at `data-source.constants.ts` and the migrations under `migrations/`; every configuration fails with a message when it is unset. Extra command-line flags are not forwarded to the commands. Never cached: every configuration reads or changes a live database.",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{projectRoot}",
@@ -740,11 +755,11 @@
         },
         "inputs": [
           "{projectRoot}/src/**/*.ipynb",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock"
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock"
         ],
         "options": {
-          "command": "find src -name '*.ipynb' -exec uv run nbstripout {args} {} +",
+          "command": "find src -name '*.ipynb' -exec uv run --project \"$NX_WORKSPACE_ROOT/configuration\" nbstripout {args} {} +",
           "cwd": "{projectRoot}"
         }
       }
@@ -864,12 +879,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run pyright src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pyright src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -879,16 +894,16 @@
         "cache": true,
         "configurations": {
           "coverage": {
-            "command": "uv run pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest --cov=src --cov-report=xml:coverage/python.xml --cov-report=term-missing"
           },
           "integration": {
-            "command": "uv run pytest -m integration"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest -m integration"
           },
           "unit": {
-            "command": "uv run pytest -m unit"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest -m unit"
           },
           "watch": {
-            "command": "uv run pytest-watch"
+            "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest-watch"
           }
         },
         "executor": "nx:run-commands",
@@ -896,13 +911,13 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source",
           "python-tests"
         ],
         "options": {
-          "command": "uv run pytest",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" pytest",
           "cwd": "{projectRoot}"
         }
       }
@@ -936,12 +951,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run ruff format {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ruff format {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -961,12 +976,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run ruff check {args} .",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ruff check {args} .",
           "cwd": "{projectRoot}"
         }
       }
@@ -1027,15 +1042,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run sqlfluff {args} --config pyproject.toml {projectRoot}",
+          "command": "uv run --project configuration sqlfluff {args} --config configuration/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1058,15 +1073,15 @@
         },
         "inputs": [
           "{projectRoot}/**/*.sql",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run sqlfluff {args} --config pyproject.toml {projectRoot}",
+          "command": "uv run --project configuration sqlfluff {args} --config configuration/pyproject.toml {projectRoot}",
           "cwd": "{workspaceRoot}"
         }
       }
@@ -1205,7 +1220,8 @@
       "defaultConfiguration": "coverage",
       "dependsOn": ["pytest", "vitest"],
       "description": "Dynamic code analysis: the tests, which execute the source. An nx:noop aggregator. The configuration propagates down dependsOn, so test-code:coverage reaches test:coverage.",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["default"]
     },
     "ty": [
       {
@@ -1215,12 +1231,12 @@
           "projects": ["tag:language:python"]
         },
         "inputs": [
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source"
         ],
         "options": {
-          "command": "uv run ty check src/",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" ty check src/",
           "cwd": "{projectRoot}"
         }
       }
@@ -1287,7 +1303,8 @@
       "defaultConfiguration": "check",
       "dependsOn": ["type-coverage", "typecheck"],
       "description": "Aggregator for typecheck-code",
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "inputs": ["typescript-files"]
     },
     "vitest": {
       "configurations": {
@@ -1324,15 +1341,15 @@
         },
         "inputs": [
           "{projectRoot}/.vulture_whitelist.py",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "python-source",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run python -m vulture src/ .vulture_whitelist.py --min-confidence 80",
+          "command": "uv run --project \"$NX_WORKSPACE_ROOT/configuration\" python -m vulture src/ .vulture_whitelist.py --min-confidence 80",
           "cwd": "{projectRoot}"
         }
       }
@@ -1350,16 +1367,16 @@
         },
         "inputs": [
           "{projectRoot}/**/*.{yaml,yml}",
+          "{workspaceRoot}/configuration/pyproject.toml",
+          "{workspaceRoot}/configuration/uv.lock",
           "{workspaceRoot}/configuration/yamllint.yaml",
-          "{workspaceRoot}/pyproject.toml",
-          "{workspaceRoot}/uv.lock",
           "shared-globals",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "uv run yamllint -c configuration/yamllint.yaml '{projectRoot}'",
+          "command": "uv run --project configuration yamllint -c configuration/yamllint.yaml '{projectRoot}'",
           "cwd": "{workspaceRoot}"
         }
       }

@@ -66,16 +66,20 @@ describe(ReadmeProjectsService, () => {
       expect.hasAssertions();
 
       existingPaths.add("/workspace/projects");
-      scopeChildren.set("/workspace/projects", ["lexico", "logging", "notes"]);
+      scopeChildren.set("/workspace/projects", [
+        "lexico",
+        "observability",
+        "notes",
+      ]);
 
-      existingPaths.add("/workspace/projects/common/observability/package.json");
+      existingPaths.add("/workspace/projects/observability/package.json");
 
       existingPaths.add("/workspace/projects/lexico/lexico-api/package.json");
       scopeChildren.set("/workspace/projects/lexico", ["lexico-api"]);
 
       expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
         "projects/lexico/lexico-api",
-        "projects/common/observability",
+        "projects/observability",
       ]);
     });
 
@@ -130,13 +134,13 @@ describe(ReadmeProjectsService, () => {
       expect.hasAssertions();
 
       existingPaths.add("/workspace/projects");
-      scopeChildren.set("/workspace/projects", ["logging"]);
+      scopeChildren.set("/workspace/projects", ["observability"]);
 
-      existingPaths.add("/workspace/projects/common/observability/package.json");
-      scopeChildren.set("/workspace/projects/common/observability", ["src"]);
+      existingPaths.add("/workspace/projects/observability/package.json");
+      scopeChildren.set("/workspace/projects/observability", ["src"]);
 
       expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
-        "projects/common/observability",
+        "projects/observability",
       ]);
     });
   });
@@ -176,8 +180,8 @@ describe(ReadmeProjectsService, () => {
       expect.hasAssertions();
       expect(
         service.findUndocumentedProjectPaths(
-          ["projects/common/observability"],
-          "- **[logger](projects/common/observability)** - Shared logger",
+          ["projects/observability"],
+          "- **[logger](projects/observability)** - Shared logger",
         ),
       ).toStrictEqual([]);
     });
@@ -186,8 +190,8 @@ describe(ReadmeProjectsService, () => {
       expect.hasAssertions();
       expect(
         service.findUndocumentedProjectPaths(
-          ["projects/common/observability", "projects/orphan"],
-          "- **[logger](projects/common/observability)** - Shared logger",
+          ["projects/observability", "projects/orphan"],
+          "- **[logger](projects/observability)** - Shared logger",
         ),
       ).toStrictEqual(["projects/orphan"]);
     });

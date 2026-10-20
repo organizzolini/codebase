@@ -7,8 +7,8 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { SextupleAspectsComposerService } from "./sextuple-aspects-composer.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { ComposeHexagramsArguments } from "./sextuple-aspects.types";
 import type { Moment } from "moment-timezone";
 

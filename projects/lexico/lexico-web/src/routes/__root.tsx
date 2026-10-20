@@ -26,7 +26,7 @@ import {
   useSidebar,
 } from "@codebase/interface";
 
-import { Logo } from "../interface/layout";
+import { Logo } from "../components/layout";
 import applicationCss from "../styles/application.css?url";
 
 import type { ReactNode } from "react";

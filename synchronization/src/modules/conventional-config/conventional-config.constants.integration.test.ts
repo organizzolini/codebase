@@ -10,7 +10,7 @@ import { SYNC_CONVENTIONAL_CONFIG_MARKDOWN_FILES } from "./conventional-config.c
 
 const workspaceRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../../../../..",
+  "../../../..",
 );
 
 const SCOPES_START_MARKER = "<!-- scopes-start -->";

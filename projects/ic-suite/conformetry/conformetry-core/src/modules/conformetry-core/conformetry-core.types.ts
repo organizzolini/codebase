@@ -108,6 +108,14 @@ export interface ConformetryLanguageValidator {
 }
 
 /**
+ * A directory entry read from the source template tree.
+ */
+export interface DirectoryEntry {
+  isDirectory: boolean;
+  name: string;
+}
+
+/**
  * What comparing one document produced: the differences, and the size of the
  * requirement the comparison weighed them against.
  *
@@ -127,6 +135,71 @@ export interface DocumentValidationResult {
   readonly differences: ConformetryDifference[];
   /** Combined weight of the template requirements this document imposes. */
   readonly totalWeight: number;
+}
+
+/**
+ * Filesystem operations used by the generation runtime.
+ *
+ * Exists so a host with a virtual filesystem — an Nx generator `Tree`, for
+ * instance — can run generation without touching disk. The default
+ * implementation reads and writes directly.
+ */
+export interface FileSystemAdapter {
+  listDirectory(directoryPath: string): Promise<DirectoryEntry[]>;
+  makeDirectory(directoryPath: string): Promise<void>;
+  readFile(filePath: string): Promise<string>;
+  writeFile(filePath: string, content: string): Promise<void>;
+}
+
+/**
+ * Generator metadata and runtime configuration.
+ */
+export interface GeneratorDefinition {
+  description?: string;
+  hooks?: GeneratorHooks;
+  name: string;
+  templateDirectoryPath: string;
+}
+
+/**
+ * A generator hook function.
+ */
+export type GeneratorHook = (
+  context: GeneratorHookContext,
+) => Promise<void> | void;
+
+/**
+ * Data exposed to generator hooks.
+ */
+export interface GeneratorHookContext {
+  /**
+   * Absolute directory of the configuration file that declared the generator.
+   *
+   * The anchor for any path a hook builds that belongs to the configuration
+   * rather than to the instance being generated.
+   */
+  configurationDirectoryPath: string;
+  definition: GeneratorDefinition;
+  /**
+   * The adapter the run itself reads and writes through.
+   *
+   * Absolute paths only, exactly as the runtime uses it. A hook that writes
+   * here lands in whatever the host writes to — the disk under the command
+   * line, a virtual tree under Nx — instead of bypassing it.
+   */
+  filesystem: FileSystemAdapter;
+  generatedFilePaths: string[];
+  input: Record<string, string>;
+  outputDirectoryPath: string;
+  substitutions: Record<string, string>;
+}
+
+/**
+ * Generator lifecycle hooks.
+ */
+export interface GeneratorHooks {
+  postGenerate?: GeneratorHook;
+  preGenerate?: GeneratorHook;
 }
 
 /**

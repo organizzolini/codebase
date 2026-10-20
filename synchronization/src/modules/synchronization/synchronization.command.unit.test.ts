@@ -13,6 +13,7 @@ import { PackageManifestsCommand } from "../package-manifests/package-manifests.
 import { PullRequestLabelsCommand } from "../pull-request-labels/pull-request-labels.command";
 import { PullRequestTemplateCommand } from "../pull-request-template/pull-request-template.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
+import { TypeormMigrationSqlCommand } from "../typeorm-migration-sql/typeorm-migration-sql.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
 
 import { SynchronizationCommand } from "./synchronization.command";
@@ -27,9 +28,11 @@ describe(SynchronizationCommand, () => {
   let devcontainerConfiguration: DevcontainerConfigurationCommand;
   let installedSkills: InstalledSkillsCommand;
   let logger: LoggerService;
+  let packageManifests: PackageManifestsCommand;
   let pullRequestLabels: PullRequestLabelsCommand;
   let pullRequestTemplate: PullRequestTemplateCommand;
   let skillExclusions: SkillExclusionsCommand;
+  let typeormMigrationSql: TypeormMigrationSqlCommand;
   let vscodeExtensions: VscodeExtensionsCommand;
 
   /** The delegates in the order the aggregate reports them. */
@@ -39,9 +42,11 @@ describe(SynchronizationCommand, () => {
       conventionalConfig,
       devcontainerConfiguration,
       installedSkills,
+      packageManifests,
       pullRequestLabels,
       pullRequestTemplate,
       skillExclusions,
+      typeormMigrationSql,
       vscodeExtensions,
     ];
   }
@@ -111,6 +116,12 @@ describe(SynchronizationCommand, () => {
           }),
         },
         {
+          provide: TypeormMigrationSqlCommand,
+          useValue: createMock<TypeormMigrationSqlCommand>({
+            synchronizationLabel: "typeorm-migration-sql",
+          }),
+        },
+        {
           provide: VscodeExtensionsCommand,
           useValue: createMock<VscodeExtensionsCommand>({
             synchronizationLabel: "vscode-extensions",
@@ -127,9 +138,11 @@ describe(SynchronizationCommand, () => {
     );
     installedSkills = await module.resolve(InstalledSkillsCommand);
     logger = await module.resolve(LoggerService);
+    packageManifests = await module.resolve(PackageManifestsCommand);
     pullRequestLabels = await module.resolve(PullRequestLabelsCommand);
     pullRequestTemplate = await module.resolve(PullRequestTemplateCommand);
     skillExclusions = await module.resolve(SkillExclusionsCommand);
+    typeormMigrationSql = await module.resolve(TypeormMigrationSqlCommand);
     vscodeExtensions = await module.resolve(VscodeExtensionsCommand);
   });
 
@@ -181,6 +194,10 @@ describe(SynchronizationCommand, () => {
         {
           provide: SkillExclusionsCommand,
           useValue: createMock<SkillExclusionsCommand>(),
+        },
+        {
+          provide: TypeormMigrationSqlCommand,
+          useValue: createMock<TypeormMigrationSqlCommand>(),
         },
         {
           provide: VscodeExtensionsCommand,
@@ -275,6 +292,7 @@ describe(SynchronizationCommand, () => {
 
     expect(installedSkills.synchronize).toHaveBeenCalledWith("check");
     expect(skillExclusions.synchronize).toHaveBeenCalledWith("check");
+    expect(typeormMigrationSql.synchronize).toHaveBeenCalledWith("check");
     expect(vscodeExtensions.synchronize).toHaveBeenCalledWith("check");
   });
 

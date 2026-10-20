@@ -22,8 +22,8 @@ import {
   unsealedMessage,
 } from "./publish-packages.constants";
 
-import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { Environment } from "../../publication.types";
+import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { ParallelOutcome } from "../release-group/release-group.types";
 import type {
   MirrorContext,

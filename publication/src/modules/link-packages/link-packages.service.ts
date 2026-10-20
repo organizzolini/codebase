@@ -19,8 +19,8 @@ import {
   TARBALL_DOWNLOAD_FLAGS,
 } from "./link-packages.constants";
 
-import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { Environment } from "../../publication.types";
+import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type { ParallelOutcome } from "../release-group/release-group.types";
 import type {
   LinkContext,
@@ -198,8 +198,9 @@ export class LinkPackagesService {
    * Prints the `sha256:…` digest of the tarball npm serves for a
    * `<name>@<version>`, which is what both a storage record and an
    * attestation identify the package by; npm itself reports only a sha512
-   * integrity. The tarball's address is built rather than looked up, and
-   * fetched with retries, because npm can trail a publish by minutes.
+   * integrity. The tarball URL comes from npm metadata when available, and
+   * falls back to the conventional npm path, then is fetched with retries
+   * because npm can trail a publish by minutes.
    */
   private async tarballDigest(
     specifier: string,
@@ -212,11 +213,21 @@ export class LinkPackagesService {
     const tarball = path.join(directory, "package.tgz");
 
     try {
+      const viewedTarball = await this.processRunner.captureAsync("npm", [
+        "view",
+        specifier,
+        "dist.tarball",
+        "--registry",
+        context.registryUrl,
+      ]);
+      const tarballUrl = viewedTarball.stdout.trim();
+      const fallbackUrl = `${context.registryUrl}${name}/-/${String(name.split("/").at(-1))}-${version}.tgz`;
+
       const fetched = await this.processRunner.captureAsync("curl", [
         ...TARBALL_DOWNLOAD_FLAGS,
         "--output",
         tarball,
-        `${context.registryUrl}${name}/-/${String(name.split("/").at(-1))}-${version}.tgz`,
+        tarballUrl === "" ? fallbackUrl : tarballUrl,
       ]);
 
       if (fetched.status !== 0) {

@@ -66,8 +66,8 @@
     "atLeast": 99.84,
     "ignoreCatch": true,
     "ignoreFiles": [
-      "src/interface/**",
       "src/hooks/**",
+      "src/interface/**",
       "src/lib/**"
     ],
     "strict": true

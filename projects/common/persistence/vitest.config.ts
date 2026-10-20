@@ -18,7 +18,7 @@ export default mergeConfig(
          * The testing entry's Nest helper too: it lives under `testing/`,
          * where code may import test tooling, but it is shipped code.
          */
-        include: ["src/**/*.ts", "testing/database-testing.utilities.ts"],
+        include: ["src/**/*.ts", "testing/persistence-testing.utilities.ts"],
       },
       /**
        * The command-line runner hands every message to the real

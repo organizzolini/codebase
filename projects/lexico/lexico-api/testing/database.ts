@@ -1,10 +1,10 @@
 import { vi } from "vitest";
 
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 import {
   LEXICO_DATABASE_MIGRATIONS,
   LexicoDatabaseModule,
 } from "@codebase/lexico-entities";
+import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/lexico-api.constants";
 

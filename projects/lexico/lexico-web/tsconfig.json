@@ -10,8 +10,8 @@
     "noEmit": true,
     "outDir": "../../../dist/out-tsc",
     "paths": {
-      "@/*": ["../../interface/src/*"],
-      "@codebase/interface": ["../../interface/src/index.ts"]
+      "@/*": ["../../common/interface/src/*"],
+      "@codebase/interface": ["../../common/interface/src/index.ts"]
     },
     "strict": true,
     "target": "ES2022",

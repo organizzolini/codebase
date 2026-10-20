@@ -11,7 +11,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { MinorAspectsProgressiveService } from "./minor-aspects-progressive.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(MinorAspectsProgressiveService, () => {
   let service: MinorAspectsProgressiveService;

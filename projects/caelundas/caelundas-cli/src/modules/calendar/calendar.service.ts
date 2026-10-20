@@ -9,7 +9,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { CONTENT_LINE_OCTETS } from "./calendar.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Environment, Input } from "../input/input.types";
 import type {
   BuildCalendarFileContentParameters,

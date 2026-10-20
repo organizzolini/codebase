@@ -20,7 +20,7 @@ import { TwilightsService } from "../twilights/twilights.service";
 import { PerfectiveService } from "./perfective.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Input } from "../input/input.types";
 import type {
   MartianPhaseEventArguments,

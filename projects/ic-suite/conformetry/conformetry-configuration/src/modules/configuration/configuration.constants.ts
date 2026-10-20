@@ -4,6 +4,8 @@ import { z } from "zod";
 
 import { assertNoCollisions } from "./configuration.utilities";
 
+import type { GeneratorHook } from "@conformetry/core";
+
 /**
  * Raised when a run names no configuration file.
  *
@@ -60,6 +62,19 @@ const jsonSchemaDefinitionSchema: z.ZodType = z.lazy(() => {
 });
 
 /**
+ * A hook as a config file declares it: a function, and nothing narrower.
+ *
+ * Zod cannot see a function's parameters or its return type, so the arity and
+ * the promise are the hook author's to get right; what it can refuse is a
+ * string or an object where a function was meant, and it names which hook.
+ */
+const generatorHookSchema = (hookName: string): z.ZodType<GeneratorHook> => {
+  return z.custom<GeneratorHook>((value) => typeof value === "function", {
+    message: `The ${hookName} hook must be a function`,
+  });
+};
+
+/**
  * Validates the generator list loaded from a config file.
  *
  * Every field a generator needs is declared here deliberately, and the
@@ -71,6 +86,14 @@ export const conformetryConfigurationSchema = z
   .array(
     z.strictObject({
       description: z.string().optional(),
+      // Strict for the same reason the generator is: a misspelt hook name
+      // would otherwise be stripped and the hook silently never run.
+      hooks: z
+        .strictObject({
+          postGenerate: generatorHookSchema("postGenerate").optional(),
+          preGenerate: generatorHookSchema("preGenerate").optional(),
+        })
+        .optional(),
       // Each input is a JSON Schema fragment, so it must be an object; its own
       // fields may hold any JSON value.
       inputs: z

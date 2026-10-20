@@ -49,7 +49,7 @@ except `pull-request-labels` — are **derivations**: committed files derived
 from configuration a pull request can also change, so `check` runs on a pull
 request and `write` runs on the default branch's release. The
 [🧑‍🔧 Lint Codebase](../../.github/workflows/lint-code.yml) workflow and
-[`configuration/lint-staged.config.ts`](../configuration/lint-staged.config.ts)
+[`configuration/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
 each name every derivation target directly alongside `lint-code` in one
 `nx affected` invocation, rather than reaching them through
 [`lint-code`](../../AGENTS.md#code-quality)'s `dependsOn` — Nx forwards an
@@ -129,7 +129,7 @@ reads has changed, and each caller decides for itself which targets belong in
 which invocation:
 
 - [🧑‍🔧 Lint Codebase](../../.github/workflows/lint-code.yml) and
-  [`configuration/lint-staged.config.ts`](../configuration/lint-staged.config.ts)
+  [`configuration/lint-staged.config.ts`](../../configuration/lint-staged.config.ts)
   each name every derivation target directly alongside `lint-code` in one
   `nx affected` invocation, so a pull request and a commit both check drift.
 - The release workflow runs every derivation's `write` configuration through
@@ -184,7 +184,7 @@ MIT — see [LICENSE](../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
 
 <!-- callidescope:start -->
 
@@ -279,7 +279,25 @@ What this project is judged against, as declared in its own `callidescope.config
 <details>
 <summary>13 more call stacks</summary>
 
-**4. `PullRequestLabelsCommand.run`** — depth 7 · decorated-method
+**4. `ConformetryGeneratorsCommand.run`** — depth ≥ 7 · decorated-method
+
+```text
+🚀 ConformetryGeneratorsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:188]
+   ↳ Runs the conformetry-generators sync command in check or write mode.
+  └─> ConformetryGeneratorsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:206]
+     ↳ Synchronizes the generators table and reports success without exiting.
+    └─> ConformetryGeneratorsCommand.readGenerators(): Promise<ConformetryGeneratorMetadata[]> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111]
+       ↳ Reads configuration/conformetry.config.ts and returns the list of generator metadata.
+      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:237]
+         ↳ Loads, validates, and normalizes a conformetry configuration file.
+        └─> ConfigurationService.map(…)(…): ConformetryGeneratorDefinition [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:253]
+          └─> ConfigurationService.applyGeneratorDefaults(definition: ParsedGeneratorEntry): ConformetryGeneratorDefinition [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:89]
+             ↳ Fills in the optional halves of one parsed generator entry.
+            └─> ConfigurationService.applyHookDefaults(hooks: NonNullable<ParsedGeneratorEntry["hooks"]>): GeneratorHooks [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:116]
+               ↳ Drops the hooks a generator left unset, rather than carrying them as explicit `undefined`, so what a host forwards is…
+```
+
+**5. `PullRequestLabelsCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 PullRequestLabelsCommand.run(passedParameters: string[]): Promise<void> [synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts:281]
@@ -296,7 +314,7 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> PullRequestLabelsService.some(…)(prefix: string): boolean [synchronization/src/modules/pull-request-labels/pull-request-labels.service.ts:46]
 ```
 
-**5. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
+**6. `VscodeExtensionsCommand.run`** — depth 7 · decorated-method
 
 ```text
 🚀 VscodeExtensionsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:187]
@@ -312,23 +330,6 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Logs every entry that differs between the source list and a devcontainer's list.
             └─> VscodeExtensionsCommand.hasSameEntries(left: string[], right: string[]): boolean [synchronization/src/modules/vscode-extensions/vscode-extensions.command.ts:62]
                ↳ Whether two lists hold the same entries, in any order.
-```
-
-**6. `ConformetryGeneratorsCommand.run`** — depth ≥ 6 · decorated-method
-
-```text
-🚀 ConformetryGeneratorsCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:188]
-   ↳ Runs the conformetry-generators sync command in check or write mode.
-  └─> ConformetryGeneratorsCommand.synchronize(mode: SynchronizationMode): Promise<boolean> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:206]
-     ↳ Synchronizes the generators table and reports success without exiting.
-    └─> ConformetryGeneratorsCommand.readGenerators(): Promise<ConformetryGeneratorMetadata[]> [synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts:111]
-       ↳ Reads configuration/conformetry.config.ts and returns the list of generator metadata.
-      └─> ConfigurationService.loadConformetryConfiguration(configurationPath: string): Promise<ConformetryConfiguration> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:244]
-         ↳ Loads, validates, and normalizes a conformetry configuration file.
-        └─> ConfigurationService.resolveConfigurationPath(configurationPath: string): Promise<string> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:175]
-           ↳ Resolves a config path against the cwd, falling back to the workspace root.
-          └─> ConfigurationService.findWorkspaceRoot(): Promise<string | undefined> [projects/ic-suite/conformetry/conformetry-configuration/src/modules/configuration/configuration.service.ts:114]
-             ↳ Walks upward from the process cwd looking for the workspace manifest.
 ```
 
 **7. `PackageManifestsCommand.run`** — depth 6 · decorated-method

@@ -86,7 +86,7 @@ export function LexemeCard(
       className={className}
       data-testid="lexeme-card"
     >
-      <Card className="relative w-full shadow-md">
+      <Card className="relative w-full shadow-lg">
         <LexemeMatch
           className="absolute top-3 right-3"
           match={result.match}

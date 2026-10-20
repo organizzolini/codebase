@@ -14,8 +14,8 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { stelliumNameBySize } from "./stellium.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { StelliumPhase } from "./stellium.types";
 import type { Moment } from "moment-timezone";
 

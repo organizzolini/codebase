@@ -37,7 +37,7 @@
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
-    "migration": { "options": { "module": "src/modules/lexico-database" } },
+    "migration": { "options": { "module": "src/modules/database" } },
     "oxfmt": {},
     "oxlint": {},
     "prettier": {},

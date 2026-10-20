@@ -238,7 +238,8 @@ describe(ChangesService, () => {
     const workingDirectory = writeWorkspace({
       ".baseline/packages/observability/codometer-report.json":
         buildCustomCounterReport(12),
-      "packages/observability/codometer-report.json": buildCustomCounterReport(15),
+      "packages/observability/codometer-report.json":
+        buildCustomCounterReport(15),
     });
 
     const rows = service.collect({

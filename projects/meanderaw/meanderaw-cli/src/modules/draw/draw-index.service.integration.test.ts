@@ -7,19 +7,19 @@ import {
 
 import { meanderRecord } from "../../../testing/meanders";
 import { CodeService } from "../code/code.service";
+import { DatabaseModule } from "../database/database.module";
+import { Meander } from "../database/entities/meander.entity";
+import { Migration1791160950069 } from "../database/migrations/1791160950069-migration";
+import { Migration1791414023001 } from "../database/migrations/1791414023001-migration";
 import { DrawingService } from "../drawing/drawing.service";
 import { GeometryService } from "../geometry/geometry.service";
-import { Meander } from "../meanderaw-database/entities/meander.entity";
-import { MeanderawDatabaseModule } from "../meanderaw-database/meanderaw-database.module";
-import { Migration1791160950069 } from "../meanderaw-database/migrations/1791160950069-migration";
-import { Migration1791414023001 } from "../meanderaw-database/migrations/1791414023001-migration";
 import { SvgService } from "../svg/svg.service";
 import { SymmetryService } from "../symmetry/symmetry.service";
 import { TileService } from "../tile/tile.service";
 
 import { DrawIndexService } from "./draw-index.service";
 
-import type { MeanderRecord } from "../meanderaw-database/meanderaw-database.types";
+import type { MeanderRecord } from "../database/database.types";
 import type { Repository } from "typeorm";
 
 /**
@@ -28,8 +28,8 @@ import type { Repository } from "typeorm";
  * constructed set of rows, per spec #813's Testing Decisions for this seam.
  *
  * The module is booted by `startDatabaseTestingModule`, which points
- * `MeanderawDatabaseModule` at a fresh, isolated database instead of the
- * local one, the same way `meanderaw-database.service.integration.test.ts`
+ * `DatabaseModule` at a fresh, isolated database instead of the
+ * local one, the same way `database.service.integration.test.ts`
  * does.
  */
 describe(DrawIndexService, () => {
@@ -39,7 +39,7 @@ describe(DrawIndexService, () => {
 
   beforeAll(async () => {
     database = await startDatabaseTestingModule({
-      database: MeanderawDatabaseModule,
+      database: DatabaseModule,
       entities: [Meander],
       migrations: [Migration1791160950069, Migration1791414023001],
       project: "meanderaw",

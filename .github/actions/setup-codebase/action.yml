@@ -100,7 +100,10 @@ runs:
       uses: nrwl/nx-set-shas@v5
 
     - name: 🗃️ Configure Nx Cache
-      run: echo "NX_DEFAULT_OUTPUT_STYLE=static" >> "$GITHUB_ENV"
+      run: |
+        echo "NX_DEFAULT_OUTPUT_STYLE=static" >> "$GITHUB_ENV"
+        echo "NX_LEGACY_AFFECTED=false" >> "$GITHUB_ENV"
+        echo "NX_PREFER_NODE_STRIP_TYPES=false" >> "$GITHUB_ENV"
       shell: bash
 
     # `Homebrew/actions/setup-homebrew` clones the `Homebrew/brew` git
@@ -247,7 +250,7 @@ runs:
       uses: astral-sh/setup-uv@v10.3.0
       with:
         enable-cache: true
-        cache-dependency-glob: uv.lock
+        cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
 
     # Guarded on `uv` as well as its own input: `python-dependencies` defaults
@@ -255,10 +258,9 @@ runs:
     # it has no binary to run.
     - name: 🐍 Install Python Dependencies
       if: inputs.uv == 'true' && inputs.python-dependencies == 'true'
-      # Syncs every uv workspace member into the shared root `.venv`. Scoping
-      # this to a single project (`--project`) would prune the other members'
-      # tools out of that shared environment.
-      run: uv sync --frozen --quiet
+      # Syncs every uv workspace member into the shared root `.venv` via the
+      # workspace definition in configuration/pyproject.toml.
+      run: uv sync --frozen --quiet --project configuration
       shell: bash
 
     - name: ♻️ Sync ESLint Cache

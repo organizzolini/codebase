@@ -8,7 +8,7 @@ import { Author, Line, Text } from "@codebase/lexico-entities";
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
-} from "../../../testing/persistence";
+} from "../../../testing/database";
 import {
   type LiteratureSearchCorpus,
   seedLiteratureSearchCorpus,

@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import {
   ConfigurationService,
   InputError,
@@ -70,9 +72,11 @@ export class GenerateCommand extends CommandRunner {
 
     this.rejectRemovedGeneratorOption(rawArguments);
 
+    const configurationPath =
+      await this.configurationService.resolveConfigurationPath(options.config);
     const configuration =
       await this.configurationService.loadConformetryConfiguration(
-        options.config,
+        configurationPath,
       );
     const templateName = await this.resolveTemplateName({
       configuration,
@@ -103,7 +107,11 @@ export class GenerateCommand extends CommandRunner {
     });
 
     const result = await this.generationService.runGenerator({
+      configurationDirectoryPath: path.dirname(configurationPath),
       definition: {
+        // Forwarded only when declared, so a generator with none reaches the
+        // runtime exactly as it did before hooks existed.
+        ...(definition.hooks === undefined ? {} : { hooks: definition.hooks }),
         name: definition.name,
         templateDirectoryPath: definition.templatePath,
       },

@@ -67,7 +67,7 @@ The root route lays every page out in the shared sidebar, and
 `src/styles/application.css` layers this application's accent color over the
 shadcn tokens that `@codebase/interface` ships. See the
 [write-react skill](/.agents/skills/write-react/SKILL.md) and
-[components AGENTS](../../interface/AGENTS.md).
+[components AGENTS](../../common/interface/AGENTS.md).
 
 ## Development
 

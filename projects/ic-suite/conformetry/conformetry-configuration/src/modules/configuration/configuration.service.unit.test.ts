@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -386,6 +387,36 @@ describe(ConfigurationService, () => {
     );
   });
 
+  describe("resolveConfigurationPath", () => {
+    it("returns an existing absolute path unchanged", async () => {
+      const configurationPath = await writeConfiguration([]);
+
+      await expect(
+        service.resolveConfigurationPath(configurationPath),
+      ).resolves.toBe(configurationPath);
+    });
+
+    it("falls back to the workspace root for a path the cwd lacks", async () => {
+      const resolvedPath = await service.resolveConfigurationPath(
+        "configuration/conformetry.config.ts",
+      );
+
+      expect(path.isAbsolute(resolvedPath)).toBe(true);
+      expect(
+        resolvedPath.endsWith(
+          path.join("projects", "configuration", "conformetry.config.ts"),
+        ),
+      ).toBe(true);
+      expect(existsSync(resolvedPath)).toBe(true);
+    });
+
+    it("resolves a path that exists nowhere against the cwd", async () => {
+      await expect(
+        service.resolveConfigurationPath("nowhere/conformetry.config.json"),
+      ).resolves.toBe(path.resolve("nowhere/conformetry.config.json"));
+    });
+  });
+
   it("throws a typed error for an unsupported extension", async () => {
     await expect(
       service.loadConformetryConfiguration("configuration/nope.yaml"),
@@ -602,6 +633,65 @@ describe(ConfigurationService, () => {
         await service.loadConformetryConfiguration(configurationPath);
 
       expect(configuration[0]?.name).toBe("widget");
+    });
+  });
+
+  describe("generator hooks", () => {
+    /** Loads a TypeScript config whose one generator carries the given hooks. */
+    async function loadWithHooks(
+      hooks: string,
+    ): Promise<ConformetryConfiguration> {
+      const configurationPath = await writeTypescriptConfiguration(
+        `export default [
+          {
+            hooks: ${hooks},
+            name: "widget",
+            templatePath: "configuration/templates/widget",
+          },
+        ];
+`,
+      );
+
+      return service.loadConformetryConfiguration(configurationPath);
+    }
+
+    it("keeps both hooks a generator declares as functions", async () => {
+      const configuration = await loadWithHooks(
+        "{ postGenerate: () => undefined, preGenerate: async () => undefined }",
+      );
+
+      expect(configuration[0]?.hooks?.postGenerate).toBeTypeOf("function");
+      expect(configuration[0]?.hooks?.preGenerate).toBeTypeOf("function");
+    });
+
+    it("keeps a single hook without inventing the other", async () => {
+      const configuration = await loadWithHooks("{ preGenerate: () => {} }");
+
+      expect(configuration[0]?.hooks?.preGenerate).toBeTypeOf("function");
+      expect(configuration[0]?.hooks?.postGenerate).toBeUndefined();
+    });
+
+    it("refuses a hook that is not a function, naming the hook", async () => {
+      await expect(loadWithHooks('{ preGenerate: "rm -rf" }')).rejects.toThrow(
+        /preGenerate.*must be a function/s,
+      );
+    });
+
+    it("refuses a key under hooks that the schema does not know", async () => {
+      await expect(
+        loadWithHooks("{ afterGenerate: () => undefined }"),
+      ).rejects.toThrow("afterGenerate");
+    });
+
+    it("leaves a generator with no hooks without a hooks entry", async () => {
+      const configurationPath = await writeConfiguration([
+        { name: "example", templatePath: "templates/example" },
+      ]);
+
+      const configuration =
+        await service.loadConformetryConfiguration(configurationPath);
+
+      expect(configuration[0]).not.toHaveProperty("hooks");
     });
   });
 

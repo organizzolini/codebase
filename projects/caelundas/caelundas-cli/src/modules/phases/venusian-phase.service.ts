@@ -23,8 +23,8 @@ import {
   VENUSIAN_CATEGORY,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { VenusianPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   BuildPlanetPhaseEventArguments,
   PhaseParameters,

@@ -25,7 +25,7 @@ import type {
 function resolveWorkspaceRoot(): string {
   const currentFilePath = fileURLToPath(import.meta.url);
   const currentFileDirectory = path.dirname(currentFilePath);
-  const workspaceRoot = path.resolve(currentFileDirectory, "../../../../..");
+  const workspaceRoot = path.resolve(currentFileDirectory, "../../../..");
 
   if (!filesystem.existsSync(path.join(workspaceRoot, "pnpm-workspace.yaml"))) {
     throw new Error("Could not find workspace root (pnpm-workspace.yaml)");

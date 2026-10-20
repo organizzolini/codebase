@@ -184,7 +184,7 @@ Enumerate, measure, and classify greek meander patterns
 
 **🛠️ [configuration](configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
 **🎨 [components](projects/common/interface)** - Shared React component library using shadcn/ui and Base UI primitives\
-**🐘 [database](projects/common/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
+**🐘 [persistence](projects/common/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\
@@ -400,6 +400,7 @@ graph LR
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
   conformetry_generation --> conformetry_configuration
+  conformetry_generation --> conformetry_core
   conformetry_languages --> conformetry_configuration
   conformetry_languages --> conformetry_core
   conformetry_nx --> conformetry_configuration
@@ -962,7 +963,6 @@ graph LR
   module_publication_PublishablePackagesGateModule["publication/PublishablePackagesGateModule"]
   module_publication_PublishPackagesModule["publication/PublishPackagesModule"]
   module_publication_ReleaseGroupModule["publication/ReleaseGroupModule"]
-  module_publication_RunAffectedModule["publication/RunAffectedModule"]
   module_publication_TagCodebaseModule["publication/TagCodebaseModule"]
   module_publication_TagPackagesModule["publication/TagPackagesModule"]
   module_publication_TaskDatabaseModule["publication/TaskDatabaseModule"]
@@ -1822,7 +1822,6 @@ graph LR
   module_publication_MainModule --> module_publication_MergeTaskCacheModule
   module_publication_MainModule --> module_publication_PublishablePackagesGateModule
   module_publication_MainModule --> module_publication_PublishPackagesModule
-  module_publication_MainModule --> module_publication_RunAffectedModule
   module_publication_MainModule --> module_publication_TagCodebaseModule
   module_publication_MainModule --> module_publication_TagPackagesModule
   module_publication_MainModule --> module_publication_VerifyTaskDatabaseModule
@@ -1833,7 +1832,6 @@ graph LR
   module_publication_PublishPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_PublishPackagesModule --> module_publication_ReleaseGroupModule
   module_publication_ReleaseGroupModule --> module_publication_ProcessRunnerModule
-  module_publication_RunAffectedModule --> module_publication_ProcessRunnerModule
   module_publication_TagCodebaseModule --> module_publication_MainTipModule
   module_publication_TagCodebaseModule --> module_publication_ProcessRunnerModule
   module_publication_TagPackagesModule --> module_publication_MainTipModule
@@ -1941,13 +1939,13 @@ graph LR
   file_caelundas_cli_src_modules_aspects_compound_phase_service_unit_test_ts["caelundas-cli/src/modules/aspects/compound-phase.service.unit.test.ts"]
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts["caelundas-cli/src/modules/aspects/progressive-compound-event.service.ts"]
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_unit_test_ts["caelundas-cli/src/modules/aspects/progressive-compound-event.service.unit.test.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_constants_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.constants.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.module.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.service.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_unit_test_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.service.unit.test.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.types.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.utilities.ts"]
-  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts["caelundas-cli/src/modules/caelundas-database/caelundas-database.utilities.unit.test.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_constants_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.constants.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_module_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.module.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.service.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_service_unit_test_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.service.unit.test.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_types_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.types.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.utilities.ts"]
+  file_caelundas_cli_src_modules_caelundas_database_caelundas_database_utilities_unit_test_ts["caelundas-cli/src/modules/caelundas-database/caelundas-postgresql.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_caelundas_database_data_source_constants_ts["caelundas-cli/src/modules/caelundas-database/data-source.constants.ts"]
   file_caelundas_cli_src_modules_caelundas_database_entities_calendar_event_entity_ts["caelundas-cli/src/modules/caelundas-database/entities/calendar-event.entity.ts"]
   file_caelundas_cli_src_modules_caelundas_database_migrations_1791255787877_migration_ts["caelundas-cli/src/modules/caelundas-database/migrations/1791255787877-migration.ts"]
@@ -3622,6 +3620,7 @@ graph LR
   file_conformetry_examples_examples_embedding_embed_ts["conformetry-examples/examples/embedding/embed.ts"]
   file_conformetry_examples_examples_failure_modes_conformetry_config_ts["conformetry-examples/examples/failure-modes/conformetry.config.ts"]
   file_conformetry_examples_examples_hello_template_conformetry_config_ts["conformetry-examples/examples/hello-template/conformetry.config.ts"]
+  file_conformetry_examples_examples_hooks_conformetry_config_ts["conformetry-examples/examples/hooks/conformetry.config.ts"]
   file_conformetry_examples_examples_language_validators_conformetry_config_ts["conformetry-examples/examples/language-validators/conformetry.config.ts"]
   file_conformetry_examples_examples_nx_host_conformetry_config_ts["conformetry-examples/examples/nx-host/conformetry.config.ts"]
   file_conformetry_examples_examples_scoring_thresholds_conformetry_config_ts["conformetry-examples/examples/scoring-thresholds/conformetry.config.ts"]
@@ -3853,28 +3852,28 @@ graph LR
   file_database_src_database_main_end_to_end_test_ts["database/src/database.main.end-to-end.test.ts"]
   file_database_src_database_main_ts["database/src/database.main.ts"]
   file_database_src_database_main_unit_test_ts["database/src/database.main.unit.test.ts"]
-  file_database_src_database_module_ts["database/src/database.module.ts"]
-  file_database_src_database_module_unit_test_ts["database/src/database.module.unit.test.ts"]
+  file_database_src_database_module_ts["database/src/postgresql.module.ts"]
+  file_database_src_database_module_unit_test_ts["database/src/postgresql.module.unit.test.ts"]
   file_database_src_database_repl_ts["database/src/database.repl.ts"]
   file_database_src_database_repl_unit_test_ts["database/src/database.repl.unit.test.ts"]
   file_database_src_index_ts["database/src/index.ts"]
-  file_database_src_modules_database_database_testing_utilities_integration_test_ts["database/src/modules/database/database-testing.utilities.integration.test.ts"]
-  file_database_src_modules_database_database_constants_ts["database/src/modules/database/database.constants.ts"]
-  file_database_src_modules_database_database_module_integration_test_ts["database/src/modules/database/database.module.integration.test.ts"]
-  file_database_src_modules_database_database_module_ts["database/src/modules/database/database.module.ts"]
-  file_database_src_modules_database_database_service_ts["database/src/modules/database/database.service.ts"]
-  file_database_src_modules_database_database_service_unit_test_ts["database/src/modules/database/database.service.unit.test.ts"]
-  file_database_src_modules_database_database_types_ts["database/src/modules/database/database.types.ts"]
-  file_database_src_modules_database_database_utilities_ts["database/src/modules/database/database.utilities.ts"]
-  file_database_src_modules_database_database_utilities_unit_test_ts["database/src/modules/database/database.utilities.unit.test.ts"]
-  file_database_src_modules_database_entities_creatable_entity_ts["database/src/modules/database/entities/creatable.entity.ts"]
-  file_database_src_modules_database_entities_deletable_entity_ts["database/src/modules/database/entities/deletable.entity.ts"]
-  file_database_src_modules_database_entities_identifiable_entity_ts["database/src/modules/database/entities/identifiable.entity.ts"]
-  file_database_src_modules_database_entities_updatable_entity_ts["database/src/modules/database/entities/updatable.entity.ts"]
-  file_database_src_modules_database_postgres_container_constants_ts["database/src/modules/database/postgres-container.constants.ts"]
-  file_database_src_modules_database_postgres_container_types_ts["database/src/modules/database/postgres-container.types.ts"]
-  file_database_src_modules_database_postgres_container_utilities_integration_test_ts["database/src/modules/database/postgres-container.utilities.integration.test.ts"]
-  file_database_src_modules_database_postgres_container_utilities_ts["database/src/modules/database/postgres-container.utilities.ts"]
+  file_database_src_modules_database_database_testing_utilities_integration_test_ts["database/src/modules/postgresql/postgresql-testing.utilities.integration.test.ts"]
+  file_database_src_modules_database_database_constants_ts["database/src/modules/postgresql/postgresql.constants.ts"]
+  file_database_src_modules_database_database_module_integration_test_ts["database/src/modules/postgresql/postgresql.module.integration.test.ts"]
+  file_database_src_modules_database_database_module_ts["database/src/modules/postgresql/postgresql.module.ts"]
+  file_database_src_modules_database_database_service_ts["database/src/modules/postgresql/postgresql.service.ts"]
+  file_database_src_modules_database_database_service_unit_test_ts["database/src/modules/postgresql/postgresql.service.unit.test.ts"]
+  file_database_src_modules_database_database_types_ts["database/src/modules/postgresql/postgresql.types.ts"]
+  file_database_src_modules_database_database_utilities_ts["database/src/modules/postgresql/postgresql.utilities.ts"]
+  file_database_src_modules_database_database_utilities_unit_test_ts["database/src/modules/postgresql/postgresql.utilities.unit.test.ts"]
+  file_database_src_modules_database_entities_creatable_entity_ts["database/src/modules/postgresql/entities/creatable.entity.ts"]
+  file_database_src_modules_database_entities_deletable_entity_ts["database/src/modules/postgresql/entities/deletable.entity.ts"]
+  file_database_src_modules_database_entities_identifiable_entity_ts["database/src/modules/postgresql/entities/identifiable.entity.ts"]
+  file_database_src_modules_database_entities_updatable_entity_ts["database/src/modules/postgresql/entities/updatable.entity.ts"]
+  file_database_src_modules_database_postgres_container_constants_ts["database/src/modules/postgresql/postgresql-container.constants.ts"]
+  file_database_src_modules_database_postgres_container_types_ts["database/src/modules/postgresql/postgresql-container.types.ts"]
+  file_database_src_modules_database_postgres_container_utilities_integration_test_ts["database/src/modules/postgresql/postgresql-container.utilities.integration.test.ts"]
+  file_database_src_modules_database_postgres_container_utilities_ts["database/src/modules/postgresql/postgresql-container.utilities.ts"]
   file_database_src_modules_export_export_arguments_command_integration_test_ts["database/src/modules/export/export-arguments.command.integration.test.ts"]
   file_database_src_modules_export_export_dry_run_command_integration_test_ts["database/src/modules/export/export-dry-run.command.integration.test.ts"]
   file_database_src_modules_export_export_dry_run_command_unit_test_ts["database/src/modules/export/export-dry-run.command.unit.test.ts"]
@@ -3904,22 +3903,22 @@ graph LR
   file_database_src_modules_import_import_constants_ts["database/src/modules/import/import.constants.ts"]
   file_database_src_modules_import_import_module_ts["database/src/modules/import/import.module.ts"]
   file_database_src_modules_import_import_types_ts["database/src/modules/import/import.types.ts"]
-  file_database_src_modules_postgres_client_postgres_client_constants_ts["database/src/modules/postgres-client/postgres-client.constants.ts"]
-  file_database_src_modules_postgres_client_postgres_client_module_ts["database/src/modules/postgres-client/postgres-client.module.ts"]
-  file_database_src_modules_postgres_client_postgres_client_service_ts["database/src/modules/postgres-client/postgres-client.service.ts"]
-  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts["database/src/modules/postgres-client/postgres-client.service.unit.test.ts"]
-  file_database_src_modules_postgres_client_postgres_client_types_ts["database/src/modules/postgres-client/postgres-client.types.ts"]
-  file_database_src_modules_postgres_client_postgres_client_utilities_ts["database/src/modules/postgres-client/postgres-client.utilities.ts"]
-  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-client.utilities.unit.test.ts"]
-  file_database_src_modules_postgres_client_postgres_dump_utilities_ts["database/src/modules/postgres-client/postgres-dump.utilities.ts"]
-  file_database_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-dump.utilities.unit.test.ts"]
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts["database/src/modules/postgres-client/postgres-truncate.utilities.ts"]
-  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts["database/src/modules/postgres-client/postgres-truncate.utilities.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_client_constants_ts["database/src/modules/postgresql-utilities/postgresql-utilities.constants.ts"]
+  file_database_src_modules_postgres_client_postgres_client_module_ts["database/src/modules/postgresql-utilities/postgresql-utilities.module.ts"]
+  file_database_src_modules_postgres_client_postgres_client_service_ts["database/src/modules/postgresql-utilities/postgresql-utilities.service.ts"]
+  file_database_src_modules_postgres_client_postgres_client_service_unit_test_ts["database/src/modules/postgresql-utilities/postgresql-utilities.service.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_client_types_ts["database/src/modules/postgresql-utilities/postgresql-utilities.types.ts"]
+  file_database_src_modules_postgres_client_postgres_client_utilities_ts["database/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts"]
+  file_database_src_modules_postgres_client_postgres_client_utilities_unit_test_ts["database/src/modules/postgresql-utilities/postgresql-utilities.utilities.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_dump_utilities_ts["database/src/modules/postgresql-utilities/postgresql-dump.utilities.ts"]
+  file_database_src_modules_postgres_client_postgres_dump_utilities_unit_test_ts["database/src/modules/postgresql-utilities/postgresql-dump.utilities.unit.test.ts"]
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_ts["database/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts"]
+  file_database_src_modules_postgres_client_postgres_truncate_utilities_unit_test_ts["database/src/modules/postgresql-utilities/postgresql-truncate.utilities.unit.test.ts"]
   file_database_testing_command_line_runner_ts["database/testing/command-line-runner.ts"]
   file_database_testing_database_testing_types_ts["database/testing/database-testing.types.ts"]
-  file_database_testing_database_testing_utilities_ts["database/testing/database-testing.utilities.ts"]
+  file_database_testing_database_testing_utilities_ts["database/testing/postgresql-testing.utilities.ts"]
   file_database_testing_fixture_database_ts["database/testing/fixture-database.ts"]
-  file_database_testing_fixtures_fixture_database_module_ts["database/testing/fixtures/fixture-database.module.ts"]
+  file_database_testing_fixtures_fixture_database_module_ts["database/testing/fixtures/fixture-postgresql.module.ts"]
   file_database_testing_fixtures_gadget_entity_ts["database/testing/fixtures/gadget.entity.ts"]
   file_database_testing_fixtures_migrations_1767225600000_create_widgets_ts["database/testing/fixtures/migrations/1767225600000-create-widgets.ts"]
   file_database_testing_fixtures_migrations_1767225600001_create_parts_ts["database/testing/fixtures/migrations/1767225600001-create-parts.ts"]
@@ -3983,8 +3982,8 @@ graph LR
   file_installation_src_modules_shell_configuration_shell_configuration_types_ts["installation/src/modules/shell-configuration/shell-configuration.types.ts"]
   file_installation_src_modules_software_software_brew_service_ts["installation/src/modules/software/software-brew.service.ts"]
   file_installation_src_modules_software_software_brew_service_unit_test_ts["installation/src/modules/software/software-brew.service.unit.test.ts"]
-  file_installation_src_modules_software_software_database_service_ts["installation/src/modules/software/software-database.service.ts"]
-  file_installation_src_modules_software_software_database_service_unit_test_ts["installation/src/modules/software/software-database.service.unit.test.ts"]
+  file_installation_src_modules_software_software_database_service_ts["installation/src/modules/software/software-postgresql.service.ts"]
+  file_installation_src_modules_software_software_database_service_unit_test_ts["installation/src/modules/software/software-postgresql.service.unit.test.ts"]
   file_installation_src_modules_software_software_docker_service_ts["installation/src/modules/software/software-docker.service.ts"]
   file_installation_src_modules_software_software_docker_service_unit_test_ts["installation/src/modules/software/software-docker.service.unit.test.ts"]
   file_installation_src_modules_software_software_gpg_service_ts["installation/src/modules/software/software-gpg.service.ts"]
@@ -4030,16 +4029,16 @@ graph LR
   file_integration_src_integration_types_ts["integration/src/integration.types.ts"]
   file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts["integration/src/modules/adopt-task-database/adopt-task-database.command.ts"]
   file_integration_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts["integration/src/modules/adopt-task-database/adopt-task-database.command.unit.test.ts"]
-  file_integration_src_modules_adopt_task_database_adopt_task_database_constants_ts["integration/src/modules/adopt-task-database/adopt-task-database.constants.ts"]
-  file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts["integration/src/modules/adopt-task-database/adopt-task-database.module.ts"]
-  file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["integration/src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
-  file_integration_src_modules_adopt_task_database_adopt_task_database_types_ts["integration/src/modules/adopt-task-database/adopt-task-database.types.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_constants_ts["integration/src/modules/adopt-task-database/adopt-task-postgresql.constants.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts["integration/src/modules/adopt-task-database/adopt-task-postgresql.module.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["integration/src/modules/adopt-task-database/adopt-task-postgresql.module.unit.test.ts"]
+  file_integration_src_modules_adopt_task_database_adopt_task_database_types_ts["integration/src/modules/adopt-task-database/adopt-task-postgresql.types.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_command_ts["integration/src/modules/keep-task-database/keep-task-database.command.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["integration/src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
-  file_integration_src_modules_keep_task_database_keep_task_database_constants_ts["integration/src/modules/keep-task-database/keep-task-database.constants.ts"]
-  file_integration_src_modules_keep_task_database_keep_task_database_module_ts["integration/src/modules/keep-task-database/keep-task-database.module.ts"]
-  file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["integration/src/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
-  file_integration_src_modules_keep_task_database_keep_task_database_types_ts["integration/src/modules/keep-task-database/keep-task-database.types.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_constants_ts["integration/src/modules/keep-task-database/keep-task-postgresql.constants.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_module_ts["integration/src/modules/keep-task-database/keep-task-postgresql.module.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["integration/src/modules/keep-task-database/keep-task-postgresql.module.unit.test.ts"]
+  file_integration_src_modules_keep_task_database_keep_task_database_types_ts["integration/src/modules/keep-task-database/keep-task-postgresql.types.ts"]
   file_integration_src_modules_process_runner_process_runner_constants_ts["integration/src/modules/process-runner/process-runner.constants.ts"]
   file_integration_src_modules_process_runner_process_runner_module_ts["integration/src/modules/process-runner/process-runner.module.ts"]
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts["integration/src/modules/process-runner/process-runner.module.unit.test.ts"]
@@ -4057,20 +4056,20 @@ graph LR
   file_integration_src_modules_run_affected_run_affected_service_ts["integration/src/modules/run-affected/run-affected.service.ts"]
   file_integration_src_modules_run_affected_run_affected_service_unit_test_ts["integration/src/modules/run-affected/run-affected.service.unit.test.ts"]
   file_integration_src_modules_run_affected_run_affected_types_ts["integration/src/modules/run-affected/run-affected.types.ts"]
-  file_integration_src_modules_task_database_task_database_constants_ts["integration/src/modules/task-database/task-database.constants.ts"]
-  file_integration_src_modules_task_database_task_database_module_ts["integration/src/modules/task-database/task-database.module.ts"]
-  file_integration_src_modules_task_database_task_database_module_unit_test_ts["integration/src/modules/task-database/task-database.module.unit.test.ts"]
-  file_integration_src_modules_task_database_task_database_service_ts["integration/src/modules/task-database/task-database.service.ts"]
-  file_integration_src_modules_task_database_task_database_service_unit_test_ts["integration/src/modules/task-database/task-database.service.unit.test.ts"]
-  file_integration_src_modules_task_database_task_database_types_ts["integration/src/modules/task-database/task-database.types.ts"]
-  file_integration_src_modules_task_database_task_database_utilities_ts["integration/src/modules/task-database/task-database.utilities.ts"]
-  file_integration_src_modules_task_database_task_database_utilities_unit_test_ts["integration/src/modules/task-database/task-database.utilities.unit.test.ts"]
+  file_integration_src_modules_task_database_task_database_constants_ts["integration/src/modules/task-database/task-postgresql.constants.ts"]
+  file_integration_src_modules_task_database_task_database_module_ts["integration/src/modules/task-database/task-postgresql.module.ts"]
+  file_integration_src_modules_task_database_task_database_module_unit_test_ts["integration/src/modules/task-database/task-postgresql.module.unit.test.ts"]
+  file_integration_src_modules_task_database_task_database_service_ts["integration/src/modules/task-database/task-postgresql.service.ts"]
+  file_integration_src_modules_task_database_task_database_service_unit_test_ts["integration/src/modules/task-database/task-postgresql.service.unit.test.ts"]
+  file_integration_src_modules_task_database_task_database_types_ts["integration/src/modules/task-database/task-postgresql.types.ts"]
+  file_integration_src_modules_task_database_task_database_utilities_ts["integration/src/modules/task-database/task-postgresql.utilities.ts"]
+  file_integration_src_modules_task_database_task_database_utilities_unit_test_ts["integration/src/modules/task-database/task-postgresql.utilities.unit.test.ts"]
   file_integration_src_modules_verify_task_database_verify_task_database_command_ts["integration/src/modules/verify-task-database/verify-task-database.command.ts"]
   file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["integration/src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
-  file_integration_src_modules_verify_task_database_verify_task_database_constants_ts["integration/src/modules/verify-task-database/verify-task-database.constants.ts"]
-  file_integration_src_modules_verify_task_database_verify_task_database_module_ts["integration/src/modules/verify-task-database/verify-task-database.module.ts"]
-  file_integration_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["integration/src/modules/verify-task-database/verify-task-database.module.unit.test.ts"]
-  file_integration_src_modules_verify_task_database_verify_task_database_types_ts["integration/src/modules/verify-task-database/verify-task-database.types.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_constants_ts["integration/src/modules/verify-task-database/verify-task-postgresql.constants.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_module_ts["integration/src/modules/verify-task-database/verify-task-postgresql.module.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["integration/src/modules/verify-task-database/verify-task-postgresql.module.unit.test.ts"]
+  file_integration_src_modules_verify_task_database_verify_task_database_types_ts["integration/src/modules/verify-task-database/verify-task-postgresql.types.ts"]
   file_integration_testing_mocks_ts["integration/testing/mocks.ts"]
   file_integration_testing_setup_ts["integration/testing/setup.ts"]
   file_integration_vitest_config_ts["integration/vitest.config.ts"]
@@ -4458,11 +4457,11 @@ graph LR
   file_lexico_entities_src_modules_entities_literature_Token_entity_ts["lexico-entities/src/modules/entities/literature/Token.entity.ts"]
   file_lexico_entities_src_modules_lexico_database_data_source_constants_ts["lexico-entities/src/modules/lexico-database/data-source.constants.ts"]
   file_lexico_entities_src_modules_lexico_database_data_source_constants_unit_test_ts["lexico-entities/src/modules/lexico-database/data-source.constants.unit.test.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts["lexico-entities/src/modules/lexico-database/lexico-database.constants.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts["lexico-entities/src/modules/lexico-database/lexico-database.module.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts["lexico-entities/src/modules/lexico-database/lexico-database.service.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_service_unit_test_ts["lexico-entities/src/modules/lexico-database/lexico-database.service.unit.test.ts"]
-  file_lexico_entities_src_modules_lexico_database_lexico_database_types_ts["lexico-entities/src/modules/lexico-database/lexico-database.types.ts"]
+  file_lexico_entities_src_modules_lexico_database_lexico_database_constants_ts["lexico-entities/src/modules/lexico-database/lexico-postgresql.constants.ts"]
+  file_lexico_entities_src_modules_lexico_database_lexico_database_module_ts["lexico-entities/src/modules/lexico-database/lexico-postgresql.module.ts"]
+  file_lexico_entities_src_modules_lexico_database_lexico_database_service_ts["lexico-entities/src/modules/lexico-database/lexico-postgresql.service.ts"]
+  file_lexico_entities_src_modules_lexico_database_lexico_database_service_unit_test_ts["lexico-entities/src/modules/lexico-database/lexico-postgresql.service.unit.test.ts"]
+  file_lexico_entities_src_modules_lexico_database_lexico_database_types_ts["lexico-entities/src/modules/lexico-database/lexico-postgresql.types.ts"]
   file_lexico_entities_src_modules_lexico_database_migrations_1791164926316_migration_ts["lexico-entities/src/modules/lexico-database/migrations/1791164926316-migration.ts"]
   file_lexico_entities_testing_entity_definition_assertions_ts["lexico-entities/testing/entity-definition-assertions.ts"]
   file_lexico_entities_testing_setup_ts["lexico-entities/testing/setup.ts"]
@@ -4934,13 +4933,13 @@ graph LR
   file_meanderaw_cli_src_modules_meanderaw_database_data_source_constants_ts["meanderaw-cli/src/modules/meanderaw-database/data-source.constants.ts"]
   file_meanderaw_cli_src_modules_meanderaw_database_entities_meander_entity_ts["meanderaw-cli/src/modules/meanderaw-database/entities/meander.entity.ts"]
   file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_patterns_service_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database-patterns.service.integration.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_constants_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.constants.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.module.integration.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.module.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.integration.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.service.unit.test.ts"]
-  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-database.types.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_constants_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.constants.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.module.integration.test.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_module_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.module.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_integration_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.service.integration.test.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.service.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_service_unit_test_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.service.unit.test.ts"]
+  file_meanderaw_cli_src_modules_meanderaw_database_meanderaw_database_types_ts["meanderaw-cli/src/modules/meanderaw-database/meanderaw-postgresql.types.ts"]
   file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791160950069_migration_ts["meanderaw-cli/src/modules/meanderaw-database/migrations/1791160950069-migration.ts"]
   file_meanderaw_cli_src_modules_meanderaw_database_migrations_1791414023001_migration_ts["meanderaw-cli/src/modules/meanderaw-database/migrations/1791414023001-migration.ts"]
   file_meanderaw_cli_src_modules_svg_svg_constants_ts["meanderaw-cli/src/modules/svg/svg.constants.ts"]
@@ -4989,10 +4988,10 @@ graph LR
   file_publication_eslint_config_ts["publication/eslint.config.ts"]
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts["publication/src/modules/adopt-task-database/adopt-task-database.command.ts"]
   file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-database.command.unit.test.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_constants_ts["publication/src/modules/adopt-task-database/adopt-task-database.constants.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts["publication/src/modules/adopt-task-database/adopt-task-database.module.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_types_ts["publication/src/modules/adopt-task-database/adopt-task-database.types.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_constants_ts["publication/src/modules/adopt-task-database/adopt-task-postgresql.constants.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts["publication/src/modules/adopt-task-database/adopt-task-postgresql.module.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-postgresql.module.unit.test.ts"]
+  file_publication_src_modules_adopt_task_database_adopt_task_database_types_ts["publication/src/modules/adopt-task-database/adopt-task-postgresql.types.ts"]
   file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.command.ts"]
   file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.command.unit.test.ts"]
   file_publication_src_modules_bound_base_to_push_bound_base_to_push_constants_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.constants.ts"]
@@ -5011,10 +5010,10 @@ graph LR
   file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.types.ts"]
   file_publication_src_modules_keep_task_database_keep_task_database_command_ts["publication/src/modules/keep-task-database/keep-task-database.command.ts"]
   file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["publication/src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_constants_ts["publication/src/modules/keep-task-database/keep-task-database.constants.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_module_ts["publication/src/modules/keep-task-database/keep-task-database.module.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["publication/src/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_types_ts["publication/src/modules/keep-task-database/keep-task-database.types.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_constants_ts["publication/src/modules/keep-task-database/keep-task-postgresql.constants.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_module_ts["publication/src/modules/keep-task-database/keep-task-postgresql.module.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["publication/src/modules/keep-task-database/keep-task-postgresql.module.unit.test.ts"]
+  file_publication_src_modules_keep_task_database_keep_task_database_types_ts["publication/src/modules/keep-task-database/keep-task-postgresql.types.ts"]
   file_publication_src_modules_link_packages_link_packages_command_ts["publication/src/modules/link-packages/link-packages.command.ts"]
   file_publication_src_modules_link_packages_link_packages_command_unit_test_ts["publication/src/modules/link-packages/link-packages.command.unit.test.ts"]
   file_publication_src_modules_link_packages_link_packages_constants_ts["publication/src/modules/link-packages/link-packages.constants.ts"]
@@ -5066,14 +5065,6 @@ graph LR
   file_publication_src_modules_release_group_release_group_service_ts["publication/src/modules/release-group/release-group.service.ts"]
   file_publication_src_modules_release_group_release_group_service_unit_test_ts["publication/src/modules/release-group/release-group.service.unit.test.ts"]
   file_publication_src_modules_release_group_release_group_types_ts["publication/src/modules/release-group/release-group.types.ts"]
-  file_publication_src_modules_run_affected_run_affected_command_ts["publication/src/modules/run-affected/run-affected.command.ts"]
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts["publication/src/modules/run-affected/run-affected.command.unit.test.ts"]
-  file_publication_src_modules_run_affected_run_affected_constants_ts["publication/src/modules/run-affected/run-affected.constants.ts"]
-  file_publication_src_modules_run_affected_run_affected_module_ts["publication/src/modules/run-affected/run-affected.module.ts"]
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts["publication/src/modules/run-affected/run-affected.module.unit.test.ts"]
-  file_publication_src_modules_run_affected_run_affected_service_ts["publication/src/modules/run-affected/run-affected.service.ts"]
-  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts["publication/src/modules/run-affected/run-affected.service.unit.test.ts"]
-  file_publication_src_modules_run_affected_run_affected_types_ts["publication/src/modules/run-affected/run-affected.types.ts"]
   file_publication_src_modules_tag_codebase_tag_codebase_command_ts["publication/src/modules/tag-codebase/tag-codebase.command.ts"]
   file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts["publication/src/modules/tag-codebase/tag-codebase.command.unit.test.ts"]
   file_publication_src_modules_tag_codebase_tag_codebase_constants_ts["publication/src/modules/tag-codebase/tag-codebase.constants.ts"]
@@ -5090,20 +5081,20 @@ graph LR
   file_publication_src_modules_tag_packages_tag_packages_service_ts["publication/src/modules/tag-packages/tag-packages.service.ts"]
   file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts["publication/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
   file_publication_src_modules_tag_packages_tag_packages_types_ts["publication/src/modules/tag-packages/tag-packages.types.ts"]
-  file_publication_src_modules_task_database_task_database_constants_ts["publication/src/modules/task-database/task-database.constants.ts"]
-  file_publication_src_modules_task_database_task_database_module_ts["publication/src/modules/task-database/task-database.module.ts"]
-  file_publication_src_modules_task_database_task_database_module_unit_test_ts["publication/src/modules/task-database/task-database.module.unit.test.ts"]
-  file_publication_src_modules_task_database_task_database_service_ts["publication/src/modules/task-database/task-database.service.ts"]
-  file_publication_src_modules_task_database_task_database_service_unit_test_ts["publication/src/modules/task-database/task-database.service.unit.test.ts"]
-  file_publication_src_modules_task_database_task_database_types_ts["publication/src/modules/task-database/task-database.types.ts"]
-  file_publication_src_modules_task_database_task_database_utilities_ts["publication/src/modules/task-database/task-database.utilities.ts"]
-  file_publication_src_modules_task_database_task_database_utilities_unit_test_ts["publication/src/modules/task-database/task-database.utilities.unit.test.ts"]
+  file_publication_src_modules_task_database_task_database_constants_ts["publication/src/modules/task-database/task-postgresql.constants.ts"]
+  file_publication_src_modules_task_database_task_database_module_ts["publication/src/modules/task-database/task-postgresql.module.ts"]
+  file_publication_src_modules_task_database_task_database_module_unit_test_ts["publication/src/modules/task-database/task-postgresql.module.unit.test.ts"]
+  file_publication_src_modules_task_database_task_database_service_ts["publication/src/modules/task-database/task-postgresql.service.ts"]
+  file_publication_src_modules_task_database_task_database_service_unit_test_ts["publication/src/modules/task-database/task-postgresql.service.unit.test.ts"]
+  file_publication_src_modules_task_database_task_database_types_ts["publication/src/modules/task-database/task-postgresql.types.ts"]
+  file_publication_src_modules_task_database_task_database_utilities_ts["publication/src/modules/task-database/task-postgresql.utilities.ts"]
+  file_publication_src_modules_task_database_task_database_utilities_unit_test_ts["publication/src/modules/task-database/task-postgresql.utilities.unit.test.ts"]
   file_publication_src_modules_verify_task_database_verify_task_database_command_ts["publication/src/modules/verify-task-database/verify-task-database.command.ts"]
   file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["publication/src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_constants_ts["publication/src/modules/verify-task-database/verify-task-database.constants.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_module_ts["publication/src/modules/verify-task-database/verify-task-database.module.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["publication/src/modules/verify-task-database/verify-task-database.module.unit.test.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_types_ts["publication/src/modules/verify-task-database/verify-task-database.types.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_constants_ts["publication/src/modules/verify-task-database/verify-task-postgresql.constants.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_module_ts["publication/src/modules/verify-task-database/verify-task-postgresql.module.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["publication/src/modules/verify-task-database/verify-task-postgresql.module.unit.test.ts"]
+  file_publication_src_modules_verify_task_database_verify_task_database_types_ts["publication/src/modules/verify-task-database/verify-task-postgresql.types.ts"]
   file_publication_src_modules_version_packages_version_packages_command_ts["publication/src/modules/version-packages/version-packages.command.ts"]
   file_publication_src_modules_version_packages_version_packages_command_unit_test_ts["publication/src/modules/version-packages/version-packages.command.unit.test.ts"]
   file_publication_src_modules_version_packages_version_packages_constants_ts["publication/src/modules/version-packages/version-packages.constants.ts"]
@@ -12604,26 +12595,6 @@ graph LR
   file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
   file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_types_ts
   file_publication_src_modules_release_group_release_group_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_run_affected_run_affected_command_ts --> file_publication_src_modules_run_affected_run_affected_constants_ts
-  file_publication_src_modules_run_affected_run_affected_command_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
-  file_publication_src_modules_run_affected_run_affected_module_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_command_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
-  file_publication_src_modules_run_affected_run_affected_module_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_run_affected_run_affected_constants_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_modules_run_affected_run_affected_types_ts
-  file_publication_src_modules_run_affected_run_affected_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_run_affected_run_affected_service_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_service_ts
   file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
   file_publication_src_modules_tag_codebase_tag_codebase_command_ts --> file_publication_src_modules_tag_codebase_tag_codebase_service_ts
   file_publication_src_modules_tag_codebase_tag_codebase_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
@@ -12734,7 +12705,6 @@ graph LR
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
@@ -12746,7 +12716,6 @@ graph LR
   file_publication_src_publication_module_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_run_affected_run_affected_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_verify_task_database_verify_task_database_module_ts
@@ -13263,7 +13232,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-47-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.81_MB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.83_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-63-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-1-3178c6?style=flat-square)
 
@@ -13312,27 +13281,27 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-19-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-3699-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-381-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-200-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1108-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-1214-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-3686-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-383-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-207-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1118-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-1227-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-94-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-95-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-805-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1928-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-817-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-1951-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-8-ea580c?style=flat-square)
 
 ### YAML
 
-![YAML Files](https://img.shields.io/badge/YAML_Files-17-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-2712-e34c26?style=flat-square)
-![YAML Documents](https://img.shields.io/badge/YAML_Documents-17-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-375-7c3aed?style=flat-square)
-![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-59-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1325-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2515-16a34a?style=flat-square)
+![YAML Files](https://img.shields.io/badge/YAML_Files-16-cb171e?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-2699-e34c26?style=flat-square)
+![YAML Documents](https://img.shields.io/badge/YAML_Documents-16-f97316?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-366-7c3aed?style=flat-square)
+![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-58-8b5cf6?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1299-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-2472-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
 ![YAML Comments](https://img.shields.io/badge/YAML_Comments-427-64748b?style=flat-square)
@@ -13340,22 +13309,22 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### TOML
 
-![TOML Files](https://img.shields.io/badge/TOML_Files-1-9c4221?style=flat-square)
-![TOML Lines](https://img.shields.io/badge/TOML_Lines-82-b45309?style=flat-square)
-![TOML Tables](https://img.shields.io/badge/TOML_Tables-11-7c3aed?style=flat-square)
+![TOML Files](https://img.shields.io/badge/TOML_Files-0-9c4221?style=flat-square)
+![TOML Lines](https://img.shields.io/badge/TOML_Lines-0-b45309?style=flat-square)
+![TOML Tables](https://img.shields.io/badge/TOML_Tables-0-7c3aed?style=flat-square)
 ![TOML Array Tables](https://img.shields.io/badge/TOML_Array_Tables-0-8b5cf6?style=flat-square)
-![TOML Keys](https://img.shields.io/badge/TOML_Keys-34-0284c7?style=flat-square)
-![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-8-16a34a?style=flat-square)
-![TOML Comments](https://img.shields.io/badge/TOML_Comments-19-64748b?style=flat-square)
+![TOML Keys](https://img.shields.io/badge/TOML_Keys-0-0284c7?style=flat-square)
+![TOML Arrays](https://img.shields.io/badge/TOML_Arrays-0-16a34a?style=flat-square)
+![TOML Comments](https://img.shields.io/badge/TOML_Comments-0-64748b?style=flat-square)
 
 ### Shell
 
 ![Shell Files](https://img.shields.io/badge/Shell_Files-20-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1664-4eaa25?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1662-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-14-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-152-0284c7?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-151-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-118-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-117-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-20-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-42-059669?style=flat-square)
 ![Shebangs](https://img.shields.io/badge/Shebangs-21-6b7280?style=flat-square)
@@ -13446,26 +13415,26 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-119-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19102-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-118-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-681-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-512-a78bfa?style=flat-square)
-![H4](https://img.shields.io/badge/H4-78-c4b5fd?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-121-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-19457-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-120-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-692-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-529-a78bfa?style=flat-square)
+![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-5439-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-849-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4131-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-5566-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-884-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4233-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-237-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2042-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-732-059669?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-238-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2050-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-733-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-22-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-374-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-11244-ef4444?style=flat-square)
-![Block Quotes](https://img.shields.io/badge/Block_Quotes-21-ca8a04?style=flat-square)
-![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-28-a16207?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-380-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-11506-ef4444?style=flat-square)
+![Block Quotes](https://img.shields.io/badge/Block_Quotes-22-ca8a04?style=flat-square)
+![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->
 
 <!-- callidescope:start -->
@@ -13476,13 +13445,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6614 |
-| Files | 1968 |
-| Calls traced | 7281 |
-| Call stacks | 1812 |
+| Callables | 6599 |
+| Files | 1963 |
+| Calls traced | 7266 |
+| Call stacks | 1810 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
-| Unfollowable calls | 361 |
+| Unfollowable calls | 360 |
 
 ### Projects
 
@@ -13495,7 +13464,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-cli` | 15 | 15 | 0 | 7 |
 | `projects/ic-suite/codependix/codependix-nx` | 6 | 6 | 0 | 5 |
 | `projects/ic-suite/codometer/codometer-cli` | 15 | 15 | 0 | 9 |
-| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 8 |
+| `projects/ic-suite/conformetry/conformetry-cli` | 15 | 15 | 0 | 9 |
 | `projects/ic-suite/conformetry/conformetry-languages` | 13 | 13 | 0 | 11 |
 | `projects/ic-suite/conformetry/conformetry-nx` | 15 | 15 | 0 | 9 |
 | `projects/lexico/lexico-cli` | 17 | 17 | 0 | 8 |

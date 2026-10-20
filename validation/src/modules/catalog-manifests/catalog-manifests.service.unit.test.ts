@@ -68,13 +68,13 @@ describe(CatalogManifestsService, () => {
       expect.hasAssertions();
 
       existingPaths.add("/workspace/projects");
-      scopeChildren.set("/workspace/projects", ["logging", "notes"]);
-      existingPaths.add("/workspace/projects/common/observability/package.json");
+      scopeChildren.set("/workspace/projects", ["observability", "notes"]);
+      existingPaths.add("/workspace/projects/observability/package.json");
 
       expect(service.resolveWorkspaceManifestPaths("/workspace")).toStrictEqual(
         [
           "/workspace/package.json",
-          "/workspace/projects/common/observability/package.json",
+          "/workspace/projects/observability/package.json",
         ],
       );
     });
@@ -134,7 +134,7 @@ describe(CatalogManifestsService, () => {
     /** Every violation one manifest produces, at the workspace root. */
     const validate = (manifest: PackageManifest): string[] =>
       service.validateManifestDependencies(
-        `${process.cwd()}/projects/common/observability/package.json`,
+        `${process.cwd()}/projects/observability/package.json`,
         manifest,
       );
 
@@ -142,7 +142,10 @@ describe(CatalogManifestsService, () => {
       expect.hasAssertions();
       expect(
         validate({
-          dependencies: { "@codebase/observability": "workspace:*", zod: "catalog:" },
+          dependencies: {
+            "@codebase/observability": "workspace:*",
+            zod: "catalog:",
+          },
         }),
       ).toStrictEqual([]);
     });
@@ -159,14 +162,14 @@ describe(CatalogManifestsService, () => {
       expect(
         validate({ dependencies: { zod: "catalog:^3.0.0" } }),
       ).toStrictEqual([
-        "projects/common/observability/package.json -> dependencies.zod must use catalog: (found catalog:^3.0.0)",
+        "projects/observability/package.json -> dependencies.zod must use catalog: (found catalog:^3.0.0)",
       ]);
     });
 
     it("names an external dependency pinned to a range", () => {
       expect.hasAssertions();
       expect(validate({ dependencies: { zod: "^3.0.0" } })).toStrictEqual([
-        "projects/common/observability/package.json -> dependencies.zod must use catalog: (found ^3.0.0)",
+        "projects/observability/package.json -> dependencies.zod must use catalog: (found ^3.0.0)",
       ]);
     });
 
@@ -175,7 +178,7 @@ describe(CatalogManifestsService, () => {
       expect(
         validate({ devDependencies: { "@codebase/observability": "^1.0.0" } }),
       ).toStrictEqual([
-        "projects/common/observability/package.json -> devDependencies.@codebase/observability must use workspace:* (found ^1.0.0)",
+        "projects/observability/package.json -> devDependencies.@codebase/observability must use workspace:* (found ^1.0.0)",
       ]);
     });
 
@@ -202,10 +205,10 @@ describe(CatalogManifestsService, () => {
           peerDependencies: { three: "3.0.0" },
         }),
       ).toStrictEqual([
-        "projects/common/observability/package.json -> dependencies.one must use catalog: (found 1.0.0)",
-        "projects/common/observability/package.json -> devDependencies.two must use catalog: (found 2.0.0)",
-        "projects/common/observability/package.json -> peerDependencies.three must use catalog: (found 3.0.0)",
-        "projects/common/observability/package.json -> optionalDependencies.four must use catalog: (found 4.0.0)",
+        "projects/observability/package.json -> dependencies.one must use catalog: (found 1.0.0)",
+        "projects/observability/package.json -> devDependencies.two must use catalog: (found 2.0.0)",
+        "projects/observability/package.json -> peerDependencies.three must use catalog: (found 3.0.0)",
+        "projects/observability/package.json -> optionalDependencies.four must use catalog: (found 4.0.0)",
       ]);
     });
 

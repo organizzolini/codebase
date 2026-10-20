@@ -40,7 +40,7 @@ The database name carries the environment; the schema name never does. TypeORM w
 - A developer keeping an existing volume runs the same init script by hand instead, once for each domain the volume lacks, after `nx run infrastructure:postgres:up` has recreated the container with the new list. For caelundas:
 
   ```bash
-  docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/persistences.sh
+  docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/databases.sh
   ```
 
   The script stops at the first `CREATE` whose object already exists, so name only the missing domains. Meanderaw's database already exists from [ADR 0020](0020-store-meanders-in-postgres.md)'s init, so it takes the script's statements through `psql`, with an `ALTER DATABASE` in place of the `CREATE DATABASE`:

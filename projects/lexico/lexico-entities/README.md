@@ -16,13 +16,13 @@ lexico-cli, never depends on `@nestjs/graphql`.
 ## Usage
 
 ```ts
-import { LexicoDatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
+import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 ```
 
-`LexicoDatabaseModule` connects to `lexico_development`.`lexico` as
-`lexico_username` through [`@codebase/persistence`](../../persistence/README.md)'s
+`DatabaseModule` connects to `lexico_development`.`lexico` as
+`lexico_username` through [`@codebase/persistence`](../../common/persistence/README.md)'s
 `DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
-`lexicoDataSource`, in `src/modules/lexico-database/data-source.constants.ts`,
+`lexicoDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
 Neither synchronizes nor runs migrations on start, so only the data source and
@@ -74,7 +74,7 @@ morphology does not fit one flat row. A form is an `AdjectivalForm`,
 ### Base classes
 
 Every entity but `Inflection` extends
-[`@codebase/persistence`](../../persistence/README.md)'s `DeletableEntity` directly. It
+[`@codebase/persistence`](../../common/persistence/README.md)'s `DeletableEntity` directly. It
 declares the columns — a `uuid` id the database assigns with `uuidv7()`, then
 the created, updated, and soft-deleted timestamps and their nullable `*By`
 columns — so no entity restates them.
@@ -106,10 +106,10 @@ nx run lexico-entities:migration:extract-sql-all    # Emit .sql alongside each m
 
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
-`"migration": { "options": { "module": "src/modules/lexico-database" } }`,
+`"migration": { "options": { "module": "src/modules/database" } }`,
 which names the folder holding `data-source.constants.ts` and `migrations/`;
 its SQL extraction script lives in
-[`@codebase/persistence`](../../persistence/README.md).
+[`@codebase/persistence`](../../common/persistence/README.md).
 `generate` also extracts the SQL and formats the result, so a generated
 migration lands ready to review. Every migration ships a `-up.sql` and
 `-down.sql` next to its TypeScript, which is what makes a schema change
@@ -140,7 +140,7 @@ maintainer's call once the counts below match.
    run `infrastructure:postgres:recreate`, which deletes the volume:
 
    ```bash
-   docker exec -e POSTGRES_PROJECTS=lexico postgres sh /docker-entrypoint-initdb.d/persistences.sh
+   docker exec -e POSTGRES_PROJECTS=lexico postgres sh /docker-entrypoint-initdb.d/databases.sh
    ```
 
 3. **Dump `public`'s rows alone** with the database command line, naming
@@ -148,10 +148,10 @@ maintainer's call once the counts below match.
    volume where the old migration ever ran, its migrations table — stays
    behind; the new migration writes both for `lexico`. The path is relative
    to `projects/common/persistence`, where the command runs. See
-   [Moving data between databases](../../persistence/README.md#moving-data-between-databases):
+   [Moving data between databases](../../common/persistence/README.md#moving-data-between-databases):
 
    ```bash
-   pnpm exec nx run database:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
+   pnpm exec nx run persistence:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
    ```
 
 4. **Build the empty schema** with the migration, as `lexico_username`:
@@ -209,7 +209,7 @@ nx run lexico-entities:vitest:integration   # Against a Testcontainers PostgreSQ
 ```
 
 Integration tests start a throwaway Postgres 18 through
-[`@codebase/persistence/testing`](../../persistence/README.md), laid out like local
+[`@codebase/persistence/testing`](../../common/persistence/README.md), laid out like local
 Docker: `lexico_username` owning `lexico_testing` with a `lexico` schema. The
 schema is built by running the real migrations, never by synchronizing, and
 the suite asserts the entities have nothing left to change, so entity mappings
@@ -287,10 +287,10 @@ graph LR
 flowchart LR
   DatabaseModule
   EntitiesModule
-  LexicoDatabaseModule
+  DatabaseModule
   TypeOrmModule
   DatabaseModule --> TypeOrmModule
-  LexicoDatabaseModule --> DatabaseModule
+  DatabaseModule --> DatabaseModule
 ```
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
@@ -340,14 +340,14 @@ graph LR
   file_src_modules_entities_literature_Line_entity_ts["src/modules/entities/literature/Line.entity.ts"]
   file_src_modules_entities_literature_Text_entity_ts["src/modules/entities/literature/Text.entity.ts"]
   file_src_modules_entities_literature_Token_entity_ts["src/modules/entities/literature/Token.entity.ts"]
-  file_src_modules_lexico_database_data_source_constants_ts["src/modules/lexico-database/data-source.constants.ts"]
-  file_src_modules_lexico_database_data_source_constants_unit_test_ts["src/modules/lexico-database/data-source.constants.unit.test.ts"]
-  file_src_modules_lexico_database_lexico_database_constants_ts["src/modules/lexico-database/lexico-database.constants.ts"]
-  file_src_modules_lexico_database_lexico_database_module_ts["src/modules/lexico-database/lexico-database.module.ts"]
-  file_src_modules_lexico_database_lexico_database_service_ts["src/modules/lexico-database/lexico-database.service.ts"]
-  file_src_modules_lexico_database_lexico_database_service_unit_test_ts["src/modules/lexico-database/lexico-database.service.unit.test.ts"]
-  file_src_modules_lexico_database_lexico_database_types_ts["src/modules/lexico-database/lexico-database.types.ts"]
-  file_src_modules_lexico_database_migrations_1791164926316_migration_ts["src/modules/lexico-database/migrations/1791164926316-migration.ts"]
+  file_src_modules_lexico_database_data_source_constants_ts["src/modules/database/data-source.constants.ts"]
+  file_src_modules_lexico_database_data_source_constants_unit_test_ts["src/modules/database/data-source.constants.unit.test.ts"]
+  file_src_modules_lexico_database_lexico_database_constants_ts["src/modules/database/database.constants.ts"]
+  file_src_modules_lexico_database_lexico_database_module_ts["src/modules/database/database.module.ts"]
+  file_src_modules_lexico_database_lexico_database_service_ts["src/modules/database/database.service.ts"]
+  file_src_modules_lexico_database_lexico_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
+  file_src_modules_lexico_database_lexico_database_types_ts["src/modules/database/database.types.ts"]
+  file_src_modules_lexico_database_migrations_1791164926316_migration_ts["src/modules/database/migrations/1791164926316-migration.ts"]
   file_testing_entity_definition_assertions_ts["testing/entity-definition-assertions.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]

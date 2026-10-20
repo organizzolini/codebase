@@ -15,7 +15,7 @@ import {
   MARS_MORNING_VISIBILITY_DESCRIPTION,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { PhaseParameters } from "./phases.types";
 
 const createTimestamp = (): moment.Moment =>

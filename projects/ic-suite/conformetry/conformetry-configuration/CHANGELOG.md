@@ -1,3 +1,45 @@
+## 0.0.42 (2026-10-18)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.41
+
+## 0.0.41 (2026-10-18)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.40
+
+## 0.0.40 (2026-10-18)
+
+### 🚀 Features
+
+- ⚠️  **conformetry:** ✨ expose the filesystem and configuration directory to hooks ([#1695](https://github.com/organizzolini/codebase/pull/1695), [#1679](https://github.com/organizzolini/codebase/issues/1679))
+
+### ⚠️  Breaking Changes
+
+- **conformetry:** ✨ expose the filesystem and configuration directory to hooks  ([#1695](https://github.com/organizzolini/codebase/pull/1695), [#1679](https://github.com/organizzolini/codebase/issues/1679))
+  `GenerationService.runGenerator` in the published
+  `@conformetry/generation` now requires `configurationDirectoryPath`, so
+  an embedder calling it must pass the absolute directory of its
+  configuration file; the title carries `!` so the squash releases it as
+  such.
+  - This is stacked on #1693.
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.39
+
+## 0.0.39 (2026-10-18)
+
+### 🚀 Features
+
+- **conformetry:** ✨ run configured generator hooks from the command line ([#1693](https://github.com/organizzolini/codebase/pull/1693), [#1675](https://github.com/organizzolini/codebase/issues/1675))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-core to 0.0.38
+
 ## 0.0.38 (2026-10-18)
 
 ### 🧱 Updated Dependencies

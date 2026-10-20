@@ -109,7 +109,9 @@ describe(ConfigurationCommand, () => {
   });
 
   it("reads the directory it is given, and falls back to the working directory", () => {
-    expect(command.parseDirectory("packages/observability")).toBe("packages/observability");
+    expect(command.parseDirectory("packages/observability")).toBe(
+      "packages/observability",
+    );
     expect(command.parseDirectory("")).toBe(process.cwd());
     expect(command.parseDirectory(true)).toBe(process.cwd());
   });

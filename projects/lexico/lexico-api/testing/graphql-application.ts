@@ -2,11 +2,11 @@ import { ApolloDriver, type ApolloDriverConfig } from "@nestjs/apollo";
 import { GraphQLModule } from "@nestjs/graphql";
 import { z } from "zod";
 
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 import {
   LEXICO_DATABASE_MIGRATIONS,
   LexicoDatabaseModule,
 } from "@codebase/lexico-entities";
+import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/lexico-api.constants";
 import { ORPHANED_GRAPHQL_TYPES } from "../src/modules/lexemes/lexemes.constants";

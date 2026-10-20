@@ -1,9 +1,6 @@
 // 🏷️ Types
 
-import type {
-  MeanderRecord,
-  MeanderShape,
-} from "../meanderaw-database/meanderaw-database.types";
+import type { MeanderRecord, MeanderShape } from "../database/database.types";
 
 /**
  * What `DrawCodeService.draw` needs to decode, render, and persist one

@@ -41,7 +41,10 @@ describe(CatalogManifestsCommand, () => {
     });
     vi.mocked(
       catalogManifestsService.resolveWorkspaceManifestPaths,
-    ).mockReturnValue(["package.json", "projects/common/observability/package.json"]);
+    ).mockReturnValue([
+      "package.json",
+      "projects/common/observability/package.json",
+    ]);
     vi.mocked(catalogManifestsService.readManifest).mockReturnValue({});
   });
 

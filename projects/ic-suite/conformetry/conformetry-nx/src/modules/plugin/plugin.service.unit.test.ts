@@ -1,7 +1,9 @@
+import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
+import { GenerationService } from "@conformetry/generation";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { createTree } from "nx/src/generators/testing-utils/create-tree";
@@ -124,6 +126,58 @@ async function createWorkspace(): Promise<string> {
   );
 
   return workspaceRoot;
+}
+
+/**
+ * Writes a configuration declaring the same generator as the JSON one, plus a
+ * hook that refuses a name and one that stamps a receipt beside the file.
+ *
+ * Hooks are functions, so this one has to be a module. The generator itself
+ * is unchanged, which keeps the emitted plugin current for both files.
+ */
+async function writeHooksConfiguration(workspaceRoot: string): Promise<string> {
+  const configurationPath = path.join(workspaceRoot, "hooks.config.mjs");
+
+  await writeFile(
+    configurationPath,
+    [
+      'import path from "node:path";',
+      "",
+      "export default [",
+      "  {",
+      "    hooks: {",
+      "      postGenerate: async (context) => {",
+      "        const receiptPath = path.join(",
+      "          context.configurationDirectoryPath,",
+      '          "receipts",',
+      "          `${context.input.name}.log`,",
+      "        );",
+      "",
+      String.raw`        await context.filesystem.writeFile(receiptPath, "stamped\n");`,
+      "        context.generatedFilePaths.push(receiptPath);",
+      "      },",
+      "      preGenerate: (context) => {",
+      '        if (context.input.name === "forbidden") {',
+      '          throw new Error("Refused the name forbidden");',
+      "        }",
+      "      },",
+      "    },",
+      "    instances: [",
+      "      {",
+      '        patterns: ["packages/*/src/modules/*"],',
+      '        substitutions: { type: "packages" },',
+      "      },",
+      "    ],",
+      '    name: "widget",',
+      '    templatePath: "templates/widget",',
+      "  },",
+      "];",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  return configurationPath;
 }
 
 describe(PluginService, () => {
@@ -419,6 +473,107 @@ describe(PluginService, () => {
         undefined,
         { generator: "nope" },
       );
+    });
+  });
+
+  describe("runGenerator with configured hooks", () => {
+    let hooksOptions: { configurationPath: string };
+
+    beforeAll(async () => {
+      hooksOptions = {
+        configurationPath: await writeHooksConfiguration(workspaceRoot),
+      };
+    });
+
+    it("hands the runtime the hooks, the tree-backed adapter and the configuration directory", async () => {
+      const runGeneratorSpy = vi.spyOn(
+        GenerationService.prototype,
+        "runGenerator",
+      );
+      const tree = createTree();
+
+      tree.root = workspaceRoot;
+
+      try {
+        await service.runGenerator({
+          generatorName: "widget",
+          options: {
+            ...hooksOptions,
+            directory: "packages/widgets/src/modules",
+            name: "cogs",
+          },
+          tree,
+          workspaceRoot,
+        });
+
+        expect(runGeneratorSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            configurationDirectoryPath: workspaceRoot,
+            definition: expect.objectContaining({
+              hooks: {
+                postGenerate: expect.any(Function) as unknown,
+                preGenerate: expect.any(Function) as unknown,
+              },
+            }) as unknown,
+            filesystem: expect.objectContaining({
+              writeFile: expect.any(Function) as unknown,
+            }) as unknown,
+          }),
+        );
+      } finally {
+        runGeneratorSpy.mockRestore();
+      }
+    });
+
+    it("keeps a hook's write in the tree rather than on disk", async () => {
+      const tree = createTree();
+
+      tree.root = workspaceRoot;
+
+      const generatedFilePaths = await service.runGenerator({
+        generatorName: "widget",
+        options: {
+          ...hooksOptions,
+          directory: "packages/widgets/src/modules",
+          name: "bolts",
+        },
+        tree,
+        workspaceRoot,
+      });
+
+      // The hook builds an absolute path; the tree-backed adapter is what
+      // turns it into the workspace-relative path the tree records.
+      expect(tree.read("receipts/bolts.log", "utf8")).toBe("stamped\n");
+      expect(existsSync(path.join(workspaceRoot, "receipts/bolts.log"))).toBe(
+        false,
+      );
+      expect(generatedFilePaths).toContain(
+        path.join(workspaceRoot, "receipts/bolts.log"),
+      );
+    });
+
+    it("leaves the tree untouched when a hook throws", async () => {
+      const tree = createTree();
+
+      tree.root = workspaceRoot;
+
+      // `createTree` itself records a `.prettierrc`, so "untouched" means no
+      // change beyond the ones the tree already held.
+      const changesBefore = tree.listChanges();
+
+      await expect(
+        service.runGenerator({
+          generatorName: "widget",
+          options: {
+            ...hooksOptions,
+            directory: "packages/widgets/src/modules",
+            name: "forbidden",
+          },
+          tree,
+          workspaceRoot,
+        }),
+      ).rejects.toThrow("Refused the name forbidden");
+      expect(tree.listChanges()).toStrictEqual(changesBefore);
     });
   });
 

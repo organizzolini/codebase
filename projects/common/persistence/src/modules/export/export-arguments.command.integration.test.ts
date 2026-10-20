@@ -6,7 +6,7 @@ import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
-import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-database";
+import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
 
 // 🎯 The real execFile, wrapped so each test can see whether any client tool
 // was started at all.

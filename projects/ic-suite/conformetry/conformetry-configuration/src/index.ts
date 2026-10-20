@@ -42,3 +42,8 @@ export {
   createPlaceholderValue,
 } from "./modules/rendering/rendering.utilities";
 export type { TemplateDefinition } from "./modules/template-discovery/template-discovery.types";
+export type {
+  GeneratorHook,
+  GeneratorHookContext,
+  GeneratorHooks,
+} from "@conformetry/core";

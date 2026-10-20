@@ -8,7 +8,7 @@ import { SessionBranchNameGitService } from "./session-branch-name-git.service";
 import { SessionBranchNameService } from "./session-branch-name.service";
 
 /** The repository this suite runs in, whose real branch rules are read. */
-const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../../..");
+const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../..");
 
 describe(SessionBranchNameService, () => {
   let service: SessionBranchNameService;

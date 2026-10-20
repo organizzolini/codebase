@@ -10,11 +10,11 @@ import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
-} from "../../../testing/fixture-database";
+} from "../../../testing/fixture-persistence";
 import { mockStandardInputTerminal } from "../../../testing/mocks";
-import { startPostgresContainer } from "../database/postgres-container.utilities";
+import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
-import type { StartedPostgresContainer } from "../database/postgres-container.types";
+import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
 
 describe("import --clean --ddl", () => {
   const setStandardInputTerminal = mockStandardInputTerminal();

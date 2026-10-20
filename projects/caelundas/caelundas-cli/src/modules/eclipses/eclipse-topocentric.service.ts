@@ -11,8 +11,8 @@ import {
   MILLISECONDS_PER_MINUTE,
 } from "./eclipses.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { EclipsePhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { AzimuthElevationEphemeris } from "../ephemeris/ephemeris.types";
 import type { NeighborValues } from "../math/math.types";
 import type {

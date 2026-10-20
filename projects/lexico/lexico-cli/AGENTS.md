@@ -159,10 +159,10 @@ See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.
 ## Moving Data Between Databases
 
 Lexico tables move between databases through the database package's command
-line, not this one: `nx run database:start:export|import`, with
+line, not this one: `nx run persistence:start:export|import`, with
 `--schema lexico --table words` (or `--table lexico.words`). Run
 `import --dry-run` before `import --clean`, which never asks. See the
-[database README](../../persistence/README.md#moving-data-between-databases).
+[database README](../../common/persistence/README.md#moving-data-between-databases).
 
 ## Writing Modules
 

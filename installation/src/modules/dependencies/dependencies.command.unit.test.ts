@@ -29,7 +29,12 @@ import type { FakeMachine } from "../../../testing/fake-process-runner";
 import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
 import type { ProcessOptions } from "../process-runner/process-runner.types";
 
-const INSTALL_STEPS = ["pnpm install", "nx reset", "uv sync", "terraform init"];
+const INSTALL_STEPS = [
+  "pnpm install",
+  "nx reset",
+  "uv sync --project configuration",
+  "terraform init",
+];
 const CREDENTIALS = [
   'TF_VAR_linode_token="secret-token"',
   "TF_VAR_linode_kubernetes_engine_cluster_id=lke12345-6789-abcd",

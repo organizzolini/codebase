@@ -12,6 +12,9 @@ export const LINODE_TOKEN_VARIABLE = "TF_VAR_linode_token";
 /** The variable holding the cluster's id, which may carry a node pool suffix. */
 export const CLUSTER_ID_VARIABLE = "TF_VAR_linode_kubernetes_engine_cluster_id";
 
+/** The workspace config uv should resolve as the project root. */
+export const UV_WORKSPACE_PROJECT_PATH = "configuration";
+
 /** Matches the first separator of a node pool suffix, such as `lke12345-6789`. */
 export const POOL_SUFFIX_PATTERN = /[-_].*$/u;
 

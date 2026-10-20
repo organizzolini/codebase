@@ -71,7 +71,13 @@
       "!{workspaceRoot}/.agents/skills/writing-for-agents/**",
       "!{workspaceRoot}/.agents/skills/writing-skills/**"
     ],
-    "workspace-files": ["{projectRoot}/**/*", "workspace-unowned"],
+    "workspace-files": [
+      "!{projectRoot}/.cspell/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
+      "{projectRoot}/**/*",
+      "workspace-unowned"
+    ],
     "workspace-unowned": [
       "!{workspaceRoot}/projects/**/*",
       "{workspaceRoot}/**/*"
@@ -206,6 +212,9 @@
       "description": "Lint workspace root files with ESLint — config files, scripts, documentation, the infrastructure project (named explicitly rather than given its own eslint target, which would need a tsconfig just to lint an eslint.config.ts), and every markdown file in the workspace. That trailing `**/*.md` is what gives `project-structure/folder-structure` reach over markdown paths, and it is a workspace-wide glob rather than a list of directories on purpose: an enumerated list only judges the directories somebody remembered to add, so it would not have caught openwiki/ — the undeclared directory that motivated the rule — and would not catch the next one. Markdown inside a project is judged twice, here and by that project's own eslint target, which costs a second and reports the same answer.",
       "executor": "nx:run-commands",
       "inputs": [
+        "!{projectRoot}/.cspell/**",
+        "!{projectRoot}/conformetry-templates/**",
+        "!{projectRoot}/cspell.config.yaml",
         "!{workspaceRoot}/.eslintcache/**",
         "{projectRoot}/**/*",
         "{workspaceRoot}/configuration/codebase-structure.json",
@@ -659,7 +668,7 @@
     },
     "shellcheck": {
       "cache": true,
-      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. configuration/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. pyproject.toml and uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
+      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. configuration/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. configuration/pyproject.toml and configuration/uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.agents/skills/sign-commits/scripts/*.sh",
@@ -668,12 +677,12 @@
         "{workspaceRoot}/configuration/.husky/pre-commit",
         "{workspaceRoot}/configuration/.husky/pre-push",
         "{workspaceRoot}/configuration/.shellcheck.rc",
-        "{workspaceRoot}/pyproject.toml",
-        "{workspaceRoot}/scripts/**/*.sh",
-        "{workspaceRoot}/uv.lock"
+        "{workspaceRoot}/configuration/pyproject.toml",
+        "{workspaceRoot}/configuration/uv.lock",
+        "{workspaceRoot}/scripts/**/*.sh"
       ],
       "options": {
-        "command": "uv run shellcheck --rcfile configuration/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'scripts/*.sh' configuration/.husky/commit-msg configuration/.husky/pre-commit configuration/.husky/pre-push)",
+        "command": "uv run --project configuration shellcheck --rcfile configuration/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'scripts/*.sh' configuration/.husky/commit-msg configuration/.husky/pre-commit configuration/.husky/pre-push)",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -764,15 +773,15 @@
         "{workspaceRoot}/*.ts",
         "{workspaceRoot}/.devcontainer/scripts/**/*.ts",
         "{workspaceRoot}/configuration/**/*.{ts,tsx}",
+        "{workspaceRoot}/configuration/tsconfig.workspace.json",
         "{workspaceRoot}/scripts/**/*.ts",
-        "{workspaceRoot}/tsconfig.json",
         "shared-globals",
         {
           "externalDependencies": ["type-coverage", "typescript"]
         }
       ],
       "options": {
-        "command": "type-coverage --at-least 95 --detail --project tsconfig.json",
+        "command": "type-coverage --at-least 95 --detail --project configuration/tsconfig.workspace.json",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -785,15 +794,15 @@
         "{workspaceRoot}/*.ts",
         "{workspaceRoot}/.devcontainer/scripts/**/*.ts",
         "{workspaceRoot}/configuration/**/*.ts",
+        "{workspaceRoot}/configuration/tsconfig.workspace.json",
         "{workspaceRoot}/scripts/**/*.ts",
-        "{workspaceRoot}/tsconfig.json",
         "shared-globals",
         {
           "externalDependencies": ["typescript-7"]
         }
       ],
       "options": {
-        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p tsconfig.json",
+        "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p configuration/tsconfig.workspace.json",
         "cwd": "{workspaceRoot}"
       },
       "outputs": []
@@ -819,39 +828,39 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/*.py",
+        "{workspaceRoot}/configuration/pyproject.toml",
+        "{workspaceRoot}/configuration/uv.lock",
         "{workspaceRoot}/configuration/vulture_whitelist.py",
         "{workspaceRoot}/projects/affirmancy/pyproject.toml",
-        "{workspaceRoot}/pyproject.toml",
         "{workspaceRoot}/scripts/**/*.py",
-        "{workspaceRoot}/uv.lock",
         "workspace-files",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "uv run vulture . configuration/vulture_whitelist.py --min-confidence 80 --exclude '*/projects/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*,*/.claude/*'",
+        "command": "uv run --project configuration vulture . configuration/vulture_whitelist.py --min-confidence 80 --exclude '*/projects/*,*/node_modules/*,*/dist/*,*/coverage/*,*/.venv/*,*/.claude/*'",
         "cwd": "{workspaceRoot}"
       }
     },
     "yaml-lint": {
       "cache": true,
-      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer files, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. pyproject.toml and uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
+      "description": "Lint the workspace-root YAML no project reaches: the GitHub Actions workflows, composite action, and issue templates, the devcontainer files, the shared cspell and yamllint configuration, and the pnpm workspace file. The generated pnpm-lock.yaml is left out on purpose, and the Helm templates are skipped by the `**/templates/` ignore in yamllint.yaml because their Go template directives are not valid YAML. The installed skills under .agents/ are owned upstream and stay out. configuration/pyproject.toml and configuration/uv.lock are inputs because they pin yamllint itself: without them, a yamllint upgrade replays a cached pass and stops linting. Defined here rather than in the nx.json targetDefaults entry, which is filtered to language tags this project does not carry.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.devcontainer/**/*.{yaml,yml}",
         "{workspaceRoot}/.github/**/*.{yaml,yml}",
         "{workspaceRoot}/configuration/cspell.config.yaml",
+        "{workspaceRoot}/configuration/pyproject.toml",
+        "{workspaceRoot}/configuration/uv.lock",
         "{workspaceRoot}/configuration/yamllint.yaml",
         "{workspaceRoot}/pnpm-workspace.yaml",
-        "{workspaceRoot}/pyproject.toml",
-        "{workspaceRoot}/uv.lock",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "uv run yamllint -c configuration/yamllint.yaml .devcontainer .github configuration/cspell.config.yaml configuration/yamllint.yaml pnpm-workspace.yaml",
+        "command": "uv run --project configuration yamllint -c configuration/yamllint.yaml .devcontainer .github configuration/cspell.config.yaml configuration/yamllint.yaml pnpm-workspace.yaml",
         "cwd": "{workspaceRoot}"
       }
     }

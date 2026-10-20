@@ -41,6 +41,7 @@ import type {
   ConformetryGeneratorDefinition,
   ParsedGeneratorEntry,
 } from "./configuration.types";
+import type { GeneratorHooks } from "@conformetry/core";
 
 /**
  * The one answer to "what is this run actually configured to do".
@@ -92,6 +93,9 @@ export class ConfigurationService {
       ...(definition.description === undefined
         ? {}
         : { description: definition.description }),
+      ...(definition.hooks === undefined
+        ? {}
+        : { hooks: this.applyHookDefaults(definition.hooks) }),
       inputs: definition.inputs ?? {},
       instances: definition.instances ?? [],
       name: definition.name,
@@ -102,6 +106,23 @@ export class ConfigurationService {
       ...(definition.threshold === undefined
         ? {}
         : { threshold: definition.threshold }),
+    };
+  }
+
+  /**
+   * Drops the hooks a generator left unset, rather than carrying them as
+   * explicit `undefined`, so what a host forwards is exactly what was declared.
+   */
+  private applyHookDefaults(
+    hooks: NonNullable<ParsedGeneratorEntry["hooks"]>,
+  ): GeneratorHooks {
+    return {
+      ...(hooks.postGenerate === undefined
+        ? {}
+        : { postGenerate: hooks.postGenerate }),
+      ...(hooks.preGenerate === undefined
+        ? {}
+        : { preGenerate: hooks.preGenerate }),
     };
   }
 
@@ -167,34 +188,6 @@ export class ConfigurationService {
     return args.extension === ".jsonc"
       ? parseJsonc(configurationContent)
       : JSON.parse(configurationContent);
-  }
-
-  /**
-   * Resolves a config path against the cwd, falling back to the workspace root.
-   */
-  private async resolveConfigurationPath(
-    configurationPath: string,
-  ): Promise<string> {
-    const absolutePath = path.resolve(configurationPath);
-
-    if (existsSync(absolutePath)) {
-      return absolutePath;
-    }
-
-    const workspaceRoot = await this.findWorkspaceRoot();
-
-    if (workspaceRoot === undefined) {
-      return absolutePath;
-    }
-
-    const workspaceRelativePath = path.resolve(
-      workspaceRoot,
-      configurationPath,
-    );
-
-    return existsSync(workspaceRelativePath)
-      ? workspaceRelativePath
-      : absolutePath;
   }
 
   // 🌎 Public Methods
@@ -350,6 +343,39 @@ export class ConfigurationService {
     }
 
     return trimmed;
+  }
+
+  /**
+   * Resolves a config path to the absolute file `loadConformetryConfiguration`
+   * reads: against the cwd first, then the workspace root.
+   *
+   * Public because the directory a hook builds its paths from is that file's
+   * parent, and only this resolution knows which file was read. A host that
+   * worked it out from the flag alone would miss the workspace-root fallback.
+   */
+  public async resolveConfigurationPath(
+    configurationPath: string,
+  ): Promise<string> {
+    const absolutePath = path.resolve(configurationPath);
+
+    if (existsSync(absolutePath)) {
+      return absolutePath;
+    }
+
+    const workspaceRoot = await this.findWorkspaceRoot();
+
+    if (workspaceRoot === undefined) {
+      return absolutePath;
+    }
+
+    const workspaceRelativePath = path.resolve(
+      workspaceRoot,
+      configurationPath,
+    );
+
+    return existsSync(workspaceRelativePath)
+      ? workspaceRelativePath
+      : absolutePath;
   }
 
   /** Resolves generator inputs from raw command-line arguments. */

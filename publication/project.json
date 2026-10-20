@@ -52,9 +52,6 @@
         "publishable-packages-gate": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts publishable-packages-gate"
         },
-        "run-affected": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts run-affected"
-        },
         "tag-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts tag-codebase"
         },

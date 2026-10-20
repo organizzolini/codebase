@@ -13,14 +13,14 @@ import {
 import { LoggerService } from "@codebase/observability";
 
 import { CorpusService } from "../corpus/corpus.service";
-import { MeanderawDatabaseService } from "../meanderaw-database/meanderaw-database.service";
+import { DatabaseService } from "../database/database.service";
 
 import { DrawCodeService } from "./draw-code.service";
 import { DrawEnumerationService } from "./draw-enumeration.service";
 import { DrawIndexService } from "./draw-index.service";
 import { DrawCommand } from "./draw.command";
 
-import type { Meander } from "../meanderaw-database/entities/meander.entity";
+import type { Meander } from "../database/entities/meander.entity";
 import type { MeanderPageContent } from "./draw-index.types";
 
 const { mkdirMock, writeFileMock } = vi.hoisted(() => ({
@@ -96,8 +96,8 @@ describe(DrawCommand, () => {
           useValue: createMock<CorpusService>({ ingest }),
         },
         {
-          provide: MeanderawDatabaseService,
-          useValue: createMock<MeanderawDatabaseService>({ clear }),
+          provide: DatabaseService,
+          useValue: createMock<DatabaseService>({ clear }),
         },
         {
           provide: LoggerService,
@@ -145,8 +145,8 @@ describe(DrawCommand, () => {
           useValue: createMock<CorpusService>(),
         },
         {
-          provide: MeanderawDatabaseService,
-          useValue: createMock<MeanderawDatabaseService>(),
+          provide: DatabaseService,
+          useValue: createMock<DatabaseService>(),
         },
         {
           provide: LoggerService,

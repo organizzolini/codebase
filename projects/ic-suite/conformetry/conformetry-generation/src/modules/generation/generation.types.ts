@@ -1,26 +1,6 @@
 // 🏷️ Types
 
-/**
- * A directory entry read from the source template tree.
- */
-export interface DirectoryEntry {
-  isDirectory: boolean;
-  name: string;
-}
-
-/**
- * Filesystem operations used by the runtime.
- *
- * Exists so a host with a virtual filesystem — an Nx generator `Tree`, for
- * instance — can run generation without touching disk. The default
- * implementation reads and writes directly.
- */
-export interface FileSystemAdapter {
-  listDirectory(directoryPath: string): Promise<DirectoryEntry[]>;
-  makeDirectory(directoryPath: string): Promise<void>;
-  readFile(filePath: string): Promise<string>;
-  writeFile(filePath: string, content: string): Promise<void>;
-}
+import type { FileSystemAdapter, GeneratorDefinition } from "@conformetry/core";
 
 /**
  * Formatting applied once generation completes.
@@ -33,45 +13,16 @@ export interface FormatterAdapter {
 }
 
 /**
- * Generator metadata and runtime configuration.
- */
-export interface GeneratorDefinition {
-  description?: string;
-  hooks?: GeneratorHooks;
-  name: string;
-  templateDirectoryPath: string;
-}
-
-/**
- * A generator hook function.
- */
-export type GeneratorHook = (
-  context: GeneratorHookContext,
-) => Promise<void> | void;
-
-/**
- * Data exposed to generator hooks.
- */
-export interface GeneratorHookContext {
-  definition: GeneratorDefinition;
-  generatedFilePaths: string[];
-  input: Record<string, string>;
-  outputDirectoryPath: string;
-  substitutions: Record<string, string>;
-}
-
-/**
- * Generator lifecycle hooks.
- */
-export interface GeneratorHooks {
-  postGenerate?: GeneratorHook;
-  preGenerate?: GeneratorHook;
-}
-
-/**
  * Arguments accepted by the runtime runner.
  */
 export interface RunGeneratorArguments {
+  /**
+   * Absolute directory of the configuration file that declared the generator.
+   *
+   * Handed to the hooks unchanged: the runtime derives nothing from it, since
+   * which file declared the generator is the host's knowledge.
+   */
+  configurationDirectoryPath: string;
   definition: GeneratorDefinition;
   filesystem?: FileSystemAdapter;
   formatter?: FormatterAdapter;

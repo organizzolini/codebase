@@ -150,7 +150,7 @@ definitions.
 
 ## Seeing it rather than reading about it
 
-[`conformetry-examples`](https://github.com/JimmyPaolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) is eleven self-contained examples, each
+[`conformetry-examples`](https://github.com/JimmyPaolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) is twelve self-contained examples, each
 with its own configuration, template, instances, and command. Two are worth
 running before scaffolding something unfamiliar:
 

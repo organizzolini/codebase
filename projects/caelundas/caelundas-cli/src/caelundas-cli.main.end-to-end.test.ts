@@ -6,8 +6,8 @@ import _ from "lodash";
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 import { LoggerService } from "@codebase/observability";
+import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import {
   detectable,
@@ -16,10 +16,10 @@ import {
 import { createMajorAspectsService } from "../testing/major-aspects.utilities";
 
 import { environmentSchema } from "./caelundas-cli.constants";
-import { CaelundasDatabaseModule } from "./modules/caelundas-database/caelundas-database.module";
-import { CalendarEvent } from "./modules/caelundas-database/entities/calendar-event.entity";
-import { Migration1791255787877 } from "./modules/caelundas-database/migrations/1791255787877-migration";
 import { CalendarService } from "./modules/calendar/calendar.service";
+import { DatabaseModule } from "./modules/database/database.module";
+import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
+import { Migration1791255787877 } from "./modules/database/migrations/1791255787877-migration";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";
@@ -362,7 +362,7 @@ describe("main end-to-end suite", () => {
 
     beforeAll(async () => {
       database = await startDatabaseTestingModule({
-        database: CaelundasDatabaseModule,
+        database: DatabaseModule,
         entities: [CalendarEvent],
         migrations: [Migration1791255787877],
         project: "caelundas",

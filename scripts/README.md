@@ -69,13 +69,16 @@ It is one file because it installs the Node the TypeScript runs on, so none of i
 
 Everything after Node exists lives in [`installation`](../installation/AGENTS.md), one command each. Run any of them on its own with `nx run installation:start:<command>`.
 
-| Command               | What it does                                                                                                     |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
-| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion blocks to your rc file; drops the retired helper                  |
-| `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
-| `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
-| `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
+- `setup` — Runs the four below in order, then says how to activate the new
+  shell configuration
+- `shell-configuration` — Writes nvm, pnpm, GPG, Node memory, completion
+  blocks to your rc file; drops the retired helper
+- `software` — Installs uv, Python, Ollama, Docker, GPG signing, Terraform and
+  the other infrastructure tools, and squawk
+- `environment-files` — Creates `.env` from every `.env.default` (excluding
+  the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER`
+- `dependencies` — Runs `pnpm install`, `nx reset`, `uv sync --project
+  configuration`, `terraform init`, and writes kubeconfig
 
 ### VS Code extensions and settings
 
@@ -237,17 +240,14 @@ The affected-run steps are commands of the
 | Command | What it does |
 | ------- | ------------ |
 | `bound-base-to-push` | On a CI push with `nx-base: push-before`, after the install, moves `NX_BASE` to the push's previous tip (`BEFORE`), keeping it when that is empty, all zeros, or not an ancestor of `NX_HEAD` |
-| `run-affected` | Runs one Nx target on the projects a CI change affects. Passes `--base`/`--head` straight to Nx, or, to correct the change set, hands it the changed files over `--stdin`: spelling files dropped unless `INCLUDE_SPELLING` is `true`, and the conformetry config added when a template changed and `INCLUDE_TEMPLATES` is `true` |
 | `publishable-packages-gate` | Runs `validation:verify-publishable-packages` whole when an ic-suite package or `validation` is affected and skips otherwise |
 
-All three read everything from the environment, so any of them can be run
+Both read everything from the environment, so either can be run
 locally:
 
 ```bash
 BEFORE=c160aad5f NX_BASE=HEAD~5 NX_HEAD=007edad2e GITHUB_ENV=/tmp/github-env \
   nx run publication:start:bound-base-to-push
-TARGET=test-code ARGUMENTS="--parallel=4" NX_BASE=004d1f58c^ NX_HEAD=004d1f58c \
-  nx run publication:start:run-affected
 ```
 
 ## Notepads

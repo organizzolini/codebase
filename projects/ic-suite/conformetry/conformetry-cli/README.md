@@ -498,6 +498,7 @@ anything else:
 import { GenerationService } from "@conformetry/generation";
 
 const result = await generationService.runGenerator({
+  configurationDirectoryPath: "/workspace/configuration",
   definition: {
     name: "nestjs-service-module",
     templateDirectoryPath: "templates/nestjs-service-module",
@@ -527,8 +528,8 @@ Agent skills for coding agents working with conformetry are published in
 ## Examples
 
 Worked examples and sandboxes are in
-[`@conformetry/examples`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) — eleven self-contained
-examples covering template authoring, case variants, structural comparison, drift detection, and Nx integration. An agent arriving from a conformance report can use
+[`@conformetry/examples`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) — twelve self-contained
+examples covering template authoring, case variants, structural comparison, drift detection, generator hooks, and Nx integration. An agent arriving from a conformance report can use
 [`AGENTS.md`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples/AGENTS.md) to find the example that explains each finding.
 
 ## Start

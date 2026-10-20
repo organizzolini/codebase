@@ -40,7 +40,6 @@ one class.
 
 | Command | Module | Called from |
 | ------- | ------ | ----------- |
-| `run-affected` | `src/modules/run-affected` | the `run-affected` composite action |
 | `publishable-packages-gate` | `src/modules/publishable-packages-gate` | the 📦 Publishable Packages leg of Continuous Integration |
 | `bound-base-to-push` | `src/modules/bound-base-to-push` | the `setup-codebase` composite action, on a push with `nx-base: push-before` |
 | `import-pr-task-cache` | `src/modules/import-pr-task-cache` | the `setup-codebase` composite action, in a merge group |

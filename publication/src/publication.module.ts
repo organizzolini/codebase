@@ -12,7 +12,6 @@ import { LinkPackagesModule } from "./modules/link-packages/link-packages.module
 import { MergeTaskCacheModule } from "./modules/merge-task-cache/merge-task-cache.module";
 import { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
 import { PublishablePackagesGateModule } from "./modules/publishable-packages-gate/publishable-packages-gate.module";
-import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
 import { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import { VerifyTaskDatabaseModule } from "./modules/verify-task-database/verify-task-database.module";
@@ -40,7 +39,6 @@ import { environmentSchema } from "./publication.constants";
     MergeTaskCacheModule,
     PublishPackagesModule,
     PublishablePackagesGateModule,
-    RunAffectedModule,
     TagCodebaseModule,
     TagPackagesModule,
     VerifyTaskDatabaseModule,

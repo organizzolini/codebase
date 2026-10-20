@@ -29,7 +29,7 @@ import type { MockInstance } from "vitest";
 const FIXTURE_PARENT = path.resolve(import.meta.dirname, "../../../tmp");
 
 /** The repository this suite runs in, whose real branch rules are read too. */
-const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../../..");
+const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "../../../..");
 
 const RENAME_DIRECTIVE =
   "🚨 Invoke the rename-branch skill to rename this branch before doing anything else.";

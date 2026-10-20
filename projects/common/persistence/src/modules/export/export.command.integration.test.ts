@@ -20,14 +20,14 @@ import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-database";
-import { startPostgresContainer } from "../database/postgres-container.utilities";
-import { postgresProcessEnvironment } from "../postgres-client/postgres-client.utilities";
+} from "../../../testing/fixture-persistence";
+import { postgresProcessEnvironment } from "../postgresql-utilities/postgresql-utilities.utilities";
+import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
-import type { FixtureDatabase } from "../../../testing/fixture-database";
-import type { PostgresConnection } from "../database/database.types";
-import type { StartedPostgresContainer } from "../database/postgres-container.types";
-import type { PostgresUriConnection } from "../postgres-client/postgres-client.types";
+import type { FixtureDatabase } from "../../../testing/fixture-persistence";
+import type { PostgresUriConnection } from "../postgresql-utilities/postgresql-utilities.types";
+import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
+import type { PostgresConnection } from "../postgresql/postgresql.types";
 
 // 🎯 The real execFile, wrapped so each test can read the arguments and
 // environment every client tool was started with.

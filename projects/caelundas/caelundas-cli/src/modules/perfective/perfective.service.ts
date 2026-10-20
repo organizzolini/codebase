@@ -18,7 +18,7 @@ import { TwilightsService } from "../twilights/twilights.service";
 import { detectorFamilies } from "./perfective.constants";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Coordinates, Ephemerides } from "../ephemeris/ephemeris.types";
 import type { Input } from "../input/input.types";
 import type { DetectorFamily, PerfectiveOptions } from "./perfective.types";

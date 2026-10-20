@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
-import { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
+import { CalendarEvent } from "../database/entities/calendar-event.entity";
 
 import { CalendarEventsService } from "./calendar-events.service";
 

@@ -92,11 +92,13 @@ file conform. Prefer populating `instanceLine`/`templateLine` (or
 ## Exports
 
 Types only: `ConformetryDifference`, `ConformetryDifferenceLanguage`,
-`ConformetryDifferenceType`, `ConformetryLanguageValidator`,
-`DocumentValidationResult`, `InstanceScore`, `InventoriedInstance`,
-`InventoriedPairing`, `InventoriedTemplate`, `LanguageValidatorDescriptor`,
-`LanguageValidatorResult`, `PreparedValidationDocument`,
-`PreparedValidationPayload`, and `ValidationFileResult`.
+`ConformetryDifferenceType`, `ConformetryLanguageValidator`, `DirectoryEntry`,
+`DocumentValidationResult`, `FileSystemAdapter`, `GeneratorDefinition`,
+`GeneratorHook`, `GeneratorHookContext`, `GeneratorHooks`, `InstanceScore`,
+`InventoriedInstance`, `InventoriedPairing`, `InventoriedTemplate`,
+`LanguageValidatorDescriptor`, `LanguageValidatorResult`,
+`PreparedValidationDocument`, `PreparedValidationPayload`, and
+`ValidationFileResult`.
 
 ## Test
 

@@ -23,13 +23,13 @@ The devcontainer provides Python 3.14.
 
 ## Setup
 
-This application is a member of the uv workspace declared in the root
-`pyproject.toml`, sharing the root `uv.lock` and `.venv`. Sync from the
-repository root — running `uv sync` inside this directory prunes the other
-members out of the shared venv.
+This application is a member of the uv workspace declared in
+`configuration/pyproject.toml`, sharing
+`configuration/uv.lock` and the root `.venv`. Sync from the
+repository root and point uv at that workspace config.
 
 ```bash
-uv sync
+uv sync --project configuration
 ```
 
 ## Quickstart
@@ -186,7 +186,7 @@ _This project has no immediate Nx dependencies or dependents._
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4373-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-220.39_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-220.38_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-3-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-17-3178c6?style=flat-square)
 

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 /** This package's root, and the workspace root every command runs from. */
 const packageDirectory = path.resolve(
@@ -75,6 +75,10 @@ const EXPECTATIONS: Record<string, ExampleExpectation> = {
     present: ["All checked files conform.", "Could not infer {{owner}}"],
   },
   "hello-template": { exitCode: 0, present: ["All checked files conform."] },
+  hooks: {
+    exitCode: 0,
+    present: ["Receipt written:", "hooks/mars/mars.txt", "receipts/mars.log"],
+  },
   "language-validators": {
     exitCode: 0,
     present: ["All checked files conform."],
@@ -232,6 +236,38 @@ const readFileTree = (directory: string): Record<string, string> => {
   );
 };
 
+/** One run of the hooks example's generator against an output directory. */
+const runHooksExample = (
+  name: string,
+  outputDirectory: string,
+): { exitCode: number; output: string } => {
+  const result = spawnSync(
+    "node",
+    [
+      ...CONFORMETRY_COMMAND,
+      "generate",
+      "--template",
+      "receipt",
+      "--name",
+      name,
+      "--directory",
+      outputDirectory,
+      "--config",
+      "projects/ic-suite/conformetry/conformetry-examples/examples/hooks/conformetry.config.ts",
+    ],
+    {
+      cwd: workspaceRoot,
+      encoding: "utf8",
+      env: { ...process.env, ...COMMAND_ENVIRONMENT },
+    },
+  );
+
+  return {
+    exitCode: result.status ?? 1,
+    output: `${result.stdout}${result.stderr}`,
+  };
+};
+
 describe("the examples this package ships", () => {
   it("expects an outcome from every example directory", () => {
     expect(Object.keys(EXPECTATIONS).toSorted()).toStrictEqual(
@@ -318,5 +354,59 @@ describe("the examples this package ships", () => {
         fs.rmSync(outputDirectory, { force: true, recursive: true });
       },
     );
+  });
+
+  describe("the hooks example", () => {
+    // Inside the workspace's ignored temporary directory, not the system's: the
+    // loader hook that transforms the configuration cannot resolve modules from
+    // outside the workspace, which passes on macOS and fails on Linux runners.
+    const runDirectory = path.join(
+      workspaceRoot,
+      "tmp",
+      "conformetry-examples",
+      "hooks-test",
+    );
+    // Beside the configuration, not the output: the hook builds this path from
+    // `configurationDirectoryPath`, so the file landing here is what proves the
+    // directory the command derived is the one that holds the configuration.
+    const receiptsDirectory = path.join(examplesDirectory, "hooks", "receipts");
+
+    afterEach(() => {
+      fs.rmSync(runDirectory, { force: true, recursive: true });
+      fs.rmSync(receiptsDirectory, { force: true, recursive: true });
+    });
+
+    it("writes its receipt beside the configuration, through the filesystem adapter", () => {
+      const { exitCode, output } = runHooksExample("mars", runDirectory);
+
+      expect(output).toContain("Receipt written:");
+      expect(exitCode).toBe(0);
+      // Only the rendered file: a receipt written beside the output, wherever
+      // in it, would show up here as an extra entry.
+      expect(readFileTree(runDirectory)).toStrictEqual({
+        [path.join("mars", "mars.txt")]: "Receipt for mars.\n",
+      });
+      expect(
+        fs.readFileSync(path.join(receiptsDirectory, "mars.log"), "utf8"),
+      ).toContain("mars.txt");
+    });
+
+    it("lists the receipt among the files the run produced", () => {
+      const { output } = runHooksExample("mars", runDirectory);
+
+      // The command prints each listed path on its own line, indented two
+      // spaces; the hook's own "Receipt written:" line must not satisfy this.
+      expect(output).toContain(
+        `\n  ${path.join(receiptsDirectory, "mars.log")}\n`,
+      );
+    });
+
+    it("writes nothing when its preGenerate hook refuses the input", () => {
+      const { exitCode, output } = runHooksExample("Not Kebab", runDirectory);
+
+      expect(output).toContain('Refused "Not Kebab"');
+      expect(exitCode).not.toBe(0);
+      expect(fs.existsSync(runDirectory)).toBe(false);
+    });
   });
 });

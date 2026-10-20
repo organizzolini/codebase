@@ -150,6 +150,20 @@ describe(IssueLabelsCommand, () => {
     );
   });
 
+  it("treats a missing issue body as empty content", async () => {
+    expect.hasAssertions();
+
+    process.env["ISSUE_NUMBER"] = "7";
+    process.env["ISSUE_LABELS"] = "[]";
+
+    await command.run();
+
+    expect(githubService.run).not.toHaveBeenCalled();
+    expect(logger.log).toHaveBeenCalledWith(
+      "📇 Verified issue labels were already in sync",
+    );
+  });
+
   it("skips labels already on the issue", async () => {
     expect.hasAssertions();
 

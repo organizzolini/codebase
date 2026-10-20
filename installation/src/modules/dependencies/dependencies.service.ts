@@ -19,6 +19,7 @@ import {
   POOL_SUFFIX_PATTERN,
   SURROUNDING_QUOTES_PATTERN,
   TERRAFORM_DIRECTORY,
+  UV_WORKSPACE_PROJECT_PATH,
   VARIABLE_NAME_PATTERN,
 } from "./dependencies.constants";
 
@@ -201,7 +202,11 @@ export class DependenciesService {
     this.resetNxCache();
 
     this.reporter.print("🐍 Setting up Python virtual environment...");
-    this.processRunner.runOrThrow("uv", ["sync"]);
+    this.processRunner.runOrThrow("uv", [
+      "sync",
+      "--project",
+      UV_WORKSPACE_PROJECT_PATH,
+    ]);
     this.reporter.print("✅ Python dependencies installed (.venv)");
 
     this.reporter.print("🏗  Initializing Terraform...");

@@ -19,12 +19,12 @@ import {
 } from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   AspectPhase,
   Body,
   MinorAspect,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type {
   AssembleMinorAspectEventArguments,

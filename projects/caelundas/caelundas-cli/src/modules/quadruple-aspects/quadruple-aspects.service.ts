@@ -5,8 +5,8 @@ import { QuadrupleAspectsBaseService } from "./quadruple-aspects-base.service";
 import { QuadrupleAspectsComposerService } from "./quadruple-aspects-composer.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Moment } from "moment-timezone";
 
 /**
