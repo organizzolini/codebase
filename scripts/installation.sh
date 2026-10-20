@@ -35,7 +35,7 @@ source ./scripts/utilities.sh
 # is shimmed from the copy npm bundles, because the native packages (sweph,
 # cpu-features) need it on PATH. Only the .env files of the setup command apply:
 # its shell configuration, software, and Terraform steps are for a developer
-# Mac. Safe to run again.
+# Mac. Docker and Postgres are started last. Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
@@ -80,6 +80,28 @@ if [[ "${operating_system}" == "Linux" ]]; then
   echo "📦 Installing the workspace's packages..."
   pnpm install --frozen-lockfile
   NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts environment-files
+
+  # Docker and Postgres. A container that carries the daemon binary but runs
+  # none gets one started, so `infrastructure:postgres:up` has an engine; a
+  # machine that already reaches a daemon, like the devcontainer's mounted
+  # socket, is left alone. A failure warns rather than failing a setup whose
+  # Node toolchain is already done.
+  if [[ "$(id -u)" == "0" ]] && command -v dockerd &> /dev/null && ! docker info &> /dev/null; then
+    echo "🐳 Starting the Docker daemon..."
+    mkdir -p "${HOME}/.local/state"
+    setsid nohup dockerd > "${HOME}/.local/state/dockerd.log" 2>&1 &
+    for _ in $(seq 1 30); do
+      docker info &> /dev/null && break
+      sleep 1
+    done
+  fi
+  if docker info &> /dev/null; then
+    echo "🐘 Starting Postgres..."
+    pnpm exec nx run infrastructure:postgres:up ||
+      echo "⚠️  Postgres did not start. Retry with: pnpm exec nx run infrastructure:postgres:up" >&2
+  else
+    echo "⚠️  No Docker daemon is reachable, so Postgres was not started." >&2
+  fi
 
   # utilities.sh marks every script executable, which leaves the few that git
   # stores as 644 modified, and a later `git add -A` would commit that. Only
