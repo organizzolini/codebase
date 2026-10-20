@@ -12,7 +12,7 @@ events.
 ## Quick Start
 
 ```bash
-# 1. Download the Swiss Ephemeris data files (one-time, ~90 MB)
+# 1. Download the Swiss Ephemeris data files (one-time, about 2 MB)
 nx run caelundas-cli:download-ephemeris
 
 # 2. Configure your observer location and date range
@@ -57,7 +57,10 @@ calendar with silently wrong sunrise times. Supported dates run from
 Positions come from the [Swiss Ephemeris](https://www.astro.com/swisseph/)
 (`sweph`), computed locally from JPL DE431 data files — no network calls, no
 API keys, no rate limits. The data files are not committed; download them once
-with `nx run caelundas-cli:download-ephemeris` into `data/ephemeris/`.
+with `nx run caelundas-cli:download-ephemeris` into `data/ephemeris/`. Without
+them the library quietly falls back to a less precise built-in ephemeris, so a
+run stops before it starts if any file is missing, and any calculation the
+files did not answer is refused, with an error that names that command.
 
 ## Events
 

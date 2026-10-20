@@ -140,3 +140,11 @@ export type Latitude = number;
  * Range: 0° to 360° along the ecliptic, starting from the vernal equinox.
  */
 export type Longitude = number;
+
+/** What a Swiss Ephemeris call was computing, for an error that names it. */
+export interface SwissEphemerisSubject {
+  /** The body or node the call was for. */
+  body: string;
+  /** The Swiss Ephemeris function that was called. */
+  tool: string;
+}
