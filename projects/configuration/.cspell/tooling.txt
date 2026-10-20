@@ -75,6 +75,7 @@ gitmojis
 glab
 globalconfig
 golevelup
+gpgsig
 gpgsign
 gradlew
 gsub

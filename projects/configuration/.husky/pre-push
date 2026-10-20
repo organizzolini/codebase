@@ -14,6 +14,6 @@ printf '[%s] pre-push\n' "${TIMESTAMP}"
 # on PATH, which is how `nx` resolved here before.
 validate-branch-name
 
-# 🔐 Check GPG git signing configuration
+# 🔐 Check git signing configuration
 REPOSITORY_ROOT="$(git rev-parse --show-toplevel)"
 "${REPOSITORY_ROOT}/scripts/git/check-push-commit-signatures.sh"
