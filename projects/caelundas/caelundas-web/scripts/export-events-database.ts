@@ -21,6 +21,7 @@ const persistenceProjectRoot = path.join(
   projectRoot,
   "..",
   "..",
+  "common",
   "persistence",
 );
 
