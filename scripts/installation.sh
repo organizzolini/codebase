@@ -27,15 +27,22 @@
 
 source ./scripts/utilities.sh
 
+# Runs a command of the installation project. It is TypeScript, so it needs the
+# packages `pnpm install` brings, and NODE_OPTIONS is cleared because a loader
+# set there would preempt the transpiler this one names.
+installation() {
+  NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts "$@"
+}
+
 # ── Operating system ─────────────────────────────────────────────────────────
 # macOS continues below with Homebrew and nvm. Linux, which is what a Claude
 # Code cloud session and the devcontainer run, has no Homebrew and often a system
 # Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
 # linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
 # is shimmed from the copy npm bundles, because the native packages (sweph,
-# cpu-features) need it on PATH. Only the .env files of the setup command apply:
-# its shell configuration, software, and Terraform steps are for a developer
-# Mac. Docker and Postgres are started last. Safe to run again.
+# cpu-features) need it on PATH. Of the setup command only the .env files and the
+# SSH signing apply: its shell configuration, software, and Terraform steps are
+# for a developer Mac. Docker and Postgres are started last. Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
@@ -79,45 +86,11 @@ if [[ "${operating_system}" == "Linux" ]]; then
 
   echo "📦 Installing the workspace's packages..."
   pnpm install --frozen-lockfile
-  NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts environment-files
+  installation environment-files
 
-  # SSH commit signing. When git signs with SSH, the signer is the harness's and
-  # its key is not on disk, so the public key is read out of a signature it just
-  # made, and written to the allowed signers file that lets ssh-keygen verify
-  # what it signs. Both commit hooks verify with that file. A failure warns,
-  # and the commit check then names what is missing.
-  if [[ "$(git config --get gpg.format || true)" == "ssh" ]]; then
-    if ! command -v ssh-keygen &> /dev/null && [[ "$(id -u)" == "0" ]]; then
-      echo "📦 Installing ssh-keygen..."
-      (apt-get update -qq && apt-get install -y -qq --no-install-recommends openssh-client) > /dev/null ||
-        echo "⚠️  Could not install openssh-client, so SSH signatures cannot be verified." >&2
-    fi
-
-    signers_file="${HOME}/.ssh/allowed_signers"
-    signer_email="$(git config --get user.email || true)"
-    probe_commit="$(git commit-tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904 -m allowed-signers-probe -S 2> /dev/null || true)"
-    signer_key="$(
-      git cat-file commit "${probe_commit}" 2> /dev/null | node -e '
-        const text = require("node:fs").readFileSync(0, "utf8");
-        const match = text.match(/-----BEGIN SSH SIGNATURE-----([\s\S]*?)-----END SSH SIGNATURE-----/);
-        if (!match) process.exit(1);
-        const data = Buffer.from(match[1].replace(/\s+/g, ""), "base64");
-        if (data.subarray(0, 6).toString() !== "SSHSIG") process.exit(1);
-        const blob = data.subarray(14, 14 + data.readUInt32BE(10));
-        const type = blob.subarray(4, 4 + blob.readUInt32BE(0)).toString();
-        console.log(`${type} ${blob.toString("base64")}`);
-      ' 2> /dev/null || true
-    )"
-    if [[ -n "${signer_key}" && -n "${signer_email}" ]]; then
-      mkdir -p "${HOME}/.ssh"
-      grep -qsF "${signer_key}" "${signers_file}" ||
-        printf '%s namespaces="git" %s\n' "${signer_email}" "${signer_key}" >> "${signers_file}"
-      git config --global gpg.ssh.allowedSignersFile "${signers_file}"
-      echo "🔏 SSH signatures are verified against ${signers_file}."
-    else
-      echo "⚠️  Could not read the SSH signing key, so signatures cannot be verified." >&2
-    fi
-  fi
+  # SSH commit signatures are made verifiable by the installation project: it
+  # installs ssh-keygen and lists the signer's key for the commit hooks.
+  installation ssh-signing
 
   # Docker and Postgres. A container that carries the daemon binary but runs
   # none gets one started, so `infrastructure:postgres:up` has an engine; a
@@ -264,4 +237,4 @@ echo "✅ nx available globally"
 echo "📦 Installing the packages the setup command runs on..."
 pnpm install
 
-NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts setup
+installation setup

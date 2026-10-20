@@ -14,6 +14,7 @@ One command is maintenance rather than setup: `update-reui-skill` refreshes the 
 bash scripts/installation.sh                     # A fresh Mac: the script installs Node, then calls `setup`. On Linux it installs Node, the packages, and the .env files only
 nx run installation:start:setup                  # Everything this project does, in order
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
+nx run installation:start:ssh-signing            # Make SSH commit signatures verifiable: ssh-keygen and the signer's key
 nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
 ```
 
@@ -30,6 +31,7 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `software`            | `modules/software` (one service per tool) |
 | `environment-files`   | `modules/environment-files`               |
 | `dependencies`        | `modules/dependencies`                    |
+| `ssh-signing`         | `modules/ssh-signing`                     |
 | `update-reui-skill`   | `modules/update-reui-skill`               |
 
 From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
