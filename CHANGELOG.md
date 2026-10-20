@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.15.0](https://github.com/organizzolini/codebase/compare/v3.14.1...v3.15.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts:** ✨ set up linux in installation script ([#1730](https://github.com/organizzolini/codebase/issues/1730)) ([4620c1a](https://github.com/organizzolini/codebase/commit/4620c1aced3359edf72ebf1c6e315abe8cf0486c))
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🩹 unset node path in pre-commit hook ([#1731](https://github.com/organizzolini/codebase/issues/1731)) ([2847b23](https://github.com/organizzolini/codebase/commit/2847b23116e51059aa0c0e2e477a47b9d9acf24c))
+
 ## [3.14.1](https://github.com/organizzolini/codebase/compare/v3.14.0...v3.14.1) (2026-10-20)
 
 ### 🐛 Bug Fixes

@@ -268,3 +268,5 @@ windsurfrules
 workspaces
 worktree
 worktrees
+nohup
+setsid
