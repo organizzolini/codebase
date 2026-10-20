@@ -12,6 +12,8 @@ import type { DeepMocked } from "@golevelup/ts-vitest";
 export interface FakeMachine {
   /** Commands that exist on `PATH`. */
   installed?: string[];
+  /** The operating system the machine runs. Defaults to macOS, which setup was written for. */
+  platform?: NodeJS.Platform;
   /**
    * What a command line prints, keyed by the line itself, such as
    * `"uv --version"`. A line not listed succeeds and prints nothing.
@@ -94,6 +96,9 @@ export function createFakeProcessRunner(
   const runner = createMock<ProcessRunnerService>({
     locate: vi.fn<ProcessRunnerService["locate"]>((command) =>
       installed.has(command) ? `/usr/local/bin/${command}` : undefined,
+    ),
+    platform: vi.fn<ProcessRunnerService["platform"]>(
+      () => machine.platform ?? "darwin",
     ),
     run: vi.fn<ProcessRunnerService["run"]>(run),
     runOrThrow: vi.fn<ProcessRunnerService["runOrThrow"]>(runOrThrow),
