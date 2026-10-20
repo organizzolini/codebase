@@ -18,6 +18,16 @@ export const OLLAMA_READINESS_ATTEMPTS = 15;
 /** How many times to ask whether the Docker daemon is up, two seconds apart. */
 export const DOCKER_READINESS_ATTEMPTS = 30;
 
+/** The helm release Linux setup installs, the one this repository is tested with. */
+export const HELM_VERSION = "v3.16.4";
+
+/** Where that release's archive for 64-bit Linux comes from. */
+export const HELM_RELEASE_URL = `https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz`;
+
+/** The SHA-256 that release publishes for its 64-bit Linux archive. */
+export const HELM_LINUX_AMD64_SHA256 =
+  "fc307327959aa38ed8f9f7e66d45492bb022a66c3e5da6063958254b9767d179";
+
 /** What to do, printed in order, when there is no key to sign with. */
 export const NO_KEY_INSTRUCTIONS = [
   "⚠️  No GPG secret key found.",

@@ -26,7 +26,7 @@ import { STARTUP_FILES } from "./setup.constants";
  * Linux is what a Claude Code cloud session and the devcontainer run. It has
  * no Homebrew and no shell of its own to configure, and `scripts/installation.sh`
  * has already installed its packages, so only the environment files, the SSH
- * signing, and the local services apply.
+ * signing, the tools its image lacks such as helm, and the local services apply.
  */
 @Injectable()
 export class SetupService {
@@ -80,6 +80,7 @@ export class SetupService {
   private async setUpLinux(): Promise<void> {
     this.environmentFilesService.createEnvironmentFiles();
     this.sshSigningService.configureSshSigning();
+    this.softwareService.installLinuxTools();
     await this.localServicesService.startLocalServices();
     this.reporter.print("");
     this.reporter.print("✅ Linux setup complete.");

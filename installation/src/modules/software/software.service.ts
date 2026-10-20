@@ -5,6 +5,7 @@ import { LoggerService } from "@codebase/observability";
 import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
+import { SoftwareHelmService } from "./software-helm.service";
 import { SoftwareInfraService } from "./software-infra.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
@@ -28,6 +29,7 @@ export class SoftwareService {
     private readonly softwareGpgService: SoftwareGpgService,
     private readonly softwareInfraService: SoftwareInfraService,
     private readonly softwareDatabaseService: SoftwareDatabaseService,
+    private readonly softwareHelmService: SoftwareHelmService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(SoftwareService.name);
@@ -40,6 +42,11 @@ export class SoftwareService {
   // 🔏 Private Methods
 
   // 🌎 Public Methods
+
+  /** Installs the tools a Linux machine lacks, since its image brings the rest. */
+  public installLinuxTools(): void {
+    this.softwareHelmService.installHelmOnLinux();
+  }
 
   /** Installs every tool, in order. */
   public async installSoftware(): Promise<void> {

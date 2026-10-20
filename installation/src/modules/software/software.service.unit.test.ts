@@ -7,6 +7,7 @@ import { LoggerService } from "@codebase/observability";
 import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
+import { SoftwareHelmService } from "./software-helm.service";
 import { SoftwareInfraService } from "./software-infra.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
@@ -42,6 +43,10 @@ describe(SoftwareService, () => {
         {
           provide: SoftwareDatabaseService,
           useValue: createMock<SoftwareDatabaseService>(),
+        },
+        {
+          provide: SoftwareHelmService,
+          useValue: createMock<SoftwareHelmService>(),
         },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],

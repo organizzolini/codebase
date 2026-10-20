@@ -29,6 +29,7 @@ import { SoftwareBrewService } from "../software/software-brew.service";
 import { SoftwareDatabaseService } from "../software/software-database.service";
 import { SoftwareDockerService } from "../software/software-docker.service";
 import { SoftwareGpgService } from "../software/software-gpg.service";
+import { SoftwareHelmService } from "../software/software-helm.service";
 import { SoftwareInfraService } from "../software/software-infra.service";
 import { SoftwareOllamaService } from "../software/software-ollama.service";
 import { SoftwarePythonService } from "../software/software-python.service";
@@ -76,6 +77,7 @@ describe(SetupCommand, () => {
         SoftwareDatabaseService,
         SoftwareDockerService,
         SoftwareGpgService,
+        SoftwareHelmService,
         SoftwareInfraService,
         SoftwareOllamaService,
         SoftwarePythonService,
