@@ -5,15 +5,15 @@ services:
     privileged: true
     volumes:
       # Relative paths resolve against the first dockerComposeFile entry
-      # (projects/infrastructure/docker/), not this file's directory.
-      - ../../..:/workspaces/codebase:cached
+      # (infrastructure/docker/), not this file's directory.
+      - ../..:/workspaces/codebase:cached
       - codebase-node-modules:/workspaces/codebase/node_modules
       - codebase-pnpm:/root/.local/share/pnpm
       - codebase-docker:/var/lib/docker
     env_file:
       # The codebase root level .env file (copied from .env.default in CI),
-      # relative to projects/infrastructure/docker/
-      - ../../../.env
+      # relative to infrastructure/docker/
+      - ../../.env
     deploy:
       resources:
         limits:

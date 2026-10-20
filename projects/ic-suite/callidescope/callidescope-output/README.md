@@ -178,13 +178,15 @@ graph LR
   callidescope_graph["callidescope-graph"]
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   callidescope_cli --> callidescope_output
   callidescope_nx --> callidescope_output
   callidescope_output --> callidescope_configuration
   callidescope_output --> callidescope_core
   callidescope_output --> callidescope_graph
-  callidescope_output --> logging
+  callidescope_output --> configuration
+  callidescope_output --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class callidescope_output subject
 ```

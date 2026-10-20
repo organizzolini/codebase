@@ -25,7 +25,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 
 ## Type
 
-**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs):
+**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../configuration/conventional.config.cjs):
 
 <!-- types-start -->
 
@@ -47,7 +47,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 
 ## Scope
 
-**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs):
+**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../configuration/conventional.config.cjs):
 
 <!-- scopes-start -->
 
@@ -58,7 +58,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 | `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
 | `conformetry` | Code generator templates and validation tests for generated instances |
-| `database` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
+| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -67,7 +67,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
 | `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
-| `components` | Shared React/shadcn component library |
+| `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |
 | `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
@@ -158,12 +158,12 @@ git push origin --delete <old-branch-name>
 
 Branch names are validated at multiple stages:
 
-| Stage | Mechanism                                     | Config File                       |
-| ----- | --------------------------------------------- | --------------------------------- |
-| Local | `projects/configuration/.husky/pre-push` hook | `validate-branch-name.config.cjs` |
-| CI    | `.github/workflows/branch-validation.yml`     | Same config                       |
+| Stage | Mechanism                                 | Config File                       |
+| ----- | ----------------------------------------- | --------------------------------- |
+| Local | `configuration/.husky/pre-push` hook      | `validate-branch-name.config.cjs` |
+| CI    | `.github/workflows/branch-validation.yml` | Same config                       |
 
-The validation config imports types and scopes from [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs) to ensure consistency with commit message rules.
+The validation config imports types and scopes from [conventional.config.cjs](../../../configuration/conventional.config.cjs) to ensure consistency with commit message rules.
 
 ## Troubleshooting
 
@@ -198,4 +198,4 @@ refactor/codebase-cleanup       # Refactoring
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs) — Validation config
-- [conventional.config.cjs](../../../projects/configuration/conventional.config.cjs) — Types and scopes
+- [conventional.config.cjs](../../../configuration/conventional.config.cjs) — Types and scopes

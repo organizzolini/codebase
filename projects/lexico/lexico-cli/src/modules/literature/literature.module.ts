@@ -9,7 +9,7 @@ import {
   Token,
   Word,
 } from "@codebase/lexico-entities";
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { NumeralsModule } from "../numerals/numerals.module";
 

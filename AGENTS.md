@@ -255,7 +255,7 @@ Use the respective agent skills (e.g., `codometer-measure`, `callidescope-triage
 
 ### Project Structure & Boundaries
 
-- **Strict folder structure** is enforced by ESLint. Always use `conformetry-generate` (e.g., `nx g conformetry:<generator>`) to scaffold new files and modules to ensure correct placement. See `projects/configuration/codebase-structure.json` for the raw rules.
+- **Strict folder structure** is enforced by ESLint. Always use `conformetry-generate` (e.g., `nx g conformetry:<generator>`) to scaffold new files and modules to ensure correct placement. See `configuration/codebase-structure.json` for the raw rules.
 - **Respect Nx module boundaries** defined in `eslint.config.ts`. Applications cannot import applications, and packages cannot import applications. Use the `codependix-navigate` skill to check dependency rules.
 
 ### Testing & Coverage
@@ -284,9 +284,9 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 - **Pull Request Compliance:**
   - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related` (link to specs, files, or documentation if no issue exists).
   - Each section has one shape: Summary is only one plain paragraph of at most 48 words, Details is only a bulleted list with one marker and at most 512 words, Testing is only an ordered list (indent code blocks under a step), and Related opens with a `-` list, after which anything may follow.
-  - Pre-flight validate PR descriptions locally using `projects/validation/src/validation.main.ts pull-request-body <path-to-body>` before creating the PR.
+  - Pre-flight validate PR descriptions locally using `validation/src/validation.main.ts pull-request-body <path-to-body>` before creating the PR.
   - Set all required metadata at creation: `--assignee @me`, `--label type:<type>`, `--label scope:<scope>`, and `--label source:agent`.
-- **Conventional Naming:** If you need to view the current valid Types and Scopes without using a skill, read `projects/configuration/conventional.config.cjs`.
+- **Conventional Naming:** If you need to view the current valid Types and Scopes without using a skill, read `configuration/conventional.config.cjs`.
 
 ## Agent Context
 
@@ -307,7 +307,7 @@ symlinks keep tools that hard-code the old paths working:
 Wherever a skill or tool says `docs/<path>`, it means `documentation/<path>`:
 read and write through either spelling, but **write `documentation/` in anything
 this repository authors**. Never create a real `docs/` or `openwiki/` directory —
-`projects/configuration/codebase-structure.json` declares both as leaves, so the structure
+`configuration/codebase-structure.json` declares both as leaves, so the structure
 check fails if one appears. Do not edit the vendored skills to change a path;
 they are overwritten by `skills update`.
 

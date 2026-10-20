@@ -97,7 +97,7 @@ depth reads source and needs no build, which is what keeps it cheap enough for
 a commit hook.
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts --check depth
+npx callidescope --config configuration/callidescope.config.ts --check depth
 ```
 
 **In an Nx workspace, prefer the per-project `gate` target to this flag.** A
@@ -116,7 +116,7 @@ drift they did not cause. Publish on the default branch instead, where nothing
 else competes to rewrite the same block:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts --write
+npx callidescope --config configuration/callidescope.config.ts --write
 ```
 
 `--write --check reports` is **refused outright**: a report cannot be stale in
@@ -133,7 +133,7 @@ built are those plus every project they transitively import, so a call into a
 dependency still resolves to a real frame:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts -d packages/foo,packages/bar --check depth
+npx callidescope --config configuration/callidescope.config.ts -d packages/foo,packages/bar --check depth
 ```
 
 Omit it and callidescope walks the working directory for every `tsconfig.json`
@@ -189,13 +189,13 @@ an argument would read as a green one.
 Any of `callidescope.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}`, TypeScript
 first because it gets type checking. This is the **workspace** configuration,
 the file a run is pointed at with the required `--config` (an Nx target's
-`configuration`, the plugin's `configurationPath`), never searched for: `projects/configuration/callidescope.config.ts` here.
+`configuration`, the plugin's `configurationPath`), never searched for: `configuration/callidescope.config.ts` here.
 
 ```ts
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["projects/configuration/.callidescopeignore"],
+  excludeFrom: ["configuration/.callidescopeignore"],
   limits: { maximumDepth: 6 },
 };
 
@@ -424,7 +424,7 @@ export. A project spreads it and overrides what it means to, which is what
 makes a complete file cost one line:
 
 ```ts
-import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "../../configuration/callidescope.config.js";
 
 export default {
   ...projectDefaults,
@@ -480,7 +480,7 @@ file it used to live in. The `limits` command is where it is reviewable as a
 set instead:
 
 ```bash
-npx callidescope limits --config projects/configuration/callidescope.config.ts
+npx callidescope limits --config configuration/callidescope.config.ts
 ```
 
 A markdown table, one row per project per limit — `Project`, `Limit`, `Value`,

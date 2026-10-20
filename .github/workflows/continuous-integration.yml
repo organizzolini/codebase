@@ -181,7 +181,7 @@ jobs:
           PUBLISHABLE_PACKAGES_CONSUMER_ROOT: ${{ runner.temp }}/publishable-packages
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/publication.main.ts publishable-packages-gate
+            publication/src/publication.main.ts publishable-packages-gate
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         id: run-check
@@ -204,7 +204,7 @@ jobs:
           INCLUDE_CONFIGURATION_GUARD=false
           if [ "${INCLUDE_TEMPLATES}" = "true" ]; then
             MERGE_BASE=$(git merge-base "${NX_BASE}" "${NX_HEAD}" 2>/dev/null || echo "${NX_BASE}")
-            if git diff --name-only --relative "${MERGE_BASE}" "${NX_HEAD}" | grep -q '^projects/configuration/conformetry-templates/'; then
+            if git diff --name-only --relative "${MERGE_BASE}" "${NX_HEAD}" | grep -q '^configuration/conformetry-templates/'; then
               INCLUDE_CONFIGURATION_GUARD=true
             fi
           fi
@@ -217,7 +217,7 @@ jobs:
 
           if [ "${INCLUDE_CONFIGURATION_GUARD}" = "true" ]; then
             pnpm exec nx affected \
-              --files=projects/configuration/conformetry.config.ts \
+              --files=configuration/conformetry.config.ts \
               --target="${TARGET}" \
               ${EXTRA_ARGUMENTS}
           fi

@@ -2,7 +2,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import moment from "moment-timezone";
 import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
 import { EphemerisService } from "../ephemeris/ephemeris.service";

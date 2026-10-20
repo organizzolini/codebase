@@ -150,4 +150,4 @@ This was a version bump only for codometer-core to align it with other projects,
 
 ### 💅 Refactors
 
-- **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/pull/1208))
+- **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/pull/1208))

@@ -11,7 +11,7 @@ edges, judged separately per language even though TypeScript and Python are
 exported together as one `fileImports` graph type.
 
 ```bash
-codependix map --check boundaries --config projects/configuration/codependix.config.ts
+codependix map --check boundaries --config configuration/codependix.config.ts
 ```
 
 ## Why not an ESLint rule
@@ -33,7 +33,7 @@ Three facts it structurally cannot see:
 
 What this deliberately does **not** replace: the layered `depConstraints`
 graph in
-[`projects/configuration/eslint.config.ts`](../../../configuration/eslint.config.ts), which
+[`configuration/eslint.config.ts`](../../../configuration/eslint.config.ts), which
 reports at the import site with a line number, and `dependency-cruiser`'s
 `no-circular`, which is already this repository's file-cycle gate.
 
@@ -127,7 +127,7 @@ project, so a container that will not boot is collected as a
 `BoundaryCheckFailure` while every other project is still judged.
 
 Nothing here depends on `@codependix/cli` — the host calls in, never the
-reverse — and a rule in `projects/configuration/codependix.config.ts` says so, so the
+reverse — and a rule in `configuration/codependix.config.ts` says so, so the
 two cannot close a cycle.
 
 ## Test
@@ -158,11 +158,13 @@ graph LR
   codependix_nestjs_modules["codependix-nestjs-modules"]
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
+  configuration["configuration"]
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
+  codependix_boundaries --> configuration
   codependix_cli --> codependix_boundaries
   codependix_examples --> codependix_boundaries
   codependix_output --> codependix_boundaries
@@ -307,6 +309,7 @@ graph LR
   file_src_modules_boundary_check_boundary_graph_service_ts --> file_src_modules_boundaries_boundaries_types_ts
   file_src_modules_boundary_check_boundary_graph_service_unit_test_ts --> file_src_modules_boundary_check_boundary_graph_service_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_src_modules_boundaries_boundary_report_service_ts
+  file_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_src_modules_boundary_check_boundary_check_constants_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_src_modules_boundary_check_boundary_check_types_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_unit_test_ts --> file_src_modules_boundaries_boundaries_types_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_unit_test_ts --> file_src_modules_boundaries_boundary_report_service_ts

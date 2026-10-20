@@ -126,7 +126,7 @@ was named at, and three its imports reached:
 | `.../examples/gated-leaf` | Named — a nested project, for the reason [gated-leaf](examples/gated-leaf/README.md) gives |
 | `projects/ic-suite/callidescope/callidescope-configuration` | Imported by the fixture, and by [`callidescope.workspace.config.ts`](callidescope.workspace.config.ts) |
 | `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared configuration [`codometer.config.ts`](codometer.config.ts) spreads |
-| `projects/logging` | Reached through the shared `projects/configuration/eslint.config.ts` |
+| `projects/common/observability` | Reached through the shared `configuration/eslint.config.ts` |
 
 That is what the closure buys, and it is measurable: the fixture's stack is
 depth 4 as traced, and depth 2 when the same fixtures are traced again with
@@ -134,7 +134,7 @@ depth 4 as traced, and depth 2 when the same fixtures are traced again with
 from growing past those three — a project root holding no `package.json` is not
 a destination, and neither is the workspace root — and the example's guide works
 through both, including the shared
-[`projects/configuration/`](../../../../projects/configuration) directory this package's program really
+[`configuration/`](../../../../configuration) directory this package's program really
 reads and the closure deliberately refuses.
 
 ### The cap on structural matching
@@ -324,11 +324,11 @@ moved the dependency, and the `examples` target names those packages' sources in
 its `inputs` so a cached run is never replayed over them. Their READMEs are not
 named there, because this run does not write into them.
 
-`{workspaceRoot}/projects/configuration/*.config.ts` is in those `inputs` too, and it is
-not redundant with `shared-globals` — which holds `projects/configuration/tsconfig.json`
+`{workspaceRoot}/configuration/*.config.ts` is in those `inputs` too, and it is
+not redundant with `shared-globals` — which holds `configuration/tsconfig.json`
 and nothing else. Two of the three dependency packages are in the closure only
 because this package's own `eslint.config.ts` and `codometer.config.ts` spread
-the root ones, and the root ones import `@codebase/logging/eslint` and
+the root ones, and the root ones import `@codebase/observability/eslint` and
 `@codometer/configuration`. Delete an import there and these reports lose a
 whole project, with nothing else in `inputs` changed — a cached green replayed
 over exactly the drift this gate exists to catch.
@@ -336,9 +336,9 @@ over exactly the drift this gate exists to catch.
 Two command lines are refused outright:
 
 ```bash
-callidescope --config projects/configuration/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
-callidescope --config projects/configuration/callidescope.config.ts --check lint              # not a finding this tool has
-callidescope --config projects/configuration/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
+callidescope --config configuration/callidescope.config.ts --write --check reports   # a report cannot be stale in the run that just wrote it
+callidescope --config configuration/callidescope.config.ts --check lint              # not a finding this tool has
+callidescope --config configuration/callidescope.config.ts --check                   # a gate that cannot fail is a mistake, not a shorthand
 ```
 
 ## Acting on a finding
@@ -411,7 +411,7 @@ Four decisions are worth making deliberately:
    a wrong-looking label rather than a missing subtree.
 3. **`excludeFrom`.** Point it at a gitignore-syntax file rather than growing
    the configuration. This repository's
-   [`.callidescopeignore`](../../../../projects/configuration/.callidescopeignore) excludes
+   [`.callidescopeignore`](../../../../configuration/.callidescopeignore) excludes
    generated code, template sources, and — the reason it matters here — this
    package, whose fixtures exist to breach the limits the workspace gate
    enforces.
@@ -432,7 +432,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 
 | Check | Answer |
 | ----- | ------ |
-| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../projects/configuration/.callidescopeignore) and traced by its own configuration instead |
+| Workspace depth gate | The package is in [`.callidescopeignore`](../../../../configuration/.callidescopeignore) and traced by its own configuration instead |
 | Published section | Yes — this package declares its own `write.markdown`, because a section reporting the deliberately-bad fixtures is the best example in the package, not noise |
 | Test coverage | Nothing is instrumented. Fixture code exists to be read by the type checker, not executed; what is verified is what callidescope makes of it |
 | `knip` and `fallow` | Every fixture is declared an entry point rather than ignored, so both keep checking dependencies while the orphan-root fixture stops being a finding |
@@ -440,7 +440,7 @@ whose entire content is deliberately-shaped fixture code. The answers:
 | `codometer` | No declared size limit: the package is private and never built, so there is no bundle to gate |
 | Nested projects | One example directory, `gated-leaf`, holds a `tsconfig.json` and no `package.json`. The first is what makes it a project with limits of its own; the second is deliberate — Nx infers a project from a nested `package.json`, and a `tsconfig.json` and a `package.json` nested one directory apart would collide with `@nx/enforce-module-boundaries`. It is named in the run's `--directories` instead |
 | Nx tags | `type:package`, `framework:nestjs`, `language:typescript`, `name:callidescope-examples`. The NestJS dependency is real — `injected-dependency` is the headline case |
-| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `projects/configuration/codebase-structure.json` declares it |
+| Project layout | An `examples/` directory rather than `src/modules/`, matching the other `*-examples` packages. `configuration/codebase-structure.json` declares it |
 | `conformetry` | Not an instance of any template, and nothing had to be suppressed to keep it that way — see below |
 
 The layout is what keeps this package out of conformance, and it is worth
@@ -852,9 +852,11 @@ graph LR
   callidescope_configuration["callidescope-configuration"]
   callidescope_core["callidescope-core"]
   callidescope_examples["callidescope-examples"]
+  configuration["configuration"]
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
+  callidescope_examples --> configuration
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class callidescope_examples subject
 ```
@@ -913,8 +915,8 @@ graph LR
   file_examples_shared_tail_round_to_cents_ts["examples/shared-tail/round-to-cents.ts"]
   file_examples_structural_interface_structural_interface_ts["examples/structural-interface/structural-interface.ts"]
   file_examples_structural_interface_structural_provider_ts["examples/structural-interface/structural-provider.ts"]
+  file_src_callidescope_examples_main_ts["src/callidescope-examples.main.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_main_ts["src/main.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
@@ -927,9 +929,9 @@ graph LR
   file_examples_injected_dependency_orders_ts --> file_examples_injected_dependency_inventory_ts
   file_examples_plain_call_plain_call_ts --> file_examples_plain_call_normalize_label_ts
   file_examples_structural_interface_structural_interface_ts --> file_examples_structural_interface_structural_provider_ts
+  file_src_callidescope_examples_main_ts --> file_examples_injected_dependency_inventory_ts
+  file_src_callidescope_examples_main_ts --> file_examples_injected_dependency_orders_ts
   file_src_index_ts --> file_examples_plain_call_normalize_label_ts
-  file_src_main_ts --> file_examples_injected_dependency_inventory_ts
-  file_src_main_ts --> file_examples_injected_dependency_orders_ts
   file_testing_examples_integration_test_ts --> file_callidescope_workspace_config_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

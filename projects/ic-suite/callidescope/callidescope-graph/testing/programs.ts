@@ -13,7 +13,7 @@ import { ProgramService } from "../src/modules/program/program.service";
 import { WorkspaceService } from "../src/modules/workspace/workspace.service";
 
 import type { ProjectProgram } from "../src/modules/program/program.types";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 
 /** Root every in-memory fixture file is written under. */
 export const FIXTURE_ROOT = "/workspace";

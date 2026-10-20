@@ -12,7 +12,7 @@ import { FileFilterService } from "./file-filter.service";
 import { WorkspaceService } from "./workspace.service";
 
 import type { FileFilter, WorkspaceProject } from "./workspace.types";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** A project whose own configuration file excludes some of its files. */
@@ -137,7 +137,7 @@ describe(FileFilterService, () => {
     const workspaceRoot = path.resolve(process.cwd(), "..", "..", "..", "..");
     const filter = subject.buildFileFilter({
       exclude: [],
-      excludeFrom: ["projects/configuration/.callidescopeignore"],
+      excludeFrom: ["configuration/.callidescopeignore"],
       workspaceRoot,
     });
 

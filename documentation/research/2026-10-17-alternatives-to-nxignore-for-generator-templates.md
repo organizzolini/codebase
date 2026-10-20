@@ -2,22 +2,22 @@
 
 ## Executive Summary
 
-In this codebase, generator templates in `projects/configuration/conformetry-templates/` contain raw template files named `project.json`, `package.json`, `pyproject.toml`, `vite.config.*`, `eslint.config.*`, etc.
+In this codebase, generator templates in `configuration/conformetry-templates/` contain raw template files named `project.json`, `package.json`, `pyproject.toml`, `vite.config.*`, `eslint.config.*`, etc.
 
 Historically, `.nxignore` was used to mask these files from Nx:
 
 ```gitignore
-projects/configuration/conformetry-templates/**/project.json
-projects/configuration/conformetry-templates/**/package.json
-projects/configuration/conformetry-templates/**/pyproject.toml
-projects/configuration/conformetry-templates/**/vite.config.*
-projects/configuration/conformetry-templates/**/vitest.config.*
-projects/configuration/conformetry-templates/**/eslint.config.*
-projects/configuration/conformetry-templates/**/codometer.config.*
-projects/configuration/conformetry-templates/**/callidescope.config.*
+configuration/conformetry-templates/**/project.json
+configuration/conformetry-templates/**/package.json
+configuration/conformetry-templates/**/pyproject.toml
+configuration/conformetry-templates/**/vite.config.*
+configuration/conformetry-templates/**/vitest.config.*
+configuration/conformetry-templates/**/eslint.config.*
+configuration/conformetry-templates/**/codometer.config.*
+configuration/conformetry-templates/**/callidescope.config.*
 ```
 
-The drawback of `.nxignore` is that **Nx drops matching files from its git file-tracking completely**. Consequently, changes to template files produce an empty affected file list in `nx affected`, requiring manual diff interception and `--stdin` injection in `projects/publication/src/modules/run-affected/` and `projects/configuration/lint-staged.config.ts`.
+The drawback of `.nxignore` is that **Nx drops matching files from its git file-tracking completely**. Consequently, changes to template files produce an empty affected file list in `nx affected`, requiring manual diff interception and `--stdin` injection in `publication/src/modules/run-affected/` and `configuration/lint-staged.config.ts`.
 
 This research investigates whether alternative masking mechanisms exist in Nx and TypeScript tooling that allow template files to be tracked by Git in `nx affected` without causing Nx or plugins to infer false projects.
 
@@ -40,7 +40,7 @@ Nx discovers projects via two plugin sources:
 
 When template files were unmasked in experiment:
 
-1. Built-in `nx/core/project-json` parsed `projects/configuration/conformetry-templates/**/{{nameKebabCase}}/project.json`.
+1. Built-in `nx/core/project-json` parsed `configuration/conformetry-templates/**/{{nameKebabCase}}/project.json`.
 2. Because the file contains unprocessed mustache tokens (`"{{type}}/{{nameKebabCase}}"`), Nx failed to resolve valid filesystem paths for project roots and crashed during project graph configuration.
 3. Plugins (`@conformetry/nx`, `@callidescope/nx`, `@codependix/nx`) failed because `createNodes` received template config files containing mustache placeholders instead of real configurations.
 
@@ -56,8 +56,8 @@ Nx plugins in `nx.json` support `include` and `exclude` glob patterns:
 {
   "plugin": "@nx/vite/plugin",
   "exclude": [
-    "projects/configuration/**",
-    "projects/configuration/conformetry-templates/**"
+    "configuration/**",
+    "configuration/conformetry-templates/**"
   ]
 }
 ```
@@ -87,7 +87,7 @@ Conformetry generator's `renderPath()` is updated to strip `.template` when gene
    `conformetry-validate` inputs can declare:
 
    ```json
-   "{workspaceRoot}/projects/configuration/conformetry-templates/**/*"
+   "{workspaceRoot}/configuration/conformetry-templates/**/*"
    ```
 
    Editing any template file immediately marks `conformetry-validate` tasks affected across all instance packages.
@@ -96,13 +96,13 @@ Conformetry generator's `renderPath()` is updated to strip `.template` when gene
 
 #### Cons
 
-- Requires updating the generator template renderer to strip the suffix during instantiation, and renaming existing template files in `projects/configuration/conformetry-templates/`.
+- Requires updating the generator template renderer to strip the suffix during instantiation, and renaming existing template files in `configuration/conformetry-templates/`.
 
 ---
 
 ### Approach C: Bundled or Pre-Compiled Template Archive / In-Memory Artifacts
 
-Store template trees as serialized assets (such as a `.tar.gz` archive, zip, or embedded TypeScript strings/modules emitted into `.conformetry/` or `projects/configuration/assets/`).
+Store template trees as serialized assets (such as a `.tar.gz` archive, zip, or embedded TypeScript strings/modules emitted into `.conformetry/` or `configuration/assets/`).
 
 #### Pros
 

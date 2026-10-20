@@ -33,7 +33,7 @@ entry took effect by listing the generators. Every `conformetry` command
 requires `--config <path>` — there is no default configuration file:
 
 ```bash
-conformetry templates --config projects/configuration/conformetry.config.ts
+conformetry templates --config configuration/conformetry.config.ts
 ```
 
 A run without a path fails with a `ConfigurationPathRequiredError` naming the

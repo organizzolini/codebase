@@ -49,7 +49,7 @@ runs:
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/integration/src/integration.main.ts verify-task-database
+          integration/src/integration.main.ts verify-task-database
 
     # A second database means Nx stopped reading the adopted one, so warn and
     # save only the newest. See the `keep-task-database` command of the
@@ -61,7 +61,7 @@ runs:
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          projects/integration/src/integration.main.ts keep-task-database
+          integration/src/integration.main.ts keep-task-database
 
     # `.nx/cache` and `.nx/workspace-data/*.db*` hold a result for every task
     # that finished before a job was cut off, whether by a failure or a

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { CommandFactory } from "nest-commander";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MainModule } from "./lexico-cli.module";
 

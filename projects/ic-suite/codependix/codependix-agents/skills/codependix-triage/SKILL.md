@@ -24,7 +24,7 @@ has its own `codependix-gate` target, so a red `nx run <project>:codependix-gate
 means a finding is charged to that project: a forbidden edge to the project
 owning its source, a cycle to every project on it. Reproduce it with the same
 target, or with `codependix map --check boundaries --projects <project>
---config projects/configuration/codependix.config.ts`, adding `--format json`
+--config configuration/codependix.config.ts`, adding `--format json`
 to read the findings as data. The finding that fails a
 gate is the one charged to its project; a line reading "in dependency X, not
 failing" is a note, and X's own gate is the one that fails. Fix it where the
@@ -183,7 +183,7 @@ complaints are two things to fix rather than two runs.
 
 The command is `codependix map`, not bare `codependix`: a command line with no
 subcommand is rejected by the argument parser before any of this applies. So is
-one with no `--config <path>` (`--config projects/configuration/codependix.config.ts`
+one with no `--config <path>` (`--config configuration/codependix.config.ts`
 in this repository): the flag is required, and the error names it.
 
 ## A `--write` that produced no files

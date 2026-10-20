@@ -5,9 +5,9 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "codebase/configuration/*": ["../../../../projects/configuration/*"],
+      "codebase/configuration/*": ["../../../../configuration/*"],
       "eslint-plugin-better-max-params": [
-        "../../../../projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
+        "../../../../configuration/types/eslint-plugin-better-max-params/index.d.ts"
       ]
     },
     "target": "esnext",
@@ -20,7 +20,7 @@
     "node_modules",
     "output"
   ],
-  "extends": "../../../../projects/configuration/tsconfig.json",
+  "extends": "../../../../configuration/tsconfig.json",
   "include": [
     "codependix.config.ts",
     "codometer.config.ts",

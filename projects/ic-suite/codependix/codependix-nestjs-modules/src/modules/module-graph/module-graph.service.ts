@@ -19,7 +19,7 @@ import type {
 /**
  * Reduces an explored NestJS container into a Graph and renders it.
  *
- * Ported from `projects/synchronization`'s `nestjs-module-graphs` command (see
+ * Ported from `synchronization`'s `nestjs-module-graphs` command (see
  * issue #242), which this package replaces: the ambient-module heuristic and
  * mermaid rendering are unchanged, but the cross-project ownership and
  * grouping that command layers on top are not — codependix's Graph describes

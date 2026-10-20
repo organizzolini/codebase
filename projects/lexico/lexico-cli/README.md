@@ -65,7 +65,7 @@ This application does not copy tables between databases. The database
 package's command line does, with `nx run persistence:start:export` and
 `nx run persistence:start:import`. It has no default schema, so name the Lexico
 schema with `--schema lexico`, or qualify each table as `lexico.words`.
-A relative `--file` resolves from `projects/persistence`, so this keeps the dump
+A relative `--file` resolves from `projects/common/persistence`, so this keeps the dump
 in this project's `data/` directory, where `*.dump` is gitignored:
 
 ```bash
@@ -74,7 +74,7 @@ nx run persistence:start:export --args="--source-uri postgresql://user:password@
 
 `import --clean` runs without asking, so run `import --dry-run` with the same
 options first to see what it would drop or truncate. See the
-[database README](../../database/README.md#moving-data-between-databases) for
+[persistence README](../../common/persistence/README.md#moving-data-between-databases) for
 every option.
 
 ## How it works
@@ -117,7 +117,7 @@ nx run lexico-entities:migration:run
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
 - 📖 [lexico-entities](../lexico-entities/README.md) — the schema this writes to
-- 🎨 [components](../../components/README.md) — the interface
+- 🎨 [presentation](../../common/presentation/README.md) — the interface
 
 ## License
 
@@ -125,7 +125,7 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../projects/configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
 
 <!-- callidescope:start -->
 
@@ -854,12 +854,14 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
-  logging["logging"]
+  observability["observability"]
   persistence["persistence"]
+  lexico_cli --> configuration
   lexico_cli --> lexico_entities
-  lexico_cli --> logging
+  lexico_cli --> observability
   lexico_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_cli subject

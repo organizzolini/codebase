@@ -12,7 +12,7 @@ This skill manages Nx task caching configurations to ensure optimal build times 
 
 `nx.json`'s `shared-globals` reaches almost every lint target, directly or
 through `default`, so whatever it names is an input to nearly every task in the
-workspace. It holds `projects/configuration/tsconfig.json` and nothing else, and that is
+workspace. It holds `configuration/tsconfig.json` and nothing else, and that is
 load-bearing rather than incidental.
 
 **Never add a high-churn file to `shared-globals`.** It once named

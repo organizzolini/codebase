@@ -32,7 +32,7 @@ Register it in `nx.json`:
     {
       "plugin": "@callidescope/nx",
       "options": {
-        "configurationPath": "projects/configuration/callidescope.config.ts"
+        "configurationPath": "configuration/callidescope.config.ts"
       }
     }
   ]
@@ -189,7 +189,7 @@ project's own boundary would measure the wrong thing.
 program for every project the directories it was given transitively import, so
 a call into a dependency resolves to a real frame whether or not Nx is
 involved. Measured on this package,
-`callidescope --config projects/configuration/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
+`callidescope --config configuration/callidescope.config.ts --directories projects/ic-suite/callidescope/callidescope-nx` and
 `nx run callidescope-nx:trace` report the same 575 callables across 185 files
 in 7 projects.
 
@@ -315,13 +315,15 @@ graph LR
   callidescope_graph["callidescope-graph"]
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   callidescope_nx --> callidescope_cli
   callidescope_nx --> callidescope_configuration
   callidescope_nx --> callidescope_core
   callidescope_nx --> callidescope_graph
   callidescope_nx --> callidescope_output
-  callidescope_nx --> logging
+  callidescope_nx --> configuration
+  callidescope_nx --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class callidescope_nx subject
 ```
@@ -398,6 +400,7 @@ flowchart LR
   GraphModule --> SignaturesModule
   MainModule --> AddressModule
   MainModule --> PluginModule
+  OptionsModule --> ConfigurationModule
   PluginModule --> CallidescopeModule
   PluginModule --> ConfigurationModule
   PluginModule --> OptionsModule
@@ -410,7 +413,6 @@ flowchart LR
   ProjectReportsModule --> GraphModule
   ProjectReportsModule --> SignaturesModule
   RunConfigurationModule --> ConfigurationModule
-  RunConfigurationModule --> OptionsModule
   RunPlanModule --> FlagResolutionModule
   WriteDestinationsModule --> OutputJsonModule
   WriteDestinationsModule --> OutputMarkdownModule
@@ -429,6 +431,7 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
+  file_src_callidescope_nx_module_ts["src/callidescope-nx.module.ts"]
   file_src_executors_address_types_ts["src/executors/address.types.ts"]
   file_src_executors_breadth_executor_ts["src/executors/breadth/executor.ts"]
   file_src_executors_breadth_executor_unit_test_ts["src/executors/breadth/executor.unit.test.ts"]
@@ -438,12 +441,12 @@ graph LR
   file_src_executors_gate_executor_ts["src/executors/gate/executor.ts"]
   file_src_executors_gate_executor_types_ts["src/executors/gate/executor.types.ts"]
   file_src_executors_gate_executor_unit_test_ts["src/executors/gate/executor.unit.test.ts"]
+  file_src_executors_manifest_unit_test_ts["src/executors/manifest.unit.test.ts"]
   file_src_executors_trace_executor_ts["src/executors/trace/executor.ts"]
   file_src_executors_trace_executor_types_ts["src/executors/trace/executor.types.ts"]
   file_src_executors_trace_executor_unit_test_ts["src/executors/trace/executor.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
   file_src_modules_address_address_constants_ts["src/modules/address/address.constants.ts"]
   file_src_modules_address_address_module_ts["src/modules/address/address.module.ts"]
   file_src_modules_address_address_service_ts["src/modules/address/address.service.ts"]
@@ -478,6 +481,8 @@ graph LR
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_callidescope_nx_module_ts --> file_src_modules_address_address_module_ts
+  file_src_callidescope_nx_module_ts --> file_src_modules_plugin_plugin_module_ts
   file_src_executors_breadth_executor_ts --> file_src_executors_address_types_ts
   file_src_executors_breadth_executor_ts --> file_src_modules_address_address_utilities_ts
   file_src_executors_breadth_executor_unit_test_ts --> file_src_executors_breadth_executor_ts
@@ -511,8 +516,6 @@ graph LR
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_index_unit_test_ts --> file_src_modules_plugin_plugin_service_ts
   file_src_index_unit_test_ts --> file_src_modules_plugin_plugin_types_ts
-  file_src_main_module_ts --> file_src_modules_address_address_module_ts
-  file_src_main_module_ts --> file_src_modules_plugin_plugin_module_ts
   file_src_modules_address_address_module_ts --> file_src_modules_address_address_service_ts
   file_src_modules_address_address_service_ts --> file_src_modules_address_address_types_ts
   file_src_modules_address_address_service_unit_test_ts --> file_src_modules_address_address_service_ts
@@ -527,8 +530,9 @@ graph LR
   file_src_modules_options_options_module_ts --> file_src_modules_options_options_service_ts
   file_src_modules_options_options_service_ts --> file_src_modules_options_options_constants_ts
   file_src_modules_options_options_service_ts --> file_src_modules_options_options_types_ts
+  file_src_modules_options_options_service_unit_test_ts --> file_src_modules_options_options_constants_ts
   file_src_modules_options_options_service_unit_test_ts --> file_src_modules_options_options_service_ts
-  file_src_modules_plugin_plugin_context_utilities_ts --> file_src_main_module_ts
+  file_src_modules_plugin_plugin_context_utilities_ts --> file_src_callidescope_nx_module_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_address_address_service_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_options_options_service_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_plugin_plugin_constants_ts
@@ -563,12 +567,8 @@ graph LR
   file_src_modules_projects_projects_module_ts --> file_src_modules_projects_projects_service_ts
   file_src_modules_projects_projects_service_ts --> file_src_modules_projects_projects_types_ts
   file_src_modules_projects_projects_service_unit_test_ts --> file_src_modules_projects_projects_service_ts
-  file_src_modules_run_configuration_run_configuration_module_ts --> file_src_modules_options_options_module_ts
   file_src_modules_run_configuration_run_configuration_module_ts --> file_src_modules_run_configuration_run_configuration_service_ts
-  file_src_modules_run_configuration_run_configuration_service_ts --> file_src_modules_options_options_service_ts
-  file_src_modules_run_configuration_run_configuration_service_ts --> file_src_modules_run_configuration_run_configuration_constants_ts
   file_src_modules_run_configuration_run_configuration_service_ts --> file_src_modules_run_configuration_run_configuration_types_ts
-  file_src_modules_run_configuration_run_configuration_service_unit_test_ts --> file_src_modules_options_options_service_ts
   file_src_modules_run_configuration_run_configuration_service_unit_test_ts --> file_src_modules_run_configuration_run_configuration_service_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

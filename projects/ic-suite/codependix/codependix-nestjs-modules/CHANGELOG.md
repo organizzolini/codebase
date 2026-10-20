@@ -156,4 +156,4 @@ This was a version bump only for codependix-nestjs-modules to align it with othe
 
 ### 💅 Refactors
 
-- **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/pull/1208))
+- **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/pull/1208))

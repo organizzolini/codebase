@@ -39,7 +39,7 @@ import {
 } from "@codependix/output";
 import { NestFactory } from "@nestjs/core";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import type { INestApplicationContext } from "@nestjs/common";
 
