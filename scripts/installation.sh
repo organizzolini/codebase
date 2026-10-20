@@ -27,15 +27,22 @@
 
 source ./scripts/utilities.sh
 
+# Runs a command of the installation project. It is TypeScript, so it needs the
+# packages `pnpm install` brings, and NODE_OPTIONS is cleared because a loader
+# set there would preempt the transpiler this one names.
+installation() {
+  NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts "$@"
+}
+
 # ── Operating system ─────────────────────────────────────────────────────────
 # macOS continues below with Homebrew and nvm. Linux, which is what a Claude
 # Code cloud session and the devcontainer run, has no Homebrew and often a system
 # Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
 # linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
 # is shimmed from the copy npm bundles, because the native packages (sweph,
-# cpu-features) need it on PATH. Only the .env files of the setup command apply:
-# its shell configuration, software, and Terraform steps are for a developer
-# Mac. Docker and Postgres are started last. Safe to run again.
+# cpu-features) need it on PATH. Of the setup command only the .env files and the
+# SSH signing apply: its shell configuration, software, and Terraform steps are
+# for a developer Mac. Docker and Postgres are started last. Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
@@ -79,7 +86,11 @@ if [[ "${operating_system}" == "Linux" ]]; then
 
   echo "📦 Installing the workspace's packages..."
   pnpm install --frozen-lockfile
-  NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts environment-files
+  installation environment-files
+
+  # SSH commit signatures are made verifiable by the installation project: it
+  # installs ssh-keygen and lists the signer's key for the commit hooks.
+  installation ssh-signing
 
   # Docker and Postgres. A container that carries the daemon binary but runs
   # none gets one started, so `infrastructure:postgres:up` has an engine; a
@@ -226,4 +237,4 @@ echo "✅ nx available globally"
 echo "📦 Installing the packages the setup command runs on..."
 pnpm install
 
-NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts setup
+installation setup

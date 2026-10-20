@@ -11,6 +11,7 @@ import { ReporterModule } from "./modules/reporter/reporter.module";
 import { SetupModule } from "./modules/setup/setup.module";
 import { ShellConfigurationModule } from "./modules/shell-configuration/shell-configuration.module";
 import { SoftwareModule } from "./modules/software/software.module";
+import { SshSigningModule } from "./modules/ssh-signing/ssh-signing.module";
 import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-skill.module";
 
 /**
@@ -32,6 +33,7 @@ import { UpdateReuiSkillModule } from "./modules/update-reui-skill/update-reui-s
     SetupModule,
     ShellConfigurationModule,
     SoftwareModule,
+    SshSigningModule,
     UpdateReuiSkillModule,
   ],
 })

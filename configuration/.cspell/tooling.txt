@@ -135,6 +135,7 @@ nbstripout
 networkidle
 nextjs
 nindent
+nohup
 nonconstructor
 nonf
 nonfiction
@@ -144,6 +145,7 @@ nums
 obra
 onechild
 oneline
+openpgp
 operands
 organizzolini
 oxfmt
@@ -191,6 +193,7 @@ scen
 scol
 serializers
 seroval
+setsid
 sherif
 shiftsmart
 shiki
@@ -203,6 +206,7 @@ sqlfluffignore
 sqltools
 srow
 srvx
+SSHSIG
 stackoverflow
 stmts
 stringcase
