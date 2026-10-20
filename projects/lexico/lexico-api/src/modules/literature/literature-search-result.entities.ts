@@ -1,18 +1,25 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
-import { AuthorType } from "./author.entities";
-import { LineType } from "./line.entities";
-import { TextType } from "./text.entities";
+import {
+  AuthorConnectionType,
+  LineConnectionType,
+  TextConnectionType,
+} from "./literature-connection.entities";
+
+import type { Connection } from "../../lexico-api.types";
+import type { AuthorType } from "./author.entities";
+import type { LineType } from "./line.entities";
+import type { TextType } from "./text.entities";
 
 /** Aggregated result set for a literature search across authors, texts, and lines. */
 @ObjectType()
 export class LiteratureSearchResult {
-  @Field(() => [AuthorType])
-  public authors!: AuthorType[];
+  @Field(() => AuthorConnectionType)
+  public authors!: Connection<AuthorType>;
 
-  @Field(() => [LineType])
-  public lines!: LineType[];
+  @Field(() => LineConnectionType)
+  public lines!: Connection<LineType>;
 
-  @Field(() => [TextType])
-  public texts!: TextType[];
+  @Field(() => TextConnectionType)
+  public texts!: Connection<TextType>;
 }

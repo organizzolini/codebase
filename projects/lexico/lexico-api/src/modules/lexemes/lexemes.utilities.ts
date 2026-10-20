@@ -1,7 +1,7 @@
 import {
   mapNullableRelation,
-  mapNullableRelations,
-  mapRelations,
+  mapNullableRelationConnection,
+  mapRelationConnection,
   toDeletableFields,
 } from "../../lexico-api.utilities";
 
@@ -27,16 +27,22 @@ export function toLexemeType(lexeme: Lexeme): LexemeType {
     ...toDeletableFields(lexeme),
     disambiguator: lexeme.disambiguator,
     etymology: lexeme.etymology,
-    forms: mapRelations(lexeme.forms, toFormType),
+    forms: mapRelationConnection(lexeme.forms, toFormType),
     inflection: mapNullableRelation(lexeme.inflection, toInflectionType),
     lemma: lexeme.lemma,
     partOfSpeech: lexeme.partOfSpeech,
-    principalParts: mapRelations(lexeme.principalParts, toPrincipalPartType),
-    pronunciations: mapNullableRelations(
+    principalParts: mapRelationConnection(
+      lexeme.principalParts,
+      toPrincipalPartType,
+    ),
+    pronunciations: mapNullableRelationConnection(
       lexeme.pronunciations,
       toPronunciationType,
     ),
-    translations: mapNullableRelations(lexeme.translations, toTranslationType),
+    translations: mapNullableRelationConnection(
+      lexeme.translations,
+      toTranslationType,
+    ),
   } satisfies MappedFields<LexemeType, LexemeRelationField>);
 }
 

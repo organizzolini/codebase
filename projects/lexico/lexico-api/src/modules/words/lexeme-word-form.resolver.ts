@@ -1,11 +1,15 @@
 import { Inject } from "@nestjs/common";
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 
+import { mapRelationConnection } from "../../lexico-api.utilities";
 import { LexemeType } from "../lexemes/lexeme.entities";
 
 import { LexemeWordFormType } from "./lexeme-word-form.entities";
 import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
+import { LexemeWordFormConnectionType } from "./word-connection.entities";
 import { toLexemeWordFormType } from "./words.utilities";
+
+import type { Connection } from "../../lexico-api.types";
 
 /**
  * Resolves the written words behind a lexeme's forms, which the lexeme type
@@ -31,18 +35,23 @@ export class LexemeWordFormResolver {
    * Resolves every written word that surfaces as one of this lexeme's forms,
    * batched into one query per request however many lexemes are returned.
    */
-  @ResolveField(() => [LexemeWordFormType], {
+  @ResolveField(() => LexemeWordFormConnectionType, {
     description:
       "Every written word that surfaces as one of this lexeme's forms, such as the genitive singular of rosa written rosae.",
     name: "wordForms",
   })
   public async wordForms(
     @Parent() lexeme: LexemeType,
-  ): Promise<LexemeWordFormType[]> {
+  ): Promise<Connection<LexemeWordFormType>> {
     const wordForms = await this.lexemeWordFormLoader.byLexemeId.load(
       lexeme.id,
     );
-
-    return wordForms.map((wordForm) => toLexemeWordFormType(wordForm));
+    const connection = mapRelationConnection(wordForms, toLexemeWordFormType);
+    if (connection === undefined) {
+      throw new Error(
+        `Expected word forms to be loaded for lexeme ${lexeme.id}`,
+      );
+    }
+    return connection;
   }
 }

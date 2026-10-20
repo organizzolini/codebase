@@ -156,6 +156,16 @@ export function mapNullableRelation<Entity extends object, Mapped>(
 }
 
 /**
+ * Maps a nullable to-many relation to a Relay connection, keeping `null`.
+ */
+export function mapNullableRelationConnection<Entity extends object, Mapped>(
+  relations: null | readonly Entity[] | undefined,
+  map: (relation: Entity) => Mapped,
+): Connection<Mapped> | null | undefined {
+  return relations === null ? null : mapRelationConnection(relations, map);
+}
+
+/**
  * Maps a nullable to-many relation to its GraphQL types, keeping `null`, and
  * leaving one its query did not join unset, as {@link mapRelations} does.
  */
@@ -177,6 +187,27 @@ export function mapRelation<Entity extends object, Mapped>(
   map: (relation: Entity) => Mapped,
 ): Mapped | undefined {
   return relation === undefined ? undefined : map(relation);
+}
+
+/**
+ * Maps a to-many relation to a Relay connection with stable offset cursors.
+ */
+export function mapRelationConnection<Entity extends object, Mapped>(
+  relations: readonly Entity[] | undefined,
+  map: (relation: Entity) => Mapped,
+): Connection<Mapped> | undefined {
+  if (relations === undefined) {
+    return undefined;
+  }
+
+  return createConnection({
+    edges: relations.map((relation, index) =>
+      createEdge(map(relation), encodeOffsetCursor(index)),
+    ),
+    hasNextPage: false,
+    hasPreviousPage: false,
+    totalCount: relations.length,
+  });
 }
 
 /**

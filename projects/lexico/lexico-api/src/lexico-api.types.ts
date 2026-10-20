@@ -204,7 +204,11 @@ type Relations<Self, RelationField> = Pick<
 
 /** Whether a relation holds many rows, may be null, and may be unset. */
 type RelationShape<Relation> = [
-  [NonNullable<Relation>] extends [readonly unknown[]] ? "many" : "one",
+  [NonNullable<Relation>] extends [Connection<unknown>]
+    ? "many"
+    : [NonNullable<Relation>] extends [readonly unknown[]]
+      ? "many"
+      : "one",
   null extends Relation ? "nullable" : "non-null",
   undefined extends Relation ? "optional" : "required",
 ];
