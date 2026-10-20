@@ -142,7 +142,7 @@ See [.devcontainer/README.md](../.devcontainer/README.md) for detailed configura
 
 ### Commit Signing (Required)
 
-Every commit must be GPG-signed. The `pre-commit` hook refuses to run without a working signing configuration, `pre-push` verifies the signature on every commit being pushed, and `main` is protected against unsigned commits — so this is the first thing to get right, before your first commit.
+Every commit must be signed, with GPG on a local machine or with SSH in a cloud agent session. The `pre-commit` hook refuses to run without a working signing configuration, `pre-push` verifies the signature on every commit being pushed, and `main` is protected against unsigned commits — so this is the first thing to get right, before your first commit.
 
 The local setup script installs `gnupg` and `pinentry-mac` and points `gpg-agent` at the latter, but it cannot create a key for you. If you do not already have one:
 
@@ -167,6 +167,8 @@ gpg --armor --export "$(git config --get user.signingkey)"
 ```
 
 `scripts/git/check-commit-signing-configuration.sh` checks all of it — `commit.gpgsign`, `user.signingkey`, that a secret key exists for that key, and that signing actually succeeds. Husky runs it for you; never invoke it, or `check-push-commit-signatures.sh`, by hand during a normal commit or push.
+
+Cloud agent sessions sign with SSH instead (`gpg.format=ssh`), through a signer program the harness provides, so there is no GPG key to create. For `gpg.format=ssh` the check confirms the signer program and key file exist and that a throwaway commit signs; it does not verify the signature, because that needs `ssh-keygen` and `gpg.ssh.allowedSignersFile`, which a cloud session lacks. `pre-push` likewise accepts a commit carrying an SSH signature without verifying it locally, and GitHub verifies it on the pull request once the public key is registered on the account.
 
 ### Workspace Structure
 
@@ -351,7 +353,7 @@ Three Husky hooks enforce quality gates locally, from [configuration/.husky/](..
 
 | Hook         | Trigger      | What it runs                                                                                                       | Config                                                                   |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| `pre-commit` | `git commit` | GPG signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../configuration/lint-staged.config.ts) |
+| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../configuration/lint-staged.config.ts) |
 | `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                          | [commitlint.config.ts](../configuration/commitlint.config.ts)   |
 | `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                    | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs)    |
 

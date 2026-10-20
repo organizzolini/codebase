@@ -2,7 +2,7 @@
 #
 # sessionStart hook — validates git commit signing configuration.
 #
-#   - Silent when GPG signing is configured correctly
+#   - Silent when GPG or SSH signing is configured correctly
 #   - Injects the signing error + stop directive as additionalContext when
 #     commit signing is not configured
 #
@@ -21,7 +21,8 @@ fi
 # 📋 Context
 
 # Cloud agents cannot configure gpg themselves — their key arrives from repository
-# secrets — so they get bootstrap instructions while local agents get local ones.
+# secrets, or as an SSH signer from the harness — so they get bootstrap
+# instructions while local agents get local ones.
 if [[ -n "${GITHUB_ACTIONS:-}" || -n "${CI:-}" ]]; then
 	REMEDIATION="1. Stop and do not create commits until signing is configured.
 2. Confirm repository environment \"copilot\" has secrets \"GPG_PRIVATE_KEY\" and \"GPG_PASSPHRASE\".

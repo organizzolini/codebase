@@ -29,11 +29,26 @@ resolve_repository_owner() {
   return 1
 }
 
+# Claude Code cloud sessions hold a placeholder in GH_TOKEN and a session proxy
+# adds the real credential to each request, so `gh auth status` rejects a token
+# that every REST call succeeds with. They also cannot reach GraphQL at all —
+# the proxy answers 403 — which is what `gh project list` speaks. Both checks
+# would fail a session that can read and write the repository, so a cloud
+# session is judged by the REST call it will really make.
+is_cloud_session() {
+  [[ "${CLAUDE_CODE_REMOTE:-}" == 'true' ]]
+}
+
 # `gh auth status` tests every account the keyring knows and fails when any one
 # of them has a problem, so `--active` narrows it to the single credential this
 # session will actually send. Without it a stale second account fails the check
 # while every gh command in the session succeeds.
 verify_github_cli_access() {
+  if is_cloud_session; then
+    gh api user --hostname "${github_host}" --jq .login >/dev/null
+    return
+  fi
+
   local repository_owner
   repository_owner="$(resolve_repository_owner || true)"
 

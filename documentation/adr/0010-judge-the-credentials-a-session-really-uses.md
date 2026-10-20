@@ -25,6 +25,12 @@ hook shell's environment is not the session's.
 - **The gh check asks the login shell for the token** when neither variable is
   in the environment, fencing the value in markers so a profile that prints a
   banner cannot corrupt it. CI passes the token in explicitly and never asks.
+- **A cloud session is judged by a REST call, not by its token.** Claude Code
+  cloud sessions (`CLAUDE_CODE_REMOTE=true`) hold a placeholder in `GH_TOKEN`
+  that a session proxy swaps for the real credential, and the proxy refuses
+  GraphQL. `gh auth status` and `gh project list` therefore failed a session
+  that could use GitHub, telling every cloud agent to stop. The check runs
+  `gh api user` instead, which is the call the session will make.
 - **`gh auth status` runs with `--active`.** Without it, it tests every account
   in the keyring and fails when any one has a problem — including accounts no gh
   command in the session would ever use.
@@ -38,6 +44,12 @@ hook shell's environment is not the session's.
   milliseconds when there is none. A cancelled pinentry is reported as
   inconclusive rather than as broken signing, because the real commit that
   follows prompts for the passphrase normally.
+- **SSH signing skips the GPG checks and is not verified locally.** A cloud
+  session signs with `gpg.format=ssh` through a harness-provided signer, so
+  there is no secret key, user id, or trust database to judge. The check proves
+  the signer and key file exist and that a throwaway commit signs; verification
+  needs `ssh-keygen` and an allowed-signers file the session lacks, so GitHub
+  does it on the pull request instead.
 - **One script serves two harnesses.** They read different JSON shapes, so every
   script pipes its message through `scripts/git/emit-session-hook-context.sh`,
   which emits `hookSpecificOutput.additionalContext` when `CLAUDE_PROJECT_DIR`
