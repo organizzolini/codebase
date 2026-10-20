@@ -278,13 +278,13 @@ Call stacks traced through `projects/caelundas/caelundas-cli`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 947 |
-| Files | 174 |
-| Calls traced | 1242 |
+| Callables | 956 |
+| Files | 182 |
+| Calls traced | 1252 |
 | Call stacks | 96 |
 | Deepest stack | 15 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 37 |
+| Unfollowable calls | 36 |
 
 ### Limits
 
@@ -300,7 +300,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **1. `CaelundasCommand.run`** — depth ≥ 15 · decorated-method
 
 ```text
-🚀 CaelundasCommand.run(): Promise<void> [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts:64]
+🚀 CaelundasCommand.run(): Promise<void> [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts:67]
    ↳ Executes the full calendar generation pipeline.
   └─> PerfectiveService.detect(input: Input, options?: PerfectiveOptions): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:245]
      ↳ Detects all perfective (instantaneous) astronomical events within the given date range.
@@ -398,7 +398,25 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Inverts {@link bodyDisplayName}: returns the body a display name belongs to, or `undefined` when the name is not a…
 ```
 
-**5. `IngressesService.buildDecanIngressEvent`** — depth 7 · orphan-root
+**5. `EphemerisService.getAzimuthElevationEphemerisByBody`** — depth ≥ 7 · orphan-root
+
+```text
+🚀 EphemerisService.getAzimuthElevationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", AzimuthElevationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:156]
+   ↳ Computes minute-by-minute horizontal coordinates (azimuth, apparent elevation) for the requested bodies at the…
+  └─> EphemerisHorizonService.computeAzimuthElevationForBody(…): AzimuthElevationEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-horizon.service.ts:46]
+     ↳ Computes minute-by-minute horizontal coordinates (azimuth, apparent elevation) for a single body at the observer's…
+    └─> EphemerisHorizonService.computeAzimuthElevationForMinute(…): HorizonPosition [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-horizon.service.ts:76]
+       ↳ Computes horizontal coordinates for a single body at a specific moment, from its topocentric position: parallax is…
+      └─> EphemerisCoordinateService.getTopocentricBodyCoordinates(…): { distance: number; latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:224]
+         ↳ Computes a body's apparent ecliptic coordinates as seen from an observer on the Earth's surface (sea level), rather…
+        └─> EphemerisCoordinateService.computeBodyCoordinates(…): { distance: number; distanceSpeed: number; latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:43]
+           ↳ Computes body ecliptic coordinates (longitude, latitude, distance) with the given flags.
+          └─> assertSwissEphemerisResult(result: { error: string; flag: number; }, subject: SwissEphemerisSubject): void [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts:21]
+             ↳ Throws unless a `calc` or `pheno_ut` result came from the Swiss Ephemeris data files.
+            └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
+```
+
+**6. `IngressesService.buildDecanIngressEvent`** — depth 7 · orphan-root
 
 ```text
 🚀 IngressesService.buildDecanIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:91]
@@ -416,7 +434,7 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:77]
 ```
 
-**6. `MinorAspectsComposerService.processAspectGroup`** — depth 7 · orphan-root
+**7. `MinorAspectsComposerService.processAspectGroup`** — depth 7 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:234]
@@ -432,24 +450,23 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**7. `EphemerisService.getAzimuthElevationEphemerisByBody`** — depth 6 · orphan-root
+**8. `EphemerisService.getCoordinateEphemerisByBody`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 EphemerisService.getAzimuthElevationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", AzimuthElevationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:155]
-   ↳ Computes minute-by-minute horizontal coordinates (azimuth, apparent elevation) for the requested bodies at the…
-  └─> EphemerisHorizonService.computeAzimuthElevationForBody(…): AzimuthElevationEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-horizon.service.ts:46]
-     ↳ Computes minute-by-minute horizontal coordinates (azimuth, apparent elevation) for a single body at the observer's…
-    └─> EphemerisHorizonService.computeAzimuthElevationForMinute(…): HorizonPosition [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-horizon.service.ts:76]
-       ↳ Computes horizontal coordinates for a single body at a specific moment, from its topocentric position: parallax is…
-      └─> EphemerisCoordinateService.getTopocentricBodyCoordinates(…): { distance: number; latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:227]
-         ↳ Computes a body's apparent ecliptic coordinates as seen from an observer on the Earth's surface (sea level), rather…
-        └─> EphemerisCoordinateService.computeBodyCoordinates(…): { distance: number; distanceSpeed: number; latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:42]
-           ↳ Computes body ecliptic coordinates (longitude, latitude, distance) with the given flags.
-          └─> EphemerisConstantsService.getSwissEphemerisConstantForBody(body: Exclude<Body, Node>): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-constants.service.ts:43]
-             ↳ Looks up the Swiss Ephemeris constant for a non-node body (planet or asteroid).
+🚀 EphemerisService.getCoordinateEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", CoordinateEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:202]
+   ↳ Computes minute-by-minute ecliptic coordinates for all requested bodies.
+  └─> EphemerisCoordinateService.computeNodeBodyMinutes(args: { body: Node; end: Moment; start: Moment; }): CoordinateEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:175]
+     ↳ Computes minute-by-minute coordinates for a node (lunar/solar nodes and lunar perigee).
+    └─> EphemerisCoordinateService.computeNodeCoordinate(…): { latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:91]
+       ↳ Computes node coordinate (lunar node or perigee). Dispatches to the appropriate computation based on node type.
+      └─> EphemerisCoordinateService.computeRegularNodeCoordinate(…): { latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:106]
+         ↳ Computes regular lunar/solar node ecliptic coordinates. Adjusts south lunar node longitude by 180°.
+        └─> assertSwissEphemerisResult(result: { error: string; flag: number; }, subject: SwissEphemerisSubject): void [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts:21]
+           ↳ Throws unless a `calc` or `pheno_ut` result came from the Swiss Ephemeris data files.
+          └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**8. `AspectsUtilitiesService.getValue`** — depth 6 · orphan-root
+**9. `AspectsUtilitiesService.getValue`** — depth 6 · orphan-root
 
 ```text
 🚀 AspectsUtilitiesService.getValue({ body1, body2 }: { body1: Body; body2: Body; }): AspectBodies | null [projects/caelundas/caelundas-cli/src/modules/aspects/aspects-utilities.service.ts:281]
@@ -463,7 +480,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**9. `AspectsUtilitiesService.anonymous`** — depth 6 · orphan-root
+**10. `AspectsUtilitiesService.anonymous`** — depth 6 · orphan-root
 
 ```text
 🚀 AspectsUtilitiesService.anonymous(longitudes: LongitudesWindow): "forming" | "dissolving" | "perfective" | null [projects/caelundas/caelundas-cli/src/modules/aspects/aspects-utilities.service.ts:312]
@@ -479,7 +496,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**10. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**11. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:105]
@@ -494,7 +511,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**11. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**12. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:131]
@@ -509,7 +526,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**12. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**13. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:85]
@@ -524,7 +541,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**13. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**14. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:131]
@@ -539,7 +556,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**14. `MinorAspectsService.detect`** — depth ≥ 6 · orphan-root
+**15. `MinorAspectsService.detect`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 MinorAspectsService.detect(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:183]
@@ -549,13 +566,13 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Returns previous/current/next longitudes for one body at minute resolution.
       └─> AspectCalculationSupportService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:86]
          ↳ Returns previous/current/next longitudes for one body from a body-keyed ephemeris map.
-        └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+        └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
            ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-          └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+          └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
              ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**15. `QuadrupleAspectsComposerService.checkPatternExists`** — depth ≥ 6 · orphan-root
+**16. `QuadrupleAspectsComposerService.checkPatternExists`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsComposerService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:289]
@@ -570,7 +587,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**16. `QuadrupleAspectsService.detectProgressive`** — depth 6 · orphan-root
+**17. `QuadrupleAspectsService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:75]
@@ -584,7 +601,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**17. `QuintupleAspectsService.detectProgressive`** — depth 6 · orphan-root
+**18. `QuintupleAspectsService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 QuintupleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects.service.ts:58]
@@ -598,7 +615,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**18. `SextupleAspectsService.checkPatternExists`** — depth 6 · orphan-root
+**19. `SextupleAspectsService.checkPatternExists`** — depth 6 · orphan-root
 
 ```text
 🚀 SextupleAspectsService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:86]
@@ -613,7 +630,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> SextupleAspectsComposerService.find(…)(x: number): boolean [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:436]
 ```
 
-**19. `SextupleAspectsService.detectProgressive`** — depth 6 · orphan-root
+**20. `SextupleAspectsService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 SextupleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:136]
@@ -627,7 +644,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**20. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**21. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:48]
@@ -642,7 +659,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**21. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
+**22. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:120]
@@ -657,7 +674,7 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**22. `SpecialtyAspectsService.detect`** — depth ≥ 6 · orphan-root
+**23. `SpecialtyAspectsService.detect`** — depth ≥ 6 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.detect(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:201]
@@ -667,13 +684,13 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Reads previous/current/next longitudes for a body pair from coordinate ephemerides.
       └─> SpecialtyAspectsEventService.getBodyLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-event.service.ts:72]
          ↳ Returns previous/current/next longitudes for one body at minute resolution.
-        └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+        └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
            ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-          └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+          └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
              ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**23. `StelliumService.detectProgressive`** — depth 6 · orphan-root
+**24. `StelliumService.detectProgressive`** — depth 6 · orphan-root
 
 ```text
 🚀 StelliumService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:313]
@@ -687,31 +704,18 @@ What this project is judged against, as declared in its own `callidescope.config
              ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**24. `downloadEphemerisFiles`** — depth ≥ 5 · orphan-root
+**25. `EphemerisService.getDistanceEphemerisByBody`** — depth ≥ 5 · orphan-root
 
 ```text
-🚀 downloadEphemerisFiles(): Promise<void> [projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:25]
-   ↳ Downloads required ephemeris data files into the local data directory.
-  └─> downloadFile(url: string, destination: string): Promise<void> [projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:48]
-     ↳ Streams a remote ephemeris file to disk and removes partial files on failure.
-    └─> anonymous(…): void [projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:49]
-      └─> get(…)(response: IncomingMessage): void [projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:52]
-        └─> on(…)(): void [projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:64]
-```
-
-**25. `EphemerisService.getCoordinateEphemerisByBody`** — depth 5 · orphan-root
-
-```text
-🚀 EphemerisService.getCoordinateEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", CoordinateEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:201]
-   ↳ Computes minute-by-minute ecliptic coordinates for all requested bodies.
-  └─> EphemerisCoordinateService.computeNodeBodyMinutes(args: { body: Node; end: Moment; start: Moment; }): CoordinateEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:178]
-     ↳ Computes minute-by-minute coordinates for a node (lunar/solar nodes and lunar perigee).
-    └─> EphemerisCoordinateService.computeNodeCoordinate(…): { latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:92]
-       ↳ Computes node coordinate (lunar node or perigee). Dispatches to the appropriate computation based on node type.
-      └─> EphemerisCoordinateService.computeLunarPerigeeCoordinate(julianDayUniversalTime: number): { latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:69]
-         ↳ Computes lunar perigee (apogee in modern terms) ecliptic coordinates.
-        └─> MathService.normalizeDegrees(degrees: number): number [projects/caelundas/caelundas-cli/src/modules/math/math.service.ts:205]
-           ↳ Normalizes an angle in degrees to the range [0, 360).
+🚀 EphemerisService.getDistanceEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", DistanceEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:260]
+   ↳ Computes minute-by-minute geocentric distance for the requested bodies.
+  └─> EphemerisCoordinateService.computeDistanceForBody(…): DistanceEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:151]
+     ↳ * Computes minute-by-minute geocentric distance for a single body.
+    └─> EphemerisCoordinateService.computeBodyCoordinates(…): { distance: number; distanceSpeed: number; latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:43]
+       ↳ Computes body ecliptic coordinates (longitude, latitude, distance) with the given flags.
+      └─> assertSwissEphemerisResult(result: { error: string; flag: number; }, subject: SwissEphemerisSubject): void [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts:21]
+         ↳ Throws unless a `calc` or `pheno_ut` result came from the Swiss Ephemeris data files.
+        └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
 **26. `MajorAspectProgressiveService.castAspectPartsToTypes`** — depth ≥ 5 · orphan-root
@@ -749,9 +753,9 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Derives longitudes window for body.
     └─> AspectCalculationSupportService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:86]
        ↳ Returns previous/current/next longitudes for one body from a body-keyed ephemeris map.
-      └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+      └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
          ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-        └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+        └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
            ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
@@ -819,9 +823,9 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns previous/current/next longitudes for one body at minute resolution.
     └─> AspectCalculationSupportService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:86]
        ↳ Returns previous/current/next longitudes for one body from a body-keyed ephemeris map.
-      └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+      └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
          ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-        └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+        └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
            ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
@@ -945,17 +949,16 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**43. `EphemerisService.getDistanceEphemerisByBody`** — depth 4 · orphan-root
+**43. `EphemerisService.getIlluminationEphemerisByBody`** — depth ≥ 4 · orphan-root
 
 ```text
-🚀 EphemerisService.getDistanceEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", DistanceEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:259]
-   ↳ Computes minute-by-minute geocentric distance for the requested bodies.
-  └─> EphemerisCoordinateService.computeDistanceForBody(…): DistanceEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:154]
-     ↳ * Computes minute-by-minute geocentric distance for a single body.
-    └─> EphemerisCoordinateService.computeBodyCoordinates(…): { distance: number; distanceSpeed: number; latitude: number; longitude: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:42]
-       ↳ Computes body ecliptic coordinates (longitude, latitude, distance) with the given flags.
-      └─> EphemerisConstantsService.getSwissEphemerisConstantForBody(body: Exclude<Body, Node>): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-constants.service.ts:43]
-         ↳ Looks up the Swiss Ephemeris constant for a non-node body (planet or asteroid).
+🚀 EphemerisService.getIlluminationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", IlluminationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:342]
+   ↳ Computes per-body illumination series for the requested range.
+  └─> EphemerisPhenomenaService.computeIlluminationForBody(…): IlluminationEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:55]
+     ↳ Computes minute-by-minute illumination fraction, apparent magnitude and phase angle for requested bodies.
+    └─> assertSwissEphemerisResult(result: { error: string; flag: number; }, subject: SwissEphemerisSubject): void [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts:21]
+       ↳ Throws unless a `calc` or `pheno_ut` result came from the Swiss Ephemeris data files.
+      └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
 **44. `IngressesService.buildPeakIngressEvent`** — depth 4 · orphan-root
@@ -1125,9 +1128,9 @@ What this project is judged against, as declared in its own `callidescope.config
 🚀 SpecialtyAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:215]
   └─> SpecialtyAspectsEventService.getBodyLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-event.service.ts:72]
      ↳ Returns previous/current/next longitudes for one body at minute resolution.
-    └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+    └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
        ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-      └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+      └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
          ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
@@ -1149,9 +1152,9 @@ What this project is judged against, as declared in its own `callidescope.config
    ↳ Returns previous/current/next longitudes for one body at minute resolution.
   └─> AspectCalculationSupportService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:86]
      ↳ Returns previous/current/next longitudes for one body from a body-keyed ephemeris map.
-    └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+    └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
        ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-      └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+      └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
          ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
@@ -1166,18 +1169,28 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
 ```
 
-**62. `EphemerisService.getIlluminationEphemerisByBody`** — depth 3 · orphan-root
+**62. `EphemerisDownloadCommand.run`** — depth 3 · decorated-method
 
 ```text
-🚀 EphemerisService.getIlluminationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", IlluminationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:341]
-   ↳ Computes per-body illumination series for the requested range.
-  └─> EphemerisPhenomenaService.computeIlluminationForBody(…): IlluminationEphemeris [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:54]
-     ↳ Computes minute-by-minute illumination fraction, apparent magnitude and phase angle for requested bodies.
-    └─> EphemerisConstantsService.getSwissEphemerisConstantForBody(body: Exclude<Body, Node>): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-constants.service.ts:43]
-       ↳ Looks up the Swiss Ephemeris constant for a non-node body (planet or asteroid).
+🚀 EphemerisDownloadCommand.run(): Promise<void> [projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts:42]
+   ↳ Downloads the data files.
+  └─> EphemerisDownloadService.download(): Promise<void> [projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts:73]
+     ↳ Downloads every data file that is not already present.
+    └─> resolveEphemerisDirectory(): string [projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:49]
+       ↳ The absolute directory the data files live in, from the working directory.
 ```
 
-**63. `DailyCyclesService.buildLunarNadirEvent`** — depth ≥ 3 · orphan-root
+**63. `EphemerisService.constructor`** — depth 3 · orphan-root
+
+```text
+🚀 EphemerisService.constructor(…): EphemerisService [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:43]
+  └─> initializeSwissEphemeris(): void [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:126]
+     ↳ Points the Swiss Ephemeris at its data files before any calculations are performed.
+    └─> resolveEphemerisDirectory(): string [projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:49]
+       ↳ The absolute directory the data files live in, from the working directory.
+```
+
+**64. `DailyCyclesService.buildLunarNadirEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildLunarNadirEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:80]
@@ -1188,7 +1201,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**64. `DailyCyclesService.buildLunarZenithEvent`** — depth ≥ 3 · orphan-root
+**65. `DailyCyclesService.buildLunarZenithEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildLunarZenithEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:87]
@@ -1199,7 +1212,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**65. `DailyCyclesService.buildMoonriseEvent`** — depth ≥ 3 · orphan-root
+**66. `DailyCyclesService.buildMoonriseEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildMoonriseEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:94]
@@ -1210,7 +1223,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**66. `DailyCyclesService.buildMoonsetEvent`** — depth ≥ 3 · orphan-root
+**67. `DailyCyclesService.buildMoonsetEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildMoonsetEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:101]
@@ -1221,7 +1234,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**67. `DailyCyclesService.buildSolarNadirEvent`** — depth ≥ 3 · orphan-root
+**68. `DailyCyclesService.buildSolarNadirEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSolarNadirEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:108]
@@ -1232,7 +1245,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**68. `DailyCyclesService.buildSolarZenithEvent`** — depth ≥ 3 · orphan-root
+**69. `DailyCyclesService.buildSolarZenithEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSolarZenithEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:115]
@@ -1243,7 +1256,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**69. `DailyCyclesService.buildSunriseEvent`** — depth ≥ 3 · orphan-root
+**70. `DailyCyclesService.buildSunriseEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSunriseEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:122]
@@ -1254,7 +1267,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**70. `DailyCyclesService.buildSunsetEvent`** — depth ≥ 3 · orphan-root
+**71. `DailyCyclesService.buildSunsetEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSunsetEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:129]
@@ -1265,7 +1278,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**71. `EclipsesService.buildLunarEclipseEvent`** — depth 3 · orphan-root
+**72. `EclipsesService.buildLunarEclipseEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 EclipsesService.buildLunarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:48]
@@ -1276,7 +1289,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds one eclipse contact event, titled with its type, body and phase, for example "🌐 🌙🐉▶️ Total Lunar Eclipse…
 ```
 
-**72. `EclipsesService.buildSolarEclipseEvent`** — depth 3 · orphan-root
+**73. `EclipsesService.buildSolarEclipseEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 EclipsesService.buildSolarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:60]
@@ -1287,7 +1300,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds one eclipse contact event, titled with its type, body and phase, for example "🌐 🌙🐉▶️ Total Lunar Eclipse…
 ```
 
-**73. `TwilightsService.buildAstronomicalDawnEvent`** — depth 3 · orphan-root
+**74. `TwilightsService.buildAstronomicalDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildAstronomicalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:61]
@@ -1298,7 +1311,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**74. `TwilightsService.buildAstronomicalDuskEvent`** — depth 3 · orphan-root
+**75. `TwilightsService.buildAstronomicalDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildAstronomicalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:71]
@@ -1309,7 +1322,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**75. `TwilightsService.buildCivilDawnEvent`** — depth 3 · orphan-root
+**76. `TwilightsService.buildCivilDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildCivilDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:81]
@@ -1320,7 +1333,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**76. `TwilightsService.buildCivilDuskEvent`** — depth 3 · orphan-root
+**77. `TwilightsService.buildCivilDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildCivilDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:91]
@@ -1331,7 +1344,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**77. `TwilightsService.buildNauticalDawnEvent`** — depth 3 · orphan-root
+**78. `TwilightsService.buildNauticalDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildNauticalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:101]
@@ -1342,7 +1355,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**78. `TwilightsService.buildNauticalDuskEvent`** — depth 3 · orphan-root
+**79. `TwilightsService.buildNauticalDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildNauticalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:111]
@@ -1353,31 +1366,23 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**79. `SpecialtyAspectsComposerService.getBodyLongitudesWindow`** — depth 3 · orphan-root
+**80. `SpecialtyAspectsComposerService.getBodyLongitudesWindow`** — depth 3 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsComposerService.getBodyLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:149]
    ↳ Returns previous/current/next longitudes for one body at minute resolution.
-  └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389]
+  └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
      ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
-    └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:244]
+    └─> EphemerisService.getCoordinateFromEphemeris(…): number [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:245]
        ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**80. `map(…)`** — depth 2 · orphan-root
+**81. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus"] [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:481]
   └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
      ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
-```
-
-**81. `EphemerisService.constructor`** — depth 2 · orphan-root
-
-```text
-🚀 EphemerisService.constructor(…): EphemerisService [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:42]
-  └─> initializeSwissEphemeris(): void [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:92]
-     ↳ Configures the Swiss Ephemeris data path before any calculations are performed.
 ```
 
 **82. `IngressesService.getSign`** — depth 2 · orphan-root
@@ -1513,19 +1518,19 @@ What this project is judged against, as declared in its own `callidescope.config
 | `DailyCyclesService.getDailySolarCycleEvents` | 10 | `DailyCyclesBuilderService.getElevationWindow`, `DailyCyclesBuilderService.getHorizonClearanceWindow`, `DailyCyclesBuilderService.isRise`, `DailyCyclesBuilderService.buildSunriseEvent`, `MathService.isMaximum`, `DailyCyclesBuilderService.buildSolarZenithEvent`, `DailyCyclesBuilderService.isSet`, `DailyCyclesBuilderService.buildSunsetEvent`, `MathService.isMinimum`, `DailyCyclesBuilderService.buildSolarNadirEvent` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:222` |
 
 <details>
-<summary>602 more callables</summary>
+<summary>607 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `EphemerisService.getCoordinateEphemerisByBody` | 9 | `EphemerisConstantsService.isNode`, `EphemerisService.getConstantsService`, `EphemerisCoordinateService.computeNodeBodyMinutes`, `EphemerisService.getCoordinateService`, `EphemerisTimeService.generateMinutes`, `EphemerisService.getTimeService`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeBodyCoordinate`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:201` |
+| `EphemerisService.getCoordinateEphemerisByBody` | 9 | `EphemerisConstantsService.isNode`, `EphemerisService.getConstantsService`, `EphemerisCoordinateService.computeNodeBodyMinutes`, `EphemerisService.getCoordinateService`, `EphemerisTimeService.generateMinutes`, `EphemerisService.getTimeService`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeBodyCoordinate`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:202` |
 | `EclipseTopocentricService.getTopocentricEvents` | 9 | `EclipseTopocentricService.isInProgressGeocentrically(…)`, `EclipseTopocentricService.isInProgressGeocentrically`, `EclipseTopocentricService.isInProgressGeocentrically(…)`, `EclipseGeometryService.getAllTopocentricSamples`, `EclipseTopocentricService.getSolarTopocentricPhases`, `EclipseTopocentricService.continueSolarOccurrence`, `EclipseTopocentricService.getLunarTopocentricPhases`, `EclipseTopocentricService.map(…)`, `EclipseTopocentricService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:370` |
+| `CaelundasCommand.run` | 9 | `EphemerisService.verifyFiles`, `InputService.parse`, `PerfectiveService.detect`, `ProgressiveService.detect`, `CaelundasCommand.toSorted(…)`, `CalendarEventsService.upsert`, `CalendarEventsService.findInRange`, `CalendarService.write`, `CalendarService.writeJson` | `projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts:67` |
 | `AnnualSolarCycleEventsService.getAutumnEvents` | 8 | `AnnualSolarCycleEventsService.isAutumnalEquinox`, `AnnualSolarCycleEventsService.buildAutumnalEquinoxEvent`, `AnnualSolarCycleEventsService.isNinthHexadecan`, `AnnualSolarCycleEventsService.buildNinthHexadecanEvent`, `AnnualSolarCycleEventsService.isSamhain`, `AnnualSolarCycleEventsService.buildSamhainEvent`, `AnnualSolarCycleEventsService.isEleventhHexadecan`, `AnnualSolarCycleEventsService.buildEleventhHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:60` |
 | `AnnualSolarCycleEventsService.getSpringEvents` | 8 | `AnnualSolarCycleEventsService.isVernalEquinox`, `AnnualSolarCycleEventsService.buildVernalEquinoxEvent`, `AnnualSolarCycleEventsService.isFirstHexadecan`, `AnnualSolarCycleEventsService.buildFirstHexadecanEvent`, `AnnualSolarCycleEventsService.isBeltane`, `AnnualSolarCycleEventsService.buildBeltaneEvent`, `AnnualSolarCycleEventsService.isThirdHexadecan`, `AnnualSolarCycleEventsService.buildThirdHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:81` |
 | `AnnualSolarCycleEventsService.getSummerEvents` | 8 | `AnnualSolarCycleEventsService.isSummerSolstice`, `AnnualSolarCycleEventsService.buildSummerSolsticeEvent`, `AnnualSolarCycleEventsService.isFifthHexadecan`, `AnnualSolarCycleEventsService.buildFifthHexadecanEvent`, `AnnualSolarCycleEventsService.isLammas`, `AnnualSolarCycleEventsService.buildLammasEvent`, `AnnualSolarCycleEventsService.isSeventhHexadecan`, `AnnualSolarCycleEventsService.buildSeventhHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:102` |
 | `AnnualSolarCycleEventsService.getWinterEvents` | 8 | `AnnualSolarCycleEventsService.isWinterSolstice`, `AnnualSolarCycleEventsService.buildWinterSolsticeEvent`, `AnnualSolarCycleEventsService.isThirteenthHexadecan`, `AnnualSolarCycleEventsService.buildThirteenthHexadecanEvent`, `AnnualSolarCycleEventsService.isImbolc`, `AnnualSolarCycleEventsService.buildImbolcEvent`, `AnnualSolarCycleEventsService.isFifteenthHexadecan`, `AnnualSolarCycleEventsService.buildFifteenthHexadecanEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:123` |
 | `PerfectiveService.detectOrbitalEvents` | 8 | `RetrogradesService.detect`, `IngressesService.detect`, `MonthlyLunarCycleService.detect`, `MonthlyLunarCycleService.detectApsides`, `AnnualSolarCycleService.detect`, `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:171` |
 | `ProgressiveService.detect` | 8 | `AspectsService.detectProgressive`, `RetrogradesService.detectProgressive`, `EclipsesService.detectProgressive`, `IngressesService.detectProgressive`, `MonthlyLunarCycleService.detectProgressive`, `TwilightsService.detectProgressive`, `PhasesService.detectProgressive`, `AnnualSolarCycleService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts:47` |
-| `CaelundasCommand.run` | 8 | `InputService.parse`, `PerfectiveService.detect`, `ProgressiveService.detect`, `CaelundasCommand.toSorted(…)`, `CalendarEventsService.upsert`, `CalendarEventsService.findInRange`, `CalendarService.write`, `CalendarService.writeJson` | `projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.command.ts:64` |
 | `PhasesService.detectProgressive` | 7 | `PhasesService.filter(…)`, `PhasesService.filter(…)`, `VenusianPhaseService.getVenusianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MercurianPhaseService.getMercurianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MartianPhaseService.getMartianPhaseProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:97` |
 | `AspectsService.detectCompositeAspects` | 6 | `QuadrupleAspectsService.detect`, `QuintupleAspectsService.detect`, `SextupleAspectsService.detect`, `StelliumService.detect`, `TripleAspectsService.detect`, `AspectsService.compoundEventKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:84` |
 | `EclipseClassificationService.getSolarEclipseType` | 6 | `EclipseClassificationService.isInProgress(…)`, `EclipseClassificationService.isInProgress`, `EclipseClassificationService.getClosestApproach(…)`, `EclipseClassificationService.getClosestApproach`, `EclipseClassificationService.getGamma`, `EclipseClassificationService.getUmbralRadius` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:205` |
@@ -1533,7 +1538,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `RetrogradesService.detectBodyStations` | 6 | `EphemerisService.getCoordinateFromEphemeris`, `RetrogradesService.getPreviousLongitudes`, `RetrogradesService.getNextLongitudes`, `RetrogradesService.isRetrograde`, `RetrogradesService.buildRetrogradeEvent`, `RetrogradesService.isDirect` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:56` |
 | `RetrogradesService.detectProgressive` | 6 | `RetrogradesService.filter(…)`, `bodyDisplayName`, `RetrogradesService.filter(…)`, `RetrogradesService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `RetrogradesService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:358` |
 | `EphemerisAggregationService.processNonNodeBodyMinute` | 5 | `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.getBodyCoordinatesWithDistance`, `EphemerisConstantsService.isHorizonBody`, `EphemerisHorizonService.computeAzimuthElevationForMinute`, `EphemerisPhenomenaService.computePhenoForMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:103` |
-| `EphemerisService.computeAllEphemerides` | 5 | `EphemerisService.getAggregationService`, `EphemerisAggregationService.buildEphemerisFeatureSets`, `EphemerisAggregationService.buildEphemerisEntries`, `EphemerisAggregationService.accumulateBodyEphemeris`, `EphemerisAggregationService.entriesToEphemerides` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:106` |
+| `EphemerisService.computeAllEphemerides` | 5 | `EphemerisService.getAggregationService`, `EphemerisAggregationService.buildEphemerisFeatureSets`, `EphemerisAggregationService.buildEphemerisEntries`, `EphemerisAggregationService.accumulateBodyEphemeris`, `EphemerisAggregationService.entriesToEphemerides` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:107` |
 | `AnnualSolarCycleService.detectProgressive` | 5 | `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.getAdvancingProgressiveEvents`, `AnnualSolarCycleService.getRetreatingProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:205` |
 | `EclipseClassificationService.getLunarEclipseType` | 5 | `EclipseClassificationService.isInProgress(…)`, `EclipseClassificationService.isInProgress`, `EclipseClassificationService.getClosestApproach(…)`, `EclipseClassificationService.getClosestApproach`, `EclipseGeometryService.getDiscAngles` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:161` |
 | `EclipseEventService.getProgressiveEventsForFrame` | 5 | `EclipseEventService.filter(…)`, `EclipseEventService.filter(…)`, `EclipseEventService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `EclipseEventService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:122` |
@@ -1551,6 +1556,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.composeTSquares` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `TripleAspectsDetectorService.canonicalPair`, `TripleAspectsComposerService.findBodiesWithAspectTo`, `TripleAspectsDetectorService.checkTSquareFocalBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:377` |
 | `TripleAspectsDetectorService.composeYods` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `TripleAspectsDetectorService.canonicalPair`, `TripleAspectsComposerService.findBodiesWithAspectTo`, `TripleAspectsDetectorService.checkYodApexBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:432` |
 | `CalendarService.buildTimezoneContent` | 4 | `CalendarService.flatMap(…)`, `CalendarService.buildObservance`, `CalendarService.map(…)`, `CalendarService.findTransitions` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:80` |
+| `EphemerisPhenomenaService.computeIlluminationForBody` | 4 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:55` |
 | `EphemerisAggregationService.accumulateBodyEphemeris` | 4 | `EphemerisConstantsService.isNode`, `EphemerisCoordinateService.computeNodeBodyMinutes`, `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisAggregationService.computeNonNodeBodyMinutes` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:158` |
 | `AnnualSolarCycleService.getSolarApsisEvents` | 4 | `AnnualSolarCycleService.getSolarDistanceSpeeds`, `AnnualSolarCycleService.getNearestApsisMinute`, `AnnualSolarCycleEventsService.buildAphelionEvent`, `AnnualSolarCycleEventsService.buildPerihelionEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:292` |
 | `EclipseTopocentricService.getClosestVisibleApproach` | 4 | `EclipseGeometryService.getTopocentricSample`, `EclipseGeometryService.getTopocentricSolarContactGeometry`, `EclipseTopocentricService.getVisibilityMargin`, `EclipseTopocentricService.getClosestApproach` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:176` |
@@ -1577,13 +1583,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `MinorAspectsComposerService.processAspectGroup` | 4 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:234` |
 | `CalendarService.buildEventContent` | 3 | `CalendarService.generateUid`, `CalendarService.formatEventTime`, `CalendarService.buildEventProperties` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:221` |
 | `CalendarService.buildFileContent` | 3 | `CalendarService.buildTimezoneContent`, `CalendarService.map(…)`, `CalendarService.toContentLines` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:264` |
-| `EphemerisCoordinateService.computeDistanceForBody` | 3 | `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:154` |
-| `EphemerisCoordinateService.computeNodeBodyMinutes` | 3 | `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeNodeCoordinate` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:178` |
+| `EphemerisCoordinateService.computeDistanceForBody` | 3 | `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:151` |
+| `EphemerisCoordinateService.computeNodeBodyMinutes` | 3 | `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeNodeCoordinate` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:175` |
 | `EphemerisHorizonService.computeAzimuthElevationForBody` | 3 | `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `EphemerisHorizonService.computeAzimuthElevationForMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-horizon.service.ts:46` |
-| `EphemerisPhenomenaService.computeIlluminationForBody` | 3 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:54` |
-| `EphemerisService.getAzimuthElevationEphemerisByBody` | 3 | `EphemerisHorizonService.computeAzimuthElevationForBody`, `EphemerisService.getHorizonService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:155` |
-| `EphemerisService.getDistanceEphemerisByBody` | 3 | `EphemerisCoordinateService.computeDistanceForBody`, `EphemerisService.getCoordinateService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:259` |
-| `EphemerisService.getIlluminationEphemerisByBody` | 3 | `EphemerisPhenomenaService.computeIlluminationForBody`, `EphemerisService.getPhenomenaService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:341` |
+| `EphemerisService.getAzimuthElevationEphemerisByBody` | 3 | `EphemerisHorizonService.computeAzimuthElevationForBody`, `EphemerisService.getHorizonService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:156` |
+| `EphemerisService.getDistanceEphemerisByBody` | 3 | `EphemerisCoordinateService.computeDistanceForBody`, `EphemerisService.getCoordinateService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:260` |
+| `EphemerisService.getIlluminationEphemerisByBody` | 3 | `EphemerisPhenomenaService.computeIlluminationForBody`, `EphemerisService.getPhenomenaService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:342` |
 | `ProgressiveUtilitiesService.pairCompoundBoundaries` | 3 | `ProgressiveUtilitiesService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `ProgressiveUtilitiesService.boundariesFor` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:77` |
 | `AnnualSolarCycleService.getAnnualSolarCycleEvents` | 3 | `EphemerisService.getCoordinateFromEphemeris`, `AnnualSolarCycleEventsService.getVernalToAutumnalEvents`, `AnnualSolarCycleEventsService.getAutumnalToVernalEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:229` |
 | `AspectsService.detectSimpleAspects` | 3 | `MajorAspectsService.detect`, `MinorAspectsService.detect`, `SpecialtyAspectsService.detect` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:107` |
@@ -1639,10 +1644,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.checkYodApexBody` | 3 | `TripleAspectsDetectorService.isYod`, `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `TripleAspectsComposerService.buildTripleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:145` |
 | `TripleAspectsService.detect` | 3 | `TripleAspectsDetectorService.composeTSquares`, `TripleAspectsDetectorService.composeYods`, `TripleAspectsDetectorService.composeGrandTrines` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:82` |
 | `TripleAspectsService.detectProgressive` | 3 | `TripleAspectsService.filter(…)`, `TripleAspectsService.groupBy(…)`, `TripleAspectsComposerService.pairProgressiveGroup` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:111` |
+| `EphemerisDownloadService.download` | 3 | `resolveEphemerisDirectory`, `isEphemerisFilePresent`, `EphemerisDownloadService.fetchFile` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts:73` |
 | `MinorAspectsComposerService.extractAspectComponents` | 3 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)`, `MinorAspectsComposerService.castAspectComponentsToTypes` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:150` |
-| `anonymous` | 2 | `on(…)`, `get(…)` | `projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:49` |
-| `get(…)` | 2 | `on(…)`, `on(…)` | `projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:52` |
-| `EphemerisCoordinateService.computeNodeCoordinate` | 2 | `EphemerisCoordinateService.computeLunarPerigeeCoordinate`, `EphemerisCoordinateService.computeRegularNodeCoordinate` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:92` |
+| `assertEphemerisFilesPresent` | 2 | `findMissingEphemerisFiles`, `EphemerisFilesMissingError.constructor` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:20` |
+| `EphemerisCoordinateService.computeBodyCoordinates` | 2 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:43` |
+| `EphemerisCoordinateService.computeNodeCoordinate` | 2 | `EphemerisCoordinateService.computeLunarPerigeeCoordinate`, `EphemerisCoordinateService.computeRegularNodeCoordinate` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:91` |
+| `EphemerisCoordinateService.computeRegularNodeCoordinate` | 2 | `assertSwissEphemerisResult`, `MathService.normalizeDegrees` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:106` |
 | `EphemerisHorizonService.computeAzimuthElevationForMinute` | 2 | `EphemerisCoordinateService.getTopocentricBodyCoordinates`, `EphemerisHorizonService.computeSemidiameter` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-horizon.service.ts:76` |
 | `EphemerisAggregationService.computeNonNodeBodyMinutes` | 2 | `EphemerisTimeService.generateMinutes`, `EphemerisAggregationService.processNonNodeBodyMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:55` |
 | `ProgressiveUtilitiesService.boundariesFor` | 2 | `ProgressiveUtilitiesService.uniqBy(…)`, `ProgressiveUtilitiesService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:81` |
@@ -1732,8 +1739,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SpecialtyAspectsComposerService.extractTypedAspectValues` | 2 | `isSpecialtyAspect`, `isBody` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:119` |
 | `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent` | 2 | `SpecialtyAspectsComposerService.extractAspectBodiesFromCategories`, `SpecialtyAspectsComposerService.extractTypedAspectValues` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:167` |
 | `SpecialtyAspectsComposerService.specialtyAspectGroupKey` | 2 | `SpecialtyAspectsComposerService.filter(…)`, `SpecialtyAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:240` |
-| `downloadEphemerisFiles` | 1 | `downloadFile` | `projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:25` |
-| `downloadFile` | 1 | `anonymous` | `projects/caelundas/caelundas-cli/scripts/download-ephemeris.ts:48` |
 | `CalendarEventsService.toRow` | 1 | `formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:48` |
 | `CalendarEventsService.findInRange` | 1 | `formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:73` |
 | `CalendarEventsService.upsert` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:100` |
@@ -1747,19 +1752,23 @@ What this project is judged against, as declared in its own `callidescope.config
 | `CalendarService.write` | 1 | `CalendarService.buildFileContent` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:317` |
 | `CalendarService.writeJson` | 1 | `CalendarService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:353` |
 | `map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:481` |
+| `findMissingEphemerisFiles` | 1 | `filter(…)` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:31` |
+| `filter(…)` | 1 | `isEphemerisFilePresent` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:35` |
+| `initializeSwissEphemeris` | 1 | `resolveEphemerisDirectory` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:126` |
 | `MathService.getAngle` | 1 | `MathService.normalizeDegrees` | `projects/caelundas/caelundas-cli/src/modules/math/math.service.ts:86` |
 | `MathService.getCombinations` | 1 | `MathService.combine` | `projects/caelundas/caelundas-cli/src/modules/math/math.service.ts:141` |
-| `EphemerisCoordinateService.computeBodyCoordinates` | 1 | `EphemerisConstantsService.getSwissEphemerisConstantForBody` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:42` |
-| `EphemerisCoordinateService.computeLunarPerigeeCoordinate` | 1 | `MathService.normalizeDegrees` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:69` |
-| `EphemerisCoordinateService.computeRegularNodeCoordinate` | 1 | `MathService.normalizeDegrees` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:107` |
-| `EphemerisCoordinateService.computeBodyCoordinate` | 1 | `EphemerisCoordinateService.getBodyCoordinatesWithDistance` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:138` |
-| `EphemerisCoordinateService.getBodyCoordinatesWithDistance` | 1 | `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:202` |
-| `EphemerisCoordinateService.getTopocentricBodyCoordinates` | 1 | `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:227` |
-| `EphemerisPhenomenaService.computePhenoForMinute` | 1 | `EphemerisPhenomenaService.computePhenoForBodyMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:129` |
+| `assertSwissEphemerisResult` | 1 | `EphemerisUnavailableError.constructor` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts:21` |
+| `EphemerisCoordinateService.computeLunarPerigeeCoordinate` | 1 | `MathService.normalizeDegrees` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:68` |
+| `EphemerisCoordinateService.computeBodyCoordinate` | 1 | `EphemerisCoordinateService.getBodyCoordinatesWithDistance` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:135` |
+| `EphemerisCoordinateService.getBodyCoordinatesWithDistance` | 1 | `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:199` |
+| `EphemerisCoordinateService.getTopocentricBodyCoordinates` | 1 | `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:224` |
+| `EphemerisPhenomenaService.computePhenoForBodyMinute` | 1 | `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:92` |
+| `EphemerisPhenomenaService.computePhenoForMinute` | 1 | `EphemerisPhenomenaService.computePhenoForBodyMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:126` |
 | `EphemerisAggregationService.entriesToEphemerides` | 1 | `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:241` |
-| `EphemerisService.constructor` | 1 | `initializeSwissEphemeris` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:42` |
-| `EphemerisService.getEphemerides` | 1 | `EphemerisService.computeAllEphemerides` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:314` |
-| `EphemerisService.getLongitudesWindow` | 1 | `EphemerisService.getCoordinateFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:389` |
+| `EphemerisService.constructor` | 1 | `initializeSwissEphemeris` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:43` |
+| `EphemerisService.getEphemerides` | 1 | `EphemerisService.computeAllEphemerides` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:315` |
+| `EphemerisService.getLongitudesWindow` | 1 | `EphemerisService.getCoordinateFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390` |
+| `EphemerisService.verifyFiles` | 1 | `assertEphemerisFilesPresent` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:461` |
 | `ProgressiveUtilitiesService.pairInStartOrder` | 1 | `ProgressiveUtilitiesService.byStart` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33` |
 | `ProgressiveUtilitiesService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairInStartOrder` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107` |
 | `AnnualSolarCycleEventsService.buildAphelionEvent` | 1 | `AnnualSolarCycleEventsService.buildSolarCycleEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:155` |
@@ -2103,6 +2112,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TripleAspectsDetectorService.isYod` | 1 | `TripleAspectsComposerService.haveAspect` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:297` |
 | `TripleAspectsService.haveAspect` | 1 | `TripleAspectsService.some(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:64` |
 | `TripleAspectsService.groupBy(…)` | 1 | `TripleAspectsComposerService.getProgressiveGroupKey` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:115` |
+| `EphemerisDownloadCommand.run` | 1 | `EphemerisDownloadService.download` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts:42` |
 | `MinorAspectsComposerService.filter(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:100` |
 | `MinorAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:102` |
 | `MinorAspectsComposerService.find(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:106` |
@@ -2298,13 +2308,14 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_scripts_download_ephemeris_ts["scripts/download-ephemeris.ts"]
   file_src_caelundas_cli_constants_ts["src/caelundas-cli.constants.ts"]
   file_src_caelundas_cli_main_end_to_end_test_ts["src/caelundas-cli.main.end-to-end.test.ts"]
   file_src_caelundas_cli_main_ts["src/caelundas-cli.main.ts"]
   file_src_caelundas_cli_main_unit_test_ts["src/caelundas-cli.main.unit.test.ts"]
   file_src_caelundas_cli_module_ts["src/caelundas-cli.module.ts"]
   file_src_caelundas_cli_repl_ts["src/caelundas-cli.repl.ts"]
+  file_src_ephemeris_download_cli_main_ts["src/ephemeris-download-cli.main.ts"]
+  file_src_ephemeris_download_cli_module_ts["src/ephemeris-download-cli.module.ts"]
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts["src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts"]
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_unit_test_ts["src/modules/annual-solar-cycle/annual-solar-cycle-events.service.unit.test.ts"]
   file_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts["src/modules/annual-solar-cycle/annual-solar-cycle.constants.ts"]
@@ -2393,6 +2404,15 @@ graph LR
   file_src_modules_eclipses_eclipses_service_ts["src/modules/eclipses/eclipses.service.ts"]
   file_src_modules_eclipses_eclipses_service_unit_test_ts["src/modules/eclipses/eclipses.service.unit.test.ts"]
   file_src_modules_eclipses_eclipses_types_ts["src/modules/eclipses/eclipses.types.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_command_ts["src/modules/ephemeris-download/ephemeris-download.command.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_command_unit_test_ts["src/modules/ephemeris-download/ephemeris-download.command.unit.test.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_constants_ts["src/modules/ephemeris-download/ephemeris-download.constants.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_module_ts["src/modules/ephemeris-download/ephemeris-download.module.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_service_ts["src/modules/ephemeris-download/ephemeris-download.service.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_service_unit_test_ts["src/modules/ephemeris-download/ephemeris-download.service.unit.test.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_types_ts["src/modules/ephemeris-download/ephemeris-download.types.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_utilities_ts["src/modules/ephemeris-download/ephemeris-download.utilities.ts"]
+  file_src_modules_ephemeris_download_ephemeris_download_utilities_unit_test_ts["src/modules/ephemeris-download/ephemeris-download.utilities.unit.test.ts"]
   file_src_modules_ephemeris_ephemeris_aggregation_service_ts["src/modules/ephemeris/ephemeris-aggregation.service.ts"]
   file_src_modules_ephemeris_ephemeris_aggregation_service_unit_test_ts["src/modules/ephemeris/ephemeris-aggregation.service.unit.test.ts"]
   file_src_modules_ephemeris_ephemeris_constants_service_ts["src/modules/ephemeris/ephemeris-constants.service.ts"]
@@ -2413,6 +2433,8 @@ graph LR
   file_src_modules_ephemeris_ephemeris_service_unit_test_ts["src/modules/ephemeris/ephemeris.service.unit.test.ts"]
   file_src_modules_ephemeris_ephemeris_types_ts["src/modules/ephemeris/ephemeris.types.ts"]
   file_src_modules_ephemeris_ephemeris_types_unit_test_ts["src/modules/ephemeris/ephemeris.types.unit.test.ts"]
+  file_src_modules_ephemeris_ephemeris_utilities_ts["src/modules/ephemeris/ephemeris.utilities.ts"]
+  file_src_modules_ephemeris_ephemeris_utilities_unit_test_ts["src/modules/ephemeris/ephemeris.utilities.unit.test.ts"]
   file_src_modules_ephemeris_internal_ephemeris_types_ts["src/modules/ephemeris/internal-ephemeris.types.ts"]
   file_src_modules_ingresses_ingresses_composer_service_ts["src/modules/ingresses/ingresses-composer.service.ts"]
   file_src_modules_ingresses_ingresses_composer_service_unit_test_ts["src/modules/ingresses/ingresses-composer.service.unit.test.ts"]
@@ -2614,6 +2636,8 @@ graph LR
   file_src_caelundas_cli_module_ts --> file_src_caelundas_cli_constants_ts
   file_src_caelundas_cli_module_ts --> file_src_modules_caelundas_caelundas_module_ts
   file_src_caelundas_cli_repl_ts --> file_src_caelundas_cli_module_ts
+  file_src_ephemeris_download_cli_main_ts --> file_src_ephemeris_download_cli_module_ts
+  file_src_ephemeris_download_cli_module_ts --> file_src_modules_ephemeris_download_ephemeris_download_module_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
   file_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_src_modules_database_database_types_ts
@@ -2752,6 +2776,7 @@ graph LR
   file_src_modules_aspects_progressive_compound_event_service_unit_test_ts --> file_src_modules_aspects_progressive_compound_event_service_ts
   file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_calendar_events_calendar_events_service_ts
   file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_calendar_calendar_service_ts
+  file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_input_input_service_ts
   file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_perfective_perfective_service_ts
   file_src_modules_caelundas_caelundas_command_ts --> file_src_modules_progressive_progressive_service_ts
@@ -2760,6 +2785,7 @@ graph LR
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_input_input_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_input_input_types_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_perfective_perfective_service_ts
@@ -2941,6 +2967,20 @@ graph LR
   file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_eclipses_eclipse_calculation_service_ts
   file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_eclipses_eclipse_event_service_ts
   file_src_modules_eclipses_eclipses_service_unit_test_ts --> file_src_modules_eclipses_eclipses_service_ts
+  file_src_modules_ephemeris_download_ephemeris_download_command_ts --> file_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_src_modules_ephemeris_download_ephemeris_download_command_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_command_ts
+  file_src_modules_ephemeris_download_ephemeris_download_command_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_src_modules_ephemeris_download_ephemeris_download_module_ts --> file_src_modules_ephemeris_download_ephemeris_download_command_ts
+  file_src_modules_ephemeris_download_ephemeris_download_module_ts --> file_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_src_modules_ephemeris_download_ephemeris_download_service_ts --> file_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_src_modules_ephemeris_download_ephemeris_download_service_ts --> file_src_modules_ephemeris_download_ephemeris_download_utilities_ts
+  file_src_modules_ephemeris_download_ephemeris_download_service_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_src_modules_ephemeris_download_ephemeris_download_service_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_src_modules_ephemeris_download_ephemeris_download_types_ts --> file_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_src_modules_ephemeris_download_ephemeris_download_utilities_ts --> file_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_src_modules_ephemeris_download_ephemeris_download_utilities_ts --> file_src_modules_ephemeris_download_ephemeris_download_types_ts
+  file_src_modules_ephemeris_download_ephemeris_download_utilities_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_src_modules_ephemeris_download_ephemeris_download_utilities_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_src_modules_ephemeris_ephemeris_aggregation_service_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_ephemeris_ephemeris_aggregation_service_ts --> file_src_modules_ephemeris_ephemeris_constants_service_ts
   file_src_modules_ephemeris_ephemeris_aggregation_service_ts --> file_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -2965,6 +3005,7 @@ graph LR
   file_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_src_modules_ephemeris_ephemeris_time_service_ts
   file_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
   file_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_src_modules_ephemeris_ephemeris_utilities_ts
   file_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_src_modules_math_math_service_ts
   file_src_modules_ephemeris_ephemeris_coordinate_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_constants_service_ts
   file_src_modules_ephemeris_ephemeris_coordinate_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -2987,6 +3028,7 @@ graph LR
   file_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_src_modules_ephemeris_ephemeris_time_service_ts
   file_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
   file_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_src_modules_ephemeris_ephemeris_utilities_ts
   file_src_modules_ephemeris_ephemeris_phenomena_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_constants_service_ts
   file_src_modules_ephemeris_ephemeris_phenomena_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_phenomena_service_ts
   file_src_modules_ephemeris_ephemeris_phenomena_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_time_service_ts
@@ -2994,6 +3036,8 @@ graph LR
   file_src_modules_ephemeris_ephemeris_time_service_ts --> file_src_modules_ephemeris_internal_ephemeris_types_ts
   file_src_modules_ephemeris_ephemeris_time_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_time_service_ts
   file_src_modules_ephemeris_ephemeris_constants_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_ephemeris_ephemeris_constants_ts --> file_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_src_modules_ephemeris_ephemeris_constants_ts --> file_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_src_modules_ephemeris_ephemeris_constants_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_ephemeris_ephemeris_constants_unit_test_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
   file_src_modules_ephemeris_ephemeris_module_ts --> file_src_modules_ephemeris_ephemeris_aggregation_service_ts
@@ -3006,6 +3050,7 @@ graph LR
   file_src_modules_ephemeris_ephemeris_module_ts --> file_src_modules_math_math_module_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_ephemeris_aggregation_service_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_ephemeris_constants_service_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -3014,6 +3059,7 @@ graph LR
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_ephemeris_time_service_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
   file_src_modules_ephemeris_ephemeris_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_aggregation_service_ts
   file_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_constants_service_ts
   file_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -3026,6 +3072,10 @@ graph LR
   file_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_src_modules_ephemeris_internal_ephemeris_types_ts
   file_src_modules_ephemeris_ephemeris_types_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_ephemeris_ephemeris_types_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_ephemeris_ephemeris_utilities_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
+  file_src_modules_ephemeris_ephemeris_utilities_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_ephemeris_ephemeris_utilities_unit_test_ts --> file_src_modules_ephemeris_ephemeris_constants_ts
+  file_src_modules_ephemeris_ephemeris_utilities_unit_test_ts --> file_src_modules_ephemeris_ephemeris_utilities_ts
   file_src_modules_ephemeris_internal_ephemeris_types_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_ephemeris_internal_ephemeris_types_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_caelundas_caelundas_constants_ts
@@ -3806,6 +3856,7 @@ graph LR
   file_testing_calendar_command_utilities_ts --> file_src_modules_calendar_events_calendar_events_module_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_calendar_calendar_module_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_database_database_types_ts
+  file_testing_calendar_command_utilities_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_input_input_module_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_input_input_types_ts
   file_testing_calendar_command_utilities_ts --> file_src_modules_perfective_perfective_service_ts
@@ -3901,40 +3952,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-53610-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.84_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-54545-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.87_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-35-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-301-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-313-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-170.25_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-176.23_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-301-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-84-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-313-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-85-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-15-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-131-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-868-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-137-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-895-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-20-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-107-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-23-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-107-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2352-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-839-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-3032-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-159-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3752-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2057-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-414-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-1892-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-3922-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-111-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-21-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-113-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2437-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-845-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-3102-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-180-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3777-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2118-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-434-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-1933-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-4009-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -3955,15 +4006,15 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-52-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-2620-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-2624-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-473-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-91-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-1798-0284c7?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-1797-0284c7?style=flat-square)
 ![JSON Strings](https://img.shields.io/badge/JSON_Strings-1006-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-555-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-285-475569?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-286-475569?style=flat-square)
 ![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-2135-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-7-ea580c?style=flat-square)
 
@@ -4045,14 +4096,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-31-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-72-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-1-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-36-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-31-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-9-0ea5e9?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-33-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-73-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-2-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-37-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-32-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-11-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-1-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-84-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-88-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-14-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-9-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)

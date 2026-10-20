@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.18.0](https://github.com/organizzolini/codebase/compare/v3.17.0...v3.18.0) (2026-10-20)
+
+### ✨ Features
+
+* **caelundas:** ✨ verify ephemeris files and refuse fallback results ([#1736](https://github.com/organizzolini/codebase/issues/1736)) ([03126ed](https://github.com/organizzolini/codebase/commit/03126ed3c6dafcf5d6a74906b9310f804ac3090e))
+* **scripts,installation:** ✨ set up Linux through the setup command ([#1739](https://github.com/organizzolini/codebase/issues/1739)) ([ecf3737](https://github.com/organizzolini/codebase/commit/ecf3737b98104b9f942187df5efa91480a30347b))
+
 ## [3.17.0](https://github.com/organizzolini/codebase/compare/v3.16.0...v3.17.0) (2026-10-20)
 
 ### ✨ Features

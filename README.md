@@ -843,6 +843,7 @@ graph LR
   module_installation_DependenciesModule["installation/DependenciesModule"]
   module_installation_DiscoveryModule["installation/DiscoveryModule"]
   module_installation_EnvironmentFilesModule["installation/EnvironmentFilesModule"]
+  module_installation_LocalServicesModule["installation/LocalServicesModule"]
   module_installation_LoggerModule["installation/LoggerModule"]
   module_installation_MainModule["installation/MainModule"]
   module_installation_ProcessRunnerModule["installation/ProcessRunnerModule"]
@@ -1638,9 +1639,12 @@ graph LR
   module_installation_DependenciesModule --> module_installation_ReporterModule
   module_installation_EnvironmentFilesModule --> module_installation_ProcessRunnerModule
   module_installation_EnvironmentFilesModule --> module_installation_ReporterModule
+  module_installation_LocalServicesModule --> module_installation_ProcessRunnerModule
+  module_installation_LocalServicesModule --> module_installation_ReporterModule
   module_installation_MainModule --> module_installation_DependenciesModule
   module_installation_MainModule --> module_installation_DiscoveryModule
   module_installation_MainModule --> module_installation_EnvironmentFilesModule
+  module_installation_MainModule --> module_installation_LocalServicesModule
   module_installation_MainModule --> module_installation_ReporterModule
   module_installation_MainModule --> module_installation_SetupModule
   module_installation_MainModule --> module_installation_ShellConfigurationModule
@@ -1649,9 +1653,12 @@ graph LR
   module_installation_MainModule --> module_installation_UpdateReuiSkillModule
   module_installation_SetupModule --> module_installation_DependenciesModule
   module_installation_SetupModule --> module_installation_EnvironmentFilesModule
+  module_installation_SetupModule --> module_installation_LocalServicesModule
+  module_installation_SetupModule --> module_installation_ProcessRunnerModule
   module_installation_SetupModule --> module_installation_ReporterModule
   module_installation_SetupModule --> module_installation_ShellConfigurationModule
   module_installation_SetupModule --> module_installation_SoftwareModule
+  module_installation_SetupModule --> module_installation_SshSigningModule
   module_installation_ShellConfigurationModule --> module_installation_ProcessRunnerModule
   module_installation_ShellConfigurationModule --> module_installation_ReporterModule
   module_installation_SoftwareModule --> module_installation_ProcessRunnerModule
@@ -1909,13 +1916,14 @@ graph LR
   file_caelundas_cli_codependix_config_ts["caelundas-cli/codependix.config.ts"]
   file_caelundas_cli_codometer_config_ts["caelundas-cli/codometer.config.ts"]
   file_caelundas_cli_eslint_config_ts["caelundas-cli/eslint.config.ts"]
-  file_caelundas_cli_scripts_download_ephemeris_ts["caelundas-cli/scripts/download-ephemeris.ts"]
   file_caelundas_cli_src_caelundas_cli_constants_ts["caelundas-cli/src/caelundas-cli.constants.ts"]
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts["caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts"]
   file_caelundas_cli_src_caelundas_cli_main_ts["caelundas-cli/src/caelundas-cli.main.ts"]
   file_caelundas_cli_src_caelundas_cli_main_unit_test_ts["caelundas-cli/src/caelundas-cli.main.unit.test.ts"]
   file_caelundas_cli_src_caelundas_cli_module_ts["caelundas-cli/src/caelundas-cli.module.ts"]
   file_caelundas_cli_src_caelundas_cli_repl_ts["caelundas-cli/src/caelundas-cli.repl.ts"]
+  file_caelundas_cli_src_ephemeris_download_cli_main_ts["caelundas-cli/src/ephemeris-download-cli.main.ts"]
+  file_caelundas_cli_src_ephemeris_download_cli_module_ts["caelundas-cli/src/ephemeris-download-cli.module.ts"]
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts["caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts"]
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_unit_test_ts["caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.unit.test.ts"]
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts["caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.constants.ts"]
@@ -2004,6 +2012,15 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipses_service_ts["caelundas-cli/src/modules/eclipses/eclipses.service.ts"]
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts["caelundas-cli/src/modules/eclipses/eclipses.service.unit.test.ts"]
   file_caelundas_cli_src_modules_eclipses_eclipses_types_ts["caelundas-cli/src/modules/eclipses/eclipses.types.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_unit_test_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.unit.test.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.constants.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_module_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.module.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_unit_test_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.unit.test.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_types_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.types.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts"]
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_unit_test_ts["caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts["caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts"]
   file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_unit_test_ts["caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.unit.test.ts"]
   file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts["caelundas-cli/src/modules/ephemeris/ephemeris-constants.service.ts"]
@@ -2024,6 +2041,8 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_unit_test_ts["caelundas-cli/src/modules/ephemeris/ephemeris.service.unit.test.ts"]
   file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts["caelundas-cli/src/modules/ephemeris/ephemeris.types.ts"]
   file_caelundas_cli_src_modules_ephemeris_ephemeris_types_unit_test_ts["caelundas-cli/src/modules/ephemeris/ephemeris.types.unit.test.ts"]
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_ts["caelundas-cli/src/modules/ephemeris/ephemeris.utilities.ts"]
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_unit_test_ts["caelundas-cli/src/modules/ephemeris/ephemeris.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts["caelundas-cli/src/modules/ephemeris/internal-ephemeris.types.ts"]
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts["caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts"]
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_unit_test_ts["caelundas-cli/src/modules/ingresses/ingresses-composer.service.unit.test.ts"]
@@ -3726,6 +3745,13 @@ graph LR
   file_installation_src_modules_environment_files_environment_files_service_ts["installation/src/modules/environment-files/environment-files.service.ts"]
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts["installation/src/modules/environment-files/environment-files.service.unit.test.ts"]
   file_installation_src_modules_environment_files_environment_files_types_ts["installation/src/modules/environment-files/environment-files.types.ts"]
+  file_installation_src_modules_local_services_local_services_command_ts["installation/src/modules/local-services/local-services.command.ts"]
+  file_installation_src_modules_local_services_local_services_command_unit_test_ts["installation/src/modules/local-services/local-services.command.unit.test.ts"]
+  file_installation_src_modules_local_services_local_services_constants_ts["installation/src/modules/local-services/local-services.constants.ts"]
+  file_installation_src_modules_local_services_local_services_module_ts["installation/src/modules/local-services/local-services.module.ts"]
+  file_installation_src_modules_local_services_local_services_service_ts["installation/src/modules/local-services/local-services.service.ts"]
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts["installation/src/modules/local-services/local-services.service.unit.test.ts"]
+  file_installation_src_modules_local_services_local_services_types_ts["installation/src/modules/local-services/local-services.types.ts"]
   file_installation_src_modules_process_runner_process_runner_constants_ts["installation/src/modules/process-runner/process-runner.constants.ts"]
   file_installation_src_modules_process_runner_process_runner_module_ts["installation/src/modules/process-runner/process-runner.module.ts"]
   file_installation_src_modules_process_runner_process_runner_service_ts["installation/src/modules/process-runner/process-runner.service.ts"]
@@ -5394,6 +5420,8 @@ graph LR
   file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_module_ts
   file_caelundas_cli_src_caelundas_cli_repl_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
+  file_caelundas_cli_src_ephemeris_download_cli_main_ts --> file_caelundas_cli_src_ephemeris_download_cli_module_ts
+  file_caelundas_cli_src_ephemeris_download_cli_module_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_module_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_constants_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_types_ts
   file_caelundas_cli_src_modules_annual_solar_cycle_annual_solar_cycle_events_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
@@ -5532,6 +5560,7 @@ graph LR
   file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_unit_test_ts --> file_caelundas_cli_src_modules_aspects_progressive_compound_event_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_perfective_perfective_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_ts --> file_caelundas_cli_src_modules_progressive_progressive_service_ts
@@ -5540,6 +5569,7 @@ graph LR
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_input_input_service_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_command_unit_test_ts --> file_caelundas_cli_src_modules_perfective_perfective_service_ts
@@ -5721,6 +5751,20 @@ graph LR
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_calculation_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipse_event_service_ts
   file_caelundas_cli_src_modules_eclipses_eclipses_service_unit_test_ts --> file_caelundas_cli_src_modules_eclipses_eclipses_service_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_module_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_command_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_module_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_service_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_types_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_types_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -5745,6 +5789,7 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -5767,6 +5812,7 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_phenomena_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_ts
@@ -5774,6 +5820,8 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_ts --> file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts
@@ -5786,6 +5834,7 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_module_ts --> file_caelundas_cli_src_modules_math_math_module_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -5794,6 +5843,7 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_time_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_download_ephemeris_download_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_aggregation_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_service_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_coordinate_service_ts
@@ -5806,6 +5856,10 @@ graph LR
   file_caelundas_cli_src_modules_ephemeris_ephemeris_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_ephemeris_ephemeris_types_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_constants_ts
+  file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_utilities_ts
   file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_types_ts
   file_caelundas_cli_src_modules_ephemeris_internal_ephemeris_types_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_ingresses_ingresses_composer_service_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
@@ -6586,6 +6640,7 @@ graph LR
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_calendar_calendar_module_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_database_database_types_ts
+  file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_input_input_module_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_input_input_types_ts
   file_caelundas_cli_testing_calendar_command_utilities_ts --> file_caelundas_cli_src_modules_perfective_perfective_service_ts
@@ -8729,6 +8784,7 @@ graph LR
   file_installation_src_installation_module_ts --> file_installation_src_installation_constants_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_dependencies_dependencies_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_environment_files_environment_files_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_local_services_local_services_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_setup_setup_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
@@ -8777,6 +8833,23 @@ graph LR
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_local_services_local_services_command_ts --> file_installation_src_modules_local_services_local_services_service_ts
+  file_installation_src_modules_local_services_local_services_command_unit_test_ts --> file_installation_src_modules_local_services_local_services_command_ts
+  file_installation_src_modules_local_services_local_services_command_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
+  file_installation_src_modules_local_services_local_services_module_ts --> file_installation_src_modules_local_services_local_services_command_ts
+  file_installation_src_modules_local_services_local_services_module_ts --> file_installation_src_modules_local_services_local_services_service_ts
+  file_installation_src_modules_local_services_local_services_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_local_services_local_services_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_local_services_local_services_service_ts --> file_installation_src_modules_local_services_local_services_constants_ts
+  file_installation_src_modules_local_services_local_services_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_local_services_local_services_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_local_services_local_services_service_unit_test_ts --> file_installation_testing_temporary_workspace_ts
   file_installation_src_modules_process_runner_process_runner_module_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_process_runner_process_runner_service_ts --> file_installation_src_modules_process_runner_process_runner_constants_ts
   file_installation_src_modules_process_runner_process_runner_service_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
@@ -8787,6 +8860,7 @@ graph LR
   file_installation_src_modules_setup_setup_command_ts --> file_installation_src_modules_setup_setup_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_setup_setup_command_ts
@@ -8800,29 +8874,40 @@ graph LR
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_environment_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_report_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_dependencies_dependencies_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_environment_files_environment_files_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_local_services_local_services_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_setup_setup_command_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_setup_setup_service_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_software_software_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_ssh_signing_ssh_signing_module_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_local_services_local_services_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_setup_setup_constants_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_setup_setup_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
   file_installation_src_modules_shell_configuration_shell_configuration_command_ts --> file_installation_src_modules_shell_configuration_shell_configuration_service_ts
   file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
@@ -13331,36 +13416,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-56842-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.39_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-149-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-537-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57492-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.42_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-150-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-544-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-530-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-130-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-537-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-131-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-225-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1254-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-229-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1270-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-169-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-171-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-181-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2534-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-819-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2495-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-858-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2698-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2471-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-710-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2720-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5237-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-184-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2558-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-827-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2506-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-879-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2730-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2524-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-716-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2748-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5282-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13420,16 +13505,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Shell
 
 ![Shell Files](https://img.shields.io/badge/Shell_Files-20-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1862-4eaa25?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1831-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-16-16a34a?style=flat-square)
 ![Shell Variables](https://img.shields.io/badge/Shell_Variables-164-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-13-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-137-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-23-8b5cf6?style=flat-square)
-![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-48-059669?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-136-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-21-8b5cf6?style=flat-square)
+![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-46-059669?style=flat-square)
 ![Shebangs](https://img.shields.io/badge/Shebangs-21-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-355-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-355-475569?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-348-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-348-475569?style=flat-square)
 
 ### SQL
 
@@ -13471,14 +13556,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-60-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-64-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-47-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-62-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-57-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-61-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-65-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-48-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-63-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-58-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-161-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-163-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-3-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-5-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -13516,23 +13601,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-135-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26260-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26333-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-131-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-790-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-718-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6090-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6092-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-923-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4413-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-280-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2707-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2715-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-833-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-847-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-540-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14553-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-541-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-14595-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13545,10 +13630,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6645 |
-| Files | 1975 |
-| Calls traced | 7322 |
-| Call stacks | 1822 |
+| Callables | 6664 |
+| Files | 1988 |
+| Calls traced | 7358 |
+| Call stacks | 1829 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
 | Unfollowable calls | 364 |
@@ -13595,8 +13680,8 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/conformetry/conformetry-output` | 0 | 6 | 6 | 4 |
 | `projects/meanderaw/meanderaw-web` | 0 | 6 | 6 | 0 |
 | `projects/ic-suite/codometer/codometer-output` | 4 | 11 | 7 | 16 |
+| `installation` | 9 | 17 | 8 | 7 |
 | `projects/ic-suite/codependix/codependix-file-imports` | 0 | 8 | 8 | 8 |
-| `installation` | 8 | 17 | 9 | 7 |
 | `projects/ic-suite/callidescope/callidescope-output` | 4 | 13 | 9 | 7 |
 | `projects/lexico/lexico-api` | 8 | 17 | 9 | 11 |
 | `configuration` | 5 | 17 | 12 | 2 |
