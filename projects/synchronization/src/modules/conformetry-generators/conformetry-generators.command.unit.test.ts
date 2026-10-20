@@ -305,13 +305,13 @@ describe(ConformetryGeneratorsCommand, () => {
       assertLogs: (loggerService: LoggerService): void => {
         expect(loggerService.error).toHaveBeenCalledWith(
           "💥 Failed synchronizing conformetry generators",
-          expect.any(String),
+          expect.stringContaining("configuration boom"),
         );
       },
       modeArguments: ["check"],
-      scenarioName: "handles non-Error throw values in run catch block",
+      scenarioName: "logs load failures from the configuration service",
       setup: (): void => {
-        loadConformetryConfigurationError = new Error("[object Object]");
+        loadConformetryConfigurationError = new Error("configuration boom");
       },
     },
   ])("$scenarioName", async ({ assertLogs, modeArguments, setup }) => {
@@ -323,5 +323,28 @@ describe(ConformetryGeneratorsCommand, () => {
     assertLogs(logger);
 
     processExitSpy.mockRestore();
+  });
+
+  it("logs non-Error failures from configuration loading", async () => {
+    fileContents.set(
+      readmeFile,
+      [
+        "# Header",
+        "<!-- conformetry:start -->",
+        "",
+        "<!-- conformetry:end -->",
+      ].join("\n"),
+    );
+    vi.spyOn(
+      ConfigurationService.prototype,
+      "loadConformetryConfiguration",
+    ).mockRejectedValueOnce("configuration boom");
+
+    await expectProcessExitOne(async () => command.run(["check"]));
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "💥 Failed synchronizing conformetry generators",
+      "configuration boom",
+    );
   });
 });
