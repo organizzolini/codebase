@@ -1,3 +1,13 @@
+## 0.0.43 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-core to 0.0.42
+
 ## 0.0.42 (2026-10-20)
 
 ### 🧱 Updated Dependencies
@@ -236,7 +246,7 @@
 
 ### 💅 Refactors
 
-- **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/pull/1208))
+- **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/pull/1208))
 
 ### 🧱 Updated Dependencies
 

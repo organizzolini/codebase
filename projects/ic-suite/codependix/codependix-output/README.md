@@ -32,7 +32,8 @@ graph LR
   codependix_nestjs_modules["codependix-nestjs-modules"]
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   codependix_cli --> codependix_output
   codependix_examples --> codependix_output
   codependix_output --> codependix_boundaries
@@ -41,7 +42,8 @@ graph LR
   codependix_output --> codependix_file_imports
   codependix_output --> codependix_nestjs_modules
   codependix_output --> codependix_nx_projects
-  codependix_output --> logging
+  codependix_output --> configuration
+  codependix_output --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_output subject
 ```

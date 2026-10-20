@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";

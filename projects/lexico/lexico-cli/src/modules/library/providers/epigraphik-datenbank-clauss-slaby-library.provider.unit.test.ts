@@ -8,7 +8,7 @@ import { Author, type Text } from "@codebase/lexico-entities";
 
 import { EpigraphikDatenbankClaussSlabyLibraryProvider } from "./epigraphik-datenbank-clauss-slaby-library.provider";
 
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 
 const { mkdirMock, readdirMock, readFileMock, writeFileMock } = vi.hoisted(
   () => ({

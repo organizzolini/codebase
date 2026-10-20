@@ -30,7 +30,7 @@ project's root with no upward walk.
 import { type CallidescopeConfiguration } from "@callidescope/configuration";
 
 const callidescopeConfiguration: CallidescopeConfiguration = {
-  excludeFrom: ["projects/configuration/.callidescopeignore"],
+  excludeFrom: ["configuration/.callidescopeignore"],
   limits: { maximumBreadth: 5, maximumDepth: 6 },
 };
 
@@ -330,7 +330,7 @@ A project spreads it and overrides what it means to, which is what makes a
 complete file cost one line:
 
 ```ts
-import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "../../configuration/callidescope.config.js";
 
 export default {
   ...projectDefaults,
@@ -712,8 +712,10 @@ graph LR
   callidescope_graph["callidescope-graph"]
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
+  configuration["configuration"]
   callidescope_cli --> callidescope_configuration
   callidescope_configuration --> callidescope_core
+  callidescope_configuration --> configuration
   callidescope_examples --> callidescope_configuration
   callidescope_graph --> callidescope_configuration
   callidescope_nx --> callidescope_configuration
@@ -837,6 +839,7 @@ graph LR
   file_src_modules_input_input_module_ts --> file_src_modules_input_input_service_ts
   file_src_modules_input_input_service_ts --> file_src_modules_input_input_constants_ts
   file_src_modules_input_input_service_ts --> file_src_modules_input_input_types_ts
+  file_src_modules_input_input_service_unit_test_ts --> file_src_modules_input_input_constants_ts
   file_src_modules_input_input_service_unit_test_ts --> file_src_modules_input_input_service_ts
   file_src_modules_run_plan_run_plan_module_ts --> file_src_modules_flag_resolution_flag_resolution_module_ts
   file_src_modules_run_plan_run_plan_module_ts --> file_src_modules_run_plan_run_plan_service_ts

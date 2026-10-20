@@ -16,5 +16,5 @@
 # when a session starts, so a restore here would miss the current session.
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 0
-CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/synchronization/src/synchronization.main.ts installed-skills check 2>/dev/null)" && exit 0
+CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register synchronization/src/synchronization.main.ts installed-skills check 2>/dev/null)" && exit 0
 printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "pnpm exec nx run synchronization:installed-skills"

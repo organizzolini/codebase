@@ -7,7 +7,7 @@ import _ from "lodash";
 import YAML from "yaml";
 
 import { Author, Text } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { formatLineNumber, hasValidTextContent } from "../library.utilities";
 

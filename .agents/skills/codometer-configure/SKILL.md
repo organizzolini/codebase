@@ -9,7 +9,7 @@ license: MIT
 `codometer.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}` is read from the path a
 run names with `--config <path>`, which is required — nothing is searched for
 and there is no default file. In this repository the workspace file is
-`projects/configuration/codometer.config.ts`; a project's own is its
+`configuration/codometer.config.ts`; a project's own is its
 `codometer.config.ts`. The named file is never merged with another: a merged
 limit that never applied to this folder would look exactly like one that did. `format` is the one field every
 configuration must set — there is no code-level fallback for it — and every
@@ -21,7 +21,7 @@ import { type CodometerConfiguration } from "@codometer/configuration";
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   exclude: ["notepads/**"],
-  excludeFrom: ["projects/configuration/.codometerignore"],
+  excludeFrom: ["configuration/.codometerignore"],
   defaultInput: "codebase",
   limits: [{ metric: "typescript.interfaces", severity: "warn", value: 500 }],
   inputs: [
@@ -38,13 +38,13 @@ export default codometerConfiguration;
 ```
 
 Output paths resolve relative to the process's own working directory, not to
-the configuration file, so a configuration kept in a `projects/configuration/` folder
+the configuration file, so a configuration kept in a `configuration/` folder
 still writes to wherever the run was invoked from. A configuration file is
 always read as a plain object — there is no config-as-function escape hatch,
 so one file cannot describe every project in a workspace on its own; a
 repository with many projects gives each its own `codometer.config.ts` and
 spreads a shared object across them, the way this repository's own
-`projects/configuration/codometer.config.ts` does.
+`configuration/codometer.config.ts` does.
 
 ## Exclusions
 
@@ -234,7 +234,7 @@ much it measured. A block that stayed within budget contributes to neither.
 **A `comment` selector carries no inheritance.** There is no top-level default
 a per-language entry merges over, so "every language at 128 words except shell
 at 256" is written as one selector per language, not as a shared budget with
-an override — this repository's own `projects/configuration/codometer.config.ts`
+an override — this repository's own `configuration/codometer.config.ts`
 derives that enumeration from `CODOMETER_COMMENT_LANGUAGES` and types it so a
 language added to the schema is a compile error there until this repository's
 list covers it. **A language codometer starts measuring comments in is not

@@ -15,10 +15,10 @@ npm install --save-dev @conformetry/cli
 
 ```bash
 # Scaffold a new module from the `nestjs-service-module` template
-conformetry generate --config projects/configuration/conformetry.config.ts --template nestjs-service-module --name billing
+conformetry generate --config configuration/conformetry.config.ts --template nestjs-service-module --name billing
 
 # Check every existing instance still matches the template it came from
-conformetry validate --config projects/configuration/conformetry.config.ts
+conformetry validate --config configuration/conformetry.config.ts
 ```
 
 ## Why
@@ -77,7 +77,7 @@ missing one before that.
 A template's own inputs are passed as flags alongside these:
 
 ```bash
-conformetry generate --config projects/configuration/conformetry.config.ts --template react-component --name search-bar
+conformetry generate --config configuration/conformetry.config.ts --template react-component --name search-bar
 ```
 
 **Omitting `--template` at a terminal offers a picker** — an autocomplete over
@@ -139,18 +139,18 @@ With `--instances` it answers the other direction — which templates explain a
 given path:
 
 ```bash
-conformetry templates --config projects/configuration/conformetry.config.ts --instances packages/billing/src/modules/billing
+conformetry templates --config configuration/conformetry.config.ts --instances packages/billing/src/modules/billing
 ```
 
 ```text
   nestjs-service-module (nsm)
     Generate a NestJS service module
-    Template: projects/configuration/conformetry-templates/nestjs-service-module
+    Template: configuration/conformetry-templates/nestjs-service-module
     Instances:
       packages/billing/src/modules/billing 5/5 files 100%
   nestjs-command-module (ncm)
     Generate a NestJS command module
-    Template: projects/configuration/conformetry-templates/nestjs-command-module
+    Template: configuration/conformetry-templates/nestjs-command-module
     Instances:
       packages/billing/src/modules/billing 3/5 files 60%
 ```
@@ -170,7 +170,7 @@ one. The complement of the command above: that one asks what standard a path
 answers to, this one asks what generated code exists.
 
 ```bash
-conformetry instances --config projects/configuration/conformetry.config.ts --templates nestjs-service-module
+conformetry instances --config configuration/conformetry.config.ts --templates nestjs-service-module
 ```
 
 ```text
@@ -255,13 +255,13 @@ The same three numbers — met, total, percentage — are reported at every leve
 
 ```text
 Conformance scores:
-  ✗ projects/logging/src/modules/logger (nestjs-service-module) — 149/151 requirements met (98.7%), below threshold 100.0%
-  ✗ projects/logging/src/modules/logger/logger (nestjs-service-file) — 108/109 requirements met (99.1%), below threshold 100.0%
+  ✗ projects/common/observability/src/modules/logger (nestjs-service-module) — 149/151 requirements met (98.7%), below threshold 100.0%
+  ✗ projects/common/observability/src/modules/logger/logger (nestjs-service-file) — 108/109 requirements met (99.1%), below threshold 100.0%
   Total — 257/260 requirements met (98.8%) across 2 instance(s), 2 below threshold
 
   1. file: logger.types.ts — 1/2 requirements met (50.0%)
-     Instance: projects/logging/src/modules/logger/logger.types.ts
-     Template: projects/configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
+     Instance: projects/common/observability/src/modules/logger/logger.types.ts
+     Template: configuration/conformetry-templates/nestjs-service-module/{{nameKebabCase}}/{{nameKebabCase}}.types.ts
 
      1. Missing comment // 🏷️ Types
         Template: Line 1, Column 1
@@ -315,7 +315,7 @@ expected value and a concrete fix:
 ```text
 1. file: billing.service.ts
    Instance: packages/billing/src/modules/billing/billing.service.ts
-   Template: projects/configuration/conformetry-templates/nestjs-service-module/…
+   Template: configuration/conformetry-templates/nestjs-service-module/…
 
    1. Missing required comment
       Instance: line 24
@@ -543,7 +543,7 @@ nx run conformetry-cli:start
 Pass a subcommand and its flags after `--`:
 
 ```bash
-nx run conformetry-cli:start -- validate --config projects/configuration/conformetry.config.ts --languages typescript
+nx run conformetry-cli:start -- validate --config configuration/conformetry.config.ts --languages typescript
 ```
 
 ## Test
@@ -909,6 +909,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_configuration["conformetry-configuration"]
   conformetry_core["conformetry-core"]
@@ -916,13 +917,14 @@ graph LR
   conformetry_generation["conformetry-generation"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
-  logging["logging"]
+  observability["observability"]
+  conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
   conformetry_cli --> conformetry_generation
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
-  conformetry_cli --> logging
+  conformetry_cli --> observability
   conformetry_examples -.-> conformetry_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_cli subject
@@ -1025,13 +1027,15 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
+  file_src_conformetry_cli_constants_ts["src/conformetry-cli.constants.ts"]
+  file_src_conformetry_cli_main_end_to_end_test_ts["src/conformetry-cli.main.end-to-end.test.ts"]
+  file_src_conformetry_cli_main_integration_test_ts["src/conformetry-cli.main.integration.test.ts"]
+  file_src_conformetry_cli_main_ts["src/conformetry-cli.main.ts"]
+  file_src_conformetry_cli_main_unit_test_ts["src/conformetry-cli.main.unit.test.ts"]
+  file_src_conformetry_cli_module_ts["src/conformetry-cli.module.ts"]
+  file_src_conformetry_cli_repl_ts["src/conformetry-cli.repl.ts"]
+  file_src_conformetry_cli_repl_unit_test_ts["src/conformetry-cli.repl.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_integration_test_ts["src/main.integration.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
   file_src_modules_generate_generate_command_ts["src/modules/generate/generate.command.ts"]
   file_src_modules_generate_generate_command_unit_test_ts["src/modules/generate/generate.command.unit.test.ts"]
   file_src_modules_generate_generate_constants_ts["src/modules/generate/generate.constants.ts"]
@@ -1052,44 +1056,42 @@ graph LR
   file_src_modules_validate_validate_constants_ts["src/modules/validate/validate.constants.ts"]
   file_src_modules_validate_validate_module_ts["src/modules/validate/validate.module.ts"]
   file_src_modules_validate_validate_types_ts["src/modules/validate/validate.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_integration_test_ts --> file_src_main_module_ts
-  file_src_main_integration_test_ts --> file_src_modules_generate_generate_command_ts
-  file_src_main_integration_test_ts --> file_src_modules_instances_instances_command_ts
-  file_src_main_integration_test_ts --> file_src_modules_templates_templates_command_ts
-  file_src_main_integration_test_ts --> file_src_modules_validate_validate_command_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_generate_generate_module_ts
-  file_src_main_module_ts --> file_src_modules_instances_instances_module_ts
-  file_src_main_module_ts --> file_src_modules_templates_templates_module_ts
-  file_src_main_module_ts --> file_src_modules_validate_validate_module_ts
-  file_src_main_ts --> file_src_main_module_ts
-  file_src_modules_generate_generate_command_ts --> file_src_constants_ts
+  file_src_conformetry_cli_main_end_to_end_test_ts --> file_src_conformetry_cli_constants_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_conformetry_cli_module_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_generate_generate_command_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_instances_instances_command_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_templates_templates_command_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_validate_validate_command_ts
+  file_src_conformetry_cli_main_ts --> file_src_conformetry_cli_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_conformetry_cli_constants_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_generate_generate_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_instances_instances_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_templates_templates_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_validate_validate_module_ts
+  file_src_conformetry_cli_repl_ts --> file_src_conformetry_cli_module_ts
+  file_src_modules_generate_generate_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_generate_generate_command_ts --> file_src_modules_generate_generate_constants_ts
   file_src_modules_generate_generate_command_ts --> file_src_modules_generate_generate_types_ts
   file_src_modules_generate_generate_command_unit_test_ts --> file_src_modules_generate_generate_command_ts
   file_src_modules_generate_generate_module_ts --> file_src_modules_generate_generate_command_ts
-  file_src_modules_instances_instances_command_ts --> file_src_constants_ts
+  file_src_modules_instances_instances_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_instances_instances_command_ts --> file_src_modules_instances_instances_constants_ts
   file_src_modules_instances_instances_command_ts --> file_src_modules_instances_instances_types_ts
   file_src_modules_instances_instances_command_unit_test_ts --> file_src_modules_instances_instances_command_ts
   file_src_modules_instances_instances_module_ts --> file_src_modules_instances_instances_command_ts
-  file_src_modules_templates_templates_command_ts --> file_src_constants_ts
+  file_src_modules_templates_templates_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_templates_templates_command_ts --> file_src_modules_templates_templates_constants_ts
   file_src_modules_templates_templates_command_ts --> file_src_modules_templates_templates_types_ts
   file_src_modules_templates_templates_command_unit_test_ts --> file_src_modules_templates_templates_command_ts
   file_src_modules_templates_templates_module_ts --> file_src_modules_templates_templates_command_ts
-  file_src_modules_validate_validate_command_ts --> file_src_constants_ts
+  file_src_modules_validate_validate_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_validate_validate_command_ts --> file_src_modules_validate_validate_types_ts
   file_src_modules_validate_validate_command_unit_test_ts --> file_src_modules_validate_validate_command_ts
   file_src_modules_validate_validate_module_ts --> file_src_modules_validate_validate_command_ts
-  file_src_repl_ts --> file_src_main_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

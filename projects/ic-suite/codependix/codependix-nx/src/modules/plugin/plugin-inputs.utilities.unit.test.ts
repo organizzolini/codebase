@@ -79,7 +79,7 @@ function writePackage(args: {
 
 /**
  * Writes a workspace whose command line reaches `@codependix/core` and
- * `@codebase/logging`, development dependencies included, and declares two
+ * `@codebase/observability`, development dependencies included, and declares two
  * it cannot: one never linked, and one linked to a package that names itself
  * something else, beneath a stray manifest that cannot be parsed.
  *
@@ -100,7 +100,7 @@ function writeWorkspace(root: string): void {
         "@codependix/missing": "workspace:*",
         zod: "^4.0.0",
       },
-      devDependencies: { "@codebase/logging": "workspace:*" },
+      devDependencies: { "@codebase/observability": "workspace:*" },
       main: "./src/index.js",
       name: "@codependix/cli",
     },
@@ -109,13 +109,13 @@ function writeWorkspace(root: string): void {
     directory: path.join(packages, "core"),
     manifest: {
       ...exportsEntry,
-      dependencies: { "@codebase/logging": "workspace:*" },
+      dependencies: { "@codebase/observability": "workspace:*" },
       name: "@codependix/core",
     },
   });
   writePackage({
     directory: path.join(packages, "logging"),
-    manifest: { ...exportsEntry, name: "@codebase/logging" },
+    manifest: { ...exportsEntry, name: "@codebase/observability" },
   });
 
   writePackage({
@@ -127,8 +127,8 @@ function writeWorkspace(root: string): void {
   link({ from: root, name: "@codependix/cli", to: path.join(packages, "cli") });
   for (const [from, name, to] of [
     ["cli", "@codependix/core", "core"],
-    ["cli", "@codebase/logging", "logging"],
-    ["core", "@codebase/logging", "logging"],
+    ["cli", "@codebase/observability", "logging"],
+    ["core", "@codebase/observability", "logging"],
     ["cli", "@codependix/misnamed", "misnamed"],
   ] as const) {
     link({

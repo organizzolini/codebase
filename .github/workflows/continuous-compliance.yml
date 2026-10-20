@@ -8,8 +8,8 @@ name: 🦹 Continuous Compliance
 # 3. 🧑‍⚖️ Comply: Pull request metadata and commit message conventions, on
 #    pull requests and again on the merge queue group that will land them.
 #
-# Label reconciliation runs through `projects/synchronization`, and compliance
-# validation runs through `projects/validation`. All checks execute directly via
+# Label reconciliation runs through `synchronization`, and compliance
+# validation runs through `validation`. All checks execute directly via
 # Node.js without building an Nx project graph.
 
 on:
@@ -98,7 +98,7 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/synchronization/src/synchronization.main.ts issue-labels
+            synchronization/src/synchronization.main.ts issue-labels
 
       # Issue events can arrive with no assignees. Default those to the
       # repository owner while leaving already-owned issues unchanged.
@@ -135,7 +135,7 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/validation.main.ts issue-metadata "$ISSUE_NUMBER"
+            validation/src/validation.main.ts issue-metadata "$ISSUE_NUMBER"
 
       # Sweeps and audits all open issues and hierarchy relationships on
       # scheduled runs and manual dispatches.
@@ -145,7 +145,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/validation.main.ts issue-metadata --all
+            validation/src/validation.main.ts issue-metadata --all
 
   enforce:
     name: 👮 Enforce
@@ -187,7 +187,7 @@ jobs:
       - name: 👮 Audit Repository Governance
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/validation.main.ts audit-governance
+            validation/src/validation.main.ts audit-governance
 
   comply:
     name: 🧑‍⚖️ Comply
@@ -255,7 +255,7 @@ jobs:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/synchronization/src/synchronization.main.ts pull-request-labels write
+            synchronization/src/synchronization.main.ts pull-request-labels write
 
       # Validates that the pull request branch name conforms to Conventional
       # Commits. A merge group's branch is the queue's own, so it is not checked.
@@ -286,7 +286,7 @@ jobs:
             PULL_REQUEST_TITLE="$(gh pr view "$PULL_REQUEST_NUMBER" --json title -q .title)"
           fi
           echo "$PULL_REQUEST_TITLE" | \
-            npx commitlint --config projects/configuration/commitlint.config.ts
+            npx commitlint --config configuration/commitlint.config.ts
 
       # Validates pull request body against required template sections. Skipped
       # for a pull request Dependabot authored, whose body it writes itself;
@@ -304,7 +304,7 @@ jobs:
         run: |
           gh pr view "$PULL_REQUEST_NUMBER" --json body -q .body > pull_request_body.md
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/validation.main.ts pull-request-body pull_request_body.md
+            validation/src/validation.main.ts pull-request-body pull_request_body.md
           rm pull_request_body.md
 
       # Validates that PR title release significance matches or exceeds commits.
@@ -316,7 +316,7 @@ jobs:
             ${{ github.event.pull_request.number || steps.merge-group.outputs.pull-request-number }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/validation/src/validation.main.ts pull-request-release-significance \
+            validation/src/validation.main.ts pull-request-release-significance \
             "$PULL_REQUEST_NUMBER"
 
       # Validates that the latest commit on main follows Conventional Commits.
@@ -326,7 +326,7 @@ jobs:
         if: github.event_name == 'push' && github.event.head_commit.author.name != 'dependabot[bot]'
         run: |
           git log -1 --pretty=%s | \
-            npx commitlint --config projects/configuration/commitlint.config.ts
+            npx commitlint --config configuration/commitlint.config.ts
 
       # Validates the merge group's head commit, which is exactly what lands on
       # main. GitHub does not document the subject a queued squash commit
@@ -347,4 +347,4 @@ jobs:
           fi
           echo "🏷️ Linting merge group commit subject: ${COMMIT_SUBJECT}"
           echo "$COMMIT_SUBJECT" | \
-            npx commitlint --config projects/configuration/commitlint.config.ts
+            npx commitlint --config configuration/commitlint.config.ts

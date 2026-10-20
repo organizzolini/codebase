@@ -45,7 +45,7 @@ Content rules worth knowing before editing:
   worst outcome is a run that exits 0 having written nothing, because a
   configuration selecting no project resolves every graph type to
   `target: "none"`. Every example invocation passes `--config <path>` (this
-  repository's is `projects/configuration/codependix.config.ts`): the flag is
+  repository's is `configuration/codependix.config.ts`): the flag is
   required and nothing is searched for.
   Nothing in the command's own output says so, so every skill that touches a
   run says it instead.

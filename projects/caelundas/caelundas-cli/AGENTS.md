@@ -22,7 +22,7 @@ nx run caelundas-cli:start
 - **Framework**: NestJS (modules, dependency injection, providers)
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events` table)
 - **Language**: Strict TypeScript
 
@@ -120,7 +120,7 @@ Astronomical concepts, event detection, and storage:
 
 ### Logging
 
-`LoggerService` and `LoggerModule` come from `@codebase/logging` — this project does not define its own logger. Add `"@codebase/logging": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
+`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
 
 `LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
 
@@ -220,8 +220,8 @@ Caelundas runs as a **Kubernetes Job** (not Deployment):
 docker push ghcr.io/organizzolini/caelundas:latest
 
 # 2. Deploy Job (base.yaml is a defaults template, so override the image)
-helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
-  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml \
+helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
+  --values infrastructure/helm/kubernetes-job/values/base.yaml \
   --set image.repository=ghcr.io/organizzolini/caelundas --set image.tag=latest
 
 # 3. Monitor completion
@@ -234,7 +234,7 @@ kubectl delete pvc caelundas-output
 
 ### Helm Chart
 
-Uses [projects/infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
+Uses [infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
 
 **Values**: [base.yaml](../../infrastructure/helm/kubernetes-job/values/base.yaml) holds chart defaults only (its image is the placeholder `my-application`); there is no caelundas-specific values file, so override the image and `env` at deploy time.
 
@@ -425,7 +425,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/modules/caelundas/caelundas.command.ts](src/modules/caelundas/caelundas.command.ts): Root CLI command
 - [src/caelundas-cli.module.ts](src/caelundas-cli.module.ts): Root NestJS module
 - [src/caelundas-cli.constants.ts](src/caelundas-cli.constants.ts): environmentSchema (Zod)
-- `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
+- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template
 

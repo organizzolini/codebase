@@ -2,7 +2,7 @@
 
 `eslint-plugin-project-structure`'s `folder-structure` rule enforces this
 repository's folder and file placement law from
-`projects/configuration/codebase-structure.json`. It listens only on `Program`, so it
+`configuration/codebase-structure.json`. It listens only on `Program`, so it
 fires only on a file ESLint parsed into a syntax tree — which meant markdown and
 HTML paths were never judged at all. That is how `openwiki/` stayed an undeclared root
 directory, and how a generated `src/index.html` would have gone unnoticed.
@@ -23,7 +23,7 @@ it: the rule is now rebound so that one pass judges every path in the workspace.
   rejected outright with `Key "languageOptions": Unexpected key "frontmatter"
   found.`, and leaving it alone leaves the rule silently inert.
 - **Rebind the rule to the markdown tree.** Chosen. `markdownStructurePlugin` in
-  `projects/configuration/eslint.config.ts` spreads the same rule and binds its `Program`
+  `configuration/eslint.config.ts` spreads the same rule and binds its `Program`
   handler to mdast's `root` node, which puts the markdown rules and the
   structure rule in one pass. `.html` needs less: the plugin's own
   `projectStructureParser` yields an empty `Program`, and nothing else claims
@@ -52,5 +52,5 @@ it: the rule is now rebound so that one pass judges every path in the workspace.
   the same reason `markdownlint` and `cspell` exclude them, but their paths are
   still judged.
 - **`projectStructure.cache.json` masks edits.** Delete it, and `.eslintcache/`
-  beside it, before testing a change to `projects/configuration/codebase-structure.json`,
+  beside it, before testing a change to `configuration/codebase-structure.json`,
   or the edit appears to have no effect and the test proves nothing.

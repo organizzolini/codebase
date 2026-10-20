@@ -169,7 +169,7 @@ The `test-devcontainer.sh` script in `.devcontainer/scripts/` validates tool ins
 | Post-create artifacts         | `node_modules/` and `.nx/graph.json` exist (validates `postCreateCommand` ran)                |
 | Script permissions            | All `.devcontainer/scripts/*.sh` files are executable                                         |
 | Extensions sync               | `extensions` and `recommendations` arrays in `devcontainer.json` match                        |
-| Workspace structure           | `projects/` and `projects/infrastructure/` dirs exist (mount sanity)                                   |
+| Workspace structure           | `projects/` and `infrastructure/` dirs exist (mount sanity)                                   |
 | Docker (DinD)                 | Docker daemon is reachable and `docker compose` is available                                  |
 | VS Code Machine settings sync | `.vscode/settings.json` is applied to Machine settings (skipped when VS Code is not attached) |
 
@@ -185,7 +185,7 @@ Exit code is `0` if all tests pass, `1` if any fail.
 
 ### Run tests in CI
 
-The `🧑‍🏭 Devcontainer` target in [`.github/workflows/continuous-deployment.yml`](../.github/workflows/continuous-deployment.yml) builds the container image and executes the test script inside it. It runs on pull requests and on pushes to `main` that change a file the image or its test reads: `.devcontainer/**`, `.env.default`, `projects/infrastructure/docker/docker-compose.yml`, the workflow itself, or the `packageManager` pin in `package.json`. Only pushes to `main` publish the image.
+The `🧑‍🏭 Devcontainer` target in [`.github/workflows/continuous-deployment.yml`](../.github/workflows/continuous-deployment.yml) builds the container image and executes the test script inside it. It runs on pull requests and on pushes to `main` that change a file the image or its test reads: `.devcontainer/**`, `.env.default`, `infrastructure/docker/docker-compose.yml`, the workflow itself, or the `packageManager` pin in `package.json`. Only pushes to `main` publish the image.
 
 Pushes to `main` publish `ghcr.io/organizzolini/codebase-devcontainer:latest`, and that image is both the usable image and the build cache. This configuration is compose-based, and for compose configurations the devcontainer CLI bakes `BUILDKIT_INLINE_CACHE=1` into the feature build, so the published image carries its own layer metadata and the next run's `cacheFrom` resolves against it. Pull the image to run the devcontainer without building it.
 

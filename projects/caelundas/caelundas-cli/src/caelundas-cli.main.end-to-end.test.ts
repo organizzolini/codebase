@@ -6,7 +6,7 @@ import _ from "lodash";
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import {

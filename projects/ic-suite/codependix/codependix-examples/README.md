@@ -206,7 +206,8 @@ graph LR
   codependix_nestjs_modules["codependix-nestjs-modules"]
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   codependix_examples --> codependix_boundaries
   codependix_examples -.-> codependix_cli
   codependix_examples --> codependix_configuration
@@ -215,7 +216,8 @@ graph LR
   codependix_examples --> codependix_nestjs_modules
   codependix_examples --> codependix_nx_projects
   codependix_examples --> codependix_output
-  codependix_examples --> logging
+  codependix_examples --> configuration
+  codependix_examples --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_examples subject
 ```
@@ -289,6 +291,7 @@ graph LR
   file_testing_render_boundary_attribution_ts --> file_testing_render_types_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_boundary_run_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_document_ts
+  file_testing_render_boundary_boot_failures_ts --> file_testing_render_nestjs_graphs_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_nx_graphs_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_paths_ts
   file_testing_render_boundary_boot_failures_ts --> file_testing_render_types_ts

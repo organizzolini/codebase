@@ -5,7 +5,7 @@ import { ModulesContainer, NestFactory } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MainModule } from "../../../testing/codependix-nestjs-modules.module";
 

@@ -34,7 +34,7 @@ const codometerConfiguration: CodometerConfiguration = {
   // .nx), matched against repository-relative paths with `path.matchesGlob`.
   exclude: ["notepads/**", "**/templates/**"],
   // Ignore files in gitignore syntax, whose patterns exclude as well.
-  excludeFrom: ["projects/configuration/.codometerignore"],
+  excludeFrom: ["configuration/.codometerignore"],
   // Named sets of files measured alongside the codebase itself. The built-in
   // `codebase` whole-tree scan is always present unless one of these entries
   // replaces it by name.
@@ -75,7 +75,7 @@ export default codometerConfiguration;
 ```
 
 Output paths are resolved relative to the process's working directory, not to
-the configuration file, so a configuration kept in a `projects/configuration/` folder
+the configuration file, so a configuration kept in a `configuration/` folder
 still writes to the repository root.
 
 ## Resolution
@@ -592,8 +592,10 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  configuration["configuration"]
   codometer_cli --> codometer_configuration
   codometer_configuration --> codometer_core
+  codometer_configuration --> configuration
   codometer_examples --> codometer_configuration
   codometer_languages --> codometer_configuration
   codometer_measurement --> codometer_configuration
@@ -647,6 +649,7 @@ graph LR
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_configuration_configuration_flags_service_ts --> file_src_modules_configuration_configuration_flags_constants_ts
   file_src_modules_configuration_configuration_flags_service_ts --> file_src_modules_configuration_configuration_types_ts
+  file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_constants_ts
   file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_service_ts
   file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_types_ts
   file_src_modules_configuration_configuration_loader_service_ts --> file_src_modules_configuration_configuration_loader_types_ts

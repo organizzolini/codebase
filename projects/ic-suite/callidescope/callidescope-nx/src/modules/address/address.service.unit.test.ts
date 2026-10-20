@@ -12,7 +12,7 @@ import type { CallableId } from "@callidescope/core";
 import type { DiscoveredCallable } from "@callidescope/graph";
 
 /** The workspace configuration every run must name. */
-const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
+const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
 
 /** The address every test looks up. */
 const ADDRESS = "src/foo.service.ts#FooService.bar";

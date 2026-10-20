@@ -12,14 +12,14 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { GenerateCommand } from "./generate.command";
 
 import type { ConformetryConfiguration } from "@conformetry/configuration";
 import type { GeneratorHook } from "@conformetry/core";
 
-const CONFIGURATION_PATH = "projects/configuration/conformetry.config.ts";
+const CONFIGURATION_PATH = "configuration/conformetry.config.ts";
 
 const CONFIGURATION: ConformetryConfiguration = [
   {
@@ -138,9 +138,7 @@ describe(GenerateCommand, () => {
       // anything the command could work out from the flag alone.
       vi.mocked(
         configurationService.resolveConfigurationPath,
-      ).mockResolvedValue(
-        "/workspace/projects/configuration/conformetry.config.ts",
-      );
+      ).mockResolvedValue("/workspace/configuration/conformetry.config.ts");
 
       await command.run([], {
         config: CONFIGURATION_PATH,
@@ -153,12 +151,10 @@ describe(GenerateCommand, () => {
       ).toHaveBeenCalledWith(CONFIGURATION_PATH);
       expect(
         configurationService.loadConformetryConfiguration,
-      ).toHaveBeenCalledWith(
-        "/workspace/projects/configuration/conformetry.config.ts",
-      );
+      ).toHaveBeenCalledWith("/workspace/configuration/conformetry.config.ts");
       expect(generationService.runGenerator).toHaveBeenCalledWith(
         expect.objectContaining({
-          configurationDirectoryPath: "/workspace/projects/configuration",
+          configurationDirectoryPath: "/workspace/configuration",
         }),
       );
     });

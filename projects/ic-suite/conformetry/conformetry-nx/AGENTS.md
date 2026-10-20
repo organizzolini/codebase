@@ -13,7 +13,7 @@
 - **Framework**: NestJS (modules, dependency injection, providers)
 - **Bootstrap**: `NestFactory.create` (standard NestJS bootstrap)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -51,7 +51,7 @@ testing/                            # Shared test utilities
 
 ### Logging
 
-`LoggerService` and `LoggerModule` come from `@codebase/logging` — this project does not define its own logger. Add `"@codebase/logging": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
+`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
 
 `LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
 
@@ -216,6 +216,6 @@ See the [triage-integration skill](../../../../.agents/skills/triage-integration
 - [src/conformetry-nx.main.ts](src/conformetry-nx.main.ts): Application bootstrap
 - [src/conformetry-nx.module.ts](src/conformetry-nx.module.ts): Root NestJS module
 - [src/conformetry-nx.constants.ts](src/conformetry-nx.constants.ts): `environmentSchema` (Zod)
-- `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
+- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template

@@ -140,7 +140,7 @@ conformetry-examples/
   here first, which is the whole point of reproducing a behavior in this package
   rather than in a real project.
 - **There is no `src/`**, and that is load-bearing: every tag-scoped instance
-  glob in `projects/configuration/conformetry.config.ts` is under `src/modules/`, so the
+  glob in `configuration/conformetry.config.ts` is under `src/modules/`, so the
   absence of that directory is what keeps this repository's own conformance run
   from reaching the drifted fixtures — even though the package carries
   `framework:nestjs`, which is accurate because the embedding example boots a

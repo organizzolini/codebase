@@ -2,7 +2,7 @@ import { ConfigurationModule } from "@callidescope/configuration";
 import { WorkspaceModule } from "@callidescope/graph";
 import { Module } from "@nestjs/common";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { LimitsCommand } from "./limits.command";
 import { LimitsService } from "./limits.service";

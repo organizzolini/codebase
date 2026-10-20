@@ -34,7 +34,7 @@ import { SearchService } from "./search.service";
 
 import type { LexemeSearchMatch } from "./search.types";
 import type { Connection } from "@codebase/interface";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** One headword to seed, with the English senses it translates to. */

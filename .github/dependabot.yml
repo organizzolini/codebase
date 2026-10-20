@@ -71,15 +71,15 @@ updates:
         update-types: [version-update:semver-major]
       # eslint-plugin-unicorn v68 renamed `prevent-abbreviations` to
       # `name-replacements`, and the majors since add or change dozens of
-      # other rules. See projects/configuration/eslint.config.ts and
+      # other rules. See configuration/eslint.config.ts and
       # .github/workflows/upgrade-dependencies.yml for the incident this
       # ignore rule replaces.
       - dependency-name: eslint-plugin-unicorn
         update-types: [version-update:semver-major]
 
   # One lockfile covers every uv workspace member
-  # (projects/configuration plus projects/affirmancy), so a single entry
-  # rooted at projects/configuration reaches both.
+  # (configuration plus projects/affirmancy), so a single entry
+  # rooted at configuration reaches both.
   #
   # This ecosystem is newer than the npm one above, and its workspace
   # handling has an open upstream bug (dependabot/dependabot-core#14004:
@@ -91,7 +91,7 @@ updates:
   # `uv lock --upgrade` step is the fallback, kept running weekly rather
   # than removed, until this entry has proven itself.
   - package-ecosystem: uv
-    directory: /projects/configuration
+    directory: /configuration
     schedule:
       interval: weekly
       day: friday
@@ -139,9 +139,9 @@ updates:
         patterns:
           - "*"
 
-  # projects/infrastructure/terraform pins the linode/linode provider version.
+  # infrastructure/terraform pins the linode/linode provider version.
   - package-ecosystem: terraform
-    directory: /projects/infrastructure/terraform
+    directory: /infrastructure/terraform
     schedule:
       interval: weekly
       day: friday

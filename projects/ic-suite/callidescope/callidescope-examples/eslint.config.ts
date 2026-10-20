@@ -1,4 +1,4 @@
-import baseConfig from "../../../../projects/configuration/eslint.config";
+import baseConfig from "../../../../configuration/eslint.config";
 
 export default [
   // 🛠️ Base Config
@@ -10,8 +10,8 @@ export default [
   // built by spreading the measurement it came from and stamping the `limit` it
   // was judged against on the end — so sorting them here makes the very next
   // `examples:write` put them back and `examples` report the file stale. The
-  // same standoff `projects/configuration/.oxfmtignore` already resolves for this exact
-  // directory, and the same one `projects/configuration/eslint.config.ts` resolves for
+  // same standoff `configuration/.oxfmtignore` already resolves for this exact
+  // directory, and the same one `configuration/eslint.config.ts` resolves for
   // every graph codependix writes.
   {
     files: ["output/*.json"],

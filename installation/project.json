@@ -1,0 +1,62 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "installation",
+  "projectType": "application",
+  "sourceRoot": "installation",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "type:package"
+  ],
+  "targets": {
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "repl": {},
+    "spell-check": {},
+    "start": {
+      "cache": false,
+      "configurations": {
+        "dependencies": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts dependencies"
+        },
+        "environment-files": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts environment-files"
+        },
+        "setup": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts setup"
+        },
+        "shell-configuration": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts shell-configuration"
+        },
+        "software": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts software"
+        },
+        "update-reui-skill": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill"
+        }
+      },
+      "description": "Run one setup command by name: setup, shell-configuration, software, environment-files, dependencies, or update-reui-skill.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

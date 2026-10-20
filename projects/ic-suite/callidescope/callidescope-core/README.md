@@ -51,8 +51,10 @@ graph LR
   callidescope_graph["callidescope-graph"]
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
+  configuration["configuration"]
   callidescope_cli --> callidescope_core
   callidescope_configuration --> callidescope_core
+  callidescope_core --> configuration
   callidescope_examples --> callidescope_core
   callidescope_graph --> callidescope_core
   callidescope_nx --> callidescope_core

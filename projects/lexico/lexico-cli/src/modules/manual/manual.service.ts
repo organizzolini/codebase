@@ -4,7 +4,7 @@ import numberToWords from "number-to-words";
 import { Repository } from "typeorm";
 
 import { Lexeme, Translation } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { NumeralsService } from "../numerals/numerals.service";
 import { WordsService } from "../words/words.service";

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.15.1](https://github.com/organizzolini/codebase/compare/v3.15.0...v3.15.1) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/issues/1708)) ([d0b7206](https://github.com/organizzolini/codebase/commit/d0b7206d01b474562ae222282c5173df74935722))
+
 ## [3.15.0](https://github.com/organizzolini/codebase/compare/v3.14.1...v3.15.0) (2026-10-20)
 
 ### ✨ Features
@@ -552,7 +558,7 @@ All notable changes to this project will be documented in this file. See [Conven
 
 ### ♻️ Code Refactoring
 
-* **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
+* **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
 
 ## [2.33.3](https://github.com/organizzolini/codebase/compare/v2.33.2...v2.33.3) (2026-10-05)
 

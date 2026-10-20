@@ -5,7 +5,7 @@ import {
 import { InputError } from "@codependix/configuration";
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import type { MapRunResult } from "../graph-run/graph-run.types";
 import type {

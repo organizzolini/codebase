@@ -17,7 +17,7 @@
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `projects/ic-suite/callidescope/callidescope-examples` | 8 | 5 | -3 | 2 |
-| `projects/logging` | 6 | 4 | -2 | 2 |
+| `projects/common/observability` | 6 | 4 | -2 | 2 |
 | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf` | 4 | 3 | -1 | 3 |
 | `projects/ic-suite/codependix/codependix-configuration` | 7 | 7 | 0 | 4 |
 | `projects/ic-suite/codometer/codometer-configuration` | 9 | 9 | 0 | 4 |

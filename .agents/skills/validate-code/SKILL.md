@@ -21,17 +21,17 @@ The `lint-code` Nx target hangs every quality tool off `dependsOn`, so one invoc
 
 | Tool | Purpose | Configuration |
 | ---- | ------- | ------------- |
-| `oxfmt` + `prettier` | Code formatting | `projects/configuration/oxfmt.config.ts`, `projects/configuration/prettier.config.ts` |
-| `eslint` + `oxlint` | Linting (TS/JS) | project `eslint.config.ts`, `projects/configuration/oxlint.config.ts` |
+| `oxfmt` + `prettier` | Code formatting | `configuration/oxfmt.config.ts`, `configuration/prettier.config.ts` |
+| `eslint` + `oxlint` | Linting (TS/JS) | project `eslint.config.ts`, `configuration/oxlint.config.ts` |
 | `ruff` | Format + lint (Python) | `pyproject.toml` |
-| `tsc --noEmit` | TypeScript type checking | project `tsconfig.json` → `projects/configuration/tsconfig.base.json` |
+| `tsc --noEmit` | TypeScript type checking | project `tsconfig.json` → `configuration/tsconfig.base.json` |
 | `pyright` + `ty` | Python type checking | `pyproject.toml` |
-| `knip` | Unused TS files, exports, deps | `projects/configuration/knip.config.ts` |
-| `fallow dead-code` | The same, workspace-wide in one pass | `projects/configuration/fallow.config.jsonc` |
-| `vulture` | Unused Python code | `projects/configuration/vulture_whitelist.py` |
-| `cspell` | Spell checking | `projects/configuration/cspell.config.yaml` |
-| `markdownlint` | Markdown linting | `projects/configuration/markdownlint-cli2.config.jsonc` |
-| `yamllint` | YAML linting | `projects/configuration/yamllint.yaml` |
+| `knip` | Unused TS files, exports, deps | `configuration/knip.config.ts` |
+| `fallow dead-code` | The same, workspace-wide in one pass | `configuration/fallow.config.jsonc` |
+| `vulture` | Unused Python code | `configuration/vulture_whitelist.py` |
+| `cspell` | Spell checking | `configuration/cspell.config.yaml` |
+| `markdownlint` | Markdown linting | `configuration/markdownlint-cli2.config.jsonc` |
+| `yamllint` | YAML linting | `configuration/yamllint.yaml` |
 
 ## Validation Workflow
 
@@ -63,11 +63,11 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 
 - **Format/lint**: Fix the reported violations manually, then re-run.
 - **Typecheck**: Fix type errors — see [write-typescript skill](../write-typescript/SKILL.md) for patterns.
-- **Spell-check**: Either fix the typo, or add the word to the appropriate dictionary in `projects/configuration/.cspell/`.
-- **Knip (unused code)**: Remove the unused export/file/dependency, or add an exception in `projects/configuration/knip.config.ts`.
-- **Fallow dead-code (unused code)**: The same finding from the other direction — `knip` runs once per workspace, `fallow` once over all of them. The two configurations are kept in step, so fix the code and both pass; if an exception is genuinely warranted, add it to `projects/configuration/fallow.config.jsonc` _and_ its counterpart in `projects/configuration/knip.config.ts`, or the next run of the other tool reports what you just excused. Prefer `overrides` to `ignorePatterns` when suppressing a file: `ignorePatterns` also drops what that file imports out of the module graph, which makes reachable files read as dead.
+- **Spell-check**: Either fix the typo, or add the word to the appropriate dictionary in `configuration/.cspell/`.
+- **Knip (unused code)**: Remove the unused export/file/dependency, or add an exception in `configuration/knip.config.ts`.
+- **Fallow dead-code (unused code)**: The same finding from the other direction — `knip` runs once per workspace, `fallow` once over all of them. The two configurations are kept in step, so fix the code and both pass; if an exception is genuinely warranted, add it to `configuration/fallow.config.jsonc` _and_ its counterpart in `configuration/knip.config.ts`, or the next run of the other tool reports what you just excused. Prefer `overrides` to `ignorePatterns` when suppressing a file: `ignorePatterns` also drops what that file imports out of the module graph, which makes reachable files read as dead.
 - **Sync checks**: Run the failing synchronization's own `write` configuration (e.g., `nx run synchronization:conventional-config:write`), or `nx run-many --targets=conformetry-generators,conventional-config,devcontainer-configuration,pull-request-template,skill-exclusions --configuration=write` for every derivation at once.
-- **Check skill exclusions**: Add the exclusion lines the failure names to `projects/configuration/.prettierignore`, `projects/configuration/.codometerignore`, and `.gitattributes`. This leaf has no `write` variant.
+- **Check skill exclusions**: Add the exclusion lines the failure names to `configuration/.prettierignore`, `configuration/.codometerignore`, and `.gitattributes`. This leaf has no `write` variant.
 
 See [triage-integration](../triage-integration/SKILL.md) for detailed per-tool fix instructions.
 
@@ -135,7 +135,7 @@ pnpm exec nx run synchronization:skill-exclusions:write
 
 ### AGENTS.md edited
 
-The types and scopes tables in AGENTS.md are generated between marker comments from [projects/configuration/conventional.config.cjs](../../../projects/configuration/conventional.config.cjs). Edit the config, never the table, then regenerate:
+The types and scopes tables in AGENTS.md are generated between marker comments from [configuration/conventional.config.cjs](../../../configuration/conventional.config.cjs). Edit the config, never the table, then regenerate:
 
 ```bash
 pnpm exec nx run synchronization:conventional-config:write

@@ -20,7 +20,7 @@ import { DatabaseModule, Lexeme, Word } from "@codebase/lexico-entities";
 ```
 
 `DatabaseModule` connects to `lexico_development`.`lexico` as
-`lexico_username` through [`@codebase/persistence`](../../persistence/README.md)'s
+`lexico_username` through [`@codebase/persistence`](../../common/persistence/README.md)'s
 `DatabaseModule.forRoot`, with lexico's pluralizing `LexicoNamingStrategy`.
 `lexicoDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
@@ -74,7 +74,7 @@ morphology does not fit one flat row. A form is an `AdjectivalForm`,
 ### Base classes
 
 Every entity but `Inflection` extends
-[`@codebase/persistence`](../../persistence/README.md)'s `DeletableEntity` directly. It
+[`@codebase/persistence`](../../common/persistence/README.md)'s `DeletableEntity` directly. It
 declares the columns — a `uuid` id the database assigns with `uuidv7()`, then
 the created, updated, and soft-deleted timestamps and their nullable `*By`
 columns — so no entity restates them.
@@ -109,7 +109,7 @@ defaults, declared here as
 `"migration": { "options": { "module": "src/modules/database" } }`,
 which names the folder holding `data-source.constants.ts` and `migrations/`;
 its SQL extraction script lives in
-[`@codebase/persistence`](../../persistence/README.md).
+[`@codebase/persistence`](../../common/persistence/README.md).
 `generate` also extracts the SQL and formats the result, so a generated
 migration lands ready to review. Every migration ships a `-up.sql` and
 `-down.sql` next to its TypeScript, which is what makes a schema change
@@ -147,8 +147,8 @@ maintainer's call once the counts below match.
    Lexico's tables so TypeORM's own bookkeeping — its metadata and, on a
    volume where the old migration ever ran, its migrations table — stays
    behind; the new migration writes both for `lexico`. The path is relative
-   to `projects/persistence`, where the command runs. See
-   [Moving data between databases](../../persistence/README.md#moving-data-between-databases):
+   to `projects/common/persistence`, where the command runs. See
+   [Moving data between databases](../../common/persistence/README.md#moving-data-between-databases):
 
    ```bash
    pnpm exec nx run persistence:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
@@ -209,7 +209,7 @@ nx run lexico-entities:vitest:integration   # Against a Testcontainers PostgreSQ
 ```
 
 Integration tests start a throwaway Postgres 18 through
-[`@codebase/persistence/testing`](../../persistence/README.md), laid out like local
+[`@codebase/persistence/testing`](../../common/persistence/README.md), laid out like local
 Docker: `lexico_username` owning `lexico_testing` with a `lexico` schema. The
 schema is built by running the real migrations, never by synchronizing, and
 the suite asserts the entities have nothing left to change, so entity mappings
@@ -219,7 +219,7 @@ and migrations are verified against the database rather than against a mock.
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
 - 🚰 [lexico-cli](../lexico-cli/README.md) — fills these tables
-- 🎨 [components](../../components/README.md) — the interface
+- 🎨 [presentation](../../common/presentation/README.md) — the interface
 
 ## License
 
@@ -482,7 +482,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4900-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-209.46_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-209.39_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-52-3178c6?style=flat-square)
 
