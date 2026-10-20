@@ -14,6 +14,7 @@ bundlesize
 caffeinate
 callees
 callidescope
+callsites
 callidescopeignore
 capitalisation
 capitalised
@@ -30,6 +31,7 @@ codependix
 codependixignore
 codometer
 codometerignore
+codegen
 commitlint
 conformetry
 context7
@@ -161,6 +163,7 @@ pipx
 pkill
 pnpm
 pnpmfile
+pluckable
 pocock
 polymorphic
 precompiled
@@ -252,6 +255,7 @@ unstub
 unsuffixed
 untaint
 unvalidated
+urql
 uppercased
 uppercases
 userconfig
@@ -270,3 +274,4 @@ worktree
 worktrees
 nohup
 setsid
+zodv4

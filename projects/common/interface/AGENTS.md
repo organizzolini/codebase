@@ -30,8 +30,10 @@ src/
       graphql.entities.ts           # PageInfo
       graphql.types.ts              # Connection, Edge, GraphQLObjectOf, GraphQLFields
       graphql.utilities.ts          # Paginated, cursors, mapRelation* helpers
+      graphql-codegen.*.ts          # createGraphqlCodegenConfig, the shared client code generation
 testing/
   index.ts                          # The @codebase/interface/testing entry
+  graphql-server.ts                 # The shared MSW server and its start, reset, and stop
   pagination.ts                     # paginateArray and the page matrix, the oracle SQL paging agrees with
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
@@ -43,6 +45,13 @@ testing/
 Add a symbol here only when two APIs, or one API and a test harness, need it.
 Anything naming a specific API's entities, such as `DeletableType`, stays in
 that API.
+
+### Code Generation
+
+A web client's `codegen.ts` calls `createGraphqlCodegenConfig` from
+`@codebase/interface/codegen` and passes its schema path. Keep that entry free of
+Nest decorators, since the code generator loads it directly. The plugins the
+configuration names are installed by the client that runs `graphql-codegen`.
 
 ### Key Commands
 

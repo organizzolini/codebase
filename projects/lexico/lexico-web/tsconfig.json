@@ -26,6 +26,7 @@
   "extends": "@codebase/configuration/tsconfig.json",
   "include": [
     "callidescope.config.ts",
+    "codegen.ts",
     "codependix.config.ts",
     "codometer.config.ts",
     "eslint.config.ts",

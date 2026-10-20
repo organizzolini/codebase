@@ -35,6 +35,8 @@ nx run lexico-web:start     # http://localhost:7797
 | `start` | Vite dev server with hot reload, once the API is ready |
 | `stop` | Free port 7797; `nx stop lexico-api` stops this and then the API |
 | `build` | Production SSR bundle |
+| `codegen` | Generate typed GraphQL operations, Zod schemas, and MSW handlers |
+| `codegen-watch` | Regenerate GraphQL artifacts as operations or schema change |
 | `preview` | Build, then serve the production build locally |
 | `codometer` | Measure the entry, route, CSS, and server bundles and gate the limit each declares |
 | `vitest` | Tests — `:unit`, `:integration`, `:end-to-end` |
@@ -62,6 +64,9 @@ from client to server — defined beside the route that uses it and called from
 its loader, so the first render is already populated. `/search` asks the API
 for Latin and English matches at once and merges them, best first; set
 `LEXICO_API_URL` to point it somewhere other than `http://localhost:5003/graphql`.
+GraphQL documents live in `src/graphql/operations/*.graphql` and are compiled
+into `src/graphql/generated/` by GraphQL Code Generator, which emits operation
+types, Zod validators, and MSW mock helpers for tests.
 
 ## Technology
 

@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@graphql-codegen/cli": "catalog:",
     "@nestjs/graphql": "catalog:",
+    "msw": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:"
   },
@@ -16,6 +18,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./codegen": "./src/modules/graphql/graphql-codegen.utilities.ts",
     "./testing": "./testing/index.ts",
     "./package.json": "./package.json"
   },
@@ -32,6 +35,10 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./codegen": {
+        "default": "./dist/src/modules/graphql/graphql-codegen.utilities.js",
+        "types": "./dist/src/modules/graphql/graphql-codegen.utilities.d.ts"
       },
       "./testing": {
         "default": "./dist/testing/index.js",

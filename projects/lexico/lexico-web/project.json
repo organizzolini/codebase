@@ -22,6 +22,34 @@
       "outputs": ["{projectRoot}/dist"]
     },
     "build-projects": {},
+    "codegen": {
+      "description": "Generate typed GraphQL operations, runtime schemas, and test mocks",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/codegen.ts",
+        "{projectRoot}/src/graphql/operations/**/*.graphql",
+        "{workspaceRoot}/projects/lexico/lexico-api/src/schema.gql"
+      ],
+      "options": {
+        "command": "pnpm run codegen",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": [
+        "{projectRoot}/src/graphql/generated/mocks.ts",
+        "{projectRoot}/src/graphql/generated/operations.ts",
+        "{projectRoot}/src/graphql/generated/validation.ts"
+      ]
+    },
+    "codegen-watch": {
+      "continuous": true,
+      "dependsOn": ["lexico-api:await-health", "lexico-api:start"],
+      "description": "Regenerate GraphQL artifacts when schema or operations change",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run codegen:watch",
+        "cwd": "{projectRoot}"
+      }
+    },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},

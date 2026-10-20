@@ -27,6 +27,7 @@ allowBuilds:
   cpu-features: true
   esbuild: true
   nx: true
+  msw: true
   protobufjs: true
   ssh2: true
   sweph: true
@@ -54,6 +55,12 @@ catalog:
   "@eslint/markdown": ^8.0.2
   "@microsoft/api-extractor": ^7.52.1
   "@golevelup/ts-vitest": ^4.0.0
+  "@graphql-codegen/cli": ^6.0.0
+  "@graphql-codegen/typed-document-node": ^6.1.3
+  "@graphql-codegen/typescript": ^5.0.2
+  "@graphql-codegen/typescript-msw": ^3.0.1
+  "@graphql-codegen/typescript-operations": ^5.0.2
+  "@graphql-typed-document-node/core": ^3.2.0
   "@nestjs/apollo": ^14.0.2
   "@nestjs/common": ^11.1.21 || ^12.0.1
   "@nestjs/config": ^12.0.0
@@ -128,6 +135,7 @@ catalog:
   fallow: ^3.24.1
   graphql: ^16.11.0
   husky: ^9.1.7
+  graphql-codegen-typescript-validation-schema: ^0.19.0
   ignore: 7.0.12
   input-otp: ^1.4.2
   jiti: ^2.7.0
@@ -142,6 +150,7 @@ catalog:
   lodash: ^4.18.1
   lucide-react: ^1.16.0
   markdownlint-cli2: ^0.23.2
+  msw: ^2.11.5
   mdast: ^3.0.0
   mdast-util-to-string: ^4.0.0
   mustache: ^4.2.0

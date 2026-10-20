@@ -122,6 +122,7 @@ ignorePaths:
   - "**/projects/common/presentation/src/lib/**"
   - "**/pnpm-lock.yaml"
   - "**/routeTree.gen.ts"
+  - "**/src/graphql/generated/**"
   - "**/terraform.tfstate*"
   - coverage
   - dist

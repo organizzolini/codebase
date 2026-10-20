@@ -1,16 +1,25 @@
 {
   "dependencies": {
+    "@codebase/interface": "workspace:*",
     "@codebase/presentation": "workspace:*",
+    "@graphql-codegen/cli": "catalog:",
+    "@graphql-typed-document-node/core": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
     "@tanstack/react-start": "catalog:",
+    "graphql": "catalog:",
     "lodash": "catalog:",
     "lucide-react": "catalog:",
+    "msw": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@graphql-codegen/typed-document-node": "catalog:",
+    "@graphql-codegen/typescript": "catalog:",
+    "@graphql-codegen/typescript-msw": "catalog:",
+    "@graphql-codegen/typescript-operations": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/react": "catalog:",
@@ -21,6 +30,7 @@
     "@vitejs/plugin-react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "autoprefixer": "catalog:",
+    "graphql-codegen-typescript-validation-schema": "catalog:",
     "jsdom": "catalog:",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
@@ -30,6 +40,10 @@
   },
   "name": "lexico-web",
   "private": true,
+  "scripts": {
+    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:watch": "graphql-codegen --config codegen.ts --watch"
+  },
   "type": "module",
   "typeCoverage": {
     "atLeast": 100,
@@ -40,6 +54,7 @@
       "**/*.test.ts",
       "**/*.test.tsx",
       "**/routeTree.gen.ts",
+      "src/graphql/generated/**",
       "src/router.tsx",
       "src/routeTree.gen.ts",
       "testing/**",

@@ -16,8 +16,18 @@ From `@codebase/interface`:
 | `mapRelation`, `mapRelations`, `mapRelationConnection`, `mapNullable*`                       | Map an entity's relations, keeping `null` and unjoined relations      |
 | `Connection`, `Edge`, `GraphQLFields`, `GraphQLObjectOf`, `MappedFields`, `RelationKey`, ... | Types, including the entity-to-GraphQL-object contract                |
 
-From `@codebase/interface/testing`: `paginateArray`, `paginationMatrix`,
-`expectedPage`, and `summarize`, the oracle a SQL-backed page is checked against.
+From `@codebase/interface/codegen`: `createGraphqlCodegenConfig`, the GraphQL
+Code Generator configuration every web client shares. A client's `codegen.ts`
+passes only the schema its API emits and gets typed operations, Zod
+validators, and MSW handlers. It is its own entry because the configuration is
+loaded by the code generator, which should not import the decorators the main
+entry carries.
+
+From `@codebase/interface/testing`: `graphqlServer` with `startGraphqlServer`,
+`resetGraphqlServer`, and `stopGraphqlServer`, the MSW server a web client's
+tests answer GraphQL requests with, and
+`paginateArray`, `paginationMatrix`, `expectedPage`, and `summarize`, the oracle
+a SQL-backed page is checked against.
 
 ## Test
 
