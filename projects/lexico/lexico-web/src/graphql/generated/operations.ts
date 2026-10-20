@@ -104,6 +104,24 @@ export type Form = {
   id: Scalars['ID']['output'];
 };
 
+export type FormConnection = {
+  __typename?: 'FormConnection';
+  /** A list of edges. */
+  edges: Array<FormEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+export type FormEdge = {
+  __typename?: 'FormEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: Form;
+};
+
 export type GerundForm = Form & {
   __typename?: 'GerundForm';
   case: Scalars['String']['output'];
@@ -129,18 +147,18 @@ export type Lexeme = {
   deletedBy?: Maybe<Scalars['ID']['output']>;
   disambiguator: Scalars['Float']['output'];
   etymology?: Maybe<Scalars['String']['output']>;
-  forms: Array<Form>;
+  forms: FormConnection;
   id: Scalars['ID']['output'];
   inflection?: Maybe<Inflection>;
   lemma: Scalars['String']['output'];
   partOfSpeech: Scalars['String']['output'];
-  principalParts: Array<PrincipalPart>;
-  pronunciations?: Maybe<Array<Pronunciation>>;
-  translations?: Maybe<Array<Translation>>;
+  principalParts: PrincipalPartConnection;
+  pronunciations?: Maybe<PronunciationConnection>;
+  translations?: Maybe<TranslationConnection>;
   updatedAt: Scalars['DateTime']['output'];
   updatedBy?: Maybe<Scalars['ID']['output']>;
   /** Every written word that surfaces as one of this lexeme's forms, such as the genitive singular of rosa written rosae. */
-  wordForms: Array<LexemeWordForm>;
+  wordForms: LexemeWordFormConnection;
 };
 
 export type LexemeSearchResult = {
@@ -180,6 +198,24 @@ export type LexemeWordForm = {
   form: Form;
   id: Scalars['ID']['output'];
   word: Scalars['String']['output'];
+};
+
+export type LexemeWordFormConnection = {
+  __typename?: 'LexemeWordFormConnection';
+  /** A list of edges. */
+  edges: Array<LexemeWordFormEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+export type LexemeWordFormEdge = {
+  __typename?: 'LexemeWordFormEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: LexemeWordForm;
 };
 
 export type Line = {
@@ -232,9 +268,9 @@ export type LinesRangeInput = {
 
 export type LiteratureSearchResult = {
   __typename?: 'LiteratureSearchResult';
-  authors: Array<Author>;
-  lines: Array<Line>;
-  texts: Array<Text>;
+  authors: AuthorConnection;
+  lines: LineConnection;
+  texts: TextConnection;
 };
 
 export type NominalForm = Form & {
@@ -291,6 +327,24 @@ export type PrincipalPart = {
   updatedBy?: Maybe<Scalars['ID']['output']>;
 };
 
+export type PrincipalPartConnection = {
+  __typename?: 'PrincipalPartConnection';
+  /** A list of edges. */
+  edges: Array<PrincipalPartEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+export type PrincipalPartEdge = {
+  __typename?: 'PrincipalPartEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: PrincipalPart;
+};
+
 export type Pronunciation = {
   __typename?: 'Pronunciation';
   createdAt: Scalars['DateTime']['output'];
@@ -304,6 +358,24 @@ export type Pronunciation = {
   updatedAt: Scalars['DateTime']['output'];
   updatedBy?: Maybe<Scalars['ID']['output']>;
   variant: Scalars['String']['output'];
+};
+
+export type PronunciationConnection = {
+  __typename?: 'PronunciationConnection';
+  /** A list of edges. */
+  edges: Array<PronunciationEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+export type PronunciationEdge = {
+  __typename?: 'PronunciationEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: Pronunciation;
 };
 
 export type Query = {
@@ -579,6 +651,24 @@ export type Translation = {
   updatedBy?: Maybe<Scalars['ID']['output']>;
 };
 
+export type TranslationConnection = {
+  __typename?: 'TranslationConnection';
+  /** A list of edges. */
+  edges: Array<TranslationEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+export type TranslationEdge = {
+  __typename?: 'TranslationEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: Translation;
+};
+
 export type UninflectedInflection = Inflection & {
   __typename?: 'UninflectedInflection';
   id: Scalars['ID']['output'];
@@ -601,8 +691,8 @@ export type Word = {
   id: Scalars['ID']['output'];
   updatedAt: Scalars['DateTime']['output'];
   updatedBy?: Maybe<Scalars['ID']['output']>;
-  wordForms: Array<WordForm>;
-  wordLexemes: Array<WordLexeme>;
+  wordForms: WordFormConnection;
+  wordLexemes: WordLexemeConnection;
 };
 
 export type WordForm = {
@@ -618,6 +708,24 @@ export type WordForm = {
   word: Word;
 };
 
+export type WordFormConnection = {
+  __typename?: 'WordFormConnection';
+  /** A list of edges. */
+  edges: Array<WordFormEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+export type WordFormEdge = {
+  __typename?: 'WordFormEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: WordForm;
+};
+
 export type WordLexeme = {
   __typename?: 'WordLexeme';
   createdAt: Scalars['DateTime']['output'];
@@ -631,21 +739,23 @@ export type WordLexeme = {
   word: Word;
 };
 
-export type LexemeFormsQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
+export type WordLexemeConnection = {
+  __typename?: 'WordLexemeConnection';
+  /** A list of edges. */
+  edges: Array<WordLexemeEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
 
-
-export type LexemeFormsQuery = { __typename?: 'Query', lexeme?: { __typename?: 'Lexeme', wordForms: Array<{ __typename?: 'LexemeWordForm', id: string, word: string, form:
-        | { __typename: 'AdjectivalForm', case: string, gender: string, number: string }
-        | { __typename: 'AdverbForm', degree: string }
-        | { __typename: 'FiniteVerbForm', mood: string, number: string, person: string, tense: string, voice: string }
-        | { __typename: 'GerundForm', case: string }
-        | { __typename: 'InfinitiveForm', tense: string, voice: string }
-        | { __typename: 'NominalForm', case: string, number: string }
-        | { __typename: 'ParticipleForm', tense: string, voice: string }
-        | { __typename: 'SupineForm', case: string }
-       }> } | null };
+export type WordLexemeEdge = {
+  __typename?: 'WordLexemeEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: WordLexeme;
+};
 
 export type SearchEnglishQueryVariables = Exact<{
   query: Scalars['String']['input'];
@@ -660,7 +770,16 @@ export type SearchEnglishQuery = { __typename?: 'Query', searchEnglish: { __type
             | { __typename?: 'PrepositionInflection', case: string }
             | { __typename?: 'UninflectedInflection' }
             | { __typename?: 'VerbInflection', conjugation: string, other?: string | null }
-           | null, principalParts: Array<{ __typename?: 'PrincipalPart', text: Array<string> }>, pronunciations?: Array<{ __typename?: 'Pronunciation', phonetic?: string | null, variant: string }> | null, translations?: Array<{ __typename?: 'Translation', data: string }> | null } } }> } };
+           | null, principalParts: { __typename?: 'PrincipalPartConnection', edges: Array<{ __typename?: 'PrincipalPartEdge', node: { __typename?: 'PrincipalPart', text: Array<string> } }> }, pronunciations?: { __typename?: 'PronunciationConnection', edges: Array<{ __typename?: 'PronunciationEdge', node: { __typename?: 'Pronunciation', phonetic?: string | null, variant: string } }> } | null, translations?: { __typename?: 'TranslationConnection', edges: Array<{ __typename?: 'TranslationEdge', node: { __typename?: 'Translation', data: string } }> } | null, wordForms: { __typename?: 'LexemeWordFormConnection', edges: Array<{ __typename?: 'LexemeWordFormEdge', node: { __typename?: 'LexemeWordForm', id: string, word: string, form:
+                  | { __typename: 'AdjectivalForm', case: string, gender: string, number: string }
+                  | { __typename: 'AdverbForm', degree: string }
+                  | { __typename: 'FiniteVerbForm', mood: string, number: string, person: string, tense: string, voice: string }
+                  | { __typename: 'GerundForm', case: string }
+                  | { __typename: 'InfinitiveForm', tense: string, voice: string }
+                  | { __typename: 'NominalForm', case: string, number: string }
+                  | { __typename: 'ParticipleForm', tense: string, voice: string }
+                  | { __typename: 'SupineForm', case: string }
+                 } }> } } } }> } };
 
 export type SearchLatinQueryVariables = Exact<{
   query: Scalars['String']['input'];
@@ -675,9 +794,17 @@ export type SearchLatinQuery = { __typename?: 'Query', searchLatin: { __typename
             | { __typename?: 'PrepositionInflection', case: string }
             | { __typename?: 'UninflectedInflection' }
             | { __typename?: 'VerbInflection', conjugation: string, other?: string | null }
-           | null, principalParts: Array<{ __typename?: 'PrincipalPart', text: Array<string> }>, pronunciations?: Array<{ __typename?: 'Pronunciation', phonetic?: string | null, variant: string }> | null, translations?: Array<{ __typename?: 'Translation', data: string }> | null } } }> } };
+           | null, principalParts: { __typename?: 'PrincipalPartConnection', edges: Array<{ __typename?: 'PrincipalPartEdge', node: { __typename?: 'PrincipalPart', text: Array<string> } }> }, pronunciations?: { __typename?: 'PronunciationConnection', edges: Array<{ __typename?: 'PronunciationEdge', node: { __typename?: 'Pronunciation', phonetic?: string | null, variant: string } }> } | null, translations?: { __typename?: 'TranslationConnection', edges: Array<{ __typename?: 'TranslationEdge', node: { __typename?: 'Translation', data: string } }> } | null, wordForms: { __typename?: 'LexemeWordFormConnection', edges: Array<{ __typename?: 'LexemeWordFormEdge', node: { __typename?: 'LexemeWordForm', id: string, word: string, form:
+                  | { __typename: 'AdjectivalForm', case: string, gender: string, number: string }
+                  | { __typename: 'AdverbForm', degree: string }
+                  | { __typename: 'FiniteVerbForm', mood: string, number: string, person: string, tense: string, voice: string }
+                  | { __typename: 'GerundForm', case: string }
+                  | { __typename: 'InfinitiveForm', tense: string, voice: string }
+                  | { __typename: 'NominalForm', case: string, number: string }
+                  | { __typename: 'ParticipleForm', tense: string, voice: string }
+                  | { __typename: 'SupineForm', case: string }
+                 } }> } } } }> } };
 
 
-export const LexemeFormsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LexemeForms"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lexeme"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"wordForms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"word"}},{"kind":"Field","name":{"kind":"Name","value":"form"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectivalForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FiniteVerbForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"person"}},{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GerundForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InfinitiveForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NominalForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ParticipleForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SupineForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<LexemeFormsQuery, LexemeFormsQueryVariables>;
-export const SearchEnglishDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchEnglish"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchEnglish"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"enclitic"}},{"kind":"Field","name":{"kind":"Name","value":"identifiers"}},{"kind":"Field","name":{"kind":"Name","value":"score"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"lexeme"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"etymology"}},{"kind":"Field","name":{"kind":"Name","value":"lemma"}},{"kind":"Field","name":{"kind":"Name","value":"partOfSpeech"}},{"kind":"Field","name":{"kind":"Name","value":"inflection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectiveInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"adverbType"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NounInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PrepositionInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VerbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conjugation"}},{"kind":"Field","name":{"kind":"Name","value":"other"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"principalParts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pronunciations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phonetic"}},{"kind":"Field","name":{"kind":"Name","value":"variant"}}]}},{"kind":"Field","name":{"kind":"Name","value":"translations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<SearchEnglishQuery, SearchEnglishQueryVariables>;
-export const SearchLatinDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchLatin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchLatin"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"enclitic"}},{"kind":"Field","name":{"kind":"Name","value":"identifiers"}},{"kind":"Field","name":{"kind":"Name","value":"score"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"lexeme"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"etymology"}},{"kind":"Field","name":{"kind":"Name","value":"lemma"}},{"kind":"Field","name":{"kind":"Name","value":"partOfSpeech"}},{"kind":"Field","name":{"kind":"Name","value":"inflection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectiveInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"adverbType"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NounInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PrepositionInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VerbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conjugation"}},{"kind":"Field","name":{"kind":"Name","value":"other"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"principalParts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pronunciations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phonetic"}},{"kind":"Field","name":{"kind":"Name","value":"variant"}}]}},{"kind":"Field","name":{"kind":"Name","value":"translations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<SearchLatinQuery, SearchLatinQueryVariables>;
+export const SearchEnglishDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchEnglish"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchEnglish"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"enclitic"}},{"kind":"Field","name":{"kind":"Name","value":"identifiers"}},{"kind":"Field","name":{"kind":"Name","value":"score"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"lexeme"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"etymology"}},{"kind":"Field","name":{"kind":"Name","value":"lemma"}},{"kind":"Field","name":{"kind":"Name","value":"partOfSpeech"}},{"kind":"Field","name":{"kind":"Name","value":"inflection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectiveInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"adverbType"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NounInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PrepositionInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VerbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conjugation"}},{"kind":"Field","name":{"kind":"Name","value":"other"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"principalParts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pronunciations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phonetic"}},{"kind":"Field","name":{"kind":"Name","value":"variant"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"translations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"wordForms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"word"}},{"kind":"Field","name":{"kind":"Name","value":"form"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectivalForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FiniteVerbForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"person"}},{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GerundForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InfinitiveForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NominalForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ParticipleForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SupineForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<SearchEnglishQuery, SearchEnglishQueryVariables>;
+export const SearchLatinDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchLatin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchLatin"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"enclitic"}},{"kind":"Field","name":{"kind":"Name","value":"identifiers"}},{"kind":"Field","name":{"kind":"Name","value":"score"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"lexeme"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"etymology"}},{"kind":"Field","name":{"kind":"Name","value":"lemma"}},{"kind":"Field","name":{"kind":"Name","value":"partOfSpeech"}},{"kind":"Field","name":{"kind":"Name","value":"inflection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectiveInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"adverbType"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NounInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declension"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PrepositionInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VerbInflection"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conjugation"}},{"kind":"Field","name":{"kind":"Name","value":"other"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"principalParts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pronunciations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phonetic"}},{"kind":"Field","name":{"kind":"Name","value":"variant"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"translations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"wordForms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"word"}},{"kind":"Field","name":{"kind":"Name","value":"form"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdjectivalForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AdverbForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FiniteVerbForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"person"}},{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"GerundForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InfinitiveForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NominalForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ParticipleForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tense"}},{"kind":"Field","name":{"kind":"Name","value":"voice"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SupineForm"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"case"}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<SearchLatinQuery, SearchLatinQueryVariables>;

@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import * as CaelundasTypes from "../caelundas/caelundas.types";
 import { symbolByLunarPhase } from "../caelundas/symbol-caelundas.constants";
@@ -14,10 +14,10 @@ import { MathService } from "../math/math.service";
 import { LunarApsidesService } from "./lunar-apsides.service";
 import { MonthlyLunarCycleService } from "./monthly-lunar-cycle.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { LunarPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
-import type { LogData } from "@codebase/logging";
+import type { LogData } from "@codebase/observability";
 
 vi.mock("fs", () => ({
   default: {

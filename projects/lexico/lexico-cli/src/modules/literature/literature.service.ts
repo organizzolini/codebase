@@ -12,7 +12,7 @@ import remarkGfm from "remark-gfm";
 import YAML from "yaml";
 
 import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { NumeralsService } from "../numerals/numerals.service";
 

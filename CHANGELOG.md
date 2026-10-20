@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.18.0](https://github.com/organizzolini/codebase/compare/v3.17.0...v3.18.0) (2026-10-20)
+
+### ✨ Features
+
+* **caelundas:** ✨ verify ephemeris files and refuse fallback results ([#1736](https://github.com/organizzolini/codebase/issues/1736)) ([03126ed](https://github.com/organizzolini/codebase/commit/03126ed3c6dafcf5d6a74906b9310f804ac3090e))
+* **scripts,installation:** ✨ set up Linux through the setup command ([#1739](https://github.com/organizzolini/codebase/issues/1739)) ([ecf3737](https://github.com/organizzolini/codebase/commit/ecf3737b98104b9f942187df5efa91480a30347b))
+
+## [3.17.0](https://github.com/organizzolini/codebase/compare/v3.16.0...v3.17.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts,installation:** ✨ verify ssh commit signatures locally ([#1732](https://github.com/organizzolini/codebase/issues/1732)) ([7af5762](https://github.com/organizzolini/codebase/commit/7af57626cb2db033f535a30b6629137c43b46b36))
+
+## [3.16.0](https://github.com/organizzolini/codebase/compare/v3.15.2...v3.16.0) (2026-10-20)
+
+### ✨ Features
+
+* **lexico:** ✨ add relay connections for relationship fields ([#1714](https://github.com/organizzolini/codebase/issues/1714)) ([9e99709](https://github.com/organizzolini/codebase/commit/9e997098ac1bf6f6b00bf9dcbd31bd8dccfd0d5e))
+
+## [3.15.2](https://github.com/organizzolini/codebase/compare/v3.15.1...v3.15.2) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **lexico-entities:** ♻️ rename entity files to kebab-case ([#1713](https://github.com/organizzolini/codebase/issues/1713)) ([f6c74e5](https://github.com/organizzolini/codebase/commit/f6c74e51b5f89393c99954a1a4ce54cf346d3db4))
+
+## [3.15.1](https://github.com/organizzolini/codebase/compare/v3.15.0...v3.15.1) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/issues/1708)) ([d0b7206](https://github.com/organizzolini/codebase/commit/d0b7206d01b474562ae222282c5173df74935722))
+
+## [3.15.0](https://github.com/organizzolini/codebase/compare/v3.14.1...v3.15.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts:** ✨ set up linux in installation script ([#1730](https://github.com/organizzolini/codebase/issues/1730)) ([4620c1a](https://github.com/organizzolini/codebase/commit/4620c1aced3359edf72ebf1c6e315abe8cf0486c))
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🩹 unset node path in pre-commit hook ([#1731](https://github.com/organizzolini/codebase/issues/1731)) ([2847b23](https://github.com/organizzolini/codebase/commit/2847b23116e51059aa0c0e2e477a47b9d9acf24c))
+
+## [3.14.1](https://github.com/organizzolini/codebase/compare/v3.14.0...v3.14.1) (2026-10-20)
+
+### 🐛 Bug Fixes
+
+* **scripts:** 🩹 verify gh auth by rest call in cloud sessions ([#1729](https://github.com/organizzolini/codebase/issues/1729)) ([3527062](https://github.com/organizzolini/codebase/commit/35270626e095987ce56c561b388d9b6a6f5b01e7))
+
+## [3.14.0](https://github.com/organizzolini/codebase/compare/v3.13.6...v3.14.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts:** ✨ accept ssh commit signing ([#1728](https://github.com/organizzolini/codebase/issues/1728)) ([62e37ca](https://github.com/organizzolini/codebase/commit/62e37cacb6f86084256d70aaa67d3cf39491f33d))
+
+## [3.13.6](https://github.com/organizzolini/codebase/compare/v3.13.5...v3.13.6) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **database/synchronization/integration:** ♻️ rename database project to persistence ([#1707](https://github.com/organizzolini/codebase/issues/1707)) ([bc4fbfd](https://github.com/organizzolini/codebase/commit/bc4fbfd0f38018c33728ae1d797d316bbc243218))
+
+## [3.13.5](https://github.com/organizzolini/codebase/compare/v3.13.4...v3.13.5) (2026-10-18)
+
+### 🐛 Bug Fixes
+
+* **lexico:** 🐛 align search and sidebar surface styling ([#1715](https://github.com/organizzolini/codebase/issues/1715)) ([cf32c55](https://github.com/organizzolini/codebase/commit/cf32c555ea20202b9b3db1a7bdd650f9569811b2))
+
+### ♻️ Code Refactoring
+
+* **configuration,deployments:** ♻️ relocate workspace config files and explicit tool paths ([#1710](https://github.com/organizzolini/codebase/issues/1710)) ([a2fee75](https://github.com/organizzolini/codebase/commit/a2fee753f9596665dd391aef1ce802cbf05213ee))
+
 ## [3.13.4](https://github.com/organizzolini/codebase/compare/v3.13.3...v3.13.4) (2026-10-18)
 
 ### 🐛 Bug Fixes
@@ -514,7 +583,7 @@ All notable changes to this project will be documented in this file. See [Conven
 
 ### ♻️ Code Refactoring
 
-* **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
+* **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
 
 ## [2.33.3](https://github.com/organizzolini/codebase/compare/v2.33.2...v2.33.3) (2026-10-05)
 

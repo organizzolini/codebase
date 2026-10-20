@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
@@ -11,7 +11,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { AnnualSolarCycleEventsService } from "./annual-solar-cycle-events.service";
 import { AnnualSolarCycleService } from "./annual-solar-cycle.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   CoordinateEphemeris,
   DistanceEphemeris,

@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EclipseCalculationService } from "./eclipse-calculation.service";
 import { EclipseEventService } from "./eclipse-event.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { EclipsePhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   AzimuthElevationEphemeris,
   CoordinateEphemeris,

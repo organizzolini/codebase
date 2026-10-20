@@ -30,7 +30,7 @@ This runs the following in sequence:
 
 1. Homebrew is checked, then nvm, Node.js, pnpm, and nx are installed or checked
 2. `pnpm install` - Installs the packages the next step is written in
-3. `projects/installation/src/installation.main.ts setup` - The [installation](../projects/installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
+3. `installation/src/installation.main.ts setup` - The [installation](../installation/AGENTS.md) project's `setup` command: shell configuration, the remaining software (uv, Python, Ollama, Docker, GPG, Terraform, and more), `.env` files, and dependencies
 
 > **Note:** If using a devcontainer, these scripts are not needed — the devcontainer handles setup automatically via `.devcontainer/scripts/post-create-command.sh`.
 
@@ -56,7 +56,7 @@ The devcontainer handles equivalent setup automatically.
 - Checks Homebrew (never installs it; exits with an error if it is missing)
 - Installs or checks nvm, Node.js (from `.nvmrc`), pnpm, and nx, and writes Husky's init file
 - Runs `pnpm install`, so the command can start
-- Runs `projects/installation/src/installation.main.ts setup`, which does everything else
+- Runs `installation/src/installation.main.ts setup`, which does everything else
 
 It is one file because it installs the Node the TypeScript runs on, so none of it can be a command, and because the environment changes it makes (`nvm use`, `PATH`) must reach the `setup` command.
 
@@ -67,19 +67,22 @@ It is one file because it installs the Node the TypeScript runs on, so none of i
 
 ### The installation project
 
-Everything after Node exists lives in [`projects/installation`](../projects/installation/AGENTS.md), one command each. Run any of them on its own with `nx run installation:start:<command>`.
+Everything after Node exists lives in [`installation`](../installation/AGENTS.md), one command each. Run any of them on its own with `nx run installation:start:<command>`.
 
-| Command               | What it does                                                                                                     |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `setup`               | Runs the four below in order, then says how to activate the new shell configuration                              |
-| `shell-configuration` | Writes nvm, pnpm, GPG, Node memory, completion blocks to your rc file; drops the retired helper                  |
-| `software`            | Installs uv, Python, Ollama, Docker, GPG signing, Terraform and the other infrastructure tools, and squawk       |
-| `environment-files`   | Creates `.env` from every `.env.default` (excluding the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER` |
-| `dependencies`        | Runs `pnpm install`, `nx reset`, `uv sync`, `terraform init`, and writes kubeconfig                              |
+- `setup` — Runs the four below in order, then says how to activate the new
+  shell configuration
+- `shell-configuration` — Writes nvm, pnpm, GPG, Node memory, completion
+  blocks to your rc file; drops the retired helper
+- `software` — Installs uv, Python, Ollama, Docker, GPG signing, Terraform and
+  the other infrastructure tools, and squawk
+- `environment-files` — Creates `.env` from every `.env.default` (excluding
+  the conformetry templates) and sets `LOCAL_WORKSPACE_FOLDER`
+- `dependencies` — Runs `pnpm install`, `nx reset`, `uv sync --project
+  configuration`, `terraform init`, and writes kubeconfig
 
 ### VS Code extensions and settings
 
-> Implemented in [projects/synchronization](../projects/synchronization), not as scripts.
+> Implemented in [synchronization](../synchronization), not as scripts.
 
 **Purpose:** Keep `.vscode/extensions.json` and both devcontainer configurations' extension lists in step, and merge `.vscode/settings.json` into the VS Code Machine settings inside a devcontainer.
 
@@ -188,7 +191,7 @@ check the other projects' ports for a collision before adopting a new one.
 `scripts/nx/` holds only the two helpers the Nx targets call,
 `await-health.sh` and `stop-port.sh`. The CI steps around the Nx task cache
 and the affected base, which used to be shell here, are commands of the
-[publication](../projects/publication) project since
+[publication](../publication) project since
 [ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
 
 ### Task-Result Database
@@ -232,7 +235,7 @@ NX_WORKSPACE_DATA_DIRECTORY=/tmp/nx-data MACHINE_ID_FILES=/tmp/machine-id \
 ### Affected Runs
 
 The affected-run steps are commands of the
-[publication](../projects/publication) project too:
+[publication](../publication) project too:
 
 | Command | What it does |
 | ------- | ------------ |

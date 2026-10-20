@@ -22,7 +22,7 @@ import type {
 /**
  * Builds each project's one-hop Nx dependency neighborhood.
  *
- * Ported from `projects/synchronization`'s `nx-project-graphs` command (see
+ * Ported from `synchronization`'s `nx-project-graphs` command (see
  * issue #242), which this package replaces: the graph reading and mermaid
  * rendering are unchanged, but the file-writing side — deciding where and how
  * a neighborhood is exported — belongs to `codependix-cli` and its own anchor

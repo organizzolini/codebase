@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarService } from "../calendar/calendar.service";
 
@@ -10,7 +10,7 @@ import {
   LUNAR_PERIGEE_CATEGORY,
 } from "./monthly-lunar-cycle.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 

@@ -1,21 +1,21 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import "reflect-metadata";
 
-import { createDataSource } from "@codebase/database";
-import { startPostgresContainer } from "@codebase/database/testing";
+import { createDataSource } from "@codebase/persistence";
+import { startPostgresContainer } from "@codebase/persistence/testing";
 
 import {
   LEXICO_DATABASE_ENTITIES,
   LEXICO_DATABASE_MIGRATIONS,
-} from "../lexico-database/data-source.constants";
-import { LexicoNamingStrategy } from "../lexico-database/lexico-database.constants";
+} from "../database/data-source.constants";
+import { LexicoNamingStrategy } from "../database/database.constants";
 
-import { Author } from "./literature/Author.entity";
-import { Line } from "./literature/Line.entity";
-import { Text } from "./literature/Text.entity";
-import { Token } from "./literature/Token.entity";
+import { Author } from "./literature/author.entity";
+import { Line } from "./literature/line.entity";
+import { Text } from "./literature/text.entity";
+import { Token } from "./literature/token.entity";
 
-import type { StartedPostgresContainer } from "@codebase/database/testing";
+import type { StartedPostgresContainer } from "@codebase/persistence/testing";
 import type { DataSource } from "typeorm";
 
 interface EntityIntegrationExpectation {

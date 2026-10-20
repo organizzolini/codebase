@@ -53,11 +53,17 @@ describe("words utilities suite", () => {
 
       expect(mapped).toBeInstanceOf(WordType);
       expect(mapped).toMatchObject({ data: "amor", id: "word-1" });
-      expect(mapped.wordForms[0]).toBeInstanceOf(WordFormType);
-      expect(mapped.wordForms[0]?.form).toBeInstanceOf(NominalFormType);
-      expect(mapped.wordLexemes[0]).toBeInstanceOf(WordLexemeType);
-      expect(mapped.wordLexemes[0]?.lexeme).toBeInstanceOf(LexemeType);
-      expect(mapped.wordLexemes[0]?.lexeme).toMatchObject({ lemma: "amor" });
+      expect(mapped.wordForms.edges[0]?.node).toBeInstanceOf(WordFormType);
+      expect(mapped.wordForms.edges[0]?.node.form).toBeInstanceOf(
+        NominalFormType,
+      );
+      expect(mapped.wordLexemes.edges[0]?.node).toBeInstanceOf(WordLexemeType);
+      expect(mapped.wordLexemes.edges[0]?.node.lexeme).toBeInstanceOf(
+        LexemeType,
+      );
+      expect(mapped.wordLexemes.edges[0]?.node.lexeme).toMatchObject({
+        lemma: "amor",
+      });
     });
 
     it("leaves the word side of each link to its resolver", () => {
@@ -65,8 +71,8 @@ describe("words utilities suite", () => {
 
       const mapped = toWordType(createWord());
 
-      expect(mapped.wordForms[0]).not.toHaveProperty("word");
-      expect(mapped.wordLexemes[0]).not.toHaveProperty("word");
+      expect(mapped.wordForms.edges[0]?.node).not.toHaveProperty("word");
+      expect(mapped.wordLexemes.edges[0]?.node).not.toHaveProperty("word");
     });
   });
 

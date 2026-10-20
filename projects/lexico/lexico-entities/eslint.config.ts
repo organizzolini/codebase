@@ -1,11 +1,11 @@
-import baseConfig from "../../../projects/configuration/eslint.config";
+import baseConfig from "../../../configuration/eslint.config";
 
 export default [
   // �️ Base Config
   ...baseConfig,
 
   // 🙈 Ignores
-  { ignores: ["src/modules/lexico-database/migrations/**"] },
+  { ignores: ["src/modules/database/migrations/**"] },
 
   // 📦 Dependency Checks
   {

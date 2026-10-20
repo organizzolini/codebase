@@ -3,18 +3,19 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarEventsService } from "../calendar-events/calendar-events.service";
 import { CalendarService } from "../calendar/calendar.service";
+import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { InputService } from "../input/input.service";
 import { PerfectiveService } from "../perfective/perfective.service";
 import { ProgressiveService } from "../progressive/progressive.service";
 
 import { CaelundasCommand } from "./caelundas.command";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
-import type { CalendarEvent } from "../caelundas-database/entities/calendar-event.entity";
+import type { DetectedCalendarEvent } from "../database/database.types";
+import type { CalendarEvent } from "../database/entities/calendar-event.entity";
 import type { Input } from "../input/input.types";
 
 const input: Input = {
@@ -53,6 +54,7 @@ describe(CaelundasCommand, () => {
   const perfectiveService = createMock<PerfectiveService>();
   const progressiveService = createMock<ProgressiveService>();
   const inputService = createMock<InputService>();
+  const ephemerisService = createMock<EphemerisService>();
   let command: CaelundasCommand;
 
   beforeAll(async () => {
@@ -65,6 +67,7 @@ describe(CaelundasCommand, () => {
         { provide: ProgressiveService, useValue: progressiveService },
         { provide: CalendarService, useValue: calendarService },
         { provide: CalendarEventsService, useValue: calendarEventsService },
+        { provide: EphemerisService, useValue: ephemerisService },
       ],
     }).compile();
 
@@ -74,6 +77,7 @@ describe(CaelundasCommand, () => {
   beforeEach(() => {
     callOrder.length = 0;
     vi.clearAllMocks();
+    ephemerisService.verifyFiles.mockReset();
     inputService.parse.mockReturnValue(input);
     perfectiveService.detect.mockImplementation(() => {
       callOrder.push("detect");
@@ -121,6 +125,7 @@ describe(CaelundasCommand, () => {
         { provide: ProgressiveService, useValue: progressiveService },
         { provide: CalendarService, useValue: calendarService },
         { provide: CalendarEventsService, useValue: calendarEventsService },
+        { provide: EphemerisService, useValue: ephemerisService },
       ],
     }).compile();
 
@@ -130,6 +135,28 @@ describe(CaelundasCommand, () => {
   });
 
   describe("run", () => {
+    it("verifies the ephemeris files before it reads the input", async () => {
+      await command.run();
+
+      expect(ephemerisService.verifyFiles).toHaveBeenCalledWith();
+      expect(
+        ephemerisService.verifyFiles.mock.invocationCallOrder[0],
+      ).toBeLessThan(inputService.parse.mock.invocationCallOrder[0] ?? 0);
+    });
+
+    it("stops before any work when the ephemeris files are missing", async () => {
+      ephemerisService.verifyFiles.mockImplementationOnce(() => {
+        throw new Error("Swiss Ephemeris files are missing");
+      });
+
+      await expect(command.run()).rejects.toThrow(
+        "Swiss Ephemeris files are missing",
+      );
+      expect(inputService.parse).not.toHaveBeenCalled();
+      expect(perfectiveService.detect).not.toHaveBeenCalled();
+      expect(calendarEventsService.upsert).not.toHaveBeenCalled();
+    });
+
     it("detects, upserts, reads back, then writes both files", async () => {
       await command.run();
 

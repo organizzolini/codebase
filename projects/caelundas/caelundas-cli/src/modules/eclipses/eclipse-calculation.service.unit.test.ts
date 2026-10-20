@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { TEST_TRACK_SPEED } from "../../../testing/eclipse-test.constants";
 import {
@@ -21,8 +21,8 @@ import { EclipseEventService } from "./eclipse-event.service";
 import { EclipseGeometryService } from "./eclipse-geometry.service";
 import { EclipseTopocentricService } from "./eclipse-topocentric.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { EclipsePhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /** Minutes on either side of closest approach that a scan covers. */
 const SCAN_MINUTES = 400;

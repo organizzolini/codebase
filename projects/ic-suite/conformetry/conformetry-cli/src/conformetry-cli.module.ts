@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { DiscoveryModule } from "@nestjs/core";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./conformetry-cli.constants";
 import { GenerateModule } from "./modules/generate/generate.module";

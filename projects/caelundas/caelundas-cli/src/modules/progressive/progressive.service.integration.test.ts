@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { MajorAspectEventService } from "../major-aspects/major-aspect-event.service";
 import { RetrogradesService } from "../retrogrades/retrogrades.service";
@@ -12,7 +12,7 @@ import { TwilightsService } from "../twilights/twilights.service";
 import { ProgressiveModule } from "./progressive.module";
 import { ProgressiveService } from "./progressive.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /**
  * Progressive-step tests: the real progressive pass, fed hand-built perfective

@@ -2,7 +2,7 @@ import { availableParallelism } from "node:os";
 
 import { z } from "zod";
 
-import { postgresEnvironmentSchema } from "@codebase/database";
+import { postgresEnvironmentSchema } from "@codebase/persistence";
 
 import { EDGE_BUDGET } from "./modules/enumeration/enumeration.constants";
 

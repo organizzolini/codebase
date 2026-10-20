@@ -9,7 +9,7 @@ license: MIT
 Codependix produces nothing until a configuration tells it what to export and
 where. Every field of the file is optional, but the file itself never is: every
 run names it with `--config <path>` (in this repository,
-`--config projects/configuration/codependix.config.ts`), and a run naming none
+`--config configuration/codependix.config.ts`), and a run naming none
 is refused. A configuration that leaves out `include` resolves every graph type
 for every project to `target: "none"` — a successful run that writes nothing.
 The configuration is the whole control surface; there is no flag that selects a
@@ -47,14 +47,14 @@ export default codependixConfiguration;
 
 Nowhere: it is named. `--config <path>` is required, with no default filename,
 no search, and no walk upward, so `codependix map --write --config
-projects/configuration/codependix.config.ts` reads that file and nothing else.
+configuration/codependix.config.ts` reads that file and nothing else.
 Any extension in `ts`, `mts`, `cts`, `js`, `mjs`, `cjs`, or `json` loads; a
 neighboring file is never read in its place.
 
 - **A path given with `--config` must exist.** A typo fails the run rather than
   quietly resolving every graph to `"none"`. It is resolved against the working
   directory first, then against the workspace root, so a configuration kept in
-  a `projects/configuration/` folder can be named relative to either.
+  a `configuration/` folder can be named relative to either.
 - **A missing `--config` fails the run too.** The flag is required: omitting
   it is refused with an error naming `--config`, and nothing falls back to a
   `codependix.config.ts` at the workspace root.
@@ -333,7 +333,7 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
     {
       "plugin": "@codependix/nx",
       "options": {
-        "configurationPath": "projects/configuration/codependix.config.ts",
+        "configurationPath": "configuration/codependix.config.ts",
         "gateTargetName": "codependix-gate"
       }
     }

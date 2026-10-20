@@ -2,7 +2,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import moment, { type Moment } from "moment-timezone";
 import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   ingressBodies as decanIngressBodies,
@@ -14,8 +14,8 @@ import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { IngressesComposerService } from "./ingresses-composer.service";
 import { IngressesService } from "./ingresses.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { EphemerisAggregationService } from "../ephemeris/ephemeris-aggregation.service";
 import type { EphemerisConstantsService } from "../ephemeris/ephemeris-constants.service";
 import type { EphemerisCoordinateService } from "../ephemeris/ephemeris-coordinate.service";

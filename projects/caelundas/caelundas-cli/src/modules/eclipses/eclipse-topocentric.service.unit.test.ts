@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   getTestContactLimit,
@@ -16,7 +16,7 @@ import { EclipseEventService } from "./eclipse-event.service";
 import { EclipseGeometryService } from "./eclipse-geometry.service";
 import { EclipseTopocentricService } from "./eclipse-topocentric.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   EclipseCoordinates,
   SolarEclipseType,

@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
@@ -12,8 +12,8 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { StelliumService } from "./stellium.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(StelliumService, () => {
   let service: StelliumService;

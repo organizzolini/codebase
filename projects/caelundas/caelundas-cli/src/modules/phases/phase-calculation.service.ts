@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
@@ -11,7 +11,7 @@ import {
   RISE_SET_ELONGATION_DEGREES,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   CoordinateEphemeris,
   Coordinates,

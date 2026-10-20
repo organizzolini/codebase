@@ -1,3 +1,21 @@
+## 0.0.42 (2026-10-20)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.41 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+## 0.0.40 (2026-10-20)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
+## 0.0.39 (2026-10-18)
+
+This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
+
 ## 0.0.38 (2026-10-18)
 
 This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
@@ -142,4 +160,4 @@ This was a version bump only for codependix-file-imports to align it with other 
 
 ### 💅 Refactors
 
-- **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/pull/1208))
+- **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/pull/1208))

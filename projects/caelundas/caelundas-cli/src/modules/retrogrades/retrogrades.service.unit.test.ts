@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MARGIN_MINUTES } from "../caelundas/caelundas.constants";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
@@ -11,8 +11,8 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { RetrogradesService } from "./retrogrades.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { RetrogradeBody } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
 vi.mock("fs", () => ({

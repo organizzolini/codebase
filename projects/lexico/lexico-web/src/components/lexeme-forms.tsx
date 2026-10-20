@@ -7,7 +7,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@codebase/components";
+} from "@codebase/presentation";
 
 import { AdjectiveForms } from "./adjective-forms";
 import { NounForms } from "./noun-forms";
@@ -81,8 +81,8 @@ type FormsState =
 
 /**
  * The declension or conjugation of a lexeme, folded away until asked for. The
- * forms are loaded the first time it opens, since most cards are never opened
- * and a verb alone has well over a hundred.
+ * forms are loaded the first time it opens through the loader the route gives
+ * this component.
  */
 export function LexemeForms(
   properties: Readonly<LexemeFormsProperties>,

@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
 import { AspectEventFormattingService } from "../aspects/aspect-event-formatting.service";
@@ -17,8 +17,8 @@ import { MinorAspectsEventService } from "./minor-aspects-event.service";
 import { MinorAspectsProgressiveService } from "./minor-aspects-progressive.service";
 import { MinorAspectsService } from "./minor-aspects.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 
 vi.mock("fs", () => ({

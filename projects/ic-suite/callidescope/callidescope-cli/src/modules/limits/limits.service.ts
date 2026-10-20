@@ -4,7 +4,7 @@ import { ConfigurationService } from "@callidescope/configuration";
 import { FileFilterService, WorkspaceService } from "@callidescope/graph";
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import type {
   LimitName,

@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@codebase/components";
+import { Card, CardContent } from "@codebase/presentation";
 
 import { LexemeEtymology } from "./lexeme-etymology";
 import { LexemeForms } from "./lexeme-forms";
@@ -41,6 +41,7 @@ export interface LexemeCardProperties {
 export interface LexemeResult {
   enclitic?: null | string;
   etymology?: null | string;
+  forms?: Awaited<ReturnType<LoadLexemeForms>>;
   id: string;
   /** What the matched form is, such as "first person singular present active indicative". */
   identifiers: string[];
@@ -86,7 +87,7 @@ export function LexemeCard(
       className={className}
       data-testid="lexeme-card"
     >
-      <Card className="relative w-full shadow-md">
+      <Card className="relative w-full shadow-lg">
         <LexemeMatch
           className="absolute top-3 right-3"
           match={result.match}

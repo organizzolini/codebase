@@ -379,7 +379,7 @@ describe(ConfigurationService, () => {
 
   it("loads the workspace configuration", async () => {
     const configuration = await service.loadConformetryConfiguration(
-      "projects/configuration/conformetry.config.ts",
+      "configuration/conformetry.config.ts",
     );
 
     expect(configuration.map((generator) => generator.name)).toContain(
@@ -398,13 +398,13 @@ describe(ConfigurationService, () => {
 
     it("falls back to the workspace root for a path the cwd lacks", async () => {
       const resolvedPath = await service.resolveConfigurationPath(
-        "projects/configuration/conformetry.config.ts",
+        "configuration/conformetry.config.ts",
       );
 
       expect(path.isAbsolute(resolvedPath)).toBe(true);
       expect(
         resolvedPath.endsWith(
-          path.join("projects", "configuration", "conformetry.config.ts"),
+          path.join("configuration", "conformetry.config.ts"),
         ),
       ).toBe(true);
       expect(existsSync(resolvedPath)).toBe(true);

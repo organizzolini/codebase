@@ -5,11 +5,11 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import moment from "moment-timezone";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CONTENT_LINE_OCTETS } from "./calendar.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Environment, Input } from "../input/input.types";
 import type {
   BuildCalendarFileContentParameters,

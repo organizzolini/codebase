@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { CallablesModule } from "../callables/callables.module";
 import { ClassesModule } from "../classes/classes.module";

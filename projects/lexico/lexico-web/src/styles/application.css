@@ -1,10 +1,12 @@
 @import "tailwindcss";
-@import "@codebase/components/styles/globals.css";
+@import "@codebase/presentation/styles/globals.css";
 
 /*
  * Lexico's accent color, laid over the shadcn tokens in components's
  * stylesheet. That one is written by the shadcn CLI and not ours to edit, so
  * everything specific to this application overrides it from here, after it.
+ *
+ * Legacy Lexico primary: #66023C (HSL ≈ 325 96% 20%).
  */
 :root,
 .dark {
@@ -17,16 +19,19 @@
 }
 
 /*
- * The shadcn stylesheet gives the card and the page the same color, so only a
- * thin ring set a card apart. Cards take the sidebar's color, which sits clear
- * of the page behind them in both themes.
+ * Lexico keeps a neutral UI surface for sidebar/cards/inputs/popovers and a
+ * subtle magenta page canvas in dark mode.
  */
 :root {
   --background: 220 14% 92%;
   --card: var(--sidebar-background);
+  --popover: var(--sidebar-background);
+  --input: var(--sidebar-background);
 }
 
 .dark {
-  --background: 224 71.4% 4.1%;
-  --card: var(--sidebar-background);
+  --background: 325 58% 11%;
+  --card: 240 5.9% 10%;
+  --popover: 240 5.9% 10%;
+  --input: 240 5.9% 10%;
 }

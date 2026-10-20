@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,
@@ -11,7 +11,7 @@ import {
 
 import { DrawCodeService } from "./draw-code.service";
 
-import type { Meander } from "../meanderaw-database/entities/meander.entity";
+import type { Meander } from "../database/entities/meander.entity";
 
 vi.mock("node:fs/promises", () => ({
   mkdir: vi.fn<() => Promise<void>>(),

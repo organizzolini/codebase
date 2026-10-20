@@ -23,8 +23,10 @@ graph LR
   codependix_examples["codependix-examples"]
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
+  configuration["configuration"]
   codependix_boundaries --> codependix_nx_projects
   codependix_examples --> codependix_nx_projects
+  codependix_nx_projects --> configuration
   codependix_output --> codependix_nx_projects
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_nx_projects subject

@@ -11,7 +11,7 @@ import {
   Translation,
   Word,
 } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { mapConnection, toCursor } from "../../lexico-api.utilities";
 import {
@@ -114,6 +114,7 @@ export class SearchService {
       .createQueryBuilder("word")
       .leftJoinAndSelect("word.wordForms", "wordForms")
       .leftJoinAndSelect("wordForms.form", "form")
+      .leftJoinAndSelect("form.lexeme", "formLexeme")
       .innerJoinAndSelect("word.wordLexemes", "wordLexemes")
       .innerJoinAndSelect("wordLexemes.lexeme", "linkedLexeme")
       .where("LOWER(word.data) IN (:...latinTerms)", {
@@ -129,10 +130,11 @@ export class SearchService {
       for (const word of words.filter(
         (candidate) => candidate.data.toLowerCase() === term,
       )) {
-        const wordIdentifiers = word.wordForms
-          .map((wordForm) => formatFormIdentifier(wordForm.form))
-          .filter((identifier) => typeof identifier === "string");
         for (const { lexeme } of word.wordLexemes) {
+          const wordIdentifiers = word.wordForms
+            .filter((wordForm) => wordForm.form.lexeme.id === lexeme.id)
+            .map((wordForm) => formatFormIdentifier(wordForm.form))
+            .filter((identifier) => typeof identifier === "string");
           const merged = identifiers.get(lexeme.id) ?? new Set<string>();
           wordIdentifiers.forEach((identifier) => merged.add(identifier));
           identifiers.set(lexeme.id, merged);

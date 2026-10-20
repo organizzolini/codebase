@@ -1,8 +1,18 @@
 // ♟️ Constants
 import { constants, set_ephe_path } from "sweph";
 
+import {
+  DOWNLOAD_COMMAND,
+  EPHEMERIS_FIRST_YEAR,
+  EPHEMERIS_LAST_YEAR,
+} from "../ephemeris-download/ephemeris-download.constants";
+import { resolveEphemerisDirectory } from "../ephemeris-download/ephemeris-download.utilities";
+
 import type { Asteroid, Node, Planet } from "../caelundas/caelundas.types";
-import type { AzimuthElevationEphemerisBody } from "./ephemeris.types";
+import type {
+  AzimuthElevationEphemerisBody,
+  SwissEphemerisSubject,
+} from "./ephemeris.types";
 
 /** Kilometers in one astronomical unit (IAU 2012). */
 export const KILOMETERS_PER_ASTRONOMICAL_UNIT = 149_597_870.7;
@@ -84,11 +94,35 @@ export const swissEphemerisConstantByNode: Record<Node, null | number> = {
 };
 
 /**
- * Configures the Swiss Ephemeris data path before any calculations are performed.
+ * A Swiss Ephemeris result that did not come from the data files.
  *
- * Must be called once at application startup. The `./data/ephemeris` directory
- * contains the `.se1` binary data files bundled with the caelundas Docker image.
+ * When the files are missing, or the date lies outside the years they cover,
+ * the library quietly answers from its built-in Moshier ephemeris instead and
+ * only notes it in the error text. That answer is a little less precise, which
+ * for a slow body moves an exact-aspect event by hours, and for an asteroid
+ * there is none at all. So it is refused.
+ */
+export class EphemerisUnavailableError extends Error {
+  constructor({ body, tool }: SwissEphemerisSubject, detail: string) {
+    super(
+      `${tool} for ${body} did not use the Swiss Ephemeris files. They are missing (download them with \`${DOWNLOAD_COMMAND}\`), or the date lies outside ${String(EPHEMERIS_FIRST_YEAR)} to ${String(EPHEMERIS_LAST_YEAR)}, the years they cover. ${detail.trim()}`,
+    );
+    this.name = EphemerisUnavailableError.name;
+    this.body = body;
+    this.tool = tool;
+  }
+  readonly body: string;
+  readonly tool: string;
+}
+
+/**
+ * Points the Swiss Ephemeris at its data files before any calculations are
+ * performed.
+ *
+ * Must be called once at application startup. It only sets the path: whether
+ * the `.se1` files are there is checked by `EphemerisService.verifyFiles`, so
+ * that building the application never fails for want of them.
  */
 export function initializeSwissEphemeris(): void {
-  set_ephe_path("./data/ephemeris");
+  set_ephe_path(resolveEphemerisDirectory());
 }

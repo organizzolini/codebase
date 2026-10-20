@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MathService } from "../math/math.service";
 
@@ -10,8 +10,8 @@ import { EclipseGeometryService } from "./eclipse-geometry.service";
 import { EclipseTopocentricService } from "./eclipse-topocentric.service";
 import { MILLISECONDS_PER_MINUTE } from "./eclipses.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { EclipsePhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   AzimuthElevationEphemeris,
   CoordinateEphemeris,

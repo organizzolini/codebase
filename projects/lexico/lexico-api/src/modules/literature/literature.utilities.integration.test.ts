@@ -19,7 +19,7 @@ import { toCursor } from "../../lexico-api.utilities";
 import { LiteratureService } from "./literature.service";
 
 import type { Connection } from "../../lexico-api.types";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** Each boundary matrix issues a few hundred queries, which a slow runner needs time for. */
 const MATRIX_TIMEOUT_MILLISECONDS = 120_000;
@@ -438,7 +438,10 @@ describe("literature pagination integration suite", () => {
       expect(lineHits.totalCount).toBe(7);
       expect(lineHits.edges.map((edge) => edge.node.id)).toStrictEqual(armaIds);
       await expect(service.searchLiterature("arma")).resolves.toMatchObject({
-        lines: armaIds.map((id) => ({ id })),
+        lines: {
+          edges: armaIds.map((id) => ({ node: { id } })),
+          totalCount: armaIds.length,
+        },
       });
       expect(georgicsHits.edges.map((edge) => edge.node.data)).toStrictEqual([
         "arma quid faciat laetas segetes",

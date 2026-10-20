@@ -8,6 +8,8 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Author, Line, Text } from "@codebase/lexico-entities";
 
+import { createConnection, createEdge } from "../../lexico-api.utilities";
+
 import { AuthorsResolver } from "./authors.resolver";
 import { LinesResolver } from "./lines.resolver";
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
@@ -54,9 +56,24 @@ describe(LiteratureResolver, () => {
       searchLiterature: vi
         .fn<LiteratureService["searchLiterature"]>()
         .mockResolvedValue({
-          authors: [author],
-          lines: [line],
-          texts: [text],
+          authors: createConnection({
+            edges: [createEdge(author, "author-1")],
+            hasNextPage: false,
+            hasPreviousPage: false,
+            totalCount: 1,
+          }),
+          lines: createConnection({
+            edges: [createEdge(line, "line-1")],
+            hasNextPage: false,
+            hasPreviousPage: false,
+            totalCount: 1,
+          }),
+          texts: createConnection({
+            edges: [createEdge(text, "text-1")],
+            hasNextPage: false,
+            hasPreviousPage: false,
+            totalCount: 1,
+          }),
         }),
     });
 
@@ -67,17 +84,71 @@ describe(LiteratureResolver, () => {
         authorId: "author-1",
         query: "vir",
       }),
-    ).resolves.toStrictEqual({
-      authors: [toAuthorType(author)],
-      lines: [toLineType(line)],
-      texts: [toTextType(text)],
+    ).resolves.toMatchObject({
+      authors: {
+        edges: [{ cursor: "author-1", node: toAuthorType(author) }],
+        pageInfo: {
+          endCursor: "author-1",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "author-1",
+        },
+        totalCount: 1,
+      },
+      lines: {
+        edges: [{ cursor: "line-1", node: toLineType(line) }],
+        pageInfo: {
+          endCursor: "line-1",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "line-1",
+        },
+        totalCount: 1,
+      },
+      texts: {
+        edges: [{ cursor: "text-1", node: toTextType(text) }],
+        pageInfo: {
+          endCursor: "text-1",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "text-1",
+        },
+        totalCount: 1,
+      },
     });
     await expect(
       literatureResolver.searchLiterature({ query: "vir" }),
-    ).resolves.toStrictEqual({
-      authors: [toAuthorType(author)],
-      lines: [toLineType(line)],
-      texts: [toTextType(text)],
+    ).resolves.toMatchObject({
+      authors: {
+        edges: [{ cursor: "author-1", node: toAuthorType(author) }],
+        pageInfo: {
+          endCursor: "author-1",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "author-1",
+        },
+        totalCount: 1,
+      },
+      lines: {
+        edges: [{ cursor: "line-1", node: toLineType(line) }],
+        pageInfo: {
+          endCursor: "line-1",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "line-1",
+        },
+        totalCount: 1,
+      },
+      texts: {
+        edges: [{ cursor: "text-1", node: toTextType(text) }],
+        pageInfo: {
+          endCursor: "text-1",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "text-1",
+        },
+        totalCount: 1,
+      },
     });
   });
 

@@ -2,7 +2,7 @@
 
 import { Author, Line, Text } from "@codebase/lexico-entities";
 
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 const AUTHOR_SLUGS = ["cicero", "horace", "ovid", "valerius-flaccus"] as const;
 

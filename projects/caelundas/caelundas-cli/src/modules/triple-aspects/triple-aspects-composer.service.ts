@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -17,13 +17,13 @@ import {
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   Aspect,
   AspectPhase,
   Body,
   TripleAspect,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { ProgressiveBodiesMeta } from "./triple-aspects.types";
 import type { Moment } from "moment-timezone";
 

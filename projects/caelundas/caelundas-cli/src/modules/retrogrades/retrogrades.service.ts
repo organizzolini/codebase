@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   MARGIN_MINUTES,
@@ -15,11 +15,11 @@ import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { MathService } from "../math/math.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   OrbitalDirection,
   RetrogradeBody,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 

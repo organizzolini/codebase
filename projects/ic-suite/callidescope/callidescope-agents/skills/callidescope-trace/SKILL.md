@@ -15,9 +15,9 @@ flow actually lives.
 Three commands, answering three different questions:
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts                                        # the whole workspace
-npx callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar    # one callable, vertically
-npx callidescope breadth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar  # one callable, horizontally
+npx callidescope --config configuration/callidescope.config.ts                                        # the whole workspace
+npx callidescope depth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar    # one callable, vertically
+npx callidescope breadth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar  # one callable, horizontally
 ```
 
 **`--config` is required on all three**, and names the workspace configuration
@@ -162,7 +162,7 @@ overloads, two callbacks bound to the same property — is disambiguated with a
 trailing `:<line>`:
 
 ```bash
-npx callidescope depth --config projects/configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar:118
+npx callidescope depth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar:118
 ```
 
 When it cannot tell which one was meant, the run says so and prints every

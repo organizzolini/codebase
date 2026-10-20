@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { symbolByMercurianPhase } from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -23,8 +23,8 @@ import {
   PHASE_EVENT_TIMEZONE,
 } from "./phases.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { MercurianPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   BuildPlanetPhaseEventArguments,
   MercurianPhaseEventArguments,

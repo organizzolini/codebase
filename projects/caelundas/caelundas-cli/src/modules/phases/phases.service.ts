@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MartianPhaseService } from "./martian-phase.service";
 import { MercurianPhaseService } from "./mercurian-phase.service";
@@ -12,7 +12,7 @@ import {
 } from "./phases.constants";
 import { VenusianPhaseService } from "./venusian-phase.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   DetectPlanetaryEventsArguments,
   MartianPhaseEventArguments,

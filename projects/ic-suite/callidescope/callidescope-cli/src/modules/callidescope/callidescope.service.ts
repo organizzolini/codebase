@@ -12,7 +12,7 @@ import {
 import { ProjectReportsService } from "@callidescope/output";
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { INCLUDE_CONSTRUCTOR_EDGES } from "./callidescope.constants";
 
@@ -345,7 +345,7 @@ export class CallidescopeService {
 
     // `maximumDepthTraced`, never `maximumDepth`. A scoped run builds programs
     // for its whole dependency closure, so this number routinely belongs to a
-    // project the run was never pointed at — `projects/synchronization` printed a
+    // project the run was never pointed at — `synchronization` printed a
     // traced seventeen while owning ten. Under the bare name it reads as the
     // number to write into that project's own limit, which would be headroom:
     // a limit above what a project measures gates nothing while claiming to

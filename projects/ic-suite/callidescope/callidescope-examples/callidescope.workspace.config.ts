@@ -3,13 +3,13 @@ import type { CallidescopeConfiguration } from "@callidescope/configuration";
 /**
  * The configuration the fixtures in this package are traced with.
  *
- * Deliberately not the workspace's. `projects/configuration/callidescope.config.ts`
+ * Deliberately not the workspace's. `configuration/callidescope.config.ts`
  * carries a ratchet — `maximumDepth: 17`, today's worst stack — because its job
  * is to stop the repository getting worse. This one carries the tool's own
  * defaults, because its job is to make the fixtures produce findings: a package
  * whose examples all pass demonstrates nothing.
  *
- * That is also why `projects/configuration/.callidescopeignore` excludes this directory
+ * That is also why `configuration/.callidescopeignore` excludes this directory
  * from the workspace run. Fixtures that exist to be too deep would otherwise
  * gain a `gate` target of their own: the callidescope Nx plugin withholds
  * `gate` from a project the workspace configuration excludes, because such a
@@ -67,10 +67,10 @@ const callidescopeConfiguration: CallidescopeConfiguration = {
    *
    * Its `callidescope.config.ts` is this run's own file and sets workspace-only
    * fields (`excludeCallees`, `excludeFrom`, `write.json`) that a project file
-   * must not set. When the closure reaches `projects/configuration`, excluding
+   * must not set. When the closure reaches `configuration`, excluding
    * it here keeps the run scoped to fixture code and toolchain dependencies.
    */
-  exclude: ["projects/configuration/**"],
+  exclude: ["configuration/**"],
   limits: {
     /**
      * The tool's own default, so the deliberately deep fixtures are findings.

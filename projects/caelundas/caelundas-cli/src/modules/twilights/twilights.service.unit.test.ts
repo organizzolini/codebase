@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
 import { MathService } from "../math/math.service";
@@ -13,7 +13,7 @@ import { TwilightsComposerService } from "./twilights-composer.service";
 import { TwilightsDetectorService } from "./twilights-detector.service";
 import { TwilightsService } from "./twilights.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { AzimuthElevationEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 

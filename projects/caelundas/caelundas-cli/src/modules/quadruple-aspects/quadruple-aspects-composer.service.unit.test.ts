@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -13,8 +13,8 @@ import { QuadrupleAspectsBaseService } from "./quadruple-aspects-base.service";
 import { QuadrupleAspectsComposerService } from "./quadruple-aspects-composer.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Aspect } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(QuadrupleAspectsComposerService, () => {
   let service: QuadrupleAspectsComposerService;

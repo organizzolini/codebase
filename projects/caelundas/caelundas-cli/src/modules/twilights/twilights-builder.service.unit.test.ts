@@ -3,11 +3,11 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { TwilightsBuilderService } from "./twilights-builder.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 describe(TwilightsBuilderService, () => {
   let service: TwilightsBuilderService;

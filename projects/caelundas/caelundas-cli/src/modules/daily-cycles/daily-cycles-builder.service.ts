@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarService } from "../calendar/calendar.service";
 import { HORIZON_REFRACTION_DEGREES } from "../ephemeris/ephemeris.constants";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { MathService } from "../math/math.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
   AzimuthElevationEphemeris,
   AzimuthElevationEphemerisBody,

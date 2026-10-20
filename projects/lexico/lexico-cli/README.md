@@ -62,19 +62,19 @@ input is a terminal; otherwise the command takes its default of no bound or
 ## Moving data between databases
 
 This application does not copy tables between databases. The database
-package's command line does, with `nx run database:start:export` and
-`nx run database:start:import`. It has no default schema, so name the Lexico
+package's command line does, with `nx run persistence:start:export` and
+`nx run persistence:start:import`. It has no default schema, so name the Lexico
 schema with `--schema lexico`, or qualify each table as `lexico.words`.
-A relative `--file` resolves from `projects/database`, so this keeps the dump
+A relative `--file` resolves from `projects/common/persistence`, so this keeps the dump
 in this project's `data/` directory, where `*.dump` is gitignored:
 
 ```bash
-nx run database:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --schema lexico --table words --data --ddl --file ../lexico/lexico-cli/data/lexico.dump"
+nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/lexico_development --schema lexico --table words --data --ddl --file ../lexico/lexico-cli/data/lexico.dump"
 ```
 
 `import --clean` runs without asking, so run `import --dry-run` with the same
 options first to see what it would drop or truncate. See the
-[database README](../../database/README.md#moving-data-between-databases) for
+[persistence README](../../common/persistence/README.md#moving-data-between-databases) for
 every option.
 
 ## How it works
@@ -117,7 +117,7 @@ nx run lexico-entities:migration:run
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
 - 📖 [lexico-entities](../lexico-entities/README.md) — the schema this writes to
-- 🎨 [components](../../components/README.md) — the interface
+- 🎨 [presentation](../../common/presentation/README.md) — the interface
 
 ## License
 
@@ -125,7 +125,7 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../projects/configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
 
 <!-- callidescope:start -->
 
@@ -854,13 +854,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  database["database"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
-  logging["logging"]
-  lexico_cli --> database
+  observability["observability"]
+  persistence["persistence"]
   lexico_cli --> lexico_entities
-  lexico_cli --> logging
+  lexico_cli --> observability
+  lexico_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_cli subject
 ```
@@ -882,7 +882,6 @@ flowchart LR
   FormsModule
   LatinLibraryModule
   LexemesModule
-  LexicoDatabaseModule
   LexicoIngestionModule
   LibraryModule
   LiteratureModule
@@ -892,15 +891,16 @@ flowchart LR
   NumeralsModule
   PartOfSpeechModule
   PerseusModule
+  PostgresqlModule
   PrincipalPartsModule
   PronunciationModule
   TranslationsModule
   TypeOrmModule
   WiktionaryModule
   WordsModule
-  ClearModule --> LexicoDatabaseModule
+  ClearModule --> DatabaseModule
   ClearModule --> TypeOrmModule
-  DatabaseModule --> TypeOrmModule
+  DatabaseModule --> PostgresqlModule
   DictionaryModule --> FormsModule
   DictionaryModule --> LexemesModule
   DictionaryModule --> ManualModule
@@ -918,20 +918,19 @@ flowchart LR
   LexemesModule --> TranslationsModule
   LexemesModule --> TypeOrmModule
   LexemesModule --> WordsModule
-  LexicoDatabaseModule --> DatabaseModule
   LexicoIngestionModule --> ClearModule
   LexicoIngestionModule --> CorpusScriptorumEcclesiasticorumLatinorumModule
+  LexicoIngestionModule --> DatabaseModule
   LexicoIngestionModule --> DictionaryModule
   LexicoIngestionModule --> EpigraphikDatenbankClaussSlabyModule
   LexicoIngestionModule --> LatinLibraryModule
-  LexicoIngestionModule --> LexicoDatabaseModule
   LexicoIngestionModule --> LibraryModule
   LexicoIngestionModule --> LiteratureModule
   LexicoIngestionModule --> ManualModule
   LexicoIngestionModule --> PerseusModule
   LexicoIngestionModule --> WiktionaryModule
   LexicoIngestionModule --> WordsModule
-  LiteratureModule --> LexicoDatabaseModule
+  LiteratureModule --> DatabaseModule
   LiteratureModule --> NumeralsModule
   LiteratureModule --> TypeOrmModule
   MainModule --> DiscoveryModule
@@ -939,6 +938,7 @@ flowchart LR
   ManualModule --> NumeralsModule
   ManualModule --> TypeOrmModule
   ManualModule --> WordsModule
+  PostgresqlModule --> TypeOrmModule
   PrincipalPartsModule --> TypeOrmModule
   PronunciationModule --> TypeOrmModule
   TranslationsModule --> TypeOrmModule
@@ -1432,7 +1432,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.83_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.97_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 

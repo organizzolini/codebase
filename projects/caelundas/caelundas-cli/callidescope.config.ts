@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "../../../configuration/callidescope.config.js";
 
 /**
  * What caelundas is held to, measured rather than assumed.
@@ -15,7 +15,7 @@ import { projectDefaults } from "../../../projects/configuration/callidescope.co
  * this gate is green the day it arrives and the number is a starting point to
  * ratchet down from rather than a target to grow into.
  *
- * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

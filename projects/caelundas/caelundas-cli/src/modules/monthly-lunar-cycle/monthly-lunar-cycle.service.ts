@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { lunarPhases } from "../caelundas/caelundas.constants";
 import { isLunarPhase } from "../caelundas/caelundas.types";
@@ -12,8 +12,8 @@ import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { LunarApsidesService } from "./lunar-apsides.service";
 import { ELONGATION_BY_LUNAR_PHASE } from "./monthly-lunar-cycle.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { LunarPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 import type {
   DetectMonthlyLunarCycleArguments,

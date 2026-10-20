@@ -22,8 +22,8 @@ nx run caelundas-cli:start
 - **Framework**: NestJS (modules, dependency injection, providers)
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/logging` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Database**: Postgres via TypeORM and `@codebase/database` (the `calendar_events` table)
+- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
+- **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events` table)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -73,7 +73,7 @@ testing/                            # Shared test utilities
 src/modules/
   input/                               # Zod environmentSchema and config parsing
   calendar/                            # ICS and JSON file output formatting
-  caelundas-database/                  # Postgres connection, CalendarEvent entity, migrations
+  database/                  # Postgres connection, CalendarEvent entity, migrations
   calendar-events/                     # Upsert and range queries over the calendar_events table
   ephemeris/                           # Swiss Ephemeris access
   perfective/                          # Exact moment event detection (aspects, phases)
@@ -86,7 +86,7 @@ src/modules/
 
 - **Input Validation** ([input.constants.ts](src/modules/input/input.constants.ts)): Zod schema for environment variables
 - **Ephemeris Retrieval** ([ephemeris/](src/modules/ephemeris/)): Swiss Ephemeris, computed locally
-- **Event Storage** ([calendar-events/](src/modules/calendar-events/) and [caelundas-database/](src/modules/caelundas-database/)): Upserts detected events into Postgres and reads them back by range and location
+- **Event Storage** ([calendar-events/](src/modules/calendar-events/) and [database/](src/modules/database/)): Upserts detected events into Postgres and reads them back by range and location
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events
 - **Output** ([calendar/](src/modules/calendar/)): iCal and JSON files, rendered from the stored rows
@@ -120,7 +120,7 @@ Astronomical concepts, event detection, and storage:
 
 ### Logging
 
-`LoggerService` and `LoggerModule` come from `@codebase/logging` — this project does not define its own logger. Add `"@codebase/logging": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
+`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
 
 `LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
 
@@ -186,11 +186,11 @@ Postgres, in the `caelundas_development` database and `caelundas` schema, with o
 
 `CalendarEvent` is caelundas' only event type: detectors build it, `CalendarEventsService` stores and reads it, and the writers render it, with no mapper between them. Its shape differences from the table are settled in the entity, not at the call sites:
 
-- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `caelundas-database.utilities.ts`, which reads them back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
+- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `database.utilities.ts`, which reads them back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
 - **Color and location**: optional as well as nullable (`color?: null | string`), so a detector leaves them out and a stored row reads back `null`; the writers treat the two alike.
 - **Coordinates**: `latitude`/`longitude` stay `numeric` strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
 
-A detected event, which has no id, audit columns, or coordinates yet, is `DetectedCalendarEvent` in `caelundas-database.types.ts`, an `Omit` of the entity rather than a second type. A stored row is assignable to it, so the writers take it too.
+A detected event, which has no id, audit columns, or coordinates yet, is `DetectedCalendarEvent` in `database.types.ts`, an `Omit` of the entity rather than a second type. A stored row is assignable to it, so the writers take it too.
 
 Connection variables are `CAELUNDAS_POSTGRES_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and `_SCHEMA`; the unprefixed `POSTGRES_*` are never read. Postgres returns `numeric` as strings, so compare coordinates as strings.
 
@@ -199,7 +199,7 @@ nx run caelundas-cli:migration:run        # Apply pending migrations
 nx run caelundas-cli:migration:generate   # Generate the next migration from the entities
 ```
 
-The `migration` target reads its data source and migrations from `src/modules/caelundas-database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` batches rows under Postgres's 65,535-parameter limit and uses `ON CONFLICT … DO UPDATE`.
+The `migration` target reads its data source and migrations from `src/modules/database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` batches rows under Postgres's 65,535-parameter limit and uses `ON CONFLICT … DO UPDATE`.
 
 Inspect: `docker exec -it postgres psql -U caelundas_username -d caelundas_development`
 
@@ -220,8 +220,8 @@ Caelundas runs as a **Kubernetes Job** (not Deployment):
 docker push ghcr.io/organizzolini/caelundas:latest
 
 # 2. Deploy Job (base.yaml is a defaults template, so override the image)
-helm upgrade --install <release-name> projects/infrastructure/helm/kubernetes-job/ \
-  --values projects/infrastructure/helm/kubernetes-job/values/base.yaml \
+helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
+  --values infrastructure/helm/kubernetes-job/values/base.yaml \
   --set image.repository=ghcr.io/organizzolini/caelundas --set image.tag=latest
 
 # 3. Monitor completion
@@ -234,7 +234,7 @@ kubectl delete pvc caelundas-output
 
 ### Helm Chart
 
-Uses [projects/infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
+Uses [infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
 
 **Values**: [base.yaml](../../infrastructure/helm/kubernetes-job/values/base.yaml) holds chart defaults only (its image is the placeholder `my-application`); there is no caelundas-specific values file, so override the image and `env` at deploy time.
 
@@ -425,7 +425,7 @@ See the [triage-integration skill](../../../.agents/skills/triage-integration/SK
 - [src/modules/caelundas/caelundas.command.ts](src/modules/caelundas/caelundas.command.ts): Root CLI command
 - [src/caelundas-cli.module.ts](src/caelundas-cli.module.ts): Root NestJS module
 - [src/caelundas-cli.constants.ts](src/caelundas-cli.constants.ts): environmentSchema (Zod)
-- `@codebase/logging` (`projects/logging`): shared pino-backed `LoggerService` and `LoggerModule`
+- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
 - [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [.env.default](.env.default): Environment variable template
 

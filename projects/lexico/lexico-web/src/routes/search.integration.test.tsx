@@ -7,7 +7,6 @@ import { describe, expect, it } from "vitest";
 import { graphqlServer } from "../../testing/graphql-server";
 import { renderRoute } from "../../testing/render-route";
 import {
-  mockLexemeFormsQuery,
   mockSearchEnglishQuery,
   mockSearchLatinQuery,
   SearchMatchSource,
@@ -38,9 +37,26 @@ function answer(
           },
           lemma: id,
           partOfSpeech: "noun",
-          principalParts: [{ text: [id] }],
-          pronunciations: [{ phonetic: `[${id}]`, variant: "classical" }],
-          translations: [{ data: `${id} means` }],
+          principalParts: { edges: [{ node: { text: [id] } }] },
+          pronunciations: {
+            edges: [{ node: { phonetic: `[${id}]`, variant: "classical" } }],
+          },
+          translations: { edges: [{ node: { data: `${id} means` } }] },
+          wordForms: {
+            edges: [
+              {
+                node: {
+                  form: {
+                    __typename: "NominalForm",
+                    case: "genitive",
+                    number: "plural",
+                  },
+                  id: `${id}-form`,
+                  word: `${id}rum`,
+                },
+              },
+            ],
+          },
         },
         score,
         source: SearchMatchSource.LemmaExact,
@@ -129,33 +145,12 @@ describe("search", () => {
     expect(screen.getByText("Etymology")).toBeDefined();
   });
 
-  it("loads a card's forms only when its table is opened", async () => {
+  it("opens a card's forms without making another API request", async () => {
     stubSearch([["rosa", 2]], []);
 
     await renderRoute("/search?query=rosa");
     const declension = await screen.findByText("declension");
 
-    graphqlServer.use(
-      mockLexemeFormsQuery(() =>
-        HttpResponse.json({
-          data: {
-            lexeme: {
-              wordForms: [
-                {
-                  form: {
-                    __typename: "NominalForm",
-                    case: "genitive",
-                    number: "plural",
-                  },
-                  id: "1",
-                  word: "rosarum",
-                },
-              ],
-            },
-          },
-        }),
-      ),
-    );
     fireEvent.click(declension);
 
     await expect(screen.findByText("rosarum")).resolves.toBeDefined();

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   ingressBodies as decanIngressBodies,
@@ -11,8 +11,8 @@ import { objectEntries } from "../caelundas/caelundas.types";
 
 import { IngressesComposerService } from "./ingresses-composer.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Body, Sign } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 

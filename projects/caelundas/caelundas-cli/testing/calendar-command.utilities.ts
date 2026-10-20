@@ -7,17 +7,18 @@ import { NestFactory } from "@nestjs/core";
 import moment from "moment-timezone";
 import { vi } from "vitest";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "../src/caelundas-cli.constants";
 import { CaelundasCommand } from "../src/modules/caelundas/caelundas.command";
 import { CalendarEventsModule } from "../src/modules/calendar-events/calendar-events.module";
 import { CalendarModule } from "../src/modules/calendar/calendar.module";
+import { EphemerisService } from "../src/modules/ephemeris/ephemeris.service";
 import { InputModule } from "../src/modules/input/input.module";
 import { PerfectiveService } from "../src/modules/perfective/perfective.service";
 import { ProgressiveService } from "../src/modules/progressive/progressive.service";
 
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 import type { Input } from "../src/modules/input/input.types";
 import type {
   CalendarCommandOutput,
@@ -45,7 +46,8 @@ export function detectable(
  * back the ICS and JSON files it wrote.
  *
  * Only the two detectors are replaced, because Swiss Ephemeris detection is
- * minutes of computation; like a real detector, the stand-in reports the
+ * minutes of computation, and the ephemeris is stood in for, because nothing
+ * here reads its files; like a real detector, the stand-in reports the
  * events that start from the start date through the whole of the end date.
  * Each run boots its own application context, because `ConfigModule`
  * reads the run's variables once, when it is compiled.
@@ -77,6 +79,10 @@ export async function runCalendarCommand(
     ],
     providers: [
       CaelundasCommand,
+      {
+        provide: EphemerisService,
+        useValue: { verifyFiles: (): void => undefined },
+      },
       {
         provide: PerfectiveService,
         useValue: {

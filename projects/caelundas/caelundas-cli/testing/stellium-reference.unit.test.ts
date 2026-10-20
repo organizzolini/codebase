@@ -5,7 +5,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../src/modules/aspects/aspect-graph.service";
 import { ProgressiveCompoundEventService } from "../src/modules/aspects/progressive-compound-event.service";
@@ -22,7 +22,7 @@ import {
 } from "./reference-longitudes.constants";
 
 import type { AspectBodies } from "../src/modules/aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 import type { z } from "zod";
 
 /** A body the stellium step considers. */

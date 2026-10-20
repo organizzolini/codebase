@@ -1,3 +1,31 @@
+## 0.0.43 (2026-10-20)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.43
+
+## 0.0.42 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.42
+
+## 0.0.41 (2026-10-20)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.41
+
+## 0.0.40 (2026-10-18)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.40
+
 ## 0.0.39 (2026-10-18)
 
 ### 🧱 Updated Dependencies
@@ -218,7 +246,7 @@
 
 ### 💅 Refactors
 
-- **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/pull/1208))
+- **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/pull/1208))
 
 ### 🧱 Updated Dependencies
 

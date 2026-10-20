@@ -13,7 +13,7 @@ import { projectDefaults } from "@codebase/configuration/callidescope.config";
  * this gate is green the day it arrives and the number is a starting point to
  * ratchet down from rather than a target to grow into.
  *
- * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

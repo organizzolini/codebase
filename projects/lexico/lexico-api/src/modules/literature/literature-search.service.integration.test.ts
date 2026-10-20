@@ -17,7 +17,7 @@ import { expectLiteratureSearchPagination } from "../../../testing/literature-se
 import { LiteratureService } from "./literature.service";
 
 import type { Connection } from "../../lexico-api.types";
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** Lists a connection's node ids in edge order. */
 function ids<Node extends { id: string }>(
@@ -289,13 +289,13 @@ describe("literature search service integration suite", () => {
 
       const result = await service.searchLiterature("ovid");
 
-      expect(idsOf(result.authors)).toStrictEqual([corpus.author("ovid").id]);
-      expect(idsOf(result.texts)).toStrictEqual([
+      expect(ids(result.authors)).toStrictEqual([corpus.author("ovid").id]);
+      expect(ids(result.texts)).toStrictEqual([
         corpus.text("ovid/amores").id,
         corpus.text("ovid/ars-amatoria").id,
         corpus.text("ovid/metamorphoses").id,
       ]);
-      expect(result.lines.map((line) => line.data)).toStrictEqual([
+      expect(result.lines.edges.map((edge) => edge.node.data)).toStrictEqual([
         "Ovidius nondum natus erat",
       ]);
     });
@@ -308,9 +308,9 @@ describe("literature search service integration suite", () => {
         corpus.author("cicero").id,
       );
 
-      expect(idsOf(result.authors)).toStrictEqual([corpus.author("ovid").id]);
-      expect(result.texts).toStrictEqual([]);
-      expect(result.lines).toHaveLength(1);
+      expect(ids(result.authors)).toStrictEqual([corpus.author("ovid").id]);
+      expect(result.texts.edges).toStrictEqual([]);
+      expect(result.lines.edges).toHaveLength(1);
     });
 
     it("returns every match rather than a first page", async () => {
@@ -318,8 +318,8 @@ describe("literature search service integration suite", () => {
 
       const result = await service.searchLiterature("o");
 
-      expect(result.texts).toHaveLength(8);
-      expect(result.lines.length).toBeGreaterThan(8);
+      expect(result.texts.edges).toHaveLength(8);
+      expect(result.lines.edges.length).toBeGreaterThan(8);
     });
 
     it.each([
@@ -328,10 +328,10 @@ describe("literature search service integration suite", () => {
     ])("returns nothing for %s", async (_label, query) => {
       expect.hasAssertions();
 
-      await expect(service.searchLiterature(query)).resolves.toStrictEqual({
-        authors: [],
-        lines: [],
-        texts: [],
+      await expect(service.searchLiterature(query)).resolves.toMatchObject({
+        authors: { edges: [], totalCount: 0 },
+        lines: { edges: [], totalCount: 0 },
+        texts: { edges: [], totalCount: 0 },
       });
     });
   });

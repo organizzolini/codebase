@@ -95,7 +95,7 @@ Check out the merge commit (or install the published version) and run every chec
 
 - **Repro**: the scenario from the pull request's 🧪 Testing section or linked issue, which failed before and must pass now.
 - **Published artifacts**: install each new version from a scratch directory _outside_ the workspace and import or run it. A workspace install proves nothing about the tarball.
-- **Deployed environment**: when the change's scope deploys (`projects/infrastructure/`, an application with a chart), read [projects/infrastructure/AGENTS.md](../../../projects/infrastructure/AGENTS.md) and confirm the rollout and the service's behavior.
+- **Deployed environment**: when the change's scope deploys (`infrastructure/`, an application with a chart), read [infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) and confirm the rollout and the service's behavior.
 - **Docs, skills, and other non-code changes**: every added or changed file exists on the merge commit with its merged content (`git fetch origin main`, then `git show origin/main:<path>`), and a skill is listed under `.agents/skills/`. With the check below, this is their evidence.
 - **Post-release `main`**: the CI run on the tip, including the release commit, is green.
 

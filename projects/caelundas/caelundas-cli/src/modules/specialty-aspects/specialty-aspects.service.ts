@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
 import {
@@ -16,12 +16,12 @@ import type {
   LongitudesWindow,
   SimpleAspectDetectorArguments,
 } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type {
   AspectPhase,
   Body,
   SpecialtyAspect,
 } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
 import type { Moment } from "moment-timezone";
 

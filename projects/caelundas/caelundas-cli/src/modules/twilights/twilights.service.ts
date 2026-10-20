@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { MathService } from "../math/math.service";
 
@@ -8,7 +8,7 @@ import { TwilightsBuilderService } from "./twilights-builder.service";
 import { TwilightsComposerService } from "./twilights-composer.service";
 import { TwilightsDetectorService } from "./twilights-detector.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { AzimuthElevationEphemeris } from "../ephemeris/ephemeris.types";
 import type { Twilight } from "./twilights.types";
 import type { Moment } from "moment-timezone";

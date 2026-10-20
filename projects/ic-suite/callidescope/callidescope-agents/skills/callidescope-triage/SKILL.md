@@ -81,7 +81,7 @@ stack anywhere the run reached rather than anywhere it was pointed. The
 per-project scoping that decides a gate's verdict is a different code path
 entirely.
 
-The two routinely disagree by several frames. `projects/synchronization`'s scoped
+The two routinely disagree by several frames. `synchronization`'s scoped
 run prints `maximumDepthTraced:13`, while its gate passes at the declared 10
 and fails at 9 — ten is the number that project owns, and thirteen belongs to a
 dependency it was traced alongside.
@@ -171,7 +171,7 @@ write. The run names every file that drifted rather than stopping at the first.
 **Re-run `--write`. That is the entire fix.**
 
 ```bash
-npx callidescope --config projects/configuration/callidescope.config.ts --write
+npx callidescope --config configuration/callidescope.config.ts --write
 ```
 
 Three things a stale report does _not_ mean:
@@ -197,7 +197,7 @@ Nothing was traced. The message lists the reasons; these are the ones to expect:
 - **`--config` is missing.** Every command that loads a configuration
   (`callidescope`, `depth`, `breadth`, `limits`) requires it, and nothing
   searches for a file or defaults one. Pass the workspace file, for example
-  `--config projects/configuration/callidescope.config.ts`. Under Nx the same
+  `--config configuration/callidescope.config.ts`. Under Nx the same
   path is the plugin's `configurationPath` option in the `nx.json`
   registration, and the `configuration` option of a hand-written target; each
   is refused by name, in the same `ConfigurationPathRequiredError` wording.
@@ -258,7 +258,7 @@ to add one, spreading the workspace's `projectDefaults` export and overriding
 what it means to:
 
 ```ts
-import { projectDefaults } from "../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "../../configuration/callidescope.config.js";
 
 export default { ...projectDefaults };
 ```
@@ -356,7 +356,7 @@ project's limit still seems not to have taken effect after the schema passed,
 ask what it actually resolved to rather than re-reading the file:
 
 ```bash
-npx callidescope limits --config projects/configuration/callidescope.config.ts
+npx callidescope limits --config configuration/callidescope.config.ts
 ```
 
 The row for that project says the number and the file it came from.

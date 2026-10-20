@@ -1,7 +1,7 @@
 import {
   codometerConfiguration,
   compiledJavaScriptTarget,
-} from "../../../projects/configuration/codometer.config.js";
+} from "../../../configuration/codometer.config.js";
 
 export default {
   ...codometerConfiguration,

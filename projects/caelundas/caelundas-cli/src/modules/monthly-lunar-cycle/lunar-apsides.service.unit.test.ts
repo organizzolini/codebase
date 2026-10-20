@@ -2,13 +2,13 @@ import { Test } from "@nestjs/testing";
 import moment, { type Moment } from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarService } from "../calendar/calendar.service";
 
 import { LunarApsidesService } from "./lunar-apsides.service";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 
 vi.mock("fs", () => ({

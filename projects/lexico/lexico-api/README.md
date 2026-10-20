@@ -37,7 +37,7 @@ object types are registered as `ORPHANED_GRAPHQL_TYPES` in
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-graphql-application](../../../projects/configuration/conformetry-templates/nestjs-graphql-application) conformetry template.
+This project was generated from the [nestjs-graphql-application](../../../configuration/conformetry-templates/nestjs-graphql-application) conformetry template.
 
 ## 🕸️ Codependix
 
@@ -48,13 +48,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  database["database"]
   lexico_api["lexico-api"]
   lexico_entities["lexico-entities"]
-  logging["logging"]
-  lexico_api --> database
+  observability["observability"]
+  persistence["persistence"]
   lexico_api --> lexico_entities
-  lexico_api --> logging
+  lexico_api --> observability
+  lexico_api --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_api subject
 ```
@@ -114,6 +114,7 @@ graph LR
   file_src_modules_lexemes_inflections_uninflected_inflection_entities_ts["src/modules/lexemes/inflections/uninflected-inflection.entities.ts"]
   file_src_modules_lexemes_inflections_verb_inflection_entities_ts["src/modules/lexemes/inflections/verb-inflection.entities.ts"]
   file_src_modules_lexemes_lexeme_arguments_entities_ts["src/modules/lexemes/lexeme-arguments.entities.ts"]
+  file_src_modules_lexemes_lexeme_connection_entities_ts["src/modules/lexemes/lexeme-connection.entities.ts"]
   file_src_modules_lexemes_lexeme_entities_ts["src/modules/lexemes/lexeme.entities.ts"]
   file_src_modules_lexemes_lexemes_arguments_entities_ts["src/modules/lexemes/lexemes-arguments.entities.ts"]
   file_src_modules_lexemes_lexemes_constants_ts["src/modules/lexemes/lexemes.constants.ts"]
@@ -211,6 +212,7 @@ graph LR
   file_src_modules_words_lexeme_word_form_resolver_ts["src/modules/words/lexeme-word-form.resolver.ts"]
   file_src_modules_words_lexeme_word_form_resolver_unit_test_ts["src/modules/words/lexeme-word-form.resolver.unit.test.ts"]
   file_src_modules_words_word_arguments_entities_ts["src/modules/words/word-arguments.entities.ts"]
+  file_src_modules_words_word_connection_entities_ts["src/modules/words/word-connection.entities.ts"]
   file_src_modules_words_word_form_entities_ts["src/modules/words/word-form.entities.ts"]
   file_src_modules_words_word_form_resolver_ts["src/modules/words/word-form.resolver.ts"]
   file_src_modules_words_word_form_resolver_unit_test_ts["src/modules/words/word-form.resolver.unit.test.ts"]
@@ -370,10 +372,16 @@ graph LR
   file_src_modules_lexemes_inflections_verb_inflection_entities_ts --> file_src_lexico_api_types_ts
   file_src_modules_lexemes_inflections_verb_inflection_entities_ts --> file_src_modules_lexemes_inflections_inflection_entities_ts
   file_src_modules_lexemes_inflections_verb_inflection_entities_ts --> file_src_modules_lexemes_inflections_inflections_types_ts
+  file_src_modules_lexemes_lexeme_connection_entities_ts --> file_src_lexico_api_utilities_ts
+  file_src_modules_lexemes_lexeme_connection_entities_ts --> file_src_modules_lexemes_forms_form_entities_ts
+  file_src_modules_lexemes_lexeme_connection_entities_ts --> file_src_modules_lexemes_principal_part_entities_ts
+  file_src_modules_lexemes_lexeme_connection_entities_ts --> file_src_modules_lexemes_pronunciation_entities_ts
+  file_src_modules_lexemes_lexeme_connection_entities_ts --> file_src_modules_lexemes_translation_entities_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_deletable_entities_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_lexico_api_types_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_modules_lexemes_forms_form_entities_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_modules_lexemes_inflections_inflection_entities_ts
+  file_src_modules_lexemes_lexeme_entities_ts --> file_src_modules_lexemes_lexeme_connection_entities_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_modules_lexemes_lexemes_types_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_modules_lexemes_principal_part_entities_ts
   file_src_modules_lexemes_lexeme_entities_ts --> file_src_modules_lexemes_pronunciation_entities_ts
@@ -495,6 +503,7 @@ graph LR
   file_src_modules_literature_lines_resolver_unit_test_ts --> file_src_modules_literature_literature_relations_loader_ts
   file_src_modules_literature_lines_resolver_unit_test_ts --> file_src_modules_literature_literature_service_ts
   file_src_modules_literature_lines_resolver_unit_test_ts --> file_src_modules_literature_literature_utilities_ts
+  file_src_modules_literature_literature_arguments_entities_unit_test_ts --> file_src_lexico_api_utilities_ts
   file_src_modules_literature_literature_arguments_entities_unit_test_ts --> file_src_modules_literature_author_argument_entities_ts
   file_src_modules_literature_literature_arguments_entities_unit_test_ts --> file_src_modules_literature_author_lookup_input_entities_ts
   file_src_modules_literature_literature_arguments_entities_unit_test_ts --> file_src_modules_literature_author_entities_ts
@@ -546,8 +555,10 @@ graph LR
   file_src_modules_literature_literature_relations_utilities_unit_test_ts --> file_src_modules_literature_literature_utilities_ts
   file_src_modules_literature_literature_relations_utilities_unit_test_ts --> file_src_modules_search_pagination_arguments_entities_ts
   file_src_modules_literature_literature_relations_utilities_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_literature_literature_search_result_entities_ts --> file_src_lexico_api_types_ts
   file_src_modules_literature_literature_search_result_entities_ts --> file_src_modules_literature_author_entities_ts
   file_src_modules_literature_literature_search_result_entities_ts --> file_src_modules_literature_line_entities_ts
+  file_src_modules_literature_literature_search_result_entities_ts --> file_src_modules_literature_literature_connection_entities_ts
   file_src_modules_literature_literature_search_result_entities_ts --> file_src_modules_literature_text_entities_ts
   file_src_modules_literature_literature_search_resolver_end_to_end_test_ts --> file_testing_database_ts
   file_src_modules_literature_literature_search_resolver_end_to_end_test_ts --> file_testing_literature_search_corpus_ts
@@ -566,10 +577,12 @@ graph LR
   file_src_modules_literature_literature_module_ts --> file_src_modules_literature_literature_service_ts
   file_src_modules_literature_literature_module_ts --> file_src_modules_literature_texts_resolver_ts
   file_src_modules_literature_literature_module_ts --> file_src_modules_literature_tokens_resolver_ts
+  file_src_modules_literature_literature_resolver_ts --> file_src_lexico_api_utilities_ts
   file_src_modules_literature_literature_resolver_ts --> file_src_modules_literature_literature_search_result_entities_ts
   file_src_modules_literature_literature_resolver_ts --> file_src_modules_literature_literature_service_ts
   file_src_modules_literature_literature_resolver_ts --> file_src_modules_literature_literature_utilities_ts
   file_src_modules_literature_literature_resolver_ts --> file_src_modules_literature_search_literature_arguments_entities_ts
+  file_src_modules_literature_literature_resolver_unit_test_ts --> file_src_lexico_api_utilities_ts
   file_src_modules_literature_literature_resolver_unit_test_ts --> file_src_modules_literature_authors_resolver_ts
   file_src_modules_literature_literature_resolver_unit_test_ts --> file_src_modules_literature_lines_resolver_ts
   file_src_modules_literature_literature_resolver_unit_test_ts --> file_src_modules_literature_literature_relations_loader_ts
@@ -739,13 +752,20 @@ graph LR
   file_src_modules_words_lexeme_word_form_loader_ts --> file_src_modules_words_words_service_ts
   file_src_modules_words_lexeme_word_form_loader_unit_test_ts --> file_src_modules_words_lexeme_word_form_loader_ts
   file_src_modules_words_lexeme_word_form_loader_unit_test_ts --> file_src_modules_words_words_service_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_lexico_api_types_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_lexico_api_utilities_ts
   file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_lexemes_lexeme_entities_ts
   file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_lexeme_word_form_entities_ts
   file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_lexeme_word_form_loader_ts
+  file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_word_connection_entities_ts
   file_src_modules_words_lexeme_word_form_resolver_ts --> file_src_modules_words_words_utilities_ts
   file_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_src_modules_lexemes_lexeme_entities_ts
   file_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_src_modules_words_lexeme_word_form_loader_ts
   file_src_modules_words_lexeme_word_form_resolver_unit_test_ts --> file_src_modules_words_lexeme_word_form_resolver_ts
+  file_src_modules_words_word_connection_entities_ts --> file_src_lexico_api_utilities_ts
+  file_src_modules_words_word_connection_entities_ts --> file_src_modules_words_lexeme_word_form_entities_ts
+  file_src_modules_words_word_connection_entities_ts --> file_src_modules_words_word_form_entities_ts
+  file_src_modules_words_word_connection_entities_ts --> file_src_modules_words_word_lexeme_entities_ts
   file_src_modules_words_word_form_entities_ts --> file_src_deletable_entities_ts
   file_src_modules_words_word_form_entities_ts --> file_src_lexico_api_types_ts
   file_src_modules_words_word_form_entities_ts --> file_src_modules_lexemes_forms_form_entities_ts
@@ -777,6 +797,7 @@ graph LR
   file_src_modules_words_word_link_loader_unit_test_ts --> file_src_modules_words_words_service_ts
   file_src_modules_words_word_entities_ts --> file_src_deletable_entities_ts
   file_src_modules_words_word_entities_ts --> file_src_lexico_api_types_ts
+  file_src_modules_words_word_entities_ts --> file_src_modules_words_word_connection_entities_ts
   file_src_modules_words_word_entities_ts --> file_src_modules_words_word_form_entities_ts
   file_src_modules_words_word_entities_ts --> file_src_modules_words_word_lexeme_entities_ts
   file_src_modules_words_word_entities_ts --> file_src_modules_words_words_types_ts
@@ -851,25 +872,25 @@ flowchart LR
   HealthModule
   LexemesModule
   LexicoApiModule
-  LexicoDatabaseModule
   LiteratureModule
   LoggerModule([LoggerModule])
   MacronsModule
+  PostgresqlModule
   SearchModule
   TypeOrmModule
   WordsModule
-  DatabaseModule --> TypeOrmModule
+  DatabaseModule --> PostgresqlModule
   GraphQLModule --> GraphQLSchemaBuilderModule
   LexemesModule --> TypeOrmModule
+  LexicoApiModule --> DatabaseModule
   LexicoApiModule --> GraphQLModule
   LexicoApiModule --> HealthModule
   LexicoApiModule --> LexemesModule
-  LexicoApiModule --> LexicoDatabaseModule
   LexicoApiModule --> LiteratureModule
   LexicoApiModule --> SearchModule
   LexicoApiModule --> WordsModule
-  LexicoDatabaseModule --> DatabaseModule
   LiteratureModule --> TypeOrmModule
+  PostgresqlModule --> TypeOrmModule
   SearchModule --> MacronsModule
   SearchModule --> TypeOrmModule
   WordsModule --> TypeOrmModule
@@ -884,13 +905,13 @@ Call stacks traced through `projects/lexico/lexico-api`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 412 |
-| Files | 111 |
-| Calls traced | 239 |
-| Call stacks | 55 |
+| Callables | 409 |
+| Files | 113 |
+| Calls traced | 238 |
+| Call stacks | 57 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 15 |
+| Unfollowable calls | 16 |
 
 ### Limits
 
@@ -903,12 +924,31 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `LiteratureResolver.searchLiterature`** — depth ≥ 8 · decorated-method
+**1. `LexemesResolver.lexemes`** — depth ≥ 8 · decorated-method
 
 ```text
-🚀 LiteratureResolver.searchLiterature(arguments_: SearchLiteratureArguments): Promise<LiteratureSearchResult> [projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:24]
+🚀 LexemesResolver.lexemes(arguments_: LexemesArguments): Promise<LexemeType[]> [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:41]
+   ↳ Retrieves multiple dictionary lexemes by ID.
+  └─> LexemesResolver.map(…)(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:49]
+    └─> toLexemeType(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25]
+       ↳ Maps a lexeme entity, and each relation it loaded, to its GraphQL type.
+      └─> mapNullableRelationConnection(…): Connection<Mapped> | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:161]
+         ↳ Maps a nullable to-many relation to a Relay connection, keeping `null`.
+        └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+           ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+          └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+            └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+               ↳ Encodes an offset-based integer cursor.
+              └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+                 ↳ Encodes structured data into an opaque Base64 cursor string.
+```
+
+**2. `LiteratureResolver.searchLiterature`** — depth ≥ 8 · decorated-method
+
+```text
+🚀 LiteratureResolver.searchLiterature(arguments_: SearchLiteratureArguments): Promise<LiteratureSearchResult> [projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:26]
    ↳ Searches authors, texts, and lines together.
-  └─> LiteratureService.searchLiterature(…): Promise<{ authors: Author[]; lines: Line[]; texts: Text[]; }> [projects/lexico/lexico-api/src/modules/literature/literature.service.ts:259]
+  └─> LiteratureService.searchLiterature(…): Promise<{ authors: Connection<Author>; lines: Connection<Line>; texts: Connection<Text>; }> [projects/lexico/lexico-api/src/modules/literature/literature.service.ts:259]
      ↳ Aggregates author, text, and line search hits into a single response.
     └─> LiteratureService.searchAuthors(query: string, pagination?: PaginationArguments): Promise<Connection<Author>> [projects/lexico/lexico-api/src/modules/literature/literature.service.ts:202]
        ↳ Searches authors by name or slug with a simple substring filter.
@@ -924,14 +964,14 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**2. `SearchResolver.searchEnglish`** — depth ≥ 8 · decorated-method
+**3. `SearchResolver.searchEnglish`** — depth ≥ 8 · decorated-method
 
 ```text
 🚀 SearchResolver.searchEnglish(arguments_: SearchEnglishArguments): Promise<Connection<LexemeSearchResult>> [projects/lexico/lexico-api/src/modules/search/search.resolver.ts:31]
    ↳ Searches English definitions and translations using full-text and substring matching.
-  └─> SearchService.searchEnglish(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:387]
+  └─> SearchService.searchEnglish(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:389]
      ↳ Searches English translations and definitions using full-text and substring matching.
-    └─> SearchService.paginateRankedLexemes(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:207]
+    └─> SearchService.paginateRankedLexemes(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:209]
        ↳ Pages ranked lexemes in SQL, best score first and then by id: the ranking is joined to the lexemes, the cursors bound…
       └─> paginateQuery(…): Promise<Connection<Node>> [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:53]
          ↳ Pages a filtered query into a Relay connection in SQL: the cursors become keyset bounds on the sort key and id, `first`…
@@ -945,17 +985,20 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**3. `SearchResolver.searchLatin`** — depth ≥ 8 · decorated-method
+<details>
+<summary>54 more call stacks</summary>
+
+**4. `SearchResolver.searchLatin`** — depth ≥ 8 · decorated-method
 
 ```text
 🚀 SearchResolver.searchLatin(arguments_: SearchLatinArguments): Promise<Connection<LexemeSearchResult>> [projects/lexico/lexico-api/src/modules/search/search.resolver.ts:47]
    ↳ Searches Latin lemmas and inflected forms with enclitic parsing and fuzzy matching.
-  └─> SearchService.searchLatin(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:416]
+  └─> SearchService.searchLatin(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:418]
      ↳ Performs tiered Latin dictionary search with enclitic parsing and fuzzy matching.
-    └─> SearchService.paginateRankedLexemes(…)(scored: ScoredLexeme[]): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:436]
+    └─> SearchService.paginateRankedLexemes(…)(scored: ScoredLexeme[]): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:438]
       └─> SearchService.describeLatinMatches(…): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:102]
          ↳ Describes each Latin match on a page the way merging its tiers would: the morphological identifiers of every matched…
-        └─> SearchService.map(…)(wordForm: WordForm): string | null [projects/lexico/lexico-api/src/modules/search/search.service.ts:133]
+        └─> SearchService.map(…)(wordForm: WordForm): string | null [projects/lexico/lexico-api/src/modules/search/search.service.ts:136]
           └─> formatFormIdentifier(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:59]
              ↳ Formats grammatical and morphological description strings from a lexical Form.
             └─> formatDeclinedForm(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:127]
@@ -964,10 +1007,25 @@ What this project is judged against, as declared in its own `callidescope.config
                  ↳ Formats non-finite verb and uninflected forms like infinitives, gerunds, supines, and adverbs.
 ```
 
-<details>
-<summary>52 more call stacks</summary>
+**5. `LexemesResolver.lexeme`** — depth ≥ 7 · decorated-method
 
-**4. `AuthorsResolver.authors`** — depth ≥ 7 · decorated-method
+```text
+🚀 LexemesResolver.lexeme(arguments_: LexemeArguments): Promise<LexemeType | null> [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:26]
+   ↳ Retrieves a single dictionary lexeme by ID.
+  └─> toLexemeType(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25]
+     ↳ Maps a lexeme entity, and each relation it loaded, to its GraphQL type.
+    └─> mapNullableRelationConnection(…): Connection<Mapped> | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:161]
+       ↳ Maps a nullable to-many relation to a Relay connection, keeping `null`.
+      └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+         ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+        └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+          └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+             ↳ Encodes an offset-based integer cursor.
+            └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+               ↳ Encodes structured data into an opaque Base64 cursor string.
+```
+
+**6. `AuthorsResolver.authors`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 AuthorsResolver.authors(arguments_: PaginationArguments): Promise<Connection<AuthorType>> [projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:67]
@@ -986,7 +1044,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**5. `AuthorsResolver.searchAuthors`** — depth ≥ 7 · decorated-method
+**7. `AuthorsResolver.searchAuthors`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 AuthorsResolver.searchAuthors(arguments_: SearchAuthorsArguments): Promise<Connection<AuthorType>> [projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:98]
@@ -1005,7 +1063,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**6. `LinesResolver.lines`** — depth ≥ 7 · decorated-method
+**8. `LinesResolver.lines`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 LinesResolver.lines(arguments_: LinesArguments): Promise<Connection<LineType>> [projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:46]
@@ -1024,7 +1082,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**7. `LinesResolver.searchLines`** — depth ≥ 7 · decorated-method
+**9. `LinesResolver.searchLines`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 LinesResolver.searchLines(arguments_: SearchLinesArguments): Promise<Connection<LineType>> [projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:62]
@@ -1043,12 +1101,12 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**8. `TextsResolver.searchTexts`** — depth ≥ 7 · decorated-method
+**10. `TextsResolver.searchTexts`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 TextsResolver.searchTexts(arguments_: SearchTextsArguments): Promise<Connection<TextType>> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:101]
    ↳ Searches texts by title or slug.
-  └─> LiteratureService.searchTexts(…): Promise<Connection<Text>> [projects/lexico/lexico-api/src/modules/literature/literature.service.ts:289]
+  └─> LiteratureService.searchTexts(…): Promise<Connection<Text>> [projects/lexico/lexico-api/src/modules/literature/literature.service.ts:285]
      ↳ Searches texts by title or slug with optional author filter.
     └─> paginateQuery(…): Promise<Connection<Node>> [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:53]
        ↳ Pages a filtered query into a Relay connection in SQL: the cursors become keyset bounds on the sort key and id, `first`…
@@ -1062,7 +1120,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**9. `TextsResolver.texts`** — depth ≥ 7 · decorated-method
+**11. `TextsResolver.texts`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 TextsResolver.texts(arguments_: TextsArguments): Promise<Connection<TextType>> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:135]
@@ -1081,7 +1139,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**10. `TokensResolver.tokens`** — depth ≥ 7 · decorated-method
+**12. `TokensResolver.tokens`** — depth ≥ 7 · decorated-method
 
 ```text
 🚀 TokensResolver.tokens(arguments_: TokensArguments): Promise<Connection<TokenType>> [projects/lexico/lexico-api/src/modules/literature/tokens.resolver.ts:29]
@@ -1100,7 +1158,24 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**11. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
+**13. `WordsResolver.words`** — depth ≥ 7 · decorated-method
+
+```text
+🚀 WordsResolver.words(arguments_: WordsArguments): Promise<WordType[]> [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:41]
+   ↳ Retrieves multiple surface words by a batch of normalized input strings.
+  └─> WordsResolver.map(…)(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:49]
+    └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
+       ↳ Maps a word, and each link it loaded, to its GraphQL type.
+      └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+         ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+        └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+          └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+             ↳ Encodes an offset-based integer cursor.
+            └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+               ↳ Encodes structured data into an opaque Base64 cursor string.
+```
+
+**14. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
 
 ```text
 🚀 LiteratureRelationsLoader.createConnectionLoader(…)(…): Promise<Map<string, Connection<Text>>> [projects/lexico/lexico-api/src/modules/literature/literature-relations.loader.ts:31]
@@ -1118,7 +1193,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**12. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
+**15. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
 
 ```text
 🚀 LiteratureRelationsLoader.createConnectionLoader(…)(…): Promise<Map<string, Connection<Line>>> [projects/lexico/lexico-api/src/modules/literature/literature-relations.loader.ts:40]
@@ -1136,7 +1211,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**13. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
+**16. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
 
 ```text
 🚀 LiteratureRelationsLoader.createConnectionLoader(…)(…): Promise<Map<string, Connection<Text>>> [projects/lexico/lexico-api/src/modules/literature/literature-relations.loader.ts:56]
@@ -1154,7 +1229,7 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**14. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
+**17. `LiteratureRelationsLoader.createConnectionLoader(…)`** — depth ≥ 7 · orphan-root
 
 ```text
 🚀 LiteratureRelationsLoader.createConnectionLoader(…)(…): Promise<Map<string, Connection<Token>>> [projects/lexico/lexico-api/src/modules/literature/literature-relations.loader.ts:62]
@@ -1172,65 +1247,87 @@ What this project is judged against, as declared in its own `callidescope.config
                ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**15. `LexemesResolver.lexemes`** — depth ≥ 6 · decorated-method
+**18. `toLexemeSearchResult`** — depth ≥ 7 · orphan-root
 
 ```text
-🚀 LexemesResolver.lexemes(arguments_: LexemesArguments): Promise<LexemeType[]> [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:41]
-   ↳ Retrieves multiple dictionary lexemes by ID.
-  └─> LexemesResolver.map(…)(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:49]
-    └─> toLexemeType(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25]
-       ↳ Maps a lexeme entity, and each relation it loaded, to its GraphQL type.
-      └─> mapNullableRelations(…): Mapped[] | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:162]
-         ↳ Maps a nullable to-many relation to its GraphQL types, keeping `null`, and leaving one its query did not join unset, as…
-        └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-           ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-          └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
-```
-
-**16. `LexemeWordFormResolver.wordForms`** — depth 6 · decorated-method
-
-```text
-🚀 LexemeWordFormResolver.wordForms(lexeme: LexemeType): Promise<LexemeWordFormType[]> [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:34]
-   ↳ Resolves every written word that surfaces as one of this lexeme's forms, batched into one query per request however…
-  └─> LexemeWordFormResolver.map(…)(wordForm: WordForm): LexemeWordFormType [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:46]
-    └─> toLexemeWordFormType(wordForm: WordForm): LexemeWordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:26]
-       ↳ Maps a word-form link, with its form and word joined, to the type a lexeme exposes it as.
-      └─> toFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:29]
-         ↳ Maps a form entity to the GraphQL type of its own kind, the class the `Form` interface resolves a returned form by.
-        └─> toNonFiniteFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:59]
-           ↳ Maps the verbal-noun, participle, infinitive, and adverb forms.
-          └─> toVerbalNounFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:78]
-             ↳ Maps the gerund, supine, and adverb forms, the last of the kinds.
-```
-
-**17. `LexemesResolver.lexeme`** — depth ≥ 5 · decorated-method
-
-```text
-🚀 LexemesResolver.lexeme(arguments_: LexemeArguments): Promise<LexemeType | null> [projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:26]
-   ↳ Retrieves a single dictionary lexeme by ID.
+🚀 toLexemeSearchResult(match: LexemeSearchMatch): LexemeSearchResult [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:104]
+   ↳ Maps a search match, and the lexeme it matched, to the result the API returns.
   └─> toLexemeType(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25]
      ↳ Maps a lexeme entity, and each relation it loaded, to its GraphQL type.
-    └─> mapNullableRelations(…): Mapped[] | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:162]
-       ↳ Maps a nullable to-many relation to its GraphQL types, keeping `null`, and leaving one its query did not join unset, as…
-      └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-         ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-        └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
+    └─> mapNullableRelationConnection(…): Connection<Mapped> | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:161]
+       ↳ Maps a nullable to-many relation to a Relay connection, keeping `null`.
+      └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+         ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+        └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+          └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+             ↳ Encodes an offset-based integer cursor.
+            └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+               ↳ Encodes structured data into an opaque Base64 cursor string.
 ```
 
-**18. `WordsResolver.words`** — depth ≥ 5 · decorated-method
+**19. `WordFormResolver.word`** — depth ≥ 6 · decorated-method
 
 ```text
-🚀 WordsResolver.words(arguments_: WordsArguments): Promise<WordType[]> [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:41]
-   ↳ Retrieves multiple surface words by a batch of normalized input strings.
-  └─> WordsResolver.map(…)(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:49]
-    └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
-       ↳ Maps a word, and each link it loaded, to its GraphQL type.
-      └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-         ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-        └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
+🚀 WordFormResolver.word(wordForm: WordFormType): Promise<WordType> [projects/lexico/lexico-api/src/modules/words/word-form.resolver.ts:28]
+   ↳ Resolves the word side of a word-form link, batched per request.
+  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
+     ↳ Maps a word, and each link it loaded, to its GraphQL type.
+    └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+       ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+      └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+        └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+           ↳ Encodes an offset-based integer cursor.
+          └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+             ↳ Encodes structured data into an opaque Base64 cursor string.
 ```
 
-**19. `createConnectionLoader`** — depth ≥ 5 · orphan-root
+**20. `WordLexemeResolver.word`** — depth ≥ 6 · decorated-method
+
+```text
+🚀 WordLexemeResolver.word(wordLexeme: WordLexemeType): Promise<WordType> [projects/lexico/lexico-api/src/modules/words/word-lexeme.resolver.ts:29]
+   ↳ Resolves the word side of a word-lexeme link, batched per request.
+  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
+     ↳ Maps a word, and each link it loaded, to its GraphQL type.
+    └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+       ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+      └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+        └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+           ↳ Encodes an offset-based integer cursor.
+          └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+             ↳ Encodes structured data into an opaque Base64 cursor string.
+```
+
+**21. `WordsResolver.word`** — depth ≥ 6 · decorated-method
+
+```text
+🚀 WordsResolver.word(arguments_: WordArguments): Promise<null | WordType> [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:26]
+   ↳ Retrieves a single surface word by normalized input string.
+  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
+     ↳ Maps a word, and each link it loaded, to its GraphQL type.
+    └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+       ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+      └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+        └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+           ↳ Encodes an offset-based integer cursor.
+          └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+             ↳ Encodes structured data into an opaque Base64 cursor string.
+```
+
+**22. `LexemeWordFormResolver.wordForms`** — depth ≥ 5 · decorated-method
+
+```text
+🚀 LexemeWordFormResolver.wordForms(lexeme: LexemeType): Promise<Connection<LexemeWordFormType>> [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:38]
+   ↳ Resolves every written word that surfaces as one of this lexeme's forms, batched into one query per request however…
+  └─> mapRelationConnection(…): Connection<Mapped> | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:195]
+     ↳ Maps a to-many relation to a Relay connection with stable offset cursors.
+    └─> map(…)(relation: Entity, index: number): Edge<Mapped> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:204]
+      └─> encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
+         ↳ Encodes an offset-based integer cursor.
+        └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
+           ↳ Encodes structured data into an opaque Base64 cursor string.
+```
+
+**23. `createConnectionLoader`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 createConnectionLoader(…): DataLoader<ConnectionRequest, Connection<Node>, string> [projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:38]
@@ -1243,21 +1340,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Creates a Relay Connection containing edges, page info, and total count.
 ```
 
-**20. `toLexemeSearchResult`** — depth ≥ 5 · orphan-root
-
-```text
-🚀 toLexemeSearchResult(match: LexemeSearchMatch): LexemeSearchResult [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:104]
-   ↳ Maps a search match, and the lexeme it matched, to the result the API returns.
-  └─> toLexemeType(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25]
-     ↳ Maps a lexeme entity, and each relation it loaded, to its GraphQL type.
-    └─> mapNullableRelations(…): Mapped[] | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:162]
-       ↳ Maps a nullable to-many relation to its GraphQL types, keeping `null`, and leaving one its query did not join unset, as…
-      └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-         ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-        └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
-```
-
-**21. `AuthorsResolver.resolveAuthorTexts`** — depth ≥ 4 · decorated-method
+**24. `AuthorsResolver.resolveAuthorTexts`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 AuthorsResolver.resolveAuthorTexts(…): Promise<Connection<TextType>> [projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:81]
@@ -1269,7 +1352,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**22. `LinesResolver.tokensForLine`** — depth ≥ 4 · decorated-method
+**25. `LinesResolver.tokensForLine`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 LinesResolver.tokensForLine(…): Promise<Connection<TokenType>> [projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:83]
@@ -1281,7 +1364,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**23. `TextsResolver.childTexts`** — depth ≥ 4 · decorated-method
+**26. `TextsResolver.childTexts`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 TextsResolver.childTexts(text: TextType, arguments_: PaginationArguments): Promise<Connection<TextType>> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:48]
@@ -1293,7 +1376,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**24. `TextsResolver.linesForText`** — depth ≥ 4 · decorated-method
+**27. `TextsResolver.linesForText`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 TextsResolver.linesForText(text: TextType, arguments_: PaginationArguments): Promise<Connection<LineType>> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:66]
@@ -1305,7 +1388,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Creates a Relay Edge from a node and an encoded cursor string.
 ```
 
-**25. `TextsResolver.text`** — depth ≥ 4 · decorated-method
+**28. `TextsResolver.text`** — depth ≥ 4 · decorated-method
 
 ```text
 🚀 TextsResolver.text(arguments_: TextArguments): Promise<null | TextType> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:116]
@@ -1314,69 +1397,46 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Maps a text, and each relation it loaded, to its GraphQL type.
     └─> mapNullableRelation(…): Mapped | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:151]
        ↳ Maps a nullable to-one relation to its GraphQL type, keeping `null`, and leaving one its query did not join unset, as…
-      └─> mapRelation(…): Mapped | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:175]
+      └─> mapRelation(…): Mapped | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:185]
          ↳ Maps a to-one relation to its GraphQL type.
 ```
 
-**26. `WordFormResolver.word`** — depth ≥ 4 · decorated-method
+**29. `toLexemeWordFormType`** — depth 4 · orphan-root
 
 ```text
-🚀 WordFormResolver.word(wordForm: WordFormType): Promise<WordType> [projects/lexico/lexico-api/src/modules/words/word-form.resolver.ts:28]
-   ↳ Resolves the word side of a word-form link, batched per request.
-  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
-     ↳ Maps a word, and each link it loaded, to its GraphQL type.
-    └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-       ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-      └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
+🚀 toLexemeWordFormType(wordForm: WordForm): LexemeWordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:26]
+   ↳ Maps a word-form link, with its form and word joined, to the type a lexeme exposes it as.
+  └─> toFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:29]
+     ↳ Maps a form entity to the GraphQL type of its own kind, the class the `Form` interface resolves a returned form by.
+    └─> toNonFiniteFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:59]
+       ↳ Maps the verbal-noun, participle, infinitive, and adverb forms.
+      └─> toVerbalNounFormType(form: Form): FormType [projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:78]
+         ↳ Maps the gerund, supine, and adverb forms, the last of the kinds.
 ```
 
-**27. `WordLexemeResolver.word`** — depth ≥ 4 · decorated-method
-
-```text
-🚀 WordLexemeResolver.word(wordLexeme: WordLexemeType): Promise<WordType> [projects/lexico/lexico-api/src/modules/words/word-lexeme.resolver.ts:29]
-   ↳ Resolves the word side of a word-lexeme link, batched per request.
-  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
-     ↳ Maps a word, and each link it loaded, to its GraphQL type.
-    └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-       ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-      └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
-```
-
-**28. `WordsResolver.word`** — depth ≥ 4 · decorated-method
-
-```text
-🚀 WordsResolver.word(arguments_: WordArguments): Promise<null | WordType> [projects/lexico/lexico-api/src/modules/words/words.resolver.ts:26]
-   ↳ Retrieves a single surface word by normalized input string.
-  └─> toWordType(word: Word): WordType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51]
-     ↳ Maps a word, and each link it loaded, to its GraphQL type.
-    └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:186]
-       ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
-      └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:190]
-```
-
-**29. `AuthorsResolver.author`** — depth 3 · decorated-method
+**30. `AuthorsResolver.author`** — depth 3 · decorated-method
 
 ```text
 🚀 AuthorsResolver.author(arguments_: AuthorArguments): Promise<AuthorType | null> [projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:46]
    ↳ Finds an author by ID or slug.
   └─> toAuthorType(author: Author): AuthorType [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:131]
      ↳ Maps an author to its GraphQL type.
-    └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
+    └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
        ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**30. `TextsResolver.parentText`** — depth ≥ 3 · decorated-method
+**31. `TextsResolver.parentText`** — depth ≥ 3 · decorated-method
 
 ```text
 🚀 TextsResolver.parentText(text: TextType): Promise<null | TextType> [projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:84]
    ↳ Resolves the parent text for a nested text.
   └─> mapNullableRelation(…): Mapped | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:151]
      ↳ Maps a nullable to-one relation to its GraphQL type, keeping `null`, and leaving one its query did not join unset, as…
-    └─> mapRelation(…): Mapped | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:175]
+    └─> mapRelation(…): Mapped | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:185]
        ↳ Maps a to-one relation to its GraphQL type.
 ```
 
-**31. `decodeOffsetCursor`** — depth ≥ 3 · orphan-root
+**32. `decodeOffsetCursor`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 decodeOffsetCursor(cursor?: null | string, defaultOffset?: number): number [projects/lexico/lexico-api/src/lexico-api.utilities.ts:75]
@@ -1387,28 +1447,38 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**32. `Paginated`** — depth ≥ 3 · orphan-root
+**33. `mapNullableRelations`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 Paginated(…): ClassConstructor<Connection<T>> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:197]
+🚀 mapNullableRelations(…): Mapped[] | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:172]
+   ↳ Maps a nullable to-many relation to its GraphQL types, keeping `null`, and leaving one its query did not join unset, as…
+  └─> mapRelations(…): Mapped[] | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:217]
+     ↳ Maps each row of a to-many relation to its GraphQL type, leaving one its query did not join unset, as {@link…
+    └─> map(…)(relation: Entity): Mapped [projects/lexico/lexico-api/src/lexico-api.utilities.ts:221]
+```
+
+**34. `Paginated`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 Paginated(…): ClassConstructor<Connection<T>> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:228]
    ↳ Mixin type factory producing a Relay Connection ObjectType for GraphQL schema generation, named after the node's…
   └─> createEdgeType(…): ClassConstructor<Edge<T>> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:49]
      ↳ Mixin type factory producing a Relay Edge ObjectType for GraphQL schema generation, named after the node's GraphQL type…
     └─> Field(…)(): StringConstructor [projects/lexico/lexico-api/src/lexico-api.utilities.ts:60]
 ```
 
-**33. `toTokenType`** — depth ≥ 3 · orphan-root
+**35. `toTokenType`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 toTokenType(token: Token): TokenType [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:164]
    ↳ Maps a token, and each relation it loaded, to its GraphQL type.
   └─> mapNullableRelation(…): Mapped | null | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:151]
      ↳ Maps a nullable to-one relation to its GraphQL type, keeping `null`, and leaving one its query did not join unset, as…
-    └─> mapRelation(…): Mapped | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:175]
+    └─> mapRelation(…): Mapped | undefined [projects/lexico/lexico-api/src/lexico-api.utilities.ts:185]
        ↳ Maps a to-one relation to its GraphQL type.
 ```
 
-**34. `LiteratureRelationsLoader.anonymous`** — depth 3 · orphan-root
+**36. `LiteratureRelationsLoader.anonymous`** — depth 3 · orphan-root
 
 ```text
 🚀 LiteratureRelationsLoader.anonymous(textIds: readonly string[]): Promise<(Text | null)[]> [projects/lexico/lexico-api/src/modules/literature/literature-relations.loader.ts:46]
@@ -1417,7 +1487,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> LiteratureRelationsService.map(…)(text: Text): [string, Text | null] [projects/lexico/lexico-api/src/modules/literature/literature-relations.service.ts:71]
 ```
 
-**35. `readSearchCursor`** — depth ≥ 3 · orphan-root
+**37. `readSearchCursor`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 readSearchCursor(cursor: string): CursorClaim | null [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:79]
@@ -1428,16 +1498,16 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Decodes an opaque Base64 cursor string into structured data.
 ```
 
-**36. `SearchService.load`** — depth ≥ 3 · orphan-root
+**38. `SearchService.load`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 SearchService.load(…): Promise<{ id: string; enclitic: string | null; identifiers: string[]; lexeme: Lexeme; score: number; source: SearchMatchSource; }[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:233]
-  └─> SearchService.map(…)(lexeme: Lexeme): { lexeme: Lexeme; score: number; } [projects/lexico/lexico-api/src/modules/search/search.service.ts:238]
+🚀 SearchService.load(…): Promise<{ id: string; enclitic: string | null; identifiers: string[]; lexeme: Lexeme; score: number; source: SearchMatchSource; }[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:235]
+  └─> SearchService.map(…)(lexeme: Lexeme): { lexeme: Lexeme; score: number; } [projects/lexico/lexico-api/src/modules/search/search.service.ts:240]
     └─> toRankedScore(key: unknown): number [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:120]
        ↳ Reads a ranked row's score back from the sort key it pages by, which is the score negated so the best score sorts first.
 ```
 
-**37. `WordLinkLoader.anonymous`** — depth 3 · orphan-root
+**39. `WordLinkLoader.anonymous`** — depth 3 · orphan-root
 
 ```text
 🚀 WordLinkLoader.anonymous(wordFormIds: readonly string[]): Promise<(Error | Word)[]> [projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:28]
@@ -1446,7 +1516,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> WordLinkLoader.map(…)(link: { readonly id: string; readonly word: Word; }): [string, Word] [projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:53]
 ```
 
-**38. `WordLinkLoader.anonymous`** — depth 3 · orphan-root
+**40. `WordLinkLoader.anonymous`** — depth 3 · orphan-root
 
 ```text
 🚀 WordLinkLoader.anonymous(wordLexemeIds: readonly string[]): Promise<(Error | Word)[]> [projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:36]
@@ -1455,7 +1525,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> WordLinkLoader.map(…)(link: { readonly id: string; readonly word: Word; }): [string, Word] [projects/lexico/lexico-api/src/modules/words/word-link.loader.ts:53]
 ```
 
-**39. `HealthResolver.health`** — depth 2 · decorated-method
+**41. `HealthResolver.health`** — depth 2 · decorated-method
 
 ```text
 🚀 HealthResolver.health(): boolean [projects/lexico/lexico-api/src/modules/health/health.resolver.ts:22]
@@ -1464,23 +1534,14 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns true if the service is operational.
 ```
 
-**40. `transform(…)`** — depth 2 · orphan-root
+**42. `transform(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 transform(…)(origins: string): string[] [projects/lexico/lexico-api/src/lexico-api.constants.ts:14]
   └─> filter(…)(origin: string): boolean [projects/lexico/lexico-api/src/lexico-api.constants.ts:18]
 ```
 
-**41. `encodeOffsetCursor`** — depth 2 · orphan-root
-
-```text
-🚀 encodeOffsetCursor(offset: number): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:96]
-   ↳ Encodes an offset-based integer cursor.
-  └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:226]
-     ↳ Encodes structured data into an opaque Base64 cursor string.
-```
-
-**42. `toInflectionType`** — depth 2 · orphan-root
+**43. `toInflectionType`** — depth 2 · orphan-root
 
 ```text
 🚀 toInflectionType(inflection: Inflection): InflectionType [projects/lexico/lexico-api/src/modules/lexemes/inflections/inflections.utilities.ts:25]
@@ -1489,52 +1550,61 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Maps the adverb, preposition, and uninflected inflections.
 ```
 
-**43. `toPrincipalPartType`** — depth 2 · orphan-root
+**44. `toPrincipalPartType`** — depth 2 · orphan-root
 
 ```text
-🚀 toPrincipalPartType(principalPart: PrincipalPart): PrincipalPartType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:44]
+🚀 toPrincipalPartType(principalPart: PrincipalPart): PrincipalPartType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:50]
    ↳ Maps a principal part entity to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
+  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**44. `toPronunciationType`** — depth 2 · orphan-root
+**45. `toPronunciationType`** — depth 2 · orphan-root
 
 ```text
-🚀 toPronunciationType(pronunciation: Pronunciation): PronunciationType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:55]
+🚀 toPronunciationType(pronunciation: Pronunciation): PronunciationType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:61]
    ↳ Maps a pronunciation entity to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
+  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**45. `toTranslationType`** — depth 2 · orphan-root
+**46. `toTranslationType`** — depth 2 · orphan-root
 
 ```text
-🚀 toTranslationType(translation: Translation): TranslationType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:68]
+🚀 toTranslationType(translation: Translation): TranslationType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:74]
    ↳ Maps a translation entity to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
+  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**46. `toWordFormType`** — depth ≥ 2 · orphan-root
+**47. `toWordFormType`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 toWordFormType(wordForm: WordForm): WordFormType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:35]
    ↳ Maps a word-form link, and the form it loaded, to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
+  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**47. `toWordLexemeType`** — depth ≥ 2 · orphan-root
+**48. `toWordLexemeType`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 toWordLexemeType(wordLexeme: WordLexeme): WordLexemeType [projects/lexico/lexico-api/src/modules/words/words.utilities.ts:43]
    ↳ Maps a word-lexeme link, and the lexeme it loaded, to its GraphQL type.
-  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:233]
+  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
      ↳ Copies the shared base columns every soft-deletable entity exposes.
 ```
 
-**48. `toRequestKey`** — depth 2 · orphan-root
+**49. `toLineType`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 toLineType(line: Line): LineType [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:140]
+   ↳ Maps a line, and each relation it loaded, to its GraphQL type.
+  └─> toDeletableFields(entity: DeletableEntity): GraphQLFields<DeletableType> [projects/lexico/lexico-api/src/lexico-api.utilities.ts:264]
+     ↳ Copies the shared base columns every soft-deletable entity exposes.
+```
+
+**50. `toRequestKey`** — depth 2 · orphan-root
 
 ```text
 🚀 toRequestKey(request: ConnectionRequest): string [projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:310]
@@ -1543,7 +1613,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Keys one page's arguments, so requests asking the same page share a batch.
 ```
 
-**49. `LiteratureRelationsService.load`** — depth 2 · orphan-root
+**51. `LiteratureRelationsService.load`** — depth 2 · orphan-root
 
 ```text
 🚀 LiteratureRelationsService.load(): SelectQueryBuilder<Text> [projects/lexico/lexico-api/src/modules/literature/literature-relations.service.ts:82]
@@ -1551,7 +1621,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Selects texts with the relations a text connection exposes — the author, and the parent text with its own author — as a…
 ```
 
-**50. `LiteratureRelationsService.load`** — depth 2 · orphan-root
+**52. `LiteratureRelationsService.load`** — depth 2 · orphan-root
 
 ```text
 🚀 LiteratureRelationsService.load(): SelectQueryBuilder<Text> [projects/lexico/lexico-api/src/modules/literature/literature-relations.service.ts:125]
@@ -1559,15 +1629,15 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Selects texts with the relations a text connection exposes — the author, and the parent text with its own author — as a…
 ```
 
-**51. `SearchService.encode`** — depth 2 · orphan-root
+**53. `SearchService.encode`** — depth 2 · orphan-root
 
 ```text
-🚀 SearchService.encode(position: CursorPosition): string [projects/lexico/lexico-api/src/modules/search/search.service.ts:218]
-  └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:226]
+🚀 SearchService.encode(position: CursorPosition): string [projects/lexico/lexico-api/src/modules/search/search.service.ts:220]
+  └─> toCursor(data: unknown): string [projects/lexico/lexico-api/src/lexico-api.utilities.ts:257]
      ↳ Encodes structured data into an opaque Base64 cursor string.
 ```
 
-**52. `WordsService.findFormsByData`** — depth 2 · orphan-root
+**54. `WordsService.findFormsByData`** — depth 2 · orphan-root
 
 ```text
 🚀 WordsService.findFormsByData(data: string): Promise<WordForm[]> [projects/lexico/lexico-api/src/modules/words/words.service.ts:93]
@@ -1576,7 +1646,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a single surface word and all of its morphological and lexical links.
 ```
 
-**53. `WordsService.findLexemeLinksByData`** — depth 2 · orphan-root
+**55. `WordsService.findLexemeLinksByData`** — depth 2 · orphan-root
 
 ```text
 🚀 WordsService.findLexemeLinksByData(data: string): Promise<WordLexeme[]> [projects/lexico/lexico-api/src/modules/words/words.service.ts:101]
@@ -1585,7 +1655,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a single surface word and all of its morphological and lexical links.
 ```
 
-**54. `LexemeWordFormLoader.anonymous`** — depth 2 · orphan-root
+**56. `LexemeWordFormLoader.anonymous`** — depth 2 · orphan-root
 
 ```text
 🚀 LexemeWordFormLoader.anonymous(lexemeIds: readonly string[]): Promise<WordForm[][]> [projects/lexico/lexico-api/src/modules/words/lexeme-word-form.loader.ts:28]
@@ -1593,7 +1663,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Finds every word-form link of the given lexemes in one query, each with its form and word joined and the form's lexeme…
 ```
 
-**55. `main`** — depth 2 · orphan-root
+**57. `main`** — depth 2 · orphan-root
 
 ```text
 🚀 main(): Promise<void> [projects/lexico/lexico-api/src/lexico-api.ts:16]
@@ -1607,35 +1677,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `SearchService.describeLatinMatches` | 10 | `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.filter(…)`, `SearchService.map(…)`, `SearchService.forEach(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.flatMap(…)`, `SearchService.filter(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:102` |
+| `SearchService.describeLatinMatches` | 11 | `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.filter(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.forEach(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.flatMap(…)`, `SearchService.filter(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:102` |
 | `paginateQuery` | 8 | `readCount`, `readPage`, `decodeCursor`, `slicePage`, `loadInOrder`, `map(…)`, `createConnection`, `map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:53` |
-| `LiteratureService.searchLiterature` | 7 | `createEmptyConnection`, `LiteratureService.searchAuthors`, `LiteratureService.searchTexts`, `LiteratureService.searchLines`, `LiteratureService.map(…)`, `LiteratureService.map(…)`, `LiteratureService.map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:259` |
+| `SearchService.searchLatin` | 7 | `MacronsService.removeMacrons`, `createEmptyConnection`, `decomposeEnclitic`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankLatinMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:418` |
 
 <details>
-<summary>120 more callables</summary>
+<summary>119 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `SearchService.searchLatin` | 7 | `MacronsService.removeMacrons`, `createEmptyConnection`, `decomposeEnclitic`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankLatinMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:416` |
 | `paginateQueryByParent` | 5 | `readCount`, `findCursorPositions`, `countPartitions`, `loadPartitionPages`, `assembleConnection` | `projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:90` |
-| `SearchService.searchEnglish` | 5 | `createEmptyConnection`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankEnglishMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:387` |
-| `toLexemeType` | 4 | `toDeletableFields`, `mapRelations`, `mapNullableRelation`, `mapNullableRelations` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25` |
-| `LiteratureResolver.searchLiterature` | 4 | `LiteratureService.searchLiterature`, `LiteratureResolver.map(…)`, `LiteratureResolver.map(…)`, `LiteratureResolver.map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:24` |
-| `SearchService.rankLatinMatches` | 4 | `SearchService.headwordOrWordMatches`, `SearchService.translatedCondition`, `SearchService.rankLemmaPattern`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:306` |
+| `SearchService.searchEnglish` | 5 | `createEmptyConnection`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankEnglishMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:389` |
+| `toLexemeType` | 4 | `toDeletableFields`, `mapRelationConnection`, `mapNullableRelation`, `mapNullableRelationConnection` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:25` |
+| `LiteratureService.searchLiterature` | 4 | `createEmptyConnection`, `LiteratureService.searchAuthors`, `LiteratureService.searchTexts`, `LiteratureService.searchLines` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:259` |
+| `SearchService.rankLatinMatches` | 4 | `SearchService.headwordOrWordMatches`, `SearchService.translatedCondition`, `SearchService.rankLemmaPattern`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:308` |
 | `toTextType` | 3 | `toDeletableFields`, `mapRelation`, `mapNullableRelation` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:152` |
 | `toTokenType` | 3 | `toDeletableFields`, `mapRelation`, `mapNullableRelation` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:164` |
 | `loadInOrder` | 3 | `map(…)`, `map(…)`, `flatMap(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:209` |
 | `countPartitions` | 3 | `windowCondition`, `toRowKey`, `map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:168` |
 | `findCursorPositions` | 3 | `readCursorId`, `filter(…)`, `map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:208` |
-| `SearchService.paginateRankedLexemes` | 3 | `paginateQuery`, `SearchService.mapConnection(…)`, `mapConnection` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:207` |
-| `SearchService.load` | 3 | `SearchService.createLexemeQuery`, `SearchService.map(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:233` |
+| `SearchService.paginateRankedLexemes` | 3 | `paginateQuery`, `SearchService.mapConnection(…)`, `mapConnection` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:209` |
+| `SearchService.load` | 3 | `SearchService.createLexemeQuery`, `SearchService.map(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:235` |
 | `transform(…)` | 2 | `filter(…)`, `map(…)` | `projects/lexico/lexico-api/src/lexico-api.constants.ts:14` |
 | `createEdgeType` | 2 | `Field(…)`, `Field(…)` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:49` |
+| `mapRelationConnection` | 2 | `createConnection`, `map(…)` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:195` |
+| `map(…)` | 2 | `createEdge`, `encodeOffsetCursor` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:204` |
 | `LexemesResolver.lexeme` | 2 | `LexemesService.findById`, `toLexemeType` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:26` |
 | `LexemesResolver.lexemes` | 2 | `LexemesService.findByIds`, `LexemesResolver.map(…)` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:41` |
 | `toWordFormType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:35` |
 | `toWordLexemeType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:43` |
-| `toWordType` | 2 | `toDeletableFields`, `mapRelations` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51` |
+| `toWordType` | 2 | `toDeletableFields`, `mapRelationConnection` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:51` |
 | `map(…)` | 2 | `createEdge`, `encodeCursor` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:76` |
 | `readCursorId` | 2 | `fromCursorSafe`, `toCursor` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:97` |
 | `toLineType` | 2 | `toDeletableFields`, `mapRelation` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:140` |
@@ -1649,18 +1720,19 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LiteratureService.listLinesConnection` | 2 | `createEmptyConnection`, `paginateQuery` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:103` |
 | `LiteratureService.searchAuthors` | 2 | `createEmptyConnection`, `paginateQuery` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:202` |
 | `LiteratureService.searchLines` | 2 | `createEmptyConnection`, `paginateQuery` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:228` |
-| `LiteratureService.searchTexts` | 2 | `createEmptyConnection`, `paginateQuery` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:289` |
+| `LiteratureService.searchTexts` | 2 | `createEmptyConnection`, `paginateQuery` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:285` |
 | `AuthorsResolver.author` | 2 | `LiteratureService.findAuthorByLookup`, `toAuthorType` | `projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:46` |
 | `AuthorsResolver.authors` | 2 | `mapConnection`, `LiteratureService.listAuthorsConnection` | `projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:67` |
 | `AuthorsResolver.searchAuthors` | 2 | `mapConnection`, `LiteratureService.searchAuthors` | `projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:98` |
 | `LinesResolver.lines` | 2 | `LiteratureService.listLinesConnection`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:46` |
 | `LinesResolver.searchLines` | 2 | `LiteratureService.searchLines`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:62` |
+| `LiteratureResolver.searchLiterature` | 2 | `LiteratureService.searchLiterature`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:26` |
 | `TextsResolver.searchTexts` | 2 | `LiteratureService.searchTexts`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:101` |
 | `TextsResolver.text` | 2 | `LiteratureService.findTextByLookup`, `toTextType` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:116` |
 | `TextsResolver.texts` | 2 | `LiteratureService.listTextsConnection`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:135` |
 | `TokensResolver.tokens` | 2 | `LiteratureService.listTokensForLineConnection`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/tokens.resolver.ts:29` |
 | `readSearchCursor` | 2 | `fromCursorSafe`, `toCursor` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:79` |
-| `SearchService.encode` | 2 | `toCursor`, `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:218` |
+| `SearchService.encode` | 2 | `toCursor`, `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:220` |
 | `SearchResolver.searchEnglish` | 2 | `mapConnection`, `SearchService.searchEnglish` | `projects/lexico/lexico-api/src/modules/search/search.resolver.ts:31` |
 | `SearchResolver.searchLatin` | 2 | `mapConnection`, `SearchService.searchLatin` | `projects/lexico/lexico-api/src/modules/search/search.resolver.ts:47` |
 | `WordsService.findByDataList` | 2 | `WordsService.map(…)`, `WordsService.flatMap(…)` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:52` |
@@ -1676,15 +1748,16 @@ What this project is judged against, as declared in its own `callidescope.config
 | `mapConnection` | 1 | `map(…)` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:134` |
 | `map(…)` | 1 | `createEdge` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:139` |
 | `mapNullableRelation` | 1 | `mapRelation` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:151` |
-| `mapNullableRelations` | 1 | `mapRelations` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:162` |
-| `mapRelations` | 1 | `map(…)` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:186` |
-| `Paginated` | 1 | `createEdgeType` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:197` |
+| `mapNullableRelationConnection` | 1 | `mapRelationConnection` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:161` |
+| `mapNullableRelations` | 1 | `mapRelations` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:172` |
+| `mapRelations` | 1 | `map(…)` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:217` |
+| `Paginated` | 1 | `createEdgeType` | `projects/lexico/lexico-api/src/lexico-api.utilities.ts:228` |
 | `toFormType` | 1 | `toNonFiniteFormType` | `projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:29` |
 | `toNonFiniteFormType` | 1 | `toVerbalNounFormType` | `projects/lexico/lexico-api/src/modules/lexemes/forms/forms.utilities.ts:59` |
 | `toInflectionType` | 1 | `toInvariableInflectionType` | `projects/lexico/lexico-api/src/modules/lexemes/inflections/inflections.utilities.ts:25` |
-| `toPrincipalPartType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:44` |
-| `toPronunciationType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:55` |
-| `toTranslationType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:68` |
+| `toPrincipalPartType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:50` |
+| `toPronunciationType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:61` |
+| `toTranslationType` | 1 | `toDeletableFields` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:74` |
 | `LexemesResolver.map(…)` | 1 | `toLexemeType` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:49` |
 | `toLexemeWordFormType` | 1 | `toFormType` | `projects/lexico/lexico-api/src/modules/words/words.utilities.ts:26` |
 | `createEmptyConnection` | 1 | `createConnection` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:36` |
@@ -1711,26 +1784,22 @@ What this project is judged against, as declared in its own `callidescope.config
 | `LiteratureService.listTokensForLineConnection` | 1 | `paginateQuery` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:180` |
 | `AuthorsResolver.resolveAuthorTexts` | 1 | `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/authors.resolver.ts:81` |
 | `LinesResolver.tokensForLine` | 1 | `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/lines.resolver.ts:83` |
-| `LiteratureResolver.map(…)` | 1 | `toAuthorType` | `projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:33` |
-| `LiteratureResolver.map(…)` | 1 | `toLineType` | `projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:34` |
-| `LiteratureResolver.map(…)` | 1 | `toTextType` | `projects/lexico/lexico-api/src/modules/literature/literature.resolver.ts:35` |
 | `TextsResolver.childTexts` | 1 | `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:48` |
 | `TextsResolver.linesForText` | 1 | `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:66` |
 | `TextsResolver.parentText` | 1 | `mapNullableRelation` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:84` |
 | `formatFormIdentifier` | 1 | `formatDeclinedForm` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:59` |
 | `toLexemeSearchResult` | 1 | `toLexemeType` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:104` |
 | `formatDeclinedForm` | 1 | `formatNonFiniteForm` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:127` |
-| `SearchService.map(…)` | 1 | `formatFormIdentifier` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:133` |
-| `SearchService.flatMap(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:148` |
-| `SearchService.map(…)` | 1 | `toLatinMatchSource` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:151` |
-| `SearchService.logSearch` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:187` |
-| `SearchService.map(…)` | 1 | `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:238` |
-| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:400` |
-| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.describeLatinMatches` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:436` |
+| `SearchService.map(…)` | 1 | `formatFormIdentifier` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:136` |
+| `SearchService.flatMap(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:150` |
+| `SearchService.map(…)` | 1 | `toLatinMatchSource` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:153` |
+| `SearchService.logSearch` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:189` |
+| `SearchService.map(…)` | 1 | `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:240` |
+| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:402` |
+| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.describeLatinMatches` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:438` |
 | `WordsService.findFormsByData` | 1 | `WordsService.findByData` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:93` |
 | `WordsService.findLexemeLinksByData` | 1 | `WordsService.findByData` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:101` |
-| `LexemeWordFormResolver.wordForms` | 1 | `LexemeWordFormResolver.map(…)` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:34` |
-| `LexemeWordFormResolver.map(…)` | 1 | `toLexemeWordFormType` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:46` |
+| `LexemeWordFormResolver.wordForms` | 1 | `mapRelationConnection` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:38` |
 | `WordFormResolver.word` | 1 | `toWordType` | `projects/lexico/lexico-api/src/modules/words/word-form.resolver.ts:28` |
 | `WordLexemeResolver.word` | 1 | `toWordType` | `projects/lexico/lexico-api/src/modules/words/word-lexeme.resolver.ts:29` |
 | `WordsResolver.map(…)` | 1 | `toWordType` | `projects/lexico/lexico-api/src/modules/words/words.resolver.ts:49` |
@@ -1746,19 +1815,19 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18803-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-581.00_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-19216-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-594.32_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-182-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-184-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-182-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-184-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-62-0ea5e9?style=flat-square)
-![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-73-0369a1?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-75-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-1-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-328-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-462-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-469-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -1767,15 +1836,15 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Test Files](https://img.shields.io/badge/Test_Files-57-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-26-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-88-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-1054-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-312-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-869-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-497-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-1087-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-981-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-255-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-610-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-1052-475569?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1065-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-306-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-873-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-498-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-1105-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-1000-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-264-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-617-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1059-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python

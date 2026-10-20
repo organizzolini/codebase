@@ -1,33 +1,3 @@
 {
-  "compilerOptions": {
-    // `projects/configuration/lint-staged.config.ts` is loaded by Node's native
-    // TypeScript stripping during pre-commit, which resolves imports exactly
-    // as written and so needs explicit `.ts` extensions. Safe here because
-    // this project only typechecks.
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "paths": {
-      "codebase/configuration/*": ["./projects/configuration/*"],
-      "eslint-plugin-better-max-params": [
-        "./projects/configuration/types/eslint-plugin-better-max-params/index.d.ts"
-      ]
-    },
-    "skipLibCheck": true
-  },
-  "exclude": [
-    "applications",
-    "dist",
-    "node_modules",
-    "packages",
-    "projects/configuration/conformetry-templates",
-    "tmp",
-    "tools"
-  ],
-  "extends": "./projects/configuration/tsconfig.json",
-  "include": [
-    "*.ts",
-    ".devcontainer/scripts/**/*.ts",
-    "projects/configuration/**/*.ts",
-    "scripts/**/*.ts"
-  ]
+  "extends": "./configuration/tsconfig.workspace.json"
 }

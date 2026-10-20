@@ -1,10 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Command, CommandRunner } from "nest-commander";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { CalendarEventsService } from "../calendar-events/calendar-events.service";
 import { CalendarService } from "../calendar/calendar.service";
+import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { InputService } from "../input/input.service";
 import { PerfectiveService } from "../perfective/perfective.service";
 import { ProgressiveService } from "../progressive/progressive.service";
@@ -38,6 +39,8 @@ export class CaelundasCommand extends CommandRunner {
     private readonly calendarService: CalendarService,
     @Inject(CalendarEventsService)
     private readonly calendarEventsService: CalendarEventsService,
+    @Inject(EphemerisService)
+    private readonly ephemerisService: EphemerisService,
   ) {
     super();
     this.logger.setContext(CaelundasCommand.name);
@@ -65,6 +68,8 @@ export class CaelundasCommand extends CommandRunner {
     this.logger.debug("🚀 Starting a caelundas run", undefined, {
       arguments: process.argv.slice(2),
     });
+
+    this.ephemerisService.verifyFiles();
 
     const input = this.inputService.parse();
 

@@ -10,8 +10,8 @@ import { PIPELINE_TEST_TIMEOUT_MILLISECONDS } from "./pipeline-window.constants"
 import { runPipelineWindow } from "./pipeline-window.functions";
 import { PipelineWindowModule } from "./pipeline-window.module";
 
-import type { DetectedCalendarEvent } from "../src/modules/caelundas-database/caelundas-database.types";
 import type { Aspect, Body } from "../src/modules/caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../src/modules/database/database.types";
 import type { INestApplicationContext } from "@nestjs/common";
 
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };

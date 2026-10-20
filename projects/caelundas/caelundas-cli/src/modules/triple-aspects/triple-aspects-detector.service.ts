@@ -7,8 +7,8 @@ import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { TripleAspectsComposerService } from "./triple-aspects-composer.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { Aspect, Body } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { Moment } from "moment-timezone";
 
 /**

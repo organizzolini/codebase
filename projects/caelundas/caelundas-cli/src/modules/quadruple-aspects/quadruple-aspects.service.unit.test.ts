@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -15,8 +15,8 @@ import { QuadrupleAspectsComposerService } from "./quadruple-aspects-composer.se
 import { QuadrupleAspectsService } from "./quadruple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
 import type { AspectPhase } from "../caelundas/caelundas.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /** Moon–Mars–Jupiter grand trine with Venus opposite the Moon and sextile the other two. */
 const kiteEdges: AspectBodies[] = [

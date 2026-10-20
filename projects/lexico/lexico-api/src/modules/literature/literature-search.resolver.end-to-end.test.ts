@@ -18,7 +18,7 @@ import {
   type LiteratureSearchPage,
 } from "../../../testing/literature-search-pagination";
 
-import type { DatabaseTestingModule } from "@codebase/database/testing";
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
 
 /** A GraphQL response body: data when execution succeeded, errors when not. */
@@ -354,9 +354,9 @@ describe("literature search end-to-end suite", () => {
     const SEARCH_LITERATURE = `
       query SearchLiterature($query: String!, $authorId: ID) {
         searchLiterature(query: $query, authorId: $authorId) {
-          authors { id }
-          lines { data }
-          texts { id }
+          authors { edges { node { id } } }
+          lines { edges { node { data } } }
+          texts { edges { node { id } } }
         }
       }
     `;
@@ -364,9 +364,17 @@ describe("literature search end-to-end suite", () => {
     /** The aggregated `searchLiterature` result. */
     interface SearchLiteratureData {
       readonly searchLiterature: {
-        readonly authors: readonly { readonly id: string }[];
-        readonly lines: readonly { readonly data: string }[];
-        readonly texts: readonly { readonly id: string }[];
+        readonly authors: {
+          readonly edges: readonly { readonly node: { readonly id: string } }[];
+        };
+        readonly lines: {
+          readonly edges: readonly {
+            readonly node: { readonly data: string };
+          }[];
+        };
+        readonly texts: {
+          readonly edges: readonly { readonly node: { readonly id: string } }[];
+        };
       };
     }
 
@@ -381,13 +389,15 @@ describe("literature search end-to-end suite", () => {
       );
 
       expect(searchLiterature).toStrictEqual({
-        authors: [{ id: corpus.author("ovid").id }],
-        lines: [{ data: "Ovidius nondum natus erat" }],
-        texts: [
-          { id: corpus.text("ovid/amores").id },
-          { id: corpus.text("ovid/ars-amatoria").id },
-          { id: corpus.text("ovid/metamorphoses").id },
-        ],
+        authors: { edges: [{ node: { id: corpus.author("ovid").id } }] },
+        lines: { edges: [{ node: { data: "Ovidius nondum natus erat" } }] },
+        texts: {
+          edges: [
+            { node: { id: corpus.text("ovid/amores").id } },
+            { node: { id: corpus.text("ovid/ars-amatoria").id } },
+            { node: { id: corpus.text("ovid/metamorphoses").id } },
+          ],
+        },
       });
     });
 
@@ -402,9 +412,9 @@ describe("literature search end-to-end suite", () => {
         },
       );
 
-      expect(searchLiterature.authors).toHaveLength(1);
-      expect(searchLiterature.texts).toStrictEqual([]);
-      expect(searchLiterature.lines).toHaveLength(1);
+      expect(searchLiterature.authors.edges).toHaveLength(1);
+      expect(searchLiterature.texts.edges).toStrictEqual([]);
+      expect(searchLiterature.lines.edges).toHaveLength(1);
     });
 
     it("returns empty lists for a blank query", async () => {
@@ -418,9 +428,9 @@ describe("literature search end-to-end suite", () => {
       );
 
       expect(searchLiterature).toStrictEqual({
-        authors: [],
-        lines: [],
-        texts: [],
+        authors: { edges: [] },
+        lines: { edges: [] },
+        texts: { edges: [] },
       });
     });
   });

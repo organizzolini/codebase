@@ -4,7 +4,7 @@
 the guides that read them.**
 
 Conformetry's only worked example used to be a real workspace: this
-repository's own `projects/configuration/conformetry.config.ts` and its ten templates.
+repository's own `configuration/conformetry.config.ts` and its ten templates.
 That is a poor introduction on both counts — too large to read through, and too
 specific to copy. This package is the sandbox instead. Every example is
 self-contained: its own configuration, its own template folder, its own
@@ -101,7 +101,7 @@ Full reference: [`@conformetry/configuration`](../conformetry-configuration/READ
 ### 3. Scaffold from it
 
 ```bash
-conformetry generate --config projects/configuration/conformetry.config.ts --template hello --name world
+conformetry generate --config configuration/conformetry.config.ts --template hello --name world
 ```
 
 A template's own inputs are passed as flags. Unknown flags are accepted
@@ -119,7 +119,7 @@ then [case-variants](examples/case-variants/README.md).
 ### 4. Validate
 
 ```bash
-conformetry validate --config projects/configuration/conformetry.config.ts
+conformetry validate --config configuration/conformetry.config.ts
 ```
 
 ```text
@@ -227,12 +227,12 @@ collision is answered rather than suppressed:
 | Gate | Why it does not apply here | How that is expressed |
 | ---- | -------------------------- | --------------------- |
 | Test coverage 96% | Every example is either a configuration a reader copies or a script a reader runs, and the suite runs each as a child process. There is no imported library source to instrument. | `coverage.include: []` in `vitest.config.ts`, the same as [`conformetry-agents`](../conformetry-agents) |
-| `knip` | Example code exists to be read, not imported. Unused files and exports are the norm. | An explicit workspace entry in `projects/configuration/knip.config.ts` naming the example configurations as entry points |
-| `jscpd` duplication | Twelve parallel examples are near-identical by design. | The fixture trees are excluded, exactly as `projects/configuration/conformetry-templates/**` already is |
+| `knip` | Example code exists to be read, not imported. Unused files and exports are the norm. | An explicit workspace entry in `configuration/knip.config.ts` naming the example configurations as entry points |
+| `jscpd` duplication | Twelve parallel examples are near-identical by design. | The fixture trees are excluded, exactly as `configuration/conformetry-templates/**` already is |
 | ESLint, `oxfmt`, `tsc` | A template file holds mustache where an identifier belongs, and is not parseable as the language its extension names. | `examples/*/templates/**` and `examples/*/instances/**` are excluded; each example's `conformetry.config.ts` and `embed.ts` are **not**, and are linted and type-checked like any other source |
-| Project structure | `examples/` is not one of the fixed set of project subfolders. | Declared in `projects/configuration/codebase-structure.json` |
+| Project structure | `examples/` is not one of the fixed set of project subfolders. | Declared in `configuration/codebase-structure.json` |
 | `codometer` `sizeLimit` | Nothing here is built or shipped, so there is no compiled output to size. | A `codometer` target with no `PROJECT_LIMITS` entry, the same as the two `*-agents` packages |
-| Project tags | `framework:nestjs` is accurate — the embedding example boots a real Nest container — and it is safe because every tag-scoped instance glob in `projects/configuration/conformetry.config.ts` is under `src/modules/`, which this package does not have. Carrying the tag under a `src/modules/` layout would sweep the drifted fixtures into this repository's own conformance run. | `framework:nestjs`, `language:typescript`, `name:conformetry-examples`, `type:package` — and no `src/`, which is what keeps the tag free to be accurate |
+| Project tags | `framework:nestjs` is accurate — the embedding example boots a real Nest container — and it is safe because every tag-scoped instance glob in `configuration/conformetry.config.ts` is under `src/modules/`, which this package does not have. Carrying the tag under a `src/modules/` layout would sweep the drifted fixtures into this repository's own conformance run. | `framework:nestjs`, `language:typescript`, `name:conformetry-examples`, `type:package` — and no `src/`, which is what keeps the tag free to be accurate |
 
 ## Layout
 
@@ -276,6 +276,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_configuration["conformetry-configuration"]
   conformetry_examples["conformetry-examples"]
@@ -283,6 +284,7 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
+  conformetry_examples --> configuration
   conformetry_examples -.-> conformetry_cli
   conformetry_examples --> conformetry_configuration
   conformetry_examples --> conformetry_generation

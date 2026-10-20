@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -18,7 +18,7 @@ import {
   SOLAR_RETREATING_SUMMARY,
 } from "./annual-solar-cycle.constants";
 
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DistanceEphemeris } from "../ephemeris/ephemeris.types";
 import type {
   DetectAnnualSolarCycleArguments,

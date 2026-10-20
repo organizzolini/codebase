@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import { describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
@@ -13,7 +13,7 @@ import { TripleAspectsDetectorService } from "./triple-aspects-detector.service"
 import { TripleAspectsService } from "./triple-aspects.service";
 
 import type { AspectBodies } from "../aspects/aspects.types";
-import type { DetectedCalendarEvent } from "../caelundas-database/caelundas-database.types";
+import type { DetectedCalendarEvent } from "../database/database.types";
 
 /**
  * Integration tests for Triple Aspect pattern detection

@@ -3,12 +3,13 @@ import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import {
+  Card,
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
   Spinner,
-} from "@codebase/components";
+} from "@codebase/presentation";
 
 import type { ReactNode, SyntheticEvent } from "react";
 
@@ -87,31 +88,33 @@ export function SearchBar(
         onSubmit={handleSubmit}
         role="search"
       >
-        <InputGroup className="h-12">
-          <InputGroupInput
-            aria-label="Search Lexico"
-            className="text-lg"
-            onChange={(event) => {
-              setQuery(event.currentTarget.value);
-              debouncedSearch(event.currentTarget.value);
-            }}
-            placeholder="Search Lexico"
-            type="search"
-            value={query}
-          />
-          <InputGroupAddon
-            align="inline-end"
-            className="has-[>button]:mr-0"
-          >
-            <InputGroupButton
-              aria-label="Search"
-              size="icon-sm"
-              type="submit"
+        <Card className="overflow-visible p-1 shadow-lg">
+          <InputGroup className="h-12 bg-card shadow-none ring-0 dark:bg-card">
+            <InputGroupInput
+              aria-label="Search Lexico"
+              className="text-lg"
+              onChange={(event) => {
+                setQuery(event.currentTarget.value);
+                debouncedSearch(event.currentTarget.value);
+              }}
+              placeholder="Search Lexico"
+              type="search"
+              value={query}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className="has-[>button]:mr-0"
             >
-              {isLoading ? <Spinner /> : <Search />}
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
+              <InputGroupButton
+                aria-label="Search"
+                size="icon-sm"
+                type="submit"
+              >
+                {isLoading ? <Spinner /> : <Search />}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </Card>
       </form>
     </div>
   );

@@ -44,7 +44,7 @@
     "make-projects": {},
     "markdown-lint": {},
     "migration": {
-      "options": { "module": "src/modules/meanderaw-database" }
+      "options": { "module": "src/modules/database" }
     },
     "oxfmt": {},
     "oxlint": {},

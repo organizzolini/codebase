@@ -8,16 +8,15 @@ import {
 import { createServerFn as createServerFunction } from "@tanstack/react-start";
 import { print } from "graphql";
 import lodash from "lodash";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { z } from "zod";
 
-import { Button } from "@codebase/components";
+import { Button } from "@codebase/presentation";
 
 import { SearchBar } from "../components/search-bar";
 import { SearchLanding } from "../components/search-landing";
 import { SearchResults } from "../components/search-results";
 import {
-  LexemeFormsDocument,
   SearchEnglishDocument,
   SearchLatinDocument,
 } from "../graphql/generated/operations";
@@ -45,9 +44,6 @@ const searchSchema = z.object({ query: z.string().optional() });
 const connectionSchema = z.object({
   edges: z.array(z.object({ node: z.custom<ResultNode>() })),
 });
-const lexemeFormsSchema = z.object({
-  wordForms: z.array(z.custom<FormNode>()),
-});
 
 // 🏷️ Types
 
@@ -70,6 +66,13 @@ interface FormNode {
 }
 
 /**
+ * Relay connection edges carrying nodes of one shape.
+ */
+interface NodeEdges<Node> {
+  edges: { node: Node }[];
+}
+
+/**
  * One result as the GraphQL API returns it.
  */
 interface ResultNode {
@@ -81,9 +84,13 @@ interface ResultNode {
     inflection: LexemeInflection | null;
     lemma: string;
     partOfSpeech: string;
-    principalParts: { text: string[] }[];
-    pronunciations: null | { phonetic: null | string; variant: string }[];
-    translations: null | { data: string }[];
+    principalParts: NodeEdges<{ text: string[] }>;
+    pronunciations: NodeEdges<{
+      phonetic: null | string;
+      variant: string;
+    }> | null;
+    translations: NodeEdges<{ data: string }> | null;
+    wordForms: NodeEdges<FormNode> | null;
   };
   score: number;
   source: string;
@@ -255,6 +262,20 @@ const getSearch = createServerFunction({ method: "GET" })
     return best.map(({ enclitic, identifiers, lexeme, score, source }) => ({
       enclitic: enclitic ?? null,
       etymology: lexeme.etymology,
+      forms: (lexeme.wordForms?.edges ?? []).map(
+        ({
+          node: {
+            form: { __typename: kind, ...grammar },
+            id,
+            word,
+          },
+        }) => ({
+          ...grammar,
+          id,
+          kind,
+          word,
+        }),
+      ),
       id: lexeme.id,
       identifiers,
       inflection: toLexemeInflection(lexeme.inflection),
@@ -266,41 +287,18 @@ const getSearch = createServerFunction({ method: "GET" })
         source,
       }),
       partOfSpeech: lexeme.partOfSpeech,
-      principalParts: lexeme.principalParts.flatMap((part) =>
-        part.text.slice(0, 1),
+      principalParts: lexeme.principalParts.edges.flatMap(({ node }) =>
+        node.text.slice(0, 1),
       ),
-      pronunciations: (lexeme.pronunciations ?? []).flatMap(
-        ({ phonetic, variant }) =>
+      pronunciations: (lexeme.pronunciations?.edges ?? []).flatMap(
+        ({ node: { phonetic, variant } }) =>
           phonetic === null ? [] : [{ phonetic, variant }],
       ),
       source,
-      translations: (lexeme.translations ?? []).map(
-        (translation) => translation.data,
+      translations: (lexeme.translations?.edges ?? []).map(
+        ({ node: translation }) => translation.data,
       ),
     }));
-  });
-
-/**
- * Loads every form of one lexeme with the word written for it, for the table a
- * card opens on demand. It is a separate request because a lexeme can have
- * well over a hundred forms and most cards are never opened.
- */
-const getLexemeForms = createServerFunction({ method: "GET" })
-  .validator(z.object({ lexemeId: z.string() }))
-  .handler(async ({ data }): Promise<LexemeFormRow[]> => {
-    const response = await queryApi(LexemeFormsDocument, { id: data.lexemeId });
-    const lexeme = lexemeFormsSchema
-      .nullish()
-      .parse(z.record(z.string(), z.unknown()).parse(response)["lexeme"]);
-
-    return (lexeme?.wordForms ?? []).map(
-      ({ form: { __typename: kind, ...grammar }, id, word }) => ({
-        ...grammar,
-        id,
-        kind,
-        word,
-      }),
-    );
   });
 
 // 🧭 Route
@@ -377,6 +375,13 @@ function SearchPage(): ReactNode {
   const isLoading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
+  const formsByLexeme = useMemo(
+    () =>
+      new Map(
+        results.map((result) => [result.id, result.forms ?? []] as const),
+      ),
+    [results],
+  );
 
   // 🏗 Setup
 
@@ -392,8 +397,8 @@ function SearchPage(): ReactNode {
   );
   const handleLoadForms = useCallback(
     async (lexemeId: string): Promise<LexemeFormRow[]> =>
-      getLexemeForms({ data: { lexemeId } }),
-    [],
+      await Promise.resolve(formsByLexeme.get(lexemeId) ?? []),
+    [formsByLexeme],
   );
 
   // ♻️ Lifecycle
