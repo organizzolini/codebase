@@ -15,10 +15,12 @@ if [[ -z "${signing_key}" ]]; then
 fi
 
 # SSH signing (gpg.format=ssh) is how cloud agent sessions sign: the harness
-# supplies a signer program and the public key, and GitHub verifies the result
-# once that key is registered on the account. None of the GPG checks below apply
-# to it — there is no secret key to list, no user id to match against the
-# committer, and no local trust database — so it takes its own, shorter path.
+# supplies a signer program, and GitHub verifies the result once the key is
+# registered on the account. None of the GPG checks below apply to it — there is
+# no secret key to list and no trust database — so it takes its own path: the
+# signer must run, and ssh-keygen must verify what it signs against an allowed
+# signers file. git runs gpg.ssh.program for verification too, and a harness
+# signer only signs, so verification names ssh-keygen explicitly.
 signing_format="$(git config --get gpg.format || true)"
 if [[ "${signing_format}" == 'ssh' ]]; then
   ssh_program="$(git config --get gpg.ssh.program || true)"
@@ -34,14 +36,25 @@ if [[ "${signing_format}" == 'ssh' ]]; then
     exit 1
   fi
 
+  if ! command -v ssh-keygen > /dev/null 2>&1; then
+    echo "❌ ssh-keygen is required to verify SSH commit signatures but was not found in PATH." >&2
+    echo "   On Linux, bash scripts/installation.sh installs it (openssh-client)." >&2
+    exit 1
+  fi
+
+  allowed_signers_file="$(git config --get gpg.ssh.allowedSignersFile || true)"
+  if [[ -z "${allowed_signers_file}" || ! -s "${allowed_signers_file/#\~/${HOME}}" ]]; then
+    echo "❌ gpg.ssh.allowedSignersFile must name a file listing the key that signs your commits." >&2
+    echo "   On Linux, bash scripts/installation.sh writes it from the signer's own key." >&2
+    exit 1
+  fi
+
   if [[ "${SKIP_GPG_SIGNING_SMOKE_TEST:-}" == "true" ]]; then
     exit 0
   fi
 
-  # Signing a throwaway commit object proves the signer runs end to end. It is
-  # not verified locally: that needs gpg.ssh.allowedSignersFile and ssh-keygen,
-  # which a cloud session lacks, and GitHub checks the signature on the pull
-  # request regardless.
+  # Signing a throwaway commit object proves the signer runs end to end, and
+  # verifying it proves the allowed signers file lists the key that signed it.
   ssh_smoke_test_stderr="$(mktemp)"
   trap 'rm -f "$ssh_smoke_test_stderr"' EXIT
   ssh_tree_hash="$(git write-tree)"
@@ -49,10 +62,17 @@ if [[ "${signing_format}" == 'ssh' ]]; then
   if git rev-parse --verify HEAD > /dev/null 2>&1; then
     ssh_parent_options+=(-p "$(git rev-parse HEAD)")
   fi
-  if ! printf '%s' 'commit-signing-smoke-test' \
-    | git commit-tree "${ssh_tree_hash}" "${ssh_parent_options[@]}" -S > /dev/null 2> "${ssh_smoke_test_stderr}"; then
+  if ! ssh_test_commit_hash="$(
+    printf '%s' 'commit-signing-smoke-test' \
+      | git commit-tree "${ssh_tree_hash}" "${ssh_parent_options[@]}" -S 2> "${ssh_smoke_test_stderr}"
+  )"; then
     cat "${ssh_smoke_test_stderr}" >&2
     echo "❌ Git commit signing smoke test failed: ${ssh_program} could not sign with user.signingkey=${signing_key}." >&2
+    exit 1
+  fi
+  if ! git -c gpg.ssh.program=ssh-keygen verify-commit "${ssh_test_commit_hash}" > /dev/null 2> "${ssh_smoke_test_stderr}"; then
+    cat "${ssh_smoke_test_stderr}" >&2
+    echo "❌ Git commit signing smoke test failed: the test signature did not verify against ${allowed_signers_file}." >&2
     exit 1
   fi
   exit 0

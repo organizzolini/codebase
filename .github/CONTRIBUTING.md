@@ -170,7 +170,7 @@ gpg --armor --export "$(git config --get user.signingkey)"
 
 `scripts/git/check-commit-signing-configuration.sh` checks all of it — `commit.gpgsign`, `user.signingkey`, that a secret key exists for that key, and that signing actually succeeds. Husky runs it for you; never invoke it, or `check-push-commit-signatures.sh`, by hand during a normal commit or push.
 
-Cloud agent sessions sign with SSH instead (`gpg.format=ssh`), through a signer program the harness provides, so there is no GPG key to create. For `gpg.format=ssh` the check confirms the signer program and key file exist and that a throwaway commit signs; it does not verify the signature, because that needs `ssh-keygen` and `gpg.ssh.allowedSignersFile`, which a cloud session lacks. `pre-push` likewise accepts a commit carrying an SSH signature without verifying it locally, and GitHub verifies it on the pull request once the public key is registered on the account.
+Cloud agent sessions sign with SSH instead (`gpg.format=ssh`), through a signer program the harness provides, so there is no GPG key to create. For `gpg.format=ssh` the check confirms the signer program and key file exist, that `ssh-keygen` is installed, that `gpg.ssh.allowedSignersFile` lists the signing key, and that a throwaway commit both signs and verifies. `pre-push` verifies every pushed commit the same way, for either format, and rejects one whose signature is bad or cannot be checked. On Linux, `bash scripts/installation.sh` installs `ssh-keygen` and writes the allowed signers file from the signer's own key, since the harness holds the private key and the file holds only its public half. GitHub also verifies the signature on the pull request once that key is registered on the account.
 
 ### Workspace Structure
 

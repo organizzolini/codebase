@@ -36,7 +36,8 @@ else
 3. Enable signing with \"git config --global commit.gpgsign true\".
 4. Select the key with \"git config --global user.signingkey <key-id>\".
 5. Re-run \"bash scripts/git/check-commit-signing-configuration.sh\".
-6. If signatures still are not verified, add the matching public key to GitHub: Settings -> SSH and GPG keys."
+6. If signatures still are not verified, add the matching public key to GitHub: Settings -> SSH and GPG keys.
+7. If git signs with SSH (gpg.format=ssh) on Linux, run \"bash scripts/installation.sh\": it installs ssh-keygen and writes gpg.ssh.allowedSignersFile."
 fi
 
 CONTEXT="${ERROR}
