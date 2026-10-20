@@ -1,4 +1,4 @@
-import type { PageInfo } from "./lexico-api.entities";
+import type { PageInfo } from "./graphql.entities";
 
 /**
  * Constructor type for class references.

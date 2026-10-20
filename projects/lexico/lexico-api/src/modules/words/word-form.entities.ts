@@ -3,11 +3,11 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { DeletableType } from "../../deletable.entities";
 import { FormType } from "../lexemes/forms/form.entities";
 
-import type { GraphQLObjectOf, Related } from "../../lexico-api.types";
 import type {
   WordFormRelationField,
   WordFormResolvedField,
 } from "./words.types";
+import type { GraphQLObjectOf, Related } from "@codebase/interface";
 import type { WordForm } from "@codebase/lexico-entities";
 
 /** Links a written word to one morphological form it can surface as. */

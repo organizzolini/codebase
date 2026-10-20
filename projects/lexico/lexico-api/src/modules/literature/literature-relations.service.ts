@@ -11,8 +11,8 @@ import {
 
 import { paginateQueryByParent } from "./literature-relations.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { Connection } from "@codebase/interface";
 
 /**
  * Service resolving the relations beneath many authors, texts, and lines at

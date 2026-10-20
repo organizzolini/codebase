@@ -25,9 +25,9 @@ import {
 import { toTextType } from "./literature.utilities";
 import { TextsResolver } from "./texts.resolver";
 
-import type { Connection } from "../../lexico-api.types";
 import type { LineType } from "./line.entities";
 import type { TextType } from "./text.entities";
+import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** The nodes of a connection, in page order. */

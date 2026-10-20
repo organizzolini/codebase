@@ -2,9 +2,8 @@ import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { mapNullableRelation } from "@codebase/interface";
 import { Line, Text } from "@codebase/lexico-entities";
-
-import { mapNullableRelation } from "../../lexico-api.utilities";
 
 import { LiteratureRelationsLoader } from "./literature-relations.loader";
 import { LiteratureService } from "./literature.service";
@@ -15,7 +14,7 @@ import {
 } from "./literature.utilities";
 import { TextsResolver } from "./texts.resolver";
 
-import type { Connection } from "../../lexico-api.types";
+import type { Connection } from "@codebase/interface";
 
 /** A one-page connection holding the given nodes. */
 function connectionOf<Node>(nodes: Node[]): Connection<Node> {

@@ -7,8 +7,8 @@ import { AuthorType } from "./author.entities";
 import { LineType } from "./line.entities";
 import { TextType } from "./text.entities";
 
-import type { GraphQLObjectOf, Related } from "../../lexico-api.types";
 import type { TokenRelationField } from "./literature.types";
+import type { GraphQLObjectOf, Related } from "@codebase/interface";
 import type { Token } from "@codebase/lexico-entities";
 
 /** One word or punctuation mark parsed from a line. */

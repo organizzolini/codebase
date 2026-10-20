@@ -1,0 +1,54 @@
+{
+  "dependencies": {
+    "@nestjs/graphql": "catalog:",
+    "reflect-metadata": "catalog:",
+    "tslib": "catalog:"
+  },
+  "devDependencies": {
+    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@nx/eslint-plugin": "catalog:",
+    "@swc/helpers": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "graphql": "catalog:",
+    "vitest": "catalog:"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./testing/index.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "src/index.ts",
+  "name": "@codebase/interface",
+  "private": true,
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "default": "./dist/src/index.js",
+        "types": "./dist/src/index.d.ts"
+      },
+      "./testing": {
+        "default": "./dist/testing/index.js",
+        "types": "./dist/testing/index.d.ts"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts"
+  },
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "ignoreCatch": true,
+    "ignoreFiles": [
+      "**/*.test.ts"
+    ],
+    "strict": true
+  }
+}

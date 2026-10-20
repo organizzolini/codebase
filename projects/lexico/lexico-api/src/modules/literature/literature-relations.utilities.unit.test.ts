@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { createConnection, createEdge } from "@codebase/interface";
 import { Text } from "@codebase/lexico-entities";
 
 import { createRepositoryMock } from "../../../testing/mocks";
-import { createConnection, createEdge } from "../../lexico-api.utilities";
 
 import {
   createConnectionLoader,
@@ -11,8 +11,8 @@ import {
 } from "./literature-relations.utilities";
 import { createEmptyConnection } from "./literature.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { Connection } from "@codebase/interface";
 
 /** A one-edge connection naming the parent and page it answered. */
 function connectionFor(

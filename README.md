@@ -185,6 +185,7 @@ Enumerate, measure, and classify greek meander patterns
 **🛠️ [configuration](projects/configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
 **🎨 [components](projects/components)** - Shared React component library using shadcn/ui and Base UI primitives\
 **🐘 [persistence](projects/persistence)** - Shared Postgres package and command line: the `<PROJECT>_POSTGRES_*` environment fragment, TypeORM options and module, base entities, a Testcontainers harness, the `migration` target, and `export` and `import` for moving tables between databases\
+**🔌 [interface](projects/interface)** - Shared GraphQL package: the Relay connection, edge, and page info types, offset cursor and relation-mapping helpers, the entity-to-GraphQL-object type contract, and pagination test helpers\
 **🏗️ [infrastructure](projects/infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](projects/installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🔁 [integration](projects/integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\

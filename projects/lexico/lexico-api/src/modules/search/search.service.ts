@@ -4,6 +4,7 @@ import { performance } from "node:perf_hooks";
 
 import { Injectable } from "@nestjs/common";
 
+import { mapConnection, toCursor } from "@codebase/interface";
 import {
   InjectRepository,
   Lexeme,
@@ -13,7 +14,6 @@ import {
 } from "@codebase/lexico-entities";
 import { LoggerService } from "@codebase/logging";
 
-import { mapConnection, toCursor } from "../../lexico-api.utilities";
 import {
   createEmptyConnection,
   paginateQuery,
@@ -39,7 +39,6 @@ import {
   toRankedScore,
 } from "./search.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type {
   EncliticDecompositionResult,
   LexemeSearchMatch,
@@ -50,6 +49,7 @@ import type {
   SearchLogEntry,
   SearchPaginationOptions,
 } from "./search.types";
+import type { Connection } from "@codebase/interface";
 
 /**
  * Service providing dictionary search across Latin forms and English translations.

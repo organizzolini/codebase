@@ -6,10 +6,10 @@ import {
   TextConnectionType,
 } from "./literature-connection.entities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { AuthorType } from "./author.entities";
 import type { LineType } from "./line.entities";
 import type { TextType } from "./text.entities";
+import type { Connection } from "@codebase/interface";
 
 /** Aggregated result set for a literature search across authors, texts, and lines. */
 @ObjectType()

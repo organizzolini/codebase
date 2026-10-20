@@ -1,7 +1,7 @@
 // 🏷️ Types
 
-import type { Connection } from "../../lexico-api.types";
 import type { SearchMatchSource } from "./search.entities";
+import type { Connection } from "@codebase/interface";
 import type { Lexeme } from "@codebase/lexico-entities";
 
 /**

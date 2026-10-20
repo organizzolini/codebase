@@ -5,8 +5,9 @@ import {
   mapNullableRelation,
   mapRelation,
   toCursor,
-  toDeletableFields,
-} from "../../lexico-api.utilities";
+} from "@codebase/interface";
+
+import { toDeletableFields } from "../../lexico-api.utilities";
 import { toWordType } from "../words/words.utilities";
 
 import { AuthorType } from "./author.entities";
@@ -15,7 +16,6 @@ import { ENTITY_ID_PATTERN, LOAD_CHUNK_SIZE } from "./literature.constants";
 import { TextType } from "./text.entities";
 import { TokenType } from "./token.entities";
 
-import type { Connection, MappedFields } from "../../lexico-api.types";
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
 import type {
   ConnectionQuery,
@@ -30,6 +30,7 @@ import type {
   TextRelationField,
   TokenRelationField,
 } from "./literature.types";
+import type { Connection, MappedFields } from "@codebase/interface";
 import type { Author, Line, Text, Token } from "@codebase/lexico-entities";
 
 /** Returns a connection holding no edges and counting nothing. */

@@ -1,7 +1,7 @@
 import { Field, ID, InterfaceType } from "@nestjs/graphql";
 
-import type { GraphQLObjectOf } from "../../../lexico-api.types";
 import type { InflectionDatabaseOnlyField } from "./inflections.types";
+import type { GraphQLObjectOf } from "@codebase/interface";
 import type { Inflection } from "@codebase/lexico-entities";
 
 /**
