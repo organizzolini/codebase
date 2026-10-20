@@ -13,6 +13,9 @@ import { renderRoute } from "../../../testing/render-route";
 
 const PROJECT_ROOT = path.join(import.meta.dirname, "../../..");
 const DATA_DIRECTORY = path.join(PROJECT_ROOT, "data");
+// Each test starts a Node process, which a slow continuous integration
+// runner needs well past the default time for.
+const SCRIPT_TEST = { timeout: 30_000 };
 const BUILD_SCRIPT = path.join(
   PROJECT_ROOT,
   "scripts",
@@ -87,43 +90,51 @@ describe("the bundled events database", () => {
     rmSync(directory, { force: true, recursive: true });
   });
 
-  it("shows the events of a file built from an export", async () => {
-    const exported = path.join(directory, "events-export.sqlite");
-    const bundled = path.join(directory, "events.sqlite");
-    writeExportedFile(exported);
+  it(
+    "shows the events of a file built from an export",
+    SCRIPT_TEST,
+    async () => {
+      const exported = path.join(directory, "events-export.sqlite");
+      const bundled = path.join(directory, "events.sqlite");
+      writeExportedFile(exported);
 
-    const { status } = runBuildScript([
-      "--from",
-      exported,
-      "--output",
-      bundled,
-    ]);
+      const { status } = runBuildScript([
+        "--from",
+        exported,
+        "--output",
+        bundled,
+      ]);
 
-    expect(status).toBe(0);
+      expect(status).toBe(0);
 
-    await renderRoute("/?date=2026-03-04", {
-      eventsDatabase: openTestEventsDatabase(bundled),
-    });
+      await renderRoute("/?date=2026-03-04", {
+        eventsDatabase: openTestEventsDatabase(bundled),
+      });
 
-    await expect(
-      screen.findByText("Mars Conjunct Venus"),
-    ).resolves.toBeDefined();
-  });
+      await expect(
+        screen.findByText("Mars Conjunct Venus"),
+      ).resolves.toBeDefined();
+    },
+  );
 
-  it("names the address when the export cannot reach Postgres", async () => {
-    const port = await findClosedPort();
+  it(
+    "names the address when the export cannot reach Postgres",
+    SCRIPT_TEST,
+    async () => {
+      const port = await findClosedPort();
 
-    const { status, stderr } = runBuildScript(
-      ["--export", "--output", path.join(directory, "events.sqlite")],
-      {
-        CAELUNDAS_POSTGRES_HOST: "127.0.0.1",
-        CAELUNDAS_POSTGRES_PORT: String(port),
-      },
-    );
+      const { status, stderr } = runBuildScript(
+        ["--export", "--output", path.join(directory, "events.sqlite")],
+        {
+          CAELUNDAS_POSTGRES_HOST: "127.0.0.1",
+          CAELUNDAS_POSTGRES_PORT: String(port),
+        },
+      );
 
-    expect(status).toBe(1);
-    expect(stderr).toContain(
-      `Cannot reach Postgres at 127.0.0.1:${String(port)}`,
-    );
-  });
+      expect(status).toBe(1);
+      expect(stderr).toContain(
+        `Cannot reach Postgres at 127.0.0.1:${String(port)}`,
+      );
+    },
+  );
 });

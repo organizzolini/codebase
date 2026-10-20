@@ -16,6 +16,11 @@ const ingestionEnvironmentPath = path.join(
   "caelundas-cli",
   ".env",
 );
+// The `database` project's `start` target runs its command line from here.
+const databaseProjectRoot = path.join(projectRoot, "..", "..", "database");
+
+/** The highest TCP port. */
+const MAXIMUM_PORT = 65_535;
 
 /** The tables the app reads, in the schema ingestion writes to. */
 const TABLES = [
@@ -39,18 +44,27 @@ interface PostgresConnection {
 }
 
 /**
- * Exports the ingested tables to a new SQLite `file`, replacing any file
- * already there only once the export succeeds.
+ * Exports the ingested tables to a new SQLite `file`. The export writes
+ * beside it and replaces any file already there only once it succeeds.
  *
- * @throws Error naming the address when nothing answers there, since the
- * export itself reports a refused connection with an empty message, or
- * when the export fails.
+ * The `database` command line runs directly rather than through `nx run`,
+ * so its arguments are passed as a list no shell reads, and the password in
+ * the source URI is never echoed: the command masks it in what it logs.
+ *
+ * @throws Error naming the address when the port is not one or nothing
+ * answers there, since the export itself reports a refused connection with
+ * an empty message, or when the export fails.
  */
 export async function exportEventsDatabase(file: string): Promise<void> {
   const connection = readConnection();
   const address = `${connection.host}:${String(connection.port)}`;
 
-  if (!(await isReachable(connection))) {
+  if (
+    !Number.isInteger(connection.port) ||
+    connection.port < 1 ||
+    connection.port > MAXIMUM_PORT ||
+    !(await isReachable(connection))
+  ) {
     throw new Error(
       [
         `Cannot reach Postgres at ${address}, so there is nothing to export.`,
@@ -63,16 +77,15 @@ export async function exportEventsDatabase(file: string): Promise<void> {
   mkdirSync(path.dirname(file), { recursive: true });
 
   const result = spawnSync(
-    "pnpm",
+    process.execPath,
     [
-      "exec",
-      "nx",
-      "run",
-      "database:start:export",
-      `--args=${toExportArguments(connection, file).join(" ")}`,
-      "--output-style=stream",
+      "--import",
+      "@swc-node/register/esm-register",
+      "src/database.main.ts",
+      "export",
+      ...toExportArguments(connection, file),
     ],
-    { stdio: "inherit" },
+    { cwd: databaseProjectRoot, stdio: "inherit" },
   );
 
   if (result.status !== 0) {
@@ -135,12 +148,15 @@ function toExportArguments(
 
   return [
     "--sqlite",
-    `--source-uri ${sourceUri}`,
-    `--schema ${connection.schema}`,
-    ...TABLES.map((table) => `--table ${table}`),
+    "--source-uri",
+    sourceUri,
+    "--schema",
+    connection.schema,
+    ...TABLES.flatMap((table) => ["--table", table]),
     "--data",
     "--ddl",
-    `--file ${file}`,
+    "--file",
+    file,
     "--overwrite",
   ];
 }

@@ -1,4 +1,10 @@
-import { copyFileSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+} from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -19,11 +25,23 @@ const projectRoot = path.resolve(import.meta.dirname, "..");
 const outputDirectory = path.join(projectRoot, "output");
 const commandLine = process.argv.slice(2);
 
-/** The value given after `--name` on the command line, if any. */
+/**
+ * The value given after `--name` on the command line, if the option was.
+ *
+ * @throws Error when the option is given with no value after it.
+ */
 function readOption(name: string): string | undefined {
   const index = commandLine.indexOf(`--${name}`);
 
-  return index === -1 ? undefined : commandLine[index + 1];
+  if (index === -1) return undefined;
+
+  const value = commandLine[index + 1];
+
+  if (value === undefined || value.startsWith("--")) {
+    throw new Error(`--${name} needs a file path after it`);
+  }
+
+  return value;
 }
 
 const outputPath = path.resolve(
@@ -42,26 +60,38 @@ if (commandLine.includes("--export")) {
   }
 }
 
-mkdirSync(path.dirname(outputPath), { recursive: true });
-rmSync(outputPath, { force: true });
-
-if (sourcePath !== undefined) {
-  copyFileSync(path.resolve(projectRoot, sourcePath), outputPath);
-}
-
+// The file is built beside the output and replaces it only once complete, so
+// a failed build leaves the last good file in place rather than half of one.
+const partialPath = `${outputPath}.partial`;
 const sqlFileNames =
   sourcePath === undefined
     ? ["events-schema.sql", "events-seed.sql", "events-views.sql"]
     : ["events-views.sql"];
-const database = new DatabaseSync(outputPath);
 
-for (const sqlFileName of sqlFileNames) {
-  database.exec(
-    readFileSync(path.join(projectRoot, "data", sqlFileName), "utf8"),
-  );
+mkdirSync(path.dirname(outputPath), { recursive: true });
+rmSync(partialPath, { force: true });
+
+try {
+  if (sourcePath !== undefined) {
+    copyFileSync(path.resolve(projectRoot, sourcePath), partialPath);
+  }
+
+  const database = new DatabaseSync(partialPath);
+
+  try {
+    for (const sqlFileName of sqlFileNames) {
+      database.exec(
+        readFileSync(path.join(projectRoot, "data", sqlFileName), "utf8"),
+      );
+    }
+    // The browser downloads the file whole, so the space the copied export
+    // and the derived tables left behind is reclaimed.
+    database.exec("vacuum");
+  } finally {
+    database.close();
+  }
+  renameSync(partialPath, outputPath);
+} catch (error) {
+  rmSync(partialPath, { force: true });
+  throw error;
 }
-
-// The browser downloads the file whole, so the space the copied export and
-// the derived tables left behind is reclaimed.
-database.exec("vacuum");
-database.close();
