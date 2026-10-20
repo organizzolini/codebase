@@ -13,7 +13,6 @@
     "tslib": "catalog:",
     "typeorm": "catalog:",
     "typeorm-naming-strategies": "catalog:",
-    "typescript": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -24,6 +23,7 @@
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "exports": {
