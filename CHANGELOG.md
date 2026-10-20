@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.15.2](https://github.com/organizzolini/codebase/compare/v3.15.1...v3.15.2) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **lexico-entities:** ♻️ rename entity files to kebab-case ([#1713](https://github.com/organizzolini/codebase/issues/1713)) ([f6c74e5](https://github.com/organizzolini/codebase/commit/f6c74e51b5f89393c99954a1a4ce54cf346d3db4))
+
 ## [3.15.1](https://github.com/organizzolini/codebase/compare/v3.15.0...v3.15.1) (2026-10-20)
 
 ### ♻️ Code Refactoring

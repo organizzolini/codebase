@@ -1,3 +1,9 @@
+## 0.0.43 (2026-10-20)
+
+### 💅 Refactors
+
+- **lexico-entities:** ♻️ rename entity files to kebab-case ([#1713](https://github.com/organizzolini/codebase/pull/1713))
+
 ## 0.0.42 (2026-10-20)
 
 ### 💅 Refactors
