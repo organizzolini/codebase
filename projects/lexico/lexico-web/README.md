@@ -370,10 +370,8 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  configuration["configuration"]
   lexico_web["lexico-web"]
   presentation["presentation"]
-  lexico_web --> configuration
   lexico_web --> presentation
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_web subject
@@ -497,7 +495,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4472-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-142.92_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-143.03_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
 
@@ -506,7 +504,7 @@ graph LR
 ![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.72_kB_gzip-6b7280?style=flat-square)
 ![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.47_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.92_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.54_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-203.57_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 

@@ -1,3 +1,17 @@
+## 0.0.44 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.44
+- Updated conformetry-generation to 0.0.44
+- Updated conformetry-validation to 0.0.43
+- Updated conformetry-output to 0.0.43
+- Updated conformetry-core to 0.0.43
+
 ## 0.0.43 (2026-10-20)
 
 ### 🧱 Updated Dependencies

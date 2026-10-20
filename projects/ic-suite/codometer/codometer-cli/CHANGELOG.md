@@ -1,3 +1,16 @@
+## 0.0.43 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.42
+- Updated codometer-measurement to 0.0.42
+- Updated codometer-output to 0.0.42
+- Updated codometer-core to 0.0.42
+
 ## 0.0.42 (2026-10-20)
 
 ### 🧱 Updated Dependencies

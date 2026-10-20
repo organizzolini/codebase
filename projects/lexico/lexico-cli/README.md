@@ -854,12 +854,10 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  configuration["configuration"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
   observability["observability"]
   persistence["persistence"]
-  lexico_cli --> configuration
   lexico_cli --> lexico_entities
   lexico_cli --> observability
   lexico_cli --> persistence
@@ -1434,7 +1432,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.83_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-98.97_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 

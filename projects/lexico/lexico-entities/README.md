@@ -268,14 +268,12 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
   persistence["persistence"]
   lexico_api --> lexico_entities
   lexico_cli --> lexico_entities
-  lexico_entities --> configuration
   lexico_entities --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_entities subject
@@ -484,7 +482,7 @@ graph LR
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4900-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-209.46_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-209.39_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-52-3178c6?style=flat-square)
 

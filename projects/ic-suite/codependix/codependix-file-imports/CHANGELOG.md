@@ -1,3 +1,9 @@
+## 0.0.41 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
 ## 0.0.40 (2026-10-20)
 
 This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.

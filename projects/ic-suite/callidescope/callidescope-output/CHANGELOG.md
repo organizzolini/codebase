@@ -1,3 +1,15 @@
+## 0.0.42 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.43
+- Updated callidescope-graph to 0.0.42
+- Updated callidescope-core to 0.0.42
+
 ## 0.0.41 (2026-10-20)
 
 ### 🧱 Updated Dependencies

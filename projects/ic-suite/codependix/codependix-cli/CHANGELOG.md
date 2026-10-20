@@ -1,3 +1,16 @@
+## 0.0.43 (2026-10-20)
+
+### 💅 Refactors
+
+- **configuration:** ♻️ relocate internal projects and rename shared packages ([#1708](https://github.com/organizzolini/codebase/pull/1708))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.43
+- Updated codependix-boundaries to 0.0.42
+- Updated codependix-output to 0.0.42
+- Updated codependix-core to 0.0.41
+
 ## 0.0.42 (2026-10-20)
 
 ### 🧱 Updated Dependencies

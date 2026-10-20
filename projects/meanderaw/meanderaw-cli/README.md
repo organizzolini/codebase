@@ -3044,11 +3044,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  configuration["configuration"]
   meanderaw_cli["meanderaw-cli"]
   observability["observability"]
   persistence["persistence"]
-  meanderaw_cli --> configuration
   meanderaw_cli --> observability
   meanderaw_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -5516,7 +5514,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-242.84_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-242.86_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 

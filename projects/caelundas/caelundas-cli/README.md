@@ -2130,10 +2130,8 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ```mermaid
 graph LR
   caelundas_cli["caelundas-cli"]
-  configuration["configuration"]
   observability["observability"]
   persistence["persistence"]
-  caelundas_cli --> configuration
   caelundas_cli --> observability
   caelundas_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -3907,7 +3905,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-170.13_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-170.25_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
