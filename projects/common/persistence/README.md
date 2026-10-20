@@ -375,32 +375,31 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
-
 ```mermaid
 graph LR
   caelundas_cli["caelundas-cli"]
+  configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
-  logging["logging"]
   meanderaw_cli["meanderaw-cli"]
+  observability["observability"]
   persistence["persistence"]
   caelundas_cli --> persistence
   lexico_api --> persistence
   lexico_cli --> persistence
   lexico_entities --> persistence
   meanderaw_cli --> persistence
-  persistence --> logging
+  persistence --> configuration
+  persistence --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class persistence subject
 ```
-
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
-
 ```mermaid
 flowchart LR
   DiscoveryModule
@@ -423,7 +422,6 @@ _Rounded modules are global: every module can inject them, so their edges are le
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
-
 ```mermaid
 graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
@@ -693,7 +691,6 @@ graph LR
   file_testing_persistence_testing_utilities_ts --> file_src_modules_postgresql_postgresql_module_ts
   file_testing_persistence_testing_utilities_ts --> file_testing_persistence_testing_types_ts
 ```
-
 <!-- codependix:end name="codependix-file-imports" -->
 
 <!-- callidescope:start -->

@@ -219,7 +219,7 @@ and migrations are verified against the database rather than against a mock.
 
 - 🐺 [lexico-web](../lexico-web/README.md) — the web application
 - 🚰 [lexico-cli](../lexico-cli/README.md) — fills these tables
-- 🎨 [components](../../components/README.md) — the interface
+- 🎨 [presentation](../../common/presentation/README.md) — the interface
 
 ## License
 
@@ -268,12 +268,14 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_entities["lexico-entities"]
   persistence["persistence"]
   lexico_api --> lexico_entities
   lexico_cli --> lexico_entities
+  lexico_entities --> configuration
   lexico_entities --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_entities subject

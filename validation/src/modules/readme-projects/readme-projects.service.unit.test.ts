@@ -62,6 +62,52 @@ describe(ReadmeProjectsService, () => {
       );
     });
 
+    it("names a project that sits directly in the workspace root", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", [
+        "validation",
+        "documentation",
+        "scripts",
+      ]);
+      existingPaths.add("/workspace/validation/package.json");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
+        "validation",
+      ]);
+    });
+
+    it("skips hidden, installed, grouping, and template directories at the root", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", [
+        ".nx",
+        "node_modules",
+        "projects",
+        "{{nameKebabCase}}",
+      ]);
+      existingPaths.add("/workspace/.nx/package.json");
+      existingPaths.add("/workspace/node_modules/package.json");
+      existingPaths.add("/workspace/projects/package.json");
+      existingPaths.add("/workspace/{{nameKebabCase}}/package.json");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
+    it("skips a root entry that is not a directory", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", ["README.md"]);
+      fileNames.add("README.md");
+      existingPaths.add("/workspace/README.md/package.json");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
     it("names every project under every grouping folder", () => {
       expect.hasAssertions();
 

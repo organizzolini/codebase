@@ -9,7 +9,7 @@ The interface half of the [Lexico](../lexico/lexico-web/README.md) suite:
 | Project | Role |
 | ------- | ---- |
 | 🐺 [lexico-web](../lexico/lexico-web/README.md) | The SSR web application |
-| 🎨 [components](README.md) | This package — shared React components |
+| 🎨 [presentation](README.md) | This package — shared React components |
 | 📖 [lexico-entities](../lexico/lexico-entities/README.md) | TypeORM entities and migrations |
 | 🚰 [lexico-cli](../lexico/lexico-cli/README.md) | Dictionary and literature ingestion |
 
@@ -476,11 +476,13 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
-  presentation["presentation"]
+  configuration["configuration"]
   lexico_web["lexico-web"]
+  presentation["presentation"]
   lexico_web --> presentation
+  presentation --> configuration
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class components subject
+  class presentation subject
 ```
 <!-- codependix:end name="codependix-nx-projects" -->
 

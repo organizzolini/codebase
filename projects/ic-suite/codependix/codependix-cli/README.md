@@ -258,12 +258,14 @@ graph LR
   codependix_examples["codependix-examples"]
   codependix_nx["codependix-nx"]
   codependix_output["codependix-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   codependix_cli --> codependix_boundaries
   codependix_cli --> codependix_configuration
   codependix_cli --> codependix_core
   codependix_cli --> codependix_output
-  codependix_cli --> logging
+  codependix_cli --> configuration
+  codependix_cli --> observability
   codependix_examples -.-> codependix_cli
   codependix_nx --> codependix_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -379,13 +381,15 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
+  file_src_codependix_cli_constants_ts["src/codependix-cli.constants.ts"]
+  file_src_codependix_cli_main_end_to_end_test_ts["src/codependix-cli.main.end-to-end.test.ts"]
+  file_src_codependix_cli_main_ts["src/codependix-cli.main.ts"]
+  file_src_codependix_cli_main_unit_test_ts["src/codependix-cli.main.unit.test.ts"]
+  file_src_codependix_cli_module_ts["src/codependix-cli.module.ts"]
+  file_src_codependix_cli_repl_ts["src/codependix-cli.repl.ts"]
+  file_src_codependix_cli_repl_unit_test_ts["src/codependix-cli.repl.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
   file_src_modules_map_map_command_integration_test_ts["src/modules/map/map.command.integration.test.ts"]
   file_src_modules_map_map_command_ts["src/modules/map/map.command.ts"]
   file_src_modules_map_map_command_unit_test_ts["src/modules/map/map.command.unit.test.ts"]
@@ -400,25 +404,25 @@ graph LR
   file_src_modules_path_path_module_ts["src/modules/path/path.module.ts"]
   file_src_modules_path_path_module_unit_test_ts["src/modules/path/path.module.unit.test.ts"]
   file_src_modules_path_path_types_ts["src/modules/path/path.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_codependix_cli_main_end_to_end_test_ts --> file_src_codependix_cli_constants_ts
+  file_src_codependix_cli_main_ts --> file_src_codependix_cli_module_ts
+  file_src_codependix_cli_module_ts --> file_src_codependix_cli_constants_ts
+  file_src_codependix_cli_module_ts --> file_src_modules_map_map_module_ts
+  file_src_codependix_cli_module_ts --> file_src_modules_path_path_module_ts
+  file_src_codependix_cli_repl_ts --> file_src_codependix_cli_module_ts
   file_src_index_unit_test_ts --> file_src_index_ts
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_map_map_module_ts
-  file_src_main_module_ts --> file_src_modules_path_path_module_ts
-  file_src_main_ts --> file_src_main_module_ts
-  file_src_modules_map_map_command_integration_test_ts --> file_src_main_module_ts
+  file_src_modules_map_map_command_integration_test_ts --> file_src_codependix_cli_module_ts
   file_src_modules_map_map_command_integration_test_ts --> file_src_modules_map_map_command_ts
+  file_src_modules_map_map_command_ts --> file_src_modules_map_map_constants_ts
   file_src_modules_map_map_command_unit_test_ts --> file_src_modules_map_map_command_ts
   file_src_modules_map_map_module_ts --> file_src_modules_map_map_command_ts
   file_src_modules_map_map_module_unit_test_ts --> file_src_modules_map_map_command_ts
   file_src_modules_map_map_module_unit_test_ts --> file_src_modules_map_map_module_ts
-  file_src_modules_path_path_command_integration_test_ts --> file_src_main_module_ts
+  file_src_modules_path_path_command_integration_test_ts --> file_src_codependix_cli_module_ts
   file_src_modules_path_path_command_integration_test_ts --> file_src_modules_path_path_command_ts
   file_src_modules_path_path_command_integration_test_ts --> file_src_modules_path_path_types_ts
   file_src_modules_path_path_command_ts --> file_src_modules_path_path_constants_ts
@@ -428,7 +432,6 @@ graph LR
   file_src_modules_path_path_module_ts --> file_src_modules_path_path_command_ts
   file_src_modules_path_path_module_unit_test_ts --> file_src_modules_path_path_command_ts
   file_src_modules_path_path_module_unit_test_ts --> file_src_modules_path_path_module_ts
-  file_src_repl_ts --> file_src_main_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

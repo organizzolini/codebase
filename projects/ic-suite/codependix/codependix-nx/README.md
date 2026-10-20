@@ -227,8 +227,12 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ```mermaid
 graph LR
   codependix_cli["codependix-cli"]
+  codependix_configuration["codependix-configuration"]
   codependix_nx["codependix-nx"]
+  configuration["configuration"]
   codependix_nx --> codependix_cli
+  codependix_nx --> codependix_configuration
+  codependix_nx --> configuration
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_nx subject
 ```
@@ -239,12 +243,19 @@ graph LR
 <!-- codependix:start name="codependix-nestjs-modules" -->
 ```mermaid
 flowchart LR
+  ConfigurationModule
   GateModule
+  InputModule
   MainModule
+  OverrideResolutionModule
   PluginModule
+  ConfigurationModule --> InputModule
+  ConfigurationModule --> OverrideResolutionModule
+  GateModule --> ConfigurationModule
   GateModule --> PluginModule
   MainModule --> GateModule
   MainModule --> PluginModule
+  PluginModule --> ConfigurationModule
 ```
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
@@ -257,13 +268,16 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
+  file_src_codependix_nx_module_ts["src/codependix-nx.module.ts"]
   file_src_executors_gate_executor_integration_test_ts["src/executors/gate/executor.integration.test.ts"]
   file_src_executors_gate_executor_ts["src/executors/gate/executor.ts"]
   file_src_executors_gate_executor_types_ts["src/executors/gate/executor.types.ts"]
   file_src_executors_gate_executor_unit_test_ts["src/executors/gate/executor.unit.test.ts"]
+  file_src_executors_gate_hasher_ts["src/executors/gate/hasher.ts"]
+  file_src_executors_gate_hasher_unit_test_ts["src/executors/gate/hasher.unit.test.ts"]
+  file_src_executors_gate_loader_unit_test_ts["src/executors/gate/loader.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
   file_src_index_unit_test_ts["src/index.unit.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
   file_src_modules_gate_gate_constants_ts["src/modules/gate/gate.constants.ts"]
   file_src_modules_gate_gate_module_ts["src/modules/gate/gate.module.ts"]
   file_src_modules_gate_gate_service_ts["src/modules/gate/gate.service.ts"]
@@ -273,6 +287,8 @@ graph LR
   file_src_modules_plugin_plugin_context_utilities_unit_test_ts["src/modules/plugin/plugin-context.utilities.unit.test.ts"]
   file_src_modules_plugin_plugin_inputs_utilities_ts["src/modules/plugin/plugin-inputs.utilities.ts"]
   file_src_modules_plugin_plugin_inputs_utilities_unit_test_ts["src/modules/plugin/plugin-inputs.utilities.unit.test.ts"]
+  file_src_modules_plugin_plugin_tsconfig_utilities_ts["src/modules/plugin/plugin-tsconfig.utilities.ts"]
+  file_src_modules_plugin_plugin_tsconfig_utilities_unit_test_ts["src/modules/plugin/plugin-tsconfig.utilities.unit.test.ts"]
   file_src_modules_plugin_plugin_constants_ts["src/modules/plugin/plugin.constants.ts"]
   file_src_modules_plugin_plugin_module_ts["src/modules/plugin/plugin.module.ts"]
   file_src_modules_plugin_plugin_service_ts["src/modules/plugin/plugin.service.ts"]
@@ -282,6 +298,8 @@ graph LR
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
+  file_src_codependix_nx_module_ts --> file_src_modules_gate_gate_module_ts
+  file_src_codependix_nx_module_ts --> file_src_modules_plugin_plugin_module_ts
   file_src_executors_gate_executor_integration_test_ts --> file_src_executors_gate_executor_ts
   file_src_executors_gate_executor_integration_test_ts --> file_src_executors_gate_executor_types_ts
   file_src_executors_gate_executor_ts --> file_src_executors_gate_executor_types_ts
@@ -289,22 +307,27 @@ graph LR
   file_src_executors_gate_executor_types_ts --> file_src_modules_gate_gate_types_ts
   file_src_executors_gate_executor_unit_test_ts --> file_src_executors_gate_executor_ts
   file_src_executors_gate_executor_unit_test_ts --> file_src_modules_gate_gate_service_ts
+  file_src_executors_gate_hasher_ts --> file_src_modules_gate_gate_types_ts
+  file_src_executors_gate_hasher_ts --> file_src_modules_plugin_plugin_context_utilities_ts
+  file_src_executors_gate_hasher_unit_test_ts --> file_src_executors_gate_hasher_ts
+  file_src_executors_gate_hasher_unit_test_ts --> file_src_modules_gate_gate_service_ts
+  file_src_executors_gate_hasher_unit_test_ts --> file_src_modules_gate_gate_types_ts
   file_src_index_ts --> file_src_modules_plugin_plugin_context_utilities_ts
   file_src_index_ts --> file_src_modules_plugin_plugin_inputs_utilities_ts
+  file_src_index_ts --> file_src_modules_plugin_plugin_tsconfig_utilities_ts
   file_src_index_ts --> file_src_modules_plugin_plugin_constants_ts
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_index_unit_test_ts --> file_src_modules_plugin_plugin_service_ts
   file_src_index_unit_test_ts --> file_src_modules_plugin_plugin_types_ts
-  file_src_main_module_ts --> file_src_modules_gate_gate_module_ts
-  file_src_main_module_ts --> file_src_modules_plugin_plugin_module_ts
   file_src_modules_gate_gate_module_ts --> file_src_modules_gate_gate_service_ts
   file_src_modules_gate_gate_module_ts --> file_src_modules_plugin_plugin_module_ts
   file_src_modules_gate_gate_service_ts --> file_src_modules_gate_gate_constants_ts
   file_src_modules_gate_gate_service_ts --> file_src_modules_gate_gate_types_ts
   file_src_modules_gate_gate_service_ts --> file_src_modules_plugin_plugin_service_ts
   file_src_modules_gate_gate_service_unit_test_ts --> file_src_modules_gate_gate_service_ts
+  file_src_modules_gate_gate_service_unit_test_ts --> file_src_modules_gate_gate_types_ts
   file_src_modules_gate_gate_service_unit_test_ts --> file_src_modules_plugin_plugin_service_ts
-  file_src_modules_plugin_plugin_context_utilities_ts --> file_src_main_module_ts
+  file_src_modules_plugin_plugin_context_utilities_ts --> file_src_codependix_nx_module_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_gate_gate_service_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_plugin_plugin_constants_ts
   file_src_modules_plugin_plugin_context_utilities_ts --> file_src_modules_plugin_plugin_service_ts
@@ -315,6 +338,12 @@ graph LR
   file_src_modules_plugin_plugin_inputs_utilities_ts --> file_src_modules_plugin_plugin_constants_ts
   file_src_modules_plugin_plugin_inputs_utilities_ts --> file_src_modules_plugin_plugin_types_ts
   file_src_modules_plugin_plugin_inputs_utilities_unit_test_ts --> file_src_modules_plugin_plugin_inputs_utilities_ts
+  file_src_modules_plugin_plugin_inputs_utilities_unit_test_ts --> file_src_modules_plugin_plugin_types_ts
+  file_src_modules_plugin_plugin_tsconfig_utilities_ts --> file_src_modules_plugin_plugin_inputs_utilities_ts
+  file_src_modules_plugin_plugin_tsconfig_utilities_ts --> file_src_modules_plugin_plugin_constants_ts
+  file_src_modules_plugin_plugin_tsconfig_utilities_ts --> file_src_modules_plugin_plugin_types_ts
+  file_src_modules_plugin_plugin_tsconfig_utilities_unit_test_ts --> file_src_modules_plugin_plugin_tsconfig_utilities_ts
+  file_src_modules_plugin_plugin_tsconfig_utilities_unit_test_ts --> file_src_modules_plugin_plugin_types_ts
   file_src_modules_plugin_plugin_module_ts --> file_src_modules_plugin_plugin_service_ts
   file_src_modules_plugin_plugin_service_ts --> file_src_modules_plugin_plugin_constants_ts
   file_src_modules_plugin_plugin_service_ts --> file_src_modules_plugin_plugin_types_ts

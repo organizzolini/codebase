@@ -852,9 +852,11 @@ graph LR
   callidescope_configuration["callidescope-configuration"]
   callidescope_core["callidescope-core"]
   callidescope_examples["callidescope-examples"]
+  configuration["configuration"]
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
+  callidescope_examples --> configuration
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class callidescope_examples subject
 ```
@@ -913,8 +915,8 @@ graph LR
   file_examples_shared_tail_round_to_cents_ts["examples/shared-tail/round-to-cents.ts"]
   file_examples_structural_interface_structural_interface_ts["examples/structural-interface/structural-interface.ts"]
   file_examples_structural_interface_structural_provider_ts["examples/structural-interface/structural-provider.ts"]
+  file_src_callidescope_examples_main_ts["src/callidescope-examples.main.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_main_ts["src/main.ts"]
   file_testing_examples_integration_test_ts["testing/examples.integration.test.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vitest_config_ts["vitest.config.ts"]
@@ -927,9 +929,9 @@ graph LR
   file_examples_injected_dependency_orders_ts --> file_examples_injected_dependency_inventory_ts
   file_examples_plain_call_plain_call_ts --> file_examples_plain_call_normalize_label_ts
   file_examples_structural_interface_structural_interface_ts --> file_examples_structural_interface_structural_provider_ts
+  file_src_callidescope_examples_main_ts --> file_examples_injected_dependency_inventory_ts
+  file_src_callidescope_examples_main_ts --> file_examples_injected_dependency_orders_ts
   file_src_index_ts --> file_examples_plain_call_normalize_label_ts
-  file_src_main_ts --> file_examples_injected_dependency_inventory_ts
-  file_src_main_ts --> file_examples_injected_dependency_orders_ts
   file_testing_examples_integration_test_ts --> file_callidescope_workspace_config_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

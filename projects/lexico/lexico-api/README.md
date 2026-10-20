@@ -48,12 +48,14 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   lexico_api["lexico-api"]
   lexico_entities["lexico-entities"]
-  logging["logging"]
+  observability["observability"]
   persistence["persistence"]
+  lexico_api --> configuration
   lexico_api --> lexico_entities
-  lexico_api --> logging
+  lexico_api --> observability
   lexico_api --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_api subject

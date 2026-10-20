@@ -1312,12 +1312,14 @@ graph LR
   callidescope_graph["callidescope-graph"]
   callidescope_nx["callidescope-nx"]
   callidescope_output["callidescope-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
   callidescope_cli --> callidescope_output
-  callidescope_cli --> logging
+  callidescope_cli --> configuration
+  callidescope_cli --> observability
   callidescope_examples -.-> callidescope_cli
   callidescope_nx --> callidescope_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
@@ -1430,12 +1432,14 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
+  file_src_callidescope_cli_constants_ts["src/callidescope-cli.constants.ts"]
+  file_src_callidescope_cli_main_end_to_end_test_ts["src/callidescope-cli.main.end-to-end.test.ts"]
+  file_src_callidescope_cli_main_ts["src/callidescope-cli.main.ts"]
+  file_src_callidescope_cli_main_unit_test_ts["src/callidescope-cli.main.unit.test.ts"]
+  file_src_callidescope_cli_module_ts["src/callidescope-cli.module.ts"]
+  file_src_callidescope_cli_repl_ts["src/callidescope-cli.repl.ts"]
+  file_src_callidescope_cli_repl_unit_test_ts["src/callidescope-cli.repl.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
   file_src_modules_address_lookup_address_lookup_constants_ts["src/modules/address-lookup/address-lookup.constants.ts"]
   file_src_modules_address_lookup_address_lookup_constants_unit_test_ts["src/modules/address-lookup/address-lookup.constants.unit.test.ts"]
   file_src_modules_address_lookup_address_lookup_module_ts["src/modules/address-lookup/address-lookup.module.ts"]
@@ -1469,21 +1473,20 @@ graph LR
   file_src_modules_limits_limits_types_ts["src/modules/limits/limits.types.ts"]
   file_src_modules_limits_render_limits_service_ts["src/modules/limits/render-limits.service.ts"]
   file_src_modules_limits_render_limits_service_unit_test_ts["src/modules/limits/render-limits.service.unit.test.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_modules_ts["testing/modules.ts"]
   file_testing_programs_ts["testing/programs.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_breadth_breadth_module_ts
-  file_src_main_module_ts --> file_src_modules_callidescope_callidescope_module_ts
-  file_src_main_module_ts --> file_src_modules_depth_depth_module_ts
-  file_src_main_module_ts --> file_src_modules_limits_limits_module_ts
-  file_src_main_ts --> file_src_main_module_ts
+  file_src_callidescope_cli_main_end_to_end_test_ts --> file_src_callidescope_cli_constants_ts
+  file_src_callidescope_cli_main_ts --> file_src_callidescope_cli_module_ts
+  file_src_callidescope_cli_module_ts --> file_src_callidescope_cli_constants_ts
+  file_src_callidescope_cli_module_ts --> file_src_modules_breadth_breadth_module_ts
+  file_src_callidescope_cli_module_ts --> file_src_modules_callidescope_callidescope_module_ts
+  file_src_callidescope_cli_module_ts --> file_src_modules_depth_depth_module_ts
+  file_src_callidescope_cli_module_ts --> file_src_modules_limits_limits_module_ts
+  file_src_callidescope_cli_repl_ts --> file_src_callidescope_cli_module_ts
   file_src_modules_address_lookup_address_lookup_constants_unit_test_ts --> file_src_modules_address_lookup_address_lookup_constants_ts
   file_src_modules_address_lookup_address_lookup_module_ts --> file_src_modules_address_lookup_address_lookup_service_ts
   file_src_modules_address_lookup_address_lookup_module_ts --> file_src_modules_callidescope_callidescope_module_ts
@@ -1547,7 +1550,6 @@ graph LR
   file_src_modules_limits_render_limits_service_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_render_limits_service_unit_test_ts --> file_src_modules_limits_limits_types_ts
   file_src_modules_limits_render_limits_service_unit_test_ts --> file_src_modules_limits_render_limits_service_ts
-  file_src_repl_ts --> file_src_main_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

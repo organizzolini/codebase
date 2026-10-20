@@ -64,6 +64,46 @@ describe(CatalogManifestsService, () => {
       );
     });
 
+    it("names a project that sits directly in the workspace root", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", [
+        "validation",
+        "documentation",
+        "scripts",
+      ]);
+      existingPaths.add("/workspace/validation/package.json");
+
+      expect(service.resolveWorkspaceManifestPaths("/workspace")).toStrictEqual(
+        ["/workspace/package.json", "/workspace/validation/package.json"],
+      );
+    });
+
+    it("skips hidden, installed, and grouping directories at the root", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", [".nx", "node_modules", "projects"]);
+      existingPaths.add("/workspace/.nx/package.json");
+      existingPaths.add("/workspace/node_modules/package.json");
+      existingPaths.add("/workspace/projects/package.json");
+
+      expect(service.resolveWorkspaceManifestPaths("/workspace")).toStrictEqual(
+        ["/workspace/package.json"],
+      );
+    });
+
+    it("skips a root entry that is not a directory", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", ["README.md"]);
+      fileNames.add("README.md");
+      existingPaths.add("/workspace/README.md/package.json");
+
+      expect(service.resolveWorkspaceManifestPaths("/workspace")).toStrictEqual(
+        ["/workspace/package.json"],
+      );
+    });
+
     it("names every project manifest under every grouping folder", () => {
       expect.hasAssertions();
 

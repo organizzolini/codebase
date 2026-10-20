@@ -883,12 +883,14 @@ graph LR
   codometer_examples["codometer-examples"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   codometer_cli --> codometer_configuration
   codometer_cli --> codometer_core
   codometer_cli --> codometer_measurement
   codometer_cli --> codometer_output
-  codometer_cli --> logging
+  codometer_cli --> configuration
+  codometer_cli --> observability
   codometer_examples -.-> codometer_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codometer_cli subject
@@ -992,14 +994,16 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
+  file_src_codometer_cli_constants_ts["src/codometer-cli.constants.ts"]
+  file_src_codometer_cli_main_end_to_end_test_ts["src/codometer-cli.main.end-to-end.test.ts"]
+  file_src_codometer_cli_main_ts["src/codometer-cli.main.ts"]
+  file_src_codometer_cli_main_unit_test_ts["src/codometer-cli.main.unit.test.ts"]
+  file_src_codometer_cli_module_ts["src/codometer-cli.module.ts"]
+  file_src_codometer_cli_repl_ts["src/codometer-cli.repl.ts"]
+  file_src_codometer_cli_repl_unit_test_ts["src/codometer-cli.repl.unit.test.ts"]
+  file_src_codometer_cli_utilities_ts["src/codometer-cli.utilities.ts"]
+  file_src_codometer_cli_utilities_unit_test_ts["src/codometer-cli.utilities.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
-  file_src_main_utilities_ts["src/main.utilities.ts"]
-  file_src_main_utilities_unit_test_ts["src/main.utilities.unit.test.ts"]
   file_src_modules_changes_changes_command_ts["src/modules/changes/changes.command.ts"]
   file_src_modules_changes_changes_command_unit_test_ts["src/modules/changes/changes.command.unit.test.ts"]
   file_src_modules_changes_changes_constants_ts["src/modules/changes/changes.constants.ts"]
@@ -1016,8 +1020,6 @@ graph LR
   file_src_modules_measure_measure_constants_ts["src/modules/measure/measure.constants.ts"]
   file_src_modules_measure_measure_module_ts["src/modules/measure/measure.module.ts"]
   file_src_modules_measure_measure_types_ts["src/modules/measure/measure.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_fixture_tree_ts["testing/fixture-tree.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
@@ -1025,15 +1027,16 @@ graph LR
   file_testing_vite_library_config_integration_test_ts["testing/vite-library-config.integration.test.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_end_to_end_test_ts --> file_testing_fixture_tree_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_changes_changes_module_ts
-  file_src_main_module_ts --> file_src_modules_configuration_configuration_module_ts
-  file_src_main_module_ts --> file_src_modules_measure_measure_module_ts
-  file_src_main_ts --> file_src_main_module_ts
-  file_src_main_ts --> file_src_main_utilities_ts
-  file_src_main_utilities_unit_test_ts --> file_src_main_utilities_ts
+  file_src_codometer_cli_main_end_to_end_test_ts --> file_src_codometer_cli_constants_ts
+  file_src_codometer_cli_main_end_to_end_test_ts --> file_testing_fixture_tree_ts
+  file_src_codometer_cli_main_ts --> file_src_codometer_cli_module_ts
+  file_src_codometer_cli_main_ts --> file_src_codometer_cli_utilities_ts
+  file_src_codometer_cli_module_ts --> file_src_codometer_cli_constants_ts
+  file_src_codometer_cli_module_ts --> file_src_modules_changes_changes_module_ts
+  file_src_codometer_cli_module_ts --> file_src_modules_configuration_configuration_module_ts
+  file_src_codometer_cli_module_ts --> file_src_modules_measure_measure_module_ts
+  file_src_codometer_cli_repl_ts --> file_src_codometer_cli_module_ts
+  file_src_codometer_cli_utilities_unit_test_ts --> file_src_codometer_cli_utilities_ts
   file_src_modules_changes_changes_command_ts --> file_src_modules_changes_changes_types_ts
   file_src_modules_changes_changes_command_unit_test_ts --> file_src_modules_changes_changes_command_ts
   file_src_modules_changes_changes_module_ts --> file_src_modules_changes_changes_command_ts
@@ -1041,14 +1044,13 @@ graph LR
   file_src_modules_configuration_configuration_command_ts --> file_src_modules_configuration_configuration_types_ts
   file_src_modules_configuration_configuration_command_unit_test_ts --> file_src_modules_configuration_configuration_command_ts
   file_src_modules_configuration_configuration_module_ts --> file_src_modules_configuration_configuration_command_ts
-  file_src_modules_measure_measure_command_integration_test_ts --> file_src_main_module_ts
+  file_src_modules_measure_measure_command_integration_test_ts --> file_src_codometer_cli_module_ts
   file_src_modules_measure_measure_command_integration_test_ts --> file_src_modules_measure_measure_command_ts
   file_src_modules_measure_measure_command_integration_test_ts --> file_testing_fixture_tree_ts
   file_src_modules_measure_measure_command_ts --> file_src_modules_measure_measure_types_ts
   file_src_modules_measure_measure_command_unit_test_ts --> file_src_modules_measure_measure_command_ts
   file_src_modules_measure_measure_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_measure_measure_module_ts --> file_src_modules_measure_measure_command_ts
-  file_src_repl_ts --> file_src_main_module_ts
   file_testing_vite_library_config_integration_test_ts --> file_vite_config_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

@@ -592,8 +592,10 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  configuration["configuration"]
   codometer_cli --> codometer_configuration
   codometer_configuration --> codometer_core
+  codometer_configuration --> configuration
   codometer_examples --> codometer_configuration
   codometer_languages --> codometer_configuration
   codometer_measurement --> codometer_configuration
@@ -647,6 +649,7 @@ graph LR
   file_src_index_unit_test_ts --> file_src_index_ts
   file_src_modules_configuration_configuration_flags_service_ts --> file_src_modules_configuration_configuration_flags_constants_ts
   file_src_modules_configuration_configuration_flags_service_ts --> file_src_modules_configuration_configuration_types_ts
+  file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_constants_ts
   file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_flags_service_ts
   file_src_modules_configuration_configuration_flags_service_unit_test_ts --> file_src_modules_configuration_configuration_types_ts
   file_src_modules_configuration_configuration_loader_service_ts --> file_src_modules_configuration_configuration_loader_types_ts

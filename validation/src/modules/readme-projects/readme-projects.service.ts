@@ -4,6 +4,7 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 
 import {
+  NON_PROJECT_ROOT_DIRECTORIES,
   ROOT_README_PATH,
   TEMPLATE_PLACEHOLDER_PATTERN,
   WORKSPACE_SCOPES,
@@ -13,9 +14,9 @@ import {
  * Finds every workspace project and says which ones the root README does not
  * link to.
  *
- * A project is any directory with its own `package.json` under `projects/`,
- * at any depth below its grouping folders — the same definition the catalog
- * policy scans by. Documented means the README links to that project's
+ * A project is any directory with its own `package.json` directly in the
+ * workspace root, or under `projects/` at any depth below its grouping
+ * folders — the same definition the catalog policy scans by. Documented means the README links to that project's
  * directory somewhere as `[name](scope/name)`; nothing enforces the
  * surrounding prose, grouping, or description.
  */
@@ -68,6 +69,33 @@ export class ReadmeProjectsService {
     return projectPaths;
   }
 
+  /**
+   * Every project that sits directly in the workspace root, such as
+   * `validation`: a non-hidden directory with its own `package.json`. Not
+   * searched any deeper, because the root also holds folders that are not
+   * projects.
+   */
+  private findRootProjectPaths(workspaceRoot: string): string[] {
+    const projectPaths: string[] = [];
+
+    for (const child of readdirSync(workspaceRoot, { withFileTypes: true })) {
+      if (
+        !child.isDirectory() ||
+        child.name.startsWith(".") ||
+        NON_PROJECT_ROOT_DIRECTORIES.includes(child.name) ||
+        TEMPLATE_PLACEHOLDER_PATTERN.test(child.name)
+      ) {
+        continue;
+      }
+
+      if (existsSync(path.join(workspaceRoot, child.name, "package.json"))) {
+        projectPaths.push(child.name);
+      }
+    }
+
+    return projectPaths;
+  }
+
   /** Every project path the README does not link to. */
   public findUndocumentedProjectPaths(
     projectPaths: string[],
@@ -85,7 +113,7 @@ export class ReadmeProjectsService {
 
   /** Every workspace project's scope-relative path, e.g. `projects/common/observability`. */
   public resolveWorkspaceProjectPaths(workspaceRoot: string): string[] {
-    const projectPaths: string[] = [];
+    const projectPaths = this.findRootProjectPaths(workspaceRoot);
 
     for (const scope of WORKSPACE_SCOPES) {
       const scopePath = path.join(workspaceRoot, scope);

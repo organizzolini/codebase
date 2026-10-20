@@ -148,44 +148,46 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
   installation["installation"]
   integration["integration"]
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
-  logging["logging"]
   meanderaw_cli["meanderaw-cli"]
+  observability["observability"]
   persistence["persistence"]
   publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
-  caelundas_cli --> logging
-  callidescope_cli --> logging
-  callidescope_graph --> logging
-  callidescope_nx --> logging
-  callidescope_output --> logging
-  codependix_cli --> logging
-  codependix_examples --> logging
-  codependix_nestjs_modules --> logging
-  codependix_output --> logging
-  codometer_cli --> logging
-  codometer_languages --> logging
-  codometer_measurement --> logging
-  codometer_output --> logging
-  conformetry_cli --> logging
-  conformetry_nx --> logging
-  installation --> logging
-  integration --> logging
-  lexico_api --> logging
-  lexico_cli --> logging
-  meanderaw_cli --> logging
-  persistence --> logging
-  publication --> logging
-  synchronization --> logging
-  validation --> logging
+  caelundas_cli --> observability
+  callidescope_cli --> observability
+  callidescope_graph --> observability
+  callidescope_nx --> observability
+  callidescope_output --> observability
+  codependix_cli --> observability
+  codependix_examples --> observability
+  codependix_nestjs_modules --> observability
+  codependix_output --> observability
+  codometer_cli --> observability
+  codometer_languages --> observability
+  codometer_measurement --> observability
+  codometer_output --> observability
+  conformetry_cli --> observability
+  conformetry_nx --> observability
+  installation --> observability
+  integration --> observability
+  lexico_api --> observability
+  lexico_cli --> observability
+  meanderaw_cli --> observability
+  observability --> configuration
+  persistence --> observability
+  publication --> observability
+  synchronization --> observability
+  validation --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
-  class logging subject
+  class observability subject
 ```
 <!-- codependix:end name="codependix-nx-projects" -->
 

@@ -8,6 +8,7 @@ import {
   CATALOG_PROTOCOL,
   DEPENDENCY_SECTION_NAMES,
   INTERNAL_PACKAGE_SCOPES,
+  NON_PROJECT_ROOT_DIRECTORIES,
   WORKSPACE_PROTOCOL_PREFIX,
   WORKSPACE_SCOPES,
 } from "./catalog-manifests.constants";
@@ -63,6 +64,34 @@ export class CatalogManifestsService {
     return manifestPaths;
   }
 
+  /**
+   * Every project that sits directly in the workspace root, such as
+   * `validation`: a non-hidden directory with its own `package.json`. Not
+   * searched any deeper, because the root also holds folders that are not
+   * projects.
+   */
+  private findRootManifestPaths(workspaceRoot: string): string[] {
+    const manifestPaths: string[] = [];
+
+    for (const child of readdirSync(workspaceRoot, { withFileTypes: true })) {
+      if (
+        !child.isDirectory() ||
+        child.name.startsWith(".") ||
+        NON_PROJECT_ROOT_DIRECTORIES.includes(child.name)
+      ) {
+        continue;
+      }
+
+      const manifestPath = path.join(workspaceRoot, child.name, "package.json");
+
+      if (existsSync(manifestPath)) {
+        manifestPaths.push(manifestPath);
+      }
+    }
+
+    return manifestPaths;
+  }
+
   /** Whether this dependency names one of this workspace's own packages. */
   private isInternalWorkspaceDependency(dependencyName: string): boolean {
     return INTERNAL_PACKAGE_SCOPES.some((scope) =>
@@ -79,7 +108,10 @@ export class CatalogManifestsService {
 
   /** Finds every workspace `package.json` the catalog policy covers. */
   public resolveWorkspaceManifestPaths(workspaceRoot: string): string[] {
-    const manifestPaths = [path.join(workspaceRoot, "package.json")];
+    const manifestPaths = [
+      path.join(workspaceRoot, "package.json"),
+      ...this.findRootManifestPaths(workspaceRoot),
+    ];
 
     for (const workspaceScope of WORKSPACE_SCOPES) {
       const scopePath = path.join(workspaceRoot, workspaceScope);

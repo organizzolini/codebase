@@ -466,9 +466,11 @@ graph LR
   codometer_configuration["codometer-configuration"]
   codometer_core["codometer-core"]
   codometer_examples["codometer-examples"]
+  configuration["configuration"]
   codometer_examples -.-> codometer_cli
   codometer_examples --> codometer_configuration
   codometer_examples --> codometer_core
+  codometer_examples --> configuration
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codometer_examples subject
 ```

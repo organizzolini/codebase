@@ -909,6 +909,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_configuration["conformetry-configuration"]
   conformetry_core["conformetry-core"]
@@ -916,13 +917,14 @@ graph LR
   conformetry_generation["conformetry-generation"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
-  logging["logging"]
+  observability["observability"]
+  conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
   conformetry_cli --> conformetry_generation
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
-  conformetry_cli --> logging
+  conformetry_cli --> observability
   conformetry_examples -.-> conformetry_cli
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class conformetry_cli subject
@@ -1025,13 +1027,15 @@ graph LR
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
-  file_src_constants_ts["src/constants.ts"]
+  file_src_conformetry_cli_constants_ts["src/conformetry-cli.constants.ts"]
+  file_src_conformetry_cli_main_end_to_end_test_ts["src/conformetry-cli.main.end-to-end.test.ts"]
+  file_src_conformetry_cli_main_integration_test_ts["src/conformetry-cli.main.integration.test.ts"]
+  file_src_conformetry_cli_main_ts["src/conformetry-cli.main.ts"]
+  file_src_conformetry_cli_main_unit_test_ts["src/conformetry-cli.main.unit.test.ts"]
+  file_src_conformetry_cli_module_ts["src/conformetry-cli.module.ts"]
+  file_src_conformetry_cli_repl_ts["src/conformetry-cli.repl.ts"]
+  file_src_conformetry_cli_repl_unit_test_ts["src/conformetry-cli.repl.unit.test.ts"]
   file_src_index_ts["src/index.ts"]
-  file_src_main_end_to_end_test_ts["src/main.end-to-end.test.ts"]
-  file_src_main_integration_test_ts["src/main.integration.test.ts"]
-  file_src_main_module_ts["src/main.module.ts"]
-  file_src_main_ts["src/main.ts"]
-  file_src_main_unit_test_ts["src/main.unit.test.ts"]
   file_src_modules_generate_generate_command_ts["src/modules/generate/generate.command.ts"]
   file_src_modules_generate_generate_command_unit_test_ts["src/modules/generate/generate.command.unit.test.ts"]
   file_src_modules_generate_generate_constants_ts["src/modules/generate/generate.constants.ts"]
@@ -1052,44 +1056,42 @@ graph LR
   file_src_modules_validate_validate_constants_ts["src/modules/validate/validate.constants.ts"]
   file_src_modules_validate_validate_module_ts["src/modules/validate/validate.module.ts"]
   file_src_modules_validate_validate_types_ts["src/modules/validate/validate.types.ts"]
-  file_src_repl_ts["src/repl.ts"]
-  file_src_repl_unit_test_ts["src/repl.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
   file_vitest_config_ts["vitest.config.ts"]
-  file_src_main_end_to_end_test_ts --> file_src_constants_ts
-  file_src_main_integration_test_ts --> file_src_main_module_ts
-  file_src_main_integration_test_ts --> file_src_modules_generate_generate_command_ts
-  file_src_main_integration_test_ts --> file_src_modules_instances_instances_command_ts
-  file_src_main_integration_test_ts --> file_src_modules_templates_templates_command_ts
-  file_src_main_integration_test_ts --> file_src_modules_validate_validate_command_ts
-  file_src_main_module_ts --> file_src_constants_ts
-  file_src_main_module_ts --> file_src_modules_generate_generate_module_ts
-  file_src_main_module_ts --> file_src_modules_instances_instances_module_ts
-  file_src_main_module_ts --> file_src_modules_templates_templates_module_ts
-  file_src_main_module_ts --> file_src_modules_validate_validate_module_ts
-  file_src_main_ts --> file_src_main_module_ts
-  file_src_modules_generate_generate_command_ts --> file_src_constants_ts
+  file_src_conformetry_cli_main_end_to_end_test_ts --> file_src_conformetry_cli_constants_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_conformetry_cli_module_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_generate_generate_command_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_instances_instances_command_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_templates_templates_command_ts
+  file_src_conformetry_cli_main_integration_test_ts --> file_src_modules_validate_validate_command_ts
+  file_src_conformetry_cli_main_ts --> file_src_conformetry_cli_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_conformetry_cli_constants_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_generate_generate_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_instances_instances_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_templates_templates_module_ts
+  file_src_conformetry_cli_module_ts --> file_src_modules_validate_validate_module_ts
+  file_src_conformetry_cli_repl_ts --> file_src_conformetry_cli_module_ts
+  file_src_modules_generate_generate_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_generate_generate_command_ts --> file_src_modules_generate_generate_constants_ts
   file_src_modules_generate_generate_command_ts --> file_src_modules_generate_generate_types_ts
   file_src_modules_generate_generate_command_unit_test_ts --> file_src_modules_generate_generate_command_ts
   file_src_modules_generate_generate_module_ts --> file_src_modules_generate_generate_command_ts
-  file_src_modules_instances_instances_command_ts --> file_src_constants_ts
+  file_src_modules_instances_instances_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_instances_instances_command_ts --> file_src_modules_instances_instances_constants_ts
   file_src_modules_instances_instances_command_ts --> file_src_modules_instances_instances_types_ts
   file_src_modules_instances_instances_command_unit_test_ts --> file_src_modules_instances_instances_command_ts
   file_src_modules_instances_instances_module_ts --> file_src_modules_instances_instances_command_ts
-  file_src_modules_templates_templates_command_ts --> file_src_constants_ts
+  file_src_modules_templates_templates_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_templates_templates_command_ts --> file_src_modules_templates_templates_constants_ts
   file_src_modules_templates_templates_command_ts --> file_src_modules_templates_templates_types_ts
   file_src_modules_templates_templates_command_unit_test_ts --> file_src_modules_templates_templates_command_ts
   file_src_modules_templates_templates_module_ts --> file_src_modules_templates_templates_command_ts
-  file_src_modules_validate_validate_command_ts --> file_src_constants_ts
+  file_src_modules_validate_validate_command_ts --> file_src_conformetry_cli_constants_ts
   file_src_modules_validate_validate_command_ts --> file_src_modules_validate_validate_types_ts
   file_src_modules_validate_validate_command_unit_test_ts --> file_src_modules_validate_validate_command_ts
   file_src_modules_validate_validate_module_ts --> file_src_modules_validate_validate_command_ts
-  file_src_repl_ts --> file_src_main_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

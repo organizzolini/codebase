@@ -236,9 +236,11 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   installation["installation"]
-  logging["logging"]
-  installation --> logging
+  observability["observability"]
+  installation --> configuration
+  installation --> observability
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class installation subject
 ```

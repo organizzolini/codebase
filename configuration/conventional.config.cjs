@@ -121,7 +121,7 @@ const scopes = [
   {
     description:
       "Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations",
-    name: "database",
+    name: "persistence",
   },
   {
     description:
@@ -161,7 +161,7 @@ const scopes = [
   },
   {
     description: "Shared React/shadcn component library",
-    name: "components",
+    name: "presentation",
   },
   {
     description: "Shared TypeORM entities and GraphQL types",

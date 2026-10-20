@@ -158,11 +158,13 @@ graph LR
   codependix_nestjs_modules["codependix-nestjs-modules"]
   codependix_nx_projects["codependix-nx-projects"]
   codependix_output["codependix-output"]
+  configuration["configuration"]
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
+  codependix_boundaries --> configuration
   codependix_cli --> codependix_boundaries
   codependix_examples --> codependix_boundaries
   codependix_output --> codependix_boundaries
@@ -307,6 +309,7 @@ graph LR
   file_src_modules_boundary_check_boundary_graph_service_ts --> file_src_modules_boundaries_boundaries_types_ts
   file_src_modules_boundary_check_boundary_graph_service_unit_test_ts --> file_src_modules_boundary_check_boundary_graph_service_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_src_modules_boundaries_boundary_report_service_ts
+  file_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_src_modules_boundary_check_boundary_check_constants_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_ts --> file_src_modules_boundary_check_boundary_check_types_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_unit_test_ts --> file_src_modules_boundaries_boundaries_types_ts
   file_src_modules_boundary_check_boundary_outcome_report_service_unit_test_ts --> file_src_modules_boundaries_boundary_report_service_ts

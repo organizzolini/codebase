@@ -20,6 +20,13 @@ export const DEPENDENCY_SECTION_NAMES: DependencySectionName[] = [
 export const WORKSPACE_SCOPES = ["projects"];
 
 /**
+ * Workspace root directories that never hold a project of their own: the
+ * dependency install, and `projects/`, which is searched through
+ * `WORKSPACE_SCOPES` instead. Hidden directories are skipped by name.
+ */
+export const NON_PROJECT_ROOT_DIRECTORIES = ["node_modules", "projects"];
+
+/**
  * The scopes a package name carries when it is one of this workspace's own.
  *
  * A name under one of them must be pinned `workspace:*`; anything else must be
