@@ -850,6 +850,7 @@ graph LR
   module_installation_SetupModule["installation/SetupModule"]
   module_installation_ShellConfigurationModule["installation/ShellConfigurationModule"]
   module_installation_SoftwareModule["installation/SoftwareModule"]
+  module_installation_SshSigningModule["installation/SshSigningModule"]
   module_installation_UpdateReuiSkillModule["installation/UpdateReuiSkillModule"]
   module_integration_AdoptTaskDatabaseModule["integration/AdoptTaskDatabaseModule"]
   module_integration_DiscoveryModule["integration/DiscoveryModule"]
@@ -1644,6 +1645,7 @@ graph LR
   module_installation_MainModule --> module_installation_SetupModule
   module_installation_MainModule --> module_installation_ShellConfigurationModule
   module_installation_MainModule --> module_installation_SoftwareModule
+  module_installation_MainModule --> module_installation_SshSigningModule
   module_installation_MainModule --> module_installation_UpdateReuiSkillModule
   module_installation_SetupModule --> module_installation_DependenciesModule
   module_installation_SetupModule --> module_installation_EnvironmentFilesModule
@@ -1654,6 +1656,8 @@ graph LR
   module_installation_ShellConfigurationModule --> module_installation_ReporterModule
   module_installation_SoftwareModule --> module_installation_ProcessRunnerModule
   module_installation_SoftwareModule --> module_installation_ReporterModule
+  module_installation_SshSigningModule --> module_installation_ProcessRunnerModule
+  module_installation_SshSigningModule --> module_installation_ReporterModule
   module_installation_UpdateReuiSkillModule --> module_installation_ReporterModule
   module_integration_AdoptTaskDatabaseModule --> module_integration_TaskDatabaseModule
   module_integration_KeepTaskDatabaseModule --> module_integration_TaskDatabaseModule
@@ -3767,6 +3771,15 @@ graph LR
   file_installation_src_modules_software_software_service_ts["installation/src/modules/software/software.service.ts"]
   file_installation_src_modules_software_software_service_unit_test_ts["installation/src/modules/software/software.service.unit.test.ts"]
   file_installation_src_modules_software_software_types_ts["installation/src/modules/software/software.types.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_command_ts["installation/src/modules/ssh-signing/ssh-signing.command.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_command_unit_test_ts["installation/src/modules/ssh-signing/ssh-signing.command.unit.test.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_constants_ts["installation/src/modules/ssh-signing/ssh-signing.constants.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_module_ts["installation/src/modules/ssh-signing/ssh-signing.module.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_service_ts["installation/src/modules/ssh-signing/ssh-signing.service.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts["installation/src/modules/ssh-signing/ssh-signing.service.unit.test.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_types_ts["installation/src/modules/ssh-signing/ssh-signing.types.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_utilities_ts["installation/src/modules/ssh-signing/ssh-signing.utilities.ts"]
+  file_installation_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts["installation/src/modules/ssh-signing/ssh-signing.utilities.unit.test.ts"]
   file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts["installation/src/modules/update-reui-skill/update-reui-skill.command.ts"]
   file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts["installation/src/modules/update-reui-skill/update-reui-skill.command.unit.test.ts"]
   file_installation_src_modules_update_reui_skill_update_reui_skill_constants_ts["installation/src/modules/update-reui-skill/update-reui-skill.constants.ts"]
@@ -3779,6 +3792,7 @@ graph LR
   file_installation_testing_mocks_ts["installation/testing/mocks.ts"]
   file_installation_testing_report_ts["installation/testing/report.ts"]
   file_installation_testing_setup_ts["installation/testing/setup.ts"]
+  file_installation_testing_ssh_signature_ts["installation/testing/ssh-signature.ts"]
   file_installation_testing_temporary_workspace_ts["installation/testing/temporary-workspace.ts"]
   file_installation_vitest_config_ts["installation/vitest.config.ts"]
   file_integration_callidescope_config_ts["integration/callidescope.config.ts"]
@@ -8719,6 +8733,7 @@ graph LR
   file_installation_src_installation_module_ts --> file_installation_src_modules_setup_setup_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_shell_configuration_shell_configuration_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_software_software_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_ssh_signing_ssh_signing_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_module_ts
   file_installation_src_installation_repl_ts --> file_installation_src_installation_module_ts
   file_installation_src_modules_dependencies_dependencies_command_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
@@ -8914,6 +8929,28 @@ graph LR
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_command_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_command_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_command_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_command_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_ssh_signing_ssh_signing_command_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_ts --> file_installation_src_modules_ssh_signing_ssh_signing_constants_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_ts --> file_installation_src_modules_ssh_signing_ssh_signing_utilities_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_testing_environment_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_testing_report_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_testing_ssh_signature_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_service_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_utilities_ts --> file_installation_src_modules_ssh_signing_ssh_signing_constants_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_utilities_ts
+  file_installation_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts --> file_installation_testing_ssh_signature_ts
   file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_service_ts
   file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
   file_installation_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_installation_src_modules_update_reui_skill_update_reui_skill_command_ts
@@ -13294,36 +13331,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-56014-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.36_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-148-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-527-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-56842-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.39_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-149-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-537-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-520-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-129-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-530-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-130-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-221-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1233-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-225-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1254-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-166-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-169-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-178-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2495-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-813-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2466-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-842-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2638-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2425-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-690-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2687-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5190-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-181-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2534-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-819-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2495-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-858-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2698-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2471-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-710-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2720-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5237-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13383,16 +13420,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Shell
 
 ![Shell Files](https://img.shields.io/badge/Shell_Files-20-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1823-4eaa25?style=flat-square)
-![Shell Functions](https://img.shields.io/badge/Shell_Functions-15-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-162-0284c7?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1862-4eaa25?style=flat-square)
+![Shell Functions](https://img.shields.io/badge/Shell_Functions-16-16a34a?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-164-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-13-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-132-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-137-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-23-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-48-059669?style=flat-square)
 ![Shebangs](https://img.shields.io/badge/Shebangs-21-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-349-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-349-475569?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-355-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-355-475569?style=flat-square)
 
 ### SQL
 
@@ -13434,14 +13471,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-59-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-63-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-46-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-61-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-56-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-5-0ea5e9?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-60-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-64-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-47-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-62-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-57-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-158-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-161-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-3-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-5-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -13479,23 +13516,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-135-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26198-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26260-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-131-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-790-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-718-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6089-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6090-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-923-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4413-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-280-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2699-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2707-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-833-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-847-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-539-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14519-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-540-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-14553-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13508,13 +13545,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6634 |
-| Files | 1969 |
-| Calls traced | 7298 |
-| Call stacks | 1819 |
+| Callables | 6645 |
+| Files | 1975 |
+| Calls traced | 7322 |
+| Call stacks | 1822 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |
-| Unfollowable calls | 363 |
+| Unfollowable calls | 364 |
 
 ### Projects
 
