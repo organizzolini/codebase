@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { createViteLibraryConfig } from "../../../../projects/configuration/vite.library.config.ts";
+import { createViteLibraryConfig } from "../../../../configuration/vite.library.config.ts";
 
 const packageDirectory = path.dirname(fileURLToPath(import.meta.url));
 

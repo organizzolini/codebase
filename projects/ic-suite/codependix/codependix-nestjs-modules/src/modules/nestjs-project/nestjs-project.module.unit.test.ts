@@ -1,7 +1,7 @@
 import { MODULE_METADATA } from "@nestjs/common/constants";
 import { describe, expect, it } from "vitest";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { NestjsProjectModule } from "./nestjs-project.module";
 import { NestjsProjectService } from "./nestjs-project.service";

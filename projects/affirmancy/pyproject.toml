@@ -41,8 +41,8 @@ packages = ["src"]
 reproducible = true
 
 [tool.ruff]
-# Extend shared workspace config in projects/configuration
-extend = "../configuration/pyproject.toml"
+# Extend shared workspace config in configuration
+extend = "../../configuration/pyproject.toml"
 exclude = ["notebooks/**", ".vulture_whitelist.py"]
 extend-include = ["*.ipynb"]
 

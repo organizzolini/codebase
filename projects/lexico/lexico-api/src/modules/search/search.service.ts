@@ -11,7 +11,7 @@ import {
   Translation,
   Word,
 } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { mapConnection, toCursor } from "../../lexico-api.utilities";
 import {

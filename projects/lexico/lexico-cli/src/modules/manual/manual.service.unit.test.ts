@@ -4,7 +4,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Lexeme, Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { createRepositoryMock } from "../../../testing/mocks";
 import { NumeralsService } from "../numerals/numerals.service";

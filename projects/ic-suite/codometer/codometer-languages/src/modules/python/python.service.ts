@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { EMPTY_PYTHON_RESULT } from "./python.constants";
 

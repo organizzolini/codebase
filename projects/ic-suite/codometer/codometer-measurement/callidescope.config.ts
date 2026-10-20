@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../projects/configuration/callidescope.config.js";
+import { projectDefaults } from "../../../../configuration/callidescope.config.js";
 
 /**
  * What codometer-measurement is held to, measured rather than assumed.
@@ -15,7 +15,7 @@ import { projectDefaults } from "../../../../projects/configuration/callidescope
  * join's fan-out: `measure` personally names every analyzer it composes, which
  * is the arrangement working rather than drifting.
  *
- * @see projects/configuration/callidescope.config.ts — `projectDefaults`, spread below
+ * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
  */
 export default {

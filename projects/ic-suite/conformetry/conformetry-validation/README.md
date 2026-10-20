@@ -167,6 +167,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_configuration["conformetry-configuration"]
   conformetry_core["conformetry-core"]
@@ -177,6 +178,7 @@ graph LR
   conformetry_cli --> conformetry_validation
   conformetry_examples --> conformetry_validation
   conformetry_nx --> conformetry_validation
+  conformetry_validation --> configuration
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages

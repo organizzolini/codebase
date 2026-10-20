@@ -6,7 +6,7 @@ import type { CodometerConfiguration } from "@codometer/configuration";
  * Codometer never searches for a configuration: the file `--config` names is
  * the only one read. Three files sit above this one — this package's, and the
  * workspace root's, which is itself a re-export of
- * `projects/configuration/codometer.config.ts` — and none of them contributes
+ * `configuration/codometer.config.ts` — and none of them contributes
  * anything to a run that names this file.
  *
  * That is visible rather than asserted, because the counter below exists

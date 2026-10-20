@@ -12,7 +12,7 @@ import { ProgramConfigurationError } from "../program/program.constants";
 import { WorkspaceService } from "./workspace.service";
 
 import type { WorkspaceProject } from "./workspace.types";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const PROJECT: WorkspaceProject = {

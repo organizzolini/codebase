@@ -12,10 +12,10 @@ const mockCommandFactoryRun = vi.fn<
   (_module: unknown, _options: CommandFactoryRunOptions) => Promise<void>
 >(async () => {});
 
-// `callidescope-cli.main.ts` only reaches NestJS through `@codebase/logging`, so the logger
+// `callidescope-cli.main.ts` only reaches NestJS through `@codebase/observability`, so the logger
 // package is the mock boundary — the real `LoggerService` is covered by its
 // own package's tests.
-vi.mock("@codebase/logging", () => {
+vi.mock("@codebase/observability", () => {
   class MockLoggerService {
     error(message: unknown, stack?: string): void {
       mockLoggerError(message, stack);

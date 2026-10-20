@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import type { DocumentMarkers, EmitArguments } from "./documents.types";
 

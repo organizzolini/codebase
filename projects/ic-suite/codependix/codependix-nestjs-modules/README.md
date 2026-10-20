@@ -23,10 +23,12 @@ graph LR
   codependix_examples["codependix-examples"]
   codependix_nestjs_modules["codependix-nestjs-modules"]
   codependix_output["codependix-output"]
-  logging["logging"]
+  configuration["configuration"]
+  observability["observability"]
   codependix_boundaries --> codependix_nestjs_modules
   codependix_examples --> codependix_nestjs_modules
-  codependix_nestjs_modules --> logging
+  codependix_nestjs_modules --> configuration
+  codependix_nestjs_modules --> observability
   codependix_output --> codependix_nestjs_modules
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class codependix_nestjs_modules subject
@@ -77,7 +79,7 @@ graph LR
   file_src_modules_nestjs_project_nestjs_project_service_ts["src/modules/nestjs-project/nestjs-project.service.ts"]
   file_src_modules_nestjs_project_nestjs_project_service_unit_test_ts["src/modules/nestjs-project/nestjs-project.service.unit.test.ts"]
   file_src_modules_nestjs_project_nestjs_project_types_ts["src/modules/nestjs-project/nestjs-project.types.ts"]
-  file_testing_main_module_ts["testing/main.module.ts"]
+  file_testing_codependix_nestjs_modules_module_ts["testing/codependix-nestjs-modules.module.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_ts["vite.config.ts"]
@@ -107,7 +109,7 @@ graph LR
   file_src_modules_nestjs_project_nestjs_project_service_ts --> file_src_modules_nestjs_project_nestjs_project_types_ts
   file_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_src_modules_nestjs_project_nestjs_project_service_ts
   file_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_src_modules_nestjs_project_nestjs_project_types_ts
-  file_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_testing_main_module_ts
+  file_src_modules_nestjs_project_nestjs_project_service_unit_test_ts --> file_testing_codependix_nestjs_modules_module_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 

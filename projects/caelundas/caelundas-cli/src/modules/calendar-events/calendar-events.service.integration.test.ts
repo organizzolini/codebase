@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../../caelundas-cli.constants";

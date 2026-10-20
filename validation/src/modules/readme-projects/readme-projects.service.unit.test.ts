@@ -1,0 +1,245 @@
+import { Test } from "@nestjs/testing";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { ReadmeProjectsService } from "./readme-projects.service";
+
+/** Paths the mocked workspace says exist. */
+const existingPaths = new Set<string>();
+
+/** Directory names the mocked workspace returns for a read, by scope path. */
+const scopeChildren = new Map<string, string[]>();
+
+/** Names the mocked workspace treats as files rather than directories. */
+const fileNames = new Set<string>();
+
+/** What the mocked workspace hands back for a README read. */
+let readmeDocument = "";
+
+vi.mock("node:fs", () => ({
+  existsSync: vi.fn<(target: string) => boolean>((target: string) =>
+    existingPaths.has(target),
+  ),
+  readdirSync: vi.fn<
+    (target: string) => { isDirectory: () => boolean; name: string }[]
+  >((target: string) =>
+    (scopeChildren.get(target) ?? []).map((name) => ({
+      isDirectory: () => !fileNames.has(name),
+      name,
+    })),
+  ),
+  readFileSync: vi.fn<(target: string) => string>(() => readmeDocument),
+}));
+
+describe(ReadmeProjectsService, () => {
+  let service: ReadmeProjectsService;
+
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      providers: [ReadmeProjectsService],
+    }).compile();
+
+    service = await module.resolve(ReadmeProjectsService);
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    existingPaths.clear();
+    scopeChildren.clear();
+    fileNames.clear();
+    readmeDocument = "";
+  });
+
+  it("is defined", () => {
+    expect.hasAssertions();
+    expect(service).toBeDefined();
+  });
+
+  describe("resolveWorkspaceProjectPaths", () => {
+    it("finds no projects when no workspace scope exists", () => {
+      expect.hasAssertions();
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
+    it("names a project that sits directly in the workspace root", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", [
+        "validation",
+        "documentation",
+        "scripts",
+      ]);
+      existingPaths.add("/workspace/validation/package.json");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
+        "validation",
+      ]);
+    });
+
+    it("skips hidden, installed, grouping, and template directories at the root", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", [
+        ".nx",
+        "node_modules",
+        "projects",
+        "{{nameKebabCase}}",
+      ]);
+      existingPaths.add("/workspace/.nx/package.json");
+      existingPaths.add("/workspace/node_modules/package.json");
+      existingPaths.add("/workspace/projects/package.json");
+      existingPaths.add("/workspace/{{nameKebabCase}}/package.json");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
+    it("skips a root entry that is not a directory", () => {
+      expect.hasAssertions();
+
+      scopeChildren.set("/workspace", ["README.md"]);
+      fileNames.add("README.md");
+      existingPaths.add("/workspace/README.md/package.json");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
+    it("names every project under every grouping folder", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", [
+        "lexico",
+        "observability",
+        "notes",
+      ]);
+
+      existingPaths.add("/workspace/projects/observability/package.json");
+
+      existingPaths.add("/workspace/projects/lexico/lexico-api/package.json");
+      scopeChildren.set("/workspace/projects/lexico", ["lexico-api"]);
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
+        "projects/lexico/lexico-api",
+        "projects/observability",
+      ]);
+    });
+
+    it("skips a scope child that is not a directory", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      existingPaths.add("/workspace/projects/README.md/package.json");
+      scopeChildren.set("/workspace/projects", ["README.md"]);
+      fileNames.add("README.md");
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
+    it("skips a scope child with no package.json", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["stale"]);
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+
+    it("finds a project nested under a grouping folder that has no package.json of its own", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["ic-suite"]);
+
+      existingPaths.add("/workspace/projects/ic-suite");
+      scopeChildren.set("/workspace/projects/ic-suite", ["callidescope"]);
+
+      existingPaths.add("/workspace/projects/ic-suite/callidescope");
+      scopeChildren.set("/workspace/projects/ic-suite/callidescope", [
+        "callidescope-cli",
+      ]);
+
+      existingPaths.add(
+        "/workspace/projects/ic-suite/callidescope/callidescope-cli/package.json",
+      );
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
+        "projects/ic-suite/callidescope/callidescope-cli",
+      ]);
+    });
+
+    it("does not descend into a project's own subfolders looking for more projects", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["observability"]);
+
+      existingPaths.add("/workspace/projects/observability/package.json");
+      scopeChildren.set("/workspace/projects/observability", ["src"]);
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual([
+        "projects/observability",
+      ]);
+    });
+  });
+
+  describe("resolveWorkspaceProjectPaths with templates", () => {
+    it("skips a template placeholder directory holding a manifest", () => {
+      expect.hasAssertions();
+
+      existingPaths.add("/workspace/projects");
+      scopeChildren.set("/workspace/projects", ["configuration"]);
+
+      existingPaths.add("/workspace/configuration");
+      scopeChildren.set("/workspace/configuration", ["{{nameKebabCase}}"]);
+
+      existingPaths.add(
+        "/workspace/configuration/{{nameKebabCase}}/package.json",
+      );
+
+      expect(service.resolveWorkspaceProjectPaths("/workspace")).toStrictEqual(
+        [],
+      );
+    });
+  });
+
+  describe("readRootReadme", () => {
+    it("reads the workspace root README", () => {
+      expect.hasAssertions();
+
+      readmeDocument = "# codebase";
+
+      expect(service.readRootReadme("/workspace")).toBe("# codebase");
+    });
+  });
+
+  describe("findUndocumentedProjectPaths", () => {
+    it("finds nothing missing when every project is linked", () => {
+      expect.hasAssertions();
+      expect(
+        service.findUndocumentedProjectPaths(
+          ["projects/observability"],
+          "- **[logger](projects/observability)** - Shared logger",
+        ),
+      ).toStrictEqual([]);
+    });
+
+    it("names a project with no matching link", () => {
+      expect.hasAssertions();
+      expect(
+        service.findUndocumentedProjectPaths(
+          ["projects/observability", "projects/orphan"],
+          "- **[logger](projects/observability)** - Shared logger",
+        ),
+      ).toStrictEqual(["projects/orphan"]);
+    });
+  });
+});

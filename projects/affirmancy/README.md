@@ -24,12 +24,12 @@ The devcontainer provides Python 3.14.
 ## Setup
 
 This application is a member of the uv workspace declared in
-`projects/configuration/pyproject.toml`, sharing
-`projects/configuration/uv.lock` and the root `.venv`. Sync from the
+`configuration/pyproject.toml`, sharing
+`configuration/uv.lock` and the root `.venv`. Sync from the
 repository root and point uv at that workspace config.
 
 ```bash
-uv sync --project projects/configuration
+uv sync --project configuration
 ```
 
 ## Quickstart
@@ -167,7 +167,7 @@ MIT — see [LICENSE](../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [jupyter-notebook-application](../../projects/configuration/conformetry-templates/jupyter-notebook-application) conformetry template.
+This project was generated from the [jupyter-notebook-application](../../configuration/conformetry-templates/jupyter-notebook-application) conformetry template.
 
 ## 🕸️ Codependix
 
@@ -176,10 +176,53 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
-_This project has no immediate Nx dependencies or dependents._
+```mermaid
+graph LR
+  affirmancy["affirmancy"]
+  configuration["configuration"]
+  affirmancy --> configuration
+  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
+  class affirmancy subject
+```
 <!-- codependix:end name="codependix-nx-projects" -->
 
 <!-- codometer:start -->
+
+### Python File Imports
+
+<!-- codependix:start name="codependix-file-imports" -->
+```mermaid
+graph LR
+  file__vulture_whitelist_py[".vulture_whitelist.py"]
+  file_src___init___py["src/__init__.py"]
+  file_src_grammars_py["src/grammars.py"]
+  file_src_models_py["src/models.py"]
+  file_src_output_py["src/output.py"]
+  file_src_prompts_py["src/prompts.py"]
+  file_src_services_py["src/services.py"]
+  file_src_subjects_py["src/subjects.py"]
+  file_testing___init___py["testing/__init__.py"]
+  file_testing_test_grammars_py["testing/test_grammars.py"]
+  file_testing_test_models_py["testing/test_models.py"]
+  file_testing_test_output_py["testing/test_output.py"]
+  file_testing_test_prompts_py["testing/test_prompts.py"]
+  file_testing_test_services_py["testing/test_services.py"]
+  file_testing_test_subjects_py["testing/test_subjects.py"]
+  file_src_models_py --> file_src_grammars_py
+  file_src_models_py --> file_src_subjects_py
+  file_testing_test_grammars_py --> file_src_grammars_py
+  file_testing_test_models_py --> file_src_grammars_py
+  file_testing_test_models_py --> file_src_models_py
+  file_testing_test_models_py --> file_src_subjects_py
+  file_testing_test_output_py --> file_src_grammars_py
+  file_testing_test_output_py --> file_src_models_py
+  file_testing_test_output_py --> file_src_output_py
+  file_testing_test_output_py --> file_src_subjects_py
+  file_testing_test_prompts_py --> file_src_prompts_py
+  file_testing_test_services_py --> file_src_services_py
+  file_testing_test_subjects_py --> file_src_subjects_py
+```
+<!-- codependix:end name="codependix-file-imports" -->
 
 ## ⏲️ Codometer
 

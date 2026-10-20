@@ -11,7 +11,7 @@
     "types": ["node"]
   },
   "exclude": ["dist", "node_modules"],
-  "extends": "../../../projects/configuration/tsconfig.json",
+  "extends": "../../../configuration/tsconfig.json",
   "include": [
     "*.config.mts",
     "callidescope.config.ts",

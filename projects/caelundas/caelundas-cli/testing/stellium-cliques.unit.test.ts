@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../src/modules/aspects/aspect-graph.service";
 import { ProgressiveCompoundEventService } from "../src/modules/aspects/progressive-compound-event.service";

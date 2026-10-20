@@ -8,7 +8,7 @@ In this monorepo (55 projects), adopting task-based affected provides dramatic s
 
 1. **Pre-commit hooks (`lint-staged`)**: Eliminates the cascading execution of 6 targets across dozens of downstream projects when touching shared libraries, and skips irrelevant targets (such as `tsc` or `vitest`) on non-code changes.
 2. **CI Pipelines (`continuous-integration.yml`)**: Eliminates downstream linting/formatting in matrix jobs and prevents test suite re-runs across dependent packages when only specs or documentation change.
-3. **Architecture Simplification**: Renders the custom workaround in `projects/publication/src/modules/run-affected/` (which dropped `.cspell/` files and manually injected `conformetry.config.ts`) obsolete by letting Nx's native task inputs govern what runs.
+3. **Architecture Simplification**: Renders the custom workaround in `publication/src/modules/run-affected/` (which dropped `.cspell/` files and manually injected `conformetry.config.ts`) obsolete by letting Nx's native task inputs govern what runs.
 
 ---
 
@@ -24,10 +24,10 @@ In this monorepo (55 projects), adopting task-based affected provides dramatic s
   - `packages/nx/src/native/` (`nativeAffectedTasks` Rust implementation)
 - **Codebase Primary References**:
   - `nx.json` (targetDefaults, namedInputs, plugins)
-  - `projects/configuration/lint-staged.config.ts`
+  - `configuration/lint-staged.config.ts`
   - `.github/workflows/continuous-integration.yml`
   - `.github/actions/run-affected/action.yml`
-  - `projects/publication/src/modules/run-affected/run-affected.service.ts`
+  - `publication/src/modules/run-affected/run-affected.service.ts`
   - `documentation/adr/0007-state-the-real-dependency-in-task-cache-inputs.md`
 
 ### 1.2 The Core Mechanism: Project-Based vs Task-Based Affected
@@ -56,7 +56,7 @@ Under task-based affected:
 
 ### 2.1 Pre-Commit Bottleneck (`lint-staged.config.ts`)
 
-In `projects/configuration/lint-staged.config.ts`, the hook runs:
+In `configuration/lint-staged.config.ts`, the hook runs:
 
 ```typescript
 pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code,conformetry-validate --configuration=check --parallel=${String(ANALYSIS_PARALLELISM)} --outputStyle=static ${getStagedChangeFlags(files)}
@@ -65,20 +65,20 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 #### The Problem
 
 - **Massive Target Over-Execution**: When staging a single file in project `foo` (even a `README.md` or test), project-based affected marks project `foo` affected for **all 6 targets**. This forces `tsc --noEmit`, `type-coverage`, `guard-code`, and `conformetry-validate` to schedule and evaluate, even when the changed file cannot possibly affect them.
-- **Cascading Across Dependents**: When staging a change in a core library (such as `@callidescope/core` or `@codebase/logging`), project-based affected marks 20+ dependent projects affected. The hook attempts to run `eslint`, `oxlint`, `stylelint`, `spell-check`, and `typecheck` across the entire dependent subtree.
+- **Cascading Across Dependents**: When staging a change in a core library (such as `@callidescope/core` or `@codebase/observability`), project-based affected marks 20+ dependent projects affected. The hook attempts to run `eslint`, `oxlint`, `stylelint`, `spell-check`, and `typecheck` across the entire dependent subtree.
 - **Memory Pressure & Process Kills**: Because dozens of projects are marked affected on shared library commits, the pre-commit hook previously suffered OS kills (exit code 137). Complex workarounds were introduced (`getLocalParallelism()`, argument size splitting) to prevent memory exhaustion.
-- **Template Workaround**: Staging conformetry templates in `projects/configuration/conformetry-templates/` failed to select instance projects under project-based affected because `.nxignore` masked template files. The hook had to implement `getStagedTemplateFlags()` to manually inject `conformetry.config.ts` into `--files`.
+- **Template Workaround**: Staging conformetry templates in `configuration/conformetry-templates/` failed to select instance projects under project-based affected because `.nxignore` masked template files. The hook had to implement `getStagedTemplateFlags()` to manually inject `conformetry.config.ts` into `--files`.
 
 ### 2.2 CI Bottleneck & Custom Workarounds (`run-affected.service.ts`)
 
 In `.github/workflows/continuous-integration.yml`, CI runs matrix jobs for `typecheck-code`, `format-code`, `lint-code`, `deprecate-code`, `guard-code`, `test-code`, `build-projects`, and `verify-publishable-packages`.
 
-To avoid running all jobs across all projects, the codebase built an entire custom NestJS CLI service: `projects/publication/src/modules/run-affected/run-affected.service.ts`.
+To avoid running all jobs across all projects, the codebase built an entire custom NestJS CLI service: `publication/src/modules/run-affected/run-affected.service.ts`.
 
 #### CI Invalidation Challenges
 
 - **Dictionary Word Spurious Invalidation**:
-  `projects/publication/src/modules/run-affected/run-affected.constants.ts` documents:
+  `publication/src/modules/run-affected/run-affected.constants.ts` documents:
   > _"`spell-check` lists them among its `{workspaceRoot}` inputs, and Nx decides affected per project, not per target, so one new word in a dictionary marks every project affected for every target. Only the target that runs `spell-check` should see those files."_
 - To prevent dictionary edits from triggering whole-repo test, typecheck, and build runs, `RunAffectedService` intercepts the git diff and strips spelling files from the change set unless `INCLUDE_SPELLING` is true.
 - **Lost Fine-Grained Package/Lockfile Diffing**:
@@ -155,5 +155,5 @@ Task-based affected relies on the exactness of task `inputs`. Fortunately, this 
 
 ### Phase 4: Streamline Pre-Commit and CI Tooling
 
-- Update `projects/configuration/lint-staged.config.ts` to leverage task-based selection and remove unnecessary file flag workarounds.
-- Simplify `.github/actions/run-affected/action.yml` and evaluate deprecating or simplifying `projects/publication/src/modules/run-affected/run-affected.service.ts`.
+- Update `configuration/lint-staged.config.ts` to leverage task-based selection and remove unnecessary file flag workarounds.
+- Simplify `.github/actions/run-affected/action.yml` and evaluate deprecating or simplifying `publication/src/modules/run-affected/run-affected.service.ts`.

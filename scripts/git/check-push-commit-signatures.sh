@@ -34,7 +34,17 @@ while read -r local_ref local_sha remote_ref remote_sha; do
       continue
     fi
 
-    signature_status="$(git log -1 --format='%G?' "${commit_sha}")"
+    signature_status="$(git log -1 --format='%G?' "${commit_sha}" 2> /dev/null)"
+
+    # An SSH signature reads as N or E here whenever this clone has no
+    # gpg.ssh.allowedSignersFile or no ssh-keygen, as in a cloud session. The
+    # header proves the commit is signed; GitHub verifies the key on the pull
+    # request, so the commit's own header decides rather than this clone's config.
+    if [[ "${signature_status}" != 'G' && "${signature_status}" != 'U' ]] \
+      && git cat-file commit "${commit_sha}" | grep -q '^gpgsig -----BEGIN SSH SIGNATURE-----'; then
+      continue
+    fi
+
     if [[ "${signature_status}" != 'G' && "${signature_status}" != 'U' ]]; then
       commit_subject="$(git log -1 --format='%s' "${commit_sha}")"
       unsigned_commits+=("${commit_sha} [${signature_status}] ${commit_subject}")

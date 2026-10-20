@@ -58,7 +58,7 @@ Using the repository's naming convention (`<type>/<scope>-<description>`):
 | `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
 | `conformetry` | Code generator templates and validation tests for generated instances |
-| `database` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
+| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -67,7 +67,7 @@ Using the repository's naming convention (`<type>/<scope>-<description>`):
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
 | `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
-| `components` | Shared React/shadcn component library |
+| `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |
 | `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |

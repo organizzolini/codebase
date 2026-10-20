@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   DRAW_RUN_TIMEOUT_MILLISECONDS,

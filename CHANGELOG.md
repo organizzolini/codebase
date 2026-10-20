@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.15.0](https://github.com/organizzolini/codebase/compare/v3.14.1...v3.15.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts:** ✨ set up linux in installation script ([#1730](https://github.com/organizzolini/codebase/issues/1730)) ([4620c1a](https://github.com/organizzolini/codebase/commit/4620c1aced3359edf72ebf1c6e315abe8cf0486c))
+
+### 🐛 Bug Fixes
+
+* **configuration:** 🩹 unset node path in pre-commit hook ([#1731](https://github.com/organizzolini/codebase/issues/1731)) ([2847b23](https://github.com/organizzolini/codebase/commit/2847b23116e51059aa0c0e2e477a47b9d9acf24c))
+
+## [3.14.1](https://github.com/organizzolini/codebase/compare/v3.14.0...v3.14.1) (2026-10-20)
+
+### 🐛 Bug Fixes
+
+* **scripts:** 🩹 verify gh auth by rest call in cloud sessions ([#1729](https://github.com/organizzolini/codebase/issues/1729)) ([3527062](https://github.com/organizzolini/codebase/commit/35270626e095987ce56c561b388d9b6a6f5b01e7))
+
+## [3.14.0](https://github.com/organizzolini/codebase/compare/v3.13.6...v3.14.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts:** ✨ accept ssh commit signing ([#1728](https://github.com/organizzolini/codebase/issues/1728)) ([62e37ca](https://github.com/organizzolini/codebase/commit/62e37cacb6f86084256d70aaa67d3cf39491f33d))
+
+## [3.13.6](https://github.com/organizzolini/codebase/compare/v3.13.5...v3.13.6) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **database/synchronization/integration:** ♻️ rename database project to persistence ([#1707](https://github.com/organizzolini/codebase/issues/1707)) ([bc4fbfd](https://github.com/organizzolini/codebase/commit/bc4fbfd0f38018c33728ae1d797d316bbc243218))
+
 ## [3.13.5](https://github.com/organizzolini/codebase/compare/v3.13.4...v3.13.5) (2026-10-18)
 
 ### 🐛 Bug Fixes
@@ -524,7 +552,7 @@ All notable changes to this project will be documented in this file. See [Conven
 
 ### ♻️ Code Refactoring
 
-* **ic-suite:** ♻️ rename @codebase/logger to @codebase/logging ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
+* **ic-suite:** ♻️ rename @codebase/logger to @codebase/observability ([#1208](https://github.com/organizzolini/codebase/issues/1208)) ([03b3564](https://github.com/organizzolini/codebase/commit/03b3564fc46decee05eaeb5163b476fc1589bf05))
 
 ## [2.33.3](https://github.com/organizzolini/codebase/compare/v2.33.2...v2.33.3) (2026-10-05)
 

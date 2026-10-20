@@ -19,7 +19,7 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { LimitsCommand } from "./limits.command";
 import { LimitsService } from "./limits.service";

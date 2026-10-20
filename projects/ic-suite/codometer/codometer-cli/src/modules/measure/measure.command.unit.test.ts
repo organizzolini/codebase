@@ -22,7 +22,7 @@ import {
   vi,
 } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { buildCodeStatistics, throwUnknown } from "../../../testing/mocks";
 
@@ -263,10 +263,10 @@ describe(MeasureCommand, () => {
     });
 
     it("loads exactly the configuration it was named", async () => {
-      await run({ config: "projects/configuration/codometer.config.ts" });
+      await run({ config: "configuration/codometer.config.ts" });
 
       expect(configurationService.loadConfiguration).toHaveBeenCalledWith({
-        configurationPath: "projects/configuration/codometer.config.ts",
+        configurationPath: "configuration/codometer.config.ts",
       });
     });
 

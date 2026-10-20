@@ -1,4 +1,4 @@
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import { AspectEphemerisService } from "../src/modules/aspects/aspect-ephemeris.service";
 import { AspectsUtilitiesService } from "../src/modules/aspects/aspects-utilities.service";

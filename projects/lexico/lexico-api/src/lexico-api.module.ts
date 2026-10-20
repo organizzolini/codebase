@@ -5,7 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 
 import { LexicoDatabaseModule } from "@codebase/lexico-entities";
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema, GRAPHQL_SCHEMA_FILE } from "./lexico-api.constants";
 import { HealthModule } from "./modules/health/health.module";

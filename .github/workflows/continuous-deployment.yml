@@ -12,7 +12,7 @@ on:
       - .devcontainer/**
       - .env.default
       - .github/workflows/continuous-deployment.yml
-      - projects/infrastructure/docker/docker-compose.yml
+      - infrastructure/docker/docker-compose.yml
       - package.json
   workflow_dispatch:
 
@@ -98,7 +98,7 @@ jobs:
             else
               COMPARISON="$(gh api "repos/$REPOSITORY/compare/${BASE}...${HEAD}")"
               FILE_COUNT="$(jq '.files | length' <<< "$COMPARISON")"
-              MATCH_PATTERN='^(\.devcontainer/|\.env\.default$|\.github/workflows/continuous-deployment\.yml$|projects/infrastructure/docker/docker-compose\.yml$)'
+              MATCH_PATTERN='^(\.devcontainer/|\.env\.default$|\.github/workflows/continuous-deployment\.yml$|infrastructure/docker/docker-compose\.yml$)'
               PACKAGE_MANAGER_PATTERN='^[-+][[:space:]]*"packageManager"'
 
               if [ "$FILE_COUNT" -ge 300 ]; then
@@ -251,7 +251,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/publication.main.ts version-packages
+            publication/src/publication.main.ts version-packages
 
       - name: 👷 Build Projects
         if: >-
@@ -323,7 +323,7 @@ jobs:
           GIT_COMMITTER_NAME: Jimmy Paolini
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/publication.main.ts tag-codebase
+            publication/src/publication.main.ts tag-codebase
 
       # Tags each newly versioned package on the release commit and pushes the
       # tags. The `tag-packages` command of the `publication` project explains
@@ -339,7 +339,7 @@ jobs:
           GIT_COMMITTER_NAME: Jimmy Paolini
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/publication.main.ts tag-packages
+            publication/src/publication.main.ts tag-packages
 
       # Publishes each released package to npm with provenance, and to GitHub
       # Packages under the owner's scope.
@@ -358,7 +358,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/publication.main.ts publish-packages
+            publication/src/publication.main.ts publish-packages
 
       # Lists each package published to npm on the organization's Linked
       # artifacts page, and names the ones this run published for the
@@ -376,7 +376,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/publication/src/publication.main.ts link-packages
+            publication/src/publication.main.ts link-packages
 
       # A GitHub build-provenance attestation for each npm tarball this run
       # published, which the Linked artifacts page shows beside its record.

@@ -136,7 +136,7 @@ gh pr list --head <branch> --state open
    EOF
 
    NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-     projects/validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
+     validation/src/validation.main.ts pull-request-body /tmp/pr_body.md
    ```
 
    Fix any reported issues (e.g. missing headings or leftover template comments)
@@ -175,7 +175,7 @@ gh pr list --head <branch> --state open
    ```bash
    pr_number="$(gh pr view <branch> --json number --jq .number)"
    NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-     projects/validation/src/validation.main.ts pull-request-release-significance \
+     validation/src/validation.main.ts pull-request-release-significance \
      "${pr_number}"
    ```
 

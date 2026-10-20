@@ -52,15 +52,15 @@ jobs:
 
           from="requires-python = \">=3\.[0-9][0-9]*"
           to="requires-python = \">=${LATEST_PYTHON}"
-          sed -i "s/${from}/${to}/" projects/configuration/pyproject.toml
+          sed -i "s/${from}/${to}/" configuration/pyproject.toml
 
           from="target-version = \"py[0-9][0-9]*"
           to="target-version = \"py${PYTHON_VER}"
-          sed -i "s/${from}/${to}/" projects/configuration/pyproject.toml
+          sed -i "s/${from}/${to}/" configuration/pyproject.toml
 
           from="pythonVersion = \"3\.[0-9][0-9]*"
           to="pythonVersion = \"${LATEST_PYTHON}"
-          sed -i "s/${from}/${to}/" projects/configuration/pyproject.toml
+          sed -i "s/${from}/${to}/" configuration/pyproject.toml
 
           from="requires-python = \">=3\.[0-9][0-9]*"
           to="requires-python = \">=${LATEST_PYTHON}"
@@ -92,7 +92,7 @@ jobs:
 
       - name: 📦 Upgrade Python Dependencies
         # One lockfile covers every uv workspace member.
-        run: uv lock --upgrade --project projects/configuration
+        run: uv lock --upgrade --project configuration
 
       - name: 🤹 Upgrade Skills
         run: |
@@ -107,7 +107,7 @@ jobs:
           # `skills update` skips it; the installation project's
           # `update-reui-skill` command re-fetches and re-pins it.
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-            projects/installation/src/installation.main.ts update-reui-skill
+            installation/src/installation.main.ts update-reui-skill
 
       - name: 🎨 Upgrade Impeccable
         run: npx impeccable update
