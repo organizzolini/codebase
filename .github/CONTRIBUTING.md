@@ -65,12 +65,12 @@ cd codebase && bash scripts/installation.sh
 
 The script is a bootstrap. It installs what the real setup needs in order to run, then hands over to the [installation](../projects/installation/AGENTS.md) project's `setup` command, which is tested TypeScript. It runs four stages in order:
 
-| Stage | Step                                           | What it does                                                                                                                                   |
-| ----- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `scripts/utilities.sh`                         | Validates the working directory, loads `.env`, enables `set -e`                                                                                |
-| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx`           | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                    |
-| 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                                                                                        |
-| 4     | `installation setup`                           | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project projects/configuration`, and Terraform setup |
+| Stage | Step                                | What it does                                                                                                                                                                    |
+| ----- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `scripts/utilities.sh`              | Validates the working directory, loads `.env`, enables `set -e`                                                                                                                 |
+| 2     | Homebrew, `nvm`, Node, `pnpm`, `nx` | Checks Homebrew, then installs `nvm`, Node, `pnpm`, and `nx`                                                                                                                    |
+| 3     | `pnpm install`                      | Installs the packages the `setup` command is written in                                                                                                                         |
+| 4     | `installation setup`                | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project projects/configuration`, and Terraform setup |
 
 A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`. Run from inside Nx, `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; run `nx reset` yourself.
 
@@ -142,7 +142,7 @@ See [.devcontainer/README.md](../.devcontainer/README.md) for detailed configura
 
 ### Commit Signing (Required)
 
-Every commit must be GPG-signed. The `pre-commit` hook refuses to run without a working signing configuration, `pre-push` verifies the signature on every commit being pushed, and `main` is protected against unsigned commits — so this is the first thing to get right, before your first commit.
+Every commit must be signed, with GPG on a local machine or with SSH in a cloud agent session. The `pre-commit` hook refuses to run without a working signing configuration, `pre-push` verifies the signature on every commit being pushed, and `main` is protected against unsigned commits — so this is the first thing to get right, before your first commit.
 
 The local setup script installs `gnupg` and `pinentry-mac` and points `gpg-agent` at the latter, but it cannot create a key for you. If you do not already have one:
 
@@ -167,6 +167,8 @@ gpg --armor --export "$(git config --get user.signingkey)"
 ```
 
 `scripts/git/check-commit-signing-configuration.sh` checks all of it — `commit.gpgsign`, `user.signingkey`, that a secret key exists for that key, and that signing actually succeeds. Husky runs it for you; never invoke it, or `check-push-commit-signatures.sh`, by hand during a normal commit or push.
+
+Cloud agent sessions sign with SSH instead (`gpg.format=ssh`), through a signer program the harness provides, so there is no GPG key to create. For `gpg.format=ssh` the check confirms the signer program and key file exist and that a throwaway commit signs; it does not verify the signature, because that needs `ssh-keygen` and `gpg.ssh.allowedSignersFile`, which a cloud session lacks. `pre-push` likewise accepts a commit carrying an SSH signature without verifying it locally, and GitHub verifies it on the pull request once the public key is registered on the account.
 
 ### Workspace Structure
 
@@ -349,11 +351,11 @@ Every configuration these four read lives in [projects/configuration/](../projec
 
 Three Husky hooks enforce quality gates locally, from [projects/configuration/.husky/](../projects/configuration/.husky). **Never bypass them with `--no-verify`** — fix the underlying issue instead.
 
-| Hook         | Trigger      | What it runs                                                                                                       | Config                                                                   |
-| ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| `pre-commit` | `git commit` | GPG signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../projects/configuration/lint-staged.config.ts) |
-| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                          | [commitlint.config.ts](../projects/configuration/commitlint.config.ts)   |
-| `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                    | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs)    |
+| Hook         | Trigger      | What it runs                                                                                                          | Config                                                                   |
+| ------------ | ------------ | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `pre-commit` | `git commit` | Commit signing configuration check, then **lint-staged**: format, lint, typecheck, spelling, and more on staged files | [lint-staged.config.ts](../projects/configuration/lint-staged.config.ts) |
+| `commit-msg` | `git commit` | **commitlint**: validates the Conventional Commits format                                                             | [commitlint.config.ts](../projects/configuration/commitlint.config.ts)   |
+| `pre-push`   | `git push`   | **validate-branch-name**, then a commit signature check over the pushed commits                                       | [validate-branch-name.config.cjs](../validate-branch-name.config.cjs)    |
 
 If a hook fails, the git operation is blocked until you fix the error. `pre-commit` writes its full output to `last-lint-staged-output.log`, which is where to look when the terminal output is truncated.
 

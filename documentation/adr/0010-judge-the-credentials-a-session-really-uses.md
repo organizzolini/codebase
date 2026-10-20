@@ -38,6 +38,12 @@ hook shell's environment is not the session's.
   milliseconds when there is none. A cancelled pinentry is reported as
   inconclusive rather than as broken signing, because the real commit that
   follows prompts for the passphrase normally.
+- **SSH signing skips the GPG checks and is not verified locally.** A cloud
+  session signs with `gpg.format=ssh` through a harness-provided signer, so
+  there is no secret key, user id, or trust database to judge. The check proves
+  the signer and key file exist and that a throwaway commit signs; verification
+  needs `ssh-keygen` and an allowed-signers file the session lacks, so GitHub
+  does it on the pull request instead.
 - **One script serves two harnesses.** They read different JSON shapes, so every
   script pipes its message through `scripts/git/emit-session-hook-context.sh`,
   which emits `hookSpecificOutput.additionalContext` when `CLAUDE_PROJECT_DIR`
