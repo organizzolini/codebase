@@ -1,0 +1,81 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "publication",
+  "projectType": "application",
+  "sourceRoot": "publication",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "type:package"
+  ],
+  "targets": {
+    "build-projects": {},
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "repl": {},
+    "spell-check": {},
+    "start": {
+      "cache": false,
+      "configurations": {
+        "adopt-task-database": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts adopt-task-database"
+        },
+        "bound-base-to-push": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts bound-base-to-push"
+        },
+        "import-pr-task-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts import-pr-task-cache"
+        },
+        "keep-task-database": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts keep-task-database"
+        },
+        "link-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts link-packages"
+        },
+        "merge-task-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts merge-task-cache"
+        },
+        "publish-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts publish-packages"
+        },
+        "publishable-packages-gate": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts publishable-packages-gate"
+        },
+        "tag-codebase": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts tag-codebase"
+        },
+        "tag-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts tag-packages"
+        },
+        "verify-task-database": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts verify-task-database"
+        },
+        "version-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts version-packages"
+        }
+      },
+      "description": "Run one publication command by name. Callers in CI set the variables each command reads, such as NX_BASE and NX_HEAD.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register publication/src/publication.main.ts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

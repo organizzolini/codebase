@@ -24,12 +24,12 @@ The devcontainer provides Python 3.14.
 ## Setup
 
 This application is a member of the uv workspace declared in
-`projects/configuration/pyproject.toml`, sharing
-`projects/configuration/uv.lock` and the root `.venv`. Sync from the
+`configuration/pyproject.toml`, sharing
+`configuration/uv.lock` and the root `.venv`. Sync from the
 repository root and point uv at that workspace config.
 
 ```bash
-uv sync --project projects/configuration
+uv sync --project configuration
 ```
 
 ## Quickstart
@@ -167,7 +167,7 @@ MIT — see [LICENSE](../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [jupyter-notebook-application](../../projects/configuration/conformetry-templates/jupyter-notebook-application) conformetry template.
+This project was generated from the [jupyter-notebook-application](../../configuration/conformetry-templates/jupyter-notebook-application) conformetry template.
 
 ## 🕸️ Codependix
 
@@ -186,7 +186,7 @@ _This project has no immediate Nx dependencies or dependents._
 ### Project
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4373-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-220.38_kB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-220.35_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-3-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-17-3178c6?style=flat-square)
 

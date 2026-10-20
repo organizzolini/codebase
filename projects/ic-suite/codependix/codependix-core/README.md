@@ -29,9 +29,11 @@ graph LR
   codependix_core["codependix-core"]
   codependix_examples["codependix-examples"]
   codependix_output["codependix-output"]
+  configuration["configuration"]
   codependix_boundaries --> codependix_core
   codependix_cli --> codependix_core
   codependix_configuration --> codependix_core
+  codependix_core --> configuration
   codependix_examples --> codependix_core
   codependix_output --> codependix_core
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px

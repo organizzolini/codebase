@@ -1,4 +1,4 @@
-import baseConfig from "../../../../projects/configuration/eslint.config";
+import baseConfig from "../../../../configuration/eslint.config";
 
 export default [
   // 🛠️ Base Config
@@ -11,14 +11,14 @@ export default [
       "@nx/dependency-checks": [
         "error",
         {
-          // @codebase/logging: inlined into the bundled build output and declared as a devDependency.
-          // pino, pino-pretty: runtime dependencies for the inlined @codebase/logging;
+          // @codebase/observability: inlined into the bundled build output and declared as a devDependency.
+          // pino, pino-pretty: runtime dependencies for the inlined @codebase/observability;
           // pino-pretty is a transport reached only via runtime string in pino configuration.
           // vitest: referenced via tsconfig "types" array; it's a devDependency
           // and the @nx/dependency-checks rule misidentifies it as a production
           // dependency.
           ignoredDependencies: [
-            "@codebase/logging",
+            "@codebase/observability",
             "pino",
             "pino-pretty",
             "vitest",

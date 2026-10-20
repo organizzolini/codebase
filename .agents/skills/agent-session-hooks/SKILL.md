@@ -46,6 +46,6 @@ An empty context is how the emitter learns the command could not run at all. Wit
 
 The command must therefore print nothing to standard output except the context, which is why the `synchronization` and `validation` command-line applications send their logs to standard error; a project hosting a new hook command must do the same. Which project a command belongs in follows each project's own rule: a `check` with a `write` belongs in `synchronization`, a one-sided check in `validation`.
 
-The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `projects/validation/AGENTS.md`.
+The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `validation/AGENTS.md`.
 
 Why the credential checks resolve the session's own token and signing configuration rather than the hook shell's, and why a hook can fail but never hang, is in [ADR 0010](../../documentation/adr/0010-judge-the-credentials-a-session-really-uses.md).

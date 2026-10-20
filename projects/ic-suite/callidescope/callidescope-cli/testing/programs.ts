@@ -15,7 +15,7 @@ import { createMock } from "@golevelup/ts-vitest";
 import ts from "typescript";
 
 import type { ProjectProgram } from "@callidescope/graph";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 
 /** Root every in-memory fixture file is written under. */
 export const FIXTURE_ROOT = "/workspace";

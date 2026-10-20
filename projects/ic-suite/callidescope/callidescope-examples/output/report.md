@@ -17,7 +17,7 @@
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `projects/ic-suite/callidescope/callidescope-examples` | 8 | 5 | -3 | 2 |
-| `projects/logging` | 6 | 4 | -2 | 2 |
+| `projects/common/observability` | 6 | 4 | -2 | 2 |
 | `projects/ic-suite/callidescope/callidescope-examples/examples/gated-leaf` | 4 | 3 | -1 | 3 |
 | `projects/ic-suite/codependix/codependix-configuration` | 7 | 7 | 0 | 4 |
 | `projects/ic-suite/codometer/codometer-configuration` | 9 | 9 | 0 | 4 |
@@ -144,77 +144,77 @@
 **6. `LoggerService.log`** — depth 6 · orphan-root
 
 ```text
-🚀 LoggerService.log(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:305]
+🚀 LoggerService.log(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:305]
    ↳ Logs an informational message at the `info` level.
-  └─> LoggerService.info(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:289]
+  └─> LoggerService.info(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:289]
      ↳ Logs an informational message at the `info` level.
-    └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+    └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:144]
        ↳ Assembles the object pino merges into the line.
-      └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+      └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:125]
          ↳ Fails a malformed message in development, and never in production.
-        └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+        └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:163]
            ↳ Returns a human-readable explanation when the message format is invalid.
-          └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+          └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:189]
              ↳ Whether a word is a verb in one of the two tenses the convention allows.
 ```
 
 **7. `LoggerService.debug`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.debug(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:254]
+🚀 LoggerService.debug(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:254]
    ↳ Logs a debug message at the `debug` level.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:144]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:125]
        ↳ Fails a malformed message in development, and never in production.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:163]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:189]
            ↳ Whether a word is a verb in one of the two tenses the convention allows.
 ```
 
 **8. `LoggerService.error`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.error(…): void [projects/logging/src/modules/logger/logger.service.ts:269]
+🚀 LoggerService.error(…): void [projects/common/observability/src/modules/logger/logger.service.ts:269]
    ↳ Logs an error message at the `error` level, optionally including a stack trace. `ConsoleLogger.error` spends a third…
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:144]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:125]
        ↳ Fails a malformed message in development, and never in production.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:163]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:189]
            ↳ Whether a word is a verb in one of the two tenses the convention allows.
 ```
 
 **9. `LoggerService.verbose`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.verbose(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:316]
+🚀 LoggerService.verbose(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:316]
    ↳ Logs a verbose message at the `trace` level.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:144]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:125]
        ↳ Fails a malformed message in development, and never in production.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:163]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:189]
            ↳ Whether a word is a verb in one of the two tenses the convention allows.
 ```
 
 **10. `LoggerService.warn`** — depth 5 · orphan-root
 
 ```text
-🚀 LoggerService.warn(message: unknown, context?: string, data?: LogData): void [projects/logging/src/modules/logger/logger.service.ts:325]
+🚀 LoggerService.warn(message: unknown, context?: string, data?: LogData): void [projects/common/observability/src/modules/logger/logger.service.ts:325]
    ↳ Logs a warning message at the `warn` level.
-  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/logging/src/modules/logger/logger.service.ts:144]
+  └─> LoggerService.buildBindings(…): Record<string, unknown> [projects/common/observability/src/modules/logger/logger.service.ts:144]
      ↳ Assembles the object pino merges into the line.
-    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/logging/src/modules/logger/logger.service.ts:125]
+    └─> LoggerService.assertConventionalMessage(args: { context: string | undefined; parsed: ParsedLogMessage; }): void [projects/common/observability/src/modules/logger/logger.service.ts:125]
        ↳ Fails a malformed message in development, and never in production.
-      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/logging/src/modules/logger/logger.service.ts:163]
+      └─> LoggerService.getConventionalMessageViolation(parsed: ParsedLogMessage): string | undefined [projects/common/observability/src/modules/logger/logger.service.ts:163]
          ↳ Returns a human-readable explanation when the message format is invalid.
-        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/logging/src/modules/logger/logger.service.ts:189]
+        └─> LoggerService.isConventionalVerb(word: string): boolean [projects/common/observability/src/modules/logger/logger.service.ts:189]
            ↳ Whether a word is a verb in one of the two tenses the convention allows.
 ```
 

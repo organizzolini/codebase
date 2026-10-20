@@ -705,10 +705,10 @@ importers:
         version: link:projects/ic-suite/callidescope/callidescope-nx
       '@codebase/configuration':
         specifier: workspace:*
-        version: link:projects/configuration
-      '@codebase/logging':
+        version: link:configuration
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:projects/logging
+        version: link:projects/common/observability
       '@codependix/configuration':
         specifier: workspace:*
         version: link:projects/ic-suite/codependix/codependix-configuration
@@ -914,16 +914,188 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
 
+  configuration:
+    devDependencies:
+      '@commitlint/types':
+        specifier: 'catalog:'
+        version: 21.2.3
+      '@eslint-react/eslint-plugin':
+        specifier: 'catalog:'
+        version: 5.20.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+      '@eslint/js':
+        specifier: 'catalog:'
+        version: 10.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      '@eslint/markdown':
+        specifier: 'catalog:'
+        version: 8.0.3(supports-color@10.2.2)
+      '@nx/eslint-plugin':
+        specifier: 'catalog:'
+        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
+      '@vitest/eslint-plugin':
+        specifier: 'catalog:'
+        version: 1.6.27(@typescript-eslint/eslint-plugin@8.70.1(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)(vitest@5.0.1)
+      eslint-config-prettier:
+        specifier: 'catalog:'
+        version: 10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      eslint-plugin-better-max-params:
+        specifier: 'catalog:'
+        version: 1.0.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      eslint-plugin-import-x:
+        specifier: 'catalog:'
+        version: 4.17.1(@typescript-eslint/utils@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
+      eslint-plugin-jsdoc:
+        specifier: 'catalog:'
+        version: 65.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+      eslint-plugin-jsonc:
+        specifier: 'catalog:'
+        version: 3.4.2(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      eslint-plugin-jsx-a11y:
+        specifier: 'catalog:'
+        version: 6.10.2(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      eslint-plugin-perfectionist:
+        specifier: 'catalog:'
+        version: 5.12.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+      eslint-plugin-project-structure:
+        specifier: 'catalog:'
+        version: 3.14.4(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+      eslint-plugin-tsdoc:
+        specifier: 'catalog:'
+        version: 0.5.3(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+      eslint-plugin-unicorn:
+        specifier: 'catalog:'
+        version: 64.0.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      eslint-plugin-yml:
+        specifier: 'catalog:'
+        version: 3.8.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      knip:
+        specifier: 'catalog:'
+        version: 6.38.0
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+
+  infrastructure: {}
+
+  installation:
+    dependencies:
+      '@codebase/observability':
+        specifier: workspace:*
+        version: link:../projects/common/observability
+      '@nestjs/common':
+        specifier: 'catalog:'
+        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      '@nestjs/config':
+        specifier: 'catalog:'
+        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      nest-commander:
+        specifier: 'catalog:'
+        version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.5
+    devDependencies:
+      '@golevelup/ts-vitest':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@nestjs/testing':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
+      '@nx/eslint-plugin':
+        specifier: 'catalog:'
+        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
+      '@swc-node/register':
+        specifier: 'catalog:'
+        version: 1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3)
+      '@swc/core':
+        specifier: 'catalog:'
+        version: 1.16.2(@swc/helpers@0.5.23)
+      '@swc/helpers':
+        specifier: 'catalog:'
+        version: 0.5.23
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.2
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 5.0.1(vitest@5.0.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+
+  integration:
+    dependencies:
+      '@codebase/observability':
+        specifier: workspace:*
+        version: link:../projects/common/observability
+      '@nestjs/common':
+        specifier: 'catalog:'
+        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      '@nestjs/config':
+        specifier: 'catalog:'
+        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      nest-commander:
+        specifier: 'catalog:'
+        version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.5
+    devDependencies:
+      '@golevelup/ts-vitest':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@nestjs/testing':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
+      '@nx/eslint-plugin':
+        specifier: 'catalog:'
+        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
+      '@swc-node/register':
+        specifier: 'catalog:'
+        version: 1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3)
+      '@swc/core':
+        specifier: 'catalog:'
+        version: 1.16.2(@swc/helpers@0.5.23)
+      '@swc/helpers':
+        specifier: 'catalog:'
+        version: 0.5.23
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.2
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 5.0.1(vitest@5.0.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+
   projects/affirmancy: {}
 
   projects/caelundas/caelundas-cli:
     dependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../logging
+        version: link:../../common/observability
       '@codebase/persistence':
         specifier: workspace:*
-        version: link:../../persistence
+        version: link:../../common/persistence
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -1053,7 +1225,123 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/components:
+  projects/common/observability:
+    dependencies:
+      '@nestjs/common':
+        specifier: 'catalog:'
+        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      pino:
+        specifier: 'catalog:'
+        version: 10.3.1
+      pino-pretty:
+        specifier: 'catalog:'
+        version: 13.1.3
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
+      tslib:
+        specifier: 'catalog:'
+        version: 2.8.1
+    devDependencies:
+      '@golevelup/ts-vitest':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@nestjs/testing':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
+      '@nx/eslint-plugin':
+        specifier: 'catalog:'
+        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
+      '@swc/helpers':
+        specifier: 'catalog:'
+        version: 0.5.23
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.2
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 5.0.1(vitest@5.0.1)
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+
+  projects/common/persistence:
+    dependencies:
+      '@codebase/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@nestjs/common':
+        specifier: 'catalog:'
+        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      '@nestjs/config':
+        specifier: 'catalog:'
+        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/testing':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
+      '@nestjs/typeorm':
+        specifier: 'catalog:'
+        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2))
+      '@testcontainers/postgresql':
+        specifier: 'catalog:'
+        version: 12.1.0(supports-color@10.2.2)
+      nest-commander:
+        specifier: 'catalog:'
+        version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
+      pg:
+        specifier: 'catalog:'
+        version: 8.23.0
+      reflect-metadata:
+        specifier: 'catalog:'
+        version: 0.2.2
+      tslib:
+        specifier: 'catalog:'
+        version: 2.8.1
+      typeorm:
+        specifier: 'catalog:'
+        version: 1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2)
+      typeorm-naming-strategies:
+        specifier: 'catalog:'
+        version: 4.1.0(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2))
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.5
+    devDependencies:
+      '@golevelup/ts-vitest':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@nx/eslint-plugin':
+        specifier: 'catalog:'
+        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
+      '@swc-node/register':
+        specifier: 'catalog:'
+        version: 1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3)
+      '@swc/core':
+        specifier: 'catalog:'
+        version: 1.16.2(@swc/helpers@0.5.23)
+      '@swc/helpers':
+        specifier: 'catalog:'
+        version: 0.5.23
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.2
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 5.0.1(vitest@5.0.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+
+  projects/common/presentation:
     dependencies:
       '@base-ui/react':
         specifier: 'catalog:'
@@ -1174,66 +1462,6 @@ importers:
         specifier: 'catalog:'
         version: 6.1.1(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/configuration:
-    devDependencies:
-      '@commitlint/types':
-        specifier: 'catalog:'
-        version: 21.2.3
-      '@eslint-react/eslint-plugin':
-        specifier: 'catalog:'
-        version: 5.20.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
-      '@eslint/js':
-        specifier: 'catalog:'
-        version: 10.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      '@eslint/markdown':
-        specifier: 'catalog:'
-        version: 8.0.3(supports-color@10.2.2)
-      '@nx/eslint-plugin':
-        specifier: 'catalog:'
-        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
-      '@vitest/eslint-plugin':
-        specifier: 'catalog:'
-        version: 1.6.27(@typescript-eslint/eslint-plugin@8.70.1(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)(vitest@5.0.1)
-      eslint-config-prettier:
-        specifier: 'catalog:'
-        version: 10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      eslint-plugin-better-max-params:
-        specifier: 'catalog:'
-        version: 1.0.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      eslint-plugin-import-x:
-        specifier: 'catalog:'
-        version: 4.17.1(@typescript-eslint/utils@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
-      eslint-plugin-jsdoc:
-        specifier: 'catalog:'
-        version: 65.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
-      eslint-plugin-jsonc:
-        specifier: 'catalog:'
-        version: 3.4.2(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      eslint-plugin-jsx-a11y:
-        specifier: 'catalog:'
-        version: 6.10.2(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      eslint-plugin-perfectionist:
-        specifier: 'catalog:'
-        version: 5.12.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
-      eslint-plugin-project-structure:
-        specifier: 'catalog:'
-        version: 3.14.4(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
-      eslint-plugin-tsdoc:
-        specifier: 'catalog:'
-        version: 0.5.3(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
-      eslint-plugin-unicorn:
-        specifier: 'catalog:'
-        version: 64.0.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      eslint-plugin-yml:
-        specifier: 'catalog:'
-        version: 3.8.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
-      knip:
-        specifier: 'catalog:'
-        version: 6.38.0
-      typescript-eslint:
-        specifier: 'catalog:'
-        version: 8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
-
   projects/ic-suite/callidescope/callidescope-agents:
     devDependencies:
       '@nx/eslint-plugin':
@@ -1294,9 +1522,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1469,9 +1697,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1533,9 +1761,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1585,9 +1813,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1719,9 +1947,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -1835,9 +2063,9 @@ importers:
 
   projects/ic-suite/codependix/codependix-examples:
     dependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@codependix/boundaries':
         specifier: workspace:*
         version: link:../codependix-boundaries
@@ -1943,9 +2171,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2090,9 +2318,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2178,9 +2406,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2365,9 +2593,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2420,9 +2648,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2472,9 +2700,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2557,9 +2785,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@conformetry/core':
         specifier: workspace:*
         version: link:../conformetry-core
@@ -2854,9 +3082,9 @@ importers:
         specifier: 'catalog:'
         version: 0.2.2
     devDependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../../logging
+        version: link:../../../common/observability
       '@golevelup/ts-vitest':
         specifier: 'catalog:'
         version: 4.0.0
@@ -2962,118 +3190,6 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/infrastructure: {}
-
-  projects/installation:
-    dependencies:
-      '@codebase/logging':
-        specifier: workspace:*
-        version: link:../logging
-      '@nestjs/common':
-        specifier: 'catalog:'
-        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
-      '@nestjs/config':
-        specifier: 'catalog:'
-        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      nest-commander:
-        specifier: 'catalog:'
-        version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.5
-    devDependencies:
-      '@golevelup/ts-vitest':
-        specifier: 'catalog:'
-        version: 4.0.0
-      '@nestjs/testing':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
-      '@nx/eslint-plugin':
-        specifier: 'catalog:'
-        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
-      '@swc-node/register':
-        specifier: 'catalog:'
-        version: 1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3)
-      '@swc/core':
-        specifier: 'catalog:'
-        version: 1.16.2(@swc/helpers@0.5.23)
-      '@swc/helpers':
-        specifier: 'catalog:'
-        version: 0.5.23
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.6.2
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 5.0.1(vitest@5.0.1)
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-
-  projects/integration:
-    dependencies:
-      '@codebase/logging':
-        specifier: workspace:*
-        version: link:../logging
-      '@nestjs/common':
-        specifier: 'catalog:'
-        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
-      '@nestjs/config':
-        specifier: 'catalog:'
-        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      nest-commander:
-        specifier: 'catalog:'
-        version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.5
-    devDependencies:
-      '@golevelup/ts-vitest':
-        specifier: 'catalog:'
-        version: 4.0.0
-      '@nestjs/testing':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
-      '@nx/eslint-plugin':
-        specifier: 'catalog:'
-        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
-      '@swc-node/register':
-        specifier: 'catalog:'
-        version: 1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3)
-      '@swc/core':
-        specifier: 'catalog:'
-        version: 1.16.2(@swc/helpers@0.5.23)
-      '@swc/helpers':
-        specifier: 'catalog:'
-        version: 0.5.23
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.6.2
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 5.0.1(vitest@5.0.1)
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-
   projects/lexico/lexico-api:
     dependencies:
       '@apollo/server':
@@ -3085,12 +3201,12 @@ importers:
       '@codebase/lexico-entities':
         specifier: workspace:*
         version: link:../lexico-entities
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../logging
+        version: link:../../common/observability
       '@codebase/persistence':
         specifier: workspace:*
-        version: link:../../persistence
+        version: link:../../common/persistence
       '@nestjs/apollo':
         specifier: 'catalog:'
         version: 14.0.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(@as-integrations/express5@1.1.2(@apollo/server@5.5.1(graphql@16.14.2)(supports-color@10.2.2))(express@5.2.1(supports-color@10.2.2)))(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/graphql@14.0.2(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(graphql@16.14.2)(reflect-metadata@0.2.2)(typescript@6.0.3))(graphql@16.14.2)
@@ -3167,12 +3283,12 @@ importers:
       '@codebase/lexico-entities':
         specifier: workspace:*
         version: link:../lexico-entities
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../logging
+        version: link:../../common/observability
       '@codebase/persistence':
         specifier: workspace:*
-        version: link:../../persistence
+        version: link:../../common/persistence
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -3290,7 +3406,7 @@ importers:
     dependencies:
       '@codebase/persistence':
         specifier: workspace:*
-        version: link:../../persistence
+        version: link:../../common/persistence
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -3337,9 +3453,9 @@ importers:
 
   projects/lexico/lexico-web:
     dependencies:
-      '@codebase/components':
+      '@codebase/presentation':
         specifier: workspace:*
-        version: link:../../components
+        version: link:../../common/presentation
       '@tanstack/react-router':
         specifier: 'catalog:'
         version: 1.170.39(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -3414,57 +3530,14 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/logging:
-    dependencies:
-      '@nestjs/common':
-        specifier: 'catalog:'
-        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
-      pino:
-        specifier: 'catalog:'
-        version: 10.3.1
-      pino-pretty:
-        specifier: 'catalog:'
-        version: 13.1.3
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
-      tslib:
-        specifier: 'catalog:'
-        version: 2.8.1
-    devDependencies:
-      '@golevelup/ts-vitest':
-        specifier: 'catalog:'
-        version: 4.0.0
-      '@nestjs/testing':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
-      '@nx/eslint-plugin':
-        specifier: 'catalog:'
-        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
-      '@swc/helpers':
-        specifier: 'catalog:'
-        version: 0.5.23
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.6.2
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 5.0.1(vitest@5.0.1)
-      eslint:
-        specifier: 'catalog:'
-        version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-
   projects/meanderaw/meanderaw-cli:
     dependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../../logging
+        version: link:../../common/observability
       '@codebase/persistence':
         specifier: workspace:*
-        version: link:../../persistence
+        version: link:../../common/persistence
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -3576,84 +3649,11 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/persistence:
+  publication:
     dependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../logging
-      '@nestjs/common':
-        specifier: 'catalog:'
-        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
-      '@nestjs/config':
-        specifier: 'catalog:'
-        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/testing':
-        specifier: 'catalog:'
-        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
-      '@nestjs/typeorm':
-        specifier: 'catalog:'
-        version: 12.0.1(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2))
-      '@testcontainers/postgresql':
-        specifier: 'catalog:'
-        version: 12.1.0(supports-color@10.2.2)
-      nest-commander:
-        specifier: 'catalog:'
-        version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
-      pg:
-        specifier: 'catalog:'
-        version: 8.23.0
-      reflect-metadata:
-        specifier: 'catalog:'
-        version: 0.2.2
-      tslib:
-        specifier: 'catalog:'
-        version: 2.8.1
-      typeorm:
-        specifier: 'catalog:'
-        version: 1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2)
-      typeorm-naming-strategies:
-        specifier: 'catalog:'
-        version: 4.1.0(typeorm@1.1.1(babel-plugin-macros@3.1.0)(better-sqlite3@12.11.1)(pg@8.23.0)(supports-color@10.2.2))
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.5
-    devDependencies:
-      '@golevelup/ts-vitest':
-        specifier: 'catalog:'
-        version: 4.0.0
-      '@nx/eslint-plugin':
-        specifier: 'catalog:'
-        version: 23.3.0(@babel/traverse@7.29.8(supports-color@10.2.2))(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.3.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))(supports-color@10.2.2)(typescript@6.0.3)(verdaccio@6.10.4(supports-color@10.2.2)(typanion@3.14.0))
-      '@swc-node/register':
-        specifier: 'catalog:'
-        version: 1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3)
-      '@swc/core':
-        specifier: 'catalog:'
-        version: 1.16.2(@swc/helpers@0.5.23)
-      '@swc/helpers':
-        specifier: 'catalog:'
-        version: 0.5.23
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.6.2
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 5.0.1(vitest@5.0.1)
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-
-  projects/publication:
-    dependencies:
-      '@codebase/logging':
-        specifier: workspace:*
-        version: link:../logging
+        version: link:../projects/common/observability
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -3704,14 +3704,14 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/synchronization:
+  synchronization:
     dependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../logging
+        version: link:../projects/common/observability
       '@conformetry/configuration':
         specifier: workspace:*
-        version: link:../ic-suite/conformetry/conformetry-configuration
+        version: link:../projects/ic-suite/conformetry/conformetry-configuration
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -3771,11 +3771,11 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(jsdom@30.1.1)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  projects/validation:
+  validation:
     dependencies:
-      '@codebase/logging':
+      '@codebase/observability':
         specifier: workspace:*
-        version: link:../logging
+        version: link:../projects/common/observability
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -19546,7 +19546,7 @@ snapshots:
       '@typescript-eslint/utils': 8.70.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.70.1
       eslint: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
-      ignore: 7.0.10
+      ignore: 7.0.12
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -19567,8 +19567,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.56.1(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@6.0.3)
-      '@typescript-eslint/types': 8.56.1
+      '@typescript-eslint/tsconfig-utils': 8.70.1(typescript@6.0.3)
+      '@typescript-eslint/types': 8.70.1
       debug: 4.4.3(supports-color@10.2.2)
       typescript: 6.0.3
     transitivePeerDependencies:

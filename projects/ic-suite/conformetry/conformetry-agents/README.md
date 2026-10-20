@@ -60,7 +60,14 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
-_This project has no immediate Nx dependencies or dependents._
+```mermaid
+graph LR
+  configuration["configuration"]
+  conformetry_agents["conformetry-agents"]
+  conformetry_agents --> configuration
+  classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
+  class conformetry_agents subject
+```
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### File Imports

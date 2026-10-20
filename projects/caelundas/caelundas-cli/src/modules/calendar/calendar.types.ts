@@ -1,6 +1,6 @@
 // 🏷️ Types
 import type { DetectedCalendarEvent } from "../database/database.types";
-import type { LogData } from "@codebase/logging";
+import type { LogData } from "@codebase/observability";
 import type { Moment } from "moment-timezone";
 
 /**

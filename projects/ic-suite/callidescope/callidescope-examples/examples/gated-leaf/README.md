@@ -26,7 +26,7 @@ for their code, and every one of them leaves a leaf with no limit that binds:
 | 3 | [`callidescope.config.ts`](callidescope.config.ts), its own | a finding |
 | 5 | [`../../callidescope.config.ts`](../../callidescope.config.ts), the package around it | silent |
 | 6 | [`../../callidescope.workspace.config.ts`](../../callidescope.workspace.config.ts), the run's default | silent |
-| 17 | [`projects/configuration/callidescope.config.ts`](../../../../../../projects/configuration/callidescope.config.ts), this repository's ratchet | silent |
+| 17 | [`configuration/callidescope.config.ts`](../../../../../../configuration/callidescope.config.ts), this repository's ratchet | silent |
 
 That last row is the real workspace, and the number is pinned by the single
 deepest stack anywhere in it. The motivating measurement behind all of this was

@@ -1,6 +1,6 @@
 # Strict Typing
 
-All TypeScript projects in this codebase inherit strict settings from [projects/configuration/tsconfig.json](../../../../projects/configuration/tsconfig.json).
+All TypeScript projects in this codebase inherit strict settings from [configuration/tsconfig.json](../../../../configuration/tsconfig.json).
 
 ## Strict Mode Flags
 

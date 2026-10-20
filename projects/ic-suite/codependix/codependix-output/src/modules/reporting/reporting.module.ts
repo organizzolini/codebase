@@ -1,7 +1,7 @@
 import { BoundaryCheckModule } from "@codependix/boundaries";
 import { Module } from "@nestjs/common";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { ReportingService } from "./reporting.service";
 

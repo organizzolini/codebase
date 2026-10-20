@@ -16,7 +16,7 @@ import { EdgesService } from "./edges.service";
 import { SymbolResolutionService } from "./symbol-resolution.service";
 
 import type { CallEdge, UnresolvedCall } from "@callidescope/core";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /** Renders the graph as `caller -> callee` pairs, for readable assertions. */

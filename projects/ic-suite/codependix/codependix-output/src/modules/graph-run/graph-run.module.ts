@@ -1,7 +1,7 @@
 import { NeighborhoodModule } from "@codependix/nx-projects";
 import { Module } from "@nestjs/common";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { ProjectGraphsModule } from "../project-graphs/project-graphs.module";
 import { PythonImportsModule } from "../python-imports/python-imports.module";

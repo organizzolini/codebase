@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Tabs, TabsList, TabsTrigger } from "@codebase/components";
+import { Tabs, TabsList, TabsTrigger } from "@codebase/presentation";
 
 import { FormsTable } from "./forms-table";
 

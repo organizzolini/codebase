@@ -35,7 +35,7 @@ import type {
 import type { ProjectGraph } from "@nx/devkit";
 
 /** The workspace configuration every run must name. */
-const CONFIGURATION_PATH = "projects/configuration/callidescope.config.ts";
+const CONFIGURATION_PATH = "configuration/callidescope.config.ts";
 
 vi.mock("node:fs", () => ({
   existsSync: vi.fn<() => boolean>(() => true),

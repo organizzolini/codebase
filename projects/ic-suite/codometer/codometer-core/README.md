@@ -39,8 +39,10 @@ graph LR
   codometer_languages["codometer-languages"]
   codometer_measurement["codometer-measurement"]
   codometer_output["codometer-output"]
+  configuration["configuration"]
   codometer_cli --> codometer_core
   codometer_configuration --> codometer_core
+  codometer_core --> configuration
   codometer_examples --> codometer_core
   codometer_languages --> codometer_core
   codometer_measurement --> codometer_core

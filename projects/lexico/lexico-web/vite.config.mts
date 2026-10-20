@@ -46,7 +46,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "../../components/src"),
+      "@": path.resolve(import.meta.dirname, "../../common/presentation/src"),
     },
     tsconfigPaths: true,
   },

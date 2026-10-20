@@ -265,7 +265,7 @@ MIT — see [LICENSE](../../../LICENSE).
 
 ## 👔 Conformetry
 
-This project was generated from the [nestjs-command-project](../../../projects/configuration/conformetry-templates/nestjs-command-project) conformetry template.
+This project was generated from the [nestjs-command-project](../../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
 
 <!-- callidescope:start -->
 
@@ -2130,9 +2130,9 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ```mermaid
 graph LR
   caelundas_cli["caelundas-cli"]
-  logging["logging"]
+  observability["observability"]
   persistence["persistence"]
-  caelundas_cli --> logging
+  caelundas_cli --> observability
   caelundas_cli --> persistence
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class caelundas_cli subject
@@ -3905,7 +3905,7 @@ graph LR
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-170.13_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-170.25_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { Lexeme } from "@codebase/lexico-entities";
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { PronunciationClassicalService } from "./pronunciation-classical.service";
 import { PronunciationClassifierService } from "./pronunciation-classifier.service";

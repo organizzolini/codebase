@@ -12,7 +12,7 @@
 # This is a bootstrap. It installs only what the real setup needs in order to
 # run: Homebrew's presence, nvm, Node.js, pnpm, and the workspace's packages.
 # Everything after that is the `setup` command of the installation project
-# (projects/installation), which configures the shell, installs the remaining
+# (installation), which configures the shell, installs the remaining
 # software, creates the .env files, and installs the dependencies.
 #
 # Execution order:
@@ -31,7 +31,7 @@ source ./scripts/utilities.sh
 # packages `pnpm install` brings, and NODE_OPTIONS is cleared because a loader
 # set there would preempt the transpiler this one names.
 installation() {
-  NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts "$@"
+  NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts "$@"
 }
 
 # ── Operating system ─────────────────────────────────────────────────────────

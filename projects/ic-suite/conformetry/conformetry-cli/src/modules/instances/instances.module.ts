@@ -2,7 +2,7 @@ import { ConfigurationModule } from "@conformetry/configuration";
 import { InventoryModule } from "@conformetry/output";
 import { Module } from "@nestjs/common";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { InstancesCommand } from "./instances.command";
 

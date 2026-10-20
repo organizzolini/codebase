@@ -9,7 +9,7 @@ import { Test } from "@nestjs/testing";
 import { createTree } from "nx/src/generators/testing-utils/create-tree";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/logging";
+import { LoggerService } from "@codebase/observability";
 
 import {
   DEFAULT_OUTPUT_PATH,

@@ -15,7 +15,7 @@ import { ProgramConfigurationError } from "./program.constants";
 import { ProgramService } from "./program.service";
 
 import type { WorkspaceProject } from "../workspace/workspace.types";
-import type { LoggerService } from "@codebase/logging";
+import type { LoggerService } from "@codebase/observability";
 import type { DeepMocked } from "@golevelup/ts-vitest";
 
 /**

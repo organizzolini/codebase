@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@codebase/logging": "workspace:*",
+    "@codebase/observability": "workspace:*",
     "@codebase/persistence": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",

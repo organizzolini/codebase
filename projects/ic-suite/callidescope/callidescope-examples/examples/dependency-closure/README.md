@@ -54,12 +54,12 @@ starting roots and three arrive through the closure:
 | `projects/ic-suite/callidescope/callidescope-examples` | Named — the directory the run was pointed at |
 | `.../../examples/gated-leaf` | Named — a nested project [`gated-leaf`](../gated-leaf/README.md) explains, and says why it is named rather than reached |
 | `projects/ic-suite/callidescope/callidescope-configuration` | The fixture above imports it, and [`callidescope.workspace.config.ts`](../../callidescope.workspace.config.ts) imports a type from it |
-| `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared `projects/configuration/codometer.config.ts` that this package's own [`codometer.config.ts`](../../codometer.config.ts) spreads |
-| `projects/logging` | Reached through the shared `projects/configuration/eslint.config.ts`, which imports `@codebase/logging/eslint` |
+| `projects/ic-suite/codometer/codometer-configuration` | Reached through the shared `configuration/codometer.config.ts` that this package's own [`codometer.config.ts`](../../codometer.config.ts) spreads |
+| `projects/common/observability` | Reached through the shared `configuration/eslint.config.ts`, which imports `@codebase/observability/eslint` |
 
 The last two arrive through the shared configuration directory the closure
 refuses to enter, which is not the contradiction it looks like. Refusing
-`projects/configuration/` as a _destination_ keeps that directory from being traced; it
+`configuration/` as a _destination_ keeps that directory from being traced; it
 does nothing to the files it imports, which resolve to their own packages and
 join the closure like anything else.
 
@@ -70,7 +70,7 @@ project's program, not the dependency list its `package.json` declares. A
 manifest says what a package may import; the program says what it did. The two
 part company in both directions: a declared dependency nothing imports never
 widens a closure, and a package no manifest here names widens one all the same
-if some file the compiler read imported it — which is how `projects/logging`
+if some file the compiler read imported it — which is how `projects/common/observability`
 gets into this run, through a shared configuration file rather than through
 anything this package declares.
 
@@ -86,7 +86,7 @@ drags the whole workspace in:
   `tsconfig.json` is where a repository keeps shared settings, and shared
   settings are read by every project rather than depended on by any. This run
   exercises that rule: this package's program really reads four files under
-  [`projects/configuration/`](../../../../../../projects/configuration) — the shared `eslint.config.ts`,
+  [`configuration/`](../../../../../../configuration) — the shared `eslint.config.ts`,
   `vitest.config.ts`, and `codometer.config.ts` that this package's own three
   spread, plus a type declaration one of its `paths` entries names. Admit that
   directory and its program covers every configuration file in it, which reaches

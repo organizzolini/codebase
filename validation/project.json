@@ -1,0 +1,177 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "validation",
+  "projectType": "application",
+  "sourceRoot": "validation",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "type:package"
+  ],
+  "targets": {
+    "build-projects": {},
+    "catalog-manifests": {
+      "cache": true,
+      "description": "Enforce catalog: protocol for external dependencies in workspace package manifests. Named by `guard-code` through its targetDefault, so only a project that defines it runs it; its `inputs` read every manifest in the workspace, which is what pulls this project into the affected set when one changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts catalog-manifests",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "lockfile": {
+      "cache": true,
+      "description": "Verify that pnpm-lock.yaml is in sync with package.json files. A `guard-code` dependency, and affected whenever a manifest, the workspace file, `.npmrc`, a patch, or the lockfile changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/.npmrc",
+        "{workspaceRoot}/patches/**/*",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts lockfile",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "pack": {},
+    "prettier": {},
+    "readme-projects": {
+      "cache": true,
+      "description": "Verify the root README links to every workspace project. A `guard-code` dependency, affected whenever a manifest or the root README changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/README.md",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts readme-projects",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
+    "repl": {},
+    "spell-check": {},
+    "start": {
+      "cache": false,
+      "configurations": {
+        "audit-governance": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts audit-governance"
+        },
+        "audit-issues": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts issue-metadata --all"
+        },
+        "catalog-manifests": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts catalog-manifests"
+        },
+        "issue-metadata": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts issue-metadata"
+        },
+        "lockfile": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts lockfile"
+        },
+        "publishable-packages": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts publishable-packages"
+        },
+        "pull-request-body": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts pull-request-body"
+        },
+        "pull-request-metadata": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts pull-request-metadata"
+        },
+        "readme-projects": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts readme-projects"
+        },
+        "session-branch-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts session-branch-name"
+        },
+        "session-worktree-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts session-worktree-name"
+        }
+      },
+      "description": "Run one validation check by name.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "verify-publishable-packages": {
+      "cache": false,
+      "dependsOn": [
+        {
+          "projects": ["tag:layer:*"],
+          "target": "pack"
+        }
+      ],
+      "description": "Pack every publishable ic-suite package, install the tarballs into a consumer outside the workspace, and check its imports, command lines, project graph, and one inferred target per Nx plugin. Every publishable ic-suite package, and only those, carries a layer:* tag; the *-agents and *-examples packages deliberately do not. Never publishes.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec nx run validation:start:publishable-packages",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "yaml-lint": {}
+  }
+}

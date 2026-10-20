@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
-import { LoggerModule } from "@codebase/logging";
+import { LoggerModule } from "@codebase/observability";
 
 import { PerfectiveModule } from "../src/modules/perfective/perfective.module";
 import { ProgressiveModule } from "../src/modules/progressive/progressive.module";
