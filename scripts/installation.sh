@@ -6,6 +6,9 @@
 #
 # Usage: bash scripts/installation.sh   (from the workspace/worktree root)
 #
+# macOS and Linux take different paths through the same file; see the Linux
+# section below for what the second one does and leaves out.
+#
 # This is a bootstrap. It installs only what the real setup needs in order to
 # run: Homebrew's presence, nvm, Node.js, pnpm, and the workspace's packages.
 # Everything after that is the `setup` command of the installation project
@@ -23,6 +26,72 @@
 # (nvm use, PATH updates) carry through into the setup command.
 
 source ./scripts/utilities.sh
+
+# ── Operating system ─────────────────────────────────────────────────────────
+# macOS continues below with Homebrew and nvm. Linux, which is what a Claude
+# Code cloud session and the devcontainer run, has no Homebrew and often a system
+# Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
+# linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
+# is shimmed from the copy npm bundles, because the native packages (sweph,
+# cpu-features) need it on PATH. Only the .env files of the setup command apply:
+# its shell configuration, software, and Terraform steps are for a developer
+# Mac. Safe to run again.
+operating_system="$(uname -s)"
+if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
+  echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
+  exit 1
+fi
+
+if [[ "${operating_system}" == "Linux" ]]; then
+  echo "🐧 Setting up Linux..."
+  node_version="$(tr -d '[:space:]' < .nvmrc)"
+  node_version="${node_version#v}"
+  node_home="${HOME}/.local/node/${node_version}"
+  mkdir -p "${HOME}/.local/bin" "${node_home}"
+
+  if [[ ! -x "${node_home}/bin/node" ]]; then
+    case "$(uname -m)" in
+      aarch64 | arm64) node_architecture="arm64" ;;
+      *) node_architecture="x64" ;;
+    esac
+    echo "📦 Downloading Node.js ${node_version} (${node_architecture})..."
+    (
+      set -o pipefail
+      curl -fsSL "https://nodejs.org/dist/v${node_version}/node-v${node_version}-linux-${node_architecture}.tar.xz" |
+        tar -xJ --strip-components=1 -C "${node_home}"
+    )
+  fi
+
+  for tool in node npm npx corepack; do
+    ln -sf "${node_home}/bin/${tool}" "${HOME}/.local/bin/${tool}"
+  done
+  printf '#!/bin/sh\nexec node "%s" "$@"\n' \
+    "${node_home}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" \
+    > "${HOME}/.local/bin/node-gyp"
+  chmod +x "${HOME}/.local/bin/node-gyp"
+  export PATH="${HOME}/.local/bin:${PATH}"
+  echo "👍 Node.js $(node --version)"
+
+  if ! command -v pnpm &> /dev/null; then
+    echo "🛑 pnpm not found. Install the version in package.json packageManager first." >&2
+    exit 1
+  fi
+
+  echo "📦 Installing the workspace's packages..."
+  pnpm install --frozen-lockfile
+  NODE_OPTIONS='' node --import @swc-node/register/esm-register projects/installation/src/installation.main.ts environment-files
+
+  # utilities.sh marks every script executable, which leaves the few that git
+  # stores as 644 modified, and a later `git add -A` would commit that. Only
+  # those mode changes are undone; no file's content is touched.
+  git diff --summary | sed -n 's/^ mode change 100644 => 100755 //p' |
+    while IFS= read -r script; do
+      chmod -x "${script}"
+    done
+
+  echo "✅ Linux setup complete."
+  exit 0
+fi
 
 # ── Homebrew ─────────────────────────────────────────────────────────────────
 echo "🔍 Checking for Homebrew installation..."

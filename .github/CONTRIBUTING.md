@@ -72,6 +72,8 @@ The script is a bootstrap. It installs what the real setup needs in order to run
 | 3     | `pnpm install`                      | Installs the packages the `setup` command is written in                                                                                                                         |
 | 4     | `installation setup`                | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project projects/configuration`, and Terraform setup |
 
+On Linux, which is what a Claude Code cloud session and the devcontainer run, the script takes a shorter path. It installs the Node version from `.nvmrc`, shims `node-gyp`, installs the packages, and creates the `.env` files. It skips Homebrew and the shell, software, and Terraform steps, which are for a Mac. It is what a cloud environment's setup script should call.
+
 A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`. Run from inside Nx, `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; run `nx reset` yourself.
 
 **What gets installed:**

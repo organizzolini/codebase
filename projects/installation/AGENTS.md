@@ -11,7 +11,7 @@ One command is maintenance rather than setup: `update-reui-skill` refreshes the 
 ### Run Locally
 
 ```bash
-bash scripts/installation.sh                     # A fresh machine: the script installs Node, then calls `setup`
+bash scripts/installation.sh                     # A fresh Mac: the script installs Node, then calls `setup`. On Linux it installs Node, the packages, and the .env files only
 nx run installation:start:setup                  # Everything this project does, in order
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
