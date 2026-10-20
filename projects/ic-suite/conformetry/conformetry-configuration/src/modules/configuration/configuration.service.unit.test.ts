@@ -404,7 +404,7 @@ describe(ConfigurationService, () => {
       expect(path.isAbsolute(resolvedPath)).toBe(true);
       expect(
         resolvedPath.endsWith(
-          path.join("projects", "configuration", "conformetry.config.ts"),
+          path.join("configuration", "conformetry.config.ts"),
         ),
       ).toBe(true);
       expect(existsSync(resolvedPath)).toBe(true);

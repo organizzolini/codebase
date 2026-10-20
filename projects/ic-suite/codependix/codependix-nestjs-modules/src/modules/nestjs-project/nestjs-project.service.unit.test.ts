@@ -155,7 +155,7 @@ describe(NestjsProjectService, () => {
 
     it("leaves the root module undefined for a project the configuration does not name", () => {
       const project = service.describeProject(
-        "/workspace/packages/observability",
+        "/workspace/packages/logging",
         "logger",
       );
 
@@ -191,7 +191,7 @@ describe(NestjsProjectService, () => {
       const discovered = service.discoverProjects(
         [
           {
-            absoluteRoot: "/workspace/packages/observability",
+            absoluteRoot: "/workspace/packages/logging",
             name: "logger",
             tags: ["framework:nestjs"],
           },
@@ -208,7 +208,7 @@ describe(NestjsProjectService, () => {
 
       expect(discovered).toStrictEqual([
         {
-          absoluteRoot: "/workspace/packages/observability",
+          absoluteRoot: "/workspace/packages/logging",
           name: "logger",
           rootModuleExport: undefined,
           rootModuleFile: undefined,

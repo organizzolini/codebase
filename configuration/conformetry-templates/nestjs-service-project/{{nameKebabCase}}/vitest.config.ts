@@ -1,6 +1,6 @@
 import { defineConfig, mergeConfig } from "vitest/config";
 
-import vitestConfig from "../../../vitest.config.ts";
+import vitestConfig from "{{workspaceRelativePrefix}}configuration/vitest.config.ts";
 
 export default mergeConfig(
   vitestConfig,

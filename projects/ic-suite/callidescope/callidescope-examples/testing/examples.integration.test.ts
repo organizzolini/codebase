@@ -625,6 +625,7 @@ describe("callidescope examples (integration)", () => {
       expect(
         result.projects.map((project) => project.projectName),
       ).toStrictEqual([
+        "projects/common/observability",
         "projects/ic-suite/callidescope/callidescope-configuration",
         "projects/ic-suite/callidescope/callidescope-core",
         EXAMPLES_DIRECTORY,
@@ -633,7 +634,6 @@ describe("callidescope examples (integration)", () => {
         "projects/ic-suite/codependix/codependix-core",
         "projects/ic-suite/codometer/codometer-configuration",
         "projects/ic-suite/codometer/codometer-core",
-        "projects/common/observability",
       ]);
     });
 
@@ -884,8 +884,8 @@ describe("callidescope examples (integration)", () => {
         ["DeepStackService.quote", 5],
         ["ForwardingStackService.handle", 5],
         ["FrameAnnotationsService.trace", 5],
-        ["ProjectDepthLimitService.judge", 5],
         ["LoggerService.log", 4],
+        ["ProjectDepthLimitService.judge", 5],
         ["LoggerService.debug", 4],
         ["LoggerService.error", 4],
         ["LoggerService.verbose", 4],

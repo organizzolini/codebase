@@ -740,10 +740,10 @@ describe(MapCommand, () => {
   });
 
   it("delegates mode resolution to the configuration service", async () => {
-    await run({ directory: "packages/observability" });
+    await run({ directory: "packages/logging" });
 
     expect(configurationService.selectMode).toHaveBeenCalledWith({
-      directory: "packages/observability",
+      directory: "packages/logging",
     });
   });
 

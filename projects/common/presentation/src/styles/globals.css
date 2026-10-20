@@ -5,7 +5,7 @@
  */
 @custom-variant dark (&:is(.dark *));
 
-@config "../../../lexico/lexico-web/tailwind.config.cjs";
+@config "../../../../lexico/lexico-web/tailwind.config.cjs";
 
 /*
  * Lexico Theme

@@ -34,12 +34,12 @@
         "{projectRoot}/output/**",
         "{projectRoot}/README.md",
         "{workspaceRoot}/configuration/*.config.ts",
+        "{workspaceRoot}/projects/common/observability/src/**/*.ts",
         "{workspaceRoot}/projects/ic-suite/callidescope/callidescope-cli/src/**/*.ts",
         "{workspaceRoot}/projects/ic-suite/callidescope/callidescope-configuration/src/**/*.ts",
         "{workspaceRoot}/projects/ic-suite/callidescope/callidescope-graph/src/**/*.ts",
         "{workspaceRoot}/projects/ic-suite/callidescope/callidescope-output/src/**/*.ts",
         "{workspaceRoot}/projects/ic-suite/codometer/codometer-configuration/src/**/*.ts",
-        "{workspaceRoot}/projects/common/observability/src/**/*.ts",
         "shared-globals"
       ],
       "options": {

@@ -375,6 +375,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
+
 ```mermaid
 graph LR
   caelundas_cli["caelundas-cli"]
@@ -393,11 +394,13 @@ graph LR
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class persistence subject
 ```
+
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
+
 ```mermaid
 flowchart LR
   DiscoveryModule
@@ -420,6 +423,7 @@ _Rounded modules are global: every module can inject them, so their edges are le
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
+
 ```mermaid
 graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
@@ -689,6 +693,7 @@ graph LR
   file_testing_persistence_testing_utilities_ts --> file_src_modules_postgresql_postgresql_module_ts
   file_testing_persistence_testing_utilities_ts --> file_testing_persistence_testing_types_ts
 ```
+
 <!-- codependix:end name="codependix-file-imports" -->
 
 <!-- callidescope:start -->
@@ -697,24 +702,24 @@ graph LR
 
 Call stacks traced through `projects/common/persistence`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 
-| Measure | Value |
-| --- | --- |
-| Callables | 130 |
-| Files | 36 |
-| Calls traced | 139 |
-| Call stacks | 6 |
-| Deepest stack | 7 |
-| Stacks through recursion | 0 |
-| Unfollowable calls | 19 |
+| Measure                  | Value |
+| ------------------------ | ----- |
+| Callables                | 130   |
+| Files                    | 36    |
+| Calls traced             | 139   |
+| Call stacks              | 6     |
+| Deepest stack            | 7     |
+| Stacks through recursion | 0     |
+| Unfollowable calls       | 19    |
 
 ### Limits
 
 What this project is judged against, as declared in its own `callidescope.config.ts`.
 
-| Limit | Value |
-| --- | --- |
-| `maximumDepth` | 7 |
-| `maximumBreadth` | 7 |
+| Limit            | Value |
+| ---------------- | ----- |
+| `maximumDepth`   | 7     |
+| `maximumBreadth` | 7     |
 
 ### Call stacks (depth)
 
@@ -803,67 +808,67 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Breadth
 
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `ExportCommand.plan` | 7 | `ExportCommand.requireOption`, `ExportCommand.selectContent`, `parsePostgresUri`, `ExportOptionsError.constructor`, `existingFileMessage`, `maskPostgresCredentials`, `qualifyTableNames` | `projects/common/persistence/src/modules/export/export.command.ts:91` |
-| `ImportCommand.plan` | 7 | `ImportCommand.requireOption`, `ImportCommand.selectContent`, `parsePostgresUri`, `ImportOptionsError.constructor`, `missingFileMessage`, `qualifyTableNames`, `maskPostgresCredentials` | `projects/common/persistence/src/modules/import/import.command.ts:142` |
-| `ExportCommand.run` | 6 | `ExportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `ExportCommand.logDryRun`, `describePostgresContent`, `PostgresqlUtilitiesService.dump`, `ExportCommand.explain` | `projects/common/persistence/src/modules/export/export.command.ts:230` |
+| Callable             | Breadth | Calls directly                                                                                                                                                                            | Location                                                               |
+| -------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `ExportCommand.plan` | 7       | `ExportCommand.requireOption`, `ExportCommand.selectContent`, `parsePostgresUri`, `ExportOptionsError.constructor`, `existingFileMessage`, `maskPostgresCredentials`, `qualifyTableNames` | `projects/common/persistence/src/modules/export/export.command.ts:91`  |
+| `ImportCommand.plan` | 7       | `ImportCommand.requireOption`, `ImportCommand.selectContent`, `parsePostgresUri`, `ImportOptionsError.constructor`, `missingFileMessage`, `qualifyTableNames`, `maskPostgresCredentials`  | `projects/common/persistence/src/modules/import/import.command.ts:142` |
+| `ExportCommand.run`  | 6       | `ExportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `ExportCommand.logDryRun`, `describePostgresContent`, `PostgresqlUtilitiesService.dump`, `ExportCommand.explain`           | `projects/common/persistence/src/modules/export/export.command.ts:230` |
 
 <details>
 <summary>50 more callables</summary>
 
-| Callable | Breadth | Calls directly | Location |
-| --- | --- | --- | --- |
-| `ImportCommand.run` | 5 | `ImportCommand.check`, `ImportCommand.logDryRun`, `describePostgresContent`, `ImportCommand.truncate`, `ImportCommand.restore` | `projects/common/persistence/src/modules/import/import.command.ts:343` |
-| `PostgresqlService.connection` | 4 | `PostgresqlService.databaseOptions`, `postgresConnection`, `PostgresqlService.map(…)`, `postgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:61` |
-| `selectPostgresDumpEntries` | 4 | `map(…)`, `every(…)`, `filter(…)`, `every(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:85` |
-| `truncatePostgresTables` | 4 | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:31` |
-| `PostgresqlUtilitiesService.restore` | 4 | `PostgresqlUtilitiesService.map(…)`, `selectPostgresDumpEntries`, `PostgresqlUtilitiesService.run`, `postgresContentFlags` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:200` |
-| `PostgresqlUtilitiesService.truncate` | 4 | `PostgresqlUtilitiesService.truncatePostgresTables(…)`, `truncatePostgresTables`, `PostgresTruncateError.constructor`, `maskPostgresCredentials` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:251` |
-| `ImportCommand.check` | 4 | `ImportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `PostgresqlUtilitiesService.list`, `ImportCommand.ensureContents` | `projects/common/persistence/src/modules/import/import.command.ts:79` |
-| `ImportCommand.restore` | 4 | `PostgresqlUtilitiesService.restore`, `ImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage` | `projects/common/persistence/src/modules/import/import.command.ts:194` |
-| `ImportCommand.truncate` | 4 | `PostgresqlUtilitiesService.truncate`, `ImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage` | `projects/common/persistence/src/modules/import/import.command.ts:232` |
-| `startPostgresContainer` | 4 | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment` | `projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts:33` |
-| `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:200` |
-| `PostgresqlService.createTypeOrmOptions` | 3 | `postgresDataSourceOptions`, `PostgresqlService.connection`, `PostgresqlService.databaseOptions` | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:76` |
-| `qualifyTableNames` | 3 | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:136` |
-| `PostgresqlUtilitiesService.dump` | 3 | `PostgresqlUtilitiesService.run`, `postgresContentFlags`, `PostgresqlUtilitiesService.map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:105` |
-| `PostgresqlUtilitiesService.ensureTool` | 3 | `PostgresqlUtilitiesService.anonymous`, `PostgresClientToolError.constructor`, `parsePostgresMajorVersion` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:134` |
-| `ExportCommand.explain` | 3 | `missingDumpTables`, `ExportTableError.constructor`, `missingTablesMessage` | `projects/common/persistence/src/modules/export/export.command.ts:64` |
-| `ImportCommand.ensureContents` | 3 | `ImportCommand.missing`, `ImportContentsError.constructor`, `missingContentsMessage` | `projects/common/persistence/src/modules/import/import.command.ts:96` |
-| `ImportCommand.logDryRun` | 3 | `dumpedTables`, `ImportCommand.map(…)`, `dryRunMessages` | `projects/common/persistence/src/modules/import/import.command.ts:118` |
-| `createDataSource` | 2 | `postgresDataSourceOptions`, `postgresConnection` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:69` |
-| `postgresConnection` | 2 | `postgresEnvironmentKey`, `postgresSettingsSchema` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:86` |
-| `parsePostgresDumpContents` | 2 | `describeEntry`, `dependencyIds` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:46` |
-| `parsePostgresUri` | 2 | `PostgresUriError.constructor`, `postgresUriProblem` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:63` |
-| `PostgresqlUtilitiesService.anonymous` | 2 | `PostgresqlUtilitiesService.execFile(…)`, `postgresProcessEnvironment` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:69` |
-| `PostgresqlUtilitiesService.execFile(…)` | 2 | `PostgresClientError.constructor`, `maskPostgresCredentials` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:77` |
-| `PostgresqlUtilitiesService.list` | 2 | `PostgresqlUtilitiesService.run`, `parsePostgresDumpContents` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:181` |
-| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/common/persistence/src/modules/export/export.constants.ts:66` |
-| `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/common/persistence/src/modules/import/import.constants.ts:122` |
-| `ImportCommand.missing` | 2 | `dumpedTables`, `ImportCommand.filter(…)` | `projects/common/persistence/src/modules/import/import.command.ts:100` |
-| `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:35` |
-| `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:116` |
-| `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:142` |
-| `postgresEnvironmentKeys` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:176` |
-| `dumpedTables` | 1 | `flatMap(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:21` |
-| `missingDumpTables` | 1 | `map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:36` |
-| `dependencyIds` | 1 | `filter(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:112` |
-| `describeEntry` | 1 | `tableEntry` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:120` |
-| `quotePostgresTable` | 1 | `map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:16` |
-| `map(…)` | 1 | `quotePostgresTable` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:35` |
-| `postgresProcessEnvironment` | 1 | `filter(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:106` |
-| `PostgresqlUtilitiesService.run` | 1 | `PostgresqlUtilitiesService.anonymous` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:64` |
-| `PostgresqlUtilitiesService.anonymous` | 1 | `PostgresqlUtilitiesService.execFile(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:139` |
-| `map(…)` | 1 | `describePostgresContent` | `projects/common/persistence/src/modules/export/export.constants.ts:77` |
-| `ExportCommand.logDryRun` | 1 | `dryRunMessages` | `projects/common/persistence/src/modules/export/export.command.ts:76` |
-| `ExportCommand.requireOption` | 1 | `ExportOptionsError.constructor` | `projects/common/persistence/src/modules/export/export.command.ts:125` |
-| `ExportCommand.selectContent` | 1 | `ExportOptionsError.constructor` | `projects/common/persistence/src/modules/export/export.command.ts:138` |
-| `referencedTablesMessage` | 1 | `map(…)` | `projects/common/persistence/src/modules/import/import.constants.ts:93` |
-| `map(…)` | 1 | `describePostgresContent` | `projects/common/persistence/src/modules/import/import.constants.ts:134` |
-| `ImportCommand.requireOption` | 1 | `ImportOptionsError.constructor` | `projects/common/persistence/src/modules/import/import.command.ts:178` |
-| `ImportCommand.selectContent` | 1 | `ImportOptionsError.constructor` | `projects/common/persistence/src/modules/import/import.command.ts:216` |
-| `startFirstAvailableImage` | 1 | `postgresInitializationSql` | `projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts:104` |
+| Callable                                 | Breadth | Calls directly                                                                                                                                   | Location                                                                                             |
+| ---------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `ImportCommand.run`                      | 5       | `ImportCommand.check`, `ImportCommand.logDryRun`, `describePostgresContent`, `ImportCommand.truncate`, `ImportCommand.restore`                   | `projects/common/persistence/src/modules/import/import.command.ts:343`                               |
+| `PostgresqlService.connection`           | 4       | `PostgresqlService.databaseOptions`, `postgresConnection`, `PostgresqlService.map(…)`, `postgresEnvironmentKeys`                                 | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:61`                        |
+| `selectPostgresDumpEntries`              | 4       | `map(…)`, `every(…)`, `filter(…)`, `every(…)`                                                                                                    | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:85`       |
+| `truncatePostgresTables`                 | 4       | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor`                                                             | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:31`   |
+| `PostgresqlUtilitiesService.restore`     | 4       | `PostgresqlUtilitiesService.map(…)`, `selectPostgresDumpEntries`, `PostgresqlUtilitiesService.run`, `postgresContentFlags`                       | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:200`   |
+| `PostgresqlUtilitiesService.truncate`    | 4       | `PostgresqlUtilitiesService.truncatePostgresTables(…)`, `truncatePostgresTables`, `PostgresTruncateError.constructor`, `maskPostgresCredentials` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:251`   |
+| `ImportCommand.check`                    | 4       | `ImportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `PostgresqlUtilitiesService.list`, `ImportCommand.ensureContents`                 | `projects/common/persistence/src/modules/import/import.command.ts:79`                                |
+| `ImportCommand.restore`                  | 4       | `PostgresqlUtilitiesService.restore`, `ImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage`                                  | `projects/common/persistence/src/modules/import/import.command.ts:194`                               |
+| `ImportCommand.truncate`                 | 4       | `PostgresqlUtilitiesService.truncate`, `ImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage`                          | `projects/common/persistence/src/modules/import/import.command.ts:232`                               |
+| `startPostgresContainer`                 | 4       | `postgresConnection`, `startFirstAvailableImage`, `postgresDataSourceOptions`, `postgresEnvironment`                                             | `projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts:33`            |
+| `postgresEnvironmentSchema`              | 3       | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys`                                                              | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:200`                     |
+| `PostgresqlService.createTypeOrmOptions` | 3       | `postgresDataSourceOptions`, `PostgresqlService.connection`, `PostgresqlService.databaseOptions`                                                 | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:76`                        |
+| `qualifyTableNames`                      | 3       | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)`                                                                                      | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:136` |
+| `PostgresqlUtilitiesService.dump`        | 3       | `PostgresqlUtilitiesService.run`, `postgresContentFlags`, `PostgresqlUtilitiesService.map(…)`                                                    | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:105`   |
+| `PostgresqlUtilitiesService.ensureTool`  | 3       | `PostgresqlUtilitiesService.anonymous`, `PostgresClientToolError.constructor`, `parsePostgresMajorVersion`                                       | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:134`   |
+| `ExportCommand.explain`                  | 3       | `missingDumpTables`, `ExportTableError.constructor`, `missingTablesMessage`                                                                      | `projects/common/persistence/src/modules/export/export.command.ts:64`                                |
+| `ImportCommand.ensureContents`           | 3       | `ImportCommand.missing`, `ImportContentsError.constructor`, `missingContentsMessage`                                                             | `projects/common/persistence/src/modules/import/import.command.ts:96`                                |
+| `ImportCommand.logDryRun`                | 3       | `dumpedTables`, `ImportCommand.map(…)`, `dryRunMessages`                                                                                         | `projects/common/persistence/src/modules/import/import.command.ts:118`                               |
+| `createDataSource`                       | 2       | `postgresDataSourceOptions`, `postgresConnection`                                                                                                | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:69`                      |
+| `postgresConnection`                     | 2       | `postgresEnvironmentKey`, `postgresSettingsSchema`                                                                                               | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:86`                      |
+| `parsePostgresDumpContents`              | 2       | `describeEntry`, `dependencyIds`                                                                                                                 | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:46`       |
+| `parsePostgresUri`                       | 2       | `PostgresUriError.constructor`, `postgresUriProblem`                                                                                             | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:63`  |
+| `PostgresqlUtilitiesService.anonymous`   | 2       | `PostgresqlUtilitiesService.execFile(…)`, `postgresProcessEnvironment`                                                                           | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:69`    |
+| `PostgresqlUtilitiesService.execFile(…)` | 2       | `PostgresClientError.constructor`, `maskPostgresCredentials`                                                                                     | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:77`    |
+| `PostgresqlUtilitiesService.list`        | 2       | `PostgresqlUtilitiesService.run`, `parsePostgresDumpContents`                                                                                    | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:181`   |
+| `dryRunMessages`                         | 2       | `describePostgresContent`, `map(…)`                                                                                                              | `projects/common/persistence/src/modules/export/export.constants.ts:66`                              |
+| `dryRunMessages`                         | 2       | `describePostgresContent`, `map(…)`                                                                                                              | `projects/common/persistence/src/modules/import/import.constants.ts:122`                             |
+| `ImportCommand.missing`                  | 2       | `dumpedTables`, `ImportCommand.filter(…)`                                                                                                        | `projects/common/persistence/src/modules/import/import.command.ts:100`                               |
+| `assertPostgresEnvironmentKeys`          | 1       | `postgresEnvironmentKeys`                                                                                                                        | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:35`                      |
+| `postgresDataSourceOptions`              | 1       | `postgresSearchPathOption`                                                                                                                       | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:116`                     |
+| `postgresEnvironment`                    | 1       | `postgresEnvironmentKey`                                                                                                                         | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:142`                     |
+| `postgresEnvironmentKeys`                | 1       | `postgresEnvironmentKey`                                                                                                                         | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:176`                     |
+| `dumpedTables`                           | 1       | `flatMap(…)`                                                                                                                                     | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:21`       |
+| `missingDumpTables`                      | 1       | `map(…)`                                                                                                                                         | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:36`       |
+| `dependencyIds`                          | 1       | `filter(…)`                                                                                                                                      | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:112`      |
+| `describeEntry`                          | 1       | `tableEntry`                                                                                                                                     | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:120`      |
+| `quotePostgresTable`                     | 1       | `map(…)`                                                                                                                                         | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:16`   |
+| `map(…)`                                 | 1       | `quotePostgresTable`                                                                                                                             | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:35`   |
+| `postgresProcessEnvironment`             | 1       | `filter(…)`                                                                                                                                      | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:106` |
+| `PostgresqlUtilitiesService.run`         | 1       | `PostgresqlUtilitiesService.anonymous`                                                                                                           | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:64`    |
+| `PostgresqlUtilitiesService.anonymous`   | 1       | `PostgresqlUtilitiesService.execFile(…)`                                                                                                         | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.service.ts:139`   |
+| `map(…)`                                 | 1       | `describePostgresContent`                                                                                                                        | `projects/common/persistence/src/modules/export/export.constants.ts:77`                              |
+| `ExportCommand.logDryRun`                | 1       | `dryRunMessages`                                                                                                                                 | `projects/common/persistence/src/modules/export/export.command.ts:76`                                |
+| `ExportCommand.requireOption`            | 1       | `ExportOptionsError.constructor`                                                                                                                 | `projects/common/persistence/src/modules/export/export.command.ts:125`                               |
+| `ExportCommand.selectContent`            | 1       | `ExportOptionsError.constructor`                                                                                                                 | `projects/common/persistence/src/modules/export/export.command.ts:138`                               |
+| `referencedTablesMessage`                | 1       | `map(…)`                                                                                                                                         | `projects/common/persistence/src/modules/import/import.constants.ts:93`                              |
+| `map(…)`                                 | 1       | `describePostgresContent`                                                                                                                        | `projects/common/persistence/src/modules/import/import.constants.ts:134`                             |
+| `ImportCommand.requireOption`            | 1       | `ImportOptionsError.constructor`                                                                                                                 | `projects/common/persistence/src/modules/import/import.command.ts:178`                               |
+| `ImportCommand.selectContent`            | 1       | `ImportOptionsError.constructor`                                                                                                                 | `projects/common/persistence/src/modules/import/import.command.ts:216`                               |
+| `startFirstAvailableImage`               | 1       | `postgresInitializationSql`                                                                                                                      | `projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts:104`           |
 
 </details>
 <!-- callidescope:end -->

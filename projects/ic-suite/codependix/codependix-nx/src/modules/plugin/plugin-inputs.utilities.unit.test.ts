@@ -206,7 +206,7 @@ describe(resolveToolInputs, () => {
       expect.stringContaining("@codependix/misnamed, @codependix/missing"),
     );
     expect(isInput(inputs, "packages/cli/src/main.ts")).toBe(true);
-    expect(isInput(inputs, "packages/observability/src/index.ts")).toBe(true);
+    expect(isInput(inputs, "packages/logging/src/index.ts")).toBe(true);
   });
 
   it("leaves test files out, and leaves every tsconfig to resolveTsconfigInputs", () => {

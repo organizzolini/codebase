@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { environmentSchema } from "./installation.constants";
 
 /** The workspace root, which the Nx `start` target runs from. */
-const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../..");
+const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../..");
 
 /** Every command this project registers. */
 const COMMAND_NAMES = [

@@ -5,7 +5,10 @@
       "url": "https://mcp.reui.io"
     },
     "shadcn": {
-      "args": ["-c", "npx shadcn@latest mcp --cwd projects/common/presentation"],
+      "args": [
+        "-c",
+        "npx shadcn@latest mcp --cwd projects/common/presentation"
+      ],
       "command": "bash"
     }
   }
