@@ -33,9 +33,9 @@ source ./scripts/utilities.sh
 # Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
 # linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
 # is shimmed from the copy npm bundles, because the native packages (sweph,
-# cpu-features) need it on PATH. Only the .env files of the setup command apply:
-# its shell configuration, software, and Terraform steps are for a developer
-# Mac. Docker and Postgres are started last. Safe to run again.
+# cpu-features) need it on PATH. Only the .env files and Helm of the setup
+# command apply: its shell configuration, other software, and Terraform steps
+# are for a developer Mac. Docker and Postgres are started last. Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
@@ -80,6 +80,13 @@ if [[ "${operating_system}" == "Linux" ]]; then
   echo "📦 Installing the workspace's packages..."
   pnpm install --frozen-lockfile
   NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts environment-files
+
+  # Helm, which the pre-commit hook lints the charts with. There is no
+  # Homebrew here to install it the way the macOS setup does, so the helm
+  # command installs the release archive. A failure warns rather than failing
+  # a setup whose Node toolchain is already done.
+  NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts helm ||
+    echo "⚠️  Helm was not installed. Retry with: pnpm exec nx run installation:start:helm" >&2
 
   # Docker and Postgres. A container that carries the daemon binary but runs
   # none gets one started, so `infrastructure:postgres:up` has an engine; a
