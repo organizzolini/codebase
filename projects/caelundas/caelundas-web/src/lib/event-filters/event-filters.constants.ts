@@ -20,7 +20,7 @@ export const TAG_OPERATORS = {
  */
 export const EVENT_TAGS_MATCHING_SQL = `
   select t.tag_id
-  from calendar_event_tags t
+  from calendar_event_tag_nodes t
   where t.calendar_event_id = e.id and t.tag_id in ({placeholders})
 `;
 

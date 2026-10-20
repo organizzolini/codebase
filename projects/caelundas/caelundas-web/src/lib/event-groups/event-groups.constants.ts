@@ -87,7 +87,7 @@ export const DERIVED_GROUP_SQL = `select {key} as "key", null as label, null as 
  */
 export const TAG_GROUP_SQL = `
   select t.tag_id as "key", t.tag_name as label, t.tag_path as "path"
-  from calendar_event_tags t
+  from calendar_event_tag_nodes t
   where
     t.calendar_event_id = e.id
     and t.tag_root_id = ?
@@ -98,11 +98,11 @@ export const TAG_GROUP_SQL = `
         t.tag_depth < ?
         and not exists (
           select 1
-          from calendar_event_tags x
-          join tags_closure c on c.id_descendant = x.tag_id
+          from calendar_event_tag_nodes x
+          join tags_closure c on c.descendant_id = x.tag_id
           where
             x.calendar_event_id = e.id
-            and c.id_ancestor = t.tag_id
+            and c.ancestor_id = t.tag_id
             and x.tag_id != t.tag_id
         )
       )

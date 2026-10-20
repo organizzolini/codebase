@@ -32,12 +32,12 @@ create table tags (
 );
 
 create table tags_closure (
-    id_ancestor text not null references tags (id),
-    id_descendant text not null references tags (id),
-    primary key (id_ancestor, id_descendant)
+    ancestor_id text not null references tags (id),
+    descendant_id text not null references tags (id),
+    primary key (ancestor_id, descendant_id)
 );
 
-create table calendar_events_tags (
+create table calendar_event_tags (
     calendar_event_id text not null references calendar_events (id),
     tag_id text not null references tags (id),
     primary key (calendar_event_id, tag_id)

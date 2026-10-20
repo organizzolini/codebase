@@ -27,7 +27,7 @@ but that file:
    `data/events-schema.sql` and the text seed `data/events-seed.sql`.
 2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
    everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
-   and path), `calendar_event_tags` (one row per event and tag, ancestors
+   and path), `calendar_event_tag_nodes` (one row per event and tag, ancestors
    included, `is_direct` marking the tags given), and the view
    `calendar_events_derived` (each event with its duration, temporality, and
    UTC time parts). The first two are written out as indexed tables rather

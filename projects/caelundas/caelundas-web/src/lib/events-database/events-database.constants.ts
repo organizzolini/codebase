@@ -30,7 +30,7 @@ export const EVENTS_IN_WINDOW_SQL = `
       )
       from (
         select t.tag_depth, t.tag_id, t.tag_name, t.tag_path
-        from calendar_event_tags t
+        from calendar_event_tag_nodes t
         where t.calendar_event_id = e.id and t.is_direct = 1
         order by t.tag_path
       ) t
@@ -74,7 +74,7 @@ export const FACETS_SQL = `
     substr(n."path", length(r."name") + length(' / ') + 1) as path_below_root,
     (
       select count(*)
-      from calendar_event_tags t
+      from calendar_event_tag_nodes t
       where t.tag_id = n.id
     ) as count
   from tag_nodes n

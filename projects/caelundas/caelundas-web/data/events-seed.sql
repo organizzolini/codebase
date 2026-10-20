@@ -23,10 +23,10 @@ insert into tags (id, created_at, updated_at, "name", parent_id) values
     ('tag-fire', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Fire', 'tag-element');
 
 -- Every node is its own ancestor, as TypeORM writes a closure table.
-insert into tags_closure (id_ancestor, id_descendant)
+insert into tags_closure (ancestor_id, descendant_id)
 select id, id from tags;
 
-insert into tags_closure (id_ancestor, id_descendant) values
+insert into tags_closure (ancestor_id, descendant_id) values
     ('tag-type', 'tag-aspect'),
     ('tag-type', 'tag-major-aspect'),
     ('tag-type', 'tag-conjunct'),
@@ -54,7 +54,7 @@ insert into calendar_events (id, created_at, updated_at, color, description, "en
     ('event-mars-square-saturn', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', null, 'Mars and Saturn stand ninety degrees apart', '2026-04-10T22:05:00.000Z', 40.712800, 'New York, NY', -74.006000, '2026-04-10T22:05:00.000Z', 'Mars Square Saturn', 'America/New_York'),
     ('event-sun-ingress-cancer', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', null, 'The Sun enters Cancer at the summer solstice', '2026-06-21T08:24:00.000Z', 40.712800, 'New York, NY', -74.006000, '2026-06-21T08:24:00.000Z', 'Sun Ingress Cancer', 'America/New_York');
 
-insert into calendar_events_tags (calendar_event_id, tag_id) values
+insert into calendar_event_tags (calendar_event_id, tag_id) values
     ('event-mercury-retrograde', 'tag-retrograde'),
     ('event-mercury-retrograde', 'tag-mercury'),
     ('event-mars-conjunct-venus', 'tag-conjunct'),

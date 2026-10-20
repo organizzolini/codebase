@@ -19,7 +19,7 @@ const MOTION_ROOT_SQL = `
   insert into tags (id, created_at, updated_at, "name", parent_id) values
     ('tag-motion', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Motion', null),
     ('tag-direct', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Direct', 'tag-motion');
-  insert into tags_closure (id_ancestor, id_descendant) values
+  insert into tags_closure (ancestor_id, descendant_id) values
     ('tag-motion', 'tag-motion'),
     ('tag-direct', 'tag-direct'),
     ('tag-motion', 'tag-direct');

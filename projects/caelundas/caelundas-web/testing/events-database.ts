@@ -139,11 +139,21 @@ export function createTestSqlExecutor(
     readFileSync(path.join(DATA_DIRECTORY, "events-views.sql"), "utf8"),
   );
 
-  for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
-    database.function(name, { deterministic: true }, localTime);
-  }
+  registerLocalTimeFunctions(database);
 
   return createNodeSqliteExecutor(database);
+}
+
+/**
+ * Opens a built SQLite file read-only, the way the browser's worker opens the
+ * file the build bundles, and returns the events database over it.
+ */
+export function openTestEventsDatabase(file: string): EventsDatabase {
+  const database = new DatabaseSync(file, { readOnly: true });
+
+  registerLocalTimeFunctions(database);
+
+  return createEventsDatabase(createNodeSqliteExecutor(database));
 }
 
 /**
@@ -160,4 +170,13 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
       });
     },
   };
+}
+
+/**
+ * Gives the database the local-time functions the browser's worker registers.
+ */
+function registerLocalTimeFunctions(database: DatabaseSync): void {
+  for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
+    database.function(name, { deterministic: true }, localTime);
+  }
 }
