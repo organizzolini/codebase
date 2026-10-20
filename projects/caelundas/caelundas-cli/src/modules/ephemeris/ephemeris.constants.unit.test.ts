@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("sweph", () => ({
   constants: {
@@ -30,6 +32,7 @@ vi.mock("sweph", () => ({
 
 import {
   ECLIPTIC_TO_HORIZONTAL_FLAG,
+  EphemerisUnavailableError,
   GREGORIAN_CALENDAR_FLAG,
   initializeSwissEphemeris,
   OSCULATING_ORBITAL_ELEMENTS_FLAG,
@@ -167,12 +170,14 @@ describe("ephemeris.constants", () => {
       vi.clearAllMocks();
     });
 
-    it("calls set_ephe_path with the ephemeris data directory", async () => {
+    it("calls set_ephe_path with the absolute ephemeris data directory", async () => {
       const { set_ephe_path: setEphemerisPath } = await import("sweph");
 
       initializeSwissEphemeris();
 
-      expect(setEphemerisPath).toHaveBeenCalledWith("./data/ephemeris");
+      expect(setEphemerisPath).toHaveBeenCalledWith(
+        path.resolve("./data/ephemeris"),
+      );
     });
 
     it("calls set_ephe_path exactly once", async () => {
@@ -180,7 +185,37 @@ describe("ephemeris.constants", () => {
 
       initializeSwissEphemeris();
 
-      expect(setEphemerisPath).toHaveBeenCalledWith("./data/ephemeris");
+      expect(setEphemerisPath).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe(EphemerisUnavailableError, () => {
+    const error = new EphemerisUnavailableError(
+      { body: "mars", tool: "calc" },
+      " using Moshier eph.; ",
+    );
+
+    it("names the call and the body", () => {
+      expect(error.message).toContain("calc for mars");
+    });
+
+    it("names the command that downloads the files and the years they cover", () => {
+      expect(error.message).toContain(
+        "nx run caelundas-cli:download-ephemeris",
+      );
+      expect(error.message).toContain("1800 to 2399");
+    });
+
+    it("keeps the library's own note, trimmed", () => {
+      expect(error.message.endsWith("using Moshier eph.;")).toBe(true);
+    });
+
+    it("carries the body and the tool", () => {
+      expect(error).toMatchObject({
+        body: "mars",
+        name: "EphemerisUnavailableError",
+        tool: "calc",
+      });
     });
   });
 });

@@ -4,6 +4,7 @@ import { pheno_ut } from "sweph";
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
 import { SWISS_EPHEMERIS_FLAGS } from "./ephemeris.constants";
+import { assertSwissEphemerisResult } from "./ephemeris.utilities";
 
 import type { Body, Node } from "../caelundas/caelundas.types";
 import type { IlluminationEphemeris } from "./ephemeris.types";
@@ -72,9 +73,7 @@ export class EphemerisPhenomenaService {
         swissEphemerisConstant,
         SWISS_EPHEMERIS_FLAGS,
       );
-      if (result.flag < 0) {
-        throw new Error(`pheno_ut failed for ${body}: ${result.error}`);
-      }
+      assertSwissEphemerisResult(result, { body, tool: "pheno_ut" });
       ephemeris[timestamp] = {
         illumination: result.data[1] * 100,
         magnitude: result.data[4],
@@ -111,9 +110,7 @@ export class EphemerisPhenomenaService {
       swissEphemerisConstant,
       SWISS_EPHEMERIS_FLAGS,
     );
-    if (result.flag < 0) {
-      throw new Error(`pheno_ut failed for ${body}: ${result.error}`);
-    }
+    assertSwissEphemerisResult(result, { body, tool: "pheno_ut" });
     if (needsIllumination)
       illuminationEphemeris[timestamp] = {
         illumination: result.data[1] * 100,

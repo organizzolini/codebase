@@ -1,7 +1,7 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
-import { pheno_ut } from "sweph";
+import { constants, pheno_ut } from "sweph";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
@@ -147,6 +147,25 @@ describe(EphemerisPhenomenaService, () => {
           timestamp: "2024-03-21T00:00:00.000Z",
         }),
       ).toThrow("pheno_ut failed for moon");
+    });
+
+    it("throws when pheno fell back to the built-in ephemeris", () => {
+      vi.mocked(pheno_ut).mockReturnValueOnce({
+        data: [0, 0, 0, 0, 0],
+        error: "",
+        flag: constants.SEFLG_MOSEPH,
+      });
+
+      expect(() =>
+        service.computePhenoForMinute({
+          body: "moon",
+          illuminationEphemeris: {},
+          julianDayUniversalTime: 2_460_395.499_306,
+          needsIllumination: true,
+          swissEphemerisConstant: 0,
+          timestamp: "2024-03-21T00:00:00.000Z",
+        }),
+      ).toThrow("pheno_ut for moon did not use the Swiss Ephemeris files");
     });
 
     it("writes non-sun illumination from pheno", () => {

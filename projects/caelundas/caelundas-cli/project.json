@@ -36,11 +36,15 @@
     "deprecate-code": {},
     "download-ephemeris": {
       "cache": true,
-      "description": "Download Swiss Ephemeris data files to data/ephemeris/ (cached, so CI fetches them once per cache key)",
+      "description": "Download the Swiss Ephemeris data files to data/ephemeris/ (cached, so CI fetches them once per cache key). Runs its own entry point, which does not connect to Postgres.",
       "executor": "nx:run-commands",
-      "inputs": ["{projectRoot}/scripts/download-ephemeris.ts"],
+      "inputs": [
+        "!{projectRoot}/**/*.test.ts",
+        "{projectRoot}/src/ephemeris-download-cli.*",
+        "{projectRoot}/src/modules/ephemeris-download/**/*"
+      ],
       "options": {
-        "command": "pnpm tsx scripts/download-ephemeris.ts",
+        "command": "node --import @swc-node/register/esm-register src/ephemeris-download-cli.main.ts ephemeris-download",
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/data/ephemeris"]
@@ -51,7 +55,9 @@
     "lint-code": {},
     "markdown-lint": {},
     "migration": {
-      "options": { "module": "src/modules/database" }
+      "options": {
+        "module": "src/modules/database"
+      }
     },
     "oxfmt": {},
     "oxlint": {},

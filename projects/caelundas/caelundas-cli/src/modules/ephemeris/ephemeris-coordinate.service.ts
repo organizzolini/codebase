@@ -12,6 +12,7 @@ import {
   swissEphemerisConstantByNode,
   TOPOCENTRIC_EPHEMERIS_FLAGS,
 } from "./ephemeris.constants";
+import { assertSwissEphemerisResult } from "./ephemeris.utilities";
 
 import type { Body, Node } from "../caelundas/caelundas.types";
 import type { CoordinateEphemeris, DistanceEphemeris } from "./ephemeris.types";
@@ -52,9 +53,7 @@ export class EphemerisCoordinateService {
     const swissEphemerisConstant =
       this.ephemerisConstantsService.getSwissEphemerisConstantForBody(body);
     const result = calc(julianDayEphemerisTime, swissEphemerisConstant, flags);
-    if (result.flag < 0) {
-      throw new Error(`calc failed for ${body}: ${result.error}`);
-    }
+    assertSwissEphemerisResult(result, { body, tool: "calc" });
     return {
       distance: result.data[2],
       distanceSpeed: result.data[5],
@@ -119,9 +118,7 @@ export class EphemerisCoordinateService {
       swissEphemerisConstant,
       SWISS_EPHEMERIS_FLAGS,
     );
-    if (result.flag < 0) {
-      throw new Error(`calc failed for ${node}: ${result.error}`);
-    }
+    assertSwissEphemerisResult(result, { body: node, tool: "calc" });
     const longitude =
       node === "south lunar node"
         ? this.mathService.normalizeDegrees(result.data[0] + 180)
