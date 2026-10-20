@@ -39,10 +39,10 @@ installation() {
 # Code cloud session and the devcontainer run, has no Homebrew and often a system
 # Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
 # linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
-# is shimmed from the copy npm bundles, because the native packages (sweph,
-# cpu-features) need it on PATH. Of the setup command only the .env files and the
-# SSH signing apply: its shell configuration, software, and Terraform steps are
-# for a developer Mac. Docker and Postgres are started last. Safe to run again.
+# is linked from the copy npm bundles, because the native packages (sweph,
+# cpu-features) need it on PATH. The setup command then does the rest for
+# Linux: the .env files, the SSH signing, and the Docker daemon and Postgres.
+# Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
   echo "🛑 Unsupported operating system: ${operating_system}. Use macOS or Linux." >&2
@@ -72,10 +72,8 @@ if [[ "${operating_system}" == "Linux" ]]; then
   for tool in node npm npx corepack; do
     ln -sf "${node_home}/bin/${tool}" "${HOME}/.local/bin/${tool}"
   done
-  printf '#!/bin/sh\nexec node "%s" "$@"\n' \
-    "${node_home}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" \
-    > "${HOME}/.local/bin/node-gyp"
-  chmod +x "${HOME}/.local/bin/node-gyp"
+  ln -sf "${node_home}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" \
+    "${HOME}/.local/bin/node-gyp"
   export PATH="${HOME}/.local/bin:${PATH}"
   echo "👍 Node.js $(node --version)"
 
@@ -86,43 +84,7 @@ if [[ "${operating_system}" == "Linux" ]]; then
 
   echo "📦 Installing the workspace's packages..."
   pnpm install --frozen-lockfile
-  installation environment-files
-
-  # SSH commit signatures are made verifiable by the installation project: it
-  # installs ssh-keygen and lists the signer's key for the commit hooks.
-  installation ssh-signing
-
-  # Docker and Postgres. A container that carries the daemon binary but runs
-  # none gets one started, so `infrastructure:postgres:up` has an engine; a
-  # machine that already reaches a daemon, like the devcontainer's mounted
-  # socket, is left alone. A failure warns rather than failing a setup whose
-  # Node toolchain is already done.
-  if [[ "$(id -u)" == "0" ]] && command -v dockerd &> /dev/null && ! docker info &> /dev/null; then
-    echo "🐳 Starting the Docker daemon..."
-    mkdir -p "${HOME}/.local/state"
-    setsid nohup dockerd > "${HOME}/.local/state/dockerd.log" 2>&1 &
-    for _ in $(seq 1 30); do
-      docker info &> /dev/null && break
-      sleep 1
-    done
-  fi
-  if docker info &> /dev/null; then
-    echo "🐘 Starting Postgres..."
-    pnpm exec nx run infrastructure:postgres:up ||
-      echo "⚠️  Postgres did not start. Retry with: pnpm exec nx run infrastructure:postgres:up" >&2
-  else
-    echo "⚠️  No Docker daemon is reachable, so Postgres was not started." >&2
-  fi
-
-  # utilities.sh marks every script executable, which leaves the few that git
-  # stores as 644 modified, and a later `git add -A` would commit that. Only
-  # those mode changes are undone; no file's content is touched.
-  git diff --summary | sed -n 's/^ mode change 100644 => 100755 //p' |
-    while IFS= read -r script; do
-      chmod -x "${script}"
-    done
-
-  echo "✅ Linux setup complete."
+  installation setup
   exit 0
 fi
 
