@@ -1,4 +1,4 @@
-export { PageInfo } from "./modules/graphql/graphql.entities";
+export { PageInfo } from "./modules/graphql-server/graphql-server.entities";
 // 📤 Exports
 export type {
   ClassConstructor,
@@ -10,7 +10,7 @@ export type {
   MappedFields,
   Related,
   RelationKey,
-} from "./modules/graphql/graphql.types";
+} from "./modules/graphql-server/graphql-server.types";
 export {
   createConnection,
   createEdge,
@@ -28,4 +28,4 @@ export {
   mapRelations,
   Paginated,
   toCursor,
-} from "./modules/graphql/graphql.utilities";
+} from "./modules/graphql-server/graphql-server.utilities";

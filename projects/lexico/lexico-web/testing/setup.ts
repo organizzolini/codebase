@@ -2,9 +2,9 @@ import { cleanup } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 import {
-  resetGraphqlServer,
-  startGraphqlServer,
-  stopGraphqlServer,
+  resetGraphqlMockServer,
+  startGraphqlMockServer,
+  stopGraphqlMockServer,
 } from "@codebase/interface/testing";
 
 // `createServerFn` only runs inside the Start server runtime, so a route that
@@ -48,14 +48,14 @@ Object.defineProperty(globalThis.window, "matchMedia", {
 });
 
 beforeAll(() => {
-  startGraphqlServer();
+  startGraphqlMockServer();
 });
 
 afterEach(() => {
   cleanup();
-  resetGraphqlServer();
+  resetGraphqlMockServer();
 });
 
 afterAll(() => {
-  stopGraphqlServer();
+  stopGraphqlMockServer();
 });

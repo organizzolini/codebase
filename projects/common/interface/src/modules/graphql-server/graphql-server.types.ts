@@ -1,4 +1,4 @@
-import type { PageInfo } from "./graphql.entities";
+import type { PageInfo } from "./graphql-server.entities";
 
 /**
  * Constructor type for class references.

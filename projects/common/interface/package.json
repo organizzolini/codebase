@@ -18,7 +18,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./codegen": "./src/modules/graphql/graphql-codegen.utilities.ts",
+    "./client": "./src/modules/graphql-client/graphql-client.utilities.ts",
     "./testing": "./testing/index.ts",
     "./package.json": "./package.json"
   },
@@ -36,9 +36,9 @@
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
       },
-      "./codegen": {
-        "default": "./dist/src/modules/graphql/graphql-codegen.utilities.js",
-        "types": "./dist/src/modules/graphql/graphql-codegen.utilities.d.ts"
+      "./client": {
+        "default": "./dist/src/modules/graphql-client/graphql-client.utilities.js",
+        "types": "./dist/src/modules/graphql-client/graphql-client.utilities.d.ts"
       },
       "./testing": {
         "default": "./dist/testing/index.js",

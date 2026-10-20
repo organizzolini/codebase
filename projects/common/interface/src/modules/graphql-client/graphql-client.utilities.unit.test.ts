@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createGraphqlCodegenConfig } from "./graphql-codegen.utilities";
+import { createGraphqlCodegenConfig } from "./graphql-client.utilities";
 
 describe("graphql codegen configuration suite", () => {
   it("generates operations, validators, and mocks beside each other", () => {

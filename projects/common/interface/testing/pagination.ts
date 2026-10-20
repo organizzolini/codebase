@@ -1,6 +1,12 @@
-import { createEdge, toCursor } from "../src/modules/graphql/graphql.utilities";
+import {
+  createEdge,
+  toCursor,
+} from "../src/modules/graphql-server/graphql-server.utilities";
 
-import type { Connection, Edge } from "../src/modules/graphql/graphql.types";
+import type {
+  Connection,
+  Edge,
+} from "../src/modules/graphql-server/graphql-server.types";
 
 /** Plain Relay arguments, so matrix entries can be spread and combined. */
 export interface PageRequest {

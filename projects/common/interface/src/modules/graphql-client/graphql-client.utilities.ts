@@ -2,9 +2,9 @@ import {
   GRAPHQL_CODEGEN_GENERATED_DIRECTORY,
   GRAPHQL_CODEGEN_OPERATIONS,
   GRAPHQL_CODEGEN_SCALARS,
-} from "./graphql-codegen.constants";
+} from "./graphql-client.constants";
 
-import type { GraphqlCodegenOptions } from "./graphql-codegen.types";
+import type { GraphqlCodegenOptions } from "./graphql-client.types";
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 /**

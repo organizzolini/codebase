@@ -1,4 +1,4 @@
-import { createGraphqlCodegenConfig } from "@codebase/interface/codegen";
+import { createGraphqlCodegenConfig } from "@codebase/interface/client";
 
 import type { CodegenConfig } from "@graphql-codegen/cli";
 

@@ -1,8 +1,12 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 
-import { PageInfo } from "./graphql.entities";
+import { PageInfo } from "./graphql-server.entities";
 
-import type { ClassConstructor, Connection, Edge } from "./graphql.types";
+import type {
+  ClassConstructor,
+  Connection,
+  Edge,
+} from "./graphql-server.types";
 
 /**
  * Creates a Relay Connection containing edges, page info, and total count.

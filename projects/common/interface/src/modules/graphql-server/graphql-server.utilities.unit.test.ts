@@ -11,7 +11,7 @@ import { describe, expect, it } from "vitest";
 
 import { paginateArray } from "../../../testing/pagination";
 
-import { PageInfo } from "./graphql.entities";
+import { PageInfo } from "./graphql-server.entities";
 import {
   createConnection,
   createEdge,
@@ -28,9 +28,9 @@ import {
   mapRelations,
   Paginated,
   toCursor,
-} from "./graphql.utilities";
+} from "./graphql-server.utilities";
 
-import type { Connection } from "./graphql.types";
+import type { Connection } from "./graphql-server.types";
 
 @ObjectType()
 class TestItem {

@@ -1,9 +1,9 @@
 export {
-  graphqlServer,
-  resetGraphqlServer,
-  startGraphqlServer,
-  stopGraphqlServer,
-} from "./graphql-server";
+  graphqlMockServer,
+  resetGraphqlMockServer,
+  startGraphqlMockServer,
+  stopGraphqlMockServer,
+} from "./graphql-mock-server";
 export {
   expectedPage,
   paginateArray,
