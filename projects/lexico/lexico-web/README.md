@@ -111,9 +111,9 @@ Call stacks traced through `projects/lexico/lexico-web`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 128 |
-| Files | 28 |
-| Calls traced | 73 |
+| Callables | 131 |
+| Files | 29 |
+| Calls traced | 77 |
 | Call stacks | 20 |
 | Deepest stack | 4 |
 | Stacks through recursion | 0 |
@@ -151,7 +151,21 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> some(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:245]
 ```
 
-**3. `LexemeIdentifiers`** — depth 3 · orphan-root
+**3. `handler(…)`** — depth 4 · orphan-root
+
+```text
+🚀 handler(…)(…): Promise<LexemeResult[]> [projects/lexico/lexico-web/src/routes/search.tsx:246]
+  └─> searchLatin(query: string): Promise<ResultNode[]> [projects/lexico/lexico-web/src/routes/search.tsx:215]
+     ↳ Searches Latin through the lexico API and returns the results it matched.
+    └─> searchLanguage(…): ResultNode[] [projects/lexico/lexico-web/src/routes/search.tsx:193]
+       ↳ Searches Latin or English through the lexico API, which exposes each as its own query, and returns the results it…
+      └─> map(…)(edge: { node: ResultNode; }): ResultNode [projects/lexico/lexico-web/src/routes/search.tsx:207]
+```
+
+<details>
+<summary>17 more call stacks</summary>
+
+**4. `LexemeIdentifiers`** — depth 3 · orphan-root
 
 ```text
 🚀 LexemeIdentifiers(properties: Readonly<LexemeIdentifiersProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60]
@@ -160,10 +174,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> flatMap(…)(this: undefined, word: string): string | never[] [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:94]
 ```
 
-<details>
-<summary>17 more call stacks</summary>
-
-**4. `AdjectiveForms`** — depth 3 · orphan-root
+**5. `AdjectiveForms`** — depth 3 · orphan-root
 
 ```text
 🚀 AdjectiveForms(properties: Readonly<AdjectiveFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/adjective-forms.tsx:50]
@@ -172,7 +183,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> some(…)(row: AdjectiveFormRow): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:60]
 ```
 
-**5. `NounForms`** — depth 3 · orphan-root
+**6. `NounForms`** — depth 3 · orphan-root
 
 ```text
 🚀 NounForms(properties: Readonly<NounFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/noun-forms.tsx:47]
@@ -181,7 +192,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> some(…)(row: NounFormRow): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:55]
 ```
 
-**6. `handleOpenChange`** — depth ≥ 3 · orphan-root
+**7. `handleOpenChange`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 handleOpenChange(open: boolean): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:121]
@@ -191,7 +202,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> catch(…)(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:113]
 ```
 
-**7. `LexemeHeader`** — depth 3 · orphan-root
+**8. `LexemeHeader`** — depth 3 · orphan-root
 
 ```text
 🚀 LexemeHeader(properties: Readonly<LexemeHeaderProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-header.tsx:40]
@@ -201,7 +212,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> filter(…)(detail: string | null | undefined): detail is string [projects/lexico/lexico-web/src/components/lexeme-header.tsx:117]
 ```
 
-**8. `SearchResults`** — depth ≥ 3 · orphan-root
+**9. `SearchResults`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 SearchResults(properties: Readonly<SearchResultsProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-results.tsx:31]
@@ -210,23 +221,13 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> filter(…)(_result: LexemeResult, index: number): boolean [projects/lexico/lexico-web/src/components/search-results.tsx:46]
 ```
 
-**9. `handler(…)`** — depth 3 · orphan-root
-
-```text
-🚀 handler(…)(…): Promise<LexemeResult[]> [projects/lexico/lexico-web/src/routes/search.tsx:256]
-  └─> searchLanguage(field: "searchEnglish" | "searchLatin", query: string): Promise<ResultNode[]> [projects/lexico/lexico-web/src/routes/search.tsx:236]
-     ↳ Searches Latin or English through the lexico API, which exposes each as its own query, and returns the results it…
-    └─> queryApi(…): Promise<Record<string, unknown>> [projects/lexico/lexico-web/src/routes/search.tsx:211]
-       ↳ Runs one GraphQL query against the lexico API and returns its data.
-```
-
 **10. `SearchPage`** — depth 3 · orphan-root
 
 ```text
-🚀 SearchPage(): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:380]
+🚀 SearchPage(): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:370]
    ↳ The search page: a search bar over either the landing logo or the results.
-  └─> useMemo(…)(): Map<string, LexemeFormRow[]> [projects/lexico/lexico-web/src/routes/search.tsx:389]
-    └─> map(…)(result: LexemeResult): readonly [string, LexemeFormRow[]] [projects/lexico/lexico-web/src/routes/search.tsx:391]
+  └─> useMemo(…)(): Map<string, LexemeFormRow[]> [projects/lexico/lexico-web/src/routes/search.tsx:379]
+    └─> map(…)(result: LexemeResult): readonly [string, LexemeFormRow[]] [projects/lexico/lexico-web/src/routes/search.tsx:381]
 ```
 
 **11. `ApplicationSidebar`** — depth 2 · orphan-root
@@ -314,16 +315,17 @@ What this project is judged against, as declared in its own `callidescope.config
 | --- | --- | --- | --- |
 | `narrow` | 8 | `filter(…)`, `filter(…)`, `pick`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:241` |
 | `AdjectiveForms` | 6 | `filter(…)`, `filter(…)`, `filter(…)`, `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:50` |
-| `map(…)` | 5 | `map(…)`, `describeMatch`, `flatMap(…)`, `flatMap(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:272` |
+| `map(…)` | 6 | `map(…)`, `toLexemeInflection`, `describeMatch`, `flatMap(…)`, `flatMap(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:262` |
 
 <details>
-<summary>34 more callables</summary>
+<summary>36 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `NounForms` | 3 | `filter(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:47` |
 | `SearchResults` | 3 | `from(…)`, `useEffect(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:31` |
-| `SearchPage` | 3 | `useMemo(…)`, `useCallback(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:380` |
+| `handler(…)` | 3 | `searchLatin`, `searchEnglish`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:246` |
+| `SearchPage` | 3 | `useMemo(…)`, `useCallback(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:370` |
 | `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:41` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:103` |
 | `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:71` |
@@ -333,8 +335,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `FormsOfKind` | 2 | `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:193` |
 | `LexemeTranslations` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-translations.tsx:37` |
 | `map(…)` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:84` |
-| `searchLanguage` | 2 | `queryApi`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:236` |
-| `handler(…)` | 2 | `searchLanguage`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:256` |
+| `searchEnglish` | 2 | `queryApi`, `searchLanguage` | `projects/lexico/lexico-web/src/routes/search.tsx:177` |
+| `searchLatin` | 2 | `queryApi`, `searchLanguage` | `projects/lexico/lexico-web/src/routes/search.tsx:215` |
 | `ApplicationSidebar` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:88` |
 | `LexemeIdentifiers` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60` |
 | `map(…)` | 1 | `flatMap(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:85` |
@@ -354,7 +356,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `describeInflection` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:106` |
 | `LexemePronunciations` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:38` |
 | `from(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:45` |
-| `useMemo(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:389` |
+| `searchLanguage` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:193` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:379` |
 
 </details>
 <!-- callidescope:end -->
@@ -382,6 +385,7 @@ graph LR
 ```mermaid
 graph LR
   file_callidescope_config_ts["callidescope.config.ts"]
+  file_codegen_ts["codegen.ts"]
   file_codependix_config_ts["codependix.config.ts"]
   file_codometer_config_ts["codometer.config.ts"]
   file_eslint_config_ts["eslint.config.ts"]
@@ -418,6 +422,9 @@ graph LR
   file_src_components_search_results_unit_test_tsx["src/components/search-results.unit.test.tsx"]
   file_src_components_verb_forms_tsx["src/components/verb-forms.tsx"]
   file_src_components_verb_forms_unit_test_tsx["src/components/verb-forms.unit.test.tsx"]
+  file_src_graphql_generated_mocks_ts["src/graphql/generated/mocks.ts"]
+  file_src_graphql_generated_operations_ts["src/graphql/generated/operations.ts"]
+  file_src_graphql_generated_validation_ts["src/graphql/generated/validation.ts"]
   file_src_router_tsx["src/router.tsx"]
   file_src_routes___root_tsx["src/routes/__root.tsx"]
   file_src_routes_index_integration_test_tsx["src/routes/index.integration.test.tsx"]
@@ -425,6 +432,7 @@ graph LR
   file_src_routes_search_integration_test_tsx["src/routes/search.integration.test.tsx"]
   file_src_routes_search_tsx["src/routes/search.tsx"]
   file_src_routeTree_gen_ts["src/routeTree.gen.ts"]
+  file_testing_graphql_server_ts["testing/graphql-server.ts"]
   file_testing_render_route_tsx["testing/render-route.tsx"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_mts["vite.config.mts"]
@@ -465,11 +473,14 @@ graph LR
   file_src_components_verb_forms_tsx --> file_src_components_forms_table_tsx
   file_src_components_verb_forms_tsx --> file_src_components_lexeme_identifiers_tsx
   file_src_components_verb_forms_unit_test_tsx --> file_src_components_verb_forms_tsx
+  file_src_graphql_generated_validation_ts --> file_src_graphql_generated_operations_ts
   file_src_router_tsx --> file_src_routeTree_gen_ts
   file_src_routes___root_tsx --> file_src_components_layout_index_ts
   file_src_routes_index_integration_test_tsx --> file_src_routes_index_tsx
   file_src_routes_index_integration_test_tsx --> file_testing_render_route_tsx
+  file_src_routes_search_integration_test_tsx --> file_src_graphql_generated_mocks_ts
   file_src_routes_search_integration_test_tsx --> file_src_routes_search_tsx
+  file_src_routes_search_integration_test_tsx --> file_testing_graphql_server_ts
   file_src_routes_search_integration_test_tsx --> file_testing_render_route_tsx
   file_src_routes_search_tsx --> file_src_components_lexeme_card_tsx
   file_src_routes_search_tsx --> file_src_components_lexeme_forms_tsx
@@ -478,11 +489,13 @@ graph LR
   file_src_routes_search_tsx --> file_src_components_search_bar_tsx
   file_src_routes_search_tsx --> file_src_components_search_landing_tsx
   file_src_routes_search_tsx --> file_src_components_search_results_tsx
+  file_src_routes_search_tsx --> file_src_graphql_generated_operations_ts
   file_src_routeTree_gen_ts --> file_src_router_tsx
   file_src_routeTree_gen_ts --> file_src_routes___root_tsx
   file_src_routeTree_gen_ts --> file_src_routes_index_tsx
   file_src_routeTree_gen_ts --> file_src_routes_search_tsx
   file_testing_render_route_tsx --> file_src_router_tsx
+  file_testing_setup_ts --> file_testing_graphql_server_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -492,43 +505,43 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4480-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-143.23_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-8-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-50-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6484-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-229.88_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-55-3178c6?style=flat-square)
 
 ### Measured Targets
 
 ![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.71_kB_gzip-6b7280?style=flat-square)
 ![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.45_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.92_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-202.83_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-204.00_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-48-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-53-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-41-0ea5e9?style=flat-square)
-![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-1-0369a1?style=flat-square)
-![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-17-0369a1?style=flat-square)
+![Enums](https://img.shields.io/badge/Enums-2-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-98-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-274-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-2-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-17-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-16-8b5cf6?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-20-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-245-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-262-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-227-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-18-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-164-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-180-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-54-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-295-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-457-475569?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-243-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-19-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-173-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-195-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-251-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-474-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-681-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python
@@ -549,16 +562,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-160-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-36-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-12-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-105-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-93-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-203-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-41-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-133-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-122-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-9-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-44-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-152-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-54-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-190-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML

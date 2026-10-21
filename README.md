@@ -4275,6 +4275,7 @@ graph LR
   file_lexico_entities_testing_setup_ts["lexico-entities/testing/setup.ts"]
   file_lexico_entities_vitest_config_ts["lexico-entities/vitest.config.ts"]
   file_lexico_web_callidescope_config_ts["lexico-web/callidescope.config.ts"]
+  file_lexico_web_codegen_ts["lexico-web/codegen.ts"]
   file_lexico_web_codependix_config_ts["lexico-web/codependix.config.ts"]
   file_lexico_web_codometer_config_ts["lexico-web/codometer.config.ts"]
   file_lexico_web_eslint_config_ts["lexico-web/eslint.config.ts"]
@@ -4311,6 +4312,9 @@ graph LR
   file_lexico_web_src_components_search_results_unit_test_tsx["lexico-web/src/components/search-results.unit.test.tsx"]
   file_lexico_web_src_components_verb_forms_tsx["lexico-web/src/components/verb-forms.tsx"]
   file_lexico_web_src_components_verb_forms_unit_test_tsx["lexico-web/src/components/verb-forms.unit.test.tsx"]
+  file_lexico_web_src_graphql_generated_mocks_ts["lexico-web/src/graphql/generated/mocks.ts"]
+  file_lexico_web_src_graphql_generated_operations_ts["lexico-web/src/graphql/generated/operations.ts"]
+  file_lexico_web_src_graphql_generated_validation_ts["lexico-web/src/graphql/generated/validation.ts"]
   file_lexico_web_src_router_tsx["lexico-web/src/router.tsx"]
   file_lexico_web_src_routes___root_tsx["lexico-web/src/routes/__root.tsx"]
   file_lexico_web_src_routes_index_integration_test_tsx["lexico-web/src/routes/index.integration.test.tsx"]
@@ -4318,6 +4322,7 @@ graph LR
   file_lexico_web_src_routes_search_integration_test_tsx["lexico-web/src/routes/search.integration.test.tsx"]
   file_lexico_web_src_routes_search_tsx["lexico-web/src/routes/search.tsx"]
   file_lexico_web_src_routeTree_gen_ts["lexico-web/src/routeTree.gen.ts"]
+  file_lexico_web_testing_graphql_server_ts["lexico-web/testing/graphql-server.ts"]
   file_lexico_web_testing_render_route_tsx["lexico-web/testing/render-route.tsx"]
   file_lexico_web_testing_setup_ts["lexico-web/testing/setup.ts"]
   file_lexico_web_vite_config_mts["lexico-web/vite.config.mts"]
@@ -10199,11 +10204,14 @@ graph LR
   file_lexico_web_src_components_verb_forms_tsx --> file_lexico_web_src_components_forms_table_tsx
   file_lexico_web_src_components_verb_forms_tsx --> file_lexico_web_src_components_lexeme_identifiers_tsx
   file_lexico_web_src_components_verb_forms_unit_test_tsx --> file_lexico_web_src_components_verb_forms_tsx
+  file_lexico_web_src_graphql_generated_validation_ts --> file_lexico_web_src_graphql_generated_operations_ts
   file_lexico_web_src_router_tsx --> file_lexico_web_src_routeTree_gen_ts
   file_lexico_web_src_routes___root_tsx --> file_lexico_web_src_components_layout_index_ts
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_src_routes_index_tsx
   file_lexico_web_src_routes_index_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
+  file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_graphql_generated_mocks_ts
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_src_routes_search_tsx
+  file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_testing_graphql_server_ts
   file_lexico_web_src_routes_search_integration_test_tsx --> file_lexico_web_testing_render_route_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_card_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_lexeme_forms_tsx
@@ -10212,11 +10220,13 @@ graph LR
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_bar_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_landing_tsx
   file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_components_search_results_tsx
+  file_lexico_web_src_routes_search_tsx --> file_lexico_web_src_graphql_generated_operations_ts
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_router_tsx
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes___root_tsx
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes_index_tsx
   file_lexico_web_src_routeTree_gen_ts --> file_lexico_web_src_routes_search_tsx
   file_lexico_web_testing_render_route_tsx --> file_lexico_web_src_router_tsx
+  file_lexico_web_testing_setup_ts --> file_lexico_web_testing_graphql_server_ts
   file_meanderaw_cli_src_meanderaw_cli_constants_ts --> file_meanderaw_cli_src_modules_enumeration_enumeration_constants_ts
   file_meanderaw_cli_src_meanderaw_cli_main_end_to_end_test_ts --> file_meanderaw_cli_src_meanderaw_cli_constants_ts
   file_meanderaw_cli_src_meanderaw_cli_main_ts --> file_meanderaw_cli_src_meanderaw_cli_module_ts
@@ -13416,8 +13426,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57492-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.42_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57498-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.44_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-150-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-544-3178c6?style=flat-square)
 
@@ -13444,8 +13454,8 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Constants](https://img.shields.io/badge/Constants-2730-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2524-0284c7?style=flat-square)
 ![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-716-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2748-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5282-475569?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2750-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5284-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13466,7 +13476,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-44-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7060-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7067-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1042-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-385-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-2592-0284c7?style=flat-square)
@@ -13481,12 +13491,12 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3390-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3400-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-451-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1546-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3103-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1555-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3122-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
 ![YAML Comments](https://img.shields.io/badge/YAML_Comments-600-64748b?style=flat-square)
@@ -13600,26 +13610,26 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-135-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26333-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-131-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-790-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-136-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26672-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-132-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-813-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-718-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6092-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-923-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4413-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6199-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-947-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4498-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-280-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2715-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-833-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-874-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-847-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-541-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14595-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-545-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-14725-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
-![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-40-a16207?style=flat-square)
+![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
 
 <!-- callidescope:start -->
@@ -13630,9 +13640,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6664 |
-| Files | 1988 |
-| Calls traced | 7358 |
+| Callables | 6667 |
+| Files | 1989 |
+| Calls traced | 7362 |
 | Call stacks | 1829 |
 | Deepest stack | 17 |
 | Stacks through recursion | 13 |

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.19.0](https://github.com/organizzolini/codebase/compare/v3.18.0...v3.19.0) (2026-10-21)
+
+### ✨ Features
+
+* **lexico:** ✨ add graphql codegen workflow for web ([#1720](https://github.com/organizzolini/codebase/issues/1720)) ([6bf18e4](https://github.com/organizzolini/codebase/commit/6bf18e4931f80d63fbf14de915963e68c0d21df7))
+
 ## [3.18.0](https://github.com/organizzolini/codebase/compare/v3.17.0...v3.18.0) (2026-10-20)
 
 ### ✨ Features
