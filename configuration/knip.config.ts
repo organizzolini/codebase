@@ -26,6 +26,7 @@ const config: KnipConfig = {
   ignoreFiles: [
     "**/src/**/*.constants.ts",
     "**/src/**/*.types.ts",
+    "**/src/graphql/generated/**",
     "**/testing/mocks.ts",
   ],
 
@@ -52,6 +53,10 @@ const config: KnipConfig = {
     // up to the root's node_modules. The imports sit in each project's config
     // files, which knip does not treat as root code.
     "@codebase/configuration",
+    // Codegen resolves this plugin name from `codegen.ts`; the published
+    // package on npm is `graphql-codegen-typescript-validation-schema`.
+    "@graphql-codegen/typescript-validation-schema",
+    "graphql-codegen-typescript-validation-schema",
     "@commitlint/config-conventional", // commitlint preset, referenced as string in extends array
     "@golevelup/ts-vitest", // Conformance-scaffolded test mock utility — imported in testing/mocks.ts which is in ignoreFiles
     "@nx/eslint-plugin", // Loaded dynamically by Nx ESLint integration

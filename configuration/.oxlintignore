@@ -26,6 +26,7 @@ CHANGELOG.md
 
 # Generated files
 **/routeTree.gen.ts
+**/src/graphql/generated/**
 .claude/CLAUDE.md
 .github/copilot-instructions.md
 lint-staged.config.ts

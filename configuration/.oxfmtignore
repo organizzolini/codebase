@@ -19,6 +19,7 @@
 **/documentation/openwiki/**
 **/out
 **/routeTree.gen.ts
+**/src/graphql/generated/**
 **/tmp
 *.log
 *.min.css
