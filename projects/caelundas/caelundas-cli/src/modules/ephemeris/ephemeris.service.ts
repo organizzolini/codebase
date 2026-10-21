@@ -7,6 +7,7 @@ import {
   illuminationBodies as allIlluminationBodies,
 } from "../caelundas/caelundas.constants";
 import { typedFromEntries } from "../caelundas/caelundas.types";
+import { assertEphemerisFilesPresent } from "../ephemeris-download/ephemeris-download.utilities";
 
 import { EphemerisAggregationService } from "./ephemeris-aggregation.service";
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
@@ -444,5 +445,20 @@ export class EphemerisService {
       throw new Error(`Missing ${fieldName} at ${timestamp}`);
     }
     return data.phaseAngle;
+  }
+
+  /**
+   * Throws unless the Swiss Ephemeris data files are present.
+   *
+   * Run this before any calculation. Without the files the library answers
+   * from a less precise built-in ephemeris and says nothing, so a run is
+   * stopped here, naming the command that downloads them. It is a method
+   * rather than a check in the constructor so that building the application
+   * never fails for want of the files.
+   *
+   * @throws EphemerisFilesMissingError - When any file is missing or empty.
+   */
+  public verifyFiles(): void {
+    assertEphemerisFilesPresent();
   }
 }

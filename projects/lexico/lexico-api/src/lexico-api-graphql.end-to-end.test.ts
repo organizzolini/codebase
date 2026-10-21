@@ -181,11 +181,11 @@ describe("lexico api graphql end-to-end suite", () => {
           disambiguator
           createdAt
           createdBy
-          forms { __typename id ... on NominalForm { case number } }
+          forms { edges { node { __typename id ... on NominalForm { case number } } } }
           inflection { __typename id ... on NounInflection { declension gender } }
-          principalParts { name text }
-          pronunciations { variant phonemic }
-          translations { data }
+          principalParts { edges { node { name text } } }
+          pronunciations { edges { node { variant phonemic } } }
+          translations { edges { node { data } } }
         }
       }`,
       { id: seeded.lexeme.id },
@@ -198,14 +198,18 @@ describe("lexico api graphql end-to-end suite", () => {
         createdAt: expect.any(String),
         createdBy: null,
         disambiguator: 0,
-        forms: [
-          {
-            __typename: "NominalForm",
-            case: "accusative",
-            id: expect.any(String),
-            number: "singular",
-          },
-        ],
+        forms: {
+          edges: [
+            {
+              node: {
+                __typename: "NominalForm",
+                case: "accusative",
+                id: expect.any(String),
+                number: "singular",
+              },
+            },
+          ],
+        },
         id: seeded.lexeme.id,
         inflection: {
           __typename: "NounInflection",
@@ -215,9 +219,13 @@ describe("lexico api graphql end-to-end suite", () => {
         },
         lemma: "puella",
         partOfSpeech: "noun",
-        principalParts: [{ name: "nominative", text: ["puella"] }],
-        pronunciations: [{ phonemic: "/ˈpu.el.la/", variant: "classical" }],
-        translations: [{ data: "girl" }],
+        principalParts: {
+          edges: [{ node: { name: "nominative", text: ["puella"] } }],
+        },
+        pronunciations: {
+          edges: [{ node: { phonemic: "/ˈpu.el.la/", variant: "classical" } }],
+        },
+        translations: { edges: [{ node: { data: "girl" } }] },
       },
     });
   });
@@ -229,8 +237,8 @@ describe("lexico api graphql end-to-end suite", () => {
       word(data: "puellam") {
         __typename
         data
-        wordForms { __typename form { __typename ... on NominalForm { case } } }
-        wordLexemes { __typename lexeme { lemma translations { data } } }
+        wordForms { edges { node { __typename form { __typename ... on NominalForm { case } } } } }
+        wordLexemes { edges { node { __typename lexeme { lemma translations { edges { node { data } } } } } } }
       }
     }`);
 
@@ -239,18 +247,29 @@ describe("lexico api graphql end-to-end suite", () => {
       word: {
         __typename: "Word",
         data: "puellam",
-        wordForms: [
-          {
-            __typename: "WordForm",
-            form: { __typename: "NominalForm", case: "accusative" },
-          },
-        ],
-        wordLexemes: [
-          {
-            __typename: "WordLexeme",
-            lexeme: { lemma: "puella", translations: [{ data: "girl" }] },
-          },
-        ],
+        wordForms: {
+          edges: [
+            {
+              node: {
+                __typename: "WordForm",
+                form: { __typename: "NominalForm", case: "accusative" },
+              },
+            },
+          ],
+        },
+        wordLexemes: {
+          edges: [
+            {
+              node: {
+                __typename: "WordLexeme",
+                lexeme: {
+                  lemma: "puella",
+                  translations: { edges: [{ node: { data: "girl" } }] },
+                },
+              },
+            },
+          ],
+        },
       },
     });
   });
@@ -261,12 +280,12 @@ describe("lexico api graphql end-to-end suite", () => {
     const response = await application.query(
       `query ($id: ID!) {
         lexeme(id: $id) {
-          wordForms {
+          wordForms { edges { node {
             __typename
             id
             word
             form { __typename ... on NominalForm { case number } }
-          }
+          } } }
         }
       }`,
       { id: seeded.lexeme.id },
@@ -275,18 +294,22 @@ describe("lexico api graphql end-to-end suite", () => {
     expect(response.errors).toBeUndefined();
     expect(response.data).toStrictEqual({
       lexeme: {
-        wordForms: [
-          {
-            __typename: "LexemeWordForm",
-            form: {
-              __typename: "NominalForm",
-              case: "accusative",
-              number: "singular",
+        wordForms: {
+          edges: [
+            {
+              node: {
+                __typename: "LexemeWordForm",
+                form: {
+                  __typename: "NominalForm",
+                  case: "accusative",
+                  number: "singular",
+                },
+                id: expect.any(String),
+                word: "puellam",
+              },
             },
-            id: expect.any(String),
-            word: "puellam",
-          },
-        ],
+          ],
+        },
       },
     });
   });
@@ -296,16 +319,16 @@ describe("lexico api graphql end-to-end suite", () => {
 
     const response = await application.query(`{
       word(data: "puellam") {
-        wordForms { word { data } }
-        wordLexemes { word { data } }
+        wordForms { edges { node { word { data } } } }
+        wordLexemes { edges { node { word { data } } } }
       }
     }`);
 
     expect(response.errors).toBeUndefined();
     expect(response.data).toStrictEqual({
       word: {
-        wordForms: [{ word: { data: "puellam" } }],
-        wordLexemes: [{ word: { data: "puellam" } }],
+        wordForms: { edges: [{ node: { word: { data: "puellam" } } }] },
+        wordLexemes: { edges: [{ node: { word: { data: "puellam" } } }] },
       },
     });
   });
@@ -420,7 +443,7 @@ describe("lexico api graphql end-to-end suite", () => {
     expect.hasAssertions();
 
     const response = await application.query(`{
-      searchLiterature(query: "vergil") { authors { slug } }
+      searchLiterature(query: "vergil") { authors { edges { node { slug } } } }
       authors(first: 1) { totalCount edges { node { __typename slug } } }
     }`);
 
@@ -430,7 +453,7 @@ describe("lexico api graphql end-to-end suite", () => {
         edges: [{ node: { __typename: "Author", slug: "vergil" } }],
         totalCount: 1,
       },
-      searchLiterature: { authors: [{ slug: "vergil" }] },
+      searchLiterature: { authors: { edges: [{ node: { slug: "vergil" } }] } },
     });
   });
 

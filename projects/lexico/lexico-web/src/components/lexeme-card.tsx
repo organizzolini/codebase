@@ -41,6 +41,7 @@ export interface LexemeCardProperties {
 export interface LexemeResult {
   enclitic?: null | string;
   etymology?: null | string;
+  forms?: Awaited<ReturnType<LoadLexemeForms>>;
   id: string;
   /** What the matched form is, such as "first person singular present active indicative". */
   identifiers: string[];

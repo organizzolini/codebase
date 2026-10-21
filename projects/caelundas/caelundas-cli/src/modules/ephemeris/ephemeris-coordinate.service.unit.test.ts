@@ -56,7 +56,10 @@ import { MathService } from "../math/math.service";
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
 import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
-import { SWISS_EPHEMERIS_FLAGS } from "./ephemeris.constants";
+import {
+  EphemerisUnavailableError,
+  SWISS_EPHEMERIS_FLAGS,
+} from "./ephemeris.constants";
 
 describe(EphemerisCoordinateService, () => {
   const constantsService = {
@@ -117,6 +120,22 @@ describe(EphemerisCoordinateService, () => {
     ).toThrow(
       "No Swiss Ephemeris constant configured for node: north lunar node",
     );
+  });
+
+  it("throws when a regular node calculation fell back to the built-in ephemeris", () => {
+    vi.mocked(calc).mockReturnValueOnce({
+      data: [10, 0, 0, 0, 0, 0],
+      error: "SwissEph file 'sepl_18.se1' not found\nusing Moshier eph.; ",
+      flag: constants.SEFLG_MOSEPH | constants.SEFLG_SPEED,
+    } as never);
+
+    expect(() =>
+      service.computeNodeBodyMinutes({
+        body: "south lunar node",
+        end: moment.utc("2024-03-21T00:00:00.000Z"),
+        start: moment.utc("2024-03-21T00:00:00.000Z"),
+      }),
+    ).toThrow(EphemerisUnavailableError);
   });
 
   it("throws when a regular node calculation fails", () => {

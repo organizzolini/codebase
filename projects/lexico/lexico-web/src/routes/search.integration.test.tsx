@@ -1,66 +1,88 @@
 /* cspell:words rosae rosarum */
 
 import { fireEvent, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { HttpResponse } from "msw";
+import { describe, expect, it } from "vitest";
 
+import { graphqlServer } from "../../testing/graphql-server";
 import { renderRoute } from "../../testing/render-route";
+import {
+  mockSearchEnglishQuery,
+  mockSearchLatinQuery,
+  SearchMatchSource,
+} from "../graphql/generated/mocks";
 
 import { Route } from "./search";
 
+import type { SearchLatinQuery } from "../graphql/generated/mocks";
+
 /**
- * Builds the body the lexico API answers one search query with.
+ * Answers one search query with the shape the GraphQL API returns.
  */
-function answer(field: string, found: [string, number][]): Response {
-  return Response.json({
-    data: {
-      [field]: {
-        edges: found.map(([id, score]) => ({
-          node: {
-            enclitic: null,
-            identifiers: [],
-            lexeme: {
-              etymology: `${id} comes from somewhere`,
-              id,
-              inflection: { declension: "first", gender: "feminine" },
-              lemma: id,
-              partOfSpeech: "noun",
-              principalParts: [{ text: [id] }],
-              pronunciations: [{ phonetic: `[${id}]`, variant: "classical" }],
-              translations: [{ data: `${id} means` }],
-            },
-            score,
-            source: "LEMMA_EXACT",
+function answer(
+  found: [string, number][],
+): NonNullable<SearchLatinQuery["searchLatin"]> {
+  return {
+    edges: found.map(([id, score]) => ({
+      node: {
+        enclitic: null,
+        identifiers: [],
+        lexeme: {
+          etymology: `${id} comes from somewhere`,
+          id,
+          inflection: {
+            __typename: "NounInflection",
+            declension: "first",
+            gender: "feminine",
           },
-        })),
+          lemma: id,
+          partOfSpeech: "noun",
+          principalParts: { edges: [{ node: { text: [id] } }] },
+          pronunciations: {
+            edges: [{ node: { phonetic: `[${id}]`, variant: "classical" } }],
+          },
+          translations: { edges: [{ node: { data: `${id} means` } }] },
+          wordForms: {
+            edges: [
+              {
+                node: {
+                  form: {
+                    __typename: "NominalForm",
+                    case: "genitive",
+                    number: "plural",
+                  },
+                  id: `${id}-form`,
+                  word: `${id}rum`,
+                },
+              },
+            ],
+          },
+        },
+        score,
+        source: SearchMatchSource.LemmaExact,
       },
-    },
-  });
+    })),
+  };
 }
 
 /**
- * Stubs `fetch` to answer the Latin search and then the English one, the order
- * the loader asks them in, the way the lexico API does.
+ * Stubs search results with typed GraphQL handlers.
  */
-function stubApi(latin: [string, number][], english: [string, number][]): void {
-  vi.stubGlobal(
-    "fetch",
-    vi
-      .fn<typeof fetch>()
-      .mockResolvedValueOnce(answer("searchLatin", latin))
-      .mockResolvedValueOnce(answer("searchEnglish", english)),
+function stubSearch(
+  latin: [string, number][],
+  english: [string, number][],
+): void {
+  graphqlServer.use(
+    mockSearchLatinQuery(() =>
+      HttpResponse.json({ data: { searchLatin: answer(latin) } }),
+    ),
+    mockSearchEnglishQuery(() =>
+      HttpResponse.json({ data: { searchEnglish: answer(english) } }),
+    ),
   );
-  vi.stubGlobal("matchMedia", () => ({
-    addEventListener: vi.fn<() => void>(),
-    matches: false,
-    removeEventListener: vi.fn<() => void>(),
-  }));
 }
 
 describe("search", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("renders its page", async () => {
     await renderRoute("/search");
 
@@ -72,9 +94,9 @@ describe("search", () => {
   });
 
   it("says search is unavailable when the API cannot answer", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn<typeof fetch>().mockRejectedValue(new Error("connection refused")),
+    graphqlServer.use(
+      mockSearchLatinQuery(() => HttpResponse.error()),
+      mockSearchEnglishQuery(() => HttpResponse.error()),
     );
 
     await renderRoute("/search?query=amo");
@@ -85,7 +107,7 @@ describe("search", () => {
   });
 
   it("shows Latin and English matches together, best first", async () => {
-    stubApi(
+    stubSearch(
       [
         ["amo", 2],
         ["amor", 1],
@@ -108,7 +130,7 @@ describe("search", () => {
   });
 
   it("shows what a card knows of its lexeme", async () => {
-    stubApi([["rosa", 2]], []);
+    stubSearch([["rosa", 2]], []);
 
     await renderRoute("/search?query=rosa");
 
@@ -123,37 +145,14 @@ describe("search", () => {
     expect(screen.getByText("Etymology")).toBeDefined();
   });
 
-  it("loads a card's forms only when its table is opened", async () => {
-    stubApi([["rosa", 2]], []);
-    const fetchMock = vi.mocked(fetch);
+  it("opens a card's forms without making another API request", async () => {
+    stubSearch([["rosa", 2]], []);
 
     await renderRoute("/search?query=rosa");
     const declension = await screen.findByText("declension");
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-
-    fetchMock.mockResolvedValueOnce(
-      Response.json({
-        data: {
-          lexeme: {
-            wordForms: [
-              {
-                form: {
-                  __typename: "NominalForm",
-                  case: "genitive",
-                  number: "plural",
-                },
-                id: "1",
-                word: "rosarum",
-              },
-            ],
-          },
-        },
-      }),
-    );
     fireEvent.click(declension);
 
     await expect(screen.findByText("rosarum")).resolves.toBeDefined();
-    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });

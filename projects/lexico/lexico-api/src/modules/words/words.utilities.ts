@@ -1,6 +1,6 @@
 import {
   mapRelation,
-  mapRelations,
+  mapRelationConnection,
   toDeletableFields,
 } from "../../lexico-api.utilities";
 import { toFormType } from "../lexemes/forms/forms.utilities";
@@ -52,7 +52,7 @@ export function toWordType(word: Word): WordType {
   return Object.assign(new WordType(), {
     ...toDeletableFields(word),
     data: word.data,
-    wordForms: mapRelations(word.wordForms, toWordFormType),
-    wordLexemes: mapRelations(word.wordLexemes, toWordLexemeType),
+    wordForms: mapRelationConnection(word.wordForms, toWordFormType),
+    wordLexemes: mapRelationConnection(word.wordLexemes, toWordLexemeType),
   } satisfies MappedFields<WordType, WordRelationField>);
 }

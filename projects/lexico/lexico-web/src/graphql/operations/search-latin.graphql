@@ -1,0 +1,105 @@
+query SearchLatin($query: String!, $first: Int!) {
+  searchLatin(query: $query, first: $first) {
+    edges {
+      node {
+        enclitic
+        identifiers
+        score
+        source
+        lexeme {
+          id
+          etymology
+          lemma
+          partOfSpeech
+          inflection {
+            ... on AdjectiveInflection {
+              declension
+              degree
+            }
+            ... on AdverbInflection {
+              adverbType
+              degree
+            }
+            ... on NounInflection {
+              declension
+              gender
+            }
+            ... on PrepositionInflection {
+              case
+            }
+            ... on VerbInflection {
+              conjugation
+              other
+            }
+          }
+          principalParts {
+            edges {
+              node {
+                text
+              }
+            }
+          }
+          pronunciations {
+            edges {
+              node {
+                phonetic
+                variant
+              }
+            }
+          }
+          translations {
+            edges {
+              node {
+                data
+              }
+            }
+          }
+          wordForms {
+            edges {
+              node {
+                id
+                word
+                form {
+                  __typename
+                  ... on AdjectivalForm {
+                    case
+                    gender
+                    number
+                  }
+                  ... on AdverbForm {
+                    degree
+                  }
+                  ... on FiniteVerbForm {
+                    mood
+                    number
+                    person
+                    tense
+                    voice
+                  }
+                  ... on GerundForm {
+                    case
+                  }
+                  ... on InfinitiveForm {
+                    tense
+                    voice
+                  }
+                  ... on NominalForm {
+                    case
+                    number
+                  }
+                  ... on ParticipleForm {
+                    tense
+                    voice
+                  }
+                  ... on SupineForm {
+                    case
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

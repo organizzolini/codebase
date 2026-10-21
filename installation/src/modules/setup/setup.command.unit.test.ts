@@ -21,6 +21,8 @@ import { captureReport } from "../../../testing/report";
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
+import { HelmService } from "../helm/helm.service";
+import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
@@ -32,6 +34,7 @@ import { SoftwareInfraService } from "../software/software-infra.service";
 import { SoftwareOllamaService } from "../software/software-ollama.service";
 import { SoftwarePythonService } from "../software/software-python.service";
 import { SoftwareService } from "../software/software.service";
+import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
 import { SetupCommand } from "./setup.command";
 import { SetupService } from "./setup.service";
@@ -66,6 +69,8 @@ describe(SetupCommand, () => {
       providers: [
         DependenciesService,
         EnvironmentFilesService,
+        HelmService,
+        LocalServicesService,
         SetupCommand,
         SetupService,
         ShellConfigurationService,
@@ -77,6 +82,7 @@ describe(SetupCommand, () => {
         SoftwareOllamaService,
         SoftwarePythonService,
         SoftwareService,
+        SshSigningService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
         { provide: LoggerService, useValue: createMock<LoggerService>() },

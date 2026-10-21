@@ -29,6 +29,7 @@ async function build(machine: FakeMachine = {}): Promise<{
   service: HelmService;
 }> {
   const { commands, options, runner } = createFakeProcessRunner({
+    platform: "linux",
     ...machine,
     responses: {
       "mktemp -d": { stdout: `${TEMPORARY}\n` },
@@ -91,7 +92,6 @@ describe(HelmService, () => {
   });
 
   it("downloads, verifies, and installs the pinned release", async () => {
-    vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     vi.spyOn(process, "arch", "get").mockReturnValue("x64");
     const { commands, service: installer } = await build();
 
@@ -112,7 +112,6 @@ describe(HelmService, () => {
   // The archive is downloaded to a directory of its own, so the commands that
   // name it by its bare file name have to run there.
   it("runs the checksum and the unpacking in the download directory", async () => {
-    vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     vi.spyOn(process, "arch", "get").mockReturnValue("x64");
     const { options, service: installer } = await build();
 
@@ -125,7 +124,6 @@ describe(HelmService, () => {
   });
 
   it("uses the arm64 archive on an arm64 machine", async () => {
-    vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     vi.spyOn(process, "arch", "get").mockReturnValue("arm64");
     const { commands, service: installer } = await build();
 
@@ -137,7 +135,6 @@ describe(HelmService, () => {
   });
 
   it("cleans up and fails when the checksum does not match", async () => {
-    vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     vi.spyOn(process, "arch", "get").mockReturnValue("x64");
     const { commands, service: installer } = await build({
       responses: { [`sha256sum -c ${ARCHIVE}.sha256sum`]: { status: 1 } },
@@ -151,8 +148,9 @@ describe(HelmService, () => {
   });
 
   it("refuses a platform Helm's archive is not used on", async () => {
-    vi.spyOn(process, "platform", "get").mockReturnValue("darwin");
-    const { commands, service: installer } = await build();
+    const { commands, service: installer } = await build({
+      platform: "darwin",
+    });
 
     expect(() => {
       installer.installHelm();
@@ -161,7 +159,6 @@ describe(HelmService, () => {
   });
 
   it("refuses an architecture Helm publishes no archive for", async () => {
-    vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     vi.spyOn(process, "arch", "get").mockReturnValue("ia32");
     const { service: installer } = await build();
 

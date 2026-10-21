@@ -4,11 +4,17 @@ import { DeletableType } from "../../deletable.entities";
 
 import { FormType } from "./forms/form.entities";
 import { InflectionType } from "./inflections/inflection.entities";
+import {
+  FormConnectionType,
+  PrincipalPartConnectionType,
+  PronunciationConnectionType,
+  TranslationConnectionType,
+} from "./lexeme-connection.entities";
 import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";
 
-import type { GraphQLObjectOf } from "../../lexico-api.types";
+import type { Connection, GraphQLObjectOf } from "../../lexico-api.types";
 import type {
   LexemeDatabaseOnlyField,
   LexemeRelationField,
@@ -33,8 +39,8 @@ export class LexemeType
   @Field(() => String, { nullable: true })
   public etymology!: string | undefined;
 
-  @Field(() => [FormType])
-  public forms!: FormType[];
+  @Field(() => FormConnectionType)
+  public forms!: Connection<FormType>;
 
   @Field(() => InflectionType, { nullable: true })
   public inflection!: InflectionType | null | undefined;
@@ -45,12 +51,12 @@ export class LexemeType
   @Field(() => String)
   public partOfSpeech!: PartOfSpeech;
 
-  @Field(() => [PrincipalPartType])
-  public principalParts!: PrincipalPartType[];
+  @Field(() => PrincipalPartConnectionType)
+  public principalParts!: Connection<PrincipalPartType>;
 
-  @Field(() => [PronunciationType], { nullable: true })
-  public pronunciations!: null | PronunciationType[] | undefined;
+  @Field(() => PronunciationConnectionType, { nullable: true })
+  public pronunciations!: Connection<PronunciationType> | null | undefined;
 
-  @Field(() => [TranslationType], { nullable: true })
-  public translations!: null | TranslationType[] | undefined;
+  @Field(() => TranslationConnectionType, { nullable: true })
+  public translations!: Connection<TranslationType> | null | undefined;
 }

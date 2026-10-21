@@ -14,6 +14,7 @@ bundlesize
 caffeinate
 callees
 callidescope
+callsites
 callidescopeignore
 capitalisation
 capitalised
@@ -30,6 +31,7 @@ codependix
 codependixignore
 codometer
 codometerignore
+codegen
 commitlint
 conformetry
 context7
@@ -135,6 +137,7 @@ nbstripout
 networkidle
 nextjs
 nindent
+nohup
 nonconstructor
 nonf
 nonfiction
@@ -144,6 +147,7 @@ nums
 obra
 onechild
 oneline
+openpgp
 operands
 organizzolini
 oxfmt
@@ -161,6 +165,7 @@ pipx
 pkill
 pnpm
 pnpmfile
+pluckable
 pocock
 polymorphic
 precompiled
@@ -191,6 +196,7 @@ scen
 scol
 serializers
 seroval
+setsid
 sherif
 shiftsmart
 shiki
@@ -203,6 +209,7 @@ sqlfluffignore
 sqltools
 srow
 srvx
+SSHSIG
 stackoverflow
 stmts
 stringcase
@@ -252,6 +259,7 @@ unstub
 unsuffixed
 untaint
 unvalidated
+urql
 uppercased
 uppercases
 userconfig
@@ -268,5 +276,6 @@ windsurfrules
 workspaces
 worktree
 worktrees
+zodv4
 nohup
 setsid

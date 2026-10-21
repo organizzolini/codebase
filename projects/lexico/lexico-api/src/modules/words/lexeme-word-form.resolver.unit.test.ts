@@ -44,7 +44,10 @@ describe(LexemeWordFormResolver, () => {
     } as LexemeType);
 
     expect(load).toHaveBeenCalledWith("lexeme-1");
-    expect(wordForms).toHaveLength(1);
-    expect(wordForms[0]).toMatchObject({ id: "link-1", word: "rosae" });
+    expect(wordForms.edges).toHaveLength(1);
+    expect(wordForms.edges[0]?.node).toMatchObject({
+      id: "link-1",
+      word: "rosae",
+    });
   });
 });

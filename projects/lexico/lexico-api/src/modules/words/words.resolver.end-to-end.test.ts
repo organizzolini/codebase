@@ -17,25 +17,25 @@ const APPLICATION_TIMEOUT_MILLISECONDS = 120_000;
 const WORD_FIELDS = `
   data
   id
-  wordForms {
+  wordForms { edges { node {
     form {
       __typename
       ... on NominalForm { case number }
       ... on FiniteVerbForm { mood number person tense voice }
     }
-  }
-  wordLexemes {
+  } } }
+  wordLexemes { edges { node {
     lexeme {
-      forms { __typename }
+      forms { edges { node { __typename } } }
       inflection {
         __typename
         ... on NounInflection { declension gender }
       }
       lemma
       partOfSpeech
-      translations { data }
+      translations { edges { node { data } } }
     }
-  }
+  } } }
 `;
 
 const WORD_QUERY = `query Word($data: String!) { word(data: $data) { ${WORD_FIELDS} } }`;
@@ -69,20 +69,26 @@ describe("words resolver end-to-end suite", () => {
       expect(response.data).toMatchObject({
         word: {
           data: "rosae",
-          wordLexemes: [
-            {
-              lexeme: {
-                inflection: {
-                  __typename: "NounInflection",
-                  declension: "first",
-                  gender: "feminine",
+          wordLexemes: {
+            edges: [
+              {
+                node: {
+                  lexeme: {
+                    inflection: {
+                      __typename: "NounInflection",
+                      declension: "first",
+                      gender: "feminine",
+                    },
+                    lemma: "rosa",
+                    partOfSpeech: "noun",
+                    translations: {
+                      edges: [{ node: { data: "rose" } }],
+                    },
+                  },
                 },
-                lemma: "rosa",
-                partOfSpeech: "noun",
-                translations: [{ data: "rose" }],
               },
-            },
-          ],
+            ],
+          },
         },
       });
       expect(response.data?.["word"]).toHaveProperty("id", expect.any(String));
@@ -95,32 +101,40 @@ describe("words resolver end-to-end suite", () => {
 
       expect(response.data).toMatchObject({
         word: {
-          wordForms: expect.arrayContaining([
-            {
-              form: {
-                __typename: "NominalForm",
-                case: "genitive",
-                number: "singular",
+          wordForms: {
+            edges: expect.arrayContaining([
+              {
+                node: {
+                  form: {
+                    __typename: "NominalForm",
+                    case: "genitive",
+                    number: "singular",
+                  },
+                },
               },
-            },
-            {
-              form: {
-                __typename: "NominalForm",
-                case: "dative",
-                number: "singular",
+              {
+                node: {
+                  form: {
+                    __typename: "NominalForm",
+                    case: "dative",
+                    number: "singular",
+                  },
+                },
               },
-            },
-            {
-              form: {
-                __typename: "NominalForm",
-                case: "nominative",
-                number: "plural",
+              {
+                node: {
+                  form: {
+                    __typename: "NominalForm",
+                    case: "nominative",
+                    number: "plural",
+                  },
+                },
               },
-            },
-          ]),
+            ]),
+          },
         },
       });
-      expect(response.data).toHaveProperty("word.wordForms.length", 3);
+      expect(response.data).toHaveProperty("word.wordForms.edges.length", 3);
     });
 
     it("resolves a lexeme's forms to their concrete type", async () => {
@@ -130,18 +144,24 @@ describe("words resolver end-to-end suite", () => {
 
       expect(response.data).toMatchObject({
         word: {
-          wordLexemes: [
-            {
-              lexeme: {
-                forms: [
-                  { __typename: "NominalForm" },
-                  { __typename: "NominalForm" },
-                  { __typename: "NominalForm" },
-                  { __typename: "NominalForm" },
-                ],
+          wordLexemes: {
+            edges: [
+              {
+                node: {
+                  lexeme: {
+                    forms: {
+                      edges: [
+                        { node: { __typename: "NominalForm" } },
+                        { node: { __typename: "NominalForm" } },
+                        { node: { __typename: "NominalForm" } },
+                        { node: { __typename: "NominalForm" } },
+                      ],
+                    },
+                  },
+                },
               },
-            },
-          ],
+            ],
+          },
         },
       });
     });
@@ -152,23 +172,37 @@ describe("words resolver end-to-end suite", () => {
       const response = await application.query(WORD_QUERY, { data: "est" });
 
       expect(response.errors).toBeUndefined();
-      expect(response.data).toHaveProperty("word.wordForms.length", 2);
+      expect(response.data).toHaveProperty("word.wordForms.edges.length", 2);
       expect(response.data).toMatchObject({
         word: {
-          wordForms: expect.arrayContaining([
-            { form: expect.objectContaining({ __typename: "FiniteVerbForm" }) },
-          ]),
-          wordLexemes: expect.arrayContaining([
-            expect.objectContaining({
-              lexeme: expect.objectContaining({
-                inflection: null,
-                lemma: "sum",
+          wordForms: {
+            edges: expect.arrayContaining([
+              {
+                node: {
+                  form: expect.objectContaining({
+                    __typename: "FiniteVerbForm",
+                  }),
+                },
+              },
+            ]),
+          },
+          wordLexemes: {
+            edges: expect.arrayContaining([
+              expect.objectContaining({
+                node: expect.objectContaining({
+                  lexeme: expect.objectContaining({
+                    inflection: null,
+                    lemma: "sum",
+                  }),
+                }),
               }),
-            }),
-            expect.objectContaining({
-              lexeme: expect.objectContaining({ lemma: "edo" }),
-            }),
-          ]),
+              expect.objectContaining({
+                node: expect.objectContaining({
+                  lexeme: expect.objectContaining({ lemma: "edo" }),
+                }),
+              }),
+            ]),
+          },
         },
       });
     });
@@ -224,11 +258,17 @@ describe("words resolver end-to-end suite", () => {
 
       expect(response.errors).toBeUndefined();
       expect(response.data).toHaveProperty("words.0.data", "rosae");
-      expect(response.data).toHaveProperty("words.0.wordForms.length", 3);
-      expect(response.data).toHaveProperty("words.0.wordLexemes.length", 1);
+      expect(response.data).toHaveProperty("words.0.wordForms.edges.length", 3);
+      expect(response.data).toHaveProperty(
+        "words.0.wordLexemes.edges.length",
+        1,
+      );
       expect(response.data).toHaveProperty("words.1.data", "est");
-      expect(response.data).toHaveProperty("words.1.wordForms.length", 2);
-      expect(response.data).toHaveProperty("words.1.wordLexemes.length", 2);
+      expect(response.data).toHaveProperty("words.1.wordForms.edges.length", 2);
+      expect(response.data).toHaveProperty(
+        "words.1.wordLexemes.edges.length",
+        2,
+      );
     });
 
     it("answers an empty list for an empty batch", async () => {

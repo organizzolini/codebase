@@ -1,6 +1,8 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
+import { mapConnection } from "../../lexico-api.utilities";
+
 import { LiteratureSearchResult } from "./literature-search-result.entities";
 import { LiteratureService } from "./literature.service";
 import { toAuthorType, toLineType, toTextType } from "./literature.utilities";
@@ -30,9 +32,9 @@ export class LiteratureResolver {
       arguments_.authorId,
     );
     return {
-      authors: results.authors.map((author) => toAuthorType(author)),
-      lines: results.lines.map((line) => toLineType(line)),
-      texts: results.texts.map((text) => toTextType(text)),
+      authors: mapConnection(results.authors, toAuthorType),
+      lines: mapConnection(results.lines, toLineType),
+      texts: mapConnection(results.texts, toTextType),
     };
   }
 

@@ -69,9 +69,11 @@ export class HelmService {
   private resolveArchitecture(): string {
     const architecture = HELM_ARCHITECTURES[process.arch];
 
-    if (process.platform !== "linux" || architecture === undefined) {
+    const platform = this.processRunner.platform();
+
+    if (platform !== "linux" || architecture === undefined) {
       throw new Error(
-        `Helm is installed from its release archive on Linux only; this is ${process.platform}/${process.arch}. Use Homebrew instead.`,
+        `Helm is installed from its release archive on Linux only; this is ${platform}/${process.arch}. Use Homebrew instead.`,
       );
     }
 

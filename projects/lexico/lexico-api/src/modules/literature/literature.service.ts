@@ -260,9 +260,9 @@ export class LiteratureService {
     query: string,
     authorId?: null | string,
   ): Promise<{
-    authors: Author[];
-    lines: Line[];
-    texts: Text[];
+    authors: Connection<Author>;
+    lines: Connection<Line>;
+    texts: Connection<Text>;
   }> {
     const clean = query.trim();
     const authors =
@@ -278,11 +278,7 @@ export class LiteratureService {
         ? createEmptyConnection<Line>()
         : await this.searchLines(clean);
 
-    return {
-      authors: authors.edges.map((edge: { node: Author }) => edge.node),
-      lines: lines.edges.map((edge: { node: Line }) => edge.node),
-      texts: texts.edges.map((edge: { node: Text }) => edge.node),
-    };
+    return { authors, lines, texts };
   }
 
   /** Searches texts by title or slug with optional author filter. */

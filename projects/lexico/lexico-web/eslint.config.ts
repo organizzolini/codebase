@@ -6,7 +6,7 @@ export default [
 
   // 🚫 Project Ignores
   {
-    ignores: ["src/routeTree.gen.ts"],
+    ignores: ["codegen.ts", "src/graphql/generated/**", "src/routeTree.gen.ts"],
   },
 
   // ⚛️ React Component Complexity Overrides
