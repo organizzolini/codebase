@@ -233,10 +233,6 @@
     },
     {
       "exports": ["*"],
-      "file": "**/src/lib/supabase.ts",
-    },
-    {
-      "exports": ["*"],
       "file": "**/src/modules/postgresql/postgresql.module.ts",
     },
     {

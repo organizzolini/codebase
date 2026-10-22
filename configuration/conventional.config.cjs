@@ -161,7 +161,7 @@ const scopes = [
   },
   {
     description:
-      "TanStack Start SSR Latin dictionary web app with Supabase backend",
+      "TanStack Start SSR Latin dictionary web app",
     name: "lexico",
   },
   {

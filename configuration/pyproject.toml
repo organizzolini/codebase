@@ -65,7 +65,7 @@ templater = "raw"
 indent_unit = "space"
 indent_width = 2
 max_line_length = 120
-# PostgreSQL and Supabase use quoted identifiers with special chars in policy/function names
+# PostgreSQL uses quoted identifiers with special chars in policy/function names
 exclude_rules = ["RF05"]
 
 [tool.sqlfluff.rules.capitalisation.keywords]

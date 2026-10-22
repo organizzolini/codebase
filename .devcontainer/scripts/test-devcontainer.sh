@@ -21,7 +21,6 @@ NODE_MAJOR="$(jq -r '.features["ghcr.io/devcontainers/features/node:1"].version'
 PNPM_VERSION="$(jq -r '.packageManager | split("@")[1]' "${PACKAGE_JSON}")"
 EXPECTED_NX_VERSION="$(jq -r '.features["ghcr.io/devcontainers-extra/features/nx-npm:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_GH_VERSION="$(jq -r '.features["ghcr.io/devcontainers/features/github-cli:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
-EXPECTED_SUPABASE_VERSION="$(jq -r '.features["ghcr.io/devcontainers-extra/features/supabase-cli:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_TERRAFORM_VERSION="$(jq -r '.features["ghcr.io/devcontainers/features/terraform:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_TFLINT_VERSION="$(jq -r '.features["ghcr.io/devcontainers/features/terraform:1"].tflint' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_HELM_VERSION="$(jq -r '.features["ghcr.io/devcontainers/features/kubectl-helm-minikube:1"].helm' "${LOCAL_DEVCONTAINER_JSON}")"
@@ -96,10 +95,6 @@ assert_version_contains "nx" "${EXPECTED_NX_VERSION}" "nx --version"
 echo ""
 echo "🐙 GitHub CLI — must be ${EXPECTED_GH_VERSION}"
 assert_version_contains "gh" "${EXPECTED_GH_VERSION}" "gh --version"
-
-echo ""
-echo "⚡ Supabase CLI — must be ${EXPECTED_SUPABASE_VERSION}"
-assert_version_contains "supabase" "${EXPECTED_SUPABASE_VERSION}" "supabase --version"
 
 echo ""
 echo "🏗  Terraform — must be ${EXPECTED_TERRAFORM_VERSION}"
