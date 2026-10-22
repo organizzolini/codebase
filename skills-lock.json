@@ -223,6 +223,12 @@
       "skillPath": ".agents/skills/nx-workspace/SKILL.md",
       "computedHash": "32b7b72c54c6644e97ac8c8491e3cfa936afa6f8a86798214258d631367b4add"
     },
+    "ponytail": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "skills/ponytail/SKILL.md",
+      "computedHash": "061f887d9e3e735f85db3be3655a8936a00f24d5fb65ac4ab74a968a770fe342"
+    },
     "prototype": {
       "source": "mattpocock/skills",
       "sourceType": "github",

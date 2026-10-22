@@ -93,6 +93,7 @@ ignorePaths:
   - "**/.agents/skills/nx-plugins/**"
   - "**/.agents/skills/nx-run-tasks/**"
   - "**/.agents/skills/nx-workspace/**"
+  - "**/.agents/skills/ponytail/**"
   - "**/.agents/skills/prototype/**"
   - "**/.agents/skills/receiving-code-review/**"
   - "**/.agents/skills/requesting-code-review/**"
