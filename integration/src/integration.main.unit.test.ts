@@ -57,6 +57,14 @@ vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
   KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
 }));
 
+vi.mock("./modules/best-effort/best-effort.module", () => ({
+  BestEffortModule: function BestEffortModule() {},
+}));
+
+vi.mock("./modules/best-effort-report/best-effort-report.module", () => ({
+  BestEffortReportModule: function BestEffortReportModule() {},
+}));
+
 describe("main bootstrap", () => {
   const originalExitCode = process.exitCode;
 

@@ -31,6 +31,12 @@
         "adopt-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts adopt-task-database"
         },
+        "best-effort": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts best-effort"
+        },
+        "best-effort-report": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts best-effort-report"
+        },
         "keep-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts keep-task-database"
         },
