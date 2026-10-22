@@ -1,9 +1,14 @@
 import { z } from "zod";
 
-import { DATASET_SQL, EVENTS_IN_WINDOW_SQL } from "./events-database.constants";
+import {
+  DATASET_SQL,
+  EVENTS_IN_WINDOW_SQL,
+  FACETS_SQL,
+} from "./events-database.constants";
 
 import type {
   CalendarEventRecord,
+  EventFacet,
   EventsDatabase,
   EventsDataset,
   EventsQuery,
@@ -33,12 +38,25 @@ export function createEventsDatabase(executor: SqlExecutor): EventsDatabase {
     },
 
     async findEvents(query: EventsQuery) {
-      const rows = await executor.select(EVENTS_IN_WINDOW_SQL, [
-        query.window.end.toISOString(),
-        query.window.start.toISOString(),
-      ]);
+      const filter = query.filter ?? null;
+      const rows = await executor.select(
+        // A replacer function, so nothing in the condition is read as a
+        // replacement pattern.
+        EVENTS_IN_WINDOW_SQL.replace("{filter}", () =>
+          filter === null ? "" : `and ${filter.sql}`,
+        ),
+        [
+          query.window.end.toISOString(),
+          query.window.start.toISOString(),
+          ...(filter?.parameters ?? []),
+        ],
+      );
 
       return rows.map((row) => toEventRecord(row));
+    },
+
+    async findFacets() {
+      return toFacets(await executor.select(FACETS_SQL, []));
     },
   };
 }
@@ -95,4 +113,32 @@ function toEventRecord(row: SqlRow): CalendarEventRecord {
     tags: tagsSchema.parse(JSON.parse(readRequiredText(row, "tags"))),
     timezone: readRequiredText(row, "timezone"),
   };
+}
+
+/**
+ * Gathers the tag rows, roots first in path order, into one facet per root.
+ */
+function toFacets(rows: readonly SqlRow[]): EventFacet[] {
+  const facets = new Map<string, EventFacet>();
+
+  for (const row of rows) {
+    const depth = Number(row["depth"]);
+    const id = readRequiredText(row, "id");
+    const name = readRequiredText(row, "name");
+
+    if (depth === 0) {
+      facets.set(id, { id, name, values: [] });
+      continue;
+    }
+
+    facets.get(readRequiredText(row, "root_id"))?.values.push({
+      count: Number(row["count"]),
+      depth,
+      id,
+      name,
+      path: readRequiredText(row, "path_below_root"),
+    });
+  }
+
+  return [...facets.values()];
 }

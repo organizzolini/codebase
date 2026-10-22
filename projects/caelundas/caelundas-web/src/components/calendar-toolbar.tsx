@@ -11,24 +11,28 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The toolbar takes only a class name; everything it shows comes from the
- * calendar it sits inside.
+ * The toolbar shows the calendar it sits inside, plus whatever filter
+ * controls the page hands it.
  */
 export interface CalendarToolbarProperties {
   className?: string;
+  /**
+   * Drawn between the period's title and the view selector.
+   */
+  filters?: ReactNode;
 }
 
 // 🧩 Component
 
 /**
  * Renders the calendar's one toolbar row: today, previous and next, the
- * period's title, and the view selector. It must sit inside an
+ * period's title, the filters, and the view selector. It must sit inside an
  * `EventCalendar`, whose state it reads.
  */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,
 ): ReactNode {
-  const { className } = properties;
+  const { className, filters } = properties;
 
   // 🪝 Hooks
   const navigation = useEventCalendarNavigation();
@@ -75,7 +79,9 @@ export function CalendarToolbar(
         <h2 className="ms-2 truncate text-base font-semibold">
           {navigation.title}
         </h2>
-        <div className="grow" />
+        <div className="flex min-w-0 grow items-center justify-end gap-1">
+          {filters}
+        </div>
         <ToggleGroup
           aria-label="View"
           size="sm"

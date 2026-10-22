@@ -2,6 +2,7 @@
 export * from "./components/reui/event-calendar/event-calendar";
 export * from "./components/reui/event-calendar/event-calendar-content";
 export type * from "./components/reui/event-calendar/event-calendar-types";
+export * from "./components/reui/filters/filters";
 
 // UI Components
 export * from "./components/ui/accordion";

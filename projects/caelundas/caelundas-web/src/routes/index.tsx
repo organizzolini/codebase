@@ -3,16 +3,19 @@ import {
   type ErrorComponentProps,
   useRouter,
 } from "@tanstack/react-router";
+import { type ReactNode, useMemo } from "react";
 
 import { CalendarEmpty } from "../components/calendar-empty";
 import { CalendarError } from "../components/calendar-error";
+import { CalendarFilters } from "../components/calendar-filters";
 import { CalendarSkeleton } from "../components/calendar-skeleton";
 import { EventsCalendar } from "../components/events-calendar";
 import { loadCalendarMonth } from "../lib/calendar/calendar-loader";
 import { validateCalendarSearch } from "../lib/calendar/calendar-search";
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
+import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
 
-import type { ReactNode } from "react";
+import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
 
 // 🧭 Route
 
@@ -33,10 +36,10 @@ export const Route = createFileRoute("/")({
 
   // The dependencies are declared ahead of the loader so their type flows
   // into it.
-  loaderDeps: ({ search }) => ({ date: search.date }),
+  loaderDeps: ({ search }) => ({ date: search.date, filter: search.filter }),
 
   loader: async ({ context, deps }) =>
-    loadCalendarMonth(context.eventsDatabase, deps.date),
+    loadCalendarMonth(context.eventsDatabase, deps),
 });
 
 // 🧩 Component
@@ -68,16 +71,30 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // events, a notice over the calendar says why.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { anchor, dataset, emptiness, events } = Route.useLoaderData();
+  const { anchor, dataset, emptiness, events, facets } = Route.useLoaderData();
+  const { filter } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const fields = useMemo(() => createEventFilterFields(facets), [facets]);
 
   // 🏗 Setup
   const timeZone =
     dataset?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // 💪 Handlers
+  const handleFilterChange = (next: EventFilterQuery | undefined): void => {
+    void navigate({
+      replace: true,
+      search: (previous) => ({ ...previous, filter: next }),
+    });
+  };
+
   const handleDateChange = (date: Date): void => {
-    void navigate({ search: { date: formatCalendarDate(date, timeZone) } });
+    void navigate({
+      search: (previous) => ({
+        ...previous,
+        date: formatCalendarDate(date, timeZone),
+      }),
+    });
   };
 
   // ♻️ Lifecycle
@@ -92,6 +109,14 @@ function IndexPage(): ReactNode {
         anchor={anchor}
         className="min-h-0 flex-1"
         events={events}
+        filters={
+          <CalendarFilters
+            className="flex min-w-0 items-center gap-1"
+            fields={fields}
+            filter={filter}
+            onFilterChange={handleFilterChange}
+          />
+        }
         onDateChange={handleDateChange}
         timeZone={timeZone}
       />

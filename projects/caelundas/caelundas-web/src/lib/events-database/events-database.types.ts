@@ -35,6 +35,39 @@ export interface CalendarEventTag {
 }
 
 /**
+ * One tag root, the dimension it names, and every tag beneath it, so the
+ * filters can offer a field per root without knowing the roots ahead.
+ */
+export interface EventFacet {
+  id: string;
+  name: string;
+  /**
+   * The tags beneath the root, depth first.
+   */
+  values: EventFacetValue[];
+}
+
+/**
+ * A tag a facet offers.
+ */
+export interface EventFacetValue {
+  /**
+   * The events that carry the tag or any tag beneath it.
+   */
+  count: number;
+  /**
+   * How far beneath its root the tag sits, so a root's children are 1.
+   */
+  depth: number;
+  id: string;
+  name: string;
+  /**
+   * The names from beneath the root down to this tag, joined by " / ".
+   */
+  path: string;
+}
+
+/**
  * The calendar's only way to read events. One implementation runs in a
  * browser worker over sqlite-wasm and another over `node:sqlite` in tests;
  * both are built from the same SQL.
@@ -42,6 +75,7 @@ export interface CalendarEventTag {
 export interface EventsDatabase {
   describeDataset(): Promise<EventsDataset | null>;
   findEvents(query: EventsQuery): Promise<CalendarEventRecord[]>;
+  findFacets(): Promise<EventFacet[]>;
 }
 
 /**
@@ -57,10 +91,11 @@ export interface EventsDataset {
 }
 
 /**
- * What a query asks for. Only the window exists so far; filters and grouping
- * join it as their own fields.
+ * What a query asks for: a window, and optionally a condition the events in
+ * it must also meet, such as a compiled filter.
  */
 export interface EventsQuery {
+  filter?: null | SqlCondition | undefined;
   window: EventsWindow;
 }
 
@@ -70,6 +105,15 @@ export interface EventsQuery {
 export interface EventsWindow {
   end: Date;
   start: Date;
+}
+
+/**
+ * A boolean SQL expression over the derived events view, aliased `e`, with
+ * its values bound to `?` placeholders in order.
+ */
+export interface SqlCondition {
+  parameters: SqlValue[];
+  sql: string;
 }
 
 /**
