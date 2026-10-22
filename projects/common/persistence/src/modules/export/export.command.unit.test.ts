@@ -20,6 +20,7 @@ import { LoggerService } from "@codebase/observability";
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses, processFailure } from "../../../testing/mocks";
 import { PostgresqlUtilitiesService } from "../postgresql-utilities/postgresql-utilities.service";
+import { SqliteExportService } from "../sqlite-export/sqlite-export.service";
 
 import { ExportCommand } from "./export.command";
 
@@ -72,6 +73,10 @@ describe(ExportCommand, () => {
           provide: PostgresqlUtilitiesService,
           useValue: createMock<PostgresqlUtilitiesService>(),
         },
+        {
+          provide: SqliteExportService,
+          useValue: createMock<SqliteExportService>(),
+        },
       ],
     }).compile();
 
@@ -101,6 +106,10 @@ describe(ExportCommand, () => {
         {
           provide: PostgresqlUtilitiesService,
           useValue: createMock<PostgresqlUtilitiesService>(),
+        },
+        {
+          provide: SqliteExportService,
+          useValue: createMock<SqliteExportService>(),
         },
       ],
     }).compile();
