@@ -351,6 +351,9 @@ words:
   - rerere
   # Observer sites in caelundas reference fixtures, checked against USNO.
   - Reykjavík
+  # The SQLite function that trims characters from a string's end, which reads
+  # the number a tag such as "Harmonic 6" is named for.
+  - rtrim
   - tromso
   - Tromsø
   # The markdown heading style written as text underlined by === or ---.

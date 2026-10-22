@@ -9,6 +9,7 @@ const DERIVED_FIELDS = [
   ["weekday", "Weekday"],
   ["hour", "Hour"],
   ["duration", "Duration"],
+  ["duration-minutes", "Duration (minutes)"],
   ["temporality", "Temporality"],
   ["text", "Text"],
 ];
@@ -23,6 +24,17 @@ const MOTION_ROOT_SQL = `
     ('tag-motion', 'tag-motion'),
     ('tag-direct', 'tag-direct'),
     ('tag-motion', 'tag-direct');
+`;
+
+// A root whose tags are named for the numbers they stand for.
+const HARMONIC_ROOT_SQL = `
+  insert into tags (id, created_at, updated_at, "name", parent_id) values
+    ('tag-harmonic', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Aspect Harmonic', null),
+    ('tag-harmonic-4', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Harmonic 4', 'tag-harmonic');
+  insert into tags_closure (ancestor_id, descendant_id) values
+    ('tag-harmonic', 'tag-harmonic'),
+    ('tag-harmonic-4', 'tag-harmonic-4'),
+    ('tag-harmonic', 'tag-harmonic-4');
 `;
 
 // A root that names a dimension the app already derives from each event.
@@ -84,6 +96,34 @@ describe(createEventFilterFields, () => {
       "has all of",
       "is none of",
     ]);
+  });
+
+  it("offers a number field for a root whose tags are named for numbers", async () => {
+    const facets = await createTestEventsDatabase({
+      extraSql: HARMONIC_ROOT_SQL,
+    }).findFacets();
+    const field = createEventFilterFields(facets).find(
+      (candidate) => candidate.label === "Aspect Harmonic",
+    );
+
+    expect(field).toMatchObject({ id: "tag:tag-harmonic", type: "number" });
+    expect(field?.operators).toStrictEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: "equals", value: "eq" }),
+        expect.objectContaining({ label: "is greater than", value: "gt" }),
+        expect.objectContaining({ label: "is less than", value: "lt" }),
+      ]),
+    );
+  });
+
+  it("offers the hour and the duration in minutes as numbers", async () => {
+    const fields = createEventFilterFields(
+      await createTestEventsDatabase().findFacets(),
+    );
+
+    for (const id of ["hour", "duration-minutes"]) {
+      expect(fields.find((field) => field.id === id)?.type).toBe("number");
+    }
   });
 
   it("adds a field for a new tag root with no code change", async () => {

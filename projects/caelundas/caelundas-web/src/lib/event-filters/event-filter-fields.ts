@@ -3,6 +3,7 @@ import {
   DERIVED_FIELD_IDS,
   DERIVED_OPERATORS,
   DURATION_BUCKETS,
+  NUMBER_OPERATORS,
   TAG_FIELD_PREFIX,
   TAG_OPERATORS,
   TEMPORALITIES,
@@ -12,6 +13,8 @@ import {
 import type { EventFacet } from "../events-database/events-database.types";
 import type { EventFilterField } from "./event-filters.types";
 import type { FilterOperator, FilterOption } from "@codebase/presentation";
+
+const NUMERIC_TAG_NAME = /\d$/u;
 
 const EVENT_COUNT_FORMAT = new Intl.PluralRules("en-US");
 
@@ -46,6 +49,54 @@ const SET_OPERATORS: FilterOperator[] = [
     inverse: DERIVED_OPERATORS.isAnyOf,
     label: "is none of",
     value: DERIVED_OPERATORS.isNoneOf,
+  },
+];
+
+/**
+ * The operators a numeric field offers: equality, the orderings, and a range.
+ */
+const NUMBER_FIELD_OPERATORS: FilterOperator[] = [
+  {
+    inverse: NUMBER_OPERATORS.neq,
+    label: "equals",
+    value: NUMBER_OPERATORS.eq,
+  },
+  {
+    inverse: NUMBER_OPERATORS.eq,
+    label: "does not equal",
+    value: NUMBER_OPERATORS.neq,
+  },
+  {
+    inverse: NUMBER_OPERATORS.lte,
+    label: "is greater than",
+    value: NUMBER_OPERATORS.gt,
+  },
+  {
+    inverse: NUMBER_OPERATORS.lt,
+    label: "is at least",
+    value: NUMBER_OPERATORS.gte,
+  },
+  {
+    inverse: NUMBER_OPERATORS.gte,
+    label: "is less than",
+    value: NUMBER_OPERATORS.lt,
+  },
+  {
+    inverse: NUMBER_OPERATORS.gt,
+    label: "is at most",
+    value: NUMBER_OPERATORS.lte,
+  },
+  {
+    arity: "range",
+    inverse: NUMBER_OPERATORS.notBetween,
+    label: "is between",
+    value: NUMBER_OPERATORS.between,
+  },
+  {
+    arity: "range",
+    inverse: NUMBER_OPERATORS.between,
+    label: "is not between",
+    value: NUMBER_OPERATORS.notBetween,
   },
 ];
 
@@ -89,12 +140,12 @@ const DERIVED_FIELDS: readonly EventFilterField[] = [
     type: "multiselect",
   },
   {
-    defaultOperator: DERIVED_OPERATORS.between,
+    defaultOperator: NUMBER_OPERATORS.eq,
     description: "The hour an event starts, from 0 to 23",
     id: DERIVED_FIELD_IDS.hour,
     label: "Hour",
-    operators: RANGE_OPERATORS,
-    type: "range",
+    operators: NUMBER_FIELD_OPERATORS,
+    type: "number",
   },
   {
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
@@ -106,6 +157,14 @@ const DERIVED_FIELDS: readonly EventFilterField[] = [
       value: bucket.value,
     })),
     type: "multiselect",
+  },
+  {
+    defaultOperator: NUMBER_OPERATORS.gte,
+    description: "The whole minutes from start to end, 0 for an instant",
+    id: DERIVED_FIELD_IDS.durationMinutes,
+    label: "Duration (minutes)",
+    operators: NUMBER_FIELD_OPERATORS,
+    type: "number",
   },
   {
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
@@ -179,10 +238,30 @@ function formatEventCount(count: number): string {
 }
 
 /**
+ * Whether every tag beneath a root is named for a number it ends in, such as
+ * "Harmonic 6", so the root reads as a number to compare rather than a set to
+ * pick from.
+ */
+function isNumericFacet(facet: EventFacet): boolean {
+  return facet.values.every((value) => NUMERIC_TAG_NAME.test(value.name));
+}
+
+/**
  * Builds the field for one tag root. Each option is labeled with its path
  * beneath the root, so a nested tag reads in context.
  */
 function toTagField(facet: EventFacet): EventFilterField {
+  if (isNumericFacet(facet)) {
+    return {
+      defaultOperator: NUMBER_OPERATORS.eq,
+      description: `The number in each ${facet.name.toLowerCase()} tag`,
+      id: `${TAG_FIELD_PREFIX}${facet.id}`,
+      label: facet.name,
+      operators: NUMBER_FIELD_OPERATORS,
+      type: "number",
+    };
+  }
+
   const options: FilterOption[] = [];
 
   for (const value of facet.values) {

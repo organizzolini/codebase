@@ -31,6 +31,7 @@ export const EVENT_TAGS_MATCHING_SQL = `
 export const DERIVED_FIELD_IDS = {
   date: "date",
   duration: "duration",
+  durationMinutes: "duration-minutes",
   hour: "hour",
   temporality: "temporality",
   text: "text",
@@ -101,8 +102,46 @@ export const TEMPORALITIES: readonly string[] = ["Instant", "Duration"];
 export const DERIVED_FIELD_SQL = {
   dateRange: `(event_local_date(e."end", e.timezone) >= ? and event_local_date(e."start", e.timezone) <= ?)`,
   duration: "(e.duration_minutes between ? and ?)",
+  durationMinutes: "e.duration_minutes",
+  hour: `event_local_hour(e."start", e.timezone)`,
   hourRange: `(event_local_hour(e."start", e.timezone) between ? and ?)`,
   temporality: "e.temporality",
   text: String.raw`(e."summary" like ? escape '\' or e.description like ? escape '\')`,
   weekday: `event_local_weekday(e."start", e.timezone)`,
 } as const;
+
+/**
+ * The operators a numeric field offers, mirroring the filter builder's own
+ * number operators: equality, the four orderings, and a range.
+ */
+export const NUMBER_OPERATORS = {
+  between: "between",
+  eq: "eq",
+  gt: "gt",
+  gte: "gte",
+  lt: "lt",
+  lte: "lte",
+  neq: "neq",
+  notBetween: "not_between",
+} as const;
+
+/**
+ * The number a tag's name ends in, such as the 6 of "Harmonic 6": the name
+ * with its non-digit prefix taken away. Only a name that ends in a digit is
+ * numeric, so a root such as "Aspect Harmonic" itself never reads as 0.
+ */
+export const TAG_NUMBER_SQL =
+  "cast(replace(t.tag_name, rtrim(t.tag_name, '0123456789'), '') as integer)";
+
+/**
+ * The tag nodes of the event under test, beneath one root, whose name ends
+ * in a number and meets a condition on that number.
+ */
+export const EVENT_TAG_NUMBERS_SQL = `
+  select 1
+  from calendar_event_tag_nodes t
+  where t.calendar_event_id = e.id
+    and t.tag_root_id = ?
+    and t.tag_name glob '*[0-9]'
+    and {condition}
+`;

@@ -1,4 +1,10 @@
 import { compileDerivedRule } from "./event-filter-derived";
+import {
+  compileDerivedNumberRule,
+  compileTagNumberRule,
+  isDerivedNumberRule,
+  isNumberOperator,
+} from "./event-filter-numbers";
 import { readTexts } from "./event-filter-values";
 import {
   EVENT_TAGS_MATCHING_SQL,
@@ -68,9 +74,24 @@ function combine(
  */
 function compileRule(rule: EventFilterRule): CompiledEventFilter | null {
   const fieldId = rule.path.join(".");
-  const compiled = fieldId.startsWith(TAG_FIELD_PREFIX)
-    ? compileTagRule(rule.operator, readTexts(rule.value))
-    : compileDerivedRule(rule);
+  const { operator, value } = rule;
+  let compiled: CompiledEventFilter | null;
+
+  // A rule that compares a number reads it straight away; any other picks
+  // from a list, so each kind compiles through its own function.
+  if (fieldId.startsWith(TAG_FIELD_PREFIX)) {
+    compiled = isNumberOperator(operator)
+      ? compileTagNumberRule(
+          fieldId.slice(TAG_FIELD_PREFIX.length),
+          operator,
+          value,
+        )
+      : compileTagRule(operator, readTexts(value));
+  } else {
+    compiled = isDerivedNumberRule(fieldId, operator)
+      ? compileDerivedNumberRule(rule, fieldId)
+      : compileDerivedRule(rule);
+  }
 
   if (compiled === null || rule.negated !== true) {
     return compiled;
