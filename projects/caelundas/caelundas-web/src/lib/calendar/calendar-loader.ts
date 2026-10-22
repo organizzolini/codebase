@@ -1,17 +1,27 @@
 import { compileEventFilter } from "../event-filters/event-filter-compiler";
 
-import { getMonthWindow, parseCalendarDate } from "./calendar-window";
+import { getViewWindows, parseCalendarDate } from "./calendar-window";
 
 import type {
   CalendarEventRecord,
   EventFacet,
   EventsDatabase,
   EventsDataset,
+  EventsQuery,
   EventsWindow,
 } from "../events-database/events-database.types";
 import type { CalendarSearch } from "./calendar-search";
 
 const FACETS_BY_DATABASE = new WeakMap<EventsDatabase, Promise<EventFacet[]>>();
+
+const EVENTS_BY_DATABASE = new WeakMap<
+  EventsDatabase,
+  Map<string, Promise<CalendarEventRecord[]>>
+>();
+
+// Enough recent windows to step back and forth through a few months, or
+// views, without reading any of them twice.
+const CACHED_READS = 24;
 
 /**
  * Everything the calendar page renders from one load.
@@ -55,30 +65,33 @@ export type CalendarEmptiness =
   | { kind: "match" };
 
 /**
- * Reads the events around the day the search parameters name that pass their
- * filter, together with the dataset's span and zone.
+ * Reads the events in the window the search parameters' view and day show,
+ * plus a buffer, that pass their filter, together with the dataset's span
+ * and zone. Reads go through a cache keyed by window and filter, so going
+ * back to a window already seen answers at once.
  */
-export async function loadCalendarMonth(
+export async function loadCalendar(
   database: EventsDatabase,
   search: CalendarSearch,
 ): Promise<CalendarData> {
   const anchor = parseCalendarDate(search.date, new Date());
-  const window = getMonthWindow(anchor);
+  const { visible, window } = getViewWindows(search.view, anchor, search.days);
   const filter = compileEventFilter(search.filter);
   const [dataset, events, facets] = await Promise.all([
     database.describeDataset(),
-    database.findEvents({ filter, window }),
+    findEventsCached(database, { filter, window }),
     findFacetsOnce(database),
   ]);
   const filtered = filter !== null;
-  let emptiness = describeEmptiness({ dataset, events, window });
+  let emptiness = describeEmptiness({ dataset, events, visible });
 
-  // Whether the filters emptied the month, or it holds nothing to filter, is
-  // asked only when it is empty, so a filtered month costs no second query.
+  // Whether the filters emptied the days, or they hold nothing to filter, is
+  // asked only when they are empty, so a filtered window costs no second
+  // query.
   if (emptiness?.kind === "match" && filtered) {
-    const unfiltered = await database.findEvents({ window });
+    const unfiltered = await findEventsCached(database, { window });
 
-    if (unfiltered.length > 0) {
+    if (describeEmptiness({ dataset, events: unfiltered, visible }) === null) {
       emptiness = { kind: "filter" };
     }
   }
@@ -87,14 +100,21 @@ export async function loadCalendarMonth(
 }
 
 /**
- * Tells why a window holds no events, or nothing when it holds some.
+ * Tells why the days a view shows hold no events, or nothing when they hold
+ * some. Only those days count, not the buffer read around them.
  */
-function describeEmptiness(
-  data: Pick<CalendarData, "dataset" | "events" | "window">,
-): CalendarEmptiness | null {
-  const { dataset, events, window } = data;
+function describeEmptiness(data: {
+  dataset: EventsDataset | null;
+  events: readonly CalendarEventRecord[];
+  visible: EventsWindow;
+}): CalendarEmptiness | null {
+  const { dataset, events, visible } = data;
 
-  if (events.length > 0) {
+  if (
+    events.some(
+      (event) => event.start < visible.end && event.end >= visible.start,
+    )
+  ) {
     return null;
   }
 
@@ -102,15 +122,62 @@ function describeEmptiness(
     return { kind: "database" };
   }
 
-  if (window.end <= dataset.start) {
+  if (visible.end <= dataset.start) {
     return { dataset, jumpTo: dataset.start, kind: "range" };
   }
 
-  if (window.start > dataset.end) {
+  if (visible.start > dataset.end) {
     return { dataset, jumpTo: dataset.end, kind: "range" };
   }
 
   return { kind: "match" };
+}
+
+/**
+ * Reads the events for a window and filter through a small cache per
+ * database, keeping the most recent reads. The data never changes while the
+ * page is open, so a cached read stays right; a failed one is forgotten, so
+ * Retry reads it again.
+ */
+async function findEventsCached(
+  database: EventsDatabase,
+  query: EventsQuery,
+): Promise<CalendarEventRecord[]> {
+  let cache = EVENTS_BY_DATABASE.get(database);
+
+  if (cache === undefined) {
+    cache = new Map();
+    EVENTS_BY_DATABASE.set(database, cache);
+  }
+
+  const key = JSON.stringify([
+    query.window.start,
+    query.window.end,
+    query.filter ?? null,
+  ]);
+  let events = cache.get(key);
+
+  if (events === undefined) {
+    events = database.findEvents(query);
+    events.catch(() => {
+      cache.delete(key);
+    });
+  } else {
+    // Moved to the back, so the least recently read goes first.
+    cache.delete(key);
+  }
+
+  cache.set(key, events);
+
+  for (const oldest of cache.keys()) {
+    if (cache.size <= CACHED_READS) {
+      break;
+    }
+
+    cache.delete(oldest);
+  }
+
+  return events;
 }
 
 /**
