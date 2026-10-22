@@ -371,8 +371,10 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 <!-- codependix:start name="codependix-nx-projects" -->
 ```mermaid
 graph LR
+  interface["interface"]
   lexico_web["lexico-web"]
   presentation["presentation"]
+  lexico_web --> interface
   lexico_web --> presentation
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class lexico_web subject
@@ -432,7 +434,6 @@ graph LR
   file_src_routes_search_integration_test_tsx["src/routes/search.integration.test.tsx"]
   file_src_routes_search_tsx["src/routes/search.tsx"]
   file_src_routeTree_gen_ts["src/routeTree.gen.ts"]
-  file_testing_graphql_server_ts["testing/graphql-server.ts"]
   file_testing_render_route_tsx["testing/render-route.tsx"]
   file_testing_setup_ts["testing/setup.ts"]
   file_vite_config_mts["vite.config.mts"]
@@ -480,7 +481,6 @@ graph LR
   file_src_routes_index_integration_test_tsx --> file_testing_render_route_tsx
   file_src_routes_search_integration_test_tsx --> file_src_graphql_generated_mocks_ts
   file_src_routes_search_integration_test_tsx --> file_src_routes_search_tsx
-  file_src_routes_search_integration_test_tsx --> file_testing_graphql_server_ts
   file_src_routes_search_integration_test_tsx --> file_testing_render_route_tsx
   file_src_routes_search_tsx --> file_src_components_lexeme_card_tsx
   file_src_routes_search_tsx --> file_src_components_lexeme_forms_tsx
@@ -495,7 +495,6 @@ graph LR
   file_src_routeTree_gen_ts --> file_src_routes_index_tsx
   file_src_routeTree_gen_ts --> file_src_routes_search_tsx
   file_testing_render_route_tsx --> file_src_router_tsx
-  file_testing_setup_ts --> file_testing_graphql_server_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->
 
@@ -505,10 +504,10 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6484-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-229.88_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-6452-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-229.03_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-55-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-54-3178c6?style=flat-square)
 
 ### Measured Targets
 
@@ -519,7 +518,7 @@ graph LR
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-53-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-52-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-41-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-17-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-2-f97316?style=flat-square)
@@ -531,15 +530,15 @@ graph LR
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-2-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-17-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-20-8b5cf6?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-21-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
 ![Functions](https://img.shields.io/badge/Functions-262-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-243-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-19-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-173-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-172-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-195-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-251-ea580c?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-250-ea580c?style=flat-square)
 ![Comments](https://img.shields.io/badge/Comments-474-64748b?style=flat-square)
 ![Comment Lines](https://img.shields.io/badge/Comment_Lines-681-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
@@ -562,16 +561,16 @@ graph LR
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-203-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-204-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-41-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-133-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-122-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-134-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-123-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-10-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-54-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-190-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-191-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
