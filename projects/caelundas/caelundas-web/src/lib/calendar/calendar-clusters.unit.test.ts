@@ -56,8 +56,8 @@ describe(clusterEvents, () => {
     const clustered = clusterEvents(
       [
         event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z"),
-        event("b", "2026-03-03T10:20:00Z", "2026-03-03T10:20:00Z"),
-        event("c", "2026-03-03T10:45:00Z", "2026-03-03T10:45:00Z"),
+        event("b", "2026-03-03T10:10:00Z", "2026-03-03T10:10:00Z"),
+        event("c", "2026-03-03T10:25:00Z", "2026-03-03T10:25:00Z"),
       ],
       OPTIONS,
     );
@@ -282,5 +282,52 @@ describe(clusterEvents, () => {
     ).events.map((merged) => merged.id);
 
     expect(starts).toStrictEqual(["a", "b"]);
+  });
+
+  it("never stretches a cluster across the day by events each close to the next", () => {
+    // Each event starts ten minutes after the last, but the last is an hour
+    // after the first: with a half-hour gap that is two clusters, not one.
+    const events = ["00", "10", "20", "30", "40", "50"].map((minute) =>
+      event(
+        `m${minute}`,
+        `2026-03-03T10:${minute}:00Z`,
+        `2026-03-03T10:${minute}:00Z`,
+      ),
+    );
+    const clustered = clusterEvents(events, { ...OPTIONS, gapMinutes: 25 });
+
+    expect(
+      [...clustered.members.values()].map((members) =>
+        members.map((member) => member.id),
+      ),
+    ).toStrictEqual([
+      ["m00", "m10", "m20"],
+      ["m30", "m40", "m50"],
+    ]);
+  });
+
+  it("draws a cluster inside a day as a short chip, however long its events run", () => {
+    const [standIn] = clusterEvents(
+      [
+        event("a", "2026-03-03T10:00:00Z", "2026-03-03T22:00:00Z"),
+        event("b", "2026-03-03T10:05:00Z", "2026-03-03T18:00:00Z"),
+      ],
+      OPTIONS,
+    ).events;
+
+    expect(standIn?.durationMinutes).toBe(30);
+    expect(standIn?.start).toStrictEqual(new Date("2026-03-03T10:00:00Z"));
+  });
+
+  it("draws a cluster of events that run past a day over all the days they cover", () => {
+    const [standIn] = clusterEvents(
+      [
+        event("a", "2026-03-02T06:00:00Z", "2026-03-04T06:00:00Z"),
+        event("b", "2026-03-03T12:00:00Z", "2026-03-06T00:00:00Z"),
+      ],
+      OPTIONS,
+    ).events;
+
+    expect(standIn?.end).toStrictEqual(new Date("2026-03-06T00:00:00Z"));
   });
 });

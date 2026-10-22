@@ -26,8 +26,8 @@ function event(id: string, minute: number, path = SQUARE): CalendarEventRecord {
   };
 }
 
-// Three aspects ten and fifteen minutes apart on 4 March.
-const EVENTS = [event("a", 0), event("b", 10), event("c", 25)];
+// Three aspects within ten minutes of the first, on 4 March.
+const EVENTS = [event("a", 0), event("b", 5), event("c", 10)];
 
 function shown(
   view: CalendarViewName,

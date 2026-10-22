@@ -35,15 +35,16 @@ const CLUSTERED_VIEWS: ReadonlySet<CalendarViewName> = new Set([
 ]);
 
 /**
- * How readily each view merges: a day has room for many events side by side,
- * so it merges only a crowd, and a short gap apart; a week has seven narrow
- * columns, so it merges any two close events. A phone's one narrow column
- * merges as the week does.
+ * How readily each view merges: events merge only when they start within a
+ * quarter of an hour of the first of the cluster. A day has room for many
+ * events side by side, so it merges only a crowd, and a shorter gap apart; a
+ * week has seven narrow columns, so it merges any two close events. A phone's
+ * one narrow column merges as the week does.
  */
 const CLUSTER_TUNING = {
   day: { gapMinutes: 10, minimum: 4 },
-  "three-day": { gapMinutes: 20, minimum: 3 },
-  week: { gapMinutes: 30, minimum: 2 },
+  "three-day": { gapMinutes: 15, minimum: 3 },
+  week: { gapMinutes: 15, minimum: 2 },
 } as const;
 
 /**

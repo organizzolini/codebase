@@ -69,7 +69,7 @@ export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
  * The least span a cluster of instants is drawn with, so it has a body to
  * read.
  */
-const CLUSTER_GAP_MILLISECONDS = 30 * 60_000;
+const CLUSTER_MINIMUM_MILLISECONDS = 30 * 60_000;
 
 const MINUTE_MILLISECONDS = 60_000;
 
@@ -80,7 +80,8 @@ const MINUTE_MILLISECONDS = 60_000;
  * count, so a busy view stays legible: the events that run past a day, which
  * the calendar draws as bars above its hours, and those inside a day, which
  * it draws as chips on them. Events of one kind merge when they overlap, or
- * for those inside a day, start within half an hour of one another; a kind
+ * for those inside a day, start within the view's gap of the first of the
+ * cluster; a kind
  * with one event in such a run keeps it as it is. Events outside the days
  * the view shows are left alone, so a count holds only what is on screen.
  */
@@ -129,9 +130,13 @@ export function clusterEvents(
  */
 function createStandIn(
   cluster: readonly CalendarEventRecord[],
-  first: CalendarEventRecord,
-  kindName: string,
+  details: Readonly<{
+    first: CalendarEventRecord;
+    isLong: boolean;
+    kindName: string;
+  }>,
 ): CalendarEventRecord {
+  const { first, isLong, kindName } = details;
   let startTime = first.start.getTime();
   let endTime = first.end.getTime();
 
@@ -140,7 +145,13 @@ function createStandIn(
     endTime = Math.max(endTime, event.end.getTime());
   }
 
-  endTime = Math.max(endTime, startTime + CLUSTER_GAP_MILLISECONDS);
+  // Events that run past a day are drawn as one bar over the span they cover.
+  // Those inside a day are drawn as one short chip at the time they start, not
+  // stretched over the hours the longest of them runs, which would read as one
+  // long event.
+  endTime = isLong
+    ? Math.max(endTime, startTime + CLUSTER_MINIMUM_MILLISECONDS)
+    : startTime + CLUSTER_MINIMUM_MILLISECONDS;
 
   return {
     color: first.color,
@@ -220,7 +231,11 @@ function mergeRuns(
       }
 
       const kindLabel = getEventKind(first)?.label.toLowerCase() ?? "events";
-      const standIn = createStandIn(cluster, first, kindLabel);
+      const standIn = createStandIn(cluster, {
+        first,
+        isLong: key.endsWith("|long"),
+        kindName: kindLabel,
+      });
 
       merged.push(standIn);
       members.set(standIn.id, cluster);
@@ -245,16 +260,27 @@ function splitRuns(
   let reach = Number.NEGATIVE_INFINITY;
 
   for (const event of events) {
-    if (current.length > 0 && event.start.getTime() > reach) {
+    const start = event.start.getTime();
+    const [first] = current;
+
+    // Events that run past a day join while they overlap, as a chain. Those
+    // inside a day join only while they start within the gap of the first of
+    // the cluster, never of one another, so a cluster cannot be stretched
+    // across the day by events each close to the next.
+    const joins =
+      first === undefined ||
+      (isLong
+        ? start <= reach
+        : start - first.start.getTime() <= gapMilliseconds);
+
+    if (!joins) {
       runs.push(current);
       current = [];
+      reach = Number.NEGATIVE_INFINITY;
     }
 
     current.push(event);
-    reach = Math.max(
-      current.length === 1 ? Number.NEGATIVE_INFINITY : reach,
-      event.end.getTime() + (isLong ? 0 : gapMilliseconds),
-    );
+    reach = Math.max(reach, event.end.getTime());
   }
 
   if (current.length > 0) {
