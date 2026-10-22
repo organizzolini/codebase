@@ -11,6 +11,23 @@ import type { CalendarEmptiness } from "../lib/calendar/calendar-loader";
 import type { EventsDataset } from "../lib/events-database/events-database.types";
 import type { ReactNode } from "react";
 
+/**
+ * The kinds of emptiness that need no more than a title and a sentence.
+ */
+type PlainEmptiness = Exclude<CalendarEmptiness["kind"], "range">;
+
+const EMPTY_TITLES: Readonly<Record<PlainEmptiness, string>> = {
+  database: "No events yet",
+  filter: "No events match the filters",
+  match: "No events this month",
+};
+
+const EMPTY_DESCRIPTIONS: Readonly<Record<PlainEmptiness, string>> = {
+  database: "The events database is empty.",
+  filter: "Nothing this month passes the filters; change or clear them.",
+  match: "Nothing in the data falls in this month.",
+};
+
 // 🔖 Type
 
 /**
@@ -69,15 +86,9 @@ export function CalendarEmpty(
     >
       <Empty className="bg-background/90 pointer-events-auto max-w-md border shadow-sm">
         <EmptyHeader>
-          <EmptyTitle>
-            {emptiness.kind === "database"
-              ? "No events yet"
-              : "No events this month"}
-          </EmptyTitle>
+          <EmptyTitle>{EMPTY_TITLES[emptiness.kind]}</EmptyTitle>
           <EmptyDescription>
-            {emptiness.kind === "database"
-              ? "The events database is empty."
-              : "Nothing in the data falls in this month."}
+            {EMPTY_DESCRIPTIONS[emptiness.kind]}
           </EmptyDescription>
         </EmptyHeader>
       </Empty>
