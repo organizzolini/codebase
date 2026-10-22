@@ -7,14 +7,18 @@ import { SoftwareService } from "./software.service";
 
 /**
  * CLI command that installs the developer tools that come after Node, and
- * starts the Ollama and Docker daemons.
+ * makes SSH commit signatures verifiable.
+ *
+ * On a Mac that is Python, Ollama, Docker, GPG signing, the infrastructure
+ * tools, and the database tools, and it starts the Ollama and Docker daemons.
+ * On Linux it is Helm alone.
  *
  * Exits non-zero at the first install that fails. Safe to run again: a tool
  * already present is left alone.
  */
 @Command({
   description:
-    "Install Python, Ollama, Docker, GPG signing, infrastructure tools, and database tools",
+    "Install the developer tools this operating system gets, and make SSH commit signatures verifiable",
   name: "software",
 })
 @Injectable()
