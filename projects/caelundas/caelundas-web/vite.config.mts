@@ -23,6 +23,6 @@ export default defineConfig({
   },
   root: import.meta.dirname,
   server: {
-    port: 3000,
+    port: 8967,
   },
 });

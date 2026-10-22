@@ -21,6 +21,7 @@ import { captureReport } from "../../../testing/report";
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
+import { HelmService } from "../helm/helm.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
@@ -68,6 +69,7 @@ describe(SetupCommand, () => {
       providers: [
         DependenciesService,
         EnvironmentFilesService,
+        HelmService,
         LocalServicesService,
         SetupCommand,
         SetupService,
