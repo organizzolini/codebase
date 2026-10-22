@@ -50,10 +50,16 @@ export function CalendarEventTooltip(
       data-testid="calendar-event-tooltip"
     >
       <Tooltip>
-        <TooltipTrigger render={<span className="block min-w-0 truncate" />}>
+        <TooltipTrigger
+          closeDelay={0}
+          delay={100}
+          render={
+            <span className="block min-w-0 truncate before:absolute before:inset-0 before:content-['']" />
+          }
+        >
           {children}
         </TooltipTrigger>
-        <TooltipContent className="flex-col items-start gap-0.5">
+        <TooltipContent className="bg-popover text-popover-foreground border-border flex-col items-start gap-0.5 border shadow-md [&>div:last-child]:hidden">
           <span className="font-medium">{name}</span>
           {details === undefined ? null : (
             <span className="opacity-80">{details}</span>
