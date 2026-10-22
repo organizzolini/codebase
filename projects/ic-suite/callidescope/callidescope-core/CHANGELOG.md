@@ -1,3 +1,7 @@
+## 0.0.45 (2026-10-22)
+
+This was a version bump only for callidescope-core to align it with other projects, there were no code changes.
+
 ## 0.0.44 (2026-10-21)
 
 This was a version bump only for callidescope-core to align it with other projects, there were no code changes.

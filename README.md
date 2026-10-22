@@ -850,6 +850,7 @@ graph LR
   module_installation_DependenciesModule["installation/DependenciesModule"]
   module_installation_DiscoveryModule["installation/DiscoveryModule"]
   module_installation_EnvironmentFilesModule["installation/EnvironmentFilesModule"]
+  module_installation_HelmModule["installation/HelmModule"]
   module_installation_LocalServicesModule["installation/LocalServicesModule"]
   module_installation_LoggerModule["installation/LoggerModule"]
   module_installation_MainModule["installation/MainModule"]
@@ -991,6 +992,7 @@ graph LR
   module_synchronization_LoggerModule["synchronization/LoggerModule"]
   module_synchronization_MainModule["synchronization/MainModule"]
   module_synchronization_PackageManifestsModule["synchronization/PackageManifestsModule"]
+  module_synchronization_ProjectPortsModule["synchronization/ProjectPortsModule"]
   module_synchronization_PullRequestLabelsModule["synchronization/PullRequestLabelsModule"]
   module_synchronization_PullRequestTemplateModule["synchronization/PullRequestTemplateModule"]
   module_synchronization_RenderingModule["synchronization/RenderingModule"]
@@ -1646,11 +1648,14 @@ graph LR
   module_installation_DependenciesModule --> module_installation_ReporterModule
   module_installation_EnvironmentFilesModule --> module_installation_ProcessRunnerModule
   module_installation_EnvironmentFilesModule --> module_installation_ReporterModule
+  module_installation_HelmModule --> module_installation_ProcessRunnerModule
+  module_installation_HelmModule --> module_installation_ReporterModule
   module_installation_LocalServicesModule --> module_installation_ProcessRunnerModule
   module_installation_LocalServicesModule --> module_installation_ReporterModule
   module_installation_MainModule --> module_installation_DependenciesModule
   module_installation_MainModule --> module_installation_DiscoveryModule
   module_installation_MainModule --> module_installation_EnvironmentFilesModule
+  module_installation_MainModule --> module_installation_HelmModule
   module_installation_MainModule --> module_installation_LocalServicesModule
   module_installation_MainModule --> module_installation_ReporterModule
   module_installation_MainModule --> module_installation_SetupModule
@@ -1660,6 +1665,7 @@ graph LR
   module_installation_MainModule --> module_installation_UpdateReuiSkillModule
   module_installation_SetupModule --> module_installation_DependenciesModule
   module_installation_SetupModule --> module_installation_EnvironmentFilesModule
+  module_installation_SetupModule --> module_installation_HelmModule
   module_installation_SetupModule --> module_installation_LocalServicesModule
   module_installation_SetupModule --> module_installation_ProcessRunnerModule
   module_installation_SetupModule --> module_installation_ReporterModule
@@ -1877,6 +1883,7 @@ graph LR
   module_synchronization_SynchronizationModule --> module_synchronization_DevcontainerConfigurationModule
   module_synchronization_SynchronizationModule --> module_synchronization_InstalledSkillsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PackageManifestsModule
+  module_synchronization_SynchronizationModule --> module_synchronization_ProjectPortsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestLabelsModule
   module_synchronization_SynchronizationModule --> module_synchronization_PullRequestTemplateModule
   module_synchronization_SynchronizationModule --> module_synchronization_SkillExclusionsModule
@@ -3752,6 +3759,14 @@ graph LR
   file_installation_src_modules_environment_files_environment_files_service_ts["installation/src/modules/environment-files/environment-files.service.ts"]
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts["installation/src/modules/environment-files/environment-files.service.unit.test.ts"]
   file_installation_src_modules_environment_files_environment_files_types_ts["installation/src/modules/environment-files/environment-files.types.ts"]
+  file_installation_src_modules_helm_helm_command_ts["installation/src/modules/helm/helm.command.ts"]
+  file_installation_src_modules_helm_helm_command_unit_test_ts["installation/src/modules/helm/helm.command.unit.test.ts"]
+  file_installation_src_modules_helm_helm_constants_integration_test_ts["installation/src/modules/helm/helm.constants.integration.test.ts"]
+  file_installation_src_modules_helm_helm_constants_ts["installation/src/modules/helm/helm.constants.ts"]
+  file_installation_src_modules_helm_helm_module_ts["installation/src/modules/helm/helm.module.ts"]
+  file_installation_src_modules_helm_helm_service_ts["installation/src/modules/helm/helm.service.ts"]
+  file_installation_src_modules_helm_helm_service_unit_test_ts["installation/src/modules/helm/helm.service.unit.test.ts"]
+  file_installation_src_modules_helm_helm_types_ts["installation/src/modules/helm/helm.types.ts"]
   file_installation_src_modules_local_services_local_services_command_ts["installation/src/modules/local-services/local-services.command.ts"]
   file_installation_src_modules_local_services_local_services_command_unit_test_ts["installation/src/modules/local-services/local-services.command.unit.test.ts"]
   file_installation_src_modules_local_services_local_services_constants_ts["installation/src/modules/local-services/local-services.constants.ts"]
@@ -5222,6 +5237,13 @@ graph LR
   file_synchronization_src_modules_package_manifests_package_manifests_service_ts["synchronization/src/modules/package-manifests/package-manifests.service.ts"]
   file_synchronization_src_modules_package_manifests_package_manifests_service_unit_test_ts["synchronization/src/modules/package-manifests/package-manifests.service.unit.test.ts"]
   file_synchronization_src_modules_package_manifests_package_manifests_types_ts["synchronization/src/modules/package-manifests/package-manifests.types.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_command_ts["synchronization/src/modules/project-ports/project-ports.command.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_command_unit_test_ts["synchronization/src/modules/project-ports/project-ports.command.unit.test.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_constants_ts["synchronization/src/modules/project-ports/project-ports.constants.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_module_ts["synchronization/src/modules/project-ports/project-ports.module.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_service_ts["synchronization/src/modules/project-ports/project-ports.service.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_service_unit_test_ts["synchronization/src/modules/project-ports/project-ports.service.unit.test.ts"]
+  file_synchronization_src_modules_project_ports_project_ports_types_ts["synchronization/src/modules/project-ports/project-ports.types.ts"]
   file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts["synchronization/src/modules/pull-request-labels/pull-request-labels-github.service.ts"]
   file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts["synchronization/src/modules/pull-request-labels/pull-request-labels-github.service.unit.test.ts"]
   file_synchronization_src_modules_pull_request_labels_pull_request_labels_command_ts["synchronization/src/modules/pull-request-labels/pull-request-labels.command.ts"]
@@ -8796,6 +8818,7 @@ graph LR
   file_installation_src_installation_module_ts --> file_installation_src_installation_constants_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_dependencies_dependencies_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_environment_files_environment_files_module_ts
+  file_installation_src_installation_module_ts --> file_installation_src_modules_helm_helm_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_local_services_local_services_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_modules_setup_setup_module_ts
@@ -8845,6 +8868,23 @@ graph LR
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_environment_files_environment_files_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_helm_helm_command_ts --> file_installation_src_modules_helm_helm_service_ts
+  file_installation_src_modules_helm_helm_command_unit_test_ts --> file_installation_src_modules_helm_helm_command_ts
+  file_installation_src_modules_helm_helm_command_unit_test_ts --> file_installation_src_modules_helm_helm_service_ts
+  file_installation_src_modules_helm_helm_constants_integration_test_ts --> file_installation_src_modules_helm_helm_constants_ts
+  file_installation_src_modules_helm_helm_module_ts --> file_installation_src_modules_helm_helm_command_ts
+  file_installation_src_modules_helm_helm_module_ts --> file_installation_src_modules_helm_helm_service_ts
+  file_installation_src_modules_helm_helm_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
+  file_installation_src_modules_helm_helm_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
+  file_installation_src_modules_helm_helm_service_ts --> file_installation_src_modules_helm_helm_constants_ts
+  file_installation_src_modules_helm_helm_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_helm_helm_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_helm_helm_service_unit_test_ts --> file_installation_src_modules_helm_helm_constants_ts
+  file_installation_src_modules_helm_helm_service_unit_test_ts --> file_installation_src_modules_helm_helm_service_ts
+  file_installation_src_modules_helm_helm_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_helm_helm_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_types_ts
+  file_installation_src_modules_helm_helm_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
+  file_installation_src_modules_helm_helm_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
   file_installation_src_modules_local_services_local_services_command_ts --> file_installation_src_modules_local_services_local_services_service_ts
   file_installation_src_modules_local_services_local_services_command_unit_test_ts --> file_installation_src_modules_local_services_local_services_command_ts
   file_installation_src_modules_local_services_local_services_command_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
@@ -8872,6 +8912,7 @@ graph LR
   file_installation_src_modules_setup_setup_command_ts --> file_installation_src_modules_setup_setup_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_helm_helm_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
@@ -8893,6 +8934,7 @@ graph LR
   file_installation_src_modules_setup_setup_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_dependencies_dependencies_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_environment_files_environment_files_module_ts
+  file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_helm_helm_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_local_services_local_services_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
@@ -8903,6 +8945,7 @@ graph LR
   file_installation_src_modules_setup_setup_module_ts --> file_installation_src_modules_ssh_signing_ssh_signing_module_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_helm_helm_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_local_services_local_services_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
@@ -8912,6 +8955,7 @@ graph LR
   file_installation_src_modules_setup_setup_service_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_dependencies_dependencies_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_environment_files_environment_files_service_ts
+  file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_helm_helm_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_local_services_local_services_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_setup_setup_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
@@ -13018,6 +13062,21 @@ graph LR
   file_synchronization_src_modules_package_manifests_package_manifests_service_unit_test_ts --> file_synchronization_src_modules_package_manifests_package_manifests_service_ts
   file_synchronization_src_modules_package_manifests_package_manifests_service_unit_test_ts --> file_synchronization_src_modules_package_manifests_package_manifests_types_ts
   file_synchronization_src_modules_package_manifests_package_manifests_types_ts --> file_synchronization_src_modules_package_manifests_package_manifests_constants_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_ts --> file_synchronization_src_modules_project_ports_project_ports_constants_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_ts --> file_synchronization_src_modules_project_ports_project_ports_service_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_ts --> file_synchronization_src_modules_project_ports_project_ports_types_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_ts --> file_synchronization_src_modules_synchronization_synchronization_types_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_unit_test_ts --> file_synchronization_src_modules_project_ports_project_ports_command_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_unit_test_ts --> file_synchronization_src_modules_project_ports_project_ports_service_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_unit_test_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_project_ports_project_ports_command_unit_test_ts --> file_synchronization_testing_mocks_ts
+  file_synchronization_src_modules_project_ports_project_ports_constants_ts --> file_synchronization_src_modules_project_ports_project_ports_types_ts
+  file_synchronization_src_modules_project_ports_project_ports_module_ts --> file_synchronization_src_modules_project_ports_project_ports_command_ts
+  file_synchronization_src_modules_project_ports_project_ports_module_ts --> file_synchronization_src_modules_project_ports_project_ports_service_ts
+  file_synchronization_src_modules_project_ports_project_ports_module_ts --> file_synchronization_src_modules_synchronization_synchronization_service_ts
+  file_synchronization_src_modules_project_ports_project_ports_service_ts --> file_synchronization_src_modules_project_ports_project_ports_constants_ts
+  file_synchronization_src_modules_project_ports_project_ports_service_unit_test_ts --> file_synchronization_src_modules_project_ports_project_ports_service_ts
   file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_constants_ts
   file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_types_ts
   file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_github_service_ts
@@ -13096,6 +13155,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_package_manifests_package_manifests_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_project_ports_project_ports_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
@@ -13108,6 +13168,7 @@ graph LR
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_conventional_config_conventional_config_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_devcontainer_configuration_devcontainer_configuration_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_installed_skills_installed_skills_module_ts
+  file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_project_ports_project_ports_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_labels_pull_request_labels_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_pull_request_template_pull_request_template_module_ts
   file_synchronization_src_modules_synchronization_synchronization_module_unit_test_ts --> file_synchronization_src_modules_skill_exclusions_skill_exclusions_module_ts
@@ -13433,36 +13494,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-57498-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.44_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-150-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-544-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-58882-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.49_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-151-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-559-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-537-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-131-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-552-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-133-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-229-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1270-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-237-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1316-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-171-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-176-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-184-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2558-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-827-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2506-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-879-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2730-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2524-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-716-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2750-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5284-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-190-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2620-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-860-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2566-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-914-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2806-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2602-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-736-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2823-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5395-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13483,16 +13544,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-44-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7067-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1042-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-385-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2592-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2463-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7096-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1048-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-386-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2607-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2477-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-48-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-184-0ea5e9?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-185-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-1493-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4122-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-1500-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4144-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
@@ -13521,17 +13582,17 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Shell
 
-![Shell Files](https://img.shields.io/badge/Shell_Files-20-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1831-4eaa25?style=flat-square)
+![Shell Files](https://img.shields.io/badge/Shell_Files-19-89e051?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1797-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-16-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-164-0284c7?style=flat-square)
-![Shell Exports](https://img.shields.io/badge/Shell_Exports-13-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-136-7c3aed?style=flat-square)
-![Shell Loops](https://img.shields.io/badge/Shell_Loops-21-8b5cf6?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-161-0284c7?style=flat-square)
+![Shell Exports](https://img.shields.io/badge/Shell_Exports-12-ea580c?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-135-7c3aed?style=flat-square)
+![Shell Loops](https://img.shields.io/badge/Shell_Loops-20-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-46-059669?style=flat-square)
-![Shebangs](https://img.shields.io/badge/Shebangs-21-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-348-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-348-475569?style=flat-square)
+![Shebangs](https://img.shields.io/badge/Shebangs-20-6b7280?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-333-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-333-475569?style=flat-square)
 
 ### SQL
 
@@ -13573,15 +13634,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-61-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-65-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-48-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-63-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-58-db2777?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-63-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-67-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-50-16a34a?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-65-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-60-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-163-ca8a04?style=flat-square)
-![Integration Tests](https://img.shields.io/badge/Integration_Tests-3-7c3aed?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-167-ca8a04?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-4-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-5-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
@@ -13618,23 +13679,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-136-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26672-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26775-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-132-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-813-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-718-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-812-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-717-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6199-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6198-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-947-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4498-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4497-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-280-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2715-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2738-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-874-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-847-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-545-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14725-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-546-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-14820-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13647,13 +13708,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6667 |
-| Files | 1989 |
-| Calls traced | 7362 |
-| Call stacks | 1829 |
+| Callables | 6704 |
+| Files | 1999 |
+| Calls traced | 7412 |
+| Call stacks | 1835 |
 | Deepest stack | 17 |
-| Stacks through recursion | 13 |
-| Unfollowable calls | 364 |
+| Stacks through recursion | 14 |
+| Unfollowable calls | 366 |
 
 ### Projects
 

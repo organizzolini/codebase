@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.20.0](https://github.com/organizzolini/codebase/compare/v3.19.0...v3.20.0) (2026-10-22)
+
+### ✨ Features
+
+* **synchronization,installation:** ✨ add project-ports command and install helm on linux ([#1738](https://github.com/organizzolini/codebase/issues/1738)) ([2eb4ae4](https://github.com/organizzolini/codebase/commit/2eb4ae4e5695503708cfdd2e1c1581cc2bd37df6)), closes [#1739](https://github.com/organizzolini/codebase/issues/1739)
+
+### 📝 Documentation
+
+* **documentation:** 📝 group common projects and move license badge in readme ([#1740](https://github.com/organizzolini/codebase/issues/1740)) ([3fa847b](https://github.com/organizzolini/codebase/commit/3fa847b0f7b33ecdff7f7107f60f54e9b28b98e9))
+
 ## [3.19.0](https://github.com/organizzolini/codebase/compare/v3.18.0...v3.19.0) (2026-10-21)
 
 ### ✨ Features
