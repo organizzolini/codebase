@@ -23,7 +23,7 @@ nx run caelundas-cli:start
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events` table)
+- **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events`, `tags`, `tags_closure`, and `calendar_event_tags` tables)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -73,8 +73,9 @@ testing/                            # Shared test utilities
 src/modules/
   input/                               # Zod environmentSchema and config parsing
   calendar/                            # ICS and JSON file output formatting
-  database/                  # Postgres connection, CalendarEvent entity, migrations
+  database/                            # Postgres connection, entities, migrations
   calendar-events/                     # Upsert and range queries over the calendar_events table
+  tags/                                # Resolving raw tag strings to nodes of the tag tree
   ephemeris/                           # Swiss Ephemeris access
   perfective/                          # Exact moment event detection (aspects, phases)
   progressive/                         # Duration event synthesis (retrogrades)
@@ -180,9 +181,12 @@ Full schema: [src/modules/input/input.constants.ts](src/modules/input/input.cons
 
 ### Database
 
-Postgres, in the `caelundas_development` database and `caelundas` schema, with one table:
+Postgres, in the `caelundas_development` database and `caelundas` schema, with four tables:
 
-- `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending the shared `UpdatableEntity`. Columns: `summary`, `description`, `start`/`end` (`timestamptz`), `categories` (`text[]`, GIN-indexed; the `tags` property persists here until the schema change renames it), nullable `color` and `location`, and `latitude numeric(8,6)` / `longitude numeric(9,6)`. Unique on `(summary, start, latitude, longitude)`
+- `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending the shared `UpdatableEntity`. Columns: `summary`, `description`, `start`/`end` (`timestamptz` instants), nullable `color` and `location`, `latitude numeric(8,6)` / `longitude numeric(9,6)`, and `timezone`, the observer's IANA zone, which `InputService` derives from the coordinates. Unique on `(summary, start, latitude, longitude)`
+- `tags` (entity `Tag`): A TypeORM closure-table tree with many roots. A `name`, unique among its siblings through two partial unique indexes (`tags_sibling_name`, `tags_root_name`), and a nullable `parent_id`. A full path is derived by walking ancestors; depth is the number of ancestors, never a column
+- `tags_closure`: TypeORM's closure table for `Tag`, one `(ancestor_id, descendant_id)` row per pair, each tag with itself included. Saving through a `TreeRepository` keeps it in step, so never insert a `Tag` with a plain `insert`
+- `calendar_event_tags` (entity `CalendarEventTag`): The event-tag links, keyed on `(calendar_event_id, tag_id)`, cascading from both sides, with the index `calendar_event_tags_tag_id_calendar_event_id` leading with the tag
 
 `CalendarEvent` is caelundas' only event type: detectors build it, `CalendarEventsService` stores and reads it, and the writers render it, with no mapper between them. Its shape differences from the table are settled in the entity, not at the call sites:
 
@@ -190,7 +194,9 @@ Postgres, in the `caelundas_development` database and `caelundas` schema, with o
 - **Color and location**: optional as well as nullable (`color?: null | string`), so a detector leaves them out and a stored row reads back `null`; the writers treat the two alike.
 - **Coordinates**: `latitude`/`longitude` stay `numeric` strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
 
-A detected event, which has no id, audit columns, or coordinates yet, is `DetectedCalendarEvent` in `database.types.ts`, an `Omit` of the entity rather than a second type. A stored row is assignable to it, so the writers take it too.
+A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `database.types.ts`, an `Omit` of the entity plus its raw `tags: string[]`. `findInRange` returns `StoredCalendarEvent`, the entity plus the names of its linked tags, ordered by name; it is assignable to `DetectedCalendarEvent`, so the writers take it too.
+
+Tags go from raw strings to tree nodes in one place: `resolveTagPaths` in `tags/tags.utilities.ts` maps a raw tag to the root-to-node paths it stands for, and `TagsService.resolve` inserts any missing node through a `TreeRepository`. Every raw tag currently falls back to a root of its own; a tag map replaces that function without touching the upsert. An event links to the last node of each path and carries the nodes above it through the closure table.
 
 Connection variables are `CAELUNDAS_POSTGRES_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and `_SCHEMA`; the unprefixed `POSTGRES_*` are never read. Postgres returns `numeric` as strings, so compare coordinates as strings.
 
@@ -199,7 +205,7 @@ nx run caelundas-cli:migration:run        # Apply pending migrations
 nx run caelundas-cli:migration:generate   # Generate the next migration from the entities
 ```
 
-The `migration` target reads its data source and migrations from `src/modules/database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` batches rows under Postgres's 65,535-parameter limit and uses `ON CONFLICT … DO UPDATE`.
+The `migration` target reads its data source and migrations from `src/modules/database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` runs in one transaction, takes the observer's coordinates and timezone, batches rows under Postgres's 65,535-parameter limit, uses `ON CONFLICT … DO UPDATE`, and replaces each written event's `calendar_event_tags` rows with the links its raw tags resolve to. The initial migration was regenerated at this schema rather than migrated, under a new name, so a database built from the old one is reset rather than upgraded: run `nx run caelundas-cli:migration:revert` from a checkout that still has the old migration, or drop and recreate the empty `caelundas` schema, then `migration:run` and rerun ingestion. `TagsService.resolve` locks the `tags` table for the transaction (`TAGS_LOCK_SQL`, a mode that blocks other writers but not readers) before inserting nodes, so concurrent runs never race on the tree's unique indexes.
 
 Inspect: `docker exec -it postgres psql -U caelundas_username -d caelundas_development`
 
