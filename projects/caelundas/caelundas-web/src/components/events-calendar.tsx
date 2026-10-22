@@ -238,6 +238,7 @@ function CalendarGrid(
     handleEventClick,
   } = useCalendarClusters({
     anchor,
+    compact,
     enabled: clusters,
     events,
     timeZone,

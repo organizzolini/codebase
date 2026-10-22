@@ -8,7 +8,9 @@ const ZONE = "UTC";
 const OPTIONS = {
   enabled: true,
   firstDay: "2026-03-02",
+  gapMinutes: 30,
   lastDay: "2026-03-08",
+  minimum: 2,
   timeZone: ZONE,
 };
 const MAJOR = "Type / Aspect / Simple Aspect / Major Aspect / Square";
@@ -189,26 +191,85 @@ describe(clusterEvents, () => {
     expect(clustered.events).toHaveLength(1);
   });
 
-  it("names a cluster of events with no kind by their count", () => {
-    const clustered = clusterEvents(
-      [
-        event(
-          "a",
-          "2026-03-03T10:00:00Z",
-          "2026-03-03T10:00:00Z",
-          "Planet / Mars",
-        ),
-        event(
-          "b",
-          "2026-03-03T10:05:00Z",
-          "2026-03-03T10:05:00Z",
-          "Planet / Mars",
-        ),
-      ],
-      OPTIONS,
-    );
+  it.each([
+    ["twilights", "Type / Twilight / Civil Dawn"],
+    ["a station", "Type / Station / Retrograde"],
+    ["a daily cycle", "Type / Cycle / Daily Solar Cycle / Sunrise"],
+    ["an ingress", "Type / Ingress / Sign Ingress"],
+    ["an event of no kind", "Planet / Mars"],
+  ])("never merges %s, however close they start", (_name, path) => {
+    const events = [
+      event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z", path),
+      event("b", "2026-03-03T10:05:00Z", "2026-03-03T10:05:00Z", path),
+      event("c", "2026-03-03T10:10:00Z", "2026-03-03T10:10:00Z", path),
+    ];
+    const clustered = clusterEvents(events, OPTIONS);
 
-    expect(clustered.events[0]?.summary).toBe("2 events");
+    expect(clustered.events.map((merged) => merged.id)).toStrictEqual([
+      "a",
+      "b",
+      "c",
+    ]);
+    expect(clustered.members.size).toBe(0);
+  });
+
+  it("merges every kind of aspect", () => {
+    for (const path of [
+      "Type / Aspect / Simple Aspect / Major Aspect / Square",
+      "Type / Aspect / Simple Aspect / Minor Aspect / Quincunx",
+      "Type / Aspect / Simple Aspect / Specialty Aspect / Novile",
+      "Type / Aspect / Compound Aspect / Triple Aspect / Yod",
+    ]) {
+      const clustered = clusterEvents(
+        [
+          event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z", path),
+          event("b", "2026-03-03T10:05:00Z", "2026-03-03T10:05:00Z", path),
+        ],
+        OPTIONS,
+      );
+
+      expect(clustered.events).toHaveLength(1);
+    }
+  });
+
+  it("leaves a run alone that is under the least that makes a cluster", () => {
+    const events = [
+      event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z"),
+      event("b", "2026-03-03T10:05:00Z", "2026-03-03T10:05:00Z"),
+      event("c", "2026-03-03T10:10:00Z", "2026-03-03T10:10:00Z"),
+    ];
+
+    expect(
+      clusterEvents(events, { ...OPTIONS, minimum: 4 }).events,
+    ).toHaveLength(3);
+    expect(
+      clusterEvents(events, { ...OPTIONS, minimum: 3 }).events,
+    ).toHaveLength(1);
+  });
+
+  it("keeps a long run apart when the view wants fewer clusters", () => {
+    const events = [
+      event("a", "2026-03-02T06:00:00Z", "2026-03-04T06:00:00Z"),
+      event("b", "2026-03-03T12:00:00Z", "2026-03-06T00:00:00Z"),
+    ];
+
+    expect(
+      clusterEvents(events, { ...OPTIONS, minimum: 3 }).events,
+    ).toHaveLength(2);
+  });
+
+  it("starts a new cluster when events start further apart than the gap", () => {
+    const events = [
+      event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z"),
+      event("b", "2026-03-03T10:20:00Z", "2026-03-03T10:20:00Z"),
+    ];
+
+    expect(
+      clusterEvents(events, { ...OPTIONS, gapMinutes: 30 }).events,
+    ).toHaveLength(1);
+    expect(
+      clusterEvents(events, { ...OPTIONS, gapMinutes: 10 }).events,
+    ).toHaveLength(2);
   });
 
   it("returns the events in order of start", () => {

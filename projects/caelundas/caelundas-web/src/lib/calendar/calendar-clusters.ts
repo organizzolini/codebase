@@ -30,7 +30,18 @@ export interface ClusterOptions {
    * The first and last day the view shows, as `YYYY-MM-DD`.
    */
   firstDay: string;
+  /**
+   * How far apart, in minutes, two events inside a day may start and still
+   * be one cluster. A view with room to draw many events side by side keeps
+   * it short.
+   */
+  gapMinutes: number;
   lastDay: string;
+  /**
+   * The fewest events that make a cluster; fewer are left as they are, so a
+   * view with room merges only what would crowd it.
+   */
+  minimum: number;
   timeZone: string;
 }
 
@@ -42,9 +53,21 @@ export interface ClusterOptions {
 export const CLUSTER_ID_PREFIX = "cluster:";
 
 /**
- * How far apart two events of one kind may start and still be one cluster,
- * and the least span a cluster of instants is drawn with, so it has a body
- * to read.
+ * The kinds of event that are merged: the aspects, of which a busy day has
+ * dozens that differ only in the bodies they join. Every other kind, such as
+ * a twilight, a station or a cycle, is a different named event each time, and
+ * is never merged.
+ */
+export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
+  "Type / Aspect / Compound Aspect",
+  "Type / Aspect / Simple Aspect / Major Aspect",
+  "Type / Aspect / Simple Aspect / Minor Aspect",
+  "Type / Aspect / Simple Aspect / Specialty Aspect",
+]);
+
+/**
+ * The least span a cluster of instants is drawn with, so it has a body to
+ * read.
  */
 const CLUSTER_GAP_MILLISECONDS = 30 * 60_000;
 
@@ -69,14 +92,27 @@ export function clusterEvents(
     return { events: [...events], members: new Map() };
   }
 
-  // Ordered once here, so every run groupEvents makes is already in order.
-  const { kept, runs } = groupEvents(
-    events.toSorted(
-      (left, right) => left.start.getTime() - right.start.getTime(),
-    ),
-    options,
-  );
-  const { members, merged } = mergeRuns(runs);
+  const kept: CalendarEventRecord[] = [];
+  const runs = new Map<string, CalendarEventRecord[]>();
+
+  // Ordered once here, so every run is already in order of start. Loops
+  // rather than mapping callbacks keep the call stacks shallow.
+  for (const event of events.toSorted(
+    (left, right) => left.start.getTime() - right.start.getTime(),
+  )) {
+    const key = getRunKey(event, options);
+    const run = key === null ? undefined : runs.get(key);
+
+    if (key === null) {
+      kept.push(event);
+    } else if (run === undefined) {
+      runs.set(key, [event]);
+    } else {
+      run.push(event);
+    }
+  }
+
+  const { members, merged } = mergeRuns(runs, options);
 
   return {
     events: [...kept, ...merged].toSorted(
@@ -122,54 +158,44 @@ function createStandIn(
 }
 
 /**
- * Sorts the events the view shows into runs, one for each kind and each day
- * inside which events are merged, with one more for each kind's events that
- * run past a day, and sets the events outside the days shown aside.
+ * Names the run an event belongs to, one for each kind of aspect and each day
+ * inside which events are merged, and one more for each kind's events that run
+ * past a day, or says it belongs to none: an event of a kind that is never
+ * merged, or one outside the days the view shows.
  */
-function groupEvents(
-  events: readonly CalendarEventRecord[],
+function getRunKey(
+  event: CalendarEventRecord,
   options: ClusterOptions,
-): {
-  kept: CalendarEventRecord[];
-  runs: Map<string, CalendarEventRecord[]>;
-} {
-  const { firstDay, lastDay, timeZone } = options;
-  const kept: CalendarEventRecord[] = [];
-  const runs = new Map<string, CalendarEventRecord[]>();
+): null | string {
+  const kind = getEventKind(event);
 
-  // Loops rather than mapping callbacks keep the call stacks shallow.
-  for (const event of events) {
-    const startDay = formatCalendarDate(event.start, timeZone);
-    const endDay = formatCalendarDate(
-      new Date(Math.max(event.start.getTime(), event.end.getTime() - 1)),
-      timeZone,
-    );
-
-    if (endDay < firstDay || startDay > lastDay) {
-      kept.push(event);
-      continue;
-    }
-
-    // Events that run past a day are merged apart from the ones inside it,
-    // and the ones inside it day by day.
-    const key = `${getEventKind(event)?.path ?? ""}|${startDay === endDay ? startDay : "long"}`;
-    const run = runs.get(key);
-
-    if (run === undefined) {
-      runs.set(key, [event]);
-    } else {
-      run.push(event);
-    }
+  if (kind === null || !CLUSTERED_KIND_PATHS.has(kind.path)) {
+    return null;
   }
 
-  return { kept, runs };
+  const startDay = formatCalendarDate(event.start, options.timeZone);
+  const endDay = formatCalendarDate(
+    new Date(Math.max(event.start.getTime(), event.end.getTime() - 1)),
+    options.timeZone,
+  );
+
+  if (endDay < options.firstDay || startDay > options.lastDay) {
+    return null;
+  }
+
+  // Events that run past a day are merged apart from the ones inside it, and
+  // the ones inside it day by day.
+  return `${kind.path}|${startDay === endDay ? startDay : "long"}`;
 }
 
 /**
  * Splits each run into clusters and stands one in for every cluster of
  * more than one event, leaving a lone event as it is.
  */
-function mergeRuns(runs: ReadonlyMap<string, readonly CalendarEventRecord[]>): {
+function mergeRuns(
+  runs: ReadonlyMap<string, readonly CalendarEventRecord[]>,
+  options: ClusterOptions,
+): {
   members: Map<string, readonly CalendarEventRecord[]>;
   merged: CalendarEventRecord[];
 } {
@@ -177,15 +203,19 @@ function mergeRuns(runs: ReadonlyMap<string, readonly CalendarEventRecord[]>): {
   const members = new Map<string, readonly CalendarEventRecord[]>();
 
   for (const [key, run] of runs) {
-    for (const cluster of splitRuns(run, key.endsWith("|long"))) {
+    for (const cluster of splitRuns(
+      run,
+      key.endsWith("|long"),
+      options.gapMinutes * MINUTE_MILLISECONDS,
+    )) {
       const [first] = cluster;
 
       if (first === undefined) {
         continue;
       }
 
-      if (cluster.length === 1) {
-        merged.push(first);
+      if (cluster.length < Math.max(2, options.minimum)) {
+        merged.push(...cluster);
         continue;
       }
 
@@ -208,6 +238,7 @@ function mergeRuns(runs: ReadonlyMap<string, readonly CalendarEventRecord[]>): {
 function splitRuns(
   events: readonly CalendarEventRecord[],
   isLong: boolean,
+  gapMilliseconds: number,
 ): CalendarEventRecord[][] {
   const runs: CalendarEventRecord[][] = [];
   let current: CalendarEventRecord[] = [];
@@ -222,7 +253,7 @@ function splitRuns(
     current.push(event);
     reach = Math.max(
       current.length === 1 ? Number.NEGATIVE_INFINITY : reach,
-      event.end.getTime() + (isLong ? 0 : CLUSTER_GAP_MILLISECONDS),
+      event.end.getTime() + (isLong ? 0 : gapMilliseconds),
     );
   }
 
