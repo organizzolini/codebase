@@ -40,31 +40,10 @@ jobs:
             package.json > package.json.temporary
           mv package.json.temporary package.json
 
-      - name: 🐍 Upgrade Python
-        run: |
-          uv python install 3 --upgrade
-          LATEST_PYTHON=$(uv run --python 3 python -c "
-          import sys
-          v=sys.version_info
-          print(f'{v.major}.{v.minor}')
-          ")
-          PYTHON_VER=$(echo "$LATEST_PYTHON" | tr -d '.')
-
-          from="requires-python = \">=3\.[0-9][0-9]*"
-          to="requires-python = \">=${LATEST_PYTHON}"
-          sed -i "s/${from}/${to}/" configuration/pyproject.toml
-
-          from="target-version = \"py[0-9][0-9]*"
-          to="target-version = \"py${PYTHON_VER}"
-          sed -i "s/${from}/${to}/" configuration/pyproject.toml
-
-          from="pythonVersion = \"3\.[0-9][0-9]*"
-          to="pythonVersion = \"${LATEST_PYTHON}"
-          sed -i "s/${from}/${to}/" configuration/pyproject.toml
-
-          from="requires-python = \">=3\.[0-9][0-9]*"
-          to="requires-python = \">=${LATEST_PYTHON}"
-          sed -i "s/${from}/${to}/" projects/affirmancy/pyproject.toml
+      # No Python version bump here: affirmancy pins `requires-python` to 3.14
+      # (`>=3.14,<3.15`) because ormsgpack ships no cp315 wheel yet, and
+      # rewriting only the lower bound produced an empty range that `uv lock`
+      # rejected. Restore the bump when #1491 moves the pin to 3.15.
 
       # Per-package npm and GitHub Actions version bumps now come from
       # Dependabot (.github/dependabot.yml) as their own isolated pull
@@ -160,7 +139,6 @@ jobs:
             - Update pnpm to latest version
             - Deduplicate the lockfile so in-range transitive upgrades land
             - Update pnpm lockfile
-            - Update Python to latest stable 3.x
             - Update Python dependencies across all projects
             - Update vendored skills from their upstream sources
             - Update the Impeccable skill bundle to the latest release
