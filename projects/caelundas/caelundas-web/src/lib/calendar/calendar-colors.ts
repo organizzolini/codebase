@@ -100,24 +100,32 @@ export function colorEvents(
 }
 
 /**
- * The color of an event's kind: that of the most specific rule any of its
- * tags falls under, or its own color from the data when none does.
+ * The color of an event's kind: that of its kind's rule, or its own color
+ * from the data when it has none.
  */
 export function getEventColor(event: CalendarEventRecord): null | string {
-  let color: null | string = null;
-  let specificity = -1;
+  return getEventKind(event)?.color ?? event.color;
+}
+
+/**
+ * The kind of an event: the most specific rule any of its tags falls under,
+ * or none when no rule does.
+ */
+export function getEventKind(
+  event: CalendarEventRecord,
+): EventColorRule | null {
+  let kind: EventColorRule | null = null;
 
   for (const tag of event.tags) {
     for (const rule of EVENT_COLOR_RULES) {
       if (
-        rule.path.length > specificity &&
+        rule.path.length > (kind?.path.length ?? -1) &&
         (tag.path === rule.path || tag.path.startsWith(`${rule.path} / `))
       ) {
-        color = rule.color;
-        specificity = rule.path.length;
+        kind = rule;
       }
     }
   }
 
-  return color ?? event.color;
+  return kind;
 }

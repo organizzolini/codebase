@@ -26,6 +26,7 @@ import { CalendarOverflowList } from "./calendar-overflow-list";
 import { CalendarScaleSelect } from "./calendar-scale-select";
 import { CalendarTimeline } from "./calendar-timeline";
 import { CalendarToolbar } from "./calendar-toolbar";
+import { useCalendarClusters } from "./use-calendar-clusters";
 import { useCalendarNavigation } from "./use-calendar-navigation";
 
 import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
@@ -49,6 +50,11 @@ export interface EventsCalendarProperties {
   agendaDays?: number | undefined;
   anchor: Date;
   className?: string;
+  /**
+   * Whether the views of hours merge events of one kind that run together
+   * into a single one with a count; they do when absent.
+   */
+  clusters?: boolean;
   /**
    * Whether events are drawn in the color of their kind; they are when
    * absent.
@@ -244,6 +250,7 @@ function CalendarGrid(
   const {
     agendaDays = AGENDA_DAY_COUNT,
     anchor,
+    clusters = true,
     compact,
     events,
     facets,
@@ -254,13 +261,24 @@ function CalendarGrid(
     timeZone,
     view,
   } = properties;
+  const {
+    dialog,
+    events: shown,
+    handleEventClick,
+  } = useCalendarClusters({
+    anchor,
+    enabled: clusters,
+    events,
+    timeZone,
+    view,
+  });
   const calendarEvents = useMemo(
-    () => events.map((event) => toCalendarEvent(event)),
-    [events],
+    () => shown.map((event) => toCalendarEvent(event)),
+    [shown],
   );
   const descriptions = useMemo(
-    () => new Map(events.map((event) => [event.id, describeEvent(event)])),
-    [events],
+    () => new Map(shown.map((event) => [event.id, describeEvent(event)])),
+    [shown],
   );
   const agendaRange = useMemo(
     () =>
@@ -303,36 +321,40 @@ function CalendarGrid(
   );
 
   return (
-    <EventCalendar<CalendarEventRecord>
-      agendaDayCount={agendaDays}
-      className="min-h-0 flex-1"
-      classNames={layout.classNames}
-      date={anchor}
-      dayCount={calendarView.dayCount}
-      events={calendarEvents}
-      interactions={{ drag: false, resize: false, selectSlot: false }}
-      onDateChange={onDateChange}
-      renderEvent={renderEvent}
-      renderMoreContent={renderMoreContent}
-      scrollMode={layout.scrollMode}
-      timeZone={timeZone}
-      view={calendarView.view}
-      views={[calendarView.view]}
-    >
-      <CalendarGridNavigation onNavigationChange={onNavigationChange} />
-      <EventCalendarContent className={layout.contentClassName}>
-        {view === "agenda" ? (
-          <CalendarAgenda
-            className="min-h-0 flex-1 border-t"
-            events={events}
-            facets={facets}
-            grouping={grouping}
-            onShowLater={onShowLater}
-            range={agendaRange}
-          />
-        ) : undefined}
-      </EventCalendarContent>
-    </EventCalendar>
+    <>
+      <EventCalendar<CalendarEventRecord>
+        agendaDayCount={agendaDays}
+        className="min-h-0 flex-1"
+        classNames={layout.classNames}
+        date={anchor}
+        dayCount={calendarView.dayCount}
+        events={calendarEvents}
+        interactions={{ drag: false, resize: false, selectSlot: false }}
+        onDateChange={onDateChange}
+        onEventClick={handleEventClick}
+        renderEvent={renderEvent}
+        renderMoreContent={renderMoreContent}
+        scrollMode={layout.scrollMode}
+        timeZone={timeZone}
+        view={calendarView.view}
+        views={[calendarView.view]}
+      >
+        <CalendarGridNavigation onNavigationChange={onNavigationChange} />
+        <EventCalendarContent className={layout.contentClassName}>
+          {view === "agenda" ? (
+            <CalendarAgenda
+              className="min-h-0 flex-1 border-t"
+              events={events}
+              facets={facets}
+              grouping={grouping}
+              onShowLater={onShowLater}
+              range={agendaRange}
+            />
+          ) : undefined}
+        </EventCalendarContent>
+      </EventCalendar>
+      {dialog}
+    </>
   );
 }
 

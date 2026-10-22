@@ -10,6 +10,7 @@ import { CalendarError } from "../components/calendar-error";
 import { CalendarFilters } from "../components/calendar-filters";
 import { CalendarSkeleton } from "../components/calendar-skeleton";
 import { EventsCalendar } from "../components/events-calendar";
+import { useCalendarSearch } from "../components/use-calendar-search";
 import { loadCalendar } from "../lib/calendar/calendar-loader";
 import { validateCalendarSearch } from "../lib/calendar/calendar-search";
 import {
@@ -22,15 +23,9 @@ import {
   getDefaultCalendarView,
   MAXIMUM_AGENDA_DAYS,
 } from "../lib/calendar/calendar-views";
-import {
-  formatCalendarDate,
-  parseCalendarDate,
-} from "../lib/calendar/calendar-window";
+import { parseCalendarDate } from "../lib/calendar/calendar-window";
 import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
 import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
-
-import type { CalendarSearch } from "../lib/calendar/calendar-search";
-import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
 
 // 🧭 Route
 
@@ -99,7 +94,6 @@ function IndexPage(): ReactNode {
   const { dataset, emptiness, events, facets, grouping } =
     Route.useLoaderData();
   const search = Route.useSearch();
-  const navigate = Route.useNavigate();
   const fields = useMemo(() => createEventFilterFields(facets), [facets]);
   const isWide = useSyncExternalStore(subscribeToViewport, isWideViewport);
   // While a reload runs, the notice of why the last window was empty would
@@ -121,42 +115,25 @@ function IndexPage(): ReactNode {
     dataset?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // 💪 Handlers
+  const { handleDateChange, handleFilterChange, updateSearch } =
+    useCalendarSearch(timeZone);
   // The agenda grows a month at a time, up to a year, in place: the link
   // is replaced rather than pushed, and the rows already listed stay put.
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
   const handleShowLater =
     agendaDays < MAXIMUM_AGENDA_DAYS
       ? (): void => {
-          void navigate({
-            replace: true,
-            search: (previous) => ({
-              ...previous,
+          updateSearch(
+            {
               days: Math.min(
                 MAXIMUM_AGENDA_DAYS,
                 agendaDays + AGENDA_DAY_COUNT,
               ),
-            }),
-          });
+            },
+            true,
+          );
         }
       : undefined;
-
-  const updateSearch = (
-    change: Partial<CalendarSearch>,
-    replace = false,
-  ): void => {
-    void navigate({
-      replace,
-      search: (previous) => ({ ...previous, ...change }),
-    });
-  };
-
-  const handleFilterChange = (next: EventFilterQuery): void => {
-    updateSearch({ filter: next }, true);
-  };
-
-  const handleDateChange = (date: Date): void => {
-    updateSearch({ date: formatCalendarDate(date, timeZone) });
-  };
 
   // ♻️ Lifecycle
 
@@ -173,6 +150,7 @@ function IndexPage(): ReactNode {
         agendaDays={agendaDays}
         anchor={anchor}
         className="min-h-0 flex-1"
+        clusters={search.clusters !== false}
         colors={search.colors !== false}
         compact={!isWide}
         events={events}
@@ -180,10 +158,14 @@ function IndexPage(): ReactNode {
         filters={
           <CalendarFilters
             className="contents"
+            clusters={search.clusters !== false}
             colors={search.colors !== false}
             facets={facets}
             fields={fields}
             filter={filter}
+            onClustersChange={(enabled) => {
+              updateSearch({ clusters: enabled ? undefined : false }, true);
+            }}
             onColorsChange={(enabled) => {
               updateSearch({ colors: enabled ? undefined : false }, true);
             }}

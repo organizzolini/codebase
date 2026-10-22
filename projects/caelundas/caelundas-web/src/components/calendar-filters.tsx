@@ -59,6 +59,11 @@ import type { ReactElement, ReactNode } from "react";
 export interface CalendarFiltersProperties {
   className?: string;
   /**
+   * Whether the views of hours merge events that run together, which the View
+   * menu turns on or off; on when absent.
+   */
+  clusters?: boolean;
+  /**
    * Whether events are colored by type, which the View menu turns on or off;
    * on when absent.
    */
@@ -70,6 +75,10 @@ export interface CalendarFiltersProperties {
   facets?: readonly EventFacet[];
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
+  /**
+   * Called with the merging setting picked in the View menu.
+   */
+  onClustersChange?: (enabled: boolean) => void;
   /**
    * Called with the colors setting picked in the View menu; the menu offers
    * no choice without it.
@@ -104,10 +113,12 @@ export function CalendarFilters(
 ): ReactNode {
   const {
     className,
+    clusters = true,
     colors = true,
     facets = [],
     fields,
     filter,
+    onClustersChange = () => {},
     onColorsChange = () => {},
     onFilterChange,
   } = properties;
@@ -170,8 +181,10 @@ export function CalendarFilters(
     >
       <ButtonGroup aria-label="Filter">
         <CalendarViewMenu
+          clusters={clusters}
           collections={collections}
           colors={colors}
+          onClustersChange={onClustersChange}
           onColorsChange={onColorsChange}
           onSelect={handleCollectionSelect}
           query={query}

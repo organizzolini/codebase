@@ -29,24 +29,28 @@ const COLLECTION = {
 function renderMenu(
   overrides: Partial<Parameters<typeof CalendarViewMenu>[0]> = {},
 ): {
+  onClustersChange: ReturnType<typeof vi.fn<(enabled: boolean) => void>>;
   onColorsChange: ReturnType<typeof vi.fn<(enabled: boolean) => void>>;
   onSelect: ReturnType<typeof vi.fn<(filter: unknown) => void>>;
 } {
+  const onClustersChange = vi.fn<(enabled: boolean) => void>();
   const onColorsChange = vi.fn<(enabled: boolean) => void>();
   const onSelect = vi.fn<(filter: unknown) => void>();
 
   render(
     <CalendarViewMenu
       collections={[COLLECTION]}
+      onClustersChange={onClustersChange}
       onColorsChange={onColorsChange}
       onSelect={onSelect}
       query={EMPTY_EVENT_FILTER}
+      clusters
       colors
       {...overrides}
     />,
   );
 
-  return { onColorsChange, onSelect };
+  return { onClustersChange, onColorsChange, onSelect };
 }
 
 describe(CalendarViewMenu, () => {
@@ -55,9 +59,11 @@ describe(CalendarViewMenu, () => {
       <CalendarViewMenu
         className="calendar-view-menu"
         collections={[COLLECTION]}
+        onClustersChange={vi.fn<(enabled: boolean) => void>()}
         onColorsChange={vi.fn<(enabled: boolean) => void>()}
         onSelect={vi.fn<(filter: unknown) => void>()}
         query={EMPTY_EVENT_FILTER}
+        clusters
         colors
       />,
     );
@@ -125,6 +131,19 @@ describe(CalendarViewMenu, () => {
     });
 
     expect(checkbox.getAttribute("aria-checked")).toBe("false");
+  });
+
+  it("turns merging off from the menu", async () => {
+    const { onClustersChange } = renderMenu();
+
+    fireEvent.click(screen.getByRole("button", { name: /View options/u }));
+    fireEvent.click(
+      await screen.findByRole("menuitemcheckbox", {
+        name: "Group similar events",
+      }),
+    );
+
+    expect(onClustersChange).toHaveBeenCalledWith(false);
   });
 
   it("names the color of every kind of event in the legend", async () => {

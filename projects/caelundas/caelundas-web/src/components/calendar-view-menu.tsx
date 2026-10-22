@@ -32,8 +32,13 @@ import type { ReactNode } from "react";
  */
 export interface CalendarViewMenuProperties {
   className?: string;
+  /**
+   * Whether the views of hours merge events that run together.
+   */
+  clusters: boolean;
   collections: readonly ResolvedEventFilterCollection[];
   colors: boolean;
+  onClustersChange: (enabled: boolean) => void;
   onColorsChange: (enabled: boolean) => void;
   onSelect: (filter: EventFilterQuery) => void;
   query: EventFilterQuery;
@@ -54,8 +59,16 @@ const CUSTOM_ID = "custom";
 export function CalendarViewMenu(
   properties: Readonly<CalendarViewMenuProperties>,
 ): ReactNode {
-  const { className, collections, colors, onColorsChange, onSelect, query } =
-    properties;
+  const {
+    className,
+    clusters,
+    collections,
+    colors,
+    onClustersChange,
+    onColorsChange,
+    onSelect,
+    query,
+  } = properties;
 
   // 🪝 Hooks
 
@@ -141,6 +154,18 @@ export function CalendarViewMenu(
               <ColorLegend />
             </DropdownMenuSubContent>
           </DropdownMenuSub>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Crowded days</DropdownMenuLabel>
+            <DropdownMenuCheckboxItem
+              checked={clusters}
+              onCheckedChange={(checked) => {
+                onClustersChange(checked);
+              }}
+            >
+              Group similar events
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

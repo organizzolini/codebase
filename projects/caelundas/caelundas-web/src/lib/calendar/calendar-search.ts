@@ -67,6 +67,11 @@ const filterGroupSchema = z.object({
  */
 export interface CalendarSearch {
   /**
+   * `false` when the views of hours leave events unmerged; merged when
+   * absent.
+   */
+  clusters?: false | undefined;
+  /**
    * `false` when events are drawn without their colors; colored when absent.
    */
   colors?: false | undefined;
@@ -108,6 +113,10 @@ export function validateCalendarSearch(
   const filter = filterGroupSchema.safeParse(search["filter"]).data;
 
   return {
+    clusters:
+      search["clusters"] === false || search["clusters"] === "false"
+        ? false
+        : undefined,
     colors:
       search["colors"] === false || search["colors"] === "false"
         ? false

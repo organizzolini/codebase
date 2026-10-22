@@ -13,4 +13,13 @@ describe(validateCalendarSearch, () => {
       expect(validateCalendarSearch({ colors }).colors).toBeUndefined();
     }
   });
+
+  it("reads merging turned off, and leaves it on for anything else", () => {
+    expect(validateCalendarSearch({ clusters: false }).clusters).toBe(false);
+    expect(validateCalendarSearch({ clusters: "false" }).clusters).toBe(false);
+
+    for (const clusters of [undefined, true, "true", 0, null]) {
+      expect(validateCalendarSearch({ clusters }).clusters).toBeUndefined();
+    }
+  });
 });
