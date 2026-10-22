@@ -99,10 +99,10 @@ export function normalizeEventFilter(
 }
 
 /**
- * The filter a link should hold for a tree: none once nothing is left in it.
+ * The filter a link should hold for a tree. An empty tree is kept, not
+ * dropped: a link with no filter opens on the default collection, so "no
+ * filter at all" has to be written out.
  */
-export function toLinkedEventFilter(
-  query: EventFilterQuery,
-): EventFilterQuery | undefined {
-  return query.rules.length === 0 ? undefined : query;
+export function toLinkedEventFilter(query: EventFilterQuery): EventFilterQuery {
+  return query;
 }

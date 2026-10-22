@@ -257,14 +257,26 @@ selector. Times render in the zone the dataset's events carry.
 - The Filters button opens the vendored ReUI builder, nested AND/OR groups
   included: as a popover from 1024 pixels wide, a drawer from the side from
   768, and a bottom sheet below that. It never stays open over the calendar.
-- The chips scroll sideways in the row rather than wrap it, and are left out
-  below 768 pixels, where the count stands for them. `CalendarFilters` holds
+- The chips wrap onto more rows, and are left out below 768 pixels, where
+  the count stands for them. `CalendarFilters` holds
   the tree being edited, so an edit shows before the link catches up, and
   writes it to the link only when the compiled query changes: an unfinished
   rule does not reload the calendar. The facets are read once per database.
+- Collections are named sets of filters, applied in one step from the menu
+  beside the Filters button (`event-filter-collections.ts`). They are written
+  by tag names, such as `Type` and `Aspect / Simple Aspect / Major Aspect`,
+  and resolved against the data's facets, so a collection that names a tag
+  the data lacks applies to the ones it has, and an `and` that loses a
+  condition is dropped whole. A link with no `filter` opens on the default
+  collection, Highlights: major aspects and sign ingresses without the Moon,
+  plus stations, eclipses, and the long cycles. "No filter" is therefore
+  written to the link as an empty group, never left out.
 - The fields come from the data: one per tag root, offering every tag beneath
-  it, so a new root needs no code change. Date range, weekday, hour,
-  duration bucket, temporality, and text search follow them; a tag root
+  it, so a new root needs no code change. A root whose tags all end in a
+  number, such as Aspect Harmonic, offers comparisons (equals, greater and
+  less than, between) on that number instead of a pick list. Date range,
+  weekday, hour, duration bucket, duration in minutes, temporality, and text
+  search follow them; a tag root
   named like one of those is left to the derived field.
 - Date, weekday, and hour are read in each event's own zone through the
   `event_local_*` SQL functions in

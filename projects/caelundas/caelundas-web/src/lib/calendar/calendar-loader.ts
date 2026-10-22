@@ -1,3 +1,8 @@
+import {
+  DEFAULT_EVENT_FILTER_COLLECTION_ID,
+  EVENT_FILTER_COLLECTIONS,
+  resolveEventFilterCollection,
+} from "../event-filters/event-filter-collections";
 import { compileEventFilter } from "../event-filters/event-filter-compiler";
 import { compileEventGrouping } from "../event-groups/event-group-compiler";
 import {
@@ -8,6 +13,7 @@ import {
 
 import { getViewWindows, parseCalendarDate } from "./calendar-window";
 
+import type { EventFilterQuery } from "../event-filters/event-filters.types";
 import type { EventGroupLevel } from "../event-groups/event-groups.types";
 import type {
   CalendarEventRecord,
@@ -45,6 +51,11 @@ export interface CalendarData {
    * Every tag root and the tags beneath it, which the filters offer.
    */
   facets: EventFacet[];
+  /**
+   * The filter the events were read through: the link's, or the default
+   * collection's when the link names none.
+   */
+  filter: EventFilterQuery | undefined;
   /**
    * Whether a filter with at least one finished rule narrowed the events.
    */
@@ -86,15 +97,12 @@ export async function loadCalendar(
   database: EventsDatabase,
   search: CalendarSearch,
 ): Promise<CalendarData> {
-  const anchor = parseCalendarDate(search.date, new Date());
-  const { visible, window } = getViewWindows(search.view, anchor, {
-    agendaDays: search.days,
-    scale: search.scale,
-  });
-  const filter = compileEventFilter(search.filter);
-  // The facets are read once per database, and the grouping is resolved
-  // against them, so a later load waits on nothing here.
+  const { anchor, visible, window } = resolveWindows(search);
+  // The facets are read once per database, and the default filter and the
+  // grouping are resolved against them, so a later load waits on nothing here.
   const facets = await findFacetsOnce(database);
+  const effectiveFilter = search.filter ?? resolveDefaultFilter(facets);
+  const filter = compileEventFilter(effectiveFilter);
   const grouping = resolveGrouping(search, facets);
   const [dataset, events] = await Promise.all([
     database.describeDataset(),
@@ -124,6 +132,7 @@ export async function loadCalendar(
     emptiness,
     events,
     facets,
+    filter: effectiveFilter,
     filtered,
     grouping,
     window,
@@ -232,6 +241,22 @@ async function findFacetsOnce(database: EventsDatabase): Promise<EventFacet[]> {
 }
 
 /**
+ * The filter a link with none opens on: the default collection's, resolved
+ * against the data, or nothing when the data has none of the tags it names.
+ */
+function resolveDefaultFilter(
+  facets: readonly EventFacet[],
+): EventFilterQuery | undefined {
+  const collection = EVENT_FILTER_COLLECTIONS.find(
+    (candidate) => candidate.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
+  );
+
+  return collection === undefined
+    ? undefined
+    : resolveEventFilterCollection(collection, facets)?.filter;
+}
+
+/**
  * The grouping the search's view shows: the link's, or the view's default,
  * kept to the fields the data has. Only the agenda and the timeline group;
  * with no view, the agenda a phone opens on is grouped.
@@ -252,4 +277,24 @@ function resolveGrouping(
     search.group ?? getDefaultGrouping(view, fields),
     fields,
   );
+}
+
+/**
+ * The day the search anchors on, today without one, and the window the view
+ * shows around it, with the buffer read beyond it.
+ */
+function resolveWindows(search: CalendarSearch): {
+  anchor: Date;
+  visible: EventsWindow;
+  window: EventsWindow;
+} {
+  const anchor = parseCalendarDate(search.date, new Date());
+
+  return {
+    anchor,
+    ...getViewWindows(search.view, anchor, {
+      agendaDays: search.days,
+      scale: search.scale,
+    }),
+  };
 }

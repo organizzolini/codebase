@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   Badge,
@@ -8,6 +8,11 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   FilterChip,
   Filters,
   flattenFilterRules,
@@ -23,6 +28,10 @@ import {
   useMediaQuery,
 } from "@codebase/presentation";
 
+import {
+  DEFAULT_EVENT_FILTER_COLLECTION_ID,
+  resolveEventFilterCollections,
+} from "../lib/event-filters/event-filter-collections";
 import { compileEventFilter } from "../lib/event-filters/event-filter-compiler";
 import {
   countActiveEventFilterRules,
@@ -34,11 +43,13 @@ import { DATE_RANGE_EDITOR } from "../lib/event-filters/event-filters.constants"
 
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
 
+import type { ResolvedEventFilterCollection } from "../lib/event-filters/event-filter-collections";
 import type {
   EventFilterField,
   EventFilterQuery,
   EventFilterValue,
 } from "../lib/event-filters/event-filters.types";
+import type { EventFacet } from "../lib/events-database/events-database.types";
 import type { FilterEditorRegistry } from "@codebase/presentation";
 import type { ReactElement, ReactNode } from "react";
 
@@ -50,16 +61,23 @@ import type { ReactElement, ReactNode } from "react";
  */
 export interface CalendarFiltersProperties {
   className?: string;
+  /**
+   * The tags of the data, from which the collections the menu applies in one
+   * step are resolved, and the default one the calendar opens on.
+   */
+  facets?: readonly EventFacet[];
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
-   * Called with every edit to write back to the link, with `undefined` once
-   * nothing is left.
+   * Called with every edit to write back to the link: the whole tree, empty
+   * once nothing is left.
    */
-  onFilterChange: (filter: EventFilterQuery | undefined) => void;
+  onFilterChange: (filter: EventFilterQuery) => void;
 }
 
 const TITLE = "Filters";
+const ALL_EVENTS_ID = "all-events";
+const CUSTOM_ID = "custom";
 const EDITORS: FilterEditorRegistry = {
   [DATE_RANGE_EDITOR]: FilterDateRangeEditor,
 };
@@ -79,11 +97,20 @@ const TABLET_QUERY = "(min-width: 768px)";
 export function CalendarFilters(
   properties: Readonly<CalendarFiltersProperties>,
 ): ReactNode {
-  const { className, fields, filter, onFilterChange } = properties;
+  const { className, facets = [], fields, filter, onFilterChange } = properties;
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const [query, setQuery] = useState(filter ?? EMPTY_EVENT_FILTER);
+  const collections = useMemo(
+    () => resolveEventFilterCollections(facets),
+    [facets],
+  );
+  // A link with no filter opens on the default collection.
+  const defaultFilter =
+    collections.find(
+      (collection) => collection.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
+    )?.filter ?? EMPTY_EVENT_FILTER;
+  const [query, setQuery] = useState(filter ?? defaultFilter);
   const [seenFilter, setSeenFilter] = useState(filter);
 
   // 🏗 Setup
@@ -93,7 +120,7 @@ export function CalendarFilters(
     setSeenFilter(filter);
 
     if (!isSameEventFilter(filter, toLinkedEventFilter(query))) {
-      setQuery(filter ?? EMPTY_EVENT_FILTER);
+      setQuery(filter ?? defaultFilter);
     }
   }
 
@@ -111,6 +138,12 @@ export function CalendarFilters(
     }
   };
 
+  // A collection replaces the whole tree, and is written to the link at once.
+  const handleCollectionSelect = (next: EventFilterQuery): void => {
+    setQuery(next);
+    onFilterChange(toLinkedEventFilter(next));
+  };
+
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
@@ -121,6 +154,13 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
+      {collections.length === 0 ? null : (
+        <CollectionsMenu
+          collections={collections}
+          onSelect={handleCollectionSelect}
+          query={query}
+        />
+      )}
       {isTablet ? (
         <Filters<EventFilterValue>
           editors={EDITORS}
@@ -146,6 +186,92 @@ export function CalendarFilters(
         />
       </FilterSurface>
     </div>
+  );
+}
+
+/**
+ * Lists the collections of filters as one menu: the one whose filters the
+ * tree holds is marked, "All events" is marked when the tree filters nothing,
+ * and anything else reads as custom, an edit made in the builder.
+ */
+function CollectionsMenu(
+  properties: Readonly<{
+    collections: readonly ResolvedEventFilterCollection[];
+    onSelect: (filter: EventFilterQuery) => void;
+    query: EventFilterQuery;
+  }>,
+): ReactNode {
+  const { collections, onSelect, query } = properties;
+  // The compiled SQL says whether two trees filter alike, whatever their ids.
+  const current = JSON.stringify(compileEventFilter(query));
+  let value = current === "null" ? ALL_EVENTS_ID : CUSTOM_ID;
+
+  for (const collection of collections) {
+    if (JSON.stringify(compileEventFilter(collection.filter)) === current) {
+      value = collection.id;
+    }
+  }
+
+  const label =
+    collections.find((collection) => collection.id === value)?.name ??
+    (value === ALL_EVENTS_ID ? "All events" : "Custom");
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            aria-label={`Collection: ${label}`}
+            size="sm"
+            variant="outline"
+          />
+        }
+      >
+        {label}
+        <span aria-hidden="true">▾</span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        className="w-80 max-w-[95vw]"
+      >
+        <DropdownMenuRadioGroup
+          onValueChange={(next: unknown) => {
+            const collection = collections.find(
+              (candidate) => candidate.id === next,
+            );
+
+            onSelect(collection?.filter ?? EMPTY_EVENT_FILTER);
+          }}
+          value={value}
+        >
+          {collections.map((collection) => (
+            <DropdownMenuRadioItem
+              key={collection.id}
+              value={collection.id}
+              closeOnClick
+            >
+              <span className="flex flex-col gap-0.5">
+                <span>{collection.name}</span>
+                <span className="text-xs whitespace-normal text-muted-foreground">
+                  {collection.description}
+                </span>
+              </span>
+            </DropdownMenuRadioItem>
+          ))}
+          <DropdownMenuRadioItem
+            value={ALL_EVENTS_ID}
+            closeOnClick
+          >
+            <span className="flex flex-col gap-0.5">
+              <span>All events</span>
+              <span className="text-xs whitespace-normal text-muted-foreground">
+                No filters: every event in the data.
+              </span>
+            </span>
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

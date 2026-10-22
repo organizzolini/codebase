@@ -28,6 +28,7 @@ import {
   parseCalendarDate,
 } from "../lib/calendar/calendar-window";
 import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
+import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
 
 import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
 
@@ -146,7 +147,7 @@ function IndexPage(): ReactNode {
     });
   };
 
-  const handleFilterChange = (next?: EventFilterQuery): void => {
+  const handleFilterChange = (next: EventFilterQuery): void => {
     void navigate({
       replace: true,
       search: (previous) => ({ ...previous, filter: next }),
@@ -183,6 +184,7 @@ function IndexPage(): ReactNode {
         filters={
           <CalendarFilters
             className="contents"
+            facets={facets}
             fields={fields}
             filter={filter}
             onFilterChange={handleFilterChange}
@@ -211,7 +213,7 @@ function IndexPage(): ReactNode {
           className="pointer-events-none absolute inset-x-0 top-1/3 z-40 flex justify-center px-4"
           emptiness={emptiness}
           onClearFilters={() => {
-            handleFilterChange();
+            handleFilterChange(EMPTY_EVENT_FILTER);
           }}
           onJump={handleDateChange}
           period={CALENDAR_VIEW_PERIODS[view]}
