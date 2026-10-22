@@ -95,7 +95,8 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // notice over the calendar says why.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { dataset, emptiness, events, facets } = Route.useLoaderData();
+  const { dataset, emptiness, events, facets, grouping } =
+    Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const fields = useMemo(() => createEventFilterFields(facets), [facets]);
@@ -175,6 +176,7 @@ function IndexPage(): ReactNode {
         className="min-h-0 flex-1"
         compact={!isWide}
         events={events}
+        facets={facets}
         filters={
           <CalendarFilters
             className="flex min-w-0 items-center gap-1"
@@ -183,9 +185,21 @@ function IndexPage(): ReactNode {
             onFilterChange={handleFilterChange}
           />
         }
+        grouping={grouping}
         onDateChange={handleDateChange}
+        onGroupingChange={(next) => {
+          void navigate({
+            search: (previous) => ({ ...previous, group: next }),
+          });
+        }}
+        onScaleChange={(scale) => {
+          void navigate({
+            search: (previous) => ({ ...previous, scale }),
+          });
+        }}
         onShowLater={handleShowLater}
         onViewChange={handleViewChange}
+        scale={search.scale}
         timeZone={timeZone}
         view={view}
       />

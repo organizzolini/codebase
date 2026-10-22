@@ -26,10 +26,14 @@ but that file:
    SQLite file. Until that lands, `build-database` stands in for it by loading
    `data/events-schema.sql` and the text seed `data/events-seed.sql`.
 2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
-   every view the app reads: `tag_nodes` (each tag's depth, root, and path),
-   `calendar_event_tags` (one row per event and tag, ancestors included,
-   `is_direct` marking the tags given), and `calendar_events_derived` (each
-   event with its duration, temporality, and UTC time parts).
+   everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
+   and path), `calendar_event_tags` (one row per event and tag, ancestors
+   included, `is_direct` marking the tags given), and the view
+   `calendar_events_derived` (each event with its duration, temporality, and
+   UTC time parts). The first two are written out as indexed tables rather
+   than views: the file never changes once built, and as views every grouping
+   and tag filter recomputed the tree's depth, root, and path per tag, which
+   made a grouped read twenty to fifty times slower.
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
@@ -177,7 +181,7 @@ row: today, previous and next, the period's title, the active filters as
 chips, the Filters button with a count of the finished rules, and the view
 selector. Times render in the zone the dataset's events carry.
 
-- The views are month, week, three-day, day, and agenda, listed in
+- The views are month, week, three-day, day, agenda, and timeline, listed in
   `src/lib/calendar/calendar-views.ts`; the app owns that list, so a view is
   added or cut there. The `view` search parameter holds the one picked.
   Without it, the view follows the width: the agenda below 768 pixels, the
@@ -197,6 +201,36 @@ selector. Times render in the zone the dataset's events carry.
 - The route reads its search from the location and reloads with
   `shouldReload: true`, rather than through loader dependencies, so a later
   load runs in the background and the page it replaces stays on screen.
+
+- The agenda and the timeline group their events, through the Group by
+  popover in the toolbar: an ordered list of up to three levels, each a tag
+  root, taken to a chosen depth of its tree, or a year, quarter, month, week,
+  day, weekday, hour, or duration bucket read in each event's own zone.
+  `compileEventGrouping` in `src/lib/event-groups/` turns a grouping into one
+  SQL source of group keys per level, which `findEvents` reads into each
+  event's `groups`; `buildEventGroups` builds the tree from them. An event
+  falls in every group of a level it has a key for, so an event of two
+  planets is listed under both, and a group counts its distinct events. A
+  tag above the chosen depth stands for itself, and events with no key at a
+  level gather in a last "No …" group.
+- Without a `group` search parameter, the agenda groups by Type and the
+  timeline by Type, then Planet; an empty list groups by nothing. Levels that
+  do not parse or name a field the data lacks are dropped one by one.
+- The timeline is the vendored ReUI Gantt, composed in `CalendarTimeline`:
+  a row per group, nested and collapsible, a tag group grouped below its
+  root's children nested under each tag between, and a column counting each
+  row's events. The `scale` search parameter holds the span it shows, from a
+  day in fifteen-minute columns (zoomed up to fifteen times, so minutes read
+  apart) to a year in months, and a load reads only the span the scale shows.
+  Instants are drawn as diamonds at their moment, spans as bars of their
+  true length, and markers closer than one marker's width at the scale and
+  zoom shown are clustered into a count
+  (`src/lib/calendar/calendar-timeline-clusters.ts`).
+- The Gantt draws every row and bar it is handed, windowing neither, so the
+  timeline hands bars only to the rows scrolled into view and a few beyond
+  (`src/lib/calendar/calendar-timeline-window.ts`). Rows keep one track
+  each, so a row's height stays put as its bars come and go; overlapping
+  bars in one row are drawn over each other rather than stacked.
 
 - The Filters button opens the vendored ReUI builder, nested AND/OR groups
   included: as a popover from 1024 pixels wide, a drawer from the side from
@@ -239,4 +273,4 @@ selector. Times render in the zone the dataset's events carry.
 - [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
   The `EventsDatabase` interface
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
-- [data/events-views.sql](data/events-views.sql): The post-export views
+- [data/events-views.sql](data/events-views.sql): The post-export tables and views

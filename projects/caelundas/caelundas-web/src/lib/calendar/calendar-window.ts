@@ -1,4 +1,9 @@
-import { AGENDA_DAY_COUNT, type CalendarViewName } from "./calendar-views";
+import {
+  AGENDA_DAY_COUNT,
+  type CalendarViewName,
+  DEFAULT_TIMELINE_SCALE,
+  type TimelineScale,
+} from "./calendar-views";
 
 import type { EventsWindow } from "../events-database/events-database.types";
 
@@ -18,6 +23,15 @@ const THREE_DAYS = 3;
 
 // A zone's midnight lies within a day of UTC's.
 const BUFFER_DAYS = 1;
+
+/**
+ * What else decides the days a view shows: how many the agenda lists, and
+ * the span the timeline shows at once.
+ */
+export interface ViewWindowOptions {
+  agendaDays?: number | undefined;
+  scale?: TimelineScale | undefined;
+}
 
 /**
  * The days a view shows, and the window of events read for them: those days
@@ -70,11 +84,11 @@ export function formatCalendarDate(date: Date, timeZone: string): string {
 export function getViewWindows(
   view: CalendarViewName | undefined,
   anchor: Date,
-  agendaDays = AGENDA_DAY_COUNT,
+  options: ViewWindowOptions = {},
 ): ViewWindows {
   if (view === undefined) {
     const month = getViewWindows("month", anchor);
-    const agenda = getViewWindows("agenda", anchor, agendaDays);
+    const agenda = getViewWindows("agenda", anchor, options);
 
     return {
       visible: joinWindows(month.visible, agenda.visible),
@@ -82,7 +96,10 @@ export function getViewWindows(
     };
   }
 
-  const visible = getVisibleDays(view, anchor, agendaDays);
+  const visible =
+    view === "timeline"
+      ? getTimelineDays(options.scale ?? DEFAULT_TIMELINE_SCALE, anchor)
+      : getVisibleDays(view, anchor, options.agendaDays ?? AGENDA_DAY_COUNT);
 
   return {
     visible,
@@ -116,10 +133,53 @@ function anchorDay(year: number, monthIndex: number, day: number): Date {
 }
 
 /**
+ * The days the timeline's axis spans at a scale, as the Gantt lays them
+ * out: the day, the week from Sunday, the month, the quarter widened to
+ * whole weeks, or otherwise the year.
+ */
+function getTimelineDays(scale: TimelineScale, anchor: Date): EventsWindow {
+  const year = anchor.getUTCFullYear();
+  const month = anchor.getUTCMonth();
+  const day = new Date(Date.UTC(year, month, anchor.getUTCDate()));
+
+  if (scale === "day") {
+    return { end: shiftDays(day, 1), start: day };
+  }
+
+  if (scale === "week") {
+    const sunday = shiftDays(day, -day.getUTCDay());
+
+    return { end: shiftDays(sunday, WEEK_DAYS), start: sunday };
+  }
+
+  if (scale === "month") {
+    return {
+      end: new Date(Date.UTC(year, month + 1, 1)),
+      start: new Date(Date.UTC(year, month, 1)),
+    };
+  }
+
+  if (scale === "quarter") {
+    const first = new Date(Date.UTC(year, month - (month % 3), 1));
+    const next = new Date(Date.UTC(year, month - (month % 3) + 3, 1));
+
+    return {
+      end: shiftDays(next, (WEEK_DAYS - next.getUTCDay()) % WEEK_DAYS),
+      start: shiftDays(first, -first.getUTCDay()),
+    };
+  }
+
+  return {
+    end: new Date(Date.UTC(year + 1, 0, 1)),
+    start: new Date(Date.UTC(year, 0, 1)),
+  };
+}
+
+/**
  * The days a view shows, from UTC midnight to UTC midnight.
  */
 function getVisibleDays(
-  view: CalendarViewName,
+  view: Exclude<CalendarViewName, "timeline">,
   anchor: Date,
   agendaDays: number,
 ): EventsWindow {

@@ -1,20 +1,41 @@
 import { z } from "zod";
 
 import { normalizeEventFilter } from "../event-filters/event-filter-tree";
+import {
+  MAXIMUM_GROUP_DEPTH,
+  MAXIMUM_GROUP_LEVELS,
+} from "../event-groups/event-groups.constants";
 
 import {
   type CalendarViewName,
   MAXIMUM_AGENDA_DAYS,
   parseCalendarView,
+  parseTimelineScale,
+  type TimelineScale,
 } from "./calendar-views";
 
 import type { EventFilterQuery } from "../event-filters/event-filters.types";
+import type { EventGrouping } from "../event-groups/event-groups.types";
 
 const calendarDateSchema = z.iso.date();
 
 // The agenda lists up to a year at a time, so a link can never ask for the
 // whole dataset at once.
 const agendaDaysSchema = z.number().int().min(1).max(MAXIMUM_AGENDA_DAYS);
+
+const levelsSchema = z.array(z.unknown());
+
+// A depth out of range is forgotten rather than the level dropped: the
+// level's depth is brought within its root's tree once the tree is read.
+const groupDepthSchema = z.number().int().min(1).max(MAXIMUM_GROUP_DEPTH);
+
+const groupLevelSchema = z.object({
+  depth: z
+    .unknown()
+    .transform((depth) => groupDepthSchema.safeParse(depth).data)
+    .optional(),
+  field: z.string().min(1),
+});
 
 const filterValueSchema = z.union([
   z.array(z.union([z.null(), z.number(), z.string()])),
@@ -59,6 +80,15 @@ export interface CalendarSearch {
    */
   filter?: EventFilterQuery | undefined;
   /**
+   * The levels the agenda and the timeline group events by, outermost
+   * first, empty for none; each view's default when absent.
+   */
+  group?: EventGrouping | undefined;
+  /**
+   * The span the timeline shows at once; a month when absent.
+   */
+  scale?: TimelineScale | undefined;
+  /**
    * The view the calendar shows; the month when absent.
    */
   view?: CalendarViewName | undefined;
@@ -77,6 +107,21 @@ export function validateCalendarSearch(
     date: calendarDateSchema.safeParse(search["date"]).data,
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
+    group: parseGrouping(search["group"]),
+    scale: parseTimelineScale(search["scale"]),
     view: parseCalendarView(search["view"]),
   };
+}
+
+/**
+ * Reads a grouping from the link: a list whose levels that do not parse are
+ * dropped one by one, cut to the most levels a grouping nests, so a link
+ * from an older grouping keeps what it still can. Anything but a list is no
+ * grouping, which leaves the view's default.
+ */
+function parseGrouping(value: unknown): EventGrouping | undefined {
+  return levelsSchema
+    .safeParse(value)
+    .data?.flatMap((level) => groupLevelSchema.safeParse(level).data ?? [])
+    .slice(0, MAXIMUM_GROUP_LEVELS);
 }
