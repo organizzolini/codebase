@@ -278,13 +278,26 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 **Agent-Specific Rules:**
 
 - **Never bypass git hooks** with `--no-verify` — fix the underlying issue instead.
-- **Do not run signing-check scripts manually**; Husky already runs these.
+- **Do not run signing-check scripts manually**; Husky already runs these. In a
+  Claude Cloud session git signs with SSH through a harness-held key, and a fresh
+  container has no allowed-signers file, so the first commit fails until you run
+  `bash scripts/installation.sh` (idempotent). It is not run at session start.
+  The empty `commit_signing_key.pub` is expected; do not create a key.
+- **Commit messages:** the header is `<type>(<scope>): <gitmoji> <subject>`, and
+  body and footers are forbidden except `Co-authored-by:` and `Claude-Session:`
+  trailers. The rules live in [commit-code](.agents/skills/commit-code/SKILL.md).
+- **Cloud sessions have no `gh`.** Use the GitHub MCP tools: create the PR, then
+  set the assignee and the `type:`, `scope:`, and `source:agent` labels with
+  `issue_write` (`method: update`), since `create_pull_request` takes neither.
+- **Harness branches:** a `claude/<name>` branch fails the branch-name hook. Rename
+  it with [rename-branch](.agents/skills/rename-branch/SKILL.md) before pushing,
+  unless the session pins the branch, in which case keep it and say so.
 - **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately uninitialized everywhere. If `pnpm install` rewrites its `pnpm-lock.yaml` entry, **revert the lockfile** rather than reconciling it.
 - **Release Significance:** The PR title determines the semantic-release bump. Ensure the PR title's type is at least as significant as the highest commit on the branch.
 - **Pull Request Compliance:**
   - Every PR description must carry all 4 mandatory sections (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) with real content and no unfilled placeholder comments. Never omit `🔗 Related` (link to specs, files, or documentation if no issue exists).
   - Each section has one shape: Summary is only one plain paragraph of at most 48 words, Details is only a bulleted list with one marker and at most 512 words, Testing is only an ordered list (indent code blocks under a step), and Related opens with a `-` list, after which anything may follow.
-  - Pre-flight validate PR descriptions locally using `validation/src/validation.main.ts pull-request-body <path-to-body>` before creating the PR.
+  - Pre-flight validate PR descriptions locally using `NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts pull-request-body <path-to-body>` before creating the PR.
   - Set all required metadata at creation: `--assignee @me`, `--label type:<type>`, `--label scope:<scope>`, and `--label source:agent`.
 - **Conventional Naming:** If you need to view the current valid Types and Scopes without using a skill, read `configuration/conventional.config.cjs`.
 
@@ -321,7 +334,7 @@ never counts as a change to the repository.
 
 ### Session Hooks
 
-Startup scripts run at the start of every agent session and inject their failure as additional context. **Fix what they report before writing any code.** Use the [agent-session-hooks](.agents/skills/agent-session-hooks/SKILL.md) skill to understand how they work or to add a new check.
+Startup scripts run at the start of every agent session and inject their failure as additional context. **Fix what they report before writing any code.** Their remediation text is written for the session's signer (GPG locally, SSH in the cloud), so follow the steps it prints. Use the [agent-session-hooks](.agents/skills/agent-session-hooks/SKILL.md) skill to understand how they work or to add a new check.
 
 ### Instructions
 
