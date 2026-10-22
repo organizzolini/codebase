@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.22.1](https://github.com/organizzolini/codebase/compare/v3.22.0...v3.22.1) (2026-10-22)
+
+### 📦 Build System
+
+* **dependencies,configuration:** 🔥 remove supabase and allow claude-session trailer ([#1744](https://github.com/organizzolini/codebase/issues/1744)) ([667b8c4](https://github.com/organizzolini/codebase/commit/667b8c49c0f2dd0a19cda79882320a9f4a9aa2fe))
+
 ## [3.22.0](https://github.com/organizzolini/codebase/compare/v3.21.0...v3.22.0) (2026-10-22)
 
 ### ✨ Features
