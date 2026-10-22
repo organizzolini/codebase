@@ -1,3 +1,8 @@
+// ReUI Components
+export * from "./components/reui/event-calendar/event-calendar";
+export * from "./components/reui/event-calendar/event-calendar-content";
+export type * from "./components/reui/event-calendar/event-calendar-types";
+
 // UI Components
 export * from "./components/ui/accordion";
 export * from "./components/ui/alert";
