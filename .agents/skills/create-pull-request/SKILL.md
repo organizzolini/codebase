@@ -235,6 +235,15 @@ gh pr create \
 rm /tmp/pr_body.md
 ```
 
+#### Using GitHub MCP tools (cloud sessions)
+
+Claude Cloud sessions have no `gh`. Create the pull request with `create_pull_request`, then set
+the assignee and labels with `issue_write` (`method: update`, same issue number), because
+`create_pull_request` takes neither:
+
+- `assignees`: the session's user, from `get_me`
+- `labels`: `type:<type>`, `scope:<scope>` (one per scope), and `source:agent`
+
 ### 5. Address Review Feedback
 
 ```bash
