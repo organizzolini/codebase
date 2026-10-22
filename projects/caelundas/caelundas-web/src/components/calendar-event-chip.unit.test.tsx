@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { CalendarSymbolsContext } from "../lib/calendar/calendar-symbols";
+
 import { CalendarEventChip } from "./calendar-event-chip";
 
 import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
@@ -36,7 +38,9 @@ describe(CalendarEventChip, () => {
   it("draws the glyphs alone", () => {
     render(<CalendarEventChip event={EVENT} />);
 
-    expect(screen.getByText("🎯 ♂ □ ♄").className).not.toContain("sr-only");
+    expect(screen.getByTestId("event-glyphs").className).not.toContain(
+      "sr-only",
+    );
     expect(screen.getByText("Mars perfective square Saturn.").className).toBe(
       "sr-only",
     );
@@ -66,5 +70,20 @@ describe(CalendarEventChip, () => {
 
     expect(screen.getAllByText("Mars Retrograde")).toHaveLength(1);
     expect(screen.getByText("Duration").className).toBe("sr-only");
+  });
+
+  it("draws the glyphs as icons, or as emoji when the symbols are emojis", () => {
+    const { container, rerender } = render(<CalendarEventChip event={EVENT} />);
+
+    expect(container.querySelectorAll("[data-icon]").length).toBeGreaterThan(0);
+
+    rerender(
+      <CalendarSymbolsContext value="emojis">
+        <CalendarEventChip event={EVENT} />
+      </CalendarSymbolsContext>,
+    );
+
+    expect(container.querySelectorAll("[data-icon]")).toHaveLength(0);
+    expect(screen.getByText("🎯 ♂ □ ♄")).toBeDefined();
   });
 });

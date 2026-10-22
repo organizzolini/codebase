@@ -6,6 +6,7 @@ import {
   MAXIMUM_GROUP_LEVELS,
 } from "../event-groups/event-groups.constants";
 
+import { parseCalendarSymbols } from "./calendar-symbols";
 import {
   type CalendarViewName,
   MAXIMUM_AGENDA_DAYS,
@@ -98,6 +99,10 @@ export interface CalendarSearch {
    */
   scale?: TimelineScale | undefined;
   /**
+   * `emojis` when events are drawn with their emoji; their icons when absent.
+   */
+  symbols?: "emojis" | undefined;
+  /**
    * The view the calendar shows; the month when absent.
    */
   view?: CalendarViewName | undefined;
@@ -126,6 +131,7 @@ export function validateCalendarSearch(
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
     scale: parseTimelineScale(search["scale"]),
+    symbols: parseCalendarSymbols(search["symbols"]),
     view: parseCalendarView(search["view"]),
   };
 }

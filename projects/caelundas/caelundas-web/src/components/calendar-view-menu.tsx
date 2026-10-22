@@ -8,6 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -16,14 +18,16 @@ import {
 } from "@codebase/presentation";
 
 import { EVENT_COLOR_RULES } from "../lib/calendar/calendar-colors";
+import { DEFAULT_CALENDAR_SYMBOLS } from "../lib/calendar/calendar-symbols";
 
+import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * Whether events are colored by type and whether crowded days merge their
- * events, and where to send a change to either.
+ * Whether events are colored by type, whether crowded days merge their
+ * events, how symbols are drawn, and where to send a change to either.
  */
 export interface CalendarViewMenuProperties {
   /**
@@ -39,6 +43,8 @@ export interface CalendarViewMenuProperties {
   colors: boolean;
   onClustersChange: (enabled: boolean) => void;
   onColorsChange: (enabled: boolean) => void;
+  onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
+  symbols?: CalendarSymbols | undefined;
 }
 
 // 🧩 Component
@@ -59,6 +65,8 @@ export function CalendarViewMenu(
     colors,
     onClustersChange,
     onColorsChange,
+    onSymbolsChange = () => {},
+    symbols = DEFAULT_CALENDAR_SYMBOLS,
   } = properties;
 
   // 🪝 Hooks
@@ -118,6 +126,23 @@ export function CalendarViewMenu(
                 <ColorLegend />
               </DropdownMenuSubContent>
             </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Symbols</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                onValueChange={(value: unknown) => {
+                  onSymbolsChange(value === "emojis" ? "emojis" : "glyphs");
+                }}
+                value={symbols}
+              >
+                <DropdownMenuRadioItem value="glyphs">
+                  Glyphs
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="emojis">
+                  Emojis
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuLabel>Crowded days</DropdownMenuLabel>

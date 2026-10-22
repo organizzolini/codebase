@@ -1,6 +1,10 @@
+import { useContext } from "react";
+
 import { getEventLabel } from "../lib/calendar/calendar-glyphs";
+import { CalendarSymbolsContext } from "../lib/calendar/calendar-symbols";
 
 import { CalendarEventTooltip } from "./calendar-event-tooltip";
+import { EventGlyphs } from "./event-glyphs";
 
 import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
 import type { ReactNode } from "react";
@@ -33,6 +37,7 @@ export function CalendarEventChip(
   const { className = "min-w-0", description, event } = properties;
 
   // 🪝 Hooks
+  const symbols = useContext(CalendarSymbolsContext);
 
   // 🏗 Setup
   const { glyphs, name } = getEventLabel(event);
@@ -52,7 +57,13 @@ export function CalendarEventChip(
       className={className}
       data-testid="calendar-event-chip"
     >
-      <CalendarEventTooltip event={event}>{glyphs}</CalendarEventTooltip>
+      <CalendarEventTooltip event={event}>
+        {symbols === "glyphs" && glyphs !== name ? (
+          <EventGlyphs glyphs={glyphs} />
+        ) : (
+          glyphs
+        )}
+      </CalendarEventTooltip>
       {spoken === undefined ? null : <span className="sr-only">{spoken}</span>}
     </div>
   );

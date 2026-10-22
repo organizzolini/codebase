@@ -108,4 +108,19 @@ describe(CalendarViewMenu, () => {
       await expect(screen.findByText(rule.label)).resolves.toBeDefined();
     }
   });
+
+  it("offers glyphs and emojis, glyphs by default, and reports the pick", async () => {
+    const onSymbolsChange = vi.fn<(symbols: "emojis" | "glyphs") => void>();
+
+    renderMenu({ onSymbolsChange });
+    fireEvent.click(screen.getByRole("button", { name: "View options" }));
+
+    const glyphs = await screen.findByRole("menuitemradio", { name: "Glyphs" });
+
+    expect(glyphs.getAttribute("aria-checked")).toBe("true");
+
+    fireEvent.click(screen.getByRole("menuitemradio", { name: "Emojis" }));
+
+    expect(onSymbolsChange).toHaveBeenCalledWith("emojis");
+  });
 });

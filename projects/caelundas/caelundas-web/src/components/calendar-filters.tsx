@@ -27,6 +27,7 @@ import {
 
 import {
   DEFAULT_EVENT_FILTER_COLLECTION_ID,
+  type ResolvedEventFilterCollection,
   resolveEventFilterCollections,
 } from "../lib/event-filters/event-filter-collections";
 import { compileEventFilter } from "../lib/event-filters/event-filter-compiler";
@@ -46,6 +47,7 @@ import { CalendarViewMenu } from "./calendar-view-menu";
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
 import { FilterTagEditor } from "./filter-tag-editor";
 
+import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
 import type {
   EventFilterField,
   EventFilterQuery,
@@ -95,6 +97,14 @@ export interface CalendarFiltersProperties {
    */
   onFilterChange: (filter: EventFilterQuery) => void;
   /**
+   * Called with the symbols setting picked in the View menu.
+   */
+  onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
+  /**
+   * How symbols are drawn, which the View menu changes; icons when absent.
+   */
+  symbols?: CalendarSymbols | undefined;
+  /**
    * What the view shown can be arranged by, which the View menu draws ahead of
    * its own sections.
    */
@@ -132,6 +142,8 @@ export function CalendarFilters(
     onClustersChange = () => {},
     onColorsChange = () => {},
     onFilterChange,
+    onSymbolsChange,
+    symbols,
     viewOptions,
   } = properties;
 
@@ -142,10 +154,7 @@ export function CalendarFilters(
     [facets],
   );
   // A link with no filter opens on the default collection.
-  const defaultFilter =
-    collections.find(
-      (collection) => collection.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
-    )?.filter ?? EMPTY_EVENT_FILTER;
+  const defaultFilter = getDefaultFilter(collections);
   const [query, setQuery] = useState(filter ?? defaultFilter);
   const activeCount = countActiveEventFilterRules(query);
   const [seenFilter, setSeenFilter] = useState(filter);
@@ -196,6 +205,8 @@ export function CalendarFilters(
         colors={colors}
         onClustersChange={onClustersChange}
         onColorsChange={onColorsChange}
+        onSymbolsChange={onSymbolsChange}
+        symbols={symbols}
       >
         {viewOptions}
       </CalendarViewMenu>
@@ -335,6 +346,20 @@ function FilterSurface(
         <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+/**
+ * The filter of the default collection, or none when the data has no such
+ * collection.
+ */
+function getDefaultFilter(
+  collections: readonly ResolvedEventFilterCollection[],
+): EventFilterQuery {
+  return (
+    collections.find(
+      (collection) => collection.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
+    )?.filter ?? EMPTY_EVENT_FILTER
   );
 }
 

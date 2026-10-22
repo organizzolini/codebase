@@ -15,6 +15,10 @@ import { useCalendarSearch } from "../components/use-calendar-search";
 import { loadCalendar } from "../lib/calendar/calendar-loader";
 import { validateCalendarSearch } from "../lib/calendar/calendar-search";
 import {
+  CalendarSymbolsContext,
+  DEFAULT_CALENDAR_SYMBOLS,
+} from "../lib/calendar/calendar-symbols";
+import {
   isWideViewport,
   subscribeToViewport,
 } from "../lib/calendar/calendar-viewport";
@@ -117,8 +121,16 @@ function IndexPage(): ReactNode {
     dataset?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // 💪 Handlers
-  const { handleDateChange, handleFilterChange, updateSearch } =
-    useCalendarSearch(timeZone);
+  const {
+    handleClustersChange,
+    handleColorsChange,
+    handleDateChange,
+    handleFilterChange,
+    handleGroupingChange,
+    handleScaleChange,
+    handleSymbolsChange,
+    updateSearch,
+  } = useCalendarSearch(timeZone);
   // The agenda grows a month at a time, up to a year, in place: the link
   // is replaced rather than pushed, and the rows already listed stay put.
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
@@ -148,57 +160,55 @@ function IndexPage(): ReactNode {
       className="relative flex h-dvh flex-col"
     >
       <h1 className="sr-only">Caelundas</h1>
-      <EventsCalendar
-        agendaDays={agendaDays}
-        anchor={anchor}
-        className="min-h-0 flex-1"
-        clusters={search.clusters !== false}
-        colors={search.colors !== false}
-        compact={!isWide}
-        events={events}
-        facets={facets}
-        filters={
-          <CalendarFilters
-            className="contents"
-            clusters={search.clusters !== false}
-            colors={search.colors !== false}
-            facets={facets}
-            fields={fields}
-            filter={filter}
-            onClustersChange={(enabled) => {
-              updateSearch({ clusters: enabled ? undefined : false }, true);
-            }}
-            onColorsChange={(enabled) => {
-              updateSearch({ colors: enabled ? undefined : false }, true);
-            }}
-            onFilterChange={handleFilterChange}
-            viewOptions={
-              <CalendarViewOptions
-                facets={facets}
-                grouping={grouping}
-                onGroupingChange={(next) => {
-                  updateSearch({ group: next });
-                }}
-                onScaleChange={(scale) => {
-                  updateSearch({ scale });
-                }}
-                scale={search.scale ?? DEFAULT_TIMELINE_SCALE}
-                view={view}
-              />
-            }
-          />
-        }
-        grouping={grouping}
-        onDateChange={handleDateChange}
-        onShowLater={handleShowLater}
-        onViewChange={(next) => {
-          // The agenda's extra days stay behind with a view change.
-          updateSearch({ days: undefined, view: next });
-        }}
-        scale={search.scale}
-        timeZone={timeZone}
-        view={view}
-      />
+      <CalendarSymbolsContext
+        value={search.symbols ?? DEFAULT_CALENDAR_SYMBOLS}
+      >
+        <EventsCalendar
+          agendaDays={agendaDays}
+          anchor={anchor}
+          className="min-h-0 flex-1"
+          clusters={search.clusters !== false}
+          colors={search.colors !== false}
+          compact={!isWide}
+          events={events}
+          facets={facets}
+          filters={
+            <CalendarFilters
+              className="contents"
+              clusters={search.clusters !== false}
+              colors={search.colors !== false}
+              facets={facets}
+              fields={fields}
+              filter={filter}
+              onClustersChange={handleClustersChange}
+              onColorsChange={handleColorsChange}
+              onFilterChange={handleFilterChange}
+              onSymbolsChange={handleSymbolsChange}
+              symbols={search.symbols}
+              viewOptions={
+                <CalendarViewOptions
+                  facets={facets}
+                  grouping={grouping}
+                  onGroupingChange={handleGroupingChange}
+                  onScaleChange={handleScaleChange}
+                  scale={search.scale ?? DEFAULT_TIMELINE_SCALE}
+                  view={view}
+                />
+              }
+            />
+          }
+          grouping={grouping}
+          onDateChange={handleDateChange}
+          onShowLater={handleShowLater}
+          onViewChange={(next) => {
+            // The agenda's extra days stay behind with a view change.
+            updateSearch({ days: undefined, view: next });
+          }}
+          scale={search.scale}
+          timeZone={timeZone}
+          view={view}
+        />
+      </CalendarSymbolsContext>
       {emptiness === null || isReloading ? null : (
         <CalendarEmpty
           className="pointer-events-none absolute inset-x-0 top-1/3 z-40 flex justify-center px-4"

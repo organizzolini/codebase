@@ -3,14 +3,22 @@ import { useNavigate } from "@tanstack/react-router";
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import type { CalendarSearch } from "../lib/calendar/calendar-search";
+import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
+import type { TimelineScale } from "../lib/calendar/calendar-views";
 import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
+import type { EventGrouping } from "../lib/event-groups/event-groups.types";
 
 /**
  * The ways the page writes a change to the link.
  */
 export interface CalendarSearchUpdates {
+  handleClustersChange: (enabled: boolean) => void;
+  handleColorsChange: (enabled: boolean) => void;
   handleDateChange: (date: Date) => void;
   handleFilterChange: (filter: EventFilterQuery) => void;
+  handleGroupingChange: (grouping: EventGrouping) => void;
+  handleScaleChange: (scale: TimelineScale) => void;
+  handleSymbolsChange: (symbols: CalendarSymbols) => void;
   /**
    * Writes a change over the search the link already holds, pushing a new
    * entry unless `replace` is set.
@@ -36,11 +44,29 @@ export function useCalendarSearch(timeZone: string): CalendarSearchUpdates {
   };
 
   return {
+    handleClustersChange: (enabled) => {
+      updateSearch({ clusters: enabled ? undefined : false }, true);
+    },
+    handleColorsChange: (enabled) => {
+      updateSearch({ colors: enabled ? undefined : false }, true);
+    },
     handleDateChange: (date) => {
       updateSearch({ date: formatCalendarDate(date, timeZone) });
     },
     handleFilterChange: (filter) => {
       updateSearch({ filter }, true);
+    },
+    handleGroupingChange: (group) => {
+      updateSearch({ group });
+    },
+    handleScaleChange: (scale) => {
+      updateSearch({ scale });
+    },
+    handleSymbolsChange: (symbols) => {
+      updateSearch(
+        { symbols: symbols === "emojis" ? "emojis" : undefined },
+        true,
+      );
     },
     updateSearch,
   };

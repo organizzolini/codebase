@@ -455,6 +455,29 @@ describe("index", () => {
     }
   });
 
+  it("switches the symbols to emojis and back from the View menu", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await screen.findByRole("heading", { level: 1 });
+
+    for (const name of ["Emojis", "Glyphs"]) {
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(await screen.findByRole("menuitemradio", { name }));
+
+      // The link now holds the pick, and the menu reads it back.
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      await waitFor(() => {
+        expect(
+          screen
+            .getByRole("menuitemradio", { name })
+            .getAttribute("aria-checked"),
+        ).toBe("true");
+      });
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+    }
+  });
+
   it("searches the events' text from a link", async () => {
     await renderRoute(
       filterLink(
