@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import {
   Badge,
   Button,
+  ButtonGroup,
   Drawer,
   DrawerContent,
   DrawerHeader,
@@ -111,6 +112,7 @@ export function CalendarFilters(
       (collection) => collection.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
     )?.filter ?? EMPTY_EVENT_FILTER;
   const [query, setQuery] = useState(filter ?? defaultFilter);
+  const activeCount = countActiveEventFilterRules(query);
   const [seenFilter, setSeenFilter] = useState(filter);
 
   // 🏗 Setup
@@ -154,13 +156,38 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
-      {collections.length === 0 ? null : (
-        <CollectionsMenu
-          collections={collections}
-          onSelect={handleCollectionSelect}
-          query={query}
-        />
-      )}
+      <ButtonGroup aria-label="Filters">
+        {collections.length === 0 ? null : (
+          <CollectionsMenu
+            collections={collections}
+            onSelect={handleCollectionSelect}
+            query={query}
+          />
+        )}
+        <FilterSurface
+          isTablet={isTablet}
+          trigger={renderFiltersButton(activeCount)}
+        >
+          <Filters<EventFilterValue>
+            advancedMode="inline"
+            editors={EDITORS}
+            fields={[...fields]}
+            onQueryChange={handleQueryChange}
+            query={query}
+            variant="advanced"
+          />
+        </FilterSurface>
+        <Button
+          disabled={activeCount === 0}
+          onClick={() => {
+            handleCollectionSelect(EMPTY_EVENT_FILTER);
+          }}
+          size="sm"
+          variant="outline"
+        >
+          Clear
+        </Button>
+      </ButtonGroup>
       {isTablet ? (
         <Filters<EventFilterValue>
           editors={EDITORS}
@@ -172,19 +199,6 @@ export function CalendarFilters(
           <FilterChipRow />
         </Filters>
       ) : null}
-      <FilterSurface
-        isTablet={isTablet}
-        trigger={renderFiltersButton(countActiveEventFilterRules(query))}
-      >
-        <Filters<EventFilterValue>
-          advancedMode="inline"
-          editors={EDITORS}
-          fields={[...fields]}
-          onQueryChange={handleQueryChange}
-          query={query}
-          variant="advanced"
-        />
-      </FilterSurface>
     </div>
   );
 }
@@ -212,7 +226,8 @@ function CollectionsMenu(
     }
   }
 
-  const label =
+  // The button always reads "Views"; what the tree holds is in its name.
+  const currentName =
     collections.find((collection) => collection.id === value)?.name ??
     (value === ALL_EVENTS_ID ? "All events" : "Custom");
 
@@ -221,13 +236,14 @@ function CollectionsMenu(
       <DropdownMenuTrigger
         render={
           <Button
-            aria-label={`Collection: ${label}`}
+            aria-label={`Views: ${currentName}`}
             size="sm"
+            title={currentName}
             variant="outline"
           />
         }
       >
-        {label}
+        Views
         <span aria-hidden="true">▾</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent

@@ -95,9 +95,9 @@ export function CalendarToolbar(
       className={className}
       data-testid="calendar-toolbar"
     >
-      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-2 py-2">
+      <div className="flex min-w-0 flex-wrap items-start gap-x-2 gap-y-1 px-2 py-2">
         <h2
-          className={`font-semibold ${compact ? "min-w-0 grow text-sm leading-tight" : "min-w-28 truncate text-base"}`}
+          className={`font-semibold ${compact ? "min-w-0 grow text-sm leading-tight" : "min-w-28 truncate text-base leading-7"}`}
         >
           {navigation.title}
         </h2>
@@ -133,14 +133,13 @@ export function CalendarToolbar(
             view={view}
           />
         )}
-        {compact ? null : (
-          // The filters take whatever room is left and wrap onto rows of
-          // their own when it runs out, so they come last: their width
-          // varies with the rules in them.
-          <div className="flex min-w-0 flex-[1_1_28rem] flex-wrap items-center gap-1">
-            {controls}
-          </div>
-        )}
+        {
+          // The controls are items of this row, not a row of their own: the
+          // filters flow on beside the date and the buttons, anchored to the
+          // top with them, and wrap under them when the row runs out. A
+          // phone's row has no room for them, so they take one below.
+          compact ? null : controls
+        }
       </div>
       {compact && hasControls ? (
         // A phone's row has no room beside the title for the controls, so

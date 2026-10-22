@@ -32,4 +32,39 @@ describe(CalendarSkeleton, () => {
 
     expect(screen.getByRole("status").dataset["layout"]).toBe("grid");
   });
+
+  it.each([
+    ["month", "grid"],
+    ["week", "columns"],
+    ["three-day", "columns"],
+    ["day", "columns"],
+    ["agenda", "list"],
+    ["timeline", "timeline"],
+  ] as const)("takes the %s view's layout when it is named", (view, layout) => {
+    render(<CalendarSkeleton view={view} />);
+
+    expect(screen.getByRole("status").dataset["layout"]).toBe(layout);
+    expect(screen.getByRole("status").dataset["view"]).toBe(view);
+  });
+
+  it("draws a column for each day a view shows", () => {
+    const { container, rerender } = render(<CalendarSkeleton view="week" />);
+
+    expect(container.querySelectorAll("[style*='repeat(7']")).toHaveLength(1);
+
+    rerender(<CalendarSkeleton view="three-day" />);
+
+    expect(container.querySelectorAll("[style*='repeat(3']")).toHaveLength(1);
+
+    rerender(<CalendarSkeleton view="day" />);
+
+    expect(container.querySelectorAll("[style*='repeat(1']")).toHaveLength(1);
+  });
+
+  it("keeps the view the link names whatever the width", () => {
+    setViewportWidth(375);
+    render(<CalendarSkeleton view="week" />);
+
+    expect(screen.getByRole("status").dataset["view"]).toBe("week");
+  });
 });

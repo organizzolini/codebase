@@ -67,7 +67,7 @@ describe(CalendarFilters, () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "Collection: Planet-sign events" }),
+        screen.getByRole("button", { name: "Views: Planet-sign events" }),
       ).toBeDefined();
     });
 
@@ -82,7 +82,7 @@ describe(CalendarFilters, () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "Collection: All events" }),
+        screen.getByRole("button", { name: "Views: All events" }),
       ).toBeDefined();
     });
 
@@ -98,7 +98,7 @@ describe(CalendarFilters, () => {
         />,
       );
       fireEvent.click(
-        screen.getByRole("button", { name: "Collection: All events" }),
+        screen.getByRole("button", { name: "Views: All events" }),
       );
       fireEvent.click(
         await screen.findByRole("menuitemradio", {
@@ -120,13 +120,47 @@ describe(CalendarFilters, () => {
           onFilterChange={onFilterChange}
         />,
       );
-      fireEvent.click(screen.getByRole("button", { name: /Collection:/u }));
+      fireEvent.click(screen.getByRole("button", { name: /Views:/u }));
       fireEvent.click(
         await screen.findByRole("menuitemradio", { name: /All events/u }),
       );
 
       expect(onFilterChange).toHaveBeenCalledWith(
         expect.objectContaining({ rules: [] }),
+      );
+    });
+
+    it("clears every filter with the Clear button", () => {
+      const onFilterChange = vi.fn<(filter: unknown) => void>();
+
+      render(
+        <CalendarFilters
+          facets={FACETS}
+          fields={[]}
+          filter={COLLECTION.filter}
+          onFilterChange={onFilterChange}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+
+      expect(onFilterChange).toHaveBeenCalledWith(
+        expect.objectContaining({ rules: [] }),
+      );
+    });
+
+    it("leaves Clear off while nothing is filtered", () => {
+      render(
+        <CalendarFilters
+          facets={FACETS}
+          fields={[]}
+          filter={{ ...COLLECTION.filter, rules: [] }}
+          onFilterChange={vi.fn<(filter: unknown) => void>()}
+        />,
+      );
+
+      expect(screen.getByRole("button", { name: "Clear" })).toHaveProperty(
+        "disabled",
+        true,
       );
     });
   });

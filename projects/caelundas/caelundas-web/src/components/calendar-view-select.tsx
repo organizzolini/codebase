@@ -2,13 +2,12 @@ import { useSyncExternalStore } from "react";
 
 import {
   Button,
+  ButtonGroup,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  ToggleGroup,
-  ToggleGroupItem,
 } from "@codebase/presentation";
 
 import {
@@ -116,23 +115,24 @@ export function CalendarViewSelect(
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <ToggleGroup
-          aria-label="View"
-          onValueChange={handleValueChange}
-          size="sm"
-          spacing={0}
-          value={[view]}
-          variant="outline"
-        >
+        <ButtonGroup aria-label="View">
           {CALENDAR_VIEWS.map((option) => (
-            <ToggleGroupItem
+            <Button
               key={option}
-              value={option}
+              aria-pressed={option === view}
+              onClick={() => {
+                // The view already shown is not a change.
+                if (option !== view) {
+                  onViewChange(option);
+                }
+              }}
+              size="sm"
+              variant={option === view ? "secondary" : "outline"}
             >
               {CALENDAR_VIEW_LABELS[option]}
-            </ToggleGroupItem>
+            </Button>
           ))}
-        </ToggleGroup>
+        </ButtonGroup>
       )}
     </div>
   );

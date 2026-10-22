@@ -52,7 +52,7 @@ import type { EventFilterQuery } from "../lib/event-filters/event-filters.types"
 export const Route = createFileRoute("/")({
   component: IndexPage,
   errorComponent: IndexError,
-  pendingComponent: CalendarSkeleton,
+  pendingComponent: IndexPending,
   pendingMs: 200,
   shouldReload: true,
   ssr: false,
@@ -221,4 +221,11 @@ function IndexPage(): ReactNode {
       )}
     </section>
   );
+}
+
+/**
+ * Renders the skeleton of the view the link names while the first load runs.
+ */
+function IndexPending(): ReactNode {
+  return <CalendarSkeleton view={Route.useSearch().view} />;
 }
