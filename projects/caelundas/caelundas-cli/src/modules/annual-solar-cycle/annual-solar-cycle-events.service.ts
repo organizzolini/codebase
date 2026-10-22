@@ -167,7 +167,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Autumnal Equinox",
       summary: "🍂 Autumnal Equinox",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Autumnal Equinox"],
     });
   }
 
@@ -177,7 +177,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Beltane",
       summary: "🐦‍🔥 Beltane",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Beltane"],
     });
   }
 
@@ -187,7 +187,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Eleventh Hexadecan",
       summary: "🧤 Eleventh Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Eleventh Hexadecan"],
     });
   }
 
@@ -197,7 +197,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Fifteenth Hexadecan",
       summary: "🌨️ Fifteenth Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Fifteenth Hexadecan"],
     });
   }
 
@@ -207,7 +207,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Fifth Hexadecan",
       summary: "⛱️ Fifth Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Fifth Hexadecan"],
     });
   }
 
@@ -217,7 +217,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "First Hexadecan",
       summary: "🌳 First Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "First Hexadecan"],
     });
   }
 
@@ -227,7 +227,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Imbolc",
       summary: "🐑 Imbolc",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Imbolc"],
     });
   }
 
@@ -237,7 +237,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Lammas",
       summary: "🌾 Lammas",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Lammas"],
     });
   }
 
@@ -247,7 +247,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Ninth Hexadecan",
       summary: "🍁 Ninth Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Ninth Hexadecan"],
     });
   }
 
@@ -267,7 +267,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Samhain",
       summary: "🎃 Samhain",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Samhain"],
     });
   }
 
@@ -277,7 +277,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Seventh Hexadecan",
       summary: "🎑 Seventh Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Seventh Hexadecan"],
     });
   }
 
@@ -287,7 +287,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Summer Solstice",
       summary: "🌞 Summer Solstice",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Summer Solstice"],
     });
   }
 
@@ -297,7 +297,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Third Hexadecan",
       summary: "🌻 Third Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Third Hexadecan"],
     });
   }
 
@@ -307,7 +307,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Thirteenth Hexadecan",
       summary: "❄️ Thirteenth Hexadecan",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Thirteenth Hexadecan"],
     });
   }
 
@@ -317,7 +317,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Vernal Equinox",
       summary: "🌸 Vernal Equinox",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Vernal Equinox"],
     });
   }
 
@@ -327,7 +327,7 @@ export class AnnualSolarCycleEventsService {
       date,
       description: "Winter Solstice",
       summary: "☃️ Winter Solstice",
-      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Winter Solstice"],
     });
   }
 

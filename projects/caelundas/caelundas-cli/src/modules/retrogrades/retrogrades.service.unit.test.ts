@@ -189,6 +189,7 @@ describe(RetrogradesService, () => {
       expect(event.tags).toContain("Astrology");
       expect(event.tags).toContain("Direction");
       expect(event.tags).toContain("Retrograde");
+      expect(event.tags).toContain("Mercury");
     });
 
     it("creates a direct event with correct structure", () => {
@@ -318,13 +319,14 @@ describe(RetrogradesService, () => {
         tags: ["Astronomy", "Astrology", "Direction", "Direct"],
       };
 
-      expect(
-        internals.getRetrogradeProgressiveEvent(
-          beginningEvent,
-          endingEvent,
-          "mercury",
-        ).summary,
-      ).toBe(" ↩️ Mercury Retrograde");
+      const progressive = internals.getRetrogradeProgressiveEvent(
+        beginningEvent,
+        endingEvent,
+        "mercury",
+      );
+
+      expect(progressive.summary).toBe(" ↩️ Mercury Retrograde");
+      expect(progressive.tags).toContain("Mercury");
     });
 
     it("returns empty array when no direction events provided", () => {
