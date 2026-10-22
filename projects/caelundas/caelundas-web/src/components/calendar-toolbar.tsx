@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@codebase/presentation";
+import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
 
 import { CalendarViewSelect } from "./calendar-view-select";
 
@@ -12,6 +12,11 @@ import type { ReactNode } from "react";
  * shown: the event calendar's or the timeline's.
  */
 export interface CalendarNavigation {
+  /**
+   * Whether the day the calendar is anchored on is today, when the Today
+   * button has nowhere to go and is left out.
+   */
+  isToday?: boolean;
   next: () => void;
   prev: () => void;
   title: string;
@@ -96,35 +101,41 @@ export function CalendarToolbar(
       data-testid="calendar-toolbar"
     >
       <div className="flex min-w-0 flex-wrap items-start gap-x-2 gap-y-1 px-2 py-2">
-        <h2
-          className={`font-semibold ${compact ? "min-w-0 grow text-sm leading-tight" : "min-w-28 truncate text-base leading-7"}`}
-        >
-          {navigation.title}
-        </h2>
         <ButtonGroup aria-label="Navigate">
           <Button
             aria-label="Previous"
+            className="w-9 text-lg leading-none"
             onClick={navigation.prev}
             size="sm"
             variant="outline"
           >
             ‹
           </Button>
+          <ButtonGroupText
+            aria-level={2}
+            className={`h-7 bg-background font-semibold ${compact ? "min-w-0 grow truncate text-sm" : "min-w-28 truncate text-base"}`}
+            role="heading"
+          >
+            {navigation.title}
+          </ButtonGroupText>
           <Button
             aria-label="Next"
+            className="w-9 text-lg leading-none"
             onClick={navigation.next}
             size="sm"
             variant="outline"
           >
             ›
           </Button>
-          <Button
-            onClick={navigation.today}
-            size="sm"
-            variant="outline"
-          >
-            Today
-          </Button>
+          {navigation.isToday === true ? null : (
+            <Button
+              onClick={navigation.today}
+              size="sm"
+              variant="outline"
+            >
+              Today
+            </Button>
+          )}
         </ButtonGroup>
         {view === undefined || onViewChange === undefined ? null : (
           <CalendarViewSelect

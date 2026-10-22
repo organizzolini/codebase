@@ -156,6 +156,9 @@ export function EventsCalendar(
   const latest = useReference<CalendarNavigation | null>(null);
   const navigation = useMemo<CalendarNavigation>(
     () => ({
+      isToday:
+        formatCalendarDate(anchor, timeZone) ===
+        formatCalendarDate(new Date(), timeZone),
       next: () => {
         latest.current?.next();
       },
@@ -167,7 +170,7 @@ export function EventsCalendar(
         latest.current?.today();
       },
     }),
-    [latest, title],
+    [anchor, latest, timeZone, title],
   );
   const handleNavigationChange = useCallback(
     (reported: CalendarNavigation) => {

@@ -68,4 +68,32 @@ describe(CalendarToolbar, () => {
 
     expect(screen.queryByTestId("calendar-toolbar-controls")).toBeNull();
   });
+
+  it("puts the title in the group with the arrows and Today", () => {
+    render(<CalendarToolbar navigation={NAVIGATION} />);
+
+    const group = screen.getByRole("group", { name: "Navigate" });
+
+    for (const name of ["Previous", "Next", "Today"]) {
+      expect(group.contains(screen.getByRole("button", { name }))).toBe(true);
+    }
+
+    expect(
+      group.contains(screen.getByRole("heading", { name: "March 2026" })),
+    ).toBe(true);
+  });
+
+  it("leaves out Today when the day shown is today", () => {
+    const { rerender } = render(
+      <CalendarToolbar navigation={{ ...NAVIGATION, isToday: true }} />,
+    );
+
+    expect(screen.queryByRole("button", { name: "Today" })).toBeNull();
+
+    rerender(
+      <CalendarToolbar navigation={{ ...NAVIGATION, isToday: false }} />,
+    );
+
+    expect(screen.getByRole("button", { name: "Today" })).toBeDefined();
+  });
 });
