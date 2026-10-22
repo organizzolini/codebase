@@ -19,8 +19,10 @@ import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { captureReport } from "../../../testing/report";
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
+import { HelmService } from "../helm/helm.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
+import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
 import { SoftwareBrewService } from "./software-brew.service";
 import { SoftwareDatabaseService } from "./software-database.service";
@@ -100,6 +102,7 @@ describe(SoftwareCommand, () => {
     const { commands, detached, runner } = createFakeProcessRunner(machine);
     const module = await Test.createTestingModule({
       providers: [
+        HelmService,
         SoftwareBrewService,
         SoftwareCommand,
         SoftwareDatabaseService,
@@ -109,6 +112,7 @@ describe(SoftwareCommand, () => {
         SoftwareOllamaService,
         SoftwarePythonService,
         SoftwareService,
+        SshSigningService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
         { provide: LoggerService, useValue: createMock<LoggerService>() },

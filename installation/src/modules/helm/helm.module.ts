@@ -5,14 +5,13 @@ import { LoggerModule } from "@codebase/observability";
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
 import { ReporterModule } from "../reporter/reporter.module";
 
-import { HelmCommand } from "./helm.command";
 import { HelmService } from "./helm.service";
 
-/** Provides the command that installs Helm from its release archive. */
+/** Provides the service that installs Helm from its release archive. */
 @Module({
   controllers: [],
-  exports: [HelmCommand, HelmService],
+  exports: [HelmService],
   imports: [LoggerModule, ProcessRunnerModule, ReporterModule],
-  providers: [HelmCommand, HelmService],
+  providers: [HelmService],
 })
 export class HelmModule {}

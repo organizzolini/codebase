@@ -13,8 +13,7 @@ One command is maintenance rather than setup: `update-reui-skill` refreshes the 
 ```bash
 bash scripts/installation.sh                     # A fresh machine: the script installs Node and the packages, then calls `setup`, which takes the steps its operating system needs
 nx run installation:start:setup                  # Everything this project does, in order
-nx run installation:start:software               # Or one step: shell-configuration, software, helm, environment-files, dependencies
-nx run installation:start:ssh-signing            # Make SSH commit signatures verifiable: ssh-keygen and the signer's key
+nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 nx run installation:start:local-services         # Start a Docker daemon where this machine can run one, then the local Postgres container
 nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
 ```
@@ -30,16 +29,14 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `setup`               | `modules/setup`                           |
 | `shell-configuration` | `modules/shell-configuration`             |
 | `software`            | `modules/software` (one service per tool) |
-| `helm`                | `modules/helm`                            |
 | `environment-files`   | `modules/environment-files`               |
 | `dependencies`        | `modules/dependencies`                    |
-| `ssh-signing`         | `modules/ssh-signing`                     |
 | `local-services`      | `modules/local-services`                  |
 | `update-reui-skill`   | `modules/update-reui-skill`               |
 
 From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
 
-`setup` asks `ProcessRunnerService.platform()` which machine it is on, so a test covers both. A Mac runs shell configuration, software, files, and dependencies. Linux, which is what a Claude Code cloud session and the devcontainer run, has no Homebrew and no shell to configure, so it runs the files, `ssh-signing`, `helm`, and `local-services`; the script has already run `pnpm install`.
+`setup` asks `ProcessRunnerService.platform()` which machine it is on, so a test covers both. A Mac runs shell configuration, software, files, and dependencies. Linux, which is what a Claude Code cloud session and the devcontainer run, has no Homebrew and no shell to configure, so it runs the files, `software`, and `local-services`; `software` (with `modules/helm` and `modules/ssh-signing`) does less there, installing only Helm from its release archive, and on both machines it makes SSH commit signatures verifiable; the script has already run `pnpm install`.
 
 On a Mac, `setup` configures the shell before it installs software, as the script always did, so completions for tools installed in the same run are wired the next time it runs.
 
