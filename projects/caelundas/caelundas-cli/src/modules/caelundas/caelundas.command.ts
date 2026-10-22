@@ -88,14 +88,15 @@ export class CaelundasCommand extends CommandRunner {
       (a, b) => a.start.valueOf() - b.start.valueOf(),
     );
 
-    const coordinates = {
+    await this.calendarEventsService.upsert(allEvents, {
       latitude: input.latitude,
       longitude: input.longitude,
-    };
-    await this.calendarEventsService.upsert(allEvents, coordinates);
+      timezone: input.timezone,
+    });
 
     const storedEvents = await this.calendarEventsService.findInRange({
-      ...coordinates,
+      latitude: input.latitude,
+      longitude: input.longitude,
       // Detection covers the whole end date, so read back through its end.
       end: input.end.clone().add(1, "day"),
       start: input.start,

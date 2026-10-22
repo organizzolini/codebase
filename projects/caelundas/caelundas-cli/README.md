@@ -18,7 +18,7 @@ nx run caelundas-cli:download-ephemeris
 # 2. Configure your observer location and date range
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 
-# 3. Create the calendar_events table (needs the local Postgres container running)
+# 3. Create the tables (needs the local Postgres container running)
 nx run caelundas-cli:migration:run
 
 # 4. Generate the calendar
@@ -182,9 +182,9 @@ the database never disagree.
 | ------ | ----- |
 | `summary`, `description` | The event's title and detail |
 | `start`, `end` | `timestamptz`; equal for an instant |
-| `categories` | `text[]`, GIN-indexed, so SQL can filter on one; the `tags` property persists here until the schema change renames it |
 | `color`, `location` | Nullable display hints |
 | `latitude`, `longitude` | The `numeric` observer location the event was computed for |
+| `timezone` | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
 | `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns |
 
 An event is unique on `(summary, start, latitude, longitude)`:
@@ -196,12 +196,32 @@ An event is unique on `(summary, start, latitude, longitude)`:
 - An event spanning a range edge, like a retrograde, is included in that
   range's files.
 
+An event's tags live in two more tables rather than a column:
+
+| Table | Holds |
+| ----- | ----- |
+| `tags` | A tree of labels with many roots: a `name`, unique among its siblings, and a nullable `parent_id` |
+| `tags_closure` | One `(ancestor_id, descendant_id)` row per pair in the tree, each tag paired with itself included, so ancestors, descendants, and depth are plain joins |
+| `calendar_event_tags` | The links between events and tags, keyed on `(calendar_event_id, tag_id)`, with a second index leading with the tag |
+
+The upsert resolves each raw tag a detector reports to a node, inserting any
+node that is missing, and replaces the event's links, so a re-run that drops a
+tag drops its link. For now each raw tag is a root of its own. The `.ics`
+output keeps the `CATEGORIES` property, and the JSON output a `tags` array,
+both holding the linked tags' names.
+
 Postgres returns `numeric` columns as strings, so compare coordinates as such.
 The schema comes from a generated migration: `nx run caelundas-cli:migration:run`
 applies it and `nx run caelundas-cli:migration:generate` creates the next one.
 Both read the data source and migrations from
 `src/modules/database/`, the folder the `migration` target's
 `module` option names.
+
+The initial migration was regenerated at this schema, under a new name, rather
+than migrated, so a database built from the old one cannot be upgraded in
+place. Revert it first with `nx run caelundas-cli:migration:revert` from a
+checkout that still has it, or drop the `caelundas` schema and recreate it
+empty, then run the migrations and rerun ingestion.
 
 ## Structure
 
@@ -215,8 +235,9 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── database/  # Postgres connection, CalendarEvent entity, migrations
+    ├── database/            # Postgres connection, entities, migrations
     ├── calendar-events/     # Upserting and range queries over stored calendar events
+    ├── tags/                # Resolving raw tag strings to nodes of the tag tree
     ├── calendar/            # iCalendar and JSON rendering and output
     ├── datetime/, math/     # Time stepping and angular arithmetic
     └── aspects/, phases/, eclipses/, retrogrades/, ingresses/,

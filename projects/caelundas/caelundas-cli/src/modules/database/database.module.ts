@@ -5,7 +5,6 @@ import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persisten
 
 import { DATABASE_ENTITIES, DATABASE_PROJECT } from "./database.constants";
 import { DatabaseService } from "./database.service";
-import { CalendarEvent } from "./entities/calendar-event.entity";
 
 /**
  * Connects caelundas to the Postgres database its `CAELUNDAS_POSTGRES_*`
@@ -25,7 +24,7 @@ import { CalendarEvent } from "./entities/calendar-event.entity";
       entities: DATABASE_ENTITIES,
       project: DATABASE_PROJECT,
     }),
-    TypeOrmModule.forFeature([CalendarEvent]),
+    TypeOrmModule.forFeature(DATABASE_ENTITIES),
   ],
   providers: [DatabaseService],
 })
