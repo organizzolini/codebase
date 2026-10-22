@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { CalendarClusterDialog } from "./calendar-cluster-dialog";
@@ -61,5 +61,24 @@ describe(CalendarClusterDialog, () => {
 
     await expect(screen.findByRole("dialog")).resolves.toBeDefined();
     expect(screen.getByText("2 major aspects")).toBeDefined();
+  });
+
+  it("reports being closed", async () => {
+    const onClose = vi.fn<() => void>();
+
+    render(
+      <CalendarClusterDialog
+        members={[MEMBER]}
+        onClose={onClose}
+        timeZone="America/New_York"
+        title="2 major aspects"
+      />,
+    );
+    await screen.findByRole("dialog");
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+
+    await vi.waitFor(() => {
+      expect(onClose).toHaveBeenCalledExactlyOnceWith();
+    });
   });
 });

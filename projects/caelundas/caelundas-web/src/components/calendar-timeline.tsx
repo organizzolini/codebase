@@ -34,6 +34,9 @@ import {
 } from "../lib/calendar/calendar-timeline-window";
 import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
 
+import { CalendarEventChip } from "./calendar-event-chip";
+import { CalendarEventTooltip } from "./calendar-event-tooltip";
+
 import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
 import type {
   CalendarEventRecord,
@@ -286,17 +289,38 @@ function TimelineBarContent(
     );
   }
 
+  const [record] = occurrence.event.data?.records ?? [];
+
   if (occurrence.start.getTime() === occurrence.end.getTime()) {
-    return (
+    const diamond = (
       <span
         className="size-2.5 shrink-0 rotate-45 rounded-[2px] border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
         data-slot="timeline-instant"
         aria-hidden
       />
     );
+
+    // The diamond says nothing of what the event is, so it has the tooltip.
+    return record === undefined ? (
+      diamond
+    ) : (
+      <CalendarEventTooltip
+        className="flex"
+        event={record}
+      >
+        {diamond}
+      </CalendarEventTooltip>
+    );
   }
 
-  return <span className="truncate font-medium">{occurrence.event.title}</span>;
+  return record === undefined ? (
+    <span className="truncate font-medium">{occurrence.event.title}</span>
+  ) : (
+    <CalendarEventChip
+      className="min-w-0 font-medium"
+      event={record}
+    />
+  );
 }
 
 /**

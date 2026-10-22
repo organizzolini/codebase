@@ -21,6 +21,7 @@ import {
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import { CalendarAgenda } from "./calendar-agenda";
+import { CalendarEventChip } from "./calendar-event-chip";
 import { CalendarOverflowList } from "./calendar-overflow-list";
 import { CalendarTimeline } from "./calendar-timeline";
 import { CalendarToolbar } from "./calendar-toolbar";
@@ -266,16 +267,18 @@ function CalendarGrid(
   // A chip's own label carries only its title and time, so its tags and
   // duration are spelled out for screen readers inside it.
   const renderEvent = useCallback(
-    (eventProperties: EventCalendarRenderEventProps<CalendarEventRecord>) => (
-      <>
-        <span className="truncate">
-          {eventProperties.occurrence.event.title}
-        </span>
-        <span className="sr-only">
-          {descriptions.get(eventProperties.occurrence.eventId)}
-        </span>
-      </>
-    ),
+    (eventProperties: EventCalendarRenderEventProps<CalendarEventRecord>) => {
+      const { event, eventId } = eventProperties.occurrence;
+
+      return event.data === undefined ? (
+        event.title
+      ) : (
+        <CalendarEventChip
+          description={descriptions.get(eventId)}
+          event={event.data}
+        />
+      );
+    },
     [descriptions],
   );
   // A busy day's "+N more" opens every event of the day as a windowed list.

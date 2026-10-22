@@ -41,6 +41,7 @@ import {
   TAG_OPTIONS_EDITOR,
 } from "../lib/event-filters/event-filters.constants";
 
+import { CalendarCollectionPicker } from "./calendar-collection-picker";
 import { CalendarViewMenu } from "./calendar-view-menu";
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
 import { FilterTagEditor } from "./filter-tag-editor";
@@ -192,12 +193,9 @@ export function CalendarFilters(
     >
       <CalendarViewMenu
         clusters={clusters}
-        collections={collections}
         colors={colors}
         onClustersChange={onClustersChange}
         onColorsChange={onColorsChange}
-        onSelect={handleCollectionSelect}
-        query={query}
       >
         {viewOptions}
       </CalendarViewMenu>
@@ -206,14 +204,21 @@ export function CalendarFilters(
           isTablet={isTablet}
           trigger={renderFiltersButton(activeCount)}
         >
-          <Filters<EventFilterValue>
-            advancedMode="inline"
-            editors={EDITORS}
-            fields={[...fields]}
-            onQueryChange={handleQueryChange}
-            query={query}
-            variant="advanced"
-          />
+          <div className="flex flex-col gap-3">
+            <CalendarCollectionPicker
+              collections={collections}
+              onSelect={handleCollectionSelect}
+              query={query}
+            />
+            <Filters<EventFilterValue>
+              advancedMode="inline"
+              editors={EDITORS}
+              fields={[...fields]}
+              onQueryChange={handleQueryChange}
+              query={query}
+              variant="advanced"
+            />
+          </div>
         </FilterSurface>
         <Button
           disabled={activeCount === 0}
@@ -292,9 +297,10 @@ function FilterSurface(
       <Popover>
         <PopoverTrigger render={trigger} />
         <PopoverContent
-          align="end"
+          align="start"
           aria-label={TITLE}
-          className="w-[42rem] max-w-[95vw] p-0"
+          className="max-h-[80dvh] w-[42rem] max-w-[95vw] gap-3 overflow-y-auto p-3"
+          sideOffset={8}
         >
           {children}
         </PopoverContent>
@@ -310,7 +316,7 @@ function FilterSurface(
           <DrawerHeader>
             <DrawerTitle>{TITLE}</DrawerTitle>
           </DrawerHeader>
-          <div className="min-h-0 overflow-y-auto px-2 pb-4">{children}</div>
+          <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
         </DrawerContent>
       </Drawer>
     );
@@ -326,7 +332,7 @@ function FilterSurface(
         <SheetHeader>
           <SheetTitle>{TITLE}</SheetTitle>
         </SheetHeader>
-        <div className="min-h-0 overflow-y-auto px-2 pb-4">{children}</div>
+        <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
       </SheetContent>
     </Sheet>
   );

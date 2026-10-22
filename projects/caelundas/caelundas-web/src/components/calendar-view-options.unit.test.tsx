@@ -128,4 +128,10 @@ describe(CalendarViewOptions, () => {
 
     expect(onScaleChange).toHaveBeenCalledWith("week");
   });
+
+  it("names a group by its field when the data no longer has it", () => {
+    renderOptions("agenda", [{ field: "retired-field" }]);
+
+    expect(screen.getByText(/retired-field/u)).toBeDefined();
+  });
 });

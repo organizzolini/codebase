@@ -56,7 +56,7 @@ describe(CalendarFilters, () => {
       name: "Planet-sign events",
     };
 
-    it("names the collection whose filters the tree holds", () => {
+    it("offers the collections at the top of the filter panel", async () => {
       render(
         <CalendarFilters
           facets={FACETS}
@@ -65,30 +65,16 @@ describe(CalendarFilters, () => {
           onFilterChange={vi.fn<(filter: unknown) => void>()}
         />,
       );
+      fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
 
-      expect(
-        screen.getByRole("button", {
-          name: "View options, Planet-sign events",
-        }),
-      ).toBeDefined();
+      const picker = await screen.findByRole<HTMLSelectElement>("combobox", {
+        name: "Collection",
+      });
+
+      expect(picker.value).toBe("planet-sign-events");
     });
 
-    it("reads as all events when nothing is filtered", () => {
-      render(
-        <CalendarFilters
-          facets={FACETS}
-          fields={[]}
-          filter={{ ...COLLECTION.filter, rules: [] }}
-          onFilterChange={vi.fn<(filter: unknown) => void>()}
-        />,
-      );
-
-      expect(
-        screen.getByRole("button", { name: "View options, All events" }),
-      ).toBeDefined();
-    });
-
-    it("applies a collection picked from the menu", async () => {
+    it("applies a collection picked in the filter panel", async () => {
       const onFilterChange = vi.fn<(filter: unknown) => void>();
 
       render(
@@ -99,37 +85,13 @@ describe(CalendarFilters, () => {
           onFilterChange={onFilterChange}
         />,
       );
-      fireEvent.click(
-        screen.getByRole("button", { name: "View options, All events" }),
-      );
-      fireEvent.click(
-        await screen.findByRole("menuitemradio", {
-          name: /Planet-sign events/u,
-        }),
+      fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
+      fireEvent.change(
+        await screen.findByRole("combobox", { name: "Collection" }),
+        { target: { value: "planet-sign-events" } },
       );
 
       expect(onFilterChange).toHaveBeenCalledWith(COLLECTION.filter);
-    });
-
-    it("writes an empty filter when all events is picked", async () => {
-      const onFilterChange = vi.fn<(filter: unknown) => void>();
-
-      render(
-        <CalendarFilters
-          facets={FACETS}
-          fields={[]}
-          filter={COLLECTION.filter}
-          onFilterChange={onFilterChange}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: /View options/u }));
-      fireEvent.click(
-        await screen.findByRole("menuitemradio", { name: /All events/u }),
-      );
-
-      expect(onFilterChange).toHaveBeenCalledWith(
-        expect.objectContaining({ rules: [] }),
-      );
     });
 
     it("clears every filter with the Clear button", () => {

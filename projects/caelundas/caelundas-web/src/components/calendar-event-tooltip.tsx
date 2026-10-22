@@ -1,0 +1,65 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@codebase/presentation";
+
+import { getEventLabel } from "../lib/calendar/calendar-glyphs";
+
+import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { ReactNode } from "react";
+
+// 🔖 Type
+
+/**
+ * The event to describe and what to draw for it, which the tooltip opens
+ * over.
+ */
+export interface CalendarEventTooltipProperties {
+  children?: ReactNode;
+  className?: string;
+  event: CalendarEventRecord;
+}
+
+// 🧩 Component
+
+/**
+ * Wraps what is drawn for an event, its glyphs, in a tooltip with the event's
+ * name in English and whatever the database says of it.
+ */
+export function CalendarEventTooltip(
+  properties: Readonly<CalendarEventTooltipProperties>,
+): ReactNode {
+  const { children, className, event } = properties;
+
+  // 🪝 Hooks
+
+  // 🏗 Setup
+  const { details, name } = getEventLabel(event);
+
+  // 💪 Handlers
+
+  // ♻️ Lifecycle
+
+  // 🏁 Early Returns
+
+  // 🎨 Markup
+  return (
+    <div
+      className={className}
+      data-testid="calendar-event-tooltip"
+    >
+      <Tooltip>
+        <TooltipTrigger render={<span className="block min-w-0 truncate" />}>
+          {children}
+        </TooltipTrigger>
+        <TooltipContent className="flex-col items-start gap-0.5">
+          <span className="font-medium">{name}</span>
+          {details === undefined ? null : (
+            <span className="opacity-80">{details}</span>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    </div>
+  );
+}

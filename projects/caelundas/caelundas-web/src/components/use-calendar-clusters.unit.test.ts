@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { useCalendarClusters } from "./use-calendar-clusters";
@@ -67,5 +67,29 @@ describe(useCalendarClusters, () => {
   it("merges nothing when merging is off or the view has its own overflow", () => {
     expect(shown("week", { enabled: false })).toStrictEqual(["a", "b", "c"]);
     expect(shown("month")).toStrictEqual(["a", "b", "c"]);
+  });
+
+  it("opens the events behind a cluster that is clicked, and closes them", () => {
+    const { result } = renderHook(() =>
+      useCalendarClusters({
+        anchor: new Date(Date.UTC(2026, 2, 4)),
+        enabled: true,
+        events: EVENTS,
+        timeZone: "UTC",
+        view: "week",
+      }),
+    );
+
+    act(() => {
+      result.current.handleEventClick({ eventId: "cluster:a" } as never);
+    });
+
+    expect(result.current.dialog).toBeDefined();
+
+    act(() => {
+      result.current.handleEventClick({ eventId: "a" } as never);
+    });
+
+    expect(result.current.dialog).toBeDefined();
   });
 });

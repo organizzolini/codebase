@@ -1,5 +1,7 @@
 import { buildEventGroups } from "../event-groups/event-group-tree";
 
+import { getEventLabel } from "./calendar-glyphs";
+
 import type {
   EventGroupField,
   EventGrouping,
@@ -156,7 +158,7 @@ function toGanttEvent(
     readOnly: true,
     resourceId: rowId,
     start: record.start,
-    title: record.summary,
+    title: getEventLabel(record).glyphs,
     ...(record.color === null ? {} : { color: record.color }),
   };
 }

@@ -344,7 +344,7 @@ describe("index", () => {
     BUILDER_TEST,
     async () => {
       await renderRoute("/?date=2026-03-01");
-      await startFilterRule(/^Planet/u, "is any of");
+      await startFilterRule(/^Planet(?!-)/u, "is any of");
       await pickOption(/^Mercury/u);
       fireEvent.keyDown(document.activeElement ?? document.body, {
         key: "Escape",
@@ -422,6 +422,37 @@ describe("index", () => {
       within(toolbar).getByRole("button", { name: "Filter, 1 active" }),
     ).toBeDefined();
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
+  });
+
+  it("turns the colors and the grouping of crowded days off from the View menu", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await screen.findByRole("grid", { name: "March 2026" });
+
+    const seen = new Set<string>();
+
+    for (const name of [
+      "Color events by type",
+      "Group similar events",
+      "Color events by type",
+      "Group similar events",
+    ]) {
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(await screen.findByRole("menuitemcheckbox", { name }));
+
+      // The link now says so, and the menu reads back what it holds.
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      await waitFor(() => {
+        expect(
+          screen
+            .getByRole("menuitemcheckbox", { name })
+            .getAttribute("aria-checked"),
+        ).toBe(seen.has(name) ? "true" : "false");
+      });
+      seen.add(name);
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+    }
   });
 
   it("searches the events' text from a link", async () => {
