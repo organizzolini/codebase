@@ -190,18 +190,18 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
+      <CalendarViewMenu
+        clusters={clusters}
+        collections={collections}
+        colors={colors}
+        onClustersChange={onClustersChange}
+        onColorsChange={onColorsChange}
+        onSelect={handleCollectionSelect}
+        query={query}
+      >
+        {viewOptions}
+      </CalendarViewMenu>
       <ButtonGroup aria-label="Filter">
-        <CalendarViewMenu
-          clusters={clusters}
-          collections={collections}
-          colors={colors}
-          onClustersChange={onClustersChange}
-          onColorsChange={onColorsChange}
-          onSelect={handleCollectionSelect}
-          query={query}
-        >
-          {viewOptions}
-        </CalendarViewMenu>
         <FilterSurface
           isTablet={isTablet}
           trigger={renderFiltersButton(activeCount)}

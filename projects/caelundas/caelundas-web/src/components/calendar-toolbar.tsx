@@ -85,8 +85,8 @@ export function CalendarToolbar(
         // each other. Where the row is too narrow to hold both side by side,
         // the views and the date take a row above the filters.
         <div className="@container">
-          <div className="grid min-w-0 gap-1 px-2 py-2 @7xl:grid-cols-[minmax(0,1fr)_auto] @7xl:items-start @7xl:gap-2">
-            <div className="flex min-w-0 flex-wrap items-start gap-1">
+          <div className="grid min-w-0 gap-2 px-2 py-2 @7xl:grid-cols-[minmax(0,1fr)_auto] @7xl:items-start">
+            <div className="flex min-w-0 flex-wrap items-start gap-2">
               {filters}
             </div>
             <div className="order-first flex items-start justify-end gap-2 @7xl:order-none">
@@ -100,7 +100,7 @@ export function CalendarToolbar(
         // A phone's row has no room beside the title for the controls, so
         // they take a row under it, wrapping onto more rows if they outgrow it.
         <div
-          className="flex min-w-0 flex-wrap items-center gap-1 px-2 pb-2"
+          className="flex min-w-0 flex-wrap items-center gap-2 px-2 pb-2"
           data-testid="calendar-toolbar-controls"
         >
           {filters}
