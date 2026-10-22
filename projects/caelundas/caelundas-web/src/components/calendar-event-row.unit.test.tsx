@@ -13,6 +13,7 @@ describe(CalendarEventRow, () => {
           description: "Mars and Venus meet",
           durationMinutes: 0,
           end: new Date("2026-03-04T15:20:00.000Z"),
+          groups: [],
           id: "event-mars-conjunct-venus",
           location: null,
           start: new Date("2026-03-04T15:20:00.000Z"),

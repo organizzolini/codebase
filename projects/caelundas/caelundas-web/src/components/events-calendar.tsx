@@ -4,6 +4,7 @@ import {
   EventCalendar,
   EventCalendarContent,
   type EventCalendarRenderEventProps,
+  useEventCalendarNavigation,
 } from "@codebase/presentation";
 
 import { getAgendaRange } from "../lib/calendar/calendar-agenda";
@@ -12,15 +13,24 @@ import { describeEvent } from "../lib/calendar/calendar-format";
 import {
   AGENDA_DAY_COUNT,
   type CalendarViewName,
+  DEFAULT_TIMELINE_SCALE,
+  type TimelineScale,
   toEventCalendarView,
 } from "../lib/calendar/calendar-views";
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import { CalendarAgenda } from "./calendar-agenda";
+import { CalendarGroupBy } from "./calendar-group-by";
 import { CalendarOverflowList } from "./calendar-overflow-list";
-import { CalendarToolbar } from "./calendar-toolbar";
+import { CalendarScaleSelect } from "./calendar-scale-select";
+import { CalendarTimeline } from "./calendar-timeline";
+import { type CalendarNavigation, CalendarToolbar } from "./calendar-toolbar";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
+import type {
+  CalendarEventRecord,
+  EventFacet,
+} from "../lib/events-database/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -43,13 +53,31 @@ export interface EventsCalendarProperties {
   compact?: boolean;
   events: readonly CalendarEventRecord[];
   /**
+   * The tag roots the data has, which name the groups.
+   */
+  facets: readonly EventFacet[];
+  /**
    * The filter controls the toolbar row carries.
    */
   filters?: ReactNode;
   /**
+   * The levels the agenda is sectioned by, which the events' `groups` were
+   * read for.
+   */
+  grouping: readonly EventGroupLevel[];
+  /**
    * Called with the new day when the toolbar moves the calendar.
    */
   onDateChange: (date: Date) => void;
+  /**
+   * Called with the grouping picked in the toolbar of a view that groups;
+   * grouping is not offered without it.
+   */
+  onGroupingChange?: ((grouping: EventGroupLevel[]) => void) | undefined;
+  /**
+   * Called with the timeline scale picked in the toolbar.
+   */
+  onScaleChange?: ((scale: TimelineScale) => void) | undefined;
   /**
    * Called when the agenda should list more days; without it, it lists no
    * more.
@@ -59,6 +87,10 @@ export interface EventsCalendarProperties {
    * Called with the view picked in the toolbar.
    */
   onViewChange?: (view: CalendarViewName) => void;
+  /**
+   * The span the timeline shows at once; a month when absent.
+   */
+  scale?: TimelineScale | undefined;
   timeZone: string;
   /**
    * The month when absent.
@@ -75,6 +107,7 @@ const OVERFLOW_CLASS_NAMES = { morePopover: "w-80" };
 
 // The hour column stacks above the event chips, which the calendar stacks
 // from 10 up, and below the sticky day headers at 20.
+
 const SCROLLING_WEEK_CLASS_NAMES = {
   timeGrid: "min-w-[48rem]",
   timeGutter: "bg-background sticky start-0 z-[15]",
@@ -84,26 +117,125 @@ const SCROLLING_WEEK_CLASS_NAMES = {
 
 /**
  * Renders the view the page picked under a single toolbar row, filling its
- * container.
+ * container: the timeline as a Gantt, every other view in the event
+ * calendar.
  */
 export function EventsCalendar(
   properties: Readonly<EventsCalendarProperties>,
 ): ReactNode {
   const {
-    agendaDays = AGENDA_DAY_COUNT,
     anchor,
     className,
     compact = false,
     events,
+    facets,
     filters,
+    grouping,
     onDateChange,
-    onShowLater,
+    onGroupingChange,
+    onScaleChange,
     onViewChange,
+    scale = DEFAULT_TIMELINE_SCALE,
     timeZone,
     view = "month",
   } = properties;
 
   // 🪝 Hooks
+
+  // 🏗 Setup
+  const renderToolbar = (navigation: CalendarNavigation): ReactNode => (
+    <CalendarToolbar
+      compact={compact}
+      filters={filters}
+      groupBy={
+        (view === "agenda" || view === "timeline") &&
+        onGroupingChange !== undefined ? (
+          <CalendarGroupBy
+            compact={compact}
+            facets={facets}
+            grouping={grouping}
+            onGroupingChange={onGroupingChange}
+          />
+        ) : undefined
+      }
+      navigation={navigation}
+      onViewChange={onViewChange}
+      scaleSelect={
+        view === "timeline" && onScaleChange !== undefined ? (
+          <CalendarScaleSelect
+            compact={compact}
+            onScaleChange={onScaleChange}
+            scale={scale}
+          />
+        ) : undefined
+      }
+      view={view}
+    />
+  );
+
+  // 💪 Handlers
+
+  // ♻️ Lifecycle
+
+  // 🏁 Early Returns
+
+  // 🎨 Markup
+  return (
+    <div
+      className={className}
+      data-testid="events-calendar"
+    >
+      {view === "timeline" ? (
+        <CalendarTimeline
+          anchor={anchor}
+          className="flex h-full flex-col"
+          compact={compact}
+          events={events}
+          facets={facets}
+          grouping={grouping}
+          onDateChange={onDateChange}
+          renderToolbar={renderToolbar}
+          scale={scale}
+          timeZone={timeZone}
+        />
+      ) : (
+        <CalendarGrid
+          {...properties}
+          compact={compact}
+          renderToolbar={renderToolbar}
+          view={view}
+        />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Renders every view but the timeline in the vendored event calendar, under
+ * the toolbar it is handed.
+ */
+function CalendarGrid(
+  properties: Readonly<
+    EventsCalendarProperties & {
+      compact: boolean;
+      renderToolbar: (navigation: CalendarNavigation) => ReactNode;
+      view: Exclude<CalendarViewName, "timeline">;
+    }
+  >,
+): ReactNode {
+  const {
+    agendaDays = AGENDA_DAY_COUNT,
+    anchor,
+    compact,
+    events,
+    facets,
+    grouping,
+    onDateChange,
+    onShowLater,
+    renderToolbar,
+    timeZone,
+    view,
+  } = properties;
   const calendarEvents = useMemo(
     () => events.map((event) => toCalendarEvent(event)),
     [events],
@@ -121,12 +253,8 @@ export function EventsCalendar(
       ),
     [agendaDays, anchor, timeZone],
   );
-
-  // 🏗 Setup
   const calendarView = toEventCalendarView(view);
   const layout = getViewLayout(view, compact);
-
-  // 💪 Handlers
   // A chip's own label carries only its title and time, so its tags and
   // duration are spelled out for screen readers inside it.
   const renderEvent = useCallback(
@@ -156,51 +284,50 @@ export function EventsCalendar(
     [events, timeZone],
   );
 
-  // ♻️ Lifecycle
-
-  // 🏁 Early Returns
-
-  // 🎨 Markup
   return (
-    <div
-      className={className}
-      data-testid="events-calendar"
+    <EventCalendar<CalendarEventRecord>
+      agendaDayCount={agendaDays}
+      className="h-full"
+      classNames={layout.classNames}
+      date={anchor}
+      dayCount={calendarView.dayCount}
+      events={calendarEvents}
+      interactions={{ drag: false, resize: false, selectSlot: false }}
+      onDateChange={onDateChange}
+      renderEvent={renderEvent}
+      renderMoreContent={renderMoreContent}
+      scrollMode={layout.scrollMode}
+      timeZone={timeZone}
+      view={calendarView.view}
+      views={[calendarView.view]}
     >
-      <EventCalendar<CalendarEventRecord>
-        agendaDayCount={agendaDays}
-        className="h-full"
-        classNames={layout.classNames}
-        date={anchor}
-        dayCount={calendarView.dayCount}
-        events={calendarEvents}
-        interactions={{ drag: false, resize: false, selectSlot: false }}
-        onDateChange={onDateChange}
-        renderEvent={renderEvent}
-        renderMoreContent={renderMoreContent}
-        scrollMode={layout.scrollMode}
-        timeZone={timeZone}
-        view={calendarView.view}
-        views={[calendarView.view]}
-      >
-        <CalendarToolbar
-          compact={compact}
-          filters={filters}
-          onViewChange={onViewChange}
-          view={view}
-        />
-        <EventCalendarContent className={layout.contentClassName}>
-          {view === "agenda" ? (
-            <CalendarAgenda
-              className="min-h-0 flex-1 border-t"
-              events={events}
-              onShowLater={onShowLater}
-              range={agendaRange}
-            />
-          ) : undefined}
-        </EventCalendarContent>
-      </EventCalendar>
-    </div>
+      <CalendarGridToolbar renderToolbar={renderToolbar} />
+      <EventCalendarContent className={layout.contentClassName}>
+        {view === "agenda" ? (
+          <CalendarAgenda
+            className="min-h-0 flex-1 border-t"
+            events={events}
+            facets={facets}
+            grouping={grouping}
+            onShowLater={onShowLater}
+            range={agendaRange}
+          />
+        ) : undefined}
+      </EventCalendarContent>
+    </EventCalendar>
   );
+}
+
+/**
+ * Draws the toolbar with the event calendar's own navigation, which only a
+ * child of the calendar can read.
+ */
+function CalendarGridToolbar(
+  properties: Readonly<{
+    renderToolbar: (navigation: CalendarNavigation) => ReactNode;
+  }>,
+): ReactNode {
+  return properties.renderToolbar(useEventCalendarNavigation());
 }
 
 /**

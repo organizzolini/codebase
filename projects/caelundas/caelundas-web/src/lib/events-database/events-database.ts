@@ -4,6 +4,7 @@ import {
   DATASET_SQL,
   EVENTS_IN_WINDOW_SQL,
   FACETS_SQL,
+  GROUP_COLUMN_SQL,
 } from "./events-database.constants";
 
 import type {
@@ -13,6 +14,7 @@ import type {
   EventsDataset,
   EventsQuery,
   SqlExecutor,
+  SqlGroupSource,
   SqlRow,
 } from "./events-database.types";
 
@@ -24,6 +26,22 @@ const tagsSchema = z.array(
     path: z.string(),
   }),
 );
+
+// A key SQL could not work out, such as the day of an event in a zone that
+// does not parse, puts the event in no group rather than one named "null".
+const groupKeysSchema = z
+  .array(
+    z.object({
+      key: z.union([z.number(), z.string()]).nullable(),
+      label: z.string().nullable(),
+      path: z.string().nullable(),
+    }),
+  )
+  .transform((keys) =>
+    keys.flatMap(({ key, label, path }) =>
+      key === null ? [] : [{ key: String(key), label, path }],
+    ),
+  );
 
 /**
  * Builds the events database over any executor. Every query lives here, so
@@ -39,20 +57,24 @@ export function createEventsDatabase(executor: SqlExecutor): EventsDatabase {
 
     async findEvents(query: EventsQuery) {
       const filter = query.filter ?? null;
+      const groups = query.groups ?? [];
       const rows = await executor.select(
-        // A replacer function, so nothing in the condition is read as a
-        // replacement pattern.
-        EVENTS_IN_WINDOW_SQL.replace("{filter}", () =>
+        // Replacer functions, so nothing in a condition or a group source is
+        // read as a replacement pattern.
+        EVENTS_IN_WINDOW_SQL.replace("{groups}", () =>
+          toGroupColumns(groups),
+        ).replace("{filter}", () =>
           filter === null ? "" : `and ${filter.sql}`,
         ),
         [
+          ...groups.flatMap((group) => group.parameters),
           query.window.end.toISOString(),
           query.window.start.toISOString(),
           ...(filter?.parameters ?? []),
         ],
       );
 
-      return rows.map((row) => toEventRecord(row));
+      return rows.map((row) => toEventRecord(row, groups.length));
     },
 
     async findFacets() {
@@ -97,15 +119,20 @@ function toDataset(row: SqlRow): EventsDataset {
 }
 
 /**
- * Maps one event row, whose tags arrive as a JSON array, to the calendar's
- * event shape.
+ * Maps one event row, whose tags and each level's groups arrive as JSON
+ * arrays, to the calendar's event shape.
  */
-function toEventRecord(row: SqlRow): CalendarEventRecord {
+function toEventRecord(row: SqlRow, groupLevels: number): CalendarEventRecord {
   return {
     color: readText(row, "color"),
     description: readRequiredText(row, "description"),
     durationMinutes: Number(row["duration_minutes"]),
     end: readDate(row, "end"),
+    groups: Array.from({ length: groupLevels }, (_, level) =>
+      groupKeysSchema.parse(
+        JSON.parse(readRequiredText(row, `group_${String(level)}`)),
+      ),
+    ),
     id: readRequiredText(row, "id"),
     location: readText(row, "location"),
     start: readDate(row, "start"),
@@ -141,4 +168,19 @@ function toFacets(rows: readonly SqlRow[]): EventFacet[] {
   }
 
   return [...facets.values()];
+}
+
+/**
+ * The select list's extra columns, one JSON array of group keys per level,
+ * named `group_0` onward.
+ */
+function toGroupColumns(groups: readonly SqlGroupSource[]): string {
+  return groups
+    .map((group, level) =>
+      GROUP_COLUMN_SQL.replace("{source}", () => group.sql).replace(
+        "{column}",
+        `group_${String(level)}`,
+      ),
+    )
+    .join("");
 }

@@ -1,4 +1,4 @@
-import { Button, useEventCalendarNavigation } from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
 import { CalendarViewSelect } from "./calendar-view-select";
 
@@ -8,7 +8,18 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The toolbar shows the calendar it sits inside, plus whatever filter
+ * How the toolbar moves the view it sits over, and the title of the period
+ * shown: the event calendar's or the timeline's.
+ */
+export interface CalendarNavigation {
+  next: () => void;
+  prev: () => void;
+  title: string;
+  today: () => void;
+}
+
+/**
+ * The toolbar moves the view it sits over, and shows whatever filter
  * controls the page hands it and the view the page shows.
  */
 export interface CalendarToolbarProperties {
@@ -22,9 +33,18 @@ export interface CalendarToolbarProperties {
    */
   filters?: ReactNode;
   /**
+   * Drawn after the filters, for the views that group their events.
+   */
+  groupBy?: ReactNode;
+  navigation: CalendarNavigation;
+  /**
    * Called with the view picked; the selector is left out without it.
    */
   onViewChange?: ((view: CalendarViewName) => void) | undefined;
+  /**
+   * Drawn before the view selector, for the timeline's scale.
+   */
+  scaleSelect?: ReactNode;
   view?: CalendarViewName | undefined;
 }
 
@@ -32,16 +52,24 @@ export interface CalendarToolbarProperties {
 
 /**
  * Renders the calendar's one toolbar row: today, previous and next, the
- * period's title, the filters, and the view selector. It must sit inside an
- * `EventCalendar`, whose state it reads.
+ * period's title, the filters, the grouping, and the view selector, over
+ * whichever view's navigation it is handed.
  */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,
 ): ReactNode {
-  const { className, compact, filters, onViewChange, view } = properties;
+  const {
+    className,
+    compact,
+    filters,
+    groupBy,
+    navigation,
+    onViewChange,
+    scaleSelect,
+    view,
+  } = properties;
 
   // 🪝 Hooks
-  const navigation = useEventCalendarNavigation();
 
   // 🏗 Setup
 
@@ -84,9 +112,23 @@ export function CalendarToolbar(
         <h2 className="ms-2 truncate text-base font-semibold">
           {navigation.title}
         </h2>
-        <div className="flex min-w-0 grow items-center justify-end gap-1">
-          {filters}
-        </div>
+        {compact ? (
+          // A phone's row is too narrow for every control, so they scroll
+          // sideways together, never over each other.
+          <div className="flex min-w-0 grow items-center overflow-x-auto">
+            <div className="ms-auto flex shrink-0 items-center gap-1">
+              {filters}
+              {groupBy}
+              {scaleSelect}
+            </div>
+          </div>
+        ) : (
+          <div className="flex min-w-0 grow items-center justify-end gap-1">
+            {filters}
+            {groupBy}
+            {scaleSelect}
+          </div>
+        )}
         {view === undefined || onViewChange === undefined ? null : (
           <CalendarViewSelect
             compact={compact}

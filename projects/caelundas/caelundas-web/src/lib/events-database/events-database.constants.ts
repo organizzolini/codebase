@@ -4,9 +4,9 @@
 /**
  * The events that overlap a window, earliest first, each with the tags it was
  * given as a JSON array, read through the post-export views. Binds the
- * window's end, then its start, then whatever condition replaces `{filter}`;
- * ends are compared inclusively so an instant at the window's first moment
- * is still found.
+ * group sources that replace `{groups}`, then the window's end, then its
+ * start, then whatever condition replaces `{filter}`; ends are compared
+ * inclusively so an instant at the window's first moment is still found.
  */
 export const EVENTS_IN_WINDOW_SQL = `
   select
@@ -34,7 +34,7 @@ export const EVENTS_IN_WINDOW_SQL = `
         where t.calendar_event_id = e.id and t.is_direct = 1
         order by t.tag_path
       ) t
-    ) as tags
+    ) as tags {groups}
   from calendar_events_derived e
   where e."start" < ? and e."end" >= ? {filter}
   order by e."start", e."summary"
@@ -81,3 +81,15 @@ export const FACETS_SQL = `
   join tag_nodes r on r.id = n.root_id
   order by n."path"
 `;
+
+/**
+ * Gathers one level's group rows into a JSON array column, in place of
+ * `{source}`, named by `{column}`.
+ */
+export const GROUP_COLUMN_SQL = `,
+    (
+      select json_group_array(
+        json_object('key', g."key", 'label', g.label, 'path', g."path")
+      )
+      from ({source}) g
+    ) as {column}`;
