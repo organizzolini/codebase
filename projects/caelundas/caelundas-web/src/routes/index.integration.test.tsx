@@ -2,6 +2,13 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import {
+  BUILDER_TEST,
+  BUILDER_WAIT,
+  findToolbar,
+  pickOption,
+  startFilterRule,
+} from "../../testing/calendar-page";
+import {
   fieldRule,
   filterGroup,
   filterLink,
@@ -16,11 +23,6 @@ import { setViewportWidth } from "../../testing/viewport";
 import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
 
 import { Route } from "./index";
-
-// Building a rule takes a dozen renders of the vendored builder and a reload
-// of the calendar, which a slow continuous integration runner needs time for.
-const BUILDER_TEST = { timeout: 30_000 };
-const BUILDER_WAIT = { timeout: 10_000 };
 
 describe("index", () => {
   it("renders its page", async () => {
@@ -82,7 +84,7 @@ describe("index", () => {
   it("moves to the next month and reads its events", async () => {
     await renderRoute("/?date=2026-03-01");
 
-    const toolbar = await screen.findByTestId("calendar-toolbar");
+    const toolbar = await findToolbar();
 
     fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
 
@@ -236,7 +238,7 @@ describe("index", () => {
       ),
     );
 
-    const toolbar = await screen.findByTestId("calendar-toolbar");
+    const toolbar = await findToolbar();
 
     fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
 
@@ -322,7 +324,7 @@ describe("index", () => {
       setViewportWidth(viewport.width);
       await renderRoute("/?date=2026-03-01");
 
-      const toolbar = await screen.findByTestId("calendar-toolbar");
+      const toolbar = await findToolbar();
 
       expect(screen.queryByText("No filters yet")).toBeNull();
 
@@ -342,34 +344,8 @@ describe("index", () => {
     BUILDER_TEST,
     async () => {
       await renderRoute("/?date=2026-03-01");
-
-      const toolbar = await screen.findByTestId(
-        "calendar-toolbar",
-        {},
-        BUILDER_WAIT,
-      );
-
-      fireEvent.click(
-        within(toolbar).getByRole("button", { name: /^Filters/u }),
-      );
-      const builder = await screen.findByRole(
-        "dialog",
-        { name: "Filters" },
-        BUILDER_WAIT,
-      );
-
-      fireEvent.click(
-        within(builder).getByRole("button", { name: "Add filter" }),
-      );
-      fireEvent.click(
-        await screen.findByRole("option", { name: /^Planet/u }, BUILDER_WAIT),
-      );
-      fireEvent.click(
-        await screen.findByRole("option", { name: "is any of" }, BUILDER_WAIT),
-      );
-      fireEvent.click(
-        await screen.findByRole("option", { name: /^Mercury/u }, BUILDER_WAIT),
-      );
+      await startFilterRule(/^Planet/u, "is any of");
+      await pickOption(/^Mercury/u);
       fireEvent.keyDown(document.activeElement ?? document.body, {
         key: "Escape",
       });
@@ -402,7 +378,7 @@ describe("index", () => {
         ),
       );
 
-      const toolbar = await screen.findByTestId("calendar-toolbar");
+      const toolbar = await findToolbar();
       const chips = within(toolbar).getByRole("toolbar", { name: "Filters" });
 
       expect(
@@ -440,7 +416,7 @@ describe("index", () => {
       ),
     );
 
-    const toolbar = await screen.findByTestId("calendar-toolbar");
+    const toolbar = await findToolbar();
 
     expect(
       within(toolbar).getByRole("button", { name: "Filters, 1 active" }),
@@ -469,31 +445,7 @@ describe("index", () => {
     BUILDER_TEST,
     async () => {
       await renderRoute("/?date=2026-03-01");
-
-      const toolbar = await screen.findByTestId(
-        "calendar-toolbar",
-        {},
-        BUILDER_WAIT,
-      );
-
-      fireEvent.click(
-        within(toolbar).getByRole("button", { name: /^Filters/u }),
-      );
-      const builder = await screen.findByRole(
-        "dialog",
-        { name: "Filters" },
-        BUILDER_WAIT,
-      );
-
-      fireEvent.click(
-        within(builder).getByRole("button", { name: "Add filter" }),
-      );
-      fireEvent.click(
-        await screen.findByRole("option", { name: /^Date/u }, BUILDER_WAIT),
-      );
-      fireEvent.click(
-        await screen.findByRole("option", { name: "is between" }, BUILDER_WAIT),
-      );
+      await startFilterRule(/^Date/u, "is between");
       fireEvent.change(
         await screen.findByLabelText("Date from", {}, BUILDER_WAIT),
         {
