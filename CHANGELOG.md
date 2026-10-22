@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.22.0](https://github.com/organizzolini/codebase/compare/v3.21.0...v3.22.0) (2026-10-22)
+
+### ✨ Features
+
+* **installation:** ✨ fold ssh-signing into software and install the commit tools on linux ([#1743](https://github.com/organizzolini/codebase/issues/1743)) ([a5eeba3](https://github.com/organizzolini/codebase/commit/a5eeba37cddd974c6f800abc3d2f40c6265ce469)), closes [#1738](https://github.com/organizzolini/codebase/issues/1738)
+
 ## [3.21.0](https://github.com/organizzolini/codebase/compare/v3.20.0...v3.21.0) (2026-10-22)
 
 ### ✨ Features
