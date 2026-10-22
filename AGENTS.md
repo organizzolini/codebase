@@ -57,6 +57,9 @@ sub-issues without asking.
      or stack dependent ones ([gh-stack](.agents/skills/gh-stack/SKILL.md)). Brief each
      with its ticket, the spec, and steps 5–8. See
      [Multiple Pull Requests](#multiple-pull-requests).
+   - **Smallest change**: Before writing code, run [ponytail](.agents/skills/ponytail/SKILL.md)
+     (full level) — skip, reuse, standard library, installed dependency, then minimum new
+     code. [Simplicity](#simplicity) says what outranks it.
    - **TDD loop**: Use [implement](.agents/skills/implement/SKILL.md) with
      [test-driven-development](.agents/skills/test-driven-development/SKILL.md) (strict
      red-green cycle) and [tdd](.agents/skills/tdd/SKILL.md) (confirmed seams, public
@@ -66,7 +69,8 @@ sub-issues without asking.
      (root-cause gate) with [diagnosing-bugs](.agents/skills/diagnosing-bugs/SKILL.md).
 6. **Review**: Request review via
    [requesting-code-review](.agents/skills/requesting-code-review/SKILL.md) (fresh subagent
-   handed base/head commits), review with [code-review](.agents/skills/code-review/SKILL.md),
+   handed base/head commits), review with [code-review](.agents/skills/code-review/SKILL.md)
+   and [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
    and apply feedback via [receiving-code-review](.agents/skills/receiving-code-review/SKILL.md).
 7. **Validate**: Run [validate-code](.agents/skills/validate-code/SKILL.md) gated by
    [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md).
@@ -207,6 +211,14 @@ Four in-house toolchains measure this workspace and gate what they measure:
 - **conformetry**: Generated code against its template
 
 Use the respective agent skills (e.g., `codometer-measure`, `callidescope-triage`) to interact with these toolchains. Scaffold with `conformetry-generate` instead of hand-crafting. Never manually edit limits, bypass rules, or hand-edit generated output to make a check pass.
+
+### Simplicity
+
+[ponytail](.agents/skills/ponytail/SKILL.md) governs how much new code a change
+adds. It never outranks this file: tests, coverage, the folder structure,
+`conformetry-generate` output, strict typing, and Zod validation at boundaries
+all stay, so a change still gets the tests [Testing & Coverage](#testing--coverage)
+requires.
 
 ### Project Structure & Boundaries
 

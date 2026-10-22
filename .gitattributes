@@ -95,6 +95,10 @@ dist/** linguist-generated
 .agents/skills/nx-plugins/** linguist-vendored
 .agents/skills/nx-run-tasks/** linguist-vendored
 .agents/skills/nx-workspace/** linguist-vendored
+.agents/skills/ponytail/** linguist-vendored
+.agents/skills/ponytail-audit/** linguist-vendored
+.agents/skills/ponytail-debt/** linguist-vendored
+.agents/skills/ponytail-review/** linguist-vendored
 .agents/skills/prototype/** linguist-vendored
 .agents/skills/receiving-code-review/** linguist-vendored
 .agents/skills/requesting-code-review/** linguist-vendored
