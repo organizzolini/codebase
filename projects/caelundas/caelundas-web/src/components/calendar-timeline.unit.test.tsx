@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { CalendarTimeline } from "./calendar-timeline";
 
@@ -13,7 +13,7 @@ describe(CalendarTimeline, () => {
         facets={[]}
         grouping={[]}
         onDateChange={() => {}}
-        renderToolbar={(navigation) => <h2>{navigation.title}</h2>}
+        onNavigationChange={() => {}}
         timeZone="America/New_York"
       />,
     );
@@ -23,7 +23,8 @@ describe(CalendarTimeline, () => {
     );
   });
 
-  it("draws every event in one row when not grouped", () => {
+  it("draws every event in one row when not grouped, titling its period", () => {
+    const onNavigationChange = vi.fn();
     render(
       <CalendarTimeline
         anchor={new Date("2026-03-15T12:00:00.000Z")}
@@ -31,16 +32,19 @@ describe(CalendarTimeline, () => {
         facets={[]}
         grouping={[]}
         onDateChange={() => {}}
-        renderToolbar={(navigation) => <h2>{navigation.title}</h2>}
+        onNavigationChange={onNavigationChange}
         timeZone="America/New_York"
       />,
     );
 
     expect(screen.getByText("All events")).toBeDefined();
-    expect(screen.getByRole("heading", { name: "March 2026" })).toBeDefined();
+    expect(onNavigationChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ title: "March 2026" }),
+    );
   });
 
   it("zooms a phone's day in", () => {
+    const onNavigationChange = vi.fn();
     render(
       <CalendarTimeline
         anchor={new Date("2026-03-15T12:00:00.000Z")}
@@ -48,7 +52,7 @@ describe(CalendarTimeline, () => {
         facets={[]}
         grouping={[]}
         onDateChange={() => {}}
-        renderToolbar={(navigation) => <h2>{navigation.title}</h2>}
+        onNavigationChange={onNavigationChange}
         scale="day"
         timeZone="America/New_York"
         compact
@@ -57,8 +61,8 @@ describe(CalendarTimeline, () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
 
-    expect(
-      screen.getByRole("heading", { name: "Sunday, March 15, 2026" }),
-    ).toBeDefined();
+    expect(onNavigationChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ title: "Sunday, March 15, 2026" }),
+    );
   });
 });

@@ -146,7 +146,7 @@ function IndexPage(): ReactNode {
     });
   };
 
-  const handleFilterChange = (next: EventFilterQuery | undefined): void => {
+  const handleFilterChange = (next?: EventFilterQuery): void => {
     void navigate({
       replace: true,
       search: (previous) => ({ ...previous, filter: next }),
@@ -168,7 +168,10 @@ function IndexPage(): ReactNode {
 
   // 🎨 Markup
   return (
-    <section className="relative flex h-dvh flex-col">
+    <section
+      aria-busy={isReloading}
+      className="relative flex h-dvh flex-col"
+    >
       <h1 className="sr-only">Caelundas</h1>
       <EventsCalendar
         agendaDays={agendaDays}
@@ -179,7 +182,7 @@ function IndexPage(): ReactNode {
         facets={facets}
         filters={
           <CalendarFilters
-            className="flex min-w-0 items-center gap-1"
+            className="flex items-center gap-1"
             fields={fields}
             filter={filter}
             onFilterChange={handleFilterChange}
@@ -207,6 +210,9 @@ function IndexPage(): ReactNode {
         <CalendarEmpty
           className="pointer-events-none absolute inset-x-0 top-1/3 z-40 flex justify-center px-4"
           emptiness={emptiness}
+          onClearFilters={() => {
+            handleFilterChange();
+          }}
           onJump={handleDateChange}
           period={CALENDAR_VIEW_PERIODS[view]}
         />
