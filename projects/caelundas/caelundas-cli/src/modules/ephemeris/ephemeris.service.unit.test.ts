@@ -3,6 +3,8 @@ import { Test } from "@nestjs/testing";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { assertEphemerisFilesPresent } from "../ephemeris-download/ephemeris-download.utilities";
+
 import { EphemerisAggregationService } from "./ephemeris-aggregation.service";
 import { EphemerisConstantsService } from "./ephemeris-constants.service";
 import { EphemerisCoordinateService } from "./ephemeris-coordinate.service";
@@ -11,6 +13,7 @@ import { EphemerisPhenomenaService } from "./ephemeris-phenomena.service";
 import { EphemerisTimeService } from "./ephemeris-time.service";
 import { EphemerisService } from "./ephemeris.service";
 
+import type * as EphemerisDownloadUtilities from "../ephemeris-download/ephemeris-download.utilities";
 import type * as EphemerisConstantsModule from "./ephemeris.constants";
 import type {
   AzimuthElevationEphemeris,
@@ -24,6 +27,17 @@ import type {
   JulianDays,
 } from "./internal-ephemeris.types";
 import type { Moment } from "moment-timezone";
+
+vi.mock(
+  "../ephemeris-download/ephemeris-download.utilities",
+  async (importOriginal) => {
+    const original = await importOriginal<typeof EphemerisDownloadUtilities>();
+    return {
+      ...original,
+      assertEphemerisFilesPresent: vi.fn<() => void>(),
+    };
+  },
+);
 
 vi.mock("./ephemeris.constants", async (importOriginal) => {
   const original = await importOriginal<typeof EphemerisConstantsModule>();
@@ -394,6 +408,24 @@ describe(EphemerisService, () => {
       expect(() =>
         service.getIlluminationFromEphemeris({}, "missing", "illumination"),
       ).toThrow("Missing illumination at missing");
+    });
+  });
+
+  describe("verifyFiles", () => {
+    it("checks that the data files are present", () => {
+      service.verifyFiles();
+
+      expect(assertEphemerisFilesPresent).toHaveBeenCalledWith();
+    });
+
+    it("lets the error for missing files through", () => {
+      vi.mocked(assertEphemerisFilesPresent).mockImplementationOnce(() => {
+        throw new Error("files are missing");
+      });
+
+      expect(() => {
+        service.verifyFiles();
+      }).toThrow("files are missing");
     });
   });
 

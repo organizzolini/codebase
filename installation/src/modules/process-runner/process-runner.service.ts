@@ -54,6 +54,11 @@ export class ProcessRunnerService {
     return undefined;
   }
 
+  /** The operating system this runs on, which a test replaces to cover the other one. */
+  public platform(): NodeJS.Platform {
+    return process.platform;
+  }
+
   /**
    * Runs a command to completion.
    *

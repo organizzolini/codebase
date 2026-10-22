@@ -26,8 +26,15 @@ else
   echo "⚠️  .env file not found (will be created by the installation setup command)"
 fi
 
-echo "👟 Making all codebase workspace scripts executable..."
-find . -type f -name '*.sh' -print0 | xargs -0 chmod +x || true
+# Only scripts git already stores as executable are touched. Making a file
+# executable that git stores as 644 shows up as a modification, and a later
+# `git add -A` would commit it.
+echo "👟 Making the codebase workspace's executable scripts executable..."
+git ls-files --stage -- '*.sh' | while read -r mode _ _ script; do
+  if [[ "${mode}" == "100755" ]]; then
+    chmod +x "${script}"
+  fi
+done || true
 
 get_git_commit_hash() {
   local commit

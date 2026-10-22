@@ -1,3 +1,21 @@
+## 0.0.47 (2026-10-21)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.46
+- Updated conformetry-generation to 0.0.46
+- Updated conformetry-validation to 0.0.45
+- Updated conformetry-output to 0.0.45
+
+## 0.0.46 (2026-10-20)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.45
+- Updated conformetry-generation to 0.0.45
+- Updated conformetry-validation to 0.0.44
+- Updated conformetry-output to 0.0.44
+
 ## 0.0.45 (2026-10-20)
 
 ### 💅 Refactors

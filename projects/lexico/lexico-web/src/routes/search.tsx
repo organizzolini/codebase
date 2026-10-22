@@ -375,7 +375,6 @@ function SearchPage(): ReactNode {
   const isLoading = useRouterState({
     select: (state: { isLoading: boolean }) => state.isLoading,
   });
-
   const formsByLexeme = useMemo(
     () =>
       new Map(

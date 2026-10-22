@@ -131,6 +131,13 @@ describe(ProcessRunnerService, () => {
     });
   });
 
+  describe("platform", () => {
+    it("reports the operating system this runs on", () => {
+      expect.hasAssertions();
+      expect(service.platform()).toBe(process.platform);
+    });
+  });
+
   describe("sleep", () => {
     it("resolves after the wait", async () => {
       expect.hasAssertions();

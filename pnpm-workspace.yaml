@@ -136,7 +136,7 @@ catalog:
   graphql: ^16.11.0
   husky: ^9.1.7
   graphql-codegen-typescript-validation-schema: ^0.19.0
-  ignore: 7.0.12
+  ignore: 7.0.13
   input-otp: ^1.4.2
   jiti: ^2.7.0
   jsdom: ^30.0.1

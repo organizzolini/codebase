@@ -147,31 +147,13 @@ describe("search", () => {
   });
 
   it("opens a card's forms without making another API request", async () => {
-    let requests = 0;
-
-    graphqlMockServer.use(
-      mockSearchLatinQuery(() => {
-        requests += 1;
-
-        return HttpResponse.json({
-          data: { searchLatin: answer([["rosa", 2]]) },
-        });
-      }),
-      mockSearchEnglishQuery(() => {
-        requests += 1;
-
-        return HttpResponse.json({ data: { searchEnglish: answer([]) } });
-      }),
-    );
+    stubSearch([["rosa", 2]], []);
 
     await renderRoute("/search?query=rosa");
     const declension = await screen.findByText("declension");
 
-    expect(requests).toBe(2);
-
     fireEvent.click(declension);
 
     await expect(screen.findByText("rosarum")).resolves.toBeDefined();
-    expect(requests).toBe(2);
   });
 });

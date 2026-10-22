@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.19.0](https://github.com/organizzolini/codebase/compare/v3.18.0...v3.19.0) (2026-10-21)
+
+### ✨ Features
+
+* **lexico:** ✨ add graphql codegen workflow for web ([#1720](https://github.com/organizzolini/codebase/issues/1720)) ([6bf18e4](https://github.com/organizzolini/codebase/commit/6bf18e4931f80d63fbf14de915963e68c0d21df7))
+
+## [3.18.0](https://github.com/organizzolini/codebase/compare/v3.17.0...v3.18.0) (2026-10-20)
+
+### ✨ Features
+
+* **caelundas:** ✨ verify ephemeris files and refuse fallback results ([#1736](https://github.com/organizzolini/codebase/issues/1736)) ([03126ed](https://github.com/organizzolini/codebase/commit/03126ed3c6dafcf5d6a74906b9310f804ac3090e))
+* **scripts,installation:** ✨ set up Linux through the setup command ([#1739](https://github.com/organizzolini/codebase/issues/1739)) ([ecf3737](https://github.com/organizzolini/codebase/commit/ecf3737b98104b9f942187df5efa91480a30347b))
+
+## [3.17.0](https://github.com/organizzolini/codebase/compare/v3.16.0...v3.17.0) (2026-10-20)
+
+### ✨ Features
+
+* **scripts,installation:** ✨ verify ssh commit signatures locally ([#1732](https://github.com/organizzolini/codebase/issues/1732)) ([7af5762](https://github.com/organizzolini/codebase/commit/7af57626cb2db033f535a30b6629137c43b46b36))
+
+## [3.16.0](https://github.com/organizzolini/codebase/compare/v3.15.2...v3.16.0) (2026-10-20)
+
+### ✨ Features
+
+* **lexico:** ✨ add relay connections for relationship fields ([#1714](https://github.com/organizzolini/codebase/issues/1714)) ([9e99709](https://github.com/organizzolini/codebase/commit/9e997098ac1bf6f6b00bf9dcbd31bd8dccfd0d5e))
+
+## [3.15.2](https://github.com/organizzolini/codebase/compare/v3.15.1...v3.15.2) (2026-10-20)
+
+### ♻️ Code Refactoring
+
+* **lexico-entities:** ♻️ rename entity files to kebab-case ([#1713](https://github.com/organizzolini/codebase/issues/1713)) ([f6c74e5](https://github.com/organizzolini/codebase/commit/f6c74e51b5f89393c99954a1a4ce54cf346d3db4))
+
 ## [3.15.1](https://github.com/organizzolini/codebase/compare/v3.15.0...v3.15.1) (2026-10-20)
 
 ### ♻️ Code Refactoring

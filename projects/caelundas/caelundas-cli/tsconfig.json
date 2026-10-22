@@ -26,7 +26,6 @@
     "codependix.config.ts",
     "codometer.config.ts",
     "eslint.config.ts",
-    "scripts/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "testing/**/*.ts",
