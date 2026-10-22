@@ -125,6 +125,11 @@ const scopes = [
   },
   {
     description:
+      "Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers",
+    name: "interface",
+  },
+  {
+    description:
       "Dependency version changes (upgrades, additions, removals via pnpm)",
     name: "dependencies",
   },
