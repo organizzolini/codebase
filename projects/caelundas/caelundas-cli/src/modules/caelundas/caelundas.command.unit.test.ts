@@ -14,8 +14,10 @@ import { ProgressiveService } from "../progressive/progressive.service";
 
 import { CaelundasCommand } from "./caelundas.command";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
-import type { CalendarEvent } from "../database/entities/calendar-event.entity";
+import type {
+  DetectedCalendarEvent,
+  StoredCalendarEvent,
+} from "../database/database.types";
 import type { Input } from "../input/input.types";
 
 const input: Input = {
@@ -36,13 +38,14 @@ function detectedEvent(summary: string, start: string): DetectedCalendarEvent {
   };
 }
 
-function storedEvent(summary: string, start: string): CalendarEvent {
+function storedEvent(summary: string, start: string): StoredCalendarEvent {
   return {
     ...detectedEvent(summary, start),
     createdAt: new Date(start),
     id: "0192f0c4-5b1e-7c66-8a3d-2f4e6b8c9d10",
     latitude: "40.712800",
     longitude: "-74.006000",
+    timezone: "America/New_York",
     updatedAt: new Date(start),
   };
 }
@@ -169,10 +172,10 @@ describe(CaelundasCommand, () => {
       ]);
     });
 
-    it("upserts every detected event, sorted by start, for the input location", async () => {
+    it("upserts every detected event, sorted by start, for the input observer", async () => {
       await command.run();
 
-      const [events, coordinates] =
+      const [events, observer] =
         calendarEventsService.upsert.mock.calls[0] ?? [];
 
       expect(events?.map((event) => event.summary)).toStrictEqual([
@@ -180,9 +183,10 @@ describe(CaelundasCommand, () => {
         "Middle",
         "Later",
       ]);
-      expect(coordinates).toStrictEqual({
+      expect(observer).toStrictEqual({
         latitude: input.latitude,
         longitude: input.longitude,
+        timezone: input.timezone,
       });
     });
 

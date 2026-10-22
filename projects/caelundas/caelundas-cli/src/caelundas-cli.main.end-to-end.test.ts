@@ -19,7 +19,7 @@ import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
 import { DatabaseModule } from "./modules/database/database.module";
 import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
-import { Migration1791255787877 } from "./modules/database/migrations/1791255787877-migration";
+import { Migration1792416080531 } from "./modules/database/migrations/1792416080531-migration";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";
@@ -364,7 +364,7 @@ describe("main end-to-end suite", () => {
       database = await startDatabaseTestingModule({
         database: DatabaseModule,
         entities: [CalendarEvent],
-        migrations: [Migration1791255787877],
+        migrations: [Migration1792416080531],
         project: "caelundas",
         validate: (config) => environmentSchema.parse(config),
       });
@@ -388,7 +388,7 @@ describe("main end-to-end suite", () => {
         longitude: "-75.171690",
         start: moment.utc("2026-03-05T00:00:00Z"),
         summary: "Planted",
-        tags: ["e2e"],
+        timezone: "America/New_York",
       });
       const { ics, json } = await run(philadelphia, marchFirstHalf);
 
