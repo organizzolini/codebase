@@ -3,12 +3,7 @@
   "name": "presentation",
   "projectType": "library",
   "sourceRoot": "projects/common/presentation/src",
-  "tags": [
-    "domain:lexico",
-    "framework:react",
-    "language:typescript",
-    "type:package"
-  ],
+  "tags": ["framework:react", "language:typescript", "type:package"],
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
