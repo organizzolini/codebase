@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef as useReference,
-  useState,
-} from "react";
+import { useCallback, useLayoutEffect, useMemo } from "react";
 
 import {
   EventCalendar,
@@ -14,6 +8,7 @@ import {
 } from "@codebase/presentation";
 
 import { getAgendaRange } from "../lib/calendar/calendar-agenda";
+import { colorEvents } from "../lib/calendar/calendar-colors";
 import { toCalendarEvent } from "../lib/calendar/calendar-events";
 import { describeEvent } from "../lib/calendar/calendar-format";
 import {
@@ -26,11 +21,13 @@ import {
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import { CalendarAgenda } from "./calendar-agenda";
+import { CalendarColorsMenu } from "./calendar-colors-menu";
 import { CalendarGroupBy } from "./calendar-group-by";
 import { CalendarOverflowList } from "./calendar-overflow-list";
 import { CalendarScaleSelect } from "./calendar-scale-select";
 import { CalendarTimeline } from "./calendar-timeline";
 import { type CalendarNavigation, CalendarToolbar } from "./calendar-toolbar";
+import { useCalendarNavigation } from "./use-calendar-navigation";
 
 import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
 import type {
@@ -53,6 +50,11 @@ export interface EventsCalendarProperties {
   anchor: Date;
   className?: string;
   /**
+   * Whether events are drawn in the color of their kind; they are when
+   * absent.
+   */
+  colors?: boolean;
+  /**
    * Narrows the calendar for a phone: the toolbar lists the views in a menu,
    * and the week scrolls sideways under a sticky hour column.
    */
@@ -71,6 +73,11 @@ export interface EventsCalendarProperties {
    * read for.
    */
   grouping: readonly EventGroupLevel[];
+  /**
+   * Called with the colors setting picked in the toolbar; the Colors menu is
+   * not offered without it.
+   */
+  onColorsChange?: ((enabled: boolean) => void) | undefined;
   /**
    * Called with the new day when the toolbar moves the calendar.
    */
@@ -132,11 +139,13 @@ export function EventsCalendar(
   const {
     anchor,
     className,
+    colors = true,
     compact = false,
-    events,
+    events: loadedEvents,
     facets,
     filters,
     grouping,
+    onColorsChange,
     onDateChange,
     onGroupingChange,
     onScaleChange,
@@ -147,37 +156,13 @@ export function EventsCalendar(
   } = properties;
 
   // 🪝 Hooks
-  // The toolbar sits above every view, in one place, so switching views
-  // keeps it, and the focus on its view selector, rather than mounting a new
-  // one. The views report how they move, which only a child of each can
-  // read; the buttons call the latest report, and the title is state because
-  // it is drawn.
-  const [title, setTitle] = useState("");
-  const latest = useReference<CalendarNavigation | null>(null);
-  const navigation = useMemo<CalendarNavigation>(
-    () => ({
-      isToday:
-        formatCalendarDate(anchor, timeZone) ===
-        formatCalendarDate(new Date(), timeZone),
-      next: () => {
-        latest.current?.next();
-      },
-      prev: () => {
-        latest.current?.prev();
-      },
-      title,
-      today: () => {
-        latest.current?.today();
-      },
-    }),
-    [anchor, latest, timeZone, title],
+  const { handleNavigationChange, navigation } = useCalendarNavigation(
+    anchor,
+    timeZone,
   );
-  const handleNavigationChange = useCallback(
-    (reported: CalendarNavigation) => {
-      latest.current = reported;
-      setTitle(reported.title);
-    },
-    [latest],
+  const events = useMemo(
+    () => colorEvents(loadedEvents, colors),
+    [colors, loadedEvents],
   );
 
   // 🏗 Setup
@@ -196,6 +181,14 @@ export function EventsCalendar(
     >
       <div className="flex h-full flex-col">
         <CalendarToolbar
+          colors={
+            onColorsChange === undefined ? undefined : (
+              <CalendarColorsMenu
+                enabled={colors}
+                onEnabledChange={onColorsChange}
+              />
+            )
+          }
           compact={compact}
           filters={filters}
           groupBy={
@@ -239,6 +232,7 @@ export function EventsCalendar(
           <CalendarGrid
             {...properties}
             compact={compact}
+            events={events}
             onNavigationChange={handleNavigationChange}
             view={view}
           />

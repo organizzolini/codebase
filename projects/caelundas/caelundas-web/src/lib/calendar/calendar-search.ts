@@ -67,6 +67,10 @@ const filterGroupSchema = z.object({
  */
 export interface CalendarSearch {
   /**
+   * `false` when events are drawn without their colors; colored when absent.
+   */
+  colors?: false | undefined;
+  /**
    * The day the calendar shows, as `YYYY-MM-DD`; today when absent.
    */
   date?: string | undefined;
@@ -104,6 +108,10 @@ export function validateCalendarSearch(
   const filter = filterGroupSchema.safeParse(search["filter"]).data;
 
   return {
+    colors:
+      search["colors"] === false || search["colors"] === "false"
+        ? false
+        : undefined,
     date: calendarDateSchema.safeParse(search["date"]).data,
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),

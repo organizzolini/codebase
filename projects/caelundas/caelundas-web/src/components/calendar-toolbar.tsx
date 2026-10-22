@@ -30,6 +30,10 @@ export interface CalendarNavigation {
 export interface CalendarToolbarProperties {
   className?: string;
   /**
+   * Drawn first among the controls, for the colors of events.
+   */
+  colors?: ReactNode;
+  /**
    * Narrows the row for a phone, listing the views in a menu.
    */
   compact?: boolean | undefined;
@@ -65,6 +69,7 @@ export function CalendarToolbar(
 ): ReactNode {
   const {
     className,
+    colors,
     compact,
     filters,
     groupBy,
@@ -77,11 +82,12 @@ export function CalendarToolbar(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const hasControls = [filters, groupBy, scaleSelect].some(
+  const hasControls = [colors, filters, groupBy, scaleSelect].some(
     (control) => control !== undefined && control !== null,
   );
   const controls = (
     <>
+      {colors}
       {filters}
       {groupBy}
       {scaleSelect}

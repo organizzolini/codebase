@@ -106,4 +106,78 @@ describe(EventsCalendar, () => {
       expect(onDateChange.mock.lastCall?.[0].getUTCMonth()).toBe(3);
     },
   );
+
+  describe("colors", () => {
+    const INGRESS = {
+      color: null,
+      description: "The Sun enters Aries",
+      durationMinutes: 0,
+      end: new Date("2026-03-20T14:46:00.000Z"),
+      groups: [],
+      id: "event-ingress",
+      location: null,
+      start: new Date("2026-03-20T14:46:00.000Z"),
+      summary: "Sun Ingress Aries",
+      tags: [
+        {
+          depth: 2,
+          id: "tag-sign-ingress",
+          name: "Sign Ingress",
+          path: "Type / Ingress / Sign Ingress",
+        },
+      ],
+      timezone: "America/New_York",
+    };
+
+    function renderMonth(colors: boolean): void {
+      render(
+        <EventsCalendar
+          anchor={new Date("2026-03-20T12:00:00.000Z")}
+          colors={colors}
+          events={[INGRESS]}
+          facets={[]}
+          grouping={[]}
+          onColorsChange={() => {}}
+          onDateChange={() => {}}
+          timeZone="America/New_York"
+          view="month"
+        />,
+      );
+    }
+
+    it("draws each event in the color of its kind", () => {
+      renderMonth(true);
+
+      const chip = document.querySelector<HTMLElement>(
+        "[data-slot='event-calendar-event']",
+      );
+
+      expect(chip?.getAttribute("style")).toContain("#10b981");
+    });
+
+    it("draws events in the default color with colors off", () => {
+      renderMonth(false);
+
+      const chip = document.querySelector<HTMLElement>(
+        "[data-slot='event-calendar-event']",
+      );
+
+      expect(chip?.getAttribute("style")).not.toContain("#10b981");
+    });
+
+    it("offers the Colors menu only when it can change colors", () => {
+      render(
+        <EventsCalendar
+          anchor={new Date("2026-03-20T12:00:00.000Z")}
+          events={[]}
+          facets={[]}
+          grouping={[]}
+          onDateChange={() => {}}
+          timeZone="America/New_York"
+        />,
+      );
+
+      expect(screen.queryByTestId("calendar-colors-menu")).toBeNull();
+    });
+  });
 });

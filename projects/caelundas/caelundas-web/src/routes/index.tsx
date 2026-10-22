@@ -19,7 +19,6 @@ import {
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
-  type CalendarViewName,
   getDefaultCalendarView,
   MAXIMUM_AGENDA_DAYS,
 } from "../lib/calendar/calendar-views";
@@ -30,6 +29,7 @@ import {
 import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
 import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
 
+import type { CalendarSearch } from "../lib/calendar/calendar-search";
 import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
 
 // 🧭 Route
@@ -140,27 +140,22 @@ function IndexPage(): ReactNode {
         }
       : undefined;
 
-  const handleViewChange = (next: CalendarViewName): void => {
-    // The agenda's extra days belong to the agenda, so they are left behind.
+  const updateSearch = (
+    change: Partial<CalendarSearch>,
+    replace = false,
+  ): void => {
     void navigate({
-      search: (previous) => ({ ...previous, days: undefined, view: next }),
+      replace,
+      search: (previous) => ({ ...previous, ...change }),
     });
   };
 
   const handleFilterChange = (next: EventFilterQuery): void => {
-    void navigate({
-      replace: true,
-      search: (previous) => ({ ...previous, filter: next }),
-    });
+    updateSearch({ filter: next }, true);
   };
 
   const handleDateChange = (date: Date): void => {
-    void navigate({
-      search: (previous) => ({
-        ...previous,
-        date: formatCalendarDate(date, timeZone),
-      }),
-    });
+    updateSearch({ date: formatCalendarDate(date, timeZone) });
   };
 
   // ♻️ Lifecycle
@@ -178,6 +173,7 @@ function IndexPage(): ReactNode {
         agendaDays={agendaDays}
         anchor={anchor}
         className="min-h-0 flex-1"
+        colors={search.colors !== false}
         compact={!isWide}
         events={events}
         facets={facets}
@@ -191,19 +187,21 @@ function IndexPage(): ReactNode {
           />
         }
         grouping={grouping}
+        onColorsChange={(enabled) => {
+          updateSearch({ colors: enabled ? undefined : false }, true);
+        }}
         onDateChange={handleDateChange}
         onGroupingChange={(next) => {
-          void navigate({
-            search: (previous) => ({ ...previous, group: next }),
-          });
+          updateSearch({ group: next });
         }}
         onScaleChange={(scale) => {
-          void navigate({
-            search: (previous) => ({ ...previous, scale }),
-          });
+          updateSearch({ scale });
         }}
         onShowLater={handleShowLater}
-        onViewChange={handleViewChange}
+        onViewChange={(next) => {
+          // The agenda's extra days stay behind with a view change.
+          updateSearch({ days: undefined, view: next });
+        }}
         scale={search.scale}
         timeZone={timeZone}
         view={view}

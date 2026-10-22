@@ -96,4 +96,24 @@ describe(CalendarToolbar, () => {
 
     expect(screen.getByRole("button", { name: "Today" })).toBeDefined();
   });
+
+  it("draws the colors control first among the controls", () => {
+    render(
+      <CalendarToolbar
+        colors={<button type="button">Colors</button>}
+        filters={<button type="button">Filters</button>}
+        navigation={NAVIGATION}
+      />,
+    );
+
+    const [colors, filters] = [
+      screen.getByRole("button", { name: "Colors" }),
+      screen.getByRole("button", { name: "Filters" }),
+    ];
+
+    expect(
+      colors.compareDocumentPosition(filters) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
+  });
 });
