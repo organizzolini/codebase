@@ -40,8 +40,9 @@ installation() {
 # Node older than .nvmrc. So there Node is the nodejs.org release for .nvmrc,
 # linked into ~/.local/bin, which is ahead of the system Node on PATH. node-gyp
 # is linked from the copy npm bundles, because the native packages (sweph,
-# cpu-features) need it on PATH. The setup command then does the rest for
-# Linux: the .env files, the SSH signing, and the Docker daemon and Postgres.
+# cpu-features) need it on PATH. The Husky init file and the global nx are set
+# up here too, as on a Mac. The setup command then does the rest for Linux: the
+# .env files, the software Linux can have, and the Docker daemon and Postgres.
 # Safe to run again.
 operating_system="$(uname -s)"
 if [[ "${operating_system}" != "Darwin" && "${operating_system}" != "Linux" ]]; then
@@ -82,8 +83,42 @@ if [[ "${operating_system}" == "Linux" ]]; then
     exit 1
   fi
 
+  # pnpm's global binaries (squawk, nx) land in PNPM_HOME, which neither a
+  # minimal shell nor a git hook puts on PATH.
+  export PNPM_HOME="${HOME}/.local/share/pnpm"
+  mkdir -p "${PNPM_HOME}/bin"
+  export PATH="${PNPM_HOME}/bin:${PNPM_HOME}:${PATH}"
+
+  # Husky runs hooks in a minimal shell that skips ~/.bashrc, so the node, uv,
+  # and release-archive tools in ~/.local/bin, and pnpm's global binaries, are
+  # not on PATH there unless the init file sourced before every hook says so.
+  echo "🔍 Setting up husky init..."
+  mkdir -p "${HOME}/.config/husky"
+  HUSKY_INIT_FILE="${HOME}/.config/husky/init.sh"
+  if [[ ! -f "${HUSKY_INIT_FILE}" ]] || ! grep -q 'PNPM_HOME' "${HUSKY_INIT_FILE}"; then
+    cat > "${HUSKY_INIT_FILE}" << 'HUSKY_INIT'
+# node, uv, and the release-archive tools are installed to ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# pnpm global bin directory
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+HUSKY_INIT
+    echo "✅ Updated ~/.config/husky/init.sh to put ~/.local/bin and pnpm's binaries on PATH in git hooks"
+  else
+    echo "👍 ~/.config/husky/init.sh already configured"
+  fi
+
   echo "📦 Installing the workspace's packages..."
   pnpm install --frozen-lockfile
+
+  # nx must be available globally so that `nx run` works in the terminal
+  # without a project-local node_modules/.bin prefix. A failure warns rather
+  # than failing a setup whose Node toolchain is already done.
+  echo "🌐 Installing nx globally..."
+  pnpm add -g nx ||
+    echo "⚠️  nx was not installed globally. Retry with: pnpm add -g nx" >&2
+
   installation setup
   exit 0
 fi

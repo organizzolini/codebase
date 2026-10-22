@@ -2,8 +2,8 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { HelmModule } from "../helm/helm.module";
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { ReleaseArchivesModule } from "../release-archives/release-archives.module";
 import { ReporterModule } from "../reporter/reporter.module";
 import { SshSigningModule } from "../ssh-signing/ssh-signing.module";
 
@@ -12,6 +12,7 @@ import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
 import { SoftwareInfraService } from "./software-infra.service";
+import { SoftwareLinuxService } from "./software-linux.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 import { SoftwareCommand } from "./software.command";
@@ -22,9 +23,9 @@ import { SoftwareService } from "./software.service";
   controllers: [],
   exports: [SoftwareCommand, SoftwareService],
   imports: [
-    HelmModule,
     LoggerModule,
     ProcessRunnerModule,
+    ReleaseArchivesModule,
     ReporterModule,
     SshSigningModule,
   ],
@@ -35,6 +36,7 @@ import { SoftwareService } from "./software.service";
     SoftwareDockerService,
     SoftwareGpgService,
     SoftwareInfraService,
+    SoftwareLinuxService,
     SoftwareOllamaService,
     SoftwarePythonService,
     SoftwareService,

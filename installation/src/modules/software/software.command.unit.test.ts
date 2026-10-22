@@ -19,8 +19,8 @@ import { enterWorkspace } from "../../../testing/environment";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { captureReport } from "../../../testing/report";
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
-import { HelmService } from "../helm/helm.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { ReleaseArchivesService } from "../release-archives/release-archives.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
@@ -29,6 +29,7 @@ import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
 import { SoftwareInfraService } from "./software-infra.service";
+import { SoftwareLinuxService } from "./software-linux.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 import { SoftwareCommand } from "./software.command";
@@ -102,13 +103,14 @@ describe(SoftwareCommand, () => {
     const { commands, detached, runner } = createFakeProcessRunner(machine);
     const module = await Test.createTestingModule({
       providers: [
-        HelmService,
+        ReleaseArchivesService,
         SoftwareBrewService,
         SoftwareCommand,
         SoftwareDatabaseService,
         SoftwareDockerService,
         SoftwareGpgService,
         SoftwareInfraService,
+        SoftwareLinuxService,
         SoftwareOllamaService,
         SoftwarePythonService,
         SoftwareService,

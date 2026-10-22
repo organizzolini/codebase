@@ -36,7 +36,7 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 
 From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
 
-`setup` asks `ProcessRunnerService.platform()` which machine it is on, so a test covers both. A Mac runs shell configuration, software, files, and dependencies. Linux, which is what a Claude Code cloud session and the devcontainer run, has no Homebrew and no shell to configure, so it runs the files, `software`, and `local-services`; `software` (with `modules/helm` and `modules/ssh-signing`) does less there, installing only Helm from its release archive, and on both machines it makes SSH commit signatures verifiable; the script has already run `pnpm install`.
+`setup` asks `ProcessRunnerService.platform()` which machine it is on, so a test covers both. A Mac runs shell configuration, software, files, and dependencies. Linux, which is what a Claude Code cloud session and the devcontainer run, has no Homebrew and no shell to configure, so it runs the files, `software`, and `local-services`; `software` (with `modules/release-archives` and `modules/ssh-signing`) installs a different set there — Helm, kubectl, Terraform, gitleaks, Trivy, and uv from their release archives, Python through uv, squawk through pnpm, and PostgreSQL 18 from its apt repository — and on both machines it makes SSH commit signatures verifiable; the script has already run `pnpm install`.
 
 On a Mac, `setup` configures the shell before it installs software, as the script always did, so completions for tools installed in the same run are wired the next time it runs.
 
