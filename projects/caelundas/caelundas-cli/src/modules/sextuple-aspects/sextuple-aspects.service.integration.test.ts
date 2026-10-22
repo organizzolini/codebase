@@ -88,14 +88,14 @@ describe("sextuple-aspects.events integration", () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]).toBeDefined();
-      expect(events[0]?.categories).toContain("Hexagram");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Jupiter");
-      expect(events[0]?.categories).toContain("Mars");
-      expect(events[0]?.categories).toContain("Moon");
-      expect(events[0]?.categories).toContain("Saturn");
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Venus");
+      expect(events[0]?.tags).toContain("Hexagram");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Jupiter");
+      expect(events[0]?.tags).toContain("Mars");
+      expect(events[0]?.tags).toContain("Moon");
+      expect(events[0]?.tags).toContain("Saturn");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Venus");
       expect(events[0]?.description).toContain("hexagram forming");
       expect(events[0]?.summary).toContain("➡️"); // Forming emoji
       expect(events[0]?.summary).toContain("🔯"); // Hexagram symbol
@@ -150,15 +150,20 @@ describe("sextuple-aspects.events integration", () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]).toBeDefined();
-      expect(events[0]?.categories).toContain("Hexagram");
-      expect(events[0]?.categories).toContain("Dissolving");
+      expect(events[0]?.tags).toContain("Hexagram");
+      expect(events[0]?.tags).toContain("Dissolving");
       expect(events[0]?.description).toContain("hexagram dissolving");
       expect(events[0]?.summary).toContain("⬅️"); // Dissolving emoji
     });
 
     it("creates progressive event from forming/dissolving Hexagram pair", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        end: moment.utc("2024-09-22T18:42:00.000Z"),
+        start: moment.utc("2024-09-22T18:42:00.000Z"),
+        summary:
+          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -172,15 +177,16 @@ describe("sextuple-aspects.events integration", () => {
           "Sun",
           "Venus",
         ],
-        description: "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
-        end: moment.utc("2024-09-22T18:42:00.000Z"),
-        start: moment.utc("2024-09-22T18:42:00.000Z"),
-        summary:
-          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description:
+          "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+        end: moment.utc("2024-09-22T19:00:00.000Z"),
+        start: moment.utc("2024-09-22T19:00:00.000Z"),
+        summary:
+          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -194,12 +200,6 @@ describe("sextuple-aspects.events integration", () => {
           "Sun",
           "Venus",
         ],
-        description:
-          "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
-        end: moment.utc("2024-09-22T19:00:00.000Z"),
-        start: moment.utc("2024-09-22T19:00:00.000Z"),
-        summary:
-          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -215,10 +215,10 @@ describe("sextuple-aspects.events integration", () => {
       expect(progressiveEvents[0]?.end).toStrictEqual(
         moment.utc("2024-09-22T19:00:00.000Z"),
       );
-      expect(progressiveEvents[0]?.categories).toContain("Sextuple Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("Hexagram");
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).toContain("Sextuple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Hexagram");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
       expect(progressiveEvents[0]?.description).toContain("hexagram");
       expect(progressiveEvents[0]?.description).not.toMatch(
         /(forming|dissolving)$/i,
@@ -272,14 +272,14 @@ describe("sextuple-aspects.events integration", () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]).toBeDefined();
-      expect(events[0]?.categories).toContain("Hexagram");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Mars");
-      expect(events[0]?.categories).toContain("Jupiter");
-      expect(events[0]?.categories).toContain("Saturn");
-      expect(events[0]?.categories).toContain("Uranus");
-      expect(events[0]?.categories).toContain("Neptune");
-      expect(events[0]?.categories).toContain("Pluto");
+      expect(events[0]?.tags).toContain("Hexagram");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Mars");
+      expect(events[0]?.tags).toContain("Jupiter");
+      expect(events[0]?.tags).toContain("Saturn");
+      expect(events[0]?.tags).toContain("Uranus");
+      expect(events[0]?.tags).toContain("Neptune");
+      expect(events[0]?.tags).toContain("Pluto");
     });
   });
 

@@ -123,7 +123,7 @@ export class MinorAspectsService {
    * Creates a calendar event for a specific minor aspect occurrence.
    *
    * Formats the event with appropriate emoji indicators, body symbols,
-   * and categorization for filtering and organization.
+   * and tagging for filtering and organization.
    *
    * @see {@link getMinorAspect} for aspect type determination
    */

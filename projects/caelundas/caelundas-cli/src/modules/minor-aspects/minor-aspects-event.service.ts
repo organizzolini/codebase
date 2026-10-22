@@ -53,9 +53,9 @@ export class MinorAspectsEventService {
   }): DetectedCalendarEvent {
     const { body1, body2, minorAspect, phase, timestamp } = args;
     return this.aspectEventFormattingService.assembleSimpleAspectEvent({
-      aspectCategory: "Minor Aspect",
       aspectName: minorAspect,
       aspectSymbol: symbolByMinorAspect[minorAspect],
+      aspectTag: "Minor Aspect",
       body1,
       body2,
       log: (message, data) => {

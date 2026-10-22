@@ -184,7 +184,7 @@ describe(MajorAspectsService, () => {
         );
 
         expect(detectedEvent).toBeDefined();
-        expect(detectedEvent?.categories).toContain(expectedPhase);
+        expect(detectedEvent?.tags).toContain(expectedPhase);
       },
     );
 

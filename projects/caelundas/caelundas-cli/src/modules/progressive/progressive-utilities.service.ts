@@ -80,7 +80,7 @@ export class ProgressiveUtilitiesService {
   ): [DetectedCalendarEvent, DetectedCalendarEvent][] {
     const boundariesFor = (phase: string): DetectedCalendarEvent[] =>
       _.uniqBy(
-        groupEvents.filter((event) => event.categories.includes(phase)),
+        groupEvents.filter((event) => event.tags.includes(phase)),
         (event) => event.start.valueOf(),
       );
 

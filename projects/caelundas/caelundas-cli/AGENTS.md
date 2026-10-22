@@ -182,7 +182,7 @@ Full schema: [src/modules/input/input.constants.ts](src/modules/input/input.cons
 
 Postgres, in the `caelundas_development` database and `caelundas` schema, with one table:
 
-- `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending the shared `UpdatableEntity`. Columns: `summary`, `description`, `start`/`end` (`timestamptz`), `categories` (`text[]`, GIN-indexed), nullable `color` and `location`, and `latitude numeric(8,6)` / `longitude numeric(9,6)`. Unique on `(summary, start, latitude, longitude)`
+- `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending the shared `UpdatableEntity`. Columns: `summary`, `description`, `start`/`end` (`timestamptz`), `categories` (`text[]`, GIN-indexed; the `tags` property persists here until the schema change renames it), nullable `color` and `location`, and `latitude numeric(8,6)` / `longitude numeric(9,6)`. Unique on `(summary, start, latitude, longitude)`
 
 `CalendarEvent` is caelundas' only event type: detectors build it, `CalendarEventsService` stores and reads it, and the writers render it, with no mapper between them. Its shape differences from the table are settled in the entity, not at the call sites:
 

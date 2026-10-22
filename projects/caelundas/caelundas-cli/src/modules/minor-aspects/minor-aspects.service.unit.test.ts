@@ -218,7 +218,7 @@ describe(MinorAspectsService, () => {
         );
 
         expect(detectedEvent).toBeDefined();
-        expect(detectedEvent?.categories).toContain(expectedPhase);
+        expect(detectedEvent?.tags).toContain(expectedPhase);
       },
     );
 
@@ -380,13 +380,13 @@ describe(MinorAspectsService, () => {
       expect(event.summary).toContain("🌙");
       expect(event.summary).toContain("⚺");
       expect(event.description).toBe("Sun perfective semisextile Moon");
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Minor Aspect");
-      expect(event.categories).toContain("Sun");
-      expect(event.categories).toContain("Moon");
-      expect(event.categories).toContain("Semisextile");
-      expect(event.categories).toContain("Perfective");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Minor Aspect");
+      expect(event.tags).toContain("Sun");
+      expect(event.tags).toContain("Moon");
+      expect(event.tags).toContain("Semisextile");
+      expect(event.tags).toContain("Perfective");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
     });
@@ -407,8 +407,8 @@ describe(MinorAspectsService, () => {
       expect(event.summary).toContain("♀️");
       expect(event.summary).toContain("∠");
       expect(event.description).toBe("Sun forming semisquare Venus");
-      expect(event.categories).toContain("Forming");
-      expect(event.categories).toContain("Semisquare");
+      expect(event.tags).toContain("Forming");
+      expect(event.tags).toContain("Semisquare");
     });
 
     it("creates dissolving sesquiquadrate event", () => {
@@ -427,8 +427,8 @@ describe(MinorAspectsService, () => {
       expect(event.summary).toContain("♂️");
       expect(event.summary).toContain("⚼");
       expect(event.description).toBe("Sun dissolving sesquiquadrate Mars");
-      expect(event.categories).toContain("Dissolving");
-      expect(event.categories).toContain("Sesquiquadrate");
+      expect(event.tags).toContain("Dissolving");
+      expect(event.tags).toContain("Sesquiquadrate");
     });
 
     it("creates quincunx event", () => {
@@ -444,7 +444,7 @@ describe(MinorAspectsService, () => {
 
       expect(event.summary).toContain("⚻");
       expect(event.description).toContain("quincunx");
-      expect(event.categories).toContain("Quincunx");
+      expect(event.tags).toContain("Quincunx");
     });
 
     it("throws error when no minor aspect is found", () => {
@@ -484,7 +484,11 @@ describe(MinorAspectsService, () => {
       timestamp: Moment,
     ): DetectedCalendarEvent => {
       return {
-        categories: [
+        description: `${body1} ${phase.toLowerCase()} ${aspect.toLowerCase()} ${body2}`,
+        end: timestamp,
+        start: timestamp,
+        summary: `${phase} ${body1} ${aspect} ${body2}`,
+        tags: [
           "Astronomy",
           "Astrology",
           "Minor Aspect",
@@ -493,15 +497,11 @@ describe(MinorAspectsService, () => {
           aspect,
           phase,
         ],
-        description: `${body1} ${phase.toLowerCase()} ${aspect.toLowerCase()} ${body2}`,
-        end: timestamp,
-        start: timestamp,
-        summary: `${phase} ${body1} ${aspect} ${body2}`,
       };
     };
 
     it("creates progressive events from forming and dissolving pairs", () => {
-      expect.hasAssertions(); // Note: Categories must use Start Case for body/aspect names to match _.startCase() conversion
+      expect.hasAssertions(); // Note: Tags must use Start Case for body/aspect names to match _.startCase() conversion
 
       const forming = createMinorAspectEvent(
         "Sun",
@@ -526,8 +526,8 @@ describe(MinorAspectsService, () => {
       expect(progressiveEvents[0]?.start).toStrictEqual(forming.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolving.start);
       expect(progressiveEvents[0]?.description).toContain("semisextile");
-      expect(progressiveEvents[0]?.categories).toContain("Minor Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("Simple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Minor Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Simple Aspect");
     });
 
     it("handles multiple aspect types for same body pair", () => {
@@ -628,11 +628,11 @@ describe(MinorAspectsService, () => {
         moment.utc("2024-03-21T14:00:00.000Z"),
       );
       const nonAspectEvent: DetectedCalendarEvent = {
-        categories: ["Solar", "Daily Cycle"],
         description: "Sunrise",
         end: moment.utc("2024-03-21T12:00:00.000Z"),
         start: moment.utc("2024-03-21T12:00:00.000Z"),
         summary: "Sunrise",
+        tags: ["Solar", "Daily Cycle"],
       };
 
       const events = [

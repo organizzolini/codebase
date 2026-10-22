@@ -41,7 +41,7 @@ export class CalendarService {
 
   /** Builds VEVENT property lines, including the optional location and color. */
   private buildEventProperties(event: DetectedCalendarEvent): string {
-    let properties = `SUMMARY:${event.summary}\nDESCRIPTION:${event.description}\nSTATUS:CONFIRMED\nCLASS:PUBLIC\nTRANSP:TRANSPARENT\nCATEGORIES:${event.categories.join(
+    let properties = `SUMMARY:${event.summary}\nDESCRIPTION:${event.description}\nSTATUS:CONFIRMED\nCLASS:PUBLIC\nTRANSP:TRANSPARENT\nCATEGORIES:${event.tags.join(
       ",",
     )}`;
     if (event.location) {
@@ -253,7 +253,7 @@ END:VEVENT`;
    *     end: moment.utc('2026-01-21T14:23:00'),
    *     summary: '☽ ☌ ♃ Moon Conjunction Jupiter',
    *     description: 'Exact: 2026-01-21 14:23 EST',
-   *     categories: ['aspects', 'major', 'moon'],
+   *     tags: ['aspects', 'major', 'moon'],
    *   }],
    *   name: 'Astronomical Events',
    *   description: 'Caelundas astronomical calendar',
@@ -290,7 +290,7 @@ END:VCALENDAR
    * Builds a one-minute-point event where start and end are the same timestamp.
    */
   buildInstantEvent(args: BuildInstantEventArguments): DetectedCalendarEvent {
-    const { categories, date, description, logger, summary, timezone } = args;
+    const { date, description, logger, summary, tags, timezone } = args;
     const dateString = date.clone().tz(timezone).toISOString(true);
     logger.info("🗓️ Built a calendar event", undefined, {
       at: dateString,
@@ -298,11 +298,11 @@ END:VCALENDAR
     });
 
     return {
-      categories,
       description,
       end: date,
       start: date,
       summary,
+      tags,
     };
   }
 
@@ -361,13 +361,13 @@ END:VCALENDAR
     const outputPath = path.join(outputDirectory, jsonFilename);
     const content = JSON.stringify(
       events.map((event) => ({
-        categories: event.categories,
         color: event.color ?? null,
         description: event.description,
         end: event.end.toISOString(),
         location: event.location ?? null,
         start: event.start.toISOString(),
         summary: event.summary,
+        tags: event.tags,
       })),
       undefined,
       2,

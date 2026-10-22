@@ -5,10 +5,10 @@ import { LoggerService } from "@codebase/observability";
 import { MartianPhaseService } from "./martian-phase.service";
 import { MercurianPhaseService } from "./mercurian-phase.service";
 import {
-  MARTIAN_CATEGORY,
-  MERCURIAN_CATEGORY,
-  PLANETARY_PHASE_CATEGORY,
-  VENUSIAN_CATEGORY,
+  MARTIAN_TAG,
+  MERCURIAN_TAG,
+  PLANETARY_PHASE_TAG,
+  VENUSIAN_TAG,
 } from "./phases.constants";
 import { VenusianPhaseService } from "./venusian-phase.service";
 
@@ -99,12 +99,12 @@ export class PhasesService {
 
     // Filter to planetary phase events
     const planetaryPhaseEvents = events.filter((event) =>
-      event.categories.includes(PLANETARY_PHASE_CATEGORY),
+      event.tags.includes(PLANETARY_PHASE_TAG),
     );
 
     // Process Venus phases
     const venusianPhaseEvents = planetaryPhaseEvents.filter((event) =>
-      event.categories.includes(VENUSIAN_CATEGORY),
+      event.tags.includes(VENUSIAN_TAG),
     );
     progressiveEvents.push(
       ...this.venusianPhaseService.getVenusianPhaseProgressiveEvents(
@@ -114,7 +114,7 @@ export class PhasesService {
 
     // Process Mercury phases
     const mercurianPhaseEvents = planetaryPhaseEvents.filter((event) =>
-      event.categories.includes(MERCURIAN_CATEGORY),
+      event.tags.includes(MERCURIAN_TAG),
     );
     progressiveEvents.push(
       ...this.mercurianPhaseService.getMercurianPhaseProgressiveEvents(
@@ -124,7 +124,7 @@ export class PhasesService {
 
     // Process Mars phases
     const martianPhaseEvents = planetaryPhaseEvents.filter((event) =>
-      event.categories.includes(MARTIAN_CATEGORY),
+      event.tags.includes(MARTIAN_TAG),
     );
     progressiveEvents.push(
       ...this.martianPhaseService.getMartianPhaseProgressiveEvents(

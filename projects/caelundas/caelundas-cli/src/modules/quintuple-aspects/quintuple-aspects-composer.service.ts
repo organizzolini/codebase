@@ -118,25 +118,6 @@ export class QuintupleAspectsComposerService {
   }
 
   /**
-   * Builds canonical categories used for grouping and downstream progressive pairing.
-   */
-  buildQuintupleAspectCategories(
-    bodiesSorted: string[],
-    quintupleAspect: QuintupleAspect,
-    phase: AspectPhase,
-  ): string[] {
-    return [
-      "Astronomy",
-      "Astrology",
-      "Compound Aspect",
-      "Quintuple Aspect",
-      _.startCase(quintupleAspect),
-      _.startCase(phase),
-      ...bodiesSorted,
-    ];
-  }
-
-  /**
    * Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
    */
   buildQuintupleAspectSummary(args: {
@@ -150,6 +131,25 @@ export class QuintupleAspectsComposerService {
     const symbolChain = symbols.join("-");
 
     return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
+  }
+
+  /**
+   * Builds canonical tags used for grouping and downstream progressive pairing.
+   */
+  buildQuintupleAspectTags(
+    bodiesSorted: string[],
+    quintupleAspect: QuintupleAspect,
+    phase: AspectPhase,
+  ): string[] {
+    return [
+      "Astronomy",
+      "Astrology",
+      "Compound Aspect",
+      "Quintuple Aspect",
+      _.startCase(quintupleAspect),
+      _.startCase(phase),
+      ...bodiesSorted,
+    ];
   }
 
   /**
@@ -174,18 +174,18 @@ export class QuintupleAspectsComposerService {
       phase,
       symbols,
     });
-    const categories = this.buildQuintupleAspectCategories(
+    const tags = this.buildQuintupleAspectTags(
       bodiesSorted,
       quintupleAspect,
       phase,
     );
 
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -329,15 +329,15 @@ export class QuintupleAspectsComposerService {
     events: DetectedCalendarEvent[],
   ): Record<string, DetectedCalendarEvent[]> {
     const quintupleAspectEvents = events.filter((event) =>
-      event.categories.includes("Quintuple Aspect"),
+      event.tags.includes("Quintuple Aspect"),
     );
 
     return _.groupBy(quintupleAspectEvents, (event) => {
-      const filteredPlanets = event.categories.filter((category) =>
-        quintupleAspectBodies.map((b) => bodyDisplayName(b)).includes(category),
+      const filteredPlanets = event.tags.filter((tag) =>
+        quintupleAspectBodies.map((b) => bodyDisplayName(b)).includes(tag),
       );
       const planets = _.sortBy(filteredPlanets);
-      const aspect = event.categories.find((c) => ["Pentagram"].includes(c));
+      const aspect = event.tags.find((c) => ["Pentagram"].includes(c));
 
       return `${planets.join("-")}_${aspect}`;
     });

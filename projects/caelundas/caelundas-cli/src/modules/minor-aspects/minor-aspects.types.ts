@@ -31,7 +31,7 @@ export interface DetectBodyPairAspectArguments {
 }
 
 /**
- * Typed aspect and body names parsed from an event's category labels.
+ * Typed aspect and body names parsed from an event's tag labels.
  */
 export interface ExtractAspectComponentsResult {
   aspect: MinorAspect;

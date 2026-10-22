@@ -14,11 +14,11 @@ describe(ProgressiveUtilitiesService, () => {
   let logger: DeepMocked<LoggerService>;
 
   const createEvent = (iso: string): DetectedCalendarEvent => ({
-    categories: ["Astronomy"],
     description: "Event",
     end: moment.utc(iso),
     start: moment.utc(iso),
     summary: "Event",
+    tags: ["Astronomy"],
   });
 
   beforeAll(async () => {
@@ -224,7 +224,7 @@ describe(ProgressiveUtilitiesService, () => {
       iso: string,
     ): DetectedCalendarEvent => ({
       ...createEvent(iso),
-      categories: ["Compound Aspect", phase],
+      tags: ["Compound Aspect", phase],
     });
     const spansOf = (
       pairs: [DetectedCalendarEvent, DetectedCalendarEvent][],

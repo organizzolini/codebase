@@ -98,16 +98,20 @@ describe(TripleAspectsComposerService, () => {
         tripleAspect: "t-square",
       });
 
-      expect(event.categories).toContain("Triple Aspect");
-      expect(event.categories).toContain("T Square");
-      expect(event.categories).toContain("Forming");
-      expect(event.categories).toContain("Mars Focal");
+      expect(event.tags).toContain("Triple Aspect");
+      expect(event.tags).toContain("T Square");
+      expect(event.tags).toContain("Forming");
+      expect(event.tags).toContain("Mars Focal");
       expect(event.start).toStrictEqual(minute);
     });
 
     it("pairs forming and dissolving events into one progressive event", () => {
       const forming: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun t-square forming (Mars focal)",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary: "T-Square forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -119,14 +123,14 @@ describe(TripleAspectsComposerService, () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square forming (Mars focal)",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "T-Square forming",
       };
 
       const dissolving: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary: "T-Square dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -138,10 +142,6 @@ describe(TripleAspectsComposerService, () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "T-Square dissolving",
       };
 
       const progressiveEvents = service.pairProgressiveGroup([
@@ -151,9 +151,9 @@ describe(TripleAspectsComposerService, () => {
 
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.description).toContain("t-square");
-      expect(progressiveEvents[0]?.categories).toContain("Triple Aspect");
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).toContain("Triple Aspect");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
     });
   });
 
@@ -167,7 +167,11 @@ describe(TripleAspectsComposerService, () => {
     it("derives progressive keys and phases", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const forming = {
-        categories: [
+        description: "Moon, Sun, Mars grand trine forming",
+        end: minute,
+        start: minute,
+        summary: "➡️ ✶ Moon-Sun-Mars Moon, Sun, Mars grand trine forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -179,20 +183,16 @@ describe(TripleAspectsComposerService, () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Moon, Sun, Mars grand trine forming",
-        end: minute,
-        start: minute,
-        summary: "➡️ ✶ Moon-Sun-Mars Moon, Sun, Mars grand trine forming",
       } as DetectedCalendarEvent;
       const dissolving = {
         ...forming,
-        categories: forming.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "Moon, Sun, Mars grand trine dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
         summary: "⬅️ ✶ Moon-Sun-Mars Moon, Sun, Mars grand trine dissolving",
+        tags: forming.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
       const compoundPhaseService = new CompoundPhaseService();
 
@@ -230,7 +230,7 @@ describe(TripleAspectsComposerService, () => {
         "Mars-Moon-Sun-Grand Trine",
       );
       expect(
-        service.getProgressiveGroupKey({ ...forming, categories: ["Moon"] }),
+        service.getProgressiveGroupKey({ ...forming, tags: ["Moon"] }),
       ).toBe("");
 
       expect(service.pairProgressiveGroup([forming, dissolving])).toHaveLength(
@@ -257,9 +257,7 @@ describe(TripleAspectsComposerService, () => {
           dissolving,
           forming: {
             ...forming,
-            categories: forming.categories.map((category) =>
-              category === "Mars" ? "Eris" : category,
-            ),
+            tags: forming.tags.map((tag) => (tag === "Mars" ? "Eris" : tag)),
           },
         }),
       ).toBeNull();
@@ -269,8 +267,8 @@ describe(TripleAspectsComposerService, () => {
         dissolving,
         forming: {
           ...forming,
-          categories: forming.categories.map((category) =>
-            category === "Mars Focal" ? "Mars Focal" : category,
+          tags: forming.tags.map((tag) =>
+            tag === "Mars Focal" ? "Mars Focal" : tag,
           ),
         },
       });
@@ -283,7 +281,7 @@ describe(TripleAspectsComposerService, () => {
           dissolving,
           forming: {
             ...forming,
-            categories: ["Astronomy", "Astrology", "Compound Aspect"],
+            tags: ["Astronomy", "Astrology", "Compound Aspect"],
           },
         }),
       ).toBeNull();
@@ -308,7 +306,11 @@ describe(TripleAspectsComposerService, () => {
     it("skips progressive pairs without a recognized aspect label", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const forming = {
-        categories: [
+        description: "Sun, Moon, Mars forming",
+        end: minute,
+        start: minute,
+        summary: "⬅️ Sun-Moon-Mars",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -318,20 +320,16 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-        description: "Sun, Moon, Mars forming",
-        end: minute,
-        start: minute,
-        summary: "⬅️ Sun-Moon-Mars",
       } as DetectedCalendarEvent;
       const dissolving = {
         ...forming,
-        categories: forming.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "Sun, Moon, Mars dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
         summary: "⬅️ Sun-Moon-Mars",
+        tags: forming.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
 
       expect(service.pairProgressiveGroup([forming, dissolving])).toHaveLength(
@@ -349,7 +347,11 @@ describe(TripleAspectsComposerService, () => {
       };
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const forming = {
-        categories: [
+        description: "Sun, Moon, Mars grand trine forming",
+        end: minute,
+        start: minute,
+        summary: "➡️ ✶ Sun-Moon-Mars",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -360,20 +362,16 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-        description: "Sun, Moon, Mars grand trine forming",
-        end: minute,
-        start: minute,
-        summary: "➡️ ✶ Sun-Moon-Mars",
       } as DetectedCalendarEvent;
       const dissolving = {
         ...forming,
-        categories: forming.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "Sun, Moon, Mars grand trine dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
         summary: "⬅️ ✶ Sun-Moon-Mars",
+        tags: forming.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
 
       expect(service.pairProgressiveGroup([dissolving])).toHaveLength(0);
@@ -387,7 +385,11 @@ describe(TripleAspectsComposerService, () => {
     it("builds no span when the only dissolving precedes the forming", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const laterForming = {
-        categories: [
+        description: "Sun, Moon, Mars grand trine forming",
+        end: minute.clone().add(1, "hour"),
+        start: minute.clone().add(1, "hour"),
+        summary: "➡️ ✶ Sun-Moon-Mars",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -398,20 +400,16 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-        description: "Sun, Moon, Mars grand trine forming",
-        end: minute.clone().add(1, "hour"),
-        start: minute.clone().add(1, "hour"),
-        summary: "➡️ ✶ Sun-Moon-Mars",
       } as DetectedCalendarEvent;
       const earlierDissolving = {
         ...laterForming,
-        categories: laterForming.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "Sun, Moon, Mars grand trine dissolving",
         end: minute,
         start: minute,
         summary: "⬅️ ✶ Sun-Moon-Mars",
+        tags: laterForming.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
 
       expect(
@@ -435,7 +433,11 @@ describe(TripleAspectsComposerService, () => {
     it("adds focal metadata for t-square progressive summaries", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const forming = {
-        categories: [
+        description: "Mars, Moon, Sun t-square forming (Mars focal)",
+        end: minute,
+        start: minute,
+        summary: "➡️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -447,21 +449,17 @@ describe(TripleAspectsComposerService, () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square forming (Mars focal)",
-        end: minute,
-        start: minute,
-        summary: "➡️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
       } as DetectedCalendarEvent;
       const dissolving = {
         ...forming,
-        categories: forming.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
         end: minute.clone().add(2, "hours"),
         start: minute.clone().add(2, "hours"),
         summary:
           "⬅️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
+        tags: forming.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
 
       const progressiveEvent = service.buildProgressiveEvent({
@@ -477,7 +475,11 @@ describe(TripleAspectsComposerService, () => {
     it("builds progressive spans for asteroids and lunar points", () => {
       const minute = moment.utc("2026-10-01T12:00:00.000Z");
       const forming = {
-        categories: [
+        description: "Juno, Lunar Apogee, North Lunar Node grand trine forming",
+        end: minute,
+        start: minute,
+        summary: "",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -488,10 +490,6 @@ describe(TripleAspectsComposerService, () => {
           "Lunar Apogee",
           "North Lunar Node",
         ],
-        description: "Juno, Lunar Apogee, North Lunar Node grand trine forming",
-        end: minute,
-        start: minute,
-        summary: "",
       } as DetectedCalendarEvent;
       const dissolving = {
         ...forming,
@@ -513,7 +511,11 @@ describe(TripleAspectsComposerService, () => {
     it("skips push when a progressive pair resolves to null", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const forming = {
-        categories: [
+        description: "Sun, Moon, Mars grand trine forming",
+        end: minute,
+        start: minute,
+        summary: "➡️ ✶ Sun-Moon-Mars",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -524,20 +526,16 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-        description: "Sun, Moon, Mars grand trine forming",
-        end: minute,
-        start: minute,
-        summary: "➡️ ✶ Sun-Moon-Mars",
       } as DetectedCalendarEvent;
       const dissolving = {
         ...forming,
-        categories: forming.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "Sun, Moon, Mars grand trine dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
         summary: "⬅️ ✶ Sun-Moon-Mars",
+        tags: forming.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
 
       const buildProgressiveEventSpy = vi
@@ -566,7 +564,11 @@ describe(TripleAspectsComposerService, () => {
     it("sorts multiple forming and dissolving events before pair resolution", () => {
       const minute = moment.utc("2024-03-21T12:00:00.000Z");
       const formingLater = {
-        categories: [
+        description: "later forming",
+        end: minute.clone().add(2, "hours"),
+        start: minute.clone().add(2, "hours"),
+        summary: "later forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -577,10 +579,6 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-        description: "later forming",
-        end: minute.clone().add(2, "hours"),
-        start: minute.clone().add(2, "hours"),
-        summary: "later forming",
       } as DetectedCalendarEvent;
       const formingEarlier = {
         ...formingLater,
@@ -591,13 +589,13 @@ describe(TripleAspectsComposerService, () => {
       };
       const dissolvingLater = {
         ...formingLater,
-        categories: formingLater.categories.map((category) =>
-          category === "Forming" ? "Dissolving" : category,
-        ),
         description: "later dissolving",
         end: minute.clone().add(4, "hours"),
         start: minute.clone().add(4, "hours"),
         summary: "later dissolving",
+        tags: formingLater.tags.map((tag) =>
+          tag === "Forming" ? "Dissolving" : tag,
+        ),
       };
       const dissolvingEarlier = {
         ...dissolvingLater,

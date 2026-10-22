@@ -56,19 +56,19 @@ export class SpecialtyAspectsComposerService {
   buildSpecialtyAspectEventFromParts(args: {
     body1Symbol: string;
     body2Symbol: string;
-    categories: string[];
     description: string;
     phaseEmoji: string;
     specialtyAspectSymbol: SpecialtyAspectSymbol;
+    tags: string[];
     timestamp: Moment;
   }): DetectedCalendarEvent {
     const {
       body1Symbol,
       body2Symbol,
-      categories,
       description,
       phaseEmoji,
       specialtyAspectSymbol,
+      tags,
       timestamp,
     } = args;
     const summary = `${phaseEmoji} ${body1Symbol} ${specialtyAspectSymbol} ${body2Symbol} ${description}`;
@@ -77,33 +77,33 @@ export class SpecialtyAspectsComposerService {
       summary,
     });
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
   /**
-   * Extracts aspect bodies from categories.
+   * Extracts aspect bodies from tags.
    */
-  extractAspectBodiesFromCategories(categories: string[]): {
+  extractAspectBodiesFromTags(tags: string[]): {
     aspectCapitalized: string;
     body1Capitalized: string;
     body2Capitalized: string;
   } {
     const bodiesCapitalized = _.sortBy(
-      categories.filter((category) =>
-        specialtyAspectBodies.map((b) => bodyDisplayName(b)).includes(category),
+      tags.filter((tag) =>
+        specialtyAspectBodies.map((b) => bodyDisplayName(b)).includes(tag),
       ),
     );
-    const aspectCapitalized = categories.find((category) =>
-      specialtyAspects.map((a) => _.startCase(a)).includes(category),
+    const aspectCapitalized = tags.find((tag) =>
+      specialtyAspects.map((a) => _.startCase(a)).includes(tag),
     );
     if (bodiesCapitalized.length !== 2 || !aspectCapitalized) {
       throw new Error(
-        `Could not extract aspect info from categories: ${categories.join(", ")}`,
+        `Could not extract aspect info from tags: ${tags.join(", ")}`,
       );
     }
     return {
@@ -120,14 +120,10 @@ export class SpecialtyAspectsComposerService {
     aspectCapitalized: string;
     body1Capitalized: string;
     body2Capitalized: string;
-    categories: string[];
+    tags: string[];
   }): { aspect: SpecialtyAspect; body1: Body; body2: Body } {
-    const {
-      aspectCapitalized,
-      body1Capitalized,
-      body2Capitalized,
-      categories,
-    } = args;
+    const { aspectCapitalized, body1Capitalized, body2Capitalized, tags } =
+      args;
     const aspectLower = aspectCapitalized.toLowerCase();
     const body1Lower = body1Capitalized.toLowerCase();
     const body2Lower = body2Capitalized.toLowerCase();
@@ -137,7 +133,7 @@ export class SpecialtyAspectsComposerService {
       !isBody(body2Lower)
     ) {
       throw new Error(
-        `Could not extract typed values from categories: ${categories.join(", ")}`,
+        `Could not extract typed values from tags: ${tags.join(", ")}`,
       );
     }
     return { aspect: aspectLower, body1: body1Lower, body2: body2Lower };
@@ -169,18 +165,22 @@ export class SpecialtyAspectsComposerService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     const { aspectCapitalized, body1Capitalized, body2Capitalized } =
-      this.extractAspectBodiesFromCategories(beginning.categories);
+      this.extractAspectBodiesFromTags(beginning.tags);
     const { aspect, body1, body2 } = this.extractTypedAspectValues({
       aspectCapitalized,
       body1Capitalized,
       body2Capitalized,
-      categories: beginning.categories,
+      tags: beginning.tags,
     });
     const body1Symbol = symbolByBody[body1];
     const body2Symbol = symbolByBody[body2];
     const aspectSymbol = symbolBySpecialtyAspect[aspect];
     return {
-      categories: [
+      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      end: ending.start,
+      start: beginning.start,
+      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -189,25 +189,21 @@ export class SpecialtyAspectsComposerService {
         body2Capitalized,
         aspectCapitalized,
       ],
-      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
-      end: ending.start,
-      start: beginning.start,
-      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
     };
   }
 
   /**
-   * Resolves categories, description, and emoji marker for the supplied phase.
+   * Resolves tags, description, and emoji marker for the supplied phase.
    */
   phaseFields(args: {
-    baseCategories: string[];
+    baseTags: string[];
     body1Capitalized: string;
     body2Capitalized: string;
     phase: AspectPhase;
     specialtyAspect: SpecialtyAspect;
-  }): { categories: string[]; description: string; phaseEmoji: string } {
+  }): { description: string; phaseEmoji: string; tags: string[] } {
     const {
-      baseCategories,
+      baseTags,
       body1Capitalized,
       body2Capitalized,
       phase,
@@ -215,22 +211,22 @@ export class SpecialtyAspectsComposerService {
     } = args;
     if (phase === "perfective") {
       return {
-        categories: [...baseCategories, "Perfective"],
         description: `${body1Capitalized} perfective ${specialtyAspect} ${body2Capitalized}`,
         phaseEmoji: "🎯",
+        tags: [...baseTags, "Perfective"],
       };
     }
     if (phase === "forming") {
       return {
-        categories: [...baseCategories, "Forming"],
         description: `${body1Capitalized} forming ${specialtyAspect} ${body2Capitalized}`,
         phaseEmoji: "➡️",
+        tags: [...baseTags, "Forming"],
       };
     }
     return {
-      categories: [...baseCategories, "Dissolving"],
       description: `${body1Capitalized} dissolving ${specialtyAspect} ${body2Capitalized}`,
       phaseEmoji: "⬅️",
+      tags: [...baseTags, "Dissolving"],
     };
   }
 
@@ -239,12 +235,12 @@ export class SpecialtyAspectsComposerService {
    */
   specialtyAspectGroupKey(event: DetectedCalendarEvent): string {
     const bodiesCapitalized = _.sortBy(
-      event.categories.filter((category) =>
-        specialtyAspectBodies.map((b) => bodyDisplayName(b)).includes(category),
+      event.tags.filter((tag) =>
+        specialtyAspectBodies.map((b) => bodyDisplayName(b)).includes(tag),
       ),
     );
-    const aspectCapitalized = event.categories.find((category) =>
-      specialtyAspects.map((a) => _.startCase(a)).includes(category),
+    const aspectCapitalized = event.tags.find((tag) =>
+      specialtyAspects.map((a) => _.startCase(a)).includes(tag),
     );
     return bodiesCapitalized.length === 2 && aspectCapitalized
       ? `${bodiesCapitalized[0]}-${aspectCapitalized}-${bodiesCapitalized[1]}`

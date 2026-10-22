@@ -314,11 +314,11 @@ describe(EclipseTopocentricService, () => {
 
   describe("getTopocentricEvents", () => {
     const solarBeginning: DetectedCalendarEvent = {
-      categories: ["Eclipse", "Solar"],
       description: "Solar Eclipse begins",
       end: moment.utc("2026-08-12T17:11:00.000Z"),
       start: moment.utc("2026-08-12T17:11:00.000Z"),
       summary: "📍 ☀️🐉▶️ Partial Solar Eclipse begins",
+      tags: ["Eclipse", "Solar"],
     };
 
     it("titles a local solar event partial when no sample ahead can be read", () => {

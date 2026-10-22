@@ -62,7 +62,7 @@ export class MinorAspectsComposerService {
     const { body1, body2, minorAspect, phase, timestamp } = args;
     const body1Capitalized = bodyDisplayName(body1);
     const body2Capitalized = bodyDisplayName(body2);
-    const baseCategories = [
+    const baseTags = [
       "Astronomy",
       "Astrology",
       "Simple Aspect",
@@ -71,8 +71,8 @@ export class MinorAspectsComposerService {
       body2Capitalized,
       _.startCase(minorAspect),
     ];
-    const { categories, description, phaseEmoji } = this.resolvePhaseDetails({
-      baseCategories,
+    const { description, phaseEmoji, tags } = this.resolvePhaseDetails({
+      baseTags,
       body1Capitalized,
       body2Capitalized,
       minorAspect,
@@ -84,11 +84,11 @@ export class MinorAspectsComposerService {
       summary,
     });
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -97,16 +97,14 @@ export class MinorAspectsComposerService {
    */
   buildGroupKey(event: DetectedCalendarEvent): string {
     const bodiesCapitalized = _.sortBy(
-      event.categories.filter((category) =>
+      event.tags.filter((tag) =>
         minorAspectBodies
           .map((minorAspectBody) => bodyDisplayName(minorAspectBody))
-          .includes(category),
+          .includes(tag),
       ),
     );
-    const aspectCapitalized = event.categories.find((category) =>
-      minorAspects
-        .map((minorAspect) => _.startCase(minorAspect))
-        .includes(category),
+    const aspectCapitalized = event.tags.find((tag) =>
+      minorAspects.map((minorAspect) => _.startCase(minorAspect)).includes(tag),
     );
     if (bodiesCapitalized.length === 2 && aspectCapitalized) {
       return `${bodiesCapitalized[0]}-${aspectCapitalized}-${bodiesCapitalized[1]}`;
@@ -121,14 +119,10 @@ export class MinorAspectsComposerService {
     aspectCapitalized: string;
     body1Capitalized: string;
     body2Capitalized: string;
-    categories: string[];
+    tags: string[];
   }): { aspect: MinorAspect; body1: Body; body2: Body } {
-    const {
-      aspectCapitalized,
-      body1Capitalized,
-      body2Capitalized,
-      categories,
-    } = args;
+    const { aspectCapitalized, body1Capitalized, body2Capitalized, tags } =
+      args;
     const aspectLower = aspectCapitalized.toLowerCase();
     const body1Lower = body1Capitalized.toLowerCase();
     const body2Lower = body2Capitalized.toLowerCase();
@@ -138,7 +132,7 @@ export class MinorAspectsComposerService {
       !isBody(body2Lower)
     ) {
       throw new Error(
-        `Could not extract typed values from categories: ${categories.join(", ")}`,
+        `Could not extract typed values from tags: ${tags.join(", ")}`,
       );
     }
     return { aspect: aspectLower, body1: body1Lower, body2: body2Lower };
@@ -147,26 +141,24 @@ export class MinorAspectsComposerService {
   /**
    * Extracts aspect components.
    */
-  extractAspectComponents(categories: string[]): ExtractAspectComponentsResult {
-    const bodiesCapitalized = categories
+  extractAspectComponents(tags: string[]): ExtractAspectComponentsResult {
+    const bodiesCapitalized = tags
       .filter((c: string) =>
         minorAspectBodies.map((b: string) => bodyDisplayName(b)).includes(c),
       )
       .toSorted();
-    const aspectCapitalized = categories.find((c: string) =>
+    const aspectCapitalized = tags.find((c: string) =>
       minorAspects.map((a: string) => _.startCase(a)).includes(c),
     );
     if (bodiesCapitalized.length !== 2 || !aspectCapitalized)
-      throw new Error(
-        `Could not extract aspect info: ${categories.join(", ")}`,
-      );
+      throw new Error(`Could not extract aspect info: ${tags.join(", ")}`);
     const body1Capitalized = bodiesCapitalized[0] ?? "";
     const body2Capitalized = bodiesCapitalized[1] ?? "";
     const { aspect, body1, body2 } = this.castAspectComponentsToTypes({
       aspectCapitalized,
       body1Capitalized,
       body2Capitalized,
-      categories,
+      tags,
     });
     return {
       aspect,
@@ -205,14 +197,18 @@ export class MinorAspectsComposerService {
       body1Capitalized,
       body2,
       body2Capitalized,
-    } = this.extractAspectComponents(beginning.categories);
+    } = this.extractAspectComponents(beginning.tags);
 
     const body1Symbol = symbolByBody[body1];
     const body2Symbol = symbolByBody[body2];
     const aspectSymbol = symbolByMinorAspect[aspect];
 
     return {
-      categories: [
+      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      end: ending.start,
+      start: beginning.start,
+      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -221,10 +217,6 @@ export class MinorAspectsComposerService {
         body2Capitalized,
         aspectCapitalized,
       ],
-      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
-      end: ending.start,
-      start: beginning.start,
-      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
     };
   }
 
@@ -239,10 +231,10 @@ export class MinorAspectsComposerService {
       return [];
     }
     const formingEvents = aspectGroupEvents.filter((event) =>
-      event.categories.includes("Forming"),
+      event.tags.includes("Forming"),
     );
     const dissolvingEvents = aspectGroupEvents.filter((event) =>
-      event.categories.includes("Dissolving"),
+      event.tags.includes("Dissolving"),
     );
     const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
       formingEvents,
@@ -258,37 +250,32 @@ export class MinorAspectsComposerService {
    * Resolves phase details.
    */
   resolvePhaseDetails(args: {
-    baseCategories: string[];
+    baseTags: string[];
     body1Capitalized: string;
     body2Capitalized: string;
     minorAspect: MinorAspect;
     phase: AspectPhase;
-  }): { categories: string[]; description: string; phaseEmoji: string } {
-    const {
-      baseCategories,
-      body1Capitalized,
-      body2Capitalized,
-      minorAspect,
-      phase,
-    } = args;
+  }): { description: string; phaseEmoji: string; tags: string[] } {
+    const { baseTags, body1Capitalized, body2Capitalized, minorAspect, phase } =
+      args;
     if (phase === "perfective") {
       return {
-        categories: [...baseCategories, "Perfective"],
         description: `${body1Capitalized} perfective ${minorAspect} ${body2Capitalized}`,
         phaseEmoji: "🎯",
+        tags: [...baseTags, "Perfective"],
       };
     }
     if (phase === "forming") {
       return {
-        categories: [...baseCategories, "Forming"],
         description: `${body1Capitalized} forming ${minorAspect} ${body2Capitalized}`,
         phaseEmoji: "➡️",
+        tags: [...baseTags, "Forming"],
       };
     }
     return {
-      categories: [...baseCategories, "Dissolving"],
       description: `${body1Capitalized} dissolving ${minorAspect} ${body2Capitalized}`,
       phaseEmoji: "⬅️",
+      tags: [...baseTags, "Dissolving"],
     };
   }
 }

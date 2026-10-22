@@ -60,9 +60,7 @@ export class TripleAspectsComposerService {
       tripleAspectBodies.map((body) => bodyDisplayName(body)),
     );
     const bodiesCapitalized = _.sortBy(
-      forming.categories.filter((category) =>
-        tripleAspectBodyNames.has(category),
-      ),
+      forming.tags.filter((tag) => tripleAspectBodyNames.has(tag)),
     );
 
     if (bodiesCapitalized.length !== 3) {
@@ -78,45 +76,6 @@ export class TripleAspectsComposerService {
     }
 
     return this.resolveProgressiveMeta(bodiesCapitalized, aspect);
-  }
-
-  /**
-   * Builds triple aspect categories.
-   */
-  private buildTripleAspectCategories(args: {
-    body1Capitalized: string;
-    body2Capitalized: string;
-    body3Capitalized: string;
-    focalOrApexBody: Body | undefined;
-    phase: AspectPhase;
-    tripleAspect: TripleAspect;
-  }): string[] {
-    const {
-      body1Capitalized,
-      body2Capitalized,
-      body3Capitalized,
-      focalOrApexBody,
-      phase,
-      tripleAspect,
-    } = args;
-
-    const categories = [
-      "Astronomy",
-      "Astrology",
-      "Compound Aspect",
-      "Triple Aspect",
-      _.startCase(tripleAspect),
-      _.startCase(phase),
-      body1Capitalized,
-      body2Capitalized,
-      body3Capitalized,
-    ];
-
-    if (focalOrApexBody) {
-      categories.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
-    }
-
-    return categories;
   }
 
   /**
@@ -136,20 +95,57 @@ export class TripleAspectsComposerService {
   }
 
   /**
+   * Builds triple aspect tags.
+   */
+  private buildTripleAspectTags(args: {
+    body1Capitalized: string;
+    body2Capitalized: string;
+    body3Capitalized: string;
+    focalOrApexBody: Body | undefined;
+    phase: AspectPhase;
+    tripleAspect: TripleAspect;
+  }): string[] {
+    const {
+      body1Capitalized,
+      body2Capitalized,
+      body3Capitalized,
+      focalOrApexBody,
+      phase,
+      tripleAspect,
+    } = args;
+
+    const tags = [
+      "Astronomy",
+      "Astrology",
+      "Compound Aspect",
+      "Triple Aspect",
+      _.startCase(tripleAspect),
+      _.startCase(phase),
+      body1Capitalized,
+      body2Capitalized,
+      body3Capitalized,
+    ];
+
+    if (focalOrApexBody) {
+      tags.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
+    }
+
+    return tags;
+  }
+
+  /**
    * Derives focal extra info.
    */
   private getFocalExtraInfo(
-    formingCategories: string[],
+    formingTags: string[],
     aspect: TripleAspect,
   ): string {
-    const focalCategory = formingCategories.find((category) =>
-      category.includes(" Focal"),
-    );
-    if (!focalCategory) {
+    const focalTag = formingTags.find((tag) => tag.includes(" Focal"));
+    if (!focalTag) {
       return "";
     }
 
-    const focalBody = focalCategory.replace(" Focal", "");
+    const focalBody = focalTag.replace(" Focal", "");
     if (aspect === "t-square") {
       return ` (focal: ${focalBody})`;
     }
@@ -257,11 +253,15 @@ export class TripleAspectsComposerService {
       body3,
       body3Capitalized,
     } = meta;
-    const extraInfo = this.getFocalExtraInfo(args.forming.categories, aspect);
+    const extraInfo = this.getFocalExtraInfo(args.forming.tags, aspect);
     const descBodies = `${body1Capitalized}, ${body2Capitalized}, ${body3Capitalized}`;
 
     return {
-      categories: [
+      description: `${descBodies} ${aspect}`,
+      end: args.dissolving.start,
+      start: args.forming.start,
+      summary: `${symbolByTripleAspect[aspect]} ${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${descBodies} ${aspect}${extraInfo}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Compound Aspect",
@@ -271,10 +271,6 @@ export class TripleAspectsComposerService {
         body2Capitalized,
         body3Capitalized,
       ],
-      description: `${descBodies} ${aspect}`,
-      end: args.dissolving.start,
-      start: args.forming.start,
-      summary: `${symbolByTripleAspect[aspect]} ${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${descBodies} ${aspect}${extraInfo}`,
     };
   }
 
@@ -321,7 +317,11 @@ export class TripleAspectsComposerService {
     });
 
     return {
-      categories: this.buildTripleAspectCategories({
+      description,
+      end: timestamp,
+      start: timestamp,
+      summary,
+      tags: this.buildTripleAspectTags({
         body1Capitalized,
         body2Capitalized,
         body3Capitalized,
@@ -329,10 +329,6 @@ export class TripleAspectsComposerService {
         phase,
         tripleAspect,
       }),
-      description,
-      end: timestamp,
-      start: timestamp,
-      summary,
     };
   }
 
@@ -359,12 +355,10 @@ export class TripleAspectsComposerService {
       tripleAspectBodies.map((body) => bodyDisplayName(body)),
     );
     const planets = _.sortBy(
-      event.categories.filter((category) =>
-        tripleAspectBodyNames.has(category),
-      ),
+      event.tags.filter((tag) => tripleAspectBodyNames.has(tag)),
     );
-    const aspect = event.categories.find((category) =>
-      ["Grand Trine", "T Square", "Yod"].includes(category),
+    const aspect = event.tags.find((tag) =>
+      ["Grand Trine", "T Square", "Yod"].includes(tag),
     );
 
     if (planets.length === 3 && aspect) {
@@ -399,8 +393,8 @@ export class TripleAspectsComposerService {
     );
 
     return pairs.flatMap(([forming, dissolving]) => {
-      const aspectCapitalized = forming.categories.find((category) =>
-        ["Grand Trine", "T Square", "Yod"].includes(category),
+      const aspectCapitalized = forming.tags.find((tag) =>
+        ["Grand Trine", "T Square", "Yod"].includes(tag),
       );
       const event =
         aspectCapitalized === undefined

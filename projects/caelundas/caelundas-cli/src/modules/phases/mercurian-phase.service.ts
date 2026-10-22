@@ -8,18 +8,18 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { PhaseCalculationService } from "./phase-calculation.service";
 import {
-  EVENING_RISE_CATEGORY,
-  EVENING_SET_CATEGORY,
-  MERCURIAN_CATEGORY,
+  EVENING_RISE_TAG,
+  EVENING_SET_TAG,
+  MERCURIAN_TAG,
   MERCURY_EVENING_VISIBILITY_DESCRIPTION,
   MERCURY_EVENING_VISIBILITY_PAIR_LABEL,
   MERCURY_EVENING_VISIBILITY_SUMMARY,
   MERCURY_MORNING_VISIBILITY_DESCRIPTION,
   MERCURY_MORNING_VISIBILITY_PAIR_LABEL,
   MERCURY_MORNING_VISIBILITY_SUMMARY,
-  MORNING_RISE_CATEGORY,
-  MORNING_SET_CATEGORY,
-  PHASE_EVENT_BASE_CATEGORIES,
+  MORNING_RISE_TAG,
+  MORNING_SET_TAG,
+  PHASE_EVENT_BASE_TAGS,
   PHASE_EVENT_TIMEZONE,
 } from "./phases.constants";
 
@@ -49,7 +49,7 @@ export class MercurianPhaseService {
 
   // 🔐 Private Fields
 
-  private static readonly categories = PHASE_EVENT_BASE_CATEGORIES;
+  private static readonly tags = PHASE_EVENT_BASE_TAGS;
 
   // 🔑 Public Fields
 
@@ -154,15 +154,11 @@ export class MercurianPhaseService {
     });
 
     const mercurianPhaseEvent: DetectedCalendarEvent = {
-      categories: [
-        ...MercurianPhaseService.categories,
-        MERCURIAN_CATEGORY,
-        phaseCapitalized,
-      ],
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags: [...MercurianPhaseService.tags, MERCURIAN_TAG, phaseCapitalized],
     };
     return mercurianPhaseEvent;
   }
@@ -174,14 +170,8 @@ export class MercurianPhaseService {
     events: DetectedCalendarEvent[],
   ): DetectedCalendarEvent[] {
     const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
-      this.phaseCalculationService.filterByCategory(
-        events,
-        EVENING_RISE_CATEGORY,
-      ),
-      this.phaseCalculationService.filterByCategory(
-        events,
-        EVENING_SET_CATEGORY,
-      ),
+      this.phaseCalculationService.filterByTag(events, EVENING_RISE_TAG),
+      this.phaseCalculationService.filterByTag(events, EVENING_SET_TAG),
       MERCURY_EVENING_VISIBILITY_PAIR_LABEL,
     );
     return pairs.map(([beginning, ending]) =>
@@ -196,14 +186,8 @@ export class MercurianPhaseService {
     events: DetectedCalendarEvent[],
   ): DetectedCalendarEvent[] {
     const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
-      this.phaseCalculationService.filterByCategory(
-        events,
-        MORNING_RISE_CATEGORY,
-      ),
-      this.phaseCalculationService.filterByCategory(
-        events,
-        MORNING_SET_CATEGORY,
-      ),
+      this.phaseCalculationService.filterByTag(events, MORNING_RISE_TAG),
+      this.phaseCalculationService.filterByTag(events, MORNING_SET_TAG),
       MERCURY_MORNING_VISIBILITY_PAIR_LABEL,
     );
     return pairs.map(([beginning, ending]) =>
@@ -257,15 +241,15 @@ export class MercurianPhaseService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...MercurianPhaseService.categories,
-        MERCURIAN_CATEGORY,
-        "Evening Visibility",
-      ],
       description: MERCURY_EVENING_VISIBILITY_DESCRIPTION,
       end: ending.start,
       start: beginning.start,
       summary: MERCURY_EVENING_VISIBILITY_SUMMARY,
+      tags: [
+        ...MercurianPhaseService.tags,
+        MERCURIAN_TAG,
+        "Evening Visibility",
+      ],
     };
   }
 
@@ -277,15 +261,15 @@ export class MercurianPhaseService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...MercurianPhaseService.categories,
-        MERCURIAN_CATEGORY,
-        "Morning Visibility",
-      ],
       description: MERCURY_MORNING_VISIBILITY_DESCRIPTION,
       end: ending.start,
       start: beginning.start,
       summary: MERCURY_MORNING_VISIBILITY_SUMMARY,
+      tags: [
+        ...MercurianPhaseService.tags,
+        MERCURIAN_TAG,
+        "Morning Visibility",
+      ],
     };
   }
 }

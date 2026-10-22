@@ -29,8 +29,8 @@ interface ServicePrivate {
   detectProgressive: (
     events: DetectedCalendarEvent[],
   ) => DetectedCalendarEvent[];
-  extractLunarPhaseFromCategories: (
-    categories: string[],
+  extractLunarPhaseFromTags: (
+    tags: string[],
     enteringSummary: string,
   ) => LunarPhase | null;
   getMonthlyLunarCycleProgressiveEvent: (
@@ -53,7 +53,6 @@ describe(MonthlyLunarCycleService, () => {
           provide: CalendarService,
           useValue: {
             buildInstantEvent: (args: {
-              categories: string[];
               date: Moment;
               description: string;
               logger: {
@@ -64,27 +63,22 @@ describe(MonthlyLunarCycleService, () => {
                 ) => void;
               };
               summary: string;
+              tags: string[];
               timezone: string;
             }): DetectedCalendarEvent => {
-              const {
-                categories,
-                date,
-                description,
-                logger,
-                summary,
-                timezone,
-              } = args;
+              const { date, description, logger, summary, tags, timezone } =
+                args;
               const dateString = date.clone().tz(timezone).toISOString(true);
               logger.info("🗓️ Built a calendar event", undefined, {
                 at: dateString,
                 summary,
               });
               return {
-                categories,
                 description,
                 end: date,
                 start: date,
                 summary,
+                tags,
               };
             },
           },
@@ -259,11 +253,11 @@ describe(MonthlyLunarCycleService, () => {
       expect(event.description).toBe("New Moon");
       expect(event.start).toStrictEqual(date);
       expect(event.end).toStrictEqual(date);
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Monthly Lunar Cycle");
-      expect(event.categories).toContain("Lunar");
-      expect(event.categories).toContain("New");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Monthly Lunar Cycle");
+      expect(event.tags).toContain("Lunar");
+      expect(event.tags).toContain("New");
     });
 
     it("creates a full moon event with correct structure", () => {
@@ -276,7 +270,7 @@ describe(MonthlyLunarCycleService, () => {
 
       expect(event.summary).toBe(`🌙 ${symbolByLunarPhase.full} Full Moon`);
       expect(event.description).toBe("Full Moon");
-      expect(event.categories).toContain("Full");
+      expect(event.tags).toContain("Full");
     });
 
     it("creates a first quarter event with correct structure", () => {
@@ -291,7 +285,7 @@ describe(MonthlyLunarCycleService, () => {
         `🌙 ${symbolByLunarPhase["first quarter"]} First Quarter Moon`,
       );
       expect(event.description).toBe("First Quarter Moon");
-      expect(event.categories).toContain("First Quarter");
+      expect(event.tags).toContain("First Quarter");
     });
 
     it("creates a last quarter event with correct structure", () => {
@@ -306,7 +300,7 @@ describe(MonthlyLunarCycleService, () => {
         `🌙 ${symbolByLunarPhase["last quarter"]} Last Quarter Moon`,
       );
       expect(event.description).toBe("Last Quarter Moon");
-      expect(event.categories).toContain("Last Quarter");
+      expect(event.tags).toContain("Last Quarter");
     });
 
     it("creates a waxing crescent event with correct structure", () => {
@@ -321,7 +315,7 @@ describe(MonthlyLunarCycleService, () => {
         `🌙 ${symbolByLunarPhase["waxing crescent"]} Waxing Crescent Moon`,
       );
       expect(event.description).toBe("Waxing Crescent Moon");
-      expect(event.categories).toContain("Waxing Crescent");
+      expect(event.tags).toContain("Waxing Crescent");
     });
 
     it("creates a waxing gibbous event with correct structure", () => {
@@ -336,7 +330,7 @@ describe(MonthlyLunarCycleService, () => {
         `🌙 ${symbolByLunarPhase["waxing gibbous"]} Waxing Gibbous Moon`,
       );
       expect(event.description).toBe("Waxing Gibbous Moon");
-      expect(event.categories).toContain("Waxing Gibbous");
+      expect(event.tags).toContain("Waxing Gibbous");
     });
 
     it("creates a waning gibbous event with correct structure", () => {
@@ -351,7 +345,7 @@ describe(MonthlyLunarCycleService, () => {
         `🌙 ${symbolByLunarPhase["waning gibbous"]} Waning Gibbous Moon`,
       );
       expect(event.description).toBe("Waning Gibbous Moon");
-      expect(event.categories).toContain("Waning Gibbous");
+      expect(event.tags).toContain("Waning Gibbous");
     });
 
     it("creates a waning crescent event with correct structure", () => {
@@ -366,50 +360,44 @@ describe(MonthlyLunarCycleService, () => {
         `🌙 ${symbolByLunarPhase["waning crescent"]} Waning Crescent Moon`,
       );
       expect(event.description).toBe("Waning Crescent Moon");
-      expect(event.categories).toContain("Waning Crescent");
+      expect(event.tags).toContain("Waning Crescent");
     });
   });
 
   describe("detectProgressive", () => {
     it("creates progressive events between consecutive lunar phases", () => {
       const newMoon: DetectedCalendarEvent = {
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Monthly Lunar Cycle",
-          "Lunar",
-          "New",
-        ],
         description: "New Moon",
         end: moment.utc("2024-03-10T09:00:00.000Z"),
         start: moment.utc("2024-03-10T09:00:00.000Z"),
         summary: "🌙 🌑 New Moon",
+        tags: ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar", "New"],
       };
       const waxingCrescent: DetectedCalendarEvent = {
-        categories: [
+        description: "Waxing Crescent Moon",
+        end: moment.utc("2024-03-13T12:00:00.000Z"),
+        start: moment.utc("2024-03-13T12:00:00.000Z"),
+        summary: "🌙 🌒 Waxing Crescent Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Monthly Lunar Cycle",
           "Lunar",
           "Waxing Crescent",
         ],
-        description: "Waxing Crescent Moon",
-        end: moment.utc("2024-03-13T12:00:00.000Z"),
-        start: moment.utc("2024-03-13T12:00:00.000Z"),
-        summary: "🌙 🌒 Waxing Crescent Moon",
       };
       const firstQuarter: DetectedCalendarEvent = {
-        categories: [
+        description: "First Quarter Moon",
+        end: moment.utc("2024-03-17T04:11:00.000Z"),
+        start: moment.utc("2024-03-17T04:11:00.000Z"),
+        summary: "🌙 🌓 First Quarter Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Monthly Lunar Cycle",
           "Lunar",
           "First Quarter",
         ],
-        description: "First Quarter Moon",
-        end: moment.utc("2024-03-17T04:11:00.000Z"),
-        start: moment.utc("2024-03-17T04:11:00.000Z"),
-        summary: "🌙 🌓 First Quarter Moon",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -443,11 +431,11 @@ describe(MonthlyLunarCycleService, () => {
 
     it("filters out non-lunar cycle events", () => {
       const nonLunarEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Something Else"],
         description: "Not a lunar event",
         end: moment.utc("2024-03-10T09:00:00.000Z"),
         start: moment.utc("2024-03-10T09:00:00.000Z"),
         summary: "Some other event",
+        tags: ["Astronomy", "Something Else"],
       };
 
       const progressiveEvents = service.detectProgressive([nonLunarEvent]);
@@ -480,26 +468,26 @@ describe(MonthlyLunarCycleService, () => {
       expect(progressiveEvents).toHaveLength(7);
     });
 
-    it("warns and skip events with invalid categories", () => {
+    it("warns and skip events with invalid tags", () => {
       const invalidEvent: DetectedCalendarEvent = {
-        categories: ["Monthly Lunar Cycle"], // Missing lunar phase category
         description: "Invalid",
         end: moment.utc("2024-03-10T09:00:00.000Z"),
         start: moment.utc("2024-03-10T09:00:00.000Z"),
         summary: "Invalid event",
+        tags: ["Monthly Lunar Cycle"], // Missing lunar phase tag
       };
       const validEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Waxing Crescent Moon",
+        end: moment.utc("2024-03-13T12:00:00.000Z"),
+        start: moment.utc("2024-03-13T12:00:00.000Z"),
+        summary: "🌙 🌒 Waxing Crescent Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Monthly Lunar Cycle",
           "Lunar",
           "Waxing Crescent",
         ],
-        description: "Waxing Crescent Moon",
-        end: moment.utc("2024-03-13T12:00:00.000Z"),
-        start: moment.utc("2024-03-13T12:00:00.000Z"),
-        summary: "🌙 🌒 Waxing Crescent Moon",
       };
 
       const warnSpy = vi
@@ -528,37 +516,37 @@ describe(MonthlyLunarCycleService, () => {
       vi.restoreAllMocks();
     });
 
-    it("returns null when progressive categories contain an unknown lunar phase", () => {
+    it("returns null when progressive tags contain an unknown lunar phase", () => {
       const warnSpy = vi
         .spyOn(LoggerService.prototype, "warn")
         .mockReturnValue(undefined);
 
       const progressiveEvent = s.getMonthlyLunarCycleProgressiveEvent(
         {
-          categories: [
+          description: "Unknown Moon",
+          end: moment.utc("2024-03-10T09:00:00.000Z"),
+          start: moment.utc("2024-03-10T09:00:00.000Z"),
+          summary: "Unknown Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Monthly Lunar Cycle",
             "Lunar",
             "Unknown",
           ],
-          description: "Unknown Moon",
-          end: moment.utc("2024-03-10T09:00:00.000Z"),
-          start: moment.utc("2024-03-10T09:00:00.000Z"),
-          summary: "Unknown Moon",
         },
         {
-          categories: [
+          description: "New Moon",
+          end: moment.utc("2024-03-13T12:00:00.000Z"),
+          start: moment.utc("2024-03-13T12:00:00.000Z"),
+          summary: "🌙 🌑 New Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Monthly Lunar Cycle",
             "Lunar",
             "New",
           ],
-          description: "New Moon",
-          end: moment.utc("2024-03-13T12:00:00.000Z"),
-          start: moment.utc("2024-03-13T12:00:00.000Z"),
-          summary: "🌙 🌑 New Moon",
         },
       );
 
@@ -577,34 +565,34 @@ describe(MonthlyLunarCycleService, () => {
 
       orderedEventsSpy.mockReturnValue([
         {
-          categories: [
+          description: "New Moon",
+          end: moment.utc("2024-03-10T09:00:00.000Z"),
+          start: moment.utc("2024-03-10T09:00:00.000Z"),
+          summary: "🌙 🌑 New Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Monthly Lunar Cycle",
             "Lunar",
             "New",
           ],
-          description: "New Moon",
-          end: moment.utc("2024-03-10T09:00:00.000Z"),
-          start: moment.utc("2024-03-10T09:00:00.000Z"),
-          summary: "🌙 🌑 New Moon",
         },
         undefined,
       ] as unknown);
 
       const progressiveEvents = service.detectProgressive([
         {
-          categories: [
+          description: "New Moon",
+          end: moment.utc("2024-03-10T09:00:00.000Z"),
+          start: moment.utc("2024-03-10T09:00:00.000Z"),
+          summary: "🌙 🌑 New Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Monthly Lunar Cycle",
             "Lunar",
             "New",
           ],
-          description: "New Moon",
-          end: moment.utc("2024-03-10T09:00:00.000Z"),
-          start: moment.utc("2024-03-10T09:00:00.000Z"),
-          summary: "🌙 🌑 New Moon",
         },
       ]);
 
@@ -613,13 +601,13 @@ describe(MonthlyLunarCycleService, () => {
       orderedEventsSpy.mockRestore();
     });
 
-    describe("extractLunarPhaseFromCategories", () => {
-      it("warns and return null when no lunar phase category is present", () => {
+    describe("extractLunarPhaseFromTags", () => {
+      it("warns and return null when no lunar phase tag is present", () => {
         const warnSpy = vi
           .spyOn(LoggerService.prototype, "warn")
           .mockReturnValue(undefined);
 
-        const result = s.extractLunarPhaseFromCategories(
+        const result = s.extractLunarPhaseFromTags(
           ["Astronomy", "Astrology"],
           "Invalid event",
         );
@@ -639,7 +627,7 @@ describe(MonthlyLunarCycleService, () => {
           .spyOn(LoggerService.prototype, "warn")
           .mockReturnValue(undefined);
 
-        const result = s.extractLunarPhaseFromCategories(
+        const result = s.extractLunarPhaseFromTags(
           ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar", "Fake"],
           "Invalid event",
         );
@@ -654,8 +642,8 @@ describe(MonthlyLunarCycleService, () => {
         warnSpy.mockRestore();
       });
 
-      it("extracts a valid lunar phase category", () => {
-        const result = s.extractLunarPhaseFromCategories(
+      it("extracts a valid lunar phase tag", () => {
+        const result = s.extractLunarPhaseFromTags(
           ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar", "New"],
           "Valid event",
         );
@@ -671,7 +659,7 @@ describe(MonthlyLunarCycleService, () => {
           .spyOn(CaelundasTypes, "isLunarPhase")
           .mockReturnValue(false);
 
-        const result = s.extractLunarPhaseFromCategories(
+        const result = s.extractLunarPhaseFromTags(
           ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar", "Full"],
           "Invalid typed event",
         );
@@ -691,17 +679,17 @@ describe(MonthlyLunarCycleService, () => {
     describe("getMonthlyLunarCycleProgressiveEvent", () => {
       it("creates a progressive lunar cycle event for valid lunar phases", () => {
         const entering = {
-          categories: [
+          description: "New Moon",
+          end: moment.utc("2024-01-01T00:00:00.000Z"),
+          start: moment.utc("2024-01-01T00:00:00.000Z"),
+          summary: "🌑 New Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Monthly Lunar Cycle",
             "Lunar",
             "New",
           ],
-          description: "New Moon",
-          end: moment.utc("2024-01-01T00:00:00.000Z"),
-          start: moment.utc("2024-01-01T00:00:00.000Z"),
-          summary: "🌑 New Moon",
         } as DetectedCalendarEvent;
         const exiting = {
           ...entering,
@@ -716,36 +704,36 @@ describe(MonthlyLunarCycleService, () => {
         );
 
         expect(result).toBeDefined();
-        expect(result?.categories).toContain("Monthly Lunar Cycle");
-        expect(result?.categories).toContain("New");
+        expect(result?.tags).toContain("Monthly Lunar Cycle");
+        expect(result?.tags).toContain("New");
       });
 
-      it("returns null when the entering event is missing a lunar phase category", () => {
+      it("returns null when the entering event is missing a lunar phase tag", () => {
         const internals = s as unknown as {
-          extractLunarPhaseFromCategories: (
-            categories: string[],
+          extractLunarPhaseFromTags: (
+            tags: string[],
             enteringSummary: string,
           ) => null;
         };
 
         expect(
-          internals.extractLunarPhaseFromCategories(
+          internals.extractLunarPhaseFromTags(
             ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar"],
             "Missing phase",
           ),
         ).toBeNull();
       });
 
-      it("returns null when the lunar phase category is missing", () => {
+      it("returns null when the lunar phase tag is missing", () => {
         const internals = s as unknown as {
-          extractLunarPhaseFromCategories: (
-            categories: string[],
+          extractLunarPhaseFromTags: (
+            tags: string[],
             enteringSummary: string,
           ) => null;
         };
 
         expect(
-          internals.extractLunarPhaseFromCategories(
+          internals.extractLunarPhaseFromTags(
             ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar"],
             "Missing phase",
           ),
@@ -757,17 +745,17 @@ describe(MonthlyLunarCycleService, () => {
       it("skips sparse entries when pairing monthly lunar events", () => {
         const sparseEvents = [] as DetectedCalendarEvent[];
         sparseEvents[1] = {
-          categories: [
+          description: "New Moon",
+          end: moment.utc("2024-01-01T00:00:00.000Z"),
+          start: moment.utc("2024-01-01T00:00:00.000Z"),
+          summary: "🌑 New Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Monthly Lunar Cycle",
             "Lunar",
             "New",
           ],
-          description: "New Moon",
-          end: moment.utc("2024-01-01T00:00:00.000Z"),
-          start: moment.utc("2024-01-01T00:00:00.000Z"),
-          summary: "🌑 New Moon",
         };
 
         expect(s.detectProgressive(sparseEvents)).toHaveLength(0);

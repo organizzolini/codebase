@@ -154,7 +154,7 @@ describe("progressiveService span pairing", () => {
 
     const progressive = progressiveService.detect(perfective);
     const aspectSpans = progressive
-      .filter((event) => event.categories.includes("Major Aspect"))
+      .filter((event) => event.tags.includes("Major Aspect"))
       .map((event) => ({
         end: event.end.toISOString(),
         start: event.start.toISOString(),

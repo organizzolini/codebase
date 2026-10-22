@@ -37,10 +37,10 @@ export class MajorAspectProgressiveService {
    * Builds a stable grouping key from sorted bodies plus major-aspect label.
    */
   private getAspectGroupKey(event: DetectedCalendarEvent): string {
-    return this.progressiveAspectService.buildAspectGroupKeyFromCategories({
+    return this.progressiveAspectService.buildAspectGroupKeyFromTags({
       aspects: majorAspects,
       bodies: majorAspectBodies,
-      categories: event.categories,
+      tags: event.tags,
     });
   }
 
@@ -52,8 +52,8 @@ export class MajorAspectProgressiveService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return this.progressiveAspectService.createSimpleAspectProgressiveEvent({
-      aspectCategory: "Major Aspect",
       aspects: majorAspects,
+      aspectTag: "Major Aspect",
       beginning,
       bodies: majorAspectBodies,
       ending,
@@ -73,16 +73,16 @@ export class MajorAspectProgressiveService {
     aspectCapitalized: string;
     body1Capitalized: string;
     body2Capitalized: string;
-    categories: string[];
+    tags: string[];
   }): { aspect: MajorAspect; body1: Body; body2: Body } {
     const typedParts =
       this.progressiveAspectService.extractTypedAspectPartsOrThrow({
         aspects: majorAspects,
         bodies: majorAspectBodies,
-        categories: args.categories,
-        errorMessage: "Could not extract typed values from categories",
+        errorMessage: "Could not extract typed values from tags",
         isAspect: isMajorAspect,
         isBody,
+        tags: args.tags,
       });
 
     return {
@@ -98,8 +98,7 @@ export class MajorAspectProgressiveService {
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     return this.progressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(
       {
-        aspectCategory: "Major Aspect",
-        categoryLabel: "major aspect",
+        aspectTag: "Major Aspect",
         events,
         getAspectGroupKey: (event) => this.getAspectGroupKey(event),
         getProgressiveEvent: (beginning, ending) =>
@@ -110,6 +109,7 @@ export class MajorAspectProgressiveService {
             endings,
             label,
           ),
+        tagLabel: "major aspect",
       },
     );
   }
@@ -123,8 +123,7 @@ export class MajorAspectProgressiveService {
   ): DetectedCalendarEvent[] {
     return this.progressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(
       {
-        aspectCategory: "Major Aspect",
-        categoryLabel: "major aspect",
+        aspectTag: "Major Aspect",
         events: aspectGroupEvents,
         fixedAspectGroupKey: aspectGroupKey,
         getAspectGroupKey: () => "",
@@ -136,6 +135,7 @@ export class MajorAspectProgressiveService {
             endings,
             label,
           ),
+        tagLabel: "major aspect",
       },
     );
   }

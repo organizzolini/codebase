@@ -12,15 +12,15 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 
 const createEvent = (
   description: string,
-  categories: string[],
+  tags: string[],
 ): DetectedCalendarEvent => {
   const timestamp = moment.utc("2024-04-08T18:00:00.000Z");
   return {
-    categories,
     description,
     end: timestamp,
     start: timestamp,
     summary: description,
+    tags,
   };
 };
 

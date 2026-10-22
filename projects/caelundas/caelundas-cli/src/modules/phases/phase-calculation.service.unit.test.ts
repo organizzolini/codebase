@@ -244,22 +244,22 @@ describe(PhaseCalculationService, () => {
     expect(value).toContain("2024-03-21T08:00:00.000");
   });
 
-  it("filters events by category membership", () => {
-    const result = service.filterByCategory(
+  it("filters events by tag membership", () => {
+    const result = service.filterByTag(
       [
         {
-          categories: ["Astronomy", "Target"],
           description: "match",
           end: moment.utc("2024-03-21T12:00:00.000Z"),
           start: moment.utc("2024-03-21T12:00:00.000Z"),
           summary: "match",
+          tags: ["Astronomy", "Target"],
         },
         {
-          categories: ["Astronomy", "Other"],
           description: "skip",
           end: moment.utc("2024-03-21T12:00:00.000Z"),
           start: moment.utc("2024-03-21T12:00:00.000Z"),
           summary: "skip",
+          tags: ["Astronomy", "Other"],
         },
       ],
       "Target",

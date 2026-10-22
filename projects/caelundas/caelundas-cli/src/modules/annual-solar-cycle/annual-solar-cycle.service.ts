@@ -7,15 +7,15 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { AnnualSolarCycleEventsService } from "./annual-solar-cycle-events.service";
 import {
-  ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
-  APHELION_CATEGORY,
-  PERIHELION_CATEGORY,
-  SOLAR_ADVANCING_CATEGORY,
+  ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+  APHELION_TAG,
+  PERIHELION_TAG,
   SOLAR_ADVANCING_DESCRIPTION,
   SOLAR_ADVANCING_SUMMARY,
-  SOLAR_RETREATING_CATEGORY,
+  SOLAR_ADVANCING_TAG,
   SOLAR_RETREATING_DESCRIPTION,
   SOLAR_RETREATING_SUMMARY,
+  SOLAR_RETREATING_TAG,
 } from "./annual-solar-cycle.constants";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
@@ -105,14 +105,11 @@ export class AnnualSolarCycleService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
-        SOLAR_ADVANCING_CATEGORY,
-      ],
       description: SOLAR_ADVANCING_DESCRIPTION,
       end: ending.start,
       start: beginning.start,
       summary: SOLAR_ADVANCING_SUMMARY,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, SOLAR_ADVANCING_TAG],
     };
   }
 
@@ -140,14 +137,11 @@ export class AnnualSolarCycleService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
-        SOLAR_RETREATING_CATEGORY,
-      ],
       description: SOLAR_RETREATING_DESCRIPTION,
       end: ending.start,
       start: beginning.start,
       summary: SOLAR_RETREATING_SUMMARY,
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, SOLAR_RETREATING_TAG],
     };
   }
 
@@ -204,13 +198,13 @@ export class AnnualSolarCycleService {
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const solarApsisEvents = events.filter((event) =>
-      event.categories.includes("Annual Solar Cycle"),
+      event.tags.includes("Annual Solar Cycle"),
     );
     const perihelionEvents = solarApsisEvents.filter((event) =>
-      event.categories.includes(PERIHELION_CATEGORY),
+      event.tags.includes(PERIHELION_TAG),
     );
     const aphelionEvents = solarApsisEvents.filter((event) =>
-      event.categories.includes(APHELION_CATEGORY),
+      event.tags.includes(APHELION_TAG),
     );
     return [
       ...this.getAdvancingProgressiveEvents(aphelionEvents, perihelionEvents),

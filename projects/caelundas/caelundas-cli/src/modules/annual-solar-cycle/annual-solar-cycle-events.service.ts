@@ -3,9 +3,9 @@ import { Injectable } from "@nestjs/common";
 import { LoggerService } from "@codebase/observability";
 
 import {
-  ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
-  APHELION_CATEGORY,
-  PERIHELION_CATEGORY,
+  ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+  APHELION_TAG,
+  PERIHELION_TAG,
   SOLAR_CYCLE_EVENT_TIMEZONE,
   SOLAR_CYCLE_LONGITUDE_THRESHOLDS,
 } from "./annual-solar-cycle.constants";
@@ -38,7 +38,7 @@ export class AnnualSolarCycleEventsService {
   private buildSolarCycleEvent(
     args: BuildSolarCycleEventArguments,
   ): DetectedCalendarEvent {
-    const { categories, date, description, summary } = args;
+    const { date, description, summary, tags } = args;
     const dateString = date
       .clone()
       .tz(SOLAR_CYCLE_EVENT_TIMEZONE)
@@ -48,11 +48,11 @@ export class AnnualSolarCycleEventsService {
       summary,
     });
     return {
-      categories: [...categories],
       description,
       end: date,
       start: date,
       summary,
+      tags: [...tags],
     };
   }
 
@@ -154,180 +154,180 @@ export class AnnualSolarCycleEventsService {
   /** Builds the solar aphelion event. */
   buildAphelionEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: [...ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES, APHELION_CATEGORY],
       date,
       description: "Solar Aphelion",
       summary: "☀️ ❄️ Solar Aphelion",
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, APHELION_TAG],
     });
   }
 
   /** Builds the autumnal equinox event. */
   buildAutumnalEquinoxEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Autumnal Equinox",
       summary: "🍂 Autumnal Equinox",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the Beltane event. */
   buildBeltaneEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Beltane",
       summary: "🐦‍🔥 Beltane",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the eleventh hexadecan event. */
   buildEleventhHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Eleventh Hexadecan",
       summary: "🧤 Eleventh Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the fifteenth hexadecan event. */
   buildFifteenthHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Fifteenth Hexadecan",
       summary: "🌨️ Fifteenth Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the fifth hexadecan event. */
   buildFifthHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Fifth Hexadecan",
       summary: "⛱️ Fifth Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the first hexadecan event. */
   buildFirstHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "First Hexadecan",
       summary: "🌳 First Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the Imbolc event. */
   buildImbolcEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Imbolc",
       summary: "🐑 Imbolc",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the Lammas event. */
   buildLammasEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Lammas",
       summary: "🌾 Lammas",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the ninth hexadecan event. */
   buildNinthHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Ninth Hexadecan",
       summary: "🍁 Ninth Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the solar perihelion event. */
   buildPerihelionEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: [...ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES, PERIHELION_CATEGORY],
       date,
       description: "Solar Perihelion",
       summary: "☀️ 🔥 Solar Perihelion",
+      tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, PERIHELION_TAG],
     });
   }
 
   /** Builds the Samhain event. */
   buildSamhainEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Samhain",
       summary: "🎃 Samhain",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the seventh hexadecan event. */
   buildSeventhHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Seventh Hexadecan",
       summary: "🎑 Seventh Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the summer solstice event. */
   buildSummerSolsticeEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Summer Solstice",
       summary: "🌞 Summer Solstice",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the third hexadecan event. */
   buildThirdHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Third Hexadecan",
       summary: "🌻 Third Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the thirteenth hexadecan event. */
   buildThirteenthHexadecanEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Thirteenth Hexadecan",
       summary: "❄️ Thirteenth Hexadecan",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the vernal equinox event. */
   buildVernalEquinoxEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Vernal Equinox",
       summary: "🌸 Vernal Equinox",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 
   /** Builds the winter solstice event. */
   buildWinterSolsticeEvent(date: Moment): DetectedCalendarEvent {
     return this.buildSolarCycleEvent({
-      categories: ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES,
       date,
       description: "Winter Solstice",
       summary: "☃️ Winter Solstice",
+      tags: ANNUAL_SOLAR_CYCLE_BASE_TAGS,
     });
   }
 

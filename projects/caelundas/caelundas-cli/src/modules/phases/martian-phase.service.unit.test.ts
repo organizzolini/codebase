@@ -45,9 +45,9 @@ const configurePhaseCalculationServiceMock = (
     typeof createMock<PhaseCalculationService>
   >,
 ): void => {
-  vi.mocked(phaseCalculationService.filterByCategory).mockImplementation(
-    (events: DetectedCalendarEvent[], category: string) =>
-      events.filter((event) => event.categories.includes(category)),
+  vi.mocked(phaseCalculationService.filterByTag).mockImplementation(
+    (events: DetectedCalendarEvent[], tag: string) =>
+      events.filter((event) => event.tags.includes(tag)),
   );
   vi.mocked(phaseCalculationService.formatTimeZoneIso).mockReturnValue(
     "2024-06-01T02:00:00-04:00",
@@ -128,8 +128,8 @@ describe(MartianPhaseService, () => {
       expect(event.description).toBe("Mars Morning Rise");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
-      expect(event.categories).toContain("Martian");
-      expect(event.categories).toContain("Morning Rise");
+      expect(event.tags).toContain("Martian");
+      expect(event.tags).toContain("Morning Rise");
     });
   });
 
@@ -300,18 +300,18 @@ describe(MartianPhaseService, () => {
   describe("getMartianPhaseProgressiveEvents", () => {
     it("creates martian morning visibility duration events", () => {
       const morningRise: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Martian", "Morning Rise"],
         description: "Mars Morning Rise",
         end: moment.utc("2024-01-01T00:00:00.000Z"),
         start: moment.utc("2024-01-01T00:00:00.000Z"),
         summary: "Mars Morning Rise",
+        tags: ["Planetary Phase", "Martian", "Morning Rise"],
       };
       const morningSet: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Martian", "Morning Set"],
         description: "Mars Morning Set",
         end: moment.utc("2024-01-02T00:00:00.000Z"),
         start: moment.utc("2024-01-02T00:00:00.000Z"),
         summary: "Mars Morning Set",
+        tags: ["Planetary Phase", "Martian", "Morning Set"],
       };
       progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
         [morningRise, morningSet],
@@ -330,18 +330,18 @@ describe(MartianPhaseService, () => {
 
     it("creates martian evening visibility duration events", () => {
       const eveningRise: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Martian", "Evening Rise"],
         description: "Mars Evening Rise",
         end: moment.utc("2024-01-01T00:00:00.000Z"),
         start: moment.utc("2024-01-01T00:00:00.000Z"),
         summary: "Mars Evening Rise",
+        tags: ["Planetary Phase", "Martian", "Evening Rise"],
       };
       const eveningSet: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Martian", "Evening Set"],
         description: "Mars Evening Set",
         end: moment.utc("2024-01-02T00:00:00.000Z"),
         start: moment.utc("2024-01-02T00:00:00.000Z"),
         summary: "Mars Evening Set",
+        tags: ["Planetary Phase", "Martian", "Evening Set"],
       };
       progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
         [eveningRise, eveningSet],

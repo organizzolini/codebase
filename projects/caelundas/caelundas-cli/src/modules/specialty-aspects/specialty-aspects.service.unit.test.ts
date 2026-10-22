@@ -191,7 +191,7 @@ describe(SpecialtyAspectsService, () => {
         );
 
         expect(detectedEvent).toBeDefined();
-        expect(detectedEvent?.categories).toContain(expectedPhase);
+        expect(detectedEvent?.tags).toContain(expectedPhase);
       },
     );
 
@@ -367,13 +367,13 @@ describe(SpecialtyAspectsService, () => {
       expect(event.summary).toContain("🌙");
       expect(event.summary).toContain("⬠");
       expect(event.description).toBe("Sun perfective quintile Moon");
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Specialty Aspect");
-      expect(event.categories).toContain("Sun");
-      expect(event.categories).toContain("Moon");
-      expect(event.categories).toContain("Quintile");
-      expect(event.categories).toContain("Perfective");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Specialty Aspect");
+      expect(event.tags).toContain("Sun");
+      expect(event.tags).toContain("Moon");
+      expect(event.tags).toContain("Quintile");
+      expect(event.tags).toContain("Perfective");
     });
 
     it("creates forming septile event", () => {
@@ -392,7 +392,7 @@ describe(SpecialtyAspectsService, () => {
       expect(event.summary).toContain("♀️");
       expect(event.summary).toContain("S");
       expect(event.description).toBe("Sun forming septile Venus");
-      expect(event.categories).toContain("Forming");
+      expect(event.tags).toContain("Forming");
     });
 
     it("creates dissolving biquintile event", () => {
@@ -411,7 +411,7 @@ describe(SpecialtyAspectsService, () => {
       expect(event.summary).toContain("♂️");
       expect(event.summary).toContain("±");
       expect(event.description).toBe("Sun dissolving biquintile Mars");
-      expect(event.categories).toContain("Dissolving");
+      expect(event.tags).toContain("Dissolving");
     });
 
     it("creates novile event", () => {
@@ -464,7 +464,11 @@ describe(SpecialtyAspectsService, () => {
   describe("detectProgressive", () => {
     it("creates progressive events from forming and dissolving pairs", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Sun forming quintile Mercury",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary: "➡️ ☀️ ⬠ ☿ Sun forming quintile Mercury",
+        tags: [
           "Astronomy",
           "Astrology",
           "Specialty Aspect",
@@ -473,14 +477,14 @@ describe(SpecialtyAspectsService, () => {
           "Quintile",
           "Forming",
         ],
-        description: "Sun forming quintile Mercury",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ☀️ ⬠ ☿ Sun forming quintile Mercury",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Sun dissolving quintile Mercury",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary: "⬅️ ☀️ ⬠ ☿ Sun dissolving quintile Mercury",
+        tags: [
           "Astronomy",
           "Astrology",
           "Specialty Aspect",
@@ -489,10 +493,6 @@ describe(SpecialtyAspectsService, () => {
           "Quintile",
           "Dissolving",
         ],
-        description: "Sun dissolving quintile Mercury",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ☀️ ⬠ ☿ Sun dissolving quintile Mercury",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -505,65 +505,47 @@ describe(SpecialtyAspectsService, () => {
       expect(progressiveEvents[0]?.start).toStrictEqual(formingEvent.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolvingEvent.start);
       expect(progressiveEvents[0]?.description).toBe("Mercury quintile Sun");
-      expect(progressiveEvents[0]?.categories).toContain("Simple Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("Specialty Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Simple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Specialty Aspect");
     });
 
     it("handles multiple aspect types for same body pair", () => {
       const quintileForming: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Sun",
-          "Mercury",
-          "Quintile",
-          "Forming",
-        ],
         description: "Sun forming quintile Mercury",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary: "forming",
+        tags: ["Specialty Aspect", "Sun", "Mercury", "Quintile", "Forming"],
       };
 
       const quintileDissolving: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Sun",
-          "Mercury",
-          "Quintile",
-          "Dissolving",
-        ],
         description: "Sun dissolving quintile Mercury",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary: "dissolving",
+        tags: ["Specialty Aspect", "Sun", "Mercury", "Quintile", "Dissolving"],
       };
 
       const biquintileForming: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Sun",
-          "Mercury",
-          "Biquintile",
-          "Forming",
-        ],
         description: "Sun forming biquintile Mercury",
         end: moment.utc("2024-03-22T10:00:00.000Z"),
         start: moment.utc("2024-03-22T10:00:00.000Z"),
         summary: "forming",
+        tags: ["Specialty Aspect", "Sun", "Mercury", "Biquintile", "Forming"],
       };
 
       const biquintileDissolving: DetectedCalendarEvent = {
-        categories: [
+        description: "Sun dissolving biquintile Mercury",
+        end: moment.utc("2024-03-22T14:00:00.000Z"),
+        start: moment.utc("2024-03-22T14:00:00.000Z"),
+        summary: "dissolving",
+        tags: [
           "Specialty Aspect",
           "Sun",
           "Mercury",
           "Biquintile",
           "Dissolving",
         ],
-        description: "Sun dissolving biquintile Mercury",
-        end: moment.utc("2024-03-22T14:00:00.000Z"),
-        start: moment.utc("2024-03-22T14:00:00.000Z"),
-        summary: "dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -584,53 +566,35 @@ describe(SpecialtyAspectsService, () => {
 
     it("handles multiple body pairs", () => {
       const sunMercuryForming: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Sun",
-          "Mercury",
-          "Quintile",
-          "Forming",
-        ],
         description: "Sun forming quintile Mercury",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary: "forming",
+        tags: ["Specialty Aspect", "Sun", "Mercury", "Quintile", "Forming"],
       };
 
       const sunMercuryDissolving: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Sun",
-          "Mercury",
-          "Quintile",
-          "Dissolving",
-        ],
         description: "Sun dissolving quintile Mercury",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary: "dissolving",
+        tags: ["Specialty Aspect", "Sun", "Mercury", "Quintile", "Dissolving"],
       };
 
       const venusMarForming: DetectedCalendarEvent = {
-        categories: ["Specialty Aspect", "Venus", "Mars", "Septile", "Forming"],
         description: "Venus forming septile Mars",
         end: moment.utc("2024-03-21T11:00:00.000Z"),
         start: moment.utc("2024-03-21T11:00:00.000Z"),
         summary: "forming",
+        tags: ["Specialty Aspect", "Venus", "Mars", "Septile", "Forming"],
       };
 
       const venusMarDissolving: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Venus",
-          "Mars",
-          "Septile",
-          "Dissolving",
-        ],
         description: "Venus dissolving septile Mars",
         end: moment.utc("2024-03-21T15:00:00.000Z"),
         start: moment.utc("2024-03-21T15:00:00.000Z"),
         summary: "dissolving",
+        tags: ["Specialty Aspect", "Venus", "Mars", "Septile", "Dissolving"],
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -657,19 +621,19 @@ describe(SpecialtyAspectsService, () => {
 
     it("filters out non-specialty-aspect events", () => {
       const specialtyAspectEvent: DetectedCalendarEvent = {
-        categories: ["Specialty Aspect", "Sun", "Moon", "Quintile", "Forming"],
         description: "Sun forming quintile Moon",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary: "forming",
+        tags: ["Specialty Aspect", "Sun", "Moon", "Quintile", "Forming"],
       };
 
       const nonSpecialtyAspectEvent: DetectedCalendarEvent = {
-        categories: ["Other"],
         description: "Some other event",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary: "other event",
+        tags: ["Other"],
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -678,9 +642,7 @@ describe(SpecialtyAspectsService, () => {
       ]);
 
       expect(
-        progressiveEvents.every((e) =>
-          e.categories.includes("Specialty Aspect"),
-        ),
+        progressiveEvents.every((e) => e.tags.includes("Specialty Aspect")),
       ).toBe(true);
     });
 
@@ -692,31 +654,19 @@ describe(SpecialtyAspectsService, () => {
 
     it("sorts body names alphabetically in progressive event", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Venus",
-          "Mars",
-          "Quintile",
-          "Forming",
-        ],
         description: "Venus forming quintile Mars",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary: "forming",
+        tags: ["Specialty Aspect", "Venus", "Mars", "Quintile", "Forming"],
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
-          "Specialty Aspect",
-          "Venus",
-          "Mars",
-          "Quintile",
-          "Dissolving",
-        ],
         description: "Venus dissolving quintile Mars",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary: "dissolving",
+        tags: ["Specialty Aspect", "Venus", "Mars", "Quintile", "Dissolving"],
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -727,15 +677,15 @@ describe(SpecialtyAspectsService, () => {
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]).toBeDefined();
       // Mars comes before Venus alphabetically
-      expect(progressiveEvents[0]?.categories).toContain("Mars");
-      expect(progressiveEvents[0]?.categories).toContain("Venus");
+      expect(progressiveEvents[0]?.tags).toContain("Mars");
+      expect(progressiveEvents[0]?.tags).toContain("Venus");
 
-      const categories = progressiveEvents[0]?.categories;
-      if (!categories) {
-        throw new Error("categories is undefined");
+      const tags = progressiveEvents[0]?.tags;
+      if (!tags) {
+        throw new Error("tags is undefined");
       }
-      const marsIndex = categories.indexOf("Mars");
-      const venusIndex = categories.indexOf("Venus");
+      const marsIndex = tags.indexOf("Mars");
+      const venusIndex = tags.indexOf("Venus");
 
       expect(marsIndex).toBeLessThan(venusIndex);
     });

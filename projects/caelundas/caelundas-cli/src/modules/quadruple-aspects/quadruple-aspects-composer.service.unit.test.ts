@@ -69,18 +69,18 @@ describe(QuadrupleAspectsComposerService, () => {
   it("collects progressive events from forming to dissolving", () => {
     const progressiveEvents: DetectedCalendarEvent[] = [];
     const forming: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Forming"],
       description: "forming",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
       summary: "forming",
+      tags: ["Quadruple Aspect", "Grand Cross", "Forming"],
     };
     const dissolving: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Dissolving"],
       description: "dissolving",
       end: moment.utc("2024-03-21T14:00:00.000Z"),
       start: moment.utc("2024-03-21T14:00:00.000Z"),
       summary: "dissolving",
+      tags: ["Quadruple Aspect", "Grand Cross", "Dissolving"],
     };
 
     service.collectProgressiveEventsFromGroup(
@@ -96,25 +96,25 @@ describe(QuadrupleAspectsComposerService, () => {
   it("skips non-dissolving candidates before pairing a dissolving boundary", () => {
     const progressiveEvents: DetectedCalendarEvent[] = [];
     const forming: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Forming"],
       description: "forming",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
       summary: "forming",
+      tags: ["Quadruple Aspect", "Grand Cross", "Forming"],
     };
     const perfective: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Perfective"],
       description: "perfective",
       end: moment.utc("2024-03-21T12:00:00.000Z"),
       start: moment.utc("2024-03-21T12:00:00.000Z"),
       summary: "perfective",
+      tags: ["Quadruple Aspect", "Grand Cross", "Perfective"],
     };
     const dissolving: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Dissolving"],
       description: "dissolving",
       end: moment.utc("2024-03-21T14:00:00.000Z"),
       start: moment.utc("2024-03-21T14:00:00.000Z"),
       summary: "dissolving",
+      tags: ["Quadruple Aspect", "Grand Cross", "Dissolving"],
     };
 
     service.collectProgressiveEventsFromGroup(

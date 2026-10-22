@@ -116,18 +116,18 @@ describe(QuadrupleAspectsBaseService, () => {
 
   it("builds progressive events by stripping phase markers and emojis", () => {
     const formingEvent: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Forming", "Sun"],
       description: "Mars, Moon, Sun, Venus grand cross forming (Mars focal)",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
       summary: "➡️ ⊞ ☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross forming",
+      tags: ["Quadruple Aspect", "Grand Cross", "Forming", "Sun"],
     };
     const dissolvingEvent: DetectedCalendarEvent = {
-      categories: ["Quadruple Aspect", "Grand Cross", "Dissolving", "Sun"],
       description: "Mars, Moon, Sun, Venus grand cross dissolving (Mars focal)",
       end: moment.utc("2024-03-21T14:00:00.000Z"),
       start: moment.utc("2024-03-21T14:00:00.000Z"),
       summary: "⬅️ ⊞ ☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross dissolving",
+      tags: ["Quadruple Aspect", "Grand Cross", "Dissolving", "Sun"],
     };
 
     const progressiveEvent = service.buildProgressiveEvent(
@@ -135,7 +135,7 @@ describe(QuadrupleAspectsBaseService, () => {
       dissolvingEvent,
     );
 
-    expect(progressiveEvent.categories).not.toContain("Forming");
+    expect(progressiveEvent.tags).not.toContain("Forming");
     expect(progressiveEvent.description).toBe(
       "Mars, Moon, Sun, Venus grand cross",
     );

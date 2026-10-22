@@ -106,32 +106,32 @@ describe(TwilightsService, () => {
   describe("detectProgressive", () => {
     it("builds Daylight and Night progressive spans", () => {
       const astronomicalDawn: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Twilight", "Astronomical Dawn"],
         description: "Astronomical Dawn",
         end: moment.utc("2024-03-22T05:00:00.000Z"),
         start: moment.utc("2024-03-22T05:00:00.000Z"),
         summary: "🌠 Astronomical Dawn",
+        tags: ["Astronomy", "Astrology", "Twilight", "Astronomical Dawn"],
       };
       const civilDawn: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Twilight", "Civil Dawn"],
         description: "Civil Dawn",
         end: moment.utc("2024-03-21T06:00:00.000Z"),
         start: moment.utc("2024-03-21T06:00:00.000Z"),
         summary: "🌄 Civil Dawn",
+        tags: ["Astronomy", "Astrology", "Twilight", "Civil Dawn"],
       };
       const civilDusk: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Twilight", "Civil Dusk"],
         description: "Civil Dusk",
         end: moment.utc("2024-03-21T19:00:00.000Z"),
         start: moment.utc("2024-03-21T19:00:00.000Z"),
         summary: "🌇 Civil Dusk",
+        tags: ["Astronomy", "Astrology", "Twilight", "Civil Dusk"],
       };
       const astronomicalDusk: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Twilight", "Astronomical Dusk"],
         description: "Astronomical Dusk",
         end: moment.utc("2024-03-21T20:00:00.000Z"),
         start: moment.utc("2024-03-21T20:00:00.000Z"),
         summary: "🌌 Astronomical Dusk",
+        tags: ["Astronomy", "Astrology", "Twilight", "Astronomical Dusk"],
       };
 
       const events = service.detectProgressive([
@@ -166,11 +166,11 @@ describe(TwilightsService, () => {
     const buildEvent = (description: string): DetectedCalendarEvent => {
       const timestamp = moment.utc("2024-03-21T00:00:00.000Z");
       return {
-        categories: ["Twilight"],
         description,
         end: timestamp,
         start: timestamp,
         summary: description,
+        tags: ["Twilight"],
       };
     };
 
@@ -381,18 +381,18 @@ describe(TwilightsService, () => {
       expect(
         delegatedService.detectProgressive([
           {
-            categories: ["Twilight", "Astronomical Dawn"],
             description: "Astronomical Dawn",
             end: minute,
             start: minute,
             summary: "Astronomical Dawn",
+            tags: ["Twilight", "Astronomical Dawn"],
           },
           {
-            categories: ["Twilight", "Astronomical Dusk"],
             description: "Astronomical Dusk",
             end: minute,
             start: minute,
             summary: "Astronomical Dusk",
+            tags: ["Twilight", "Astronomical Dusk"],
           },
         ]),
       ).toStrictEqual([

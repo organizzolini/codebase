@@ -25,43 +25,38 @@ export class AspectEventFormattingService {
   // 🔏 Private Methods
 
   /**
-   * Resolve category labels, description text, and emoji for an aspect phase.
+   * Resolve tag labels, description text, and emoji for an aspect phase.
    */
   private resolveAspectPhaseDetails(args: {
     aspectName: string;
-    baseCategories: string[];
+    baseTags: string[];
     body1Capitalized: string;
     body2Capitalized: string;
     phase: AspectPhase;
-  }): { categories: string[]; description: string; phaseEmoji: string } {
-    const {
-      aspectName,
-      baseCategories,
-      body1Capitalized,
-      body2Capitalized,
-      phase,
-    } = args;
+  }): { description: string; phaseEmoji: string; tags: string[] } {
+    const { aspectName, baseTags, body1Capitalized, body2Capitalized, phase } =
+      args;
 
     if (phase === "perfective") {
       return {
-        categories: [...baseCategories, "Perfective"],
         description: `${body1Capitalized} perfective ${aspectName} ${body2Capitalized}`,
         phaseEmoji: "🎯",
+        tags: [...baseTags, "Perfective"],
       };
     }
 
     if (phase === "forming") {
       return {
-        categories: [...baseCategories, "Forming"],
         description: `${body1Capitalized} forming ${aspectName} ${body2Capitalized}`,
         phaseEmoji: "➡️",
+        tags: [...baseTags, "Forming"],
       };
     }
 
     return {
-      categories: [...baseCategories, "Dissolving"],
       description: `${body1Capitalized} dissolving ${aspectName} ${body2Capitalized}`,
       phaseEmoji: "⬅️",
+      tags: [...baseTags, "Dissolving"],
     };
   }
 
@@ -71,9 +66,9 @@ export class AspectEventFormattingService {
    * Build a simple-aspect calendar event (major/minor/specialty) with consistent labels and summary.
    */
   assembleSimpleAspectEvent(args: {
-    aspectCategory: "Major Aspect" | "Minor Aspect" | "Specialty Aspect";
     aspectName: string;
     aspectSymbol: string;
+    aspectTag: "Major Aspect" | "Minor Aspect" | "Specialty Aspect";
     body1: Body;
     body2: Body;
     log: (message: string, data?: LogData) => void;
@@ -81,9 +76,9 @@ export class AspectEventFormattingService {
     timestamp: Moment;
   }): DetectedCalendarEvent {
     const {
-      aspectCategory,
       aspectName,
       aspectSymbol,
+      aspectTag,
       body1,
       body2,
       log,
@@ -93,23 +88,22 @@ export class AspectEventFormattingService {
 
     const body1Capitalized = bodyDisplayName(body1);
     const body2Capitalized = bodyDisplayName(body2);
-    const baseCategories = [
+    const baseTags = [
       "Astronomy",
       "Astrology",
       "Simple Aspect",
-      aspectCategory,
+      aspectTag,
       body1Capitalized,
       body2Capitalized,
       _.startCase(aspectName),
     ];
-    const { categories, description, phaseEmoji } =
-      this.resolveAspectPhaseDetails({
-        aspectName,
-        baseCategories,
-        body1Capitalized,
-        body2Capitalized,
-        phase,
-      });
+    const { description, phaseEmoji, tags } = this.resolveAspectPhaseDetails({
+      aspectName,
+      baseTags,
+      body1Capitalized,
+      body2Capitalized,
+      phase,
+    });
     const summary = `${phaseEmoji} ${symbolByBody[body1]} ${aspectSymbol} ${symbolByBody[body2]} ${description}`;
     log("🗓️ Built a calendar event", {
       at: timestamp.toISOString(),
@@ -117,11 +111,11 @@ export class AspectEventFormattingService {
     });
 
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -139,16 +133,14 @@ export class AspectEventFormattingService {
       : / (forming|exact|dissolving)$/;
 
     return {
-      categories: forming.categories.filter(
-        (category) =>
-          category !== "Forming" &&
-          category !== "Perfective" &&
-          category !== "Dissolving",
-      ),
       description: forming.description.replace(descriptionPattern, ""),
       end: dissolving.start,
       start: forming.start,
       summary: this.spanTitle(forming.summary),
+      tags: forming.tags.filter(
+        (tag) =>
+          tag !== "Forming" && tag !== "Perfective" && tag !== "Dissolving",
+      ),
     };
   }
 

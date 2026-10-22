@@ -45,11 +45,11 @@ describe(CalendarService, () => {
 
   describe("buildEventContent", () => {
     const baseEvent: DetectedCalendarEvent = {
-      categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
       description: "Sun ingress Aries",
       end: moment.utc("2025-03-20T09:06:00Z"),
       start: moment.utc("2025-03-20T09:06:00Z"),
       summary: "☀️ → ♈ Sun ingress Aries",
+      tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
     };
 
     it("generates valid VEVENT structure", () => {
@@ -69,6 +69,12 @@ describe(CalendarService, () => {
       expect(vevent).toContain(
         "CATEGORIES:Astronomy,Astrology,Ingress,Sun,Aries",
       );
+    });
+
+    it("keeps the standard CATEGORIES property name for tags", () => {
+      const vevent = service.buildEventContent(baseEvent);
+
+      expect(vevent).not.toContain("TAGS:");
     });
 
     it("includes optional location when provided", () => {
@@ -145,18 +151,18 @@ describe(CalendarService, () => {
   describe("buildFileContent", () => {
     const sampleEvents: DetectedCalendarEvent[] = [
       {
-        categories: ["Astronomy", "Equinox"],
         description: "Sun enters Aries",
         end: moment.utc("2025-03-20T09:06:00Z"),
         start: moment.utc("2025-03-20T09:06:00Z"),
         summary: "Vernal Equinox",
+        tags: ["Astronomy", "Equinox"],
       },
       {
-        categories: ["Astronomy", "Lunar Phase"],
         description: "Full Moon in Libra",
         end: moment.utc("2025-03-29T10:58:00Z"),
         start: moment.utc("2025-03-29T10:58:00Z"),
         summary: "Full Moon",
+        tags: ["Astronomy", "Lunar Phase"],
       },
     ];
 
@@ -257,11 +263,11 @@ describe(CalendarService, () => {
         description: "A test calendar description",
         events: [
           {
-            categories: [],
             description: "d",
             end: moment.utc("2026-01-15T00:00:00Z"),
             start: moment.utc("2026-01-15T00:00:00Z"),
             summary: "s",
+            tags: [],
           },
         ],
         name: "Test Calendar",
@@ -281,11 +287,11 @@ describe(CalendarService, () => {
         description: "A test calendar description",
         events: [
           {
-            categories: [],
             description: "d",
             end: moment.utc("2026-01-15T00:00:00Z"),
             start: moment.utc("2026-01-15T00:00:00Z"),
             summary: "s",
+            tags: [],
           },
         ],
         name: "Test Calendar",
@@ -305,11 +311,11 @@ describe(CalendarService, () => {
       const firstPass = moment.utc("2026-11-01T05:30:00Z"); // 01:30 EDT
       for (const instant of [firstPass, secondPass]) {
         const vevent = service.buildEventContent({
-          categories: [],
           description: "d",
           end: instant,
           start: instant,
           summary: "s",
+          tags: [],
         });
         const value = /DTSTART(?:;TZID=[^:]+)?:(\d{8}T\d{6}Z?)/.exec(
           vevent,
@@ -380,11 +386,11 @@ describe(CalendarService, () => {
           description: "A test calendar description",
           events: [
             {
-              categories: ["Astronomy", "Lunar Phase"],
               description: longDescription,
               end: moment.utc("2025-03-29T10:58:00Z"),
               start: moment.utc("2025-03-29T10:58:00Z"),
               summary: "Full Moon",
+              tags: ["Astronomy", "Lunar Phase"],
             },
           ],
           name: "Test Calendar",
@@ -441,11 +447,11 @@ describe(CalendarService, () => {
 
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy"],
           description: "Sample event",
           end: moment.tz("2025-03-20T09:06:00", "America/New_York"),
           start: moment.tz("2025-03-20T09:06:00", "America/New_York"),
           summary: "Sample event",
+          tags: ["Astronomy"],
         },
       ];
 
@@ -494,11 +500,11 @@ describe(CalendarService, () => {
 
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy"],
           description: "Sample event",
           end: moment.tz("2025-03-20T09:06:00", "America/New_York"),
           start: moment.tz("2025-03-20T09:06:00", "America/New_York"),
           summary: "Sample event",
+          tags: ["Astronomy"],
         },
       ];
 
@@ -528,11 +534,11 @@ describe(CalendarService, () => {
 
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy"],
           description: "Sample event",
           end: moment.tz("2025-03-20T09:06:00", "America/New_York"),
           start: moment.tz("2025-03-20T09:06:00", "America/New_York"),
           summary: "Sample event",
+          tags: ["Astronomy"],
         },
       ];
 
@@ -562,11 +568,11 @@ describe(CalendarService, () => {
       await service.write(
         [
           {
-            categories: ["Astronomy"],
             description: "Fallback output test",
             end: moment.tz("2025-03-20T10:00:00", "America/New_York"),
             start: moment.tz("2025-03-20T10:00:00", "America/New_York"),
             summary: "Fallback output test",
+            tags: ["Astronomy"],
           },
         ],
         {
@@ -596,13 +602,13 @@ describe(CalendarService, () => {
     };
     const events: DetectedCalendarEvent[] = [
       {
-        categories: ["Astronomy"],
         color: "red",
         description: "Sample event",
         end: moment.utc("2025-03-20T10:00:00Z"),
         location: "Philadelphia",
         start: moment.utc("2025-03-20T09:00:00Z"),
         summary: "Sample event",
+        tags: ["Astronomy"],
       },
     ];
 
@@ -618,15 +624,29 @@ describe(CalendarService, () => {
         JSON.parse(new TextDecoder().decode(content as Uint8Array)),
       ).toStrictEqual([
         {
-          categories: ["Astronomy"],
           color: "red",
           description: "Sample event",
           end: "2025-03-20T10:00:00.000Z",
           location: "Philadelphia",
           start: "2025-03-20T09:00:00.000Z",
           summary: "Sample event",
+          tags: ["Astronomy"],
         },
       ]);
+    });
+
+    it("names the tag key tags, not categories", async () => {
+      vi.spyOn(logger, "info").mockReturnValue(undefined);
+
+      await service.writeJson(events, input);
+
+      const content = vi.mocked(writeFile).mock.calls.at(-1)?.[1];
+      const [first] = JSON.parse(
+        new TextDecoder().decode(content as Uint8Array),
+      ) as Record<string, unknown>[];
+
+      expect(first).toHaveProperty("tags");
+      expect(first).not.toHaveProperty("categories");
     });
 
     it("writes null for a missing color and location", async () => {

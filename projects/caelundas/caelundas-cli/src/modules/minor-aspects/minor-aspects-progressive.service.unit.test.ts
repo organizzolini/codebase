@@ -45,7 +45,7 @@ describe(MinorAspectsProgressiveService, () => {
       aspectCapitalized: string;
       body1Capitalized: string;
       body2Capitalized: string;
-      categories: string[];
+      tags: string[];
     }) => { aspect: string; body1: string; body2: string };
     getMinorAspectProgressiveEvent: (
       beginning: DetectedCalendarEvent,
@@ -67,7 +67,11 @@ describe(MinorAspectsProgressiveService, () => {
 
   it("builds progressive events from forming and dissolving minor aspects", () => {
     const formingEvent: DetectedCalendarEvent = {
-      categories: [
+      description: "Sun semisquare Moon",
+      end: moment.utc("2024-03-21T10:00:00.000Z"),
+      start: moment.utc("2024-03-21T10:00:00.000Z"),
+      summary: "Sun semisquare Moon",
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -77,13 +81,13 @@ describe(MinorAspectsProgressiveService, () => {
         "Semisquare",
         "Forming",
       ],
-      description: "Sun semisquare Moon",
-      end: moment.utc("2024-03-21T10:00:00.000Z"),
-      start: moment.utc("2024-03-21T10:00:00.000Z"),
-      summary: "Sun semisquare Moon",
     };
     const dissolvingEvent: DetectedCalendarEvent = {
-      categories: [
+      description: "Sun semisquare Moon",
+      end: moment.utc("2024-03-21T14:00:00.000Z"),
+      start: moment.utc("2024-03-21T14:00:00.000Z"),
+      summary: "Sun semisquare Moon",
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -93,10 +97,6 @@ describe(MinorAspectsProgressiveService, () => {
         "Semisquare",
         "Dissolving",
       ],
-      description: "Sun semisquare Moon",
-      end: moment.utc("2024-03-21T14:00:00.000Z"),
-      start: moment.utc("2024-03-21T14:00:00.000Z"),
-      summary: "Sun semisquare Moon",
     };
 
     progressiveUtilitiesService.pairProgressiveEvents.mockReturnValueOnce([
@@ -116,30 +116,30 @@ describe(MinorAspectsProgressiveService, () => {
     expect(privateService.processAspectGroup("", [])).toStrictEqual([]);
   });
 
-  it("returns empty key for invalid categories", () => {
+  it("returns empty key for invalid tags", () => {
     expect(
       mockService.buildGroupKey({
-        categories: ["Astronomy", "Astrology", "Minor Aspect"],
         description: "invalid",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
         summary: "invalid",
+        tags: ["Astronomy", "Astrology", "Minor Aspect"],
       }),
     ).toBe("");
   });
 
-  it("throws when categories do not contain a complete minor aspect", () => {
+  it("throws when tags do not contain a complete minor aspect", () => {
     const invalidEvent: DetectedCalendarEvent = {
-      categories: ["Astronomy", "Minor Aspect", "Sun"],
       description: "invalid",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
       summary: "invalid",
+      tags: ["Astronomy", "Minor Aspect", "Sun"],
     };
 
     expect(() =>
       privateService.getMinorAspectProgressiveEvent(invalidEvent, invalidEvent),
-    ).toThrow("Could not extract aspect info from categories");
+    ).toThrow("Could not extract aspect info from tags");
   });
 
   it("throws when type casting receives invalid minor-aspect values", () => {
@@ -148,9 +148,9 @@ describe(MinorAspectsProgressiveService, () => {
         aspectCapitalized: "Invalid Aspect",
         body1Capitalized: "Invalid Body",
         body2Capitalized: "Moon",
-        categories: ["Invalid Aspect", "Invalid Body", "Moon"],
+        tags: ["Invalid Aspect", "Invalid Body", "Moon"],
       }),
-    ).toThrow("Could not extract typed values from categories");
+    ).toThrow("Could not extract typed values from tags");
   });
 
   it("handles undefined sorted body entries before type casting", () => {
@@ -158,22 +158,16 @@ describe(MinorAspectsProgressiveService, () => {
       .spyOn(_, "sortBy")
       .mockReturnValue([undefined, "Moon"] as unknown);
     const invalidEvent: DetectedCalendarEvent = {
-      categories: [
-        "Astronomy",
-        "Astrology",
-        "Minor Aspect",
-        "Semisquare",
-        "Moon",
-      ],
       description: "invalid",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
       summary: "invalid",
+      tags: ["Astronomy", "Astrology", "Minor Aspect", "Semisquare", "Moon"],
     };
 
     expect(() =>
       privateService.getMinorAspectProgressiveEvent(invalidEvent, invalidEvent),
-    ).toThrow("Could not extract typed values from categories");
+    ).toThrow("Could not extract typed values from tags");
 
     sortBySpy.mockRestore();
   });
@@ -183,22 +177,16 @@ describe(MinorAspectsProgressiveService, () => {
       .spyOn(_, "sortBy")
       .mockReturnValue(["Moon", undefined] as unknown);
     const invalidEvent: DetectedCalendarEvent = {
-      categories: [
-        "Astronomy",
-        "Astrology",
-        "Minor Aspect",
-        "Semisquare",
-        "Moon",
-      ],
       description: "invalid",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
       summary: "invalid",
+      tags: ["Astronomy", "Astrology", "Minor Aspect", "Semisquare", "Moon"],
     };
 
     expect(() =>
       privateService.getMinorAspectProgressiveEvent(invalidEvent, invalidEvent),
-    ).toThrow("Could not extract typed values from categories");
+    ).toThrow("Could not extract typed values from tags");
 
     sortBySpy.mockRestore();
   });

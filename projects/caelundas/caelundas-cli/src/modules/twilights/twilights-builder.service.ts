@@ -18,7 +18,7 @@ export class TwilightsBuilderService {
 
   // 🔐 Private Fields
 
-  private static readonly twilightBaseCategories = [
+  private static readonly twilightBaseTags = [
     "Astronomy",
     "Astrology",
     "Twilight",
@@ -42,14 +42,11 @@ export class TwilightsBuilderService {
     });
 
     return {
-      categories: [
-        ...TwilightsBuilderService.twilightBaseCategories,
-        description,
-      ],
       description,
       end: date,
       start: date,
       summary,
+      tags: [...TwilightsBuilderService.twilightBaseTags, description],
     };
   }
 
@@ -105,15 +102,15 @@ export class TwilightsBuilderService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...TwilightsBuilderService.twilightBaseCategories,
-        "Astronomical Twilight",
-        "Evening",
-      ],
       description: "Astronomical Twilight (Evening)",
       end: ending.start,
       start: beginning.start,
       summary: "🌌 Astronomical Twilight (Evening)",
+      tags: [
+        ...TwilightsBuilderService.twilightBaseTags,
+        "Astronomical Twilight",
+        "Evening",
+      ],
     };
   }
 
@@ -125,15 +122,15 @@ export class TwilightsBuilderService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...TwilightsBuilderService.twilightBaseCategories,
-        "Astronomical Twilight",
-        "Morning",
-      ],
       description: "Astronomical Twilight (Morning)",
       end: ending.start,
       start: beginning.start,
       summary: "🌠 Astronomical Twilight (Morning)",
+      tags: [
+        ...TwilightsBuilderService.twilightBaseTags,
+        "Astronomical Twilight",
+        "Morning",
+      ],
     };
   }
 
@@ -145,14 +142,11 @@ export class TwilightsBuilderService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...TwilightsBuilderService.twilightBaseCategories,
-        "Daylight",
-      ],
       description: "Daylight",
       end: ending.start,
       start: beginning.start,
       summary: "☀️ Daylight",
+      tags: [...TwilightsBuilderService.twilightBaseTags, "Daylight"],
     };
   }
 
@@ -164,15 +158,15 @@ export class TwilightsBuilderService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...TwilightsBuilderService.twilightBaseCategories,
-        "Nautical Twilight",
-        "Evening",
-      ],
       description: "Nautical Twilight (Evening)",
       end: ending.start,
       start: beginning.start,
       summary: "🌉 Nautical Twilight (Evening)",
+      tags: [
+        ...TwilightsBuilderService.twilightBaseTags,
+        "Nautical Twilight",
+        "Evening",
+      ],
     };
   }
 
@@ -184,15 +178,15 @@ export class TwilightsBuilderService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...TwilightsBuilderService.twilightBaseCategories,
-        "Nautical Twilight",
-        "Morning",
-      ],
       description: "Nautical Twilight (Morning)",
       end: ending.start,
       start: beginning.start,
       summary: "🌅 Nautical Twilight (Morning)",
+      tags: [
+        ...TwilightsBuilderService.twilightBaseTags,
+        "Nautical Twilight",
+        "Morning",
+      ],
     };
   }
 
@@ -204,11 +198,11 @@ export class TwilightsBuilderService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [...TwilightsBuilderService.twilightBaseCategories, "Night"],
       description: "Night",
       end: ending.start,
       start: beginning.start,
       summary: "🌃 Night",
+      tags: [...TwilightsBuilderService.twilightBaseTags, "Night"],
     };
   }
 }

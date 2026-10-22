@@ -26,11 +26,11 @@ function event(
   end = start,
 ): DetectedCalendarEvent {
   return {
-    categories: ["aspects", "moon"],
     description: `${summary} description`,
     end: moment.utc(end),
     start: moment.utc(start),
     summary,
+    tags: ["aspects", "moon"],
   };
 }
 
@@ -70,7 +70,7 @@ describe("calendar events service integration", () => {
 
     expect(row?.latitude).toBe("39.949309");
     expect(row?.longitude).toBe("-75.171690");
-    expect(row?.categories).toStrictEqual(["aspects", "moon"]);
+    expect(row?.tags).toStrictEqual(["aspects", "moon"]);
   });
 
   it("updates a repeated event in place and advances updatedAt", async () => {

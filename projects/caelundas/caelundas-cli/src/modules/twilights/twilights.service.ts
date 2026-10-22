@@ -163,22 +163,18 @@ export class TwilightsService {
   detectProgressive(
     detectedEvents: DetectedCalendarEvent[],
   ): DetectedCalendarEvent[] {
-    const twilightCategoryEvents = detectedEvents.filter((event) =>
-      event.categories.includes("Twilight"),
+    const twilightTagEvents = detectedEvents.filter((event) =>
+      event.tags.includes("Twilight"),
     );
-    const getEventsByCategory = (
-      categoryName: string,
-    ): DetectedCalendarEvent[] =>
-      twilightCategoryEvents.filter((event) =>
-        event.categories.includes(categoryName),
-      );
+    const getEventsByTag = (tagName: string): DetectedCalendarEvent[] =>
+      twilightTagEvents.filter((event) => event.tags.includes(tagName));
 
-    const astronomicalDawnEvents = getEventsByCategory("Astronomical Dawn");
-    const nauticalDawnEvents = getEventsByCategory("Nautical Dawn");
-    const civilDawnEvents = getEventsByCategory("Civil Dawn");
-    const civilDuskEvents = getEventsByCategory("Civil Dusk");
-    const nauticalDuskEvents = getEventsByCategory("Nautical Dusk");
-    const astronomicalDuskEvents = getEventsByCategory("Astronomical Dusk");
+    const astronomicalDawnEvents = getEventsByTag("Astronomical Dawn");
+    const nauticalDawnEvents = getEventsByTag("Nautical Dawn");
+    const civilDawnEvents = getEventsByTag("Civil Dawn");
+    const civilDuskEvents = getEventsByTag("Civil Dusk");
+    const nauticalDuskEvents = getEventsByTag("Nautical Dusk");
+    const astronomicalDuskEvents = getEventsByTag("Astronomical Dusk");
 
     const progressiveEvents = [
       ...this.twilightsComposerService.buildDawnProgressiveEvents(

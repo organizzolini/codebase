@@ -289,7 +289,7 @@ export type TripleAspect = keyof typeof symbolByTripleAspect;
 export type VenusianPhase = keyof typeof symbolByVenusianPhase;
 
 /**
- * Names a body the way every summary, description, category and progressive
+ * Names a body the way every summary, description, tag and progressive
  * grouping key does: lodash start case ("north lunar node" becomes "North Lunar Node").
  *
  * Define the display name here, once, and invert it with {@link bodyFromDisplayName}.

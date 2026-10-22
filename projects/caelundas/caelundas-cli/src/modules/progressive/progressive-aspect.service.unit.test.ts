@@ -36,12 +36,12 @@ describe(ProgressiveAspectService, () => {
   });
 
   it("groups every event under a fixed key when one is supplied", () => {
-    const makeEvent = (category: string): DetectedCalendarEvent => ({
-      categories: ["Aspect", category],
-      description: category,
+    const makeEvent = (tag: string): DetectedCalendarEvent => ({
+      description: tag,
       end: moment.utc("2024-03-21T00:00:00.000Z"),
       start: moment.utc("2024-03-21T00:00:00.000Z"),
-      summary: category,
+      summary: tag,
+      tags: ["Aspect", tag],
     });
     const pairProgressiveEvents = vi
       .fn<
@@ -54,13 +54,13 @@ describe(ProgressiveAspectService, () => {
       .mockReturnValue([]);
 
     service.buildSimpleAspectFamilyProgressiveEvents({
-      aspectCategory: "Aspect",
-      categoryLabel: "Simple",
+      aspectTag: "Aspect",
       events: [makeEvent("Forming"), makeEvent("Dissolving")],
       fixedAspectGroupKey: "fixed",
       getAspectGroupKey: (event) => event.summary,
       getProgressiveEvent: (beginning) => beginning,
       pairProgressiveEvents,
+      tagLabel: "Simple",
     });
 
     expect(pairProgressiveEvents).toHaveBeenCalledTimes(1);
@@ -73,17 +73,21 @@ describe(ProgressiveAspectService, () => {
 
   it("should build a stable group key", () => {
     expect(
-      service.buildAspectGroupKeyFromCategories({
+      service.buildAspectGroupKeyFromTags({
         aspects: ["conjunct"],
         bodies: ["sun", "moon"],
-        categories: ["Moon", "Conjunct", "Sun"],
+        tags: ["Moon", "Conjunct", "Sun"],
       }),
     ).toBe("Moon-Conjunct-Sun");
   });
 
   it("should build a simple progressive event", () => {
     const beginning = {
-      categories: [
+      description: "Sun forming conjunct Moon",
+      end: moment.utc("2024-03-21T12:00:00.000Z"),
+      start: moment.utc("2024-03-21T12:00:00.000Z"),
+      summary: "Sun conjunct Moon",
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -93,14 +97,11 @@ describe(ProgressiveAspectService, () => {
         "Conjunct",
         "Forming",
       ],
-      description: "Sun forming conjunct Moon",
-      end: moment.utc("2024-03-21T12:00:00.000Z"),
-      start: moment.utc("2024-03-21T12:00:00.000Z"),
-      summary: "Sun conjunct Moon",
     };
     const ending = {
       ...beginning,
-      categories: [
+      end: moment.utc("2024-03-21T13:00:00.000Z"),
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -110,12 +111,11 @@ describe(ProgressiveAspectService, () => {
         "Conjunct",
         "Dissolving",
       ],
-      end: moment.utc("2024-03-21T13:00:00.000Z"),
     };
 
     const event = service.createSimpleAspectProgressiveEvent({
-      aspectCategory: "Major Aspect",
       aspects: ["conjunct"],
+      aspectTag: "Major Aspect",
       beginning,
       bodies: ["sun", "moon"],
       ending,
@@ -126,7 +126,7 @@ describe(ProgressiveAspectService, () => {
       symbolByBody: { moon: "☾", sun: "☉" },
     });
 
-    expect(event.categories).toContain("Major Aspect");
+    expect(event.tags).toContain("Major Aspect");
     expect(event.summary).toContain("☉");
     expect(event.summary).toContain("☾");
     expect(event.summary).toContain("☌");
@@ -134,7 +134,11 @@ describe(ProgressiveAspectService, () => {
 
   it("should build progressive events from paired boundaries", () => {
     const forming = {
-      categories: [
+      description: "Sun forming conjunct Moon",
+      end: moment.utc("2024-03-21T12:00:00.000Z"),
+      start: moment.utc("2024-03-21T12:00:00.000Z"),
+      summary: "Sun conjunct Moon",
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -144,14 +148,11 @@ describe(ProgressiveAspectService, () => {
         "Conjunct",
         "Forming",
       ],
-      description: "Sun forming conjunct Moon",
-      end: moment.utc("2024-03-21T12:00:00.000Z"),
-      start: moment.utc("2024-03-21T12:00:00.000Z"),
-      summary: "Sun conjunct Moon",
     };
     const dissolving = {
       ...forming,
-      categories: [
+      end: moment.utc("2024-03-21T13:00:00.000Z"),
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -161,23 +162,21 @@ describe(ProgressiveAspectService, () => {
         "Conjunct",
         "Dissolving",
       ],
-      end: moment.utc("2024-03-21T13:00:00.000Z"),
     };
 
     const events = service.buildProgressiveAspectEvents({
-      aspectCategory: "Major Aspect",
-      categoryLabel: "major aspect",
+      aspectTag: "Major Aspect",
       events: [forming, dissolving],
       getAspectGroupKey: (event) =>
-        service.buildAspectGroupKeyFromCategories({
+        service.buildAspectGroupKeyFromTags({
           aspects: ["conjunct"],
           bodies: ["sun", "moon"],
-          categories: event.categories,
+          tags: event.tags,
         }),
       getProgressiveEvent: (beginning, ending) =>
         service.createSimpleAspectProgressiveEvent({
-          aspectCategory: "Major Aspect",
           aspects: ["conjunct"],
+          aspectTag: "Major Aspect",
           beginning,
           bodies: ["sun", "moon"],
           ending,
@@ -196,6 +195,7 @@ describe(ProgressiveAspectService, () => {
         );
         return pairs;
       },
+      tagLabel: "major aspect",
     });
 
     expect(events).toHaveLength(1);
@@ -203,44 +203,44 @@ describe(ProgressiveAspectService, () => {
 
   it("warns instead of silently skipping a group with an empty key", () => {
     const event = {
-      categories: ["Astronomy", "Major Aspect", "Forming"],
       description: "bodies with no match",
       end: moment.utc("2024-03-21T12:00:00.000Z"),
       start: moment.utc("2024-03-21T12:00:00.000Z"),
       summary: "bodies with no match",
+      tags: ["Astronomy", "Major Aspect", "Forming"],
     };
     mockLoggerService.warn.mockClear();
 
     const events = service.buildProgressiveAspectEvents({
-      aspectCategory: "Major Aspect",
-      categoryLabel: "major aspect",
+      aspectTag: "Major Aspect",
       events: [event],
       getAspectGroupKey: () => "",
       getProgressiveEvent: (beginning) => beginning,
       pairProgressiveEvents: () => [],
+      tagLabel: "major aspect",
     });
 
     expect(events).toHaveLength(0);
     expect(mockLoggerService.warn).toHaveBeenCalledWith(
       expect.stringContaining("Skipping"),
       undefined,
-      expect.objectContaining({ aspectCategory: "Major Aspect", events: 1 }),
+      expect.objectContaining({ aspectTag: "Major Aspect", events: 1 }),
     );
   });
 
   describe("extractTypedAspectPartsOrThrow", () => {
     it("logs and throws with the original error preserved as cause", () => {
-      const categories = ["Astronomy", "Astrology"];
+      const tags = ["Astronomy", "Astrology"];
 
       expect(() =>
         service.extractTypedAspectPartsOrThrow({
           aspects: ["conjunct"],
           bodies: ["sun", "moon"],
-          categories,
           errorMessage: "Could not extract typed values",
           isAspect: (value): value is "conjunct" => value === "conjunct",
           isBody: (value): value is "moon" | "sun" =>
             value === "sun" || value === "moon",
+          tags,
         }),
       ).toThrow("Could not extract typed values");
 
@@ -248,10 +248,10 @@ describe(ProgressiveAspectService, () => {
         "📐 Failed extracting typed aspect parts",
         undefined,
         {
-          categories,
           reason: expect.stringContaining(
-            "Could not extract aspect info from categories",
+            "Could not extract aspect info from tags",
           ) as string,
+          tags,
         },
       );
 
@@ -260,11 +260,11 @@ describe(ProgressiveAspectService, () => {
         service.extractTypedAspectPartsOrThrow({
           aspects: ["conjunct"],
           bodies: ["sun", "moon"],
-          categories,
           errorMessage: "Could not extract typed values",
           isAspect: (value): value is "conjunct" => value === "conjunct",
           isBody: (value): value is "moon" | "sun" =>
             value === "sun" || value === "moon",
+          tags,
         });
       } catch (error) {
         thrownError = error;
@@ -275,7 +275,7 @@ describe(ProgressiveAspectService, () => {
     });
 
     it("stringifies a non-Error thrown value when logging the failure", () => {
-      const categories = ["Astronomy", "Astrology"];
+      const tags = ["Astronomy", "Astrology"];
       const extractSpy = vi
         .spyOn(service, "extractTypedAspectParts")
         .mockImplementation(() => {
@@ -286,18 +286,18 @@ describe(ProgressiveAspectService, () => {
         service.extractTypedAspectPartsOrThrow({
           aspects: ["conjunct"],
           bodies: ["sun", "moon"],
-          categories,
           errorMessage: "Could not extract typed values",
           isAspect: (value): value is "conjunct" => value === "conjunct",
           isBody: (value): value is "moon" | "sun" =>
             value === "sun" || value === "moon",
+          tags,
         }),
       ).toThrow("Could not extract typed values");
 
       expect(mockLoggerService.error).toHaveBeenCalledWith(
         "📐 Failed extracting typed aspect parts",
         undefined,
-        { categories, reason: "boom" },
+        { reason: "boom", tags },
       );
 
       extractSpy.mockRestore();

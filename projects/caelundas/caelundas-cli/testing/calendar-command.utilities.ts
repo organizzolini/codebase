@@ -32,11 +32,11 @@ export function detectable(
   end = start,
 ): DetectedCalendarEvent {
   return {
-    categories: ["aspects", "e2e"],
     description: `${summary} description`,
     end: moment.utc(end),
     start: moment.utc(start),
     summary,
+    tags: ["aspects", "e2e"],
   };
 }
 

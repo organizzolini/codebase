@@ -75,18 +75,18 @@ describe(IngressesService, () => {
       });
 
       expect(event).toMatchObject({
-        categories: expect.arrayContaining<string>([
-          "Astronomy",
-          "Astrology",
-          "Ingress",
-        ]) as string[],
         description: expect.stringContaining("Sun") as string,
         end: moment.utc("2024-03-20T03:06:00.000Z"),
         start: moment.utc("2024-03-20T03:06:00.000Z"),
         summary: expect.stringContaining("Aries") as string,
+        tags: expect.arrayContaining<string>([
+          "Astronomy",
+          "Astrology",
+          "Ingress",
+        ]) as string[],
       });
-      expect(event.categories).toContain("Aries");
-      expect(event.categories).toContain("Sun");
+      expect(event.tags).toContain("Aries");
+      expect(event.tags).toContain("Sun");
     });
 
     it("creates a sign ingress event for Moon entering Taurus", () => {
@@ -98,8 +98,8 @@ describe(IngressesService, () => {
 
       expect(event.summary).toContain("Taurus");
       expect(event.description).toContain("Moon");
-      expect(event.categories).toContain("Taurus");
-      expect(event.categories).toContain("Moon");
+      expect(event.tags).toContain("Taurus");
+      expect(event.tags).toContain("Moon");
     });
   });
 
@@ -133,7 +133,7 @@ describe(IngressesService, () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]?.summary).toContain("Aries");
-      expect(events[0]?.categories).toContain("Sun");
+      expect(events[0]?.tags).toContain("Sun");
     });
 
     it("does not detect ingress when no boundary is crossed", () => {
@@ -179,9 +179,9 @@ describe(IngressesService, () => {
         end: moment.utc("2024-04-05T10:00:00.000Z"),
         start: moment.utc("2024-04-05T10:00:00.000Z"),
       });
-      expect(event.categories).toContain("Decan");
-      expect(event.categories).toContain("Aries");
-      expect(event.categories).toContain("Venus");
+      expect(event.tags).toContain("Decan");
+      expect(event.tags).toContain("Aries");
+      expect(event.tags).toContain("Venus");
     });
   });
 
@@ -214,7 +214,7 @@ describe(IngressesService, () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Decan");
+      expect(events[0]?.tags).toContain("Decan");
     });
 
     it("does not detect ingress when no decan boundary is crossed", () => {
@@ -260,9 +260,9 @@ describe(IngressesService, () => {
         end: moment.utc("2024-06-15T16:00:00.000Z"),
         start: moment.utc("2024-06-15T16:00:00.000Z"),
       });
-      expect(event.categories).toContain("Peak");
-      expect(event.categories).toContain("Leo");
-      expect(event.categories).toContain("Mars");
+      expect(event.tags).toContain("Peak");
+      expect(event.tags).toContain("Leo");
+      expect(event.tags).toContain("Mars");
     });
   });
 
@@ -306,7 +306,7 @@ describe(IngressesService, () => {
       const events = detectMars(134.9, 135.1);
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Peak");
+      expect(events[0]?.tags).toContain("Peak");
     });
 
     it("does not detect ingress when no peak boundary is crossed", () => {
@@ -355,8 +355,8 @@ describe(IngressesService, () => {
       expect(progressiveEvents[0]?.end).toStrictEqual(
         moment.utc("2024-04-19T15:00:00.000Z"),
       );
-      expect(progressiveEvents[0]?.categories).toContain("Sun");
-      expect(progressiveEvents[0]?.categories).toContain("Aries");
+      expect(progressiveEvents[0]?.tags).toContain("Sun");
+      expect(progressiveEvents[0]?.tags).toContain("Aries");
     });
 
     it("handles empty array", () => {
@@ -371,33 +371,33 @@ describe(IngressesService, () => {
         .spyOn(service, "getSignIngressEvents")
         .mockReturnValue([
           {
-            categories: ["Astronomy", "Astrology", "Ingress", "Sign"],
             description: "sign ingress",
             end: minute,
             start: minute,
             summary: "sign",
+            tags: ["Astronomy", "Astrology", "Ingress", "Sign"],
           },
         ]);
       const detectDecanSpy = vi
         .spyOn(service, "getDecanIngressEvents")
         .mockReturnValue([
           {
-            categories: ["Astronomy", "Astrology", "Ingress", "Decan"],
             description: "decan ingress",
             end: minute,
             start: minute,
             summary: "decan",
+            tags: ["Astronomy", "Astrology", "Ingress", "Decan"],
           },
         ]);
       const detectPeakSpy = vi
         .spyOn(service, "getPeakIngressEvents")
         .mockReturnValue([
           {
-            categories: ["Astronomy", "Astrology", "Ingress", "Peak"],
             description: "peak ingress",
             end: minute,
             start: minute,
             summary: "peak",
+            tags: ["Astronomy", "Astrology", "Ingress", "Peak"],
           },
         ]);
 
@@ -419,20 +419,20 @@ describe(IngressesService, () => {
         .mockReturnValue({
           "": [
             {
-              categories: ["Astronomy", "Astrology", "Ingress", "Aries"],
               description: "anonymous ingress",
               end: moment.utc("2024-03-21T12:00:00.000Z"),
               start: moment.utc("2024-03-21T12:00:00.000Z"),
               summary: "anonymous ingress",
+              tags: ["Astronomy", "Astrology", "Ingress", "Aries"],
             },
           ],
           Sun: [
             {
-              categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
               description: "sun ingress aries",
               end: moment.utc("2024-03-21T12:00:00.000Z"),
               start: moment.utc("2024-03-21T12:00:00.000Z"),
               summary: "sun ingress aries",
+              tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
             },
           ],
         });
@@ -443,11 +443,11 @@ describe(IngressesService, () => {
         .spyOn(helperService, "buildProgressiveSpansForBody")
         .mockReturnValue([
           {
-            categories: ["Astronomy", "Astrology", "Ingress", "Sun"],
             description: "sun span",
             end: moment.utc("2024-03-22T12:00:00.000Z"),
             start: moment.utc("2024-03-21T12:00:00.000Z"),
             summary: "sun span",
+            tags: ["Astronomy", "Astrology", "Ingress", "Sun"],
           },
         ]);
 
@@ -591,11 +591,11 @@ describe(IngressesService, () => {
       it("skips progressive span creation when entering or exiting event is missing", () => {
         const sortBySpy = vi.spyOn(_, "sortBy").mockReturnValue([
           {
-            categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
             description: "Sun ingress Aries",
             end: moment.utc("2024-03-20T03:06:00.000Z"),
             start: moment.utc("2024-03-20T03:06:00.000Z"),
             summary: "Sun ingress Aries",
+            tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
           },
           undefined,
         ] as unknown);
@@ -610,33 +610,33 @@ describe(IngressesService, () => {
       it("groups ingress events without a known body under an empty key", () => {
         const groupedEvents = helperService.groupSignIngressEventsByBody([
           {
-            categories: ["Astronomy", "Astrology", "Ingress", "Aries"],
             description: "Anonymous ingress",
             end: moment.utc("2024-03-20T03:06:00.000Z"),
             start: moment.utc("2024-03-20T03:06:00.000Z"),
             summary: "Anonymous ingress",
+            tags: ["Astronomy", "Astrology", "Ingress", "Aries"],
           },
         ]);
 
         expect(groupedEvents[""]).toHaveLength(1);
       });
 
-      it("throws when sign cannot be extracted from categories", () => {
+      it("throws when sign cannot be extracted from tags", () => {
         expect(() =>
-          helperService.extractSignAndBodyFromCategories(
+          helperService.extractSignAndBodyFromTags(
             ["Astronomy", "Astrology", "Ingress", "Sun"],
             "Sun",
           ),
-        ).toThrow("Could not extract sign from categories");
+        ).toThrow("Could not extract sign from tags");
       });
 
-      it("throws when extracted categories cannot be cast to typed values", () => {
+      it("throws when extracted tags cannot be cast to typed values", () => {
         expect(() =>
-          helperService.extractSignAndBodyFromCategories(
+          helperService.extractSignAndBodyFromTags(
             ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
             "NotABody",
           ),
-        ).toThrow("Could not extract typed values from categories");
+        ).toThrow("Could not extract typed values from tags");
       });
 
       it("throws when decan value is invalid", () => {

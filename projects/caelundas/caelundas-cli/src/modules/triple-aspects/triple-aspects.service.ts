@@ -110,7 +110,7 @@ export class TripleAspectsService {
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const tripleAspectEvents = events.filter((event) =>
-      event.categories.includes("Triple Aspect"),
+      event.tags.includes("Triple Aspect"),
     );
     const groupedEvents = _.groupBy(tripleAspectEvents, (event) =>
       this.tripleAspectsComposerService.getProgressiveGroupKey(event),

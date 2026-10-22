@@ -158,11 +158,11 @@ describe("phases.events integration", () => {
       });
 
       const morningSetEvent = events.find((e) =>
-        e.categories.includes("Morning Set"),
+        e.tags.includes("Morning Set"),
       );
 
       expect(morningSetEvent).toBeDefined();
-      expect(morningSetEvent?.categories).toContain("Venusian");
+      expect(morningSetEvent?.tags).toContain("Venusian");
       expect(morningSetEvent?.description).toBe("Venus Morning Set");
       expect(morningSetEvent?.start).toStrictEqual(currentMinute);
     });
@@ -196,11 +196,11 @@ describe("phases.events integration", () => {
       });
 
       const eveningRiseEvent = events.find((e) =>
-        e.categories.includes("Evening Rise"),
+        e.tags.includes("Evening Rise"),
       );
 
       expect(eveningRiseEvent).toBeDefined();
-      expect(eveningRiseEvent?.categories).toContain("Venusian");
+      expect(eveningRiseEvent?.tags).toContain("Venusian");
       expect(eveningRiseEvent?.description).toBe("Venus Evening Rise");
       expect(eveningRiseEvent?.start).toStrictEqual(currentMinute);
     });
@@ -263,11 +263,11 @@ describe("phases.events integration", () => {
       });
 
       const morningSetEvent = events.find((e) =>
-        e.categories.includes("Morning Set"),
+        e.tags.includes("Morning Set"),
       );
 
       expect(morningSetEvent).toBeDefined();
-      expect(morningSetEvent?.categories).toContain("Mercurian");
+      expect(morningSetEvent?.tags).toContain("Mercurian");
       expect(morningSetEvent?.description).toBe("Mercury Morning Set");
       expect(morningSetEvent?.start).toStrictEqual(currentMinute);
     });
@@ -299,11 +299,11 @@ describe("phases.events integration", () => {
       });
 
       const eveningRiseEvent = events.find((e) =>
-        e.categories.includes("Evening Rise"),
+        e.tags.includes("Evening Rise"),
       );
 
       expect(eveningRiseEvent).toBeDefined();
-      expect(eveningRiseEvent?.categories).toContain("Mercurian");
+      expect(eveningRiseEvent?.tags).toContain("Mercurian");
       expect(eveningRiseEvent?.description).toBe("Mercury Evening Rise");
       expect(eveningRiseEvent?.start).toStrictEqual(currentMinute);
     });
@@ -364,11 +364,11 @@ describe("phases.events integration", () => {
       });
 
       const morningSetEvent = events.find((e) =>
-        e.categories.includes("Morning Set"),
+        e.tags.includes("Morning Set"),
       );
 
       expect(morningSetEvent).toBeDefined();
-      expect(morningSetEvent?.categories).toContain("Martian");
+      expect(morningSetEvent?.tags).toContain("Martian");
       expect(morningSetEvent?.description).toBe("Mars Morning Set");
       expect(morningSetEvent?.start).toStrictEqual(currentMinute);
     });
@@ -400,11 +400,11 @@ describe("phases.events integration", () => {
       });
 
       const eveningRiseEvent = events.find((e) =>
-        e.categories.includes("Evening Rise"),
+        e.tags.includes("Evening Rise"),
       );
 
       expect(eveningRiseEvent).toBeDefined();
-      expect(eveningRiseEvent?.categories).toContain("Martian");
+      expect(eveningRiseEvent?.tags).toContain("Martian");
       expect(eveningRiseEvent?.description).toBe("Mars Evening Rise");
       expect(eveningRiseEvent?.start).toStrictEqual(currentMinute);
     });

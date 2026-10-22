@@ -2,11 +2,11 @@
 
 import type { LunarPhase } from "../caelundas/caelundas.types";
 
-export const LUNAR_APOGEE_CATEGORY = "Apogee";
-export const LUNAR_PERIGEE_CATEGORY = "Perigee";
+export const LUNAR_APOGEE_TAG = "Apogee";
+export const LUNAR_PERIGEE_TAG = "Perigee";
 
 /** Apsis events keep clear of "Monthly Lunar Cycle", whose phase events are paired into spans. */
-export const LUNAR_APSIDES_BASE_CATEGORIES = [
+export const LUNAR_APSIDES_BASE_TAGS = [
   "Astronomy",
   "Astrology",
   "Lunar Apsides",

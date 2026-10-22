@@ -133,25 +133,6 @@ export class SextupleAspectsComposerService {
   }
 
   /**
-   * Builds canonical categories used for grouping and progressive pairing.
-   */
-  buildSextupleAspectCategories(
-    bodiesSorted: string[],
-    sextupleAspect: SextupleAspect,
-    phase: AspectPhase,
-  ): string[] {
-    return [
-      "Astronomy",
-      "Astrology",
-      "Compound Aspect",
-      "Sextuple Aspect",
-      _.startCase(sextupleAspect),
-      _.startCase(phase),
-      ...bodiesSorted,
-    ];
-  }
-
-  /**
    * Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
    */
   buildSextupleAspectSummary(args: {
@@ -165,6 +146,25 @@ export class SextupleAspectsComposerService {
     const symbolChain = symbols.join("-");
 
     return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
+  }
+
+  /**
+   * Builds canonical tags used for grouping and progressive pairing.
+   */
+  buildSextupleAspectTags(
+    bodiesSorted: string[],
+    sextupleAspect: SextupleAspect,
+    phase: AspectPhase,
+  ): string[] {
+    return [
+      "Astronomy",
+      "Astrology",
+      "Compound Aspect",
+      "Sextuple Aspect",
+      _.startCase(sextupleAspect),
+      _.startCase(phase),
+      ...bodiesSorted,
+    ];
   }
 
   /**
@@ -189,18 +189,18 @@ export class SextupleAspectsComposerService {
       phase,
       symbols,
     });
-    const categories = this.buildSextupleAspectCategories(
+    const tags = this.buildSextupleAspectTags(
       bodiesSorted,
       sextupleAspect,
       phase,
     );
 
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -388,15 +388,15 @@ export class SextupleAspectsComposerService {
     events: DetectedCalendarEvent[],
   ): Record<string, DetectedCalendarEvent[]> {
     const sextupleAspectEvents = events.filter((event) =>
-      event.categories.includes("Sextuple Aspect"),
+      event.tags.includes("Sextuple Aspect"),
     );
 
     return _.groupBy(sextupleAspectEvents, (event) => {
-      const filteredPlanets = event.categories.filter((category) =>
-        sextupleAspectBodies.map((b) => bodyDisplayName(b)).includes(category),
+      const filteredPlanets = event.tags.filter((tag) =>
+        sextupleAspectBodies.map((b) => bodyDisplayName(b)).includes(tag),
       );
       const planets = _.sortBy(filteredPlanets);
-      const aspect = event.categories.find((c) =>
+      const aspect = event.tags.find((c) =>
         ["Grand Sextile", "Hexagram"].includes(c),
       );
 

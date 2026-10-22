@@ -51,44 +51,44 @@ export class MonthlyLunarCycleService {
   /**
    * Creates a progressive event from consecutive lunar phase events.
    *
-   * Extracts the lunar phase from the entering event categories and formats a
+   * Extracts the lunar phase from the entering event tags and formats a
    * progressive event showing the span of time Moon remains in that phase.
    *
    * @remarks
    * - Duration spans from entering.start to exiting.start (not exiting.end)
-   * - Extracts phase from categories by matching against {@link lunarPhases}
-   * - Returns null and logs warning if phase category is missing or invalid
+   * - Extracts phase from tags by matching against {@link lunarPhases}
+   * - Returns null and logs warning if phase tag is missing or invalid
    * - Summary format: `🌕 [phaseSymbol] [Phase] Moon`
    * - Uses same format as instantaneous phase events for consistency
-   * - Categories match entering event categories exactly
+   * - Tags match entering event tags exactly
    *
-   * @see {@link lunarPhases} for extracting phase category
+   * @see {@link lunarPhases} for extracting phase tag
    * @see {@link symbolByLunarPhase} for phase symbols
    *
    * @example
    * ```typescript
    * const duration = getMonthlyLunarCycleProgressiveEvent(
-   *   { summary: "🌕 🌑 New Moon", start: Jan 1, categories: [..., "New"] },
-   *   { summary: "🌕 🌓 First Quarter Moon", start: Jan 8, categories: [..., "First"] }
+   *   { summary: "🌕 🌑 New Moon", start: Jan 1, tags: [..., "New"] },
+   *   { summary: "🌕 🌓 First Quarter Moon", start: Jan 8, tags: [..., "First"] }
    * );
-   * // Returns: { summary: "🌕 🌑 New Moon", start: Jan 1, end: Jan 8, categories: [..., "New"] }
+   * // Returns: { summary: "🌕 🌑 New Moon", start: Jan 1, end: Jan 8, tags: [..., "New"] }
    * ```
    */
-  private extractLunarPhaseFromCategories(
-    categories: string[],
+  private extractLunarPhaseFromTags(
+    tags: string[],
     enteringSummary: string,
   ): LunarPhase | null {
     const capitalizedLunarPhases = new Set(
       lunarPhases.map((phase) => _.startCase(phase)),
     );
-    const lunarPhaseCapitalized = categories.find((category) =>
-      capitalizedLunarPhases.has(category),
+    const lunarPhaseCapitalized = tags.find((tag) =>
+      capitalizedLunarPhases.has(tag),
     );
     if (!lunarPhaseCapitalized) {
       this.logger.warn(
         "🌙 Skipping progressive event without a lunar phase",
         undefined,
-        { categories, enteringSummary },
+        { enteringSummary, tags },
       );
       return null;
     }
@@ -158,28 +158,25 @@ export class MonthlyLunarCycleService {
     entering: DetectedCalendarEvent,
     exiting: DetectedCalendarEvent,
   ): DetectedCalendarEvent | null {
-    const categories = entering.categories;
-    const lunarPhase = this.extractLunarPhaseFromCategories(
-      categories,
-      entering.summary,
-    );
+    const tags = entering.tags;
+    const lunarPhase = this.extractLunarPhaseFromTags(tags, entering.summary);
     if (!lunarPhase) {
       return null;
     }
     const lunarPhaseCapitalized = _.startCase(lunarPhase);
     const lunarPhaseSymbol = symbolByLunarPhase[lunarPhase];
     return {
-      categories: [
+      description: `${lunarPhaseCapitalized} Moon`,
+      end: exiting.start,
+      start: entering.start,
+      summary: `🌙 ${lunarPhaseSymbol} ${lunarPhaseCapitalized} Moon`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Monthly Lunar Cycle",
         "Lunar",
         lunarPhaseCapitalized,
       ],
-      description: `${lunarPhaseCapitalized} Moon`,
-      end: exiting.start,
-      start: entering.start,
-      summary: `🌙 ${lunarPhaseSymbol} ${lunarPhaseCapitalized} Moon`,
     };
   }
 
@@ -222,7 +219,7 @@ export class MonthlyLunarCycleService {
    * - Example new: "🌕 🌑 New Moon"
    * - Example full: "🌕 🌕 Full Moon"
    * - Phase symbols from {@link symbolByLunarPhase}: 🌑 (new), 🌓 (first), 🌕 (full), 🌗 (third)
-   * - Categories include capitalized phase name for filtering (e.g., "New", "Full")
+   * - Tags include capitalized phase name for filtering (e.g., "New", "Full")
    * - Logs event to console with America/New_York timezone for readability
    * - Event timestamps use UTC but display shows local time in logs
    *
@@ -235,7 +232,7 @@ export class MonthlyLunarCycleService {
    *   date: new Date('2026-01-28T20:15:00Z'),
    *   lunarPhase: "full"
    * });
-   * // Returns: { summary: "🌕 🌕 Full Moon", start: ..., categories: [..., "Full"], ... }
+   * // Returns: { summary: "🌕 🌕 Full Moon", start: ..., tags: [..., "Full"], ... }
    * ```
    */
   buildMonthlyLunarCycleEvent(args: {
@@ -249,17 +246,17 @@ export class MonthlyLunarCycleService {
     const summary = `🌙 ${symbolByLunarPhase[lunarPhase]} ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: [
+      date,
+      description,
+      logger: this.logger,
+      summary,
+      tags: [
         "Astronomy",
         "Astrology",
         "Monthly Lunar Cycle",
         "Lunar",
         lunarPhaseCapitalized,
       ],
-      date,
-      description,
-      logger: this.logger,
-      summary,
       timezone: "America/New_York",
     });
   }
@@ -311,11 +308,11 @@ export class MonthlyLunarCycleService {
    * (roughly 3.7 days per phase on average).
    *
    * @remarks
-   * - Filters to events with "Monthly Lunar Cycle" category
+   * - Filters to events with "Monthly Lunar Cycle" tag
    * - Sorts events chronologically by start time
    * - Pairs consecutive phase events (new → waxing crescent → first quarter → … → waning crescent → new)
    * - Progressive event represents time spent **in** the entering phase
-   * - Skips invalid events that lack proper phase categorization
+   * - Skips invalid events that lack proper phase tagging
    * - Returns empty array for unpaired events (e.g., at date range boundaries)
    * - Average phase duration: ~3.7 days (29.5 day lunar month ÷ 8 phases)
    *
@@ -325,14 +322,14 @@ export class MonthlyLunarCycleService {
    * @example
    * ```typescript
    * const allEvents = [
-   *   { summary: "🌙 🌑 New Moon", start: Oct 10, categories: [..., "New"] },
-   *   { summary: "🌙 🌒 Waxing Crescent Moon", start: Oct 14, categories: [..., "Waxing Crescent"] },
-   *   { summary: "🌙 🌓 First Quarter Moon", start: Oct 18, categories: [..., "First Quarter"] },
-   *   { summary: "🌙 🌔 Waxing Gibbous Moon", start: Oct 22, categories: [..., "Waxing Gibbous"] },
-   *   { summary: "🌙 🌕 Full Moon", start: Oct 26, categories: [..., "Full"] },
-   *   { summary: "🌙 🌖 Waning Gibbous Moon", start: Oct 29, categories: [..., "Waning Gibbous"] },
-   *   { summary: "🌙 🌗 Last Quarter Moon", start: Nov 1, categories: [..., "Last Quarter"] },
-   *   { summary: "🌙 🌘 Waning Crescent Moon", start: Nov 5, categories: [..., "Waning Crescent"] },
+   *   { summary: "🌙 🌑 New Moon", start: Oct 10, tags: [..., "New"] },
+   *   { summary: "🌙 🌒 Waxing Crescent Moon", start: Oct 14, tags: [..., "Waxing Crescent"] },
+   *   { summary: "🌙 🌓 First Quarter Moon", start: Oct 18, tags: [..., "First Quarter"] },
+   *   { summary: "🌙 🌔 Waxing Gibbous Moon", start: Oct 22, tags: [..., "Waxing Gibbous"] },
+   *   { summary: "🌙 🌕 Full Moon", start: Oct 26, tags: [..., "Full"] },
+   *   { summary: "🌙 🌖 Waning Gibbous Moon", start: Oct 29, tags: [..., "Waning Gibbous"] },
+   *   { summary: "🌙 🌗 Last Quarter Moon", start: Nov 1, tags: [..., "Last Quarter"] },
+   *   { summary: "🌙 🌘 Waning Crescent Moon", start: Nov 5, tags: [..., "Waning Crescent"] },
    * ];
    * const durations = service.detectProgressive(allEvents);
    * // Returns one span per consecutive pair, seven in all:
@@ -349,7 +346,7 @@ export class MonthlyLunarCycleService {
 
     // Filter to monthly lunar cycle events only
     const lunarCycleEvents = events.filter((event) =>
-      event.categories.includes("Monthly Lunar Cycle"),
+      event.tags.includes("Monthly Lunar Cycle"),
     );
 
     // Sort by time

@@ -20,11 +20,11 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 
 function makeEvent(summary: string): DetectedCalendarEvent {
   return {
-    categories: [],
     description: summary,
     end: moment.utc("2025-06-15T12:00:00Z"),
     start: moment.utc("2025-06-15T12:00:00Z"),
     summary,
+    tags: [],
   };
 }
 

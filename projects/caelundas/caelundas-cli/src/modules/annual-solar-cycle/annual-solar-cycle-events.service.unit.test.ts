@@ -32,10 +32,10 @@ describe(AnnualSolarCycleEventsService, () => {
       expect(event.description).toBe("Vernal Equinox");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Annual Solar Cycle");
-      expect(event.categories).toContain("Solar");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Solar");
     });
 
     it("creates summer solstice event with correct structure", () => {
@@ -45,7 +45,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🌞 Summer Solstice");
       expect(event.description).toBe("Summer Solstice");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates autumnal equinox event with correct structure", () => {
@@ -55,7 +55,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🍂 Autumnal Equinox");
       expect(event.description).toBe("Autumnal Equinox");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates winter solstice event with correct structure", () => {
@@ -65,7 +65,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("☃️ Winter Solstice");
       expect(event.description).toBe("Winter Solstice");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates Imbolc event with correct structure", () => {
@@ -75,7 +75,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🐑 Imbolc");
       expect(event.description).toBe("Imbolc");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates Beltane event with correct structure", () => {
@@ -85,7 +85,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🐦‍🔥 Beltane");
       expect(event.description).toBe("Beltane");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates Lammas event with correct structure", () => {
@@ -95,7 +95,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🌾 Lammas");
       expect(event.description).toBe("Lammas");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates Samhain event with correct structure", () => {
@@ -105,7 +105,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🎃 Samhain");
       expect(event.description).toBe("Samhain");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates first hexadecan event with correct structure", () => {
@@ -115,7 +115,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("🌳 First Hexadecan");
       expect(event.description).toBe("First Hexadecan");
-      expect(event.categories).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Annual Solar Cycle");
     });
 
     it("creates third hexadecan event with correct structure", () => {
@@ -190,11 +190,11 @@ describe(AnnualSolarCycleEventsService, () => {
       expect(event.description).toBe("Solar Aphelion");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Annual Solar Cycle");
-      expect(event.categories).toContain("Solar");
-      expect(event.categories).toContain("Aphelion");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Annual Solar Cycle");
+      expect(event.tags).toContain("Solar");
+      expect(event.tags).toContain("Aphelion");
     });
 
     it("creates perihelion event with correct structure", () => {
@@ -204,7 +204,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       expect(event.summary).toBe("☀️ 🔥 Solar Perihelion");
       expect(event.description).toBe("Solar Perihelion");
-      expect(event.categories).toContain("Perihelion");
+      expect(event.tags).toContain("Perihelion");
     });
   });
 

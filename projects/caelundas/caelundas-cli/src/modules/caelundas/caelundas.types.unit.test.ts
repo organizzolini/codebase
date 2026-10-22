@@ -42,11 +42,11 @@ describe("caelundas.types", () => {
   it("groups arrays into typed maps", () => {
     const grouped = groupByToMap(
       [
-        { category: "sun", value: 1 },
-        { category: "sun", value: 2 },
-        { category: "moon", value: 3 },
+        { tag: "sun", value: 1 },
+        { tag: "sun", value: 2 },
+        { tag: "moon", value: 3 },
       ],
-      (item) => item.category,
+      (item) => item.tag,
     );
 
     expect(grouped.get("sun")).toHaveLength(2);

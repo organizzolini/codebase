@@ -94,13 +94,13 @@ export class PhaseCalculationService {
   // 🌎 Public Methods
 
   /**
-   * Filters events by category.
+   * Filters events by tag.
    */
-  filterByCategory(
+  filterByTag(
     events: DetectedCalendarEvent[],
-    category: string,
+    tag: string,
   ): DetectedCalendarEvent[] {
-    return events.filter((event) => event.categories.includes(category));
+    return events.filter((event) => event.tags.includes(tag));
   }
 
   /**

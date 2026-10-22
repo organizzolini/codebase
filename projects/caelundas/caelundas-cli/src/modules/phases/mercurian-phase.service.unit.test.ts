@@ -45,9 +45,9 @@ const configurePhaseCalculationServiceMock = (
     typeof createMock<PhaseCalculationService>
   >,
 ): void => {
-  vi.mocked(phaseCalculationService.filterByCategory).mockImplementation(
-    (events: DetectedCalendarEvent[], category: string) =>
-      events.filter((event) => event.categories.includes(category)),
+  vi.mocked(phaseCalculationService.filterByTag).mockImplementation(
+    (events: DetectedCalendarEvent[], tag: string) =>
+      events.filter((event) => event.tags.includes(tag)),
   );
   vi.mocked(phaseCalculationService.formatTimeZoneIso).mockReturnValue(
     "2024-01-20T01:00:00-05:00",
@@ -132,8 +132,8 @@ describe(MercurianPhaseService, () => {
       expect(event.description).toBe("Mercury Morning Rise");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
-      expect(event.categories).toContain("Mercurian");
-      expect(event.categories).toContain("Morning Rise");
+      expect(event.tags).toContain("Mercurian");
+      expect(event.tags).toContain("Morning Rise");
     });
   });
 
@@ -334,18 +334,18 @@ describe(MercurianPhaseService, () => {
   describe("getMercurianPhaseProgressiveEvents", () => {
     it("creates mercurian morning visibility duration events", () => {
       const morningRise: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Mercurian", "Morning Rise"],
         description: "Mercury Morning Rise",
         end: moment.utc("2024-01-01T00:00:00.000Z"),
         start: moment.utc("2024-01-01T00:00:00.000Z"),
         summary: "Mercury Morning Rise",
+        tags: ["Planetary Phase", "Mercurian", "Morning Rise"],
       };
       const morningSet: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Mercurian", "Morning Set"],
         description: "Mercury Morning Set",
         end: moment.utc("2024-01-02T00:00:00.000Z"),
         start: moment.utc("2024-01-02T00:00:00.000Z"),
         summary: "Mercury Morning Set",
+        tags: ["Planetary Phase", "Mercurian", "Morning Set"],
       };
       progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
         [morningRise, morningSet],
@@ -366,18 +366,18 @@ describe(MercurianPhaseService, () => {
 
     it("creates mercurian evening visibility duration events", () => {
       const eveningRise: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Mercurian", "Evening Rise"],
         description: "Mercury Evening Rise",
         end: moment.utc("2024-01-01T00:00:00.000Z"),
         start: moment.utc("2024-01-01T00:00:00.000Z"),
         summary: "Mercury Evening Rise",
+        tags: ["Planetary Phase", "Mercurian", "Evening Rise"],
       };
       const eveningSet: DetectedCalendarEvent = {
-        categories: ["Planetary Phase", "Mercurian", "Evening Set"],
         description: "Mercury Evening Set",
         end: moment.utc("2024-01-02T00:00:00.000Z"),
         start: moment.utc("2024-01-02T00:00:00.000Z"),
         summary: "Mercury Evening Set",
+        tags: ["Planetary Phase", "Mercurian", "Evening Set"],
       };
       progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
         [eveningRise, eveningSet],

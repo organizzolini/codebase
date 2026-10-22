@@ -70,14 +70,12 @@ export class AspectsService {
   }
 
   /**
-   * Identifies a compound event by its minute and its sorted categories, which
+   * Identifies a compound event by its minute and its sorted tags, which
    * hold its bodies, pattern, phase and focal body but not the body order its
    * title happened to use.
    */
   private compoundEventKey(event: DetectedCalendarEvent): string {
-    return [event.start.valueOf(), ...event.categories.toSorted()].join(
-      "\u001F",
-    );
+    return [event.start.valueOf(), ...event.tags.toSorted()].join("\u001F");
   }
 
   /** Runs composite-aspect detectors against current and previous aspect-body snapshots. */
@@ -117,14 +115,14 @@ export class AspectsService {
     return detectedEvents;
   }
 
-  /** Extracts celestial bodies referenced in normalized event categories. */
+  /** Extracts celestial bodies referenced in normalized event tags. */
   private extractEventBodies(
-    normalizedCategories: string[],
+    normalizedTags: string[],
     lowercaseBodies: string[],
   ): Body[] {
     const eventBodies: Body[] = [];
-    for (const category of normalizedCategories) {
-      const bodyIndex = lowercaseBodies.indexOf(category);
+    for (const tag of normalizedTags) {
+      const bodyIndex = lowercaseBodies.indexOf(tag);
       if (bodyIndex !== -1) {
         const body = bodies[bodyIndex];
         if (body) {
@@ -151,7 +149,7 @@ export class AspectsService {
     body2: Body;
     isDissolving: boolean;
   } {
-    const cats = event.categories.map((c) => c.toLowerCase().trim());
+    const cats = event.tags.map((c) => c.toLowerCase().trim());
     if (!cats.includes("simple aspect")) return null;
     const isForming = cats.includes("forming");
     const isDissolving = cats.includes("dissolving");
@@ -231,7 +229,7 @@ export class AspectsService {
   /**
    * Pairs forming and dissolving events into progressive (duration) events for all aspect types.
    *
-   * Delegates to each sub-service so that every aspect category produces progressive
+   * Delegates to each sub-service so that every aspect tag produces progressive
    * events spanning its full in-orb period.
    *
    */

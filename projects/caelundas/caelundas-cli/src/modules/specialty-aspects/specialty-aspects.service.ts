@@ -144,7 +144,7 @@ export class SpecialtyAspectsService {
    * Creates a calendar event for a specific specialty aspect occurrence.
    *
    * Formats the event with appropriate emoji indicators, body symbols,
-   * and categorization. Specialty aspects use distinct Unicode symbols
+   * and tagging. Specialty aspects use distinct Unicode symbols
    * for each aspect type.
    *
    * @see {@link getSpecialtyAspect} for aspect type determination

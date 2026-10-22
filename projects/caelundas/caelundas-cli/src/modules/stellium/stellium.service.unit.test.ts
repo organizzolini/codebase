@@ -87,11 +87,11 @@ describe(StelliumService, () => {
 
         expect(events.length).toBeGreaterThanOrEqual(1);
 
-        const stellium = events.find((e) => e.categories.includes("Stellium"));
+        const stellium = events.find((e) => e.tags.includes("Stellium"));
 
         expect(stellium).toBeDefined();
-        expect(stellium?.categories).toContain("Forming");
-        expect(stellium?.categories).toContain("4 Body");
+        expect(stellium?.tags).toContain("Forming");
+        expect(stellium?.tags).toContain("4 Body");
       });
 
       it("returns empty array when fewer than 6 conjunctions exist", () => {
@@ -180,7 +180,7 @@ describe(StelliumService, () => {
         expect(events).toHaveLength(0);
       });
 
-      it("generates event with correct categories and description", () => {
+      it("generates event with correct tags and description", () => {
         const currentMinute = moment.utc("2024-03-21T12:00:00.000Z");
 
         // Complete 4-body stellium only at current minute
@@ -205,15 +205,15 @@ describe(StelliumService, () => {
 
         expect(events.length).toBeGreaterThanOrEqual(1);
 
-        const stellium = events.find((e) => e.categories.includes("Stellium"));
+        const stellium = events.find((e) => e.tags.includes("Stellium"));
 
         expect(stellium).toBeDefined();
-        expect(stellium?.categories).toContain("Astronomy");
-        expect(stellium?.categories).toContain("Astrology");
-        expect(stellium?.categories).toContain("Compound Aspect");
-        expect(stellium?.categories).toContain("Stellium");
-        expect(stellium?.categories).toContain("4 Body");
-        expect(stellium?.categories).toContain("Forming");
+        expect(stellium?.tags).toContain("Astronomy");
+        expect(stellium?.tags).toContain("Astrology");
+        expect(stellium?.tags).toContain("Compound Aspect");
+        expect(stellium?.tags).toContain("Stellium");
+        expect(stellium?.tags).toContain("4 Body");
+        expect(stellium?.tags).toContain("Forming");
         expect(stellium?.summary).toContain("➡️");
         expect(stellium?.description).toContain("stellium forming");
       });
@@ -301,11 +301,11 @@ describe(StelliumService, () => {
 
         expect(events.length).toBeGreaterThanOrEqual(1);
 
-        const stellium = events.find((e) => e.categories.includes("5 Body"));
+        const stellium = events.find((e) => e.tags.includes("5 Body"));
 
         expect(stellium).toBeDefined();
-        expect(stellium?.categories).toContain("Stellium");
-        expect(stellium?.categories).toContain("5 Body");
+        expect(stellium?.tags).toContain("Stellium");
+        expect(stellium?.tags).toContain("5 Body");
       });
     });
   });
@@ -384,11 +384,11 @@ describe(StelliumService, () => {
     it("returns empty array when no stellium events exist", () => {
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy", "Astrology", "Simple Aspect"],
           description: "Sun conjunct Moon",
           end: moment.utc("2024-03-21T13:00:00.000Z"),
           start: moment.utc("2024-03-21T12:00:00.000Z"),
           summary: "Sun conjunct Moon",
+          tags: ["Astronomy", "Astrology", "Simple Aspect"],
         },
       ];
 
@@ -399,7 +399,11 @@ describe(StelliumService, () => {
 
     it("creates progressive event from forming to dissolving pair", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun, Venus stellium forming",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -411,14 +415,14 @@ describe(StelliumService, () => {
           "Sun",
           "Venus",
         ],
-        description: "Mars, Moon, Sun, Venus stellium forming",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun, Venus stellium dissolving",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -430,10 +434,6 @@ describe(StelliumService, () => {
           "Sun",
           "Venus",
         ],
-        description: "Mars, Moon, Sun, Venus stellium dissolving",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -450,13 +450,17 @@ describe(StelliumService, () => {
       expect(progressiveEvents[0]?.description).toBe(
         "Mars, Moon, Sun, Venus stellium",
       );
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
     });
 
     it("does not create progressive event when only forming exists", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun, Venus stellium forming",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -468,10 +472,6 @@ describe(StelliumService, () => {
           "Sun",
           "Venus",
         ],
-        description: "Mars, Moon, Sun, Venus stellium forming",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
       };
 
       const progressiveEvents = service.detectProgressive([formingEvent]);
@@ -481,7 +481,11 @@ describe(StelliumService, () => {
 
     it("does not create progressive event when only dissolving exists", () => {
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun, Venus stellium dissolving",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -493,10 +497,6 @@ describe(StelliumService, () => {
           "Sun",
           "Venus",
         ],
-        description: "Mars, Moon, Sun, Venus stellium dissolving",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([dissolvingEvent]);
@@ -507,43 +507,11 @@ describe(StelliumService, () => {
     it("handles multiple forming/dissolving pairs", () => {
       const events: DetectedCalendarEvent[] = [
         {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Stellium",
-            "4 Body",
-            "Forming",
-            "Mars",
-            "Moon",
-            "Sun",
-            "Venus",
-          ],
           description: "Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
-        },
-        {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Stellium",
-            "4 Body",
-            "Dissolving",
-            "Mars",
-            "Moon",
-            "Sun",
-            "Venus",
-          ],
-          description: "Mars, Moon, Sun, Venus stellium dissolving",
-          end: moment.utc("2024-03-21T14:00:00.000Z"),
-          start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
-        },
-        {
-          categories: [
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -555,13 +523,13 @@ describe(StelliumService, () => {
             "Sun",
             "Venus",
           ],
-          description: "Mars, Moon, Sun, Venus stellium forming",
-          end: moment.utc("2024-03-22T10:00:00.000Z"),
-          start: moment.utc("2024-03-22T10:00:00.000Z"),
-          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
         },
         {
-          categories: [
+          description: "Mars, Moon, Sun, Venus stellium dissolving",
+          end: moment.utc("2024-03-21T14:00:00.000Z"),
+          start: moment.utc("2024-03-21T14:00:00.000Z"),
+          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -573,10 +541,42 @@ describe(StelliumService, () => {
             "Sun",
             "Venus",
           ],
+        },
+        {
+          description: "Mars, Moon, Sun, Venus stellium forming",
+          end: moment.utc("2024-03-22T10:00:00.000Z"),
+          start: moment.utc("2024-03-22T10:00:00.000Z"),
+          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Stellium",
+            "4 Body",
+            "Forming",
+            "Mars",
+            "Moon",
+            "Sun",
+            "Venus",
+          ],
+        },
+        {
           description: "Mars, Moon, Sun, Venus stellium dissolving",
           end: moment.utc("2024-03-22T14:00:00.000Z"),
           start: moment.utc("2024-03-22T14:00:00.000Z"),
           summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Stellium",
+            "4 Body",
+            "Dissolving",
+            "Mars",
+            "Moon",
+            "Sun",
+            "Venus",
+          ],
         },
       ];
 
@@ -601,25 +601,29 @@ describe(StelliumService, () => {
       const events: DetectedCalendarEvent[] = [
         // First body combination
         {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Stellium",
-            "4 Body",
-            "Forming",
-            "Mars",
-            "Moon",
-            "Sun",
-            "Venus",
-          ],
           description: "Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Stellium",
+            "4 Body",
+            "Forming",
+            "Mars",
+            "Moon",
+            "Sun",
+            "Venus",
+          ],
         },
         {
-          categories: [
+          description: "Mars, Moon, Sun, Venus stellium dissolving",
+          end: moment.utc("2024-03-21T14:00:00.000Z"),
+          start: moment.utc("2024-03-21T14:00:00.000Z"),
+          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -631,14 +635,14 @@ describe(StelliumService, () => {
             "Sun",
             "Venus",
           ],
-          description: "Mars, Moon, Sun, Venus stellium dissolving",
-          end: moment.utc("2024-03-21T14:00:00.000Z"),
-          start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
         },
         // Different body combination
         {
-          categories: [
+          description: "Jupiter, Mars, Saturn, Sun stellium forming",
+          end: moment.utc("2024-03-21T11:00:00.000Z"),
+          start: moment.utc("2024-03-21T11:00:00.000Z"),
+          summary: "➡️ ✨ ☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium forming",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -650,46 +654,46 @@ describe(StelliumService, () => {
             "Saturn",
             "Sun",
           ],
-          description: "Jupiter, Mars, Saturn, Sun stellium forming",
-          end: moment.utc("2024-03-21T11:00:00.000Z"),
-          start: moment.utc("2024-03-21T11:00:00.000Z"),
-          summary: "➡️ ✨ ☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium forming",
         },
         {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Stellium",
-            "4 Body",
-            "Dissolving",
-            "Jupiter",
-            "Mars",
-            "Saturn",
-            "Sun",
-          ],
           description: "Jupiter, Mars, Saturn, Sun stellium dissolving",
           end: moment.utc("2024-03-21T15:00:00.000Z"),
           start: moment.utc("2024-03-21T15:00:00.000Z"),
           summary:
             "⬅️ ✨ ☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium dissolving",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Stellium",
+            "4 Body",
+            "Dissolving",
+            "Jupiter",
+            "Mars",
+            "Saturn",
+            "Sun",
+          ],
         },
       ];
 
       const progressiveEvents = service.detectProgressive(events);
 
       expect(progressiveEvents).toHaveLength(2);
-      expect(progressiveEvents[0]?.categories).toContain("Venus");
-      expect(progressiveEvents[0]?.categories).toContain("Moon");
-      expect(progressiveEvents[1]?.categories).toContain("Jupiter");
-      expect(progressiveEvents[1]?.categories).toContain("Saturn");
+      expect(progressiveEvents[0]?.tags).toContain("Venus");
+      expect(progressiveEvents[0]?.tags).toContain("Moon");
+      expect(progressiveEvents[1]?.tags).toContain("Jupiter");
+      expect(progressiveEvents[1]?.tags).toContain("Saturn");
     });
 
     it("handles different stellium sizes separately", () => {
       const events: DetectedCalendarEvent[] = [
         // 4-body stellium
         {
-          categories: [
+          description: "Mars, Moon, Sun, Venus stellium forming",
+          end: moment.utc("2024-03-21T10:00:00.000Z"),
+          start: moment.utc("2024-03-21T10:00:00.000Z"),
+          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -701,13 +705,13 @@ describe(StelliumService, () => {
             "Sun",
             "Venus",
           ],
-          description: "Mars, Moon, Sun, Venus stellium forming",
-          end: moment.utc("2024-03-21T10:00:00.000Z"),
-          start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
         },
         {
-          categories: [
+          description: "Mars, Moon, Sun, Venus stellium dissolving",
+          end: moment.utc("2024-03-21T14:00:00.000Z"),
+          start: moment.utc("2024-03-21T14:00:00.000Z"),
+          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -719,34 +723,35 @@ describe(StelliumService, () => {
             "Sun",
             "Venus",
           ],
-          description: "Mars, Moon, Sun, Venus stellium dissolving",
-          end: moment.utc("2024-03-21T14:00:00.000Z"),
-          start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
         },
         // 5-body stellium with same bodies
         {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Stellium",
-            "5 Body",
-            "Forming",
-            "Jupiter",
-            "Mars",
-            "Moon",
-            "Sun",
-            "Venus",
-          ],
           description: "Jupiter, Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-21T11:00:00.000Z"),
           start: moment.utc("2024-03-21T11:00:00.000Z"),
           summary:
             "➡️ ✨ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium forming",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Stellium",
+            "5 Body",
+            "Forming",
+            "Jupiter",
+            "Mars",
+            "Moon",
+            "Sun",
+            "Venus",
+          ],
         },
         {
-          categories: [
+          description: "Jupiter, Mars, Moon, Sun, Venus stellium dissolving",
+          end: moment.utc("2024-03-21T15:00:00.000Z"),
+          start: moment.utc("2024-03-21T15:00:00.000Z"),
+          summary:
+            "⬅️ ✨ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -759,19 +764,14 @@ describe(StelliumService, () => {
             "Sun",
             "Venus",
           ],
-          description: "Jupiter, Mars, Moon, Sun, Venus stellium dissolving",
-          end: moment.utc("2024-03-21T15:00:00.000Z"),
-          start: moment.utc("2024-03-21T15:00:00.000Z"),
-          summary:
-            "⬅️ ✨ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium dissolving",
         },
       ];
 
       const progressiveEvents = service.detectProgressive(events);
 
       expect(progressiveEvents).toHaveLength(2);
-      expect(progressiveEvents[0]?.categories).toContain("4 Body");
-      expect(progressiveEvents[1]?.categories).toContain("5 Body");
+      expect(progressiveEvents[0]?.tags).toContain("4 Body");
+      expect(progressiveEvents[1]?.tags).toContain("5 Body");
     });
   });
 });

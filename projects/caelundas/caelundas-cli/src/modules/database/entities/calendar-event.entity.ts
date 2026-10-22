@@ -21,11 +21,11 @@ import type { Moment } from "moment-timezone";
  * `start` and `end` are equal for an instantaneous event, and are carried as
  * `Moment`s, read back in UTC, through {@link createMomentTransformer}. `color`
  * and `location` are optional as well as nullable, so a detector may leave
- * them out. `categories` is a Postgres array with a GIN index, so a reader
+ * them out. `tags` is a Postgres array with a GIN index, so a reader
  * can filter on one in SQL.
  */
 @Entity({ name: "calendar_events" })
-@Index("calendar_events_categories_gin", ["categories"], { type: "gin" })
+@Index("calendar_events_categories_gin", ["tags"], { type: "gin" })
 @Unique("calendar_events_natural_key", [
   "summary",
   "start",
@@ -33,12 +33,6 @@ import type { Moment } from "moment-timezone";
   "longitude",
 ])
 export class CalendarEvent extends UpdatableEntity {
-  @Column("text", {
-    array: true,
-    comment: "Category tags for filtering, such as aspects, major, and moon",
-  })
-  categories!: string[];
-
   @Column("text", {
     comment: "Color hint for calendar display",
     nullable: true,
@@ -84,4 +78,11 @@ export class CalendarEvent extends UpdatableEntity {
 
   @Column("text", { comment: "Brief event title shown in calendar views" })
   summary!: string;
+
+  @Column("text", {
+    array: true,
+    comment: "Category tags for filtering, such as aspects, major, and moon",
+    name: "categories",
+  })
+  tags!: string[];
 }

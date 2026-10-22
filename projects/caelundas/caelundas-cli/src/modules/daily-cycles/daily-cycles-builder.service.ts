@@ -29,13 +29,13 @@ export class DailyCyclesBuilderService {
 
   // 🔐 Private Fields
 
-  private static readonly lunarCategories = [
+  private static readonly lunarTags = [
     "Astronomy",
     "Astrology",
     "Daily Lunar Cycle",
     "Lunar",
   ];
-  private static readonly solarCategories = [
+  private static readonly solarTags = [
     "Astronomy",
     "Astrology",
     "Daily Solar Cycle",
@@ -98,11 +98,11 @@ export class DailyCyclesBuilderService {
     const summary = `🌙 ⏬ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -129,11 +129,11 @@ export class DailyCyclesBuilderService {
     const summary = `🌙 ⏫ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -160,11 +160,11 @@ export class DailyCyclesBuilderService {
     const summary = `🌙 🔼 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -191,11 +191,11 @@ export class DailyCyclesBuilderService {
     const summary = `🌙 🔽 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -208,7 +208,7 @@ export class DailyCyclesBuilderService {
    * when Sun crosses the anti-meridian (north-south line through nadir, opposite of zenith).
    *
    * @param date - Exact time of solar nadir.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
    * - Summary: "☀️ ⬇️ Solar Nadir"
@@ -221,7 +221,7 @@ export class DailyCyclesBuilderService {
    * - Opposite point to solar zenith (180° away on celestial sphere)
    *
    * @see {@link isMinimum} for nadir detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
@@ -234,11 +234,11 @@ export class DailyCyclesBuilderService {
     const summary = `☀️ ⏬ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
@@ -251,7 +251,7 @@ export class DailyCyclesBuilderService {
    * Sun crosses the meridian (north-south line through zenith and nadir).
    *
    * @param date - Exact time of solar zenith.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
    * - Summary: "☀️ ⬆️ Solar Zenith"
@@ -263,7 +263,7 @@ export class DailyCyclesBuilderService {
    * - Solar zenith time differs from clock noon due to equation of time and longitude
    *
    * @see {@link isMaximum} for zenith detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
@@ -276,11 +276,11 @@ export class DailyCyclesBuilderService {
     const summary = `☀️ ⏫ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
@@ -292,7 +292,7 @@ export class DailyCyclesBuilderService {
    * horizon moving upward (geometric sunrise, not accounting for atmospheric refraction).
    *
    * @param date - Exact time of sunrise.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
    * - Summary: "☀️ 🔼 Sunrise"
@@ -303,7 +303,7 @@ export class DailyCyclesBuilderService {
    * - Does not account for observer altitude above sea level
    *
    * @see {@link isRise} for sunrise detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
@@ -316,11 +316,11 @@ export class DailyCyclesBuilderService {
     const summary = `☀️ 🔼 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
@@ -332,7 +332,7 @@ export class DailyCyclesBuilderService {
    * horizon moving downward (geometric sunset, not accounting for atmospheric refraction).
    *
    * @param date - Exact time of sunset.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
    * - Summary: "☀️ 🔽 Sunset"
@@ -344,7 +344,7 @@ export class DailyCyclesBuilderService {
    * - Marks beginning of nautical/civil twilight period
    *
    * @see {@link isSet} for sunset detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
@@ -357,11 +357,11 @@ export class DailyCyclesBuilderService {
     const summary = `☀️ 🔽 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
