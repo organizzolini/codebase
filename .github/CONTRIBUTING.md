@@ -83,7 +83,7 @@ A step that fails stops setup, and every step is safe to run again. To re-run on
 - **Ollama**, and it pulls the `gemma4:e2b` model the affirmancy ReAct agent uses
 - **PostgreSQL** for local database work
 - **GnuPG** and `pinentry-mac`, because commits must be signed
-- **Infrastructure and quality tools** — `gitleaks`, `terraform`, `trivy`, `supabase`, `jq`, `gh`, `helm`, `kubectl`
+- **Infrastructure and quality tools** — `gitleaks`, `terraform`, `trivy`, `jq`, `gh`, `helm`, `kubectl`
 
 Stage 4 copies `.env.default` to `.env` for the workspace root and for **every** project that ships a template — existing `.env` files are never overwritten. It also appends `LOCAL_WORKSPACE_FOLDER` to the root `.env` so `docker-compose` volume mounts resolve.
 
@@ -119,7 +119,6 @@ Alternatively, use the included dev container for a fully configured environment
 | kubectl      | latest                      | Kubernetes cluster management                                |
 | Helm         | latest                      | Kubernetes package manager                                   |
 | GitHub CLI   | latest                      | Repository operations                                        |
-| Supabase CLI | latest                      | Local Supabase stack and migrations for lexico               |
 | Docker       | DooD (local) / DinD (cloud) | Docker-outside-of-Docker on local; Docker-in-Docker in cloud |
 
 The repository pins Node through `.nvmrc`, and `package.json` declares `engines.node` to match. `.nvmrc` is declarative and only takes effect after running `nvm use`, or after enabling automatic `nvm` directory switching in your shell. Use the pinned version — newer Node majors have broken this repository's commit hooks in ways that are hard to read from the error output.
@@ -134,11 +133,6 @@ pnpm is pinned by `packageManager` in the root `package.json`, so Corepack selec
 | 3001  | Open WebUI         | Notify       |
 | 8889  | SearxNG            | Notify       |
 | 11434 | Ollama API         | Silent       |
-| 54321 | Supabase API       | Silent       |
-| 54322 | Supabase Database  | Silent       |
-| 54323 | Supabase Studio    | Notify       |
-| 54324 | Supabase Email     | Silent       |
-| 54325 | Supabase Analytics | Silent       |
 
 See [.devcontainer/README.md](../.devcontainer/README.md) for detailed configuration and troubleshooting.
 
@@ -399,7 +393,7 @@ Format: `<type>(<scope>): <gitmoji> <subject>` — a single line, max 128 charac
 - **Type and scope** come from the tables below, both lowercase
 - **Gitmoji required** as the first token of the subject
 - Subject is lowercase, present-imperative (`add`, not `added` or `adds`), with no trailing period
-- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` trailers. Everything else belongs in the subject or the pull request description
+- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` or `Claude-Session:` trailers. Everything else belongs in the subject or the pull request description
 - Never list multiple changes — summarize at a higher level, or split the commit
 
 Common gitmojis: ✨ `feat` · 🐛 `fix` · 📝 `docs` · 🧪 `test` · ♻️ `refactor` · 🎨 `style` · ⚡️ `perf` · 🔧 `chore` · 👷 `ci` · 📦 `build` · ⏪ `revert`
@@ -457,7 +451,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 | `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
+| `lexico` | TanStack Start SSR Latin dictionary web app |
 | `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |

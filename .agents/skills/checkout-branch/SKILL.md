@@ -67,7 +67,7 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 | `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
+| `lexico` | TanStack Start SSR Latin dictionary web app |
 | `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |

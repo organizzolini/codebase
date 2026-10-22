@@ -357,7 +357,7 @@ export default defineConfig({
     //   - filename-case: off — PascalCase React components conflict
     //   - no-array-for-each: off — forEach is idiomatic in this codebase
     //   - no-array-reduce: off — reduce is used in data transformations
-    //   - no-null: off — Supabase/React APIs return null
+    //   - no-null: off — React APIs return null
     //   - no-process-exit: off — caelundas CLI uses process.exit
     //   - prefer-module: off — CommonJS config files (*.cjs)
     //   - prefer-top-level-await: off — not all entry points support TLA

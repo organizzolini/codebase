@@ -58,15 +58,14 @@ export const NO_KEY_INSTRUCTIONS = [
  * The infrastructure tools, in install order.
  *
  * gitleaks scans for secrets in the pre-commit hook. terraform manages the
- * LKE cluster, trivy scans images, supabase runs lexico's local stack, jq
- * parses JSON in CI scripts, gh drives pull requests, helm deploys caelundas,
- * and kubectl inspects the cluster.
+ * LKE cluster, trivy scans images, jq parses JSON in CI
+ * scripts, gh drives pull requests, helm deploys caelundas, and kubectl
+ * inspects the cluster.
  */
 export const INFRASTRUCTURE_TOOLS: InfrastructureTool[] = [
   { name: "gitleaks" },
   { name: "terraform" },
   { name: "trivy" },
-  { formula: "supabase/tap/supabase", name: "supabase" },
   { name: "jq" },
   { name: "gh" },
   { name: "helm" },

@@ -168,7 +168,7 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // lexico: TanStack Start SSR web application with Supabase backend.
+    // lexico: TanStack Start SSR web application.
     // The client entry and the generated route tree are named by the TanStack
     // Start plugin rather than imported, so knip is told where they are.
     "projects/lexico/lexico-web": {
