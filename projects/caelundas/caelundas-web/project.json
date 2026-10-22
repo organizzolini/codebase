@@ -12,6 +12,7 @@
   ],
   "targets": {
     "build": {
+      "dependsOn": ["build-database"],
       "description": "Build the application for production",
       "executor": "nx:run-commands",
       "options": {
@@ -19,6 +20,20 @@
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/dist"]
+    },
+    "build-database": {
+      "cache": true,
+      "description": "Write the SQLite file the static build bundles into output/",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/data/**/*.sql",
+        "{projectRoot}/scripts/build-events-database.ts"
+      ],
+      "options": {
+        "command": "node scripts/build-events-database.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/output/events.sqlite"]
     },
     "codometer": {},
     "dependency-cruiser": {},
@@ -42,11 +57,17 @@
     },
     "spell-check": {},
     "start": {
+      "dependsOn": ["build-database"],
       "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",
       "options": {
         "command": "vite dev",
         "cwd": "{projectRoot}"
+      }
+    },
+    "stop": {
+      "options": {
+        "port": 8967
       }
     },
     "stylelint": {},

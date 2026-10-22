@@ -1,7 +1,13 @@
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  HeadContent,
+  type Register,
+  Scripts,
+} from "@tanstack/react-router";
 
 import applicationCss from "../styles/application.css?url";
 
+import type { RouterContext } from "../router.types";
 import type { ReactNode } from "react";
 
 // 🧭 Route
@@ -9,7 +15,9 @@ import type { ReactNode } from "react";
 /**
  * The document shell every other route renders inside.
  */
-export const Route = createRootRoute({
+// The router context's type is named explicitly so every loader below reads
+// the events database from it typed.
+export const Route = createRootRoute<Register, undefined, RouterContext>({
   head: () => ({
     links: [{ href: applicationCss, rel: "stylesheet" }],
     meta: [
@@ -32,11 +40,14 @@ function RootDocument(
   const { children } = properties;
 
   return (
-    <html lang="en">
+    <html
+      className="dark"
+      lang="en"
+    >
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="min-h-screen bg-background text-foreground antialiased">
         {children}
         <Scripts />
       </body>

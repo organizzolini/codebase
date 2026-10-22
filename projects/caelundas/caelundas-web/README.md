@@ -4,6 +4,10 @@
 nx run caelundas-web:start
 ```
 
+The dev and preview servers listen on port 8967, derived from the project name
+with `scripts/shell/text-to-port.sh caelundas-web` as every other application's
+is, and `nx run caelundas-web:stop` frees it.
+
 ## Test
 
 ```bash
