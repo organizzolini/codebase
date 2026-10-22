@@ -1,4 +1,4 @@
-import { Button } from "@codebase/presentation";
+import { Button, ButtonGroup } from "@codebase/presentation";
 
 import { CalendarViewSelect } from "./calendar-view-select";
 
@@ -72,6 +72,16 @@ export function CalendarToolbar(
   // 🪝 Hooks
 
   // 🏗 Setup
+  const hasControls = [filters, groupBy, scaleSelect].some(
+    (control) => control !== undefined && control !== null,
+  );
+  const controls = (
+    <>
+      {filters}
+      {groupBy}
+      {scaleSelect}
+    </>
+  );
 
   // 💪 Handlers
 
@@ -86,47 +96,39 @@ export function CalendarToolbar(
       data-testid="calendar-toolbar"
     >
       <div className="flex min-w-0 items-center gap-1 px-2 py-2">
-        <Button
-          onClick={navigation.today}
-          size="sm"
-          variant="outline"
+        <ButtonGroup aria-label="Navigate">
+          <Button
+            onClick={navigation.today}
+            size="sm"
+            variant="outline"
+          >
+            Today
+          </Button>
+          <Button
+            aria-label="Previous"
+            onClick={navigation.prev}
+            size="sm"
+            variant="outline"
+          >
+            ‹
+          </Button>
+          <Button
+            aria-label="Next"
+            onClick={navigation.next}
+            size="sm"
+            variant="outline"
+          >
+            ›
+          </Button>
+        </ButtonGroup>
+        <h2
+          className={`ms-2 font-semibold ${compact ? "min-w-0 grow text-sm leading-tight" : "min-w-28 truncate text-base"}`}
         >
-          Today
-        </Button>
-        <Button
-          aria-label="Previous"
-          onClick={navigation.prev}
-          size="sm"
-          variant="ghost"
-        >
-          ‹
-        </Button>
-        <Button
-          aria-label="Next"
-          onClick={navigation.next}
-          size="sm"
-          variant="ghost"
-        >
-          ›
-        </Button>
-        <h2 className="ms-2 truncate text-base font-semibold">
           {navigation.title}
         </h2>
-        {compact ? (
-          // A phone's row is too narrow for every control, so they scroll
-          // sideways together, never over each other.
-          <div className="flex min-w-0 grow items-center overflow-x-auto">
-            <div className="ms-auto flex shrink-0 items-center gap-1">
-              {filters}
-              {groupBy}
-              {scaleSelect}
-            </div>
-          </div>
-        ) : (
+        {compact ? null : (
           <div className="flex min-w-0 grow items-center justify-end gap-1">
-            {filters}
-            {groupBy}
-            {scaleSelect}
+            {controls}
           </div>
         )}
         {view === undefined || onViewChange === undefined ? null : (
@@ -137,6 +139,16 @@ export function CalendarToolbar(
           />
         )}
       </div>
+      {compact && hasControls ? (
+        // A phone's row has no room beside the title for the controls, so
+        // they take a row under it, scrolling sideways if they outgrow it.
+        <div
+          className="flex min-w-0 items-center gap-1 overflow-x-auto px-2 pb-2"
+          data-testid="calendar-toolbar-controls"
+        >
+          {controls}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -50,6 +50,7 @@ export function CalendarError(
     <div
       className={className}
       data-testid="calendar-error"
+      role="alert"
     >
       <Empty className="h-dvh">
         <EmptyHeader>
