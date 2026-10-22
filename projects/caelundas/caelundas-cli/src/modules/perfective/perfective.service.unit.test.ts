@@ -344,6 +344,45 @@ describe(PerfectiveService, () => {
       expect(phasesMock.getMartianPhaseEvents).not.toHaveBeenCalled();
     });
 
+    it("runs the Venusian, Mercurian and Martian phase detectors when no families are named", () => {
+      const date = moment.tz("2025-06-15", "America/New_York");
+      const minute = date.clone().startOf("day");
+      const phaseEvent = (marker: string): DetectedCalendarEvent => ({
+        description: `${marker} phase`,
+        end: minute,
+        start: minute,
+        summary: `${marker} phase`,
+        tags: ["Astronomy", "Astrology", "Planetary Phase", marker],
+      });
+
+      datetimeMock.generateDates.mockReturnValue([date]);
+      datetimeMock.generateMinutes.mockReturnValue([minute]);
+      ephemerisAggMock.getEphemerides.mockReturnValue(emptyEphemerides);
+      phasesMock.getVenusianPhaseEvents.mockReturnValueOnce([
+        phaseEvent("Venusian"),
+      ]);
+      phasesMock.getMercurianPhaseEvents.mockReturnValueOnce([
+        phaseEvent("Mercurian"),
+      ]);
+      phasesMock.getMartianPhaseEvents.mockReturnValueOnce([
+        phaseEvent("Martian"),
+      ]);
+
+      const markers = service
+        .detect(baseInput)
+        .flatMap(({ tags }) =>
+          tags.filter((tag) =>
+            ["Martian", "Mercurian", "Venusian"].includes(tag),
+          ),
+        );
+
+      expect(markers.toSorted()).toStrictEqual([
+        "Martian",
+        "Mercurian",
+        "Venusian",
+      ]);
+    });
+
     it("logs a completion summary with the total event count", () => {
       const date = moment.tz("2025-06-15", "America/New_York");
       datetimeMock.generateDates.mockReturnValue([date]);
