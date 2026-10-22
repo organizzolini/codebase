@@ -2,8 +2,10 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
+import { HelmModule } from "../helm/helm.module";
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
 import { ReporterModule } from "../reporter/reporter.module";
+import { SshSigningModule } from "../ssh-signing/ssh-signing.module";
 
 import { SoftwareBrewService } from "./software-brew.service";
 import { SoftwareDatabaseService } from "./software-database.service";
@@ -19,7 +21,13 @@ import { SoftwareService } from "./software.service";
 @Module({
   controllers: [],
   exports: [SoftwareCommand, SoftwareService],
-  imports: [LoggerModule, ProcessRunnerModule, ReporterModule],
+  imports: [
+    HelmModule,
+    LoggerModule,
+    ProcessRunnerModule,
+    ReporterModule,
+    SshSigningModule,
+  ],
   providers: [
     SoftwareBrewService,
     SoftwareCommand,
