@@ -151,7 +151,7 @@ export function CalendarFilters(
 
 /**
  * Draws one chip per rule of the tree in the surrounding `Filters`, nested
- * ones included, in a row that scrolls sideways instead of wrapping. Unlike
+ * ones included, in a row that wraps onto more rows. Unlike
  * the vendored chip row, it leaves out the Add filter button: rules are added
  * in the builder.
  */
@@ -166,7 +166,7 @@ function FilterChipRow(): ReactNode {
   return (
     <div
       aria-label={TITLE}
-      className="flex min-w-0 flex-nowrap items-center gap-1 overflow-x-auto whitespace-nowrap *:shrink-0"
+      className="contents"
       role="toolbar"
     >
       {rules.map((rule, index) => (

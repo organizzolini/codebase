@@ -182,7 +182,7 @@ function IndexPage(): ReactNode {
         facets={facets}
         filters={
           <CalendarFilters
-            className="flex items-center gap-1"
+            className="contents"
             fields={fields}
             filter={filter}
             onFilterChange={handleFilterChange}

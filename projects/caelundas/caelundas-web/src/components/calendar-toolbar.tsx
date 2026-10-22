@@ -95,15 +95,13 @@ export function CalendarToolbar(
       className={className}
       data-testid="calendar-toolbar"
     >
-      <div className="flex min-w-0 items-center gap-1 px-2 py-2">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-2 py-2">
+        <h2
+          className={`font-semibold ${compact ? "min-w-0 grow text-sm leading-tight" : "min-w-28 truncate text-base"}`}
+        >
+          {navigation.title}
+        </h2>
         <ButtonGroup aria-label="Navigate">
-          <Button
-            onClick={navigation.today}
-            size="sm"
-            variant="outline"
-          >
-            Today
-          </Button>
           <Button
             aria-label="Previous"
             onClick={navigation.prev}
@@ -120,17 +118,14 @@ export function CalendarToolbar(
           >
             ›
           </Button>
+          <Button
+            onClick={navigation.today}
+            size="sm"
+            variant="outline"
+          >
+            Today
+          </Button>
         </ButtonGroup>
-        <h2
-          className={`ms-2 font-semibold ${compact ? "min-w-0 grow text-sm leading-tight" : "min-w-28 truncate text-base"}`}
-        >
-          {navigation.title}
-        </h2>
-        {compact ? null : (
-          <div className="flex min-w-0 grow items-center justify-end gap-1">
-            {controls}
-          </div>
-        )}
         {view === undefined || onViewChange === undefined ? null : (
           <CalendarViewSelect
             compact={compact}
@@ -138,12 +133,20 @@ export function CalendarToolbar(
             view={view}
           />
         )}
+        {compact ? null : (
+          // The filters take whatever room is left and wrap onto rows of
+          // their own when it runs out, so they come last: their width
+          // varies with the rules in them.
+          <div className="flex min-w-0 flex-[1_1_28rem] flex-wrap items-center gap-1">
+            {controls}
+          </div>
+        )}
       </div>
       {compact && hasControls ? (
         // A phone's row has no room beside the title for the controls, so
-        // they take a row under it, scrolling sideways if they outgrow it.
+        // they take a row under it, wrapping onto more rows if they outgrow it.
         <div
-          className="flex min-w-0 items-center gap-1 overflow-x-auto px-2 pb-2"
+          className="flex min-w-0 flex-wrap items-center gap-1 px-2 pb-2"
           data-testid="calendar-toolbar-controls"
         >
           {controls}
