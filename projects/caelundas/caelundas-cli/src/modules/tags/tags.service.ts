@@ -3,14 +3,14 @@ import { Injectable } from "@nestjs/common";
 import { Tag } from "../database/entities/tag.entity";
 
 import { TAGS_LOCK_SQL } from "./tags.constants";
-import { resolveTagPaths, tagNodeKey } from "./tags.utilities";
+import { tagNodeKey, tagPathKey } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
 import type { EntityManager } from "typeorm";
 
 /**
- * Turns the raw tag strings detectors attach to events into nodes of the
- * stored `tags` tree, inserting any node that is missing.
+ * Turns the paths events are classified under into nodes of the stored
+ * `tags` tree, inserting any node that is missing.
  */
 @Injectable()
 export class TagsService {
@@ -61,16 +61,16 @@ export class TagsService {
   // 🌎 Public Methods
 
   /**
-   * Maps each distinct raw tag to the ids of the nodes it resolves to,
-   * through `manager`, so the nodes it inserts belong to the caller's
-   * transaction. An event carrying the raw tag is linked to those nodes.
-   * The caller's transaction locks the `tags` table first, so
-   * concurrent runs resolve one at a time.
+   * Maps each distinct path, by its {@link tagPathKey}, to the id of its last
+   * node, through `manager`, so the nodes it inserts belong to the caller's
+   * transaction. An event classified under the path is linked to that node.
+   * The caller's transaction locks the `tags` table first, so concurrent
+   * runs resolve one at a time.
    */
   async resolve(
     manager: EntityManager,
-    rawTags: readonly string[],
-  ): Promise<Map<string, string[]>> {
+    paths: readonly TagPath[],
+  ): Promise<Map<string, string>> {
     // 🔒 Held until the caller's transaction ends, so two runs never both
     // insert the same missing node and fail on its unique index.
     await manager.query<unknown>(TAGS_LOCK_SQL);
@@ -81,14 +81,13 @@ export class TagsService {
     const ids = new Map(
       stored.map((tag) => [tagNodeKey(tag.parentId ?? null, tag.name), tag.id]),
     );
-    const resolved = new Map<string, string[]>();
+    const resolved = new Map<string, string>();
 
-    for (const rawTag of new Set(rawTags)) {
-      const nodeIds = new Set<string>();
-      for (const path of resolveTagPaths(rawTag)) {
-        nodeIds.add(await this.ensurePath(manager, path, ids));
+    for (const path of paths) {
+      const key = tagPathKey(path);
+      if (!resolved.has(key)) {
+        resolved.set(key, await this.ensurePath(manager, path, ids));
       }
-      resolved.set(rawTag, [...nodeIds]);
     }
 
     return resolved;

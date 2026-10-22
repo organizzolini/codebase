@@ -1,6 +1,8 @@
 // 🏷️ Types
+import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
 import type { CalendarEvent } from "../database/entities/calendar-event.entity";
+import type { TagPath } from "../tags/tags.types";
 import type { UpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 
@@ -12,6 +14,12 @@ export type CalendarEventTagLink = Pick<
   CalendarEventTag,
   "calendarEventId" | "tagId"
 >;
+
+/** An event to write, with the tag paths it is classified under. */
+export interface ClassifiedCalendarEvent {
+  event: DetectedCalendarEvent;
+  paths: readonly TagPath[];
+}
 
 /** An observer location in decimal degrees. */
 export interface Coordinates {

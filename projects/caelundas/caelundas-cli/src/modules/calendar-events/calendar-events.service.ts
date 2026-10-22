@@ -7,6 +7,7 @@ import { LoggerService } from "@codebase/observability";
 import { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { TagsService } from "../tags/tags.service";
+import { classifyEvent } from "../tags/tags.utilities";
 
 import {
   CALENDAR_EVENT_BATCH_SIZE,
@@ -29,6 +30,7 @@ import type {
 import type {
   CalendarEventRow,
   CalendarEventTagLink,
+  ClassifiedCalendarEvent,
   FindInRangeParameters,
   Observer,
 } from "./calendar-events.types";
@@ -39,8 +41,8 @@ import type { EntityManager } from "typeorm";
  *
  * An event is keyed by its summary, start, and the location it was computed
  * for, so writing the same event again updates its row instead of adding one.
- * Its tags are stored as links to nodes of the tag tree, which
- * {@link TagsService} resolves its raw tag strings to.
+ * Its raw tags are classified into paths of the tag tree, and it is stored
+ * linked to the nodes {@link TagsService} resolves those paths to.
  */
 @Injectable()
 export class CalendarEventsService {
@@ -83,7 +85,7 @@ export class CalendarEventsService {
     }
 
     for (const [calendarEventId, eventNames] of names) {
-      names.set(calendarEventId, eventNames.toSorted());
+      names.set(calendarEventId, [...new Set(eventNames)].toSorted());
     }
 
     return names;
@@ -206,8 +208,8 @@ export class CalendarEventsService {
   /**
    * Writes events for one observer, with its timezone, updating the row of
    * any event already stored, and replaces each one's tag links with links
-   * to the nodes of the tag tree its raw tags resolve to, inserting any node
-   * that is missing. It all runs in one transaction. Rows go in batches that stay under Postgres's
+   * to the nodes of the tag tree {@link classifyEvent} classifies it under,
+   * inserting any node that is missing. It all runs in one transaction. Rows go in batches that stay under Postgres's
    * bind-parameter limit, and a repeated key within the input keeps its last
    * occurrence, as one statement may not update the same row twice.
    */
@@ -215,9 +217,12 @@ export class CalendarEventsService {
     events: DetectedCalendarEvent[],
     observer: Observer,
   ): Promise<void> {
-    const eventsByKey = new Map<string, DetectedCalendarEvent>();
+    const eventsByKey = new Map<string, ClassifiedCalendarEvent>();
     for (const event of events) {
-      eventsByKey.set(calendarEventKey(event.summary, event.start), event);
+      eventsByKey.set(calendarEventKey(event.summary, event.start), {
+        event,
+        paths: classifyEvent(event),
+      });
     }
     const keyed = [...eventsByKey.entries()];
 
@@ -228,7 +233,7 @@ export class CalendarEventsService {
     await this.calendarEventRepository.manager.transaction(async (manager) => {
       const tagIds = await this.tagsService.resolve(
         manager,
-        keyed.flatMap(([, event]) => event.tags),
+        keyed.flatMap(([, { paths }]) => paths),
       );
 
       for (
@@ -239,7 +244,7 @@ export class CalendarEventsService {
         const batch = keyed.slice(offset, offset + CALENDAR_EVENT_BATCH_SIZE);
         const ids = await this.writeRows(
           manager,
-          batch.map(([, event]) => this.toRow(event, observer)),
+          batch.map(([, { event }]) => this.toRow(event, observer)),
         );
         await this.replaceTagLinks(
           manager,

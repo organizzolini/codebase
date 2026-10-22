@@ -1,10 +1,14 @@
+import { tagPathKey } from "../tags/tags.utilities";
+
 import {
   COORDINATE_DECIMAL_PLACES,
   WRITTEN_ROWS_SCHEMA,
 } from "./calendar-events.constants";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
-import type { CalendarEventTagLink } from "./calendar-events.types";
+import type {
+  CalendarEventTagLink,
+  ClassifiedCalendarEvent,
+} from "./calendar-events.types";
 import type { Moment } from "moment-timezone";
 
 /**
@@ -47,24 +51,31 @@ export function mapWrittenIds(
 
 /**
  * The links a written batch of events makes to the tag tree: one for each
- * node each event's raw tags resolve to, each pair once. Throws for an event
- * the write did not read back an id for, which would otherwise lose its tags.
+ * path each event is classified under, to the node `tagIds` resolved it to,
+ * each pair once. Throws for an event the write did not read back an id
+ * for, or a path `tagIds` lacks, either of which would lose its tags.
  */
 export function toTagLinks(
-  batch: readonly (readonly [string, DetectedCalendarEvent])[],
+  batch: readonly (readonly [string, ClassifiedCalendarEvent])[],
   eventIds: ReadonlyMap<string, string>,
-  tagIds: ReadonlyMap<string, readonly string[]>,
+  tagIds: ReadonlyMap<string, string>,
 ): CalendarEventTagLink[] {
   const links = new Map<string, CalendarEventTagLink>();
 
-  for (const [key, event] of batch) {
+  for (const [key, { event, paths }] of batch) {
     const calendarEventId = eventIds.get(key);
 
     if (calendarEventId === undefined) {
       throw new Error(`No id was read back for the event "${event.summary}"`);
     }
 
-    for (const tagId of event.tags.flatMap((tag) => tagIds.get(tag) ?? [])) {
+    for (const path of paths) {
+      const tagId = tagIds.get(tagPathKey(path));
+      if (tagId === undefined) {
+        throw new Error(
+          `The tag "${path.join(" > ")}" of the event "${event.summary}" was not resolved`,
+        );
+      }
       links.set(`${calendarEventId}\u0000${tagId}`, { calendarEventId, tagId });
     }
   }

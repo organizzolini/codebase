@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -80,7 +81,7 @@ export class EclipseEventService {
       end: date,
       start: date,
       summary,
-      tags: [...this.tags, body, frameLabel, typeLabel],
+      tags: [...this.tags, body, frameLabel, typeLabel, _.startCase(phase)],
     };
   }
 

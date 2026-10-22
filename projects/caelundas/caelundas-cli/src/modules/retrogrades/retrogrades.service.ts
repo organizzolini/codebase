@@ -144,7 +144,7 @@ export class RetrogradesService {
       end,
       start,
       summary: `${symbol} ↩️ ${planetCapitalized} Retrograde`,
-      tags: ["Astronomy", "Astrology", "Retrogrades"],
+      tags: ["Astronomy", "Astrology", "Retrogrades", planetCapitalized],
     };
   }
 
@@ -268,6 +268,7 @@ export class RetrogradesService {
       summary,
       tags: [
         ...RetrogradesService.tags,
+        bodyCapitalized,
         ...(direction === "retrograde" ? ["Retrograde"] : ["Direct"]),
       ],
     };
