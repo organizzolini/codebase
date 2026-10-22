@@ -44,9 +44,10 @@ src/
       postgresql.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
       entities/                     # identifiable → creatable → updatable → deletable
       postgresql-container.*.ts       # startPostgresContainer, the testing entry's harness
-    export/                         # The export command: options, plan, dry run, atomic write
+    export/                         # The export command: options, plan, dry run, atomic write, --sqlite routing
     import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
+    sqlite-export/                  # export --sqlite: node:sqlite writer, column type mapping, no client tools
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
