@@ -21,12 +21,11 @@ import {
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import { CalendarAgenda } from "./calendar-agenda";
-import { CalendarColorsMenu } from "./calendar-colors-menu";
 import { CalendarGroupBy } from "./calendar-group-by";
 import { CalendarOverflowList } from "./calendar-overflow-list";
 import { CalendarScaleSelect } from "./calendar-scale-select";
 import { CalendarTimeline } from "./calendar-timeline";
-import { type CalendarNavigation, CalendarToolbar } from "./calendar-toolbar";
+import { CalendarToolbar } from "./calendar-toolbar";
 import { useCalendarNavigation } from "./use-calendar-navigation";
 
 import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
@@ -34,6 +33,7 @@ import type {
   CalendarEventRecord,
   EventFacet,
 } from "../lib/events-database/events-database.types";
+import type { CalendarNavigation } from "./calendar-navigation-group";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -73,11 +73,6 @@ export interface EventsCalendarProperties {
    * read for.
    */
   grouping: readonly EventGroupLevel[];
-  /**
-   * Called with the colors setting picked in the toolbar; the Colors menu is
-   * not offered without it.
-   */
-  onColorsChange?: ((enabled: boolean) => void) | undefined;
   /**
    * Called with the new day when the toolbar moves the calendar.
    */
@@ -145,7 +140,6 @@ export function EventsCalendar(
     facets,
     filters,
     grouping,
-    onColorsChange,
     onDateChange,
     onGroupingChange,
     onScaleChange,
@@ -181,14 +175,6 @@ export function EventsCalendar(
     >
       <div className="flex h-full flex-col">
         <CalendarToolbar
-          colors={
-            onColorsChange === undefined ? undefined : (
-              <CalendarColorsMenu
-                enabled={colors}
-                onEnabledChange={onColorsChange}
-              />
-            )
-          }
           compact={compact}
           filters={filters}
           groupBy={

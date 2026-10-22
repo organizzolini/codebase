@@ -329,10 +329,10 @@ describe("index", () => {
       expect(screen.queryByText("No filters yet")).toBeNull();
 
       fireEvent.click(
-        within(toolbar).getByRole("button", { name: /^Filters/u }),
+        within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
       );
 
-      const builder = await screen.findByRole("dialog", { name: "Filters" });
+      const builder = await screen.findByRole("dialog", { name: "Filter" });
 
       expect(builder.closest(`[data-slot="${viewport.slot}"]`)).not.toBeNull();
       expect(within(builder).getByText("No filters yet")).toBeDefined();
@@ -379,10 +379,10 @@ describe("index", () => {
       );
 
       const toolbar = await findToolbar();
-      const chips = within(toolbar).getByRole("toolbar", { name: "Filters" });
+      const chips = within(toolbar).getByRole("toolbar", { name: "Filter" });
 
       expect(
-        within(toolbar).getByRole("button", { name: "Filters, 2 active" }),
+        within(toolbar).getByRole("button", { name: "Filter, 2 active" }),
       ).toBeDefined();
       expect(within(chips).getAllByText(/^(Planet|Sign|Type)$/u)).toHaveLength(
         3,
@@ -401,7 +401,7 @@ describe("index", () => {
           screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
         ).toBeDefined();
         expect(
-          screen.getByRole("button", { name: "Filters, 1 active" }),
+          screen.getByRole("button", { name: "Filter, 1 active" }),
         ).toBeDefined();
       }, BUILDER_WAIT);
     },
@@ -419,7 +419,7 @@ describe("index", () => {
     const toolbar = await findToolbar();
 
     expect(
-      within(toolbar).getByRole("button", { name: "Filters, 1 active" }),
+      within(toolbar).getByRole("button", { name: "Filter, 1 active" }),
     ).toBeDefined();
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });

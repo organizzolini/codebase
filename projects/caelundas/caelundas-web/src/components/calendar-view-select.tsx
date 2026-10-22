@@ -1,3 +1,11 @@
+import {
+  CalendarDays,
+  CalendarRange,
+  ChartGantt,
+  Columns3,
+  List,
+  Square,
+} from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 import {
@@ -21,6 +29,7 @@ import {
   parseCalendarView,
 } from "../lib/calendar/calendar-views";
 
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -38,6 +47,15 @@ export interface CalendarViewSelectProperties {
   onViewChange: (view: CalendarViewName) => void;
   view: CalendarViewName;
 }
+
+const VIEW_ICONS: Readonly<Record<CalendarViewName, LucideIcon>> = {
+  agenda: List,
+  day: Square,
+  month: CalendarDays,
+  "three-day": Columns3,
+  timeline: ChartGantt,
+  week: CalendarRange,
+};
 
 // 🧩 Component
 
@@ -116,22 +134,32 @@ export function CalendarViewSelect(
         </DropdownMenu>
       ) : (
         <ButtonGroup aria-label="View">
-          {CALENDAR_VIEWS.map((option) => (
-            <Button
-              key={option}
-              aria-pressed={option === view}
-              onClick={() => {
-                // The view already shown is not a change.
-                if (option !== view) {
-                  onViewChange(option);
+          {CALENDAR_VIEWS.map((option) => {
+            const Icon = VIEW_ICONS[option];
+
+            return (
+              <Button
+                key={option}
+                aria-pressed={option === view}
+                className={
+                  option === view
+                    ? "bg-accent text-accent-foreground"
+                    : undefined
                 }
-              }}
-              size="sm"
-              variant={option === view ? "secondary" : "outline"}
-            >
-              {CALENDAR_VIEW_LABELS[option]}
-            </Button>
-          ))}
+                onClick={() => {
+                  // The view already shown is not a change.
+                  if (option !== view) {
+                    onViewChange(option);
+                  }
+                }}
+                size="sm"
+                variant="outline"
+              >
+                <Icon aria-hidden="true" />
+                {CALENDAR_VIEW_LABELS[option]}
+              </Button>
+            );
+          })}
         </ButtonGroup>
       )}
     </div>

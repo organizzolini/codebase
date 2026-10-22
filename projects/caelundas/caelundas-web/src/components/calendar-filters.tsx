@@ -1,3 +1,4 @@
+import { ListFilter } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import {
@@ -9,11 +10,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
   FilterChip,
   Filters,
   flattenFilterRules,
@@ -42,9 +38,9 @@ import {
 } from "../lib/event-filters/event-filter-tree";
 import { DATE_RANGE_EDITOR } from "../lib/event-filters/event-filters.constants";
 
+import { CalendarViewMenu } from "./calendar-view-menu";
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
 
-import type { ResolvedEventFilterCollection } from "../lib/event-filters/event-filter-collections";
 import type {
   EventFilterField,
   EventFilterQuery,
@@ -63,6 +59,11 @@ import type { ReactElement, ReactNode } from "react";
 export interface CalendarFiltersProperties {
   className?: string;
   /**
+   * Whether events are colored by type, which the View menu turns on or off;
+   * on when absent.
+   */
+  colors?: boolean;
+  /**
    * The tags of the data, from which the collections the menu applies in one
    * step are resolved, and the default one the calendar opens on.
    */
@@ -70,15 +71,18 @@ export interface CalendarFiltersProperties {
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
+   * Called with the colors setting picked in the View menu; the menu offers
+   * no choice without it.
+   */
+  onColorsChange?: (enabled: boolean) => void;
+  /**
    * Called with every edit to write back to the link: the whole tree, empty
    * once nothing is left.
    */
   onFilterChange: (filter: EventFilterQuery) => void;
 }
 
-const TITLE = "Filters";
-const ALL_EVENTS_ID = "all-events";
-const CUSTOM_ID = "custom";
+const TITLE = "Filter";
 const EDITORS: FilterEditorRegistry = {
   [DATE_RANGE_EDITOR]: FilterDateRangeEditor,
 };
@@ -98,7 +102,15 @@ const TABLET_QUERY = "(min-width: 768px)";
 export function CalendarFilters(
   properties: Readonly<CalendarFiltersProperties>,
 ): ReactNode {
-  const { className, facets = [], fields, filter, onFilterChange } = properties;
+  const {
+    className,
+    colors = true,
+    facets = [],
+    fields,
+    filter,
+    onColorsChange = () => {},
+    onFilterChange,
+  } = properties;
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
@@ -156,14 +168,14 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
-      <ButtonGroup aria-label="Filters">
-        {collections.length === 0 ? null : (
-          <CollectionsMenu
-            collections={collections}
-            onSelect={handleCollectionSelect}
-            query={query}
-          />
-        )}
+      <ButtonGroup aria-label="Filter">
+        <CalendarViewMenu
+          collections={collections}
+          colors={colors}
+          onColorsChange={onColorsChange}
+          onSelect={handleCollectionSelect}
+          query={query}
+        />
         <FilterSurface
           isTablet={isTablet}
           trigger={renderFiltersButton(activeCount)}
@@ -200,94 +212,6 @@ export function CalendarFilters(
         </Filters>
       ) : null}
     </div>
-  );
-}
-
-/**
- * Lists the collections of filters as one menu: the one whose filters the
- * tree holds is marked, "All events" is marked when the tree filters nothing,
- * and anything else reads as custom, an edit made in the builder.
- */
-function CollectionsMenu(
-  properties: Readonly<{
-    collections: readonly ResolvedEventFilterCollection[];
-    onSelect: (filter: EventFilterQuery) => void;
-    query: EventFilterQuery;
-  }>,
-): ReactNode {
-  const { collections, onSelect, query } = properties;
-  // The compiled SQL says whether two trees filter alike, whatever their ids.
-  const current = JSON.stringify(compileEventFilter(query));
-  let value = current === "null" ? ALL_EVENTS_ID : CUSTOM_ID;
-
-  for (const collection of collections) {
-    if (JSON.stringify(compileEventFilter(collection.filter)) === current) {
-      value = collection.id;
-    }
-  }
-
-  // The button always reads "Views"; what the tree holds is in its name.
-  const currentName =
-    collections.find((collection) => collection.id === value)?.name ??
-    (value === ALL_EVENTS_ID ? "All events" : "Custom");
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            aria-label={`Views: ${currentName}`}
-            size="sm"
-            title={currentName}
-            variant="outline"
-          />
-        }
-      >
-        Views
-        <span aria-hidden="true">▾</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="start"
-        className="w-80 max-w-[95vw]"
-      >
-        <DropdownMenuRadioGroup
-          onValueChange={(next: unknown) => {
-            const collection = collections.find(
-              (candidate) => candidate.id === next,
-            );
-
-            onSelect(collection?.filter ?? EMPTY_EVENT_FILTER);
-          }}
-          value={value}
-        >
-          {collections.map((collection) => (
-            <DropdownMenuRadioItem
-              key={collection.id}
-              value={collection.id}
-              closeOnClick
-            >
-              <span className="flex flex-col gap-0.5">
-                <span>{collection.name}</span>
-                <span className="text-xs whitespace-normal text-muted-foreground">
-                  {collection.description}
-                </span>
-              </span>
-            </DropdownMenuRadioItem>
-          ))}
-          <DropdownMenuRadioItem
-            value={ALL_EVENTS_ID}
-            closeOnClick
-          >
-            <span className="flex flex-col gap-0.5">
-              <span>All events</span>
-              <span className="text-xs whitespace-normal text-muted-foreground">
-                No filters: every event in the data.
-              </span>
-            </span>
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 }
 
@@ -395,6 +319,7 @@ function renderFiltersButton(activeCount: number): ReactElement {
       size="sm"
       variant="outline"
     >
+      <ListFilter aria-hidden="true" />
       {TITLE}
       {activeCount === 0 ? null : (
         <Badge

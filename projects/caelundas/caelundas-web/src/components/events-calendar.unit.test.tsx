@@ -137,7 +137,6 @@ describe(EventsCalendar, () => {
           events={[INGRESS]}
           facets={[]}
           grouping={[]}
-          onColorsChange={() => {}}
           onDateChange={() => {}}
           timeZone="America/New_York"
           view="month"
@@ -163,21 +162,6 @@ describe(EventsCalendar, () => {
       );
 
       expect(chip?.getAttribute("style")).not.toContain("#10b981");
-    });
-
-    it("offers the Colors menu only when it can change colors", () => {
-      render(
-        <EventsCalendar
-          anchor={new Date("2026-03-20T12:00:00.000Z")}
-          events={[]}
-          facets={[]}
-          grouping={[]}
-          onDateChange={() => {}}
-          timeZone="America/New_York"
-        />,
-      );
-
-      expect(screen.queryByTestId("calendar-colors-menu")).toBeNull();
     });
   });
 });

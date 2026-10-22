@@ -1,27 +1,11 @@
-import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
-
+import { CalendarNavigationGroup } from "./calendar-navigation-group";
 import { CalendarViewSelect } from "./calendar-view-select";
 
 import type { CalendarViewName } from "../lib/calendar/calendar-views";
+import type { CalendarNavigation } from "./calendar-navigation-group";
 import type { ReactNode } from "react";
 
 // 🔖 Type
-
-/**
- * How the toolbar moves the view it sits over, and the title of the period
- * shown: the event calendar's or the timeline's.
- */
-export interface CalendarNavigation {
-  /**
-   * Whether the day the calendar is anchored on is today, when the Today
-   * button has nowhere to go and is left out.
-   */
-  isToday?: boolean;
-  next: () => void;
-  prev: () => void;
-  title: string;
-  today: () => void;
-}
 
 /**
  * The toolbar moves the view it sits over, and shows whatever filter
@@ -30,15 +14,11 @@ export interface CalendarNavigation {
 export interface CalendarToolbarProperties {
   className?: string;
   /**
-   * Drawn first among the controls, for the colors of events.
-   */
-  colors?: ReactNode;
-  /**
    * Narrows the row for a phone, listing the views in a menu.
    */
   compact?: boolean | undefined;
   /**
-   * Drawn between the period's title and the view selector.
+   * Drawn after the view selector, from the left.
    */
   filters?: ReactNode;
   /**
@@ -69,7 +49,6 @@ export function CalendarToolbar(
 ): ReactNode {
   const {
     className,
-    colors,
     compact,
     filters,
     groupBy,
@@ -82,12 +61,19 @@ export function CalendarToolbar(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const hasControls = [colors, filters, groupBy, scaleSelect].some(
+  const hasControls = [filters, groupBy, scaleSelect].some(
     (control) => control !== undefined && control !== null,
   );
+  const viewSelect =
+    view === undefined || onViewChange === undefined ? null : (
+      <CalendarViewSelect
+        compact={compact}
+        onViewChange={onViewChange}
+        view={view}
+      />
+    );
   const controls = (
     <>
-      {colors}
       {filters}
       {groupBy}
       {scaleSelect}
@@ -106,58 +92,30 @@ export function CalendarToolbar(
       className={className}
       data-testid="calendar-toolbar"
     >
-      <div className="flex min-w-0 flex-wrap items-start gap-x-2 gap-y-1 px-2 py-2">
-        <ButtonGroup aria-label="Navigate">
-          <Button
-            aria-label="Previous"
-            className="w-9 text-lg leading-none"
-            onClick={navigation.prev}
-            size="sm"
-            variant="outline"
-          >
-            ‹
-          </Button>
-          <ButtonGroupText
-            aria-level={2}
-            className={`h-7 bg-background font-semibold ${compact ? "min-w-0 grow truncate text-sm" : "min-w-28 truncate text-base"}`}
-            role="heading"
-          >
-            {navigation.title}
-          </ButtonGroupText>
-          <Button
-            aria-label="Next"
-            className="w-9 text-lg leading-none"
-            onClick={navigation.next}
-            size="sm"
-            variant="outline"
-          >
-            ›
-          </Button>
-          {navigation.isToday === true ? null : (
-            <Button
-              onClick={navigation.today}
-              size="sm"
-              variant="outline"
-            >
-              Today
-            </Button>
-          )}
-        </ButtonGroup>
-        {view === undefined || onViewChange === undefined ? null : (
-          <CalendarViewSelect
-            compact={compact}
-            onViewChange={onViewChange}
-            view={view}
-          />
-        )}
-        {
-          // The controls are items of this row, not a row of their own: the
-          // filters flow on beside the date and the buttons, anchored to the
-          // top with them, and wrap under them when the row runs out. A
-          // phone's row has no room for them, so they take one below.
-          compact ? null : controls
-        }
-      </div>
+      {compact ? (
+        <div className="flex min-w-0 items-start gap-2 px-2 py-2">
+          <div className="min-w-0 grow">
+            <CalendarNavigationGroup
+              navigation={navigation}
+              compact
+            />
+          </div>
+          {viewSelect}
+        </div>
+      ) : (
+        // The date and its buttons sit apart at the right, holding one width,
+        // so changing the view moves nothing; the views, the filters and
+        // their chips flow from the left and wrap under each other.
+        <div className="flex min-w-0 items-start gap-2 px-2 py-2">
+          <div className="flex min-w-0 flex-1 flex-wrap items-start gap-1">
+            {viewSelect}
+            {controls}
+          </div>
+          <div className="shrink-0">
+            <CalendarNavigationGroup navigation={navigation} />
+          </div>
+        </div>
+      )}
       {compact && hasControls ? (
         // A phone's row has no room beside the title for the controls, so
         // they take a row under it, wrapping onto more rows if they outgrow it.

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef as useReference, useState } from "react";
 
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
-import type { CalendarNavigation } from "./calendar-toolbar";
+import type { CalendarNavigation } from "./calendar-navigation-group";
 
 /**
  * The toolbar's navigation, and where the views report theirs.

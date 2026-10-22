@@ -97,23 +97,36 @@ describe(CalendarToolbar, () => {
     expect(screen.getByRole("button", { name: "Today" })).toBeDefined();
   });
 
-  it("draws the colors control first among the controls", () => {
+  it("sets the date apart from the views and the controls, and draws it last", () => {
     render(
       <CalendarToolbar
-        colors={<button type="button">Colors</button>}
         filters={<button type="button">Filters</button>}
         navigation={NAVIGATION}
+        onViewChange={() => {}}
+        view="month"
       />,
     );
 
-    const [colors, filters] = [
-      screen.getByRole("button", { name: "Colors" }),
-      screen.getByRole("button", { name: "Filters" }),
-    ];
+    const filters = screen.getByRole("button", { name: "Filters" });
+    const navigate = screen.getByRole("group", { name: "Navigate" });
 
     expect(
-      colors.compareDocumentPosition(filters) &
+      filters.compareDocumentPosition(navigate) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeGreaterThan(0);
+    expect(navigate.contains(filters)).toBe(false);
+  });
+
+  it("holds the date's width however long the period's name runs", () => {
+    const { rerender } = render(<CalendarToolbar navigation={NAVIGATION} />);
+    const first = screen.getByRole("heading").className;
+
+    rerender(
+      <CalendarToolbar
+        navigation={{ ...NAVIGATION, title: "Thursday, October 22, 2026" }}
+      />,
+    );
+
+    expect(screen.getByRole("heading").className).toBe(first);
   });
 });

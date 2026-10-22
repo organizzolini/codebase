@@ -180,16 +180,17 @@ function IndexPage(): ReactNode {
         filters={
           <CalendarFilters
             className="contents"
+            colors={search.colors !== false}
             facets={facets}
             fields={fields}
             filter={filter}
+            onColorsChange={(enabled) => {
+              updateSearch({ colors: enabled ? undefined : false }, true);
+            }}
             onFilterChange={handleFilterChange}
           />
         }
         grouping={grouping}
-        onColorsChange={(enabled) => {
-          updateSearch({ colors: enabled ? undefined : false }, true);
-        }}
         onDateChange={handleDateChange}
         onGroupingChange={(next) => {
           updateSearch({ group: next });

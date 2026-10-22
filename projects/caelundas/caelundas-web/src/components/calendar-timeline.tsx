@@ -39,7 +39,7 @@ import type {
   CalendarEventRecord,
   EventFacet,
 } from "../lib/events-database/events-database.types";
-import type { CalendarNavigation } from "./calendar-toolbar";
+import type { CalendarNavigation } from "./calendar-navigation-group";
 import type { ReactNode } from "react";
 
 // 🔖 Type

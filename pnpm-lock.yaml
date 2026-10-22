@@ -1208,6 +1208,9 @@ importers:
       '@tanstack/react-start':
         specifier: 'catalog:'
         version: 1.168.58(esbuild@0.28.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(rolldown@1.1.5)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.48.0(react@19.3.0)
       react:
         specifier: 'catalog:'
         version: 19.3.0

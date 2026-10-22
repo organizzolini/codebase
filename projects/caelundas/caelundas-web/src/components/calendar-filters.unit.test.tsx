@@ -67,7 +67,9 @@ describe(CalendarFilters, () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "Views: Planet-sign events" }),
+        screen.getByRole("button", {
+          name: "View options, Planet-sign events",
+        }),
       ).toBeDefined();
     });
 
@@ -82,7 +84,7 @@ describe(CalendarFilters, () => {
       );
 
       expect(
-        screen.getByRole("button", { name: "Views: All events" }),
+        screen.getByRole("button", { name: "View options, All events" }),
       ).toBeDefined();
     });
 
@@ -98,7 +100,7 @@ describe(CalendarFilters, () => {
         />,
       );
       fireEvent.click(
-        screen.getByRole("button", { name: "Views: All events" }),
+        screen.getByRole("button", { name: "View options, All events" }),
       );
       fireEvent.click(
         await screen.findByRole("menuitemradio", {
@@ -120,7 +122,7 @@ describe(CalendarFilters, () => {
           onFilterChange={onFilterChange}
         />,
       );
-      fireEvent.click(screen.getByRole("button", { name: /Views:/u }));
+      fireEvent.click(screen.getByRole("button", { name: /View options/u }));
       fireEvent.click(
         await screen.findByRole("menuitemradio", { name: /All events/u }),
       );
