@@ -59,7 +59,7 @@ sub-issues without asking.
      [Multiple Pull Requests](#multiple-pull-requests).
    - **Smallest change**: Before writing code, run [ponytail](.agents/skills/ponytail/SKILL.md)
      (full level) — skip, reuse, standard library, installed dependency, then minimum new
-     code. See [Simplicity](#simplicity) for what outranks it.
+     code. [Simplicity](#simplicity) says what outranks it.
    - **TDD loop**: Use [implement](.agents/skills/implement/SKILL.md) with
      [test-driven-development](.agents/skills/test-driven-development/SKILL.md) (strict
      red-green cycle) and [tdd](.agents/skills/tdd/SKILL.md) (confirmed seams, public
@@ -70,7 +70,7 @@ sub-issues without asking.
 6. **Review**: Request review via
    [requesting-code-review](.agents/skills/requesting-code-review/SKILL.md) (fresh subagent
    handed base/head commits), review with [code-review](.agents/skills/code-review/SKILL.md)
-   and [ponytail-review](.agents/skills/ponytail-review/SKILL.md) (see [Simplicity](#simplicity)),
+   and [ponytail-review](.agents/skills/ponytail-review/SKILL.md),
    and apply feedback via [receiving-code-review](.agents/skills/receiving-code-review/SKILL.md).
 7. **Validate**: Run [validate-code](.agents/skills/validate-code/SKILL.md) gated by
    [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md).
@@ -260,16 +260,10 @@ Use the respective agent skills (e.g., `codometer-measure`, `callidescope-triage
 ### Simplicity
 
 [ponytail](.agents/skills/ponytail/SKILL.md) governs how much new code a change
-adds, and reviewers flag code that skipped one of its rungs (a hand-rolled helper
-the standard library, an installed package, or this repository already provides)
-with [ponytail-review](.agents/skills/ponytail-review/SKILL.md). On request,
-[ponytail-audit](.agents/skills/ponytail-audit/SKILL.md) reports bloat across a
-folder or the repository, and [ponytail-debt](.agents/skills/ponytail-debt/SKILL.md)
-lists the `shortcut:` comments the skill leaves behind. Both only report.
-It never outranks this file: tests, coverage, the folder structure,
+adds. It never outranks this file: tests, coverage, the folder structure,
 `conformetry-generate` output, strict typing, and Zod validation at boundaries
-all stay. Read its "one small test" as the floor, not the ceiling, for
-[Testing & Coverage](#testing--coverage).
+all stay, so a change still gets the tests [Testing & Coverage](#testing--coverage)
+requires.
 
 ### Project Structure & Boundaries
 
