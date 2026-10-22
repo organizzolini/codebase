@@ -2,8 +2,9 @@ import {
   mapNullableRelation,
   mapNullableRelationConnection,
   mapRelationConnection,
-  toDeletableFields,
-} from "../../lexico-api.utilities";
+} from "@codebase/interface";
+
+import { toDeletableFields } from "../../lexico-api.utilities";
 
 import { toFormType } from "./forms/forms.utilities";
 import { toInflectionType } from "./inflections/inflections.utilities";
@@ -12,8 +13,8 @@ import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";
 
-import type { GraphQLFields, MappedFields } from "../../lexico-api.types";
 import type { LexemeRelationField } from "./lexemes.types";
+import type { GraphQLFields, MappedFields } from "@codebase/interface";
 import type {
   Lexeme,
   PrincipalPart,

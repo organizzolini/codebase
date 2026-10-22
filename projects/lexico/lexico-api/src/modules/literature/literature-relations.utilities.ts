@@ -1,10 +1,6 @@
 import DataLoader from "dataloader";
 
-import {
-  createConnection,
-  createEdge,
-  toCursor,
-} from "../../lexico-api.utilities";
+import { createConnection, createEdge, toCursor } from "@codebase/interface";
 
 import {
   EMPTY_PARTITION_COUNTS,
@@ -16,7 +12,6 @@ import {
   readCursorId,
 } from "./literature.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
 import type {
   ConnectionRequest,
@@ -28,6 +23,7 @@ import type {
   PartitionedCursorPosition,
   SqlCondition,
 } from "./literature.types";
+import type { Connection } from "@codebase/interface";
 
 /**
  * Batches relation connections into one DataLoader: every request for the

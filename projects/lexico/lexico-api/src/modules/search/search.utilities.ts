@@ -1,3 +1,4 @@
+import { fromCursorSafe, toCursor } from "@codebase/interface";
 import {
   AdjectivalForm,
   AdverbForm,
@@ -10,7 +11,6 @@ import {
   SupineForm,
 } from "@codebase/lexico-entities";
 
-import { fromCursorSafe, toCursor } from "../../lexico-api.utilities";
 import { toLexemeType } from "../lexemes/lexemes.utilities";
 import { ENTITY_ID_PATTERN } from "../literature/literature.constants";
 
@@ -21,13 +21,13 @@ import {
 } from "./search.constants";
 import { LexemeSearchResult, SearchMatchSource } from "./search.entities";
 
-import type { GraphQLFields } from "../../lexico-api.types";
 import type { CursorClaim } from "../literature/literature.types";
 import type {
   EncliticDecompositionResult,
   LexemeSearchMatch,
   SearchCursorPayload,
 } from "./search.types";
+import type { GraphQLFields } from "@codebase/interface";
 
 /**
  * Decomposes possible Latin enclitic suffixes (-que, -ve, -ne) from a query string.

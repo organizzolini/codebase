@@ -4,7 +4,8 @@ import { fireEvent, screen } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { graphqlServer } from "../../testing/graphql-server";
+import { graphqlMockServer } from "@codebase/interface/testing";
+
 import { renderRoute } from "../../testing/render-route";
 import {
   mockSearchEnglishQuery,
@@ -72,7 +73,7 @@ function stubSearch(
   latin: [string, number][],
   english: [string, number][],
 ): void {
-  graphqlServer.use(
+  graphqlMockServer.use(
     mockSearchLatinQuery(() =>
       HttpResponse.json({ data: { searchLatin: answer(latin) } }),
     ),
@@ -94,7 +95,7 @@ describe("search", () => {
   });
 
   it("says search is unavailable when the API cannot answer", async () => {
-    graphqlServer.use(
+    graphqlMockServer.use(
       mockSearchLatinQuery(() => HttpResponse.error()),
       mockSearchEnglishQuery(() => HttpResponse.error()),
     );

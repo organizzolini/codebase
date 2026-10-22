@@ -2,7 +2,8 @@
 
 import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
 
-import { Paginated } from "../../lexico-api.utilities";
+import { Paginated } from "@codebase/interface";
+
 import { LexemeType } from "../lexemes/lexeme.entities";
 
 /**

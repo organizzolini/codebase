@@ -3,6 +3,13 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { toCursor } from "@codebase/interface";
+import {
+  expectedPage,
+  type PageRequest,
+  paginationMatrix,
+  summarize,
+} from "@codebase/interface/testing";
 import {
   AdjectivalForm,
   FiniteVerbForm,
@@ -20,20 +27,13 @@ import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
 } from "../../../testing/database";
-import {
-  expectedPage,
-  type PageRequest,
-  paginationMatrix,
-  summarize,
-} from "../../../testing/pagination";
-import { toCursor } from "../../lexico-api.utilities";
 import { MacronsService } from "../macrons/macrons.service";
 
 import { SearchMatchSource } from "./search.entities";
 import { SearchService } from "./search.service";
 
-import type { Connection } from "../../lexico-api.types";
 import type { LexemeSearchMatch } from "./search.types";
+import type { Connection } from "@codebase/interface";
 import type { LoggerService } from "@codebase/observability";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 

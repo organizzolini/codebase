@@ -1,7 +1,11 @@
 import { cleanup } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
-import { graphqlServer } from "./graphql-server";
+import {
+  resetGraphqlMockServer,
+  startGraphqlMockServer,
+  stopGraphqlMockServer,
+} from "@codebase/interface/testing";
 
 // `createServerFn` only runs inside the Start server runtime, so a route that
 // defines a server function would throw under test. This stand-in builds the
@@ -44,14 +48,14 @@ Object.defineProperty(globalThis.window, "matchMedia", {
 });
 
 beforeAll(() => {
-  graphqlServer.listen({ onUnhandledRequest: "error" });
+  startGraphqlMockServer();
 });
 
 afterEach(() => {
   cleanup();
-  graphqlServer.resetHandlers();
+  resetGraphqlMockServer();
 });
 
 afterAll(() => {
-  graphqlServer.close();
+  stopGraphqlMockServer();
 });

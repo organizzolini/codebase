@@ -7,7 +7,8 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 
-import { mapConnection } from "../../lexico-api.utilities";
+import { mapConnection } from "@codebase/interface";
+
 import { PaginationArguments } from "../search/pagination-arguments.entities";
 
 import { AuthorArguments } from "./author-argument.entities";
@@ -21,8 +22,8 @@ import { LiteratureService } from "./literature.service";
 import { toAuthorType, toTextType } from "./literature.utilities";
 import { SearchAuthorsArguments } from "./search-authors-arguments.entities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { TextType } from "./text.entities";
+import type { Connection } from "@codebase/interface";
 
 /**
  * GraphQL resolver for Authors.

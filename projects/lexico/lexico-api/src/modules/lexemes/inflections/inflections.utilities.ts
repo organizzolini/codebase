@@ -15,8 +15,8 @@ import { PrepositionInflectionType } from "./preposition-inflection.entities";
 import { UninflectedInflectionType } from "./uninflected-inflection.entities";
 import { VerbInflectionType } from "./verb-inflection.entities";
 
-import type { GraphQLFields } from "../../../lexico-api.types";
 import type { InflectionType } from "./inflection.entities";
+import type { GraphQLFields } from "@codebase/interface";
 
 /**
  * Maps an inflection entity to the GraphQL type of its own part of speech,

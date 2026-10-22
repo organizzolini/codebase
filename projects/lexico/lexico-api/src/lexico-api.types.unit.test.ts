@@ -1,11 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
 
-import type {
-  GraphQLFields,
-  GraphQLObjectOf,
-  GraphQLObjectViolations,
-  RelationKey,
-} from "./lexico-api.types";
 import type { FormType } from "./modules/lexemes/forms/form.entities";
 import type { InflectionType } from "./modules/lexemes/inflections/inflection.entities";
 import type { LexemeType } from "./modules/lexemes/lexeme.entities";
@@ -21,6 +15,12 @@ import type {
   AuthorDatabaseOnlyField,
   AuthorResolvedField,
 } from "./modules/literature/literature.types";
+import type {
+  GraphQLFields,
+  GraphQLObjectOf,
+  GraphQLObjectViolations,
+  RelationKey,
+} from "@codebase/interface";
 import type {
   Author,
   Inflection,

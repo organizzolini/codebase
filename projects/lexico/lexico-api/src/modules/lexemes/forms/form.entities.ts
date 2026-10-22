@@ -1,7 +1,7 @@
 import { Field, ID, InterfaceType } from "@nestjs/graphql";
 
-import type { GraphQLObjectOf } from "../../../lexico-api.types";
 import type { FormDatabaseOnlyField } from "./forms.types";
+import type { GraphQLObjectOf } from "@codebase/interface";
 import type { Form } from "@codebase/lexico-entities";
 
 /**

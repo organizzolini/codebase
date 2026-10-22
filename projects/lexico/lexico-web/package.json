@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@codebase/interface": "workspace:*",
     "@codebase/presentation": "workspace:*",
     "@graphql-codegen/cli": "catalog:",
     "@graphql-typed-document-node/core": "catalog:",

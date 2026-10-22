@@ -2,23 +2,23 @@
 
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { toCursor } from "@codebase/interface";
+import {
+  expectedPage,
+  type PageRequest,
+  paginationMatrix,
+  summarize,
+} from "@codebase/interface/testing";
 import { Author, Line, Text, Token, Word } from "@codebase/lexico-entities";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startLexicoDatabaseTestingModule,
 } from "../../../testing/database";
-import {
-  expectedPage,
-  type PageRequest,
-  paginationMatrix,
-  summarize,
-} from "../../../testing/pagination";
-import { toCursor } from "../../lexico-api.utilities";
 
 import { LiteratureService } from "./literature.service";
 
-import type { Connection } from "../../lexico-api.types";
+import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** Each boundary matrix issues a few hundred queries, which a slow runner needs time for. */

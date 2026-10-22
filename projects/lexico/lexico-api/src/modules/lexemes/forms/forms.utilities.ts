@@ -19,8 +19,8 @@ import { NominalFormType } from "./nominal-form.entities";
 import { ParticipleFormType } from "./participle-form.entities";
 import { SupineFormType } from "./supine-form.entities";
 
-import type { GraphQLFields } from "../../../lexico-api.types";
 import type { FormType } from "./form.entities";
+import type { GraphQLFields } from "@codebase/interface";
 
 /**
  * Maps a form entity to the GraphQL type of its own kind, the class the

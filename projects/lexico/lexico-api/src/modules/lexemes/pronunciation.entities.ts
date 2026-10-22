@@ -2,8 +2,8 @@ import { Field, ObjectType } from "@nestjs/graphql";
 
 import { DeletableType } from "../../deletable.entities";
 
-import type { GraphQLObjectOf } from "../../lexico-api.types";
 import type { PronunciationDatabaseOnlyField } from "./lexemes.types";
+import type { GraphQLObjectOf } from "@codebase/interface";
 import type {
   Pronunciation,
   PronunciationVariant,

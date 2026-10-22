@@ -16,7 +16,7 @@ import { expectLiteratureSearchPagination } from "../../../testing/literature-se
 
 import { LiteratureService } from "./literature.service";
 
-import type { Connection } from "../../lexico-api.types";
+import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** Lists a connection's node ids in edge order. */

@@ -1,7 +1,7 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { mapConnection } from "../../lexico-api.utilities";
+import { mapConnection } from "@codebase/interface";
 
 import { TokenConnectionType } from "./literature-connection.entities";
 import { LiteratureService } from "./literature.service";
@@ -9,7 +9,7 @@ import { toTokenType } from "./literature.utilities";
 import { TokenType } from "./token.entities";
 import { TokensArguments } from "./tokens-arguments.entities";
 
-import type { Connection } from "../../lexico-api.types";
+import type { Connection } from "@codebase/interface";
 
 /**
  * GraphQL resolver for Tokens.

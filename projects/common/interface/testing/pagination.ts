@@ -1,6 +1,12 @@
-import { createEdge, toCursor } from "../src/lexico-api.utilities";
+import {
+  createEdge,
+  toCursor,
+} from "../src/modules/graphql-server/graphql-server.utilities";
 
-import type { Connection, Edge } from "../src/lexico-api.types";
+import type {
+  Connection,
+  Edge,
+} from "../src/modules/graphql-server/graphql-server.types";
 
 /** Plain Relay arguments, so matrix entries can be spread and combined. */
 export interface PageRequest {
