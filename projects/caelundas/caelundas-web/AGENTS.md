@@ -169,8 +169,27 @@ test tiers.
 ## Layout
 
 The page is the month view across the whole viewport under a single toolbar
-row: today, previous and next, the month's title, and the view selector, which
-holds only Month so far. Times render in the zone the dataset's events carry.
+row: today, previous and next, the month's title, the active filters as chips,
+the Filters button with a count of the finished rules, and the view selector,
+which holds only Month so far. Times render in the zone the dataset's events
+carry.
+
+- The Filters button opens the vendored ReUI builder, nested AND/OR groups
+  included: as a popover from 1024 pixels wide, a drawer from the side from
+  768, and a bottom sheet below that. It never stays open over the calendar.
+- The chips scroll sideways in the row rather than wrap it, and are left out
+  below 768 pixels, where the count stands for them. `CalendarFilters` holds
+  the tree being edited, so an edit shows before the link catches up, and
+  writes it to the link only when the compiled query changes: an unfinished
+  rule does not reload the calendar. The facets are read once per database.
+- The fields come from the data: one per tag root, offering every tag beneath
+  it, so a new root needs no code change. Date range, weekday, hour,
+  duration bucket, temporality, and text search follow them; a tag root
+  named like one of those is left to the derived field.
+- Date, weekday, and hour are read in each event's own zone through the
+  `event_local_*` SQL functions in
+  `src/lib/events-database/events-database.local-time.ts`, which the worker
+  and the tests' executor both register: SQLite itself knows no zones.
 
 - While the database loads, `CalendarSkeleton` stands in for the page.
 - A failed load shows `CalendarError` with Retry; a browser without
@@ -180,6 +199,11 @@ holds only Month so far. Times render in the zone the dataset's events carry.
   first covered day, or "No events this month" inside the covered dates.
 - The `date` search parameter (`YYYY-MM-DD`) holds the month; one that does
   not parse falls back to today.
+- The `filter` search parameter holds the ReUI filter tree as JSON, validated
+  in `src/lib/calendar/calendar-search.ts`; one that does not parse is
+  dropped. `compileEventFilter` in `src/lib/event-filters/` turns it into the
+  SQL condition `findEvents` applies, leaving out unfinished rules, and a
+  month the filters empty says so apart from one with no events at all.
 
 ## Key Files
 

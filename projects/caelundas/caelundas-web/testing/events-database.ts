@@ -3,6 +3,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
 import { createEventsDatabase } from "../src/lib/events-database/events-database";
+import { LOCAL_TIME_FUNCTIONS } from "../src/lib/events-database/events-database.local-time";
 
 import type {
   EventsDatabase,
@@ -21,6 +22,36 @@ export interface TestEventsDatabaseOptions {
    * Leaves the seed rows out, so the tables exist but hold nothing.
    */
   empty?: boolean;
+  /**
+   * More SQL run after the seed, such as rows for a dimension the seed lacks.
+   */
+  extraSql?: string;
+}
+
+/**
+ * A database whose every read fails with the error given, until `recover`
+ * hands reads back to the seeded database.
+ */
+export function createFailingEventsDatabase(error: Error): {
+  database: EventsDatabase;
+  recover: () => void;
+} {
+  const seeded = createTestEventsDatabase();
+  let failing = true;
+
+  return {
+    database: {
+      describeDataset: async () =>
+        failing ? Promise.reject(error) : seeded.describeDataset(),
+      findEvents: async (query) =>
+        failing ? Promise.reject(error) : seeded.findEvents(query),
+      findFacets: async () =>
+        failing ? Promise.reject(error) : seeded.findFacets(),
+    },
+    recover: () => {
+      failing = false;
+    },
+  };
 }
 
 /**
@@ -30,6 +61,16 @@ export interface TestEventsDatabaseOptions {
 export function createTestEventsDatabase(
   options: TestEventsDatabaseOptions = {},
 ): EventsDatabase {
+  return createEventsDatabase(createTestSqlExecutor(options));
+}
+
+/**
+ * Builds the same in-memory database and returns the bare executor over it,
+ * for a test that runs SQL of its own, such as a compiled filter.
+ */
+export function createTestSqlExecutor(
+  options: TestEventsDatabaseOptions = {},
+): SqlExecutor {
   const database = new DatabaseSync(":memory:");
   const fileNames = options.empty
     ? ["events-schema.sql", "events-views.sql"]
@@ -39,7 +80,15 @@ export function createTestEventsDatabase(
     database.exec(readFileSync(path.join(DATA_DIRECTORY, fileName), "utf8"));
   }
 
-  return createEventsDatabase(createNodeSqliteExecutor(database));
+  if (options.extraSql !== undefined) {
+    database.exec(options.extraSql);
+  }
+
+  for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
+    database.function(name, { deterministic: true }, localTime);
+  }
+
+  return createNodeSqliteExecutor(database);
 }
 
 /**

@@ -3,8 +3,10 @@
 
 /**
  * The events that overlap a window, earliest first, each with the tags it was
- * given as a JSON array, read through the post-export views. Binds the window's end, then its start; ends are compared
- * inclusively so an instant at the window's first moment is still found.
+ * given as a JSON array, read through the post-export views. Binds the
+ * window's end, then its start, then whatever condition replaces `{filter}`;
+ * ends are compared inclusively so an instant at the window's first moment
+ * is still found.
  */
 export const EVENTS_IN_WINDOW_SQL = `
   select
@@ -34,7 +36,7 @@ export const EVENTS_IN_WINDOW_SQL = `
       ) t
     ) as tags
   from calendar_events_derived e
-  where e."start" < ? and e."end" >= ?
+  where e."start" < ? and e."end" >= ? {filter}
   order by e."start", e."summary"
 `;
 
@@ -56,4 +58,26 @@ export const DATASET_SQL = `
     ) as timezone
   from calendar_events e
   having count(*) > 0
+`;
+
+/**
+ * Every tag in the tree with its root, its path beneath that root, and the
+ * number of events it matches, its descendants' included, roots and their
+ * tags each in path order.
+ */
+export const FACETS_SQL = `
+  select
+    n.id,
+    n."name",
+    n.depth,
+    n.root_id,
+    substr(n."path", length(r."name") + length(' / ') + 1) as path_below_root,
+    (
+      select count(*)
+      from calendar_event_tags t
+      where t.tag_id = n.id
+    ) as count
+  from tag_nodes n
+  join tag_nodes r on r.id = n.root_id
+  order by n."path"
 `;

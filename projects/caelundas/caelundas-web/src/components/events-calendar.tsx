@@ -25,6 +25,10 @@ export interface EventsCalendarProperties {
   className?: string;
   events: readonly CalendarEventRecord[];
   /**
+   * The filter controls the toolbar row carries.
+   */
+  filters?: ReactNode;
+  /**
    * Called with the new day when the toolbar moves the calendar.
    */
   onDateChange: (date: Date) => void;
@@ -39,7 +43,8 @@ export interface EventsCalendarProperties {
 export function EventsCalendar(
   properties: Readonly<EventsCalendarProperties>,
 ): ReactNode {
-  const { anchor, className, events, onDateChange, timeZone } = properties;
+  const { anchor, className, events, filters, onDateChange, timeZone } =
+    properties;
 
   // 🪝 Hooks
   const calendarEvents = useMemo(
@@ -91,7 +96,7 @@ export function EventsCalendar(
         view="month"
         views={["month"]}
       >
-        <CalendarToolbar />
+        <CalendarToolbar filters={filters} />
         <EventCalendarContent />
       </EventCalendar>
     </div>
