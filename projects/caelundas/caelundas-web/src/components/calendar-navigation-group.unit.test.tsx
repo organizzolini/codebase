@@ -66,11 +66,35 @@ describe(CalendarNavigationGroup, () => {
     expect(screen.getByRole("heading").className).not.toContain("w-60");
   });
 
-  it("leaves out Today on the current day", () => {
-    render(
+  it("switches Today off while the days shown include today", () => {
+    const { rerender } = render(
       <CalendarNavigationGroup navigation={{ ...NAVIGATION, isToday: true }} />,
     );
 
-    expect(screen.queryByRole("button", { name: "Today" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
+      "disabled",
+      true,
+    );
+
+    rerender(
+      <CalendarNavigationGroup
+        navigation={{ ...NAVIGATION, isToday: false }}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
+      "disabled",
+      false,
+    );
+  });
+
+  it("puts Today before the previous button", () => {
+    render(<CalendarNavigationGroup navigation={NAVIGATION} />);
+
+    const [first, second, third] = screen.getAllByRole("button");
+
+    expect(first?.textContent).toBe("Today");
+    expect(second?.getAttribute("aria-label")).toBe("Previous");
+    expect(third?.getAttribute("aria-label")).toBe("Next");
   });
 });

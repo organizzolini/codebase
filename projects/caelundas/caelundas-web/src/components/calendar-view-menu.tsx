@@ -2,6 +2,7 @@ import { ChevronDown, Eye } from "lucide-react";
 
 import {
   Button,
+  ButtonGroup,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -105,76 +106,78 @@ export function CalendarViewMenu(
       className={className}
       data-testid="calendar-view-menu"
     >
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              aria-label={`View options, ${currentName}`}
-              size="sm"
-              title={currentName}
-              variant="outline"
-            />
-          }
-        >
-          <Eye aria-hidden="true" />
-          View
-          <ChevronDown
-            aria-hidden="true"
-            className="opacity-60"
-          />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="start"
-          className="w-80 max-w-[95vw]"
-        >
-          {children}
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Collections</DropdownMenuLabel>
-          </DropdownMenuGroup>
-          <DropdownMenuRadioGroup
-            onValueChange={(next: unknown) => {
-              const collection = collections.find(
-                (candidate) => candidate.id === next,
-              );
-
-              onSelect(collection?.filter ?? EMPTY_EVENT_FILTER);
-            }}
-            value={value}
+      <ButtonGroup aria-label="View menu">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                aria-label={`View options, ${currentName}`}
+                size="sm"
+                title={currentName}
+                variant="outline"
+              />
+            }
           >
-            <CollectionOptions collections={collections} />
-          </DropdownMenuRadioGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Colors</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem
-              checked={colors}
-              onCheckedChange={(checked) => {
-                onColorsChange(checked);
+            <Eye aria-hidden="true" />
+            View
+            <ChevronDown
+              aria-hidden="true"
+              className="opacity-60"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="start"
+            className="w-80 max-w-[95vw]"
+          >
+            {children}
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Collections</DropdownMenuLabel>
+            </DropdownMenuGroup>
+            <DropdownMenuRadioGroup
+              onValueChange={(next: unknown) => {
+                const collection = collections.find(
+                  (candidate) => candidate.id === next,
+                );
+
+                onSelect(collection?.filter ?? EMPTY_EVENT_FILTER);
               }}
+              value={value}
             >
-              Color events by type
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Color legend</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="w-56">
-              <ColorLegend />
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Crowded days</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem
-              checked={clusters}
-              onCheckedChange={(checked) => {
-                onClustersChange(checked);
-              }}
-            >
-              Group similar events
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <CollectionOptions collections={collections} />
+            </DropdownMenuRadioGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Colors</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem
+                checked={colors}
+                onCheckedChange={(checked) => {
+                  onColorsChange(checked);
+                }}
+              >
+                Color events by type
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Color legend</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="w-56">
+                <ColorLegend />
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Crowded days</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem
+                checked={clusters}
+                onCheckedChange={(checked) => {
+                  onClustersChange(checked);
+                }}
+              >
+                Group similar events
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </ButtonGroup>
     </div>
   );
 }

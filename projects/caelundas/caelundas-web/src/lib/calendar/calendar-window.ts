@@ -111,6 +111,28 @@ export function getViewWindows(
 }
 
 /**
+ * Whether a day, as `YYYY-MM-DD`, is among those a view shows around the day
+ * it opens on.
+ */
+export function isDayShown(
+  day: string,
+  shown: Readonly<{
+    anchor: Date;
+    options?: ViewWindowOptions;
+    view: CalendarViewName;
+  }>,
+): boolean {
+  const { visible } = getViewWindows(shown.view, shown.anchor, shown.options);
+
+  // The days are UTC midnights standing for calendar days, so their ISO dates
+  // are the days the view shows.
+  return (
+    day >= visible.start.toISOString().slice(0, 10) &&
+    day <= new Date(visible.end.getTime() - 1).toISOString().slice(0, 10)
+  );
+}
+
+/**
  * Reads a `YYYY-MM-DD` search parameter as the day the calendar shows,
  * defaulting to today's date where the page is open.
  */

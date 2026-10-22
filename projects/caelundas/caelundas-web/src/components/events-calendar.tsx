@@ -127,6 +127,7 @@ export function EventsCalendar(
   properties: Readonly<EventsCalendarProperties>,
 ): ReactNode {
   const {
+    agendaDays,
     anchor,
     className,
     colors = true,
@@ -143,10 +144,13 @@ export function EventsCalendar(
   } = properties;
 
   // 🪝 Hooks
-  const { handleNavigationChange, navigation } = useCalendarNavigation(
+  const { handleNavigationChange, navigation } = useCalendarNavigation({
+    agendaDays,
     anchor,
+    scale,
     timeZone,
-  );
+    view,
+  });
   const events = useMemo(
     () => colorEvents(loadedEvents, colors),
     [colors, loadedEvents],

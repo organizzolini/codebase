@@ -10,8 +10,8 @@ import type { ReactNode } from "react";
  */
 export interface CalendarNavigation {
   /**
-   * Whether the day the calendar is anchored on is today, when the Today
-   * button has nowhere to go and is left out.
+   * Whether the days the view shows include today, when the Today button
+   * has nowhere to go and is switched off.
    */
   isToday?: boolean;
   next: () => void;
@@ -37,8 +37,8 @@ export interface CalendarNavigationGroupProperties {
 // 🧩 Component
 
 /**
- * Renders the previous and next buttons around the title of the period
- * shown, then Today unless the day shown is today. The title holds one width
+ * Renders Today, then the previous and next buttons around the title of the
+ * period shown. Today is switched off while the period includes today. The title holds one width
  * for every view, however long the period's name runs, so nothing beside it
  * moves when the view changes.
  */
@@ -65,6 +65,14 @@ export function CalendarNavigationGroup(
     >
       <ButtonGroup aria-label="Navigate">
         <Button
+          disabled={navigation.isToday === true}
+          onClick={navigation.today}
+          size="sm"
+          variant="outline"
+        >
+          Today
+        </Button>
+        <Button
           aria-label="Previous"
           className="w-9 text-lg leading-none"
           onClick={navigation.prev}
@@ -89,15 +97,6 @@ export function CalendarNavigationGroup(
         >
           ›
         </Button>
-        {navigation.isToday === true ? null : (
-          <Button
-            onClick={navigation.today}
-            size="sm"
-            variant="outline"
-          >
-            Today
-          </Button>
-        )}
       </ButtonGroup>
     </div>
   );

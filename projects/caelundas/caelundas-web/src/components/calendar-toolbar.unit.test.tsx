@@ -83,18 +83,24 @@ describe(CalendarToolbar, () => {
     ).toBe(true);
   });
 
-  it("leaves out Today when the day shown is today", () => {
+  it("switches Today off when the days shown include today", () => {
     const { rerender } = render(
       <CalendarToolbar navigation={{ ...NAVIGATION, isToday: true }} />,
     );
 
-    expect(screen.queryByRole("button", { name: "Today" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
+      "disabled",
+      true,
+    );
 
     rerender(
       <CalendarToolbar navigation={{ ...NAVIGATION, isToday: false }} />,
     );
 
-    expect(screen.getByRole("button", { name: "Today" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
+      "disabled",
+      false,
+    );
   });
 
   it("draws the filters from the left, then the views and the date at the right", () => {

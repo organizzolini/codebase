@@ -1,7 +1,14 @@
 import { useCallback, useMemo, useRef as useReference, useState } from "react";
 
-import { formatCalendarDate } from "../lib/calendar/calendar-window";
+import {
+  formatCalendarDate,
+  isDayShown,
+} from "../lib/calendar/calendar-window";
 
+import type {
+  CalendarViewName,
+  TimelineScale,
+} from "../lib/calendar/calendar-views";
 import type { CalendarNavigation } from "./calendar-navigation-group";
 
 /**
@@ -20,19 +27,30 @@ export interface CalendarNavigationState {
  * switching views keeps the toolbar, and the focus on its view selector,
  * rather than mounting a new one. The views report how they move; the buttons
  * call the latest report, and the title is state because it is drawn. Today
- * is left to the button once the day anchored on is today.
+ * is switched off once the days the view shows include today.
  */
 export function useCalendarNavigation(
-  anchor: Date,
-  timeZone: string,
+  properties: Readonly<{
+    agendaDays?: number | undefined;
+    anchor: Date;
+    scale?: TimelineScale | undefined;
+    timeZone: string;
+    view: CalendarViewName;
+  }>,
 ): CalendarNavigationState {
+  const { agendaDays, anchor, scale, timeZone, view } = properties;
   const [title, setTitle] = useState("");
   const latest = useReference<CalendarNavigation | null>(null);
+  // Read here and not inside the memo, which would add a frame to the
+  // call stack of every render.
+  const isToday = isDayShown(formatCalendarDate(new Date(), timeZone), {
+    anchor,
+    options: { agendaDays, scale },
+    view,
+  });
   const navigation = useMemo<CalendarNavigation>(
     () => ({
-      isToday:
-        formatCalendarDate(anchor, timeZone) ===
-        formatCalendarDate(new Date(), timeZone),
+      isToday,
       next: () => {
         latest.current?.next();
       },
@@ -44,7 +62,7 @@ export function useCalendarNavigation(
         latest.current?.today();
       },
     }),
-    [anchor, latest, timeZone, title],
+    [isToday, latest, title],
   );
   const handleNavigationChange = useCallback(
     (reported: CalendarNavigation) => {

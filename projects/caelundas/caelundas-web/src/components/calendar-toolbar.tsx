@@ -63,13 +63,16 @@ export function CalendarToolbar(
   // 🏁 Early Returns
 
   // 🎨 Markup
+  // A button presses down a pixel when it is clicked, which in a row of
+  // buttons that change what is shown reads as a bounce; the buttons here stay
+  // put, the way the menu buttons, which are exempt from it, already do.
   return (
     <div
       className={className}
       data-testid="calendar-toolbar"
     >
       {compact ? (
-        <div className="flex min-w-0 items-start gap-2 px-2 py-2">
+        <div className="flex min-w-0 items-start gap-2 px-2 py-2 [&_[data-slot=button]]:active:translate-y-0!">
           <div className="min-w-0 grow">
             <CalendarNavigationGroup
               navigation={navigation}
@@ -84,7 +87,7 @@ export function CalendarToolbar(
         // buttons and the filters' chips flow from the left and wrap under
         // each other. Where the row is too narrow to hold both side by side,
         // the views and the date take a row above the filters.
-        <div className="@container">
+        <div className="@container [&_[data-slot=button]]:active:translate-y-0!">
           <div className="grid min-w-0 gap-2 px-2 py-2 @7xl:grid-cols-[minmax(0,1fr)_auto] @7xl:items-start">
             <div className="flex min-w-0 flex-wrap items-start gap-2">
               {filters}
@@ -100,7 +103,7 @@ export function CalendarToolbar(
         // A phone's row has no room beside the title for the controls, so
         // they take a row under it, wrapping onto more rows if they outgrow it.
         <div
-          className="flex min-w-0 flex-wrap items-center gap-2 px-2 pb-2"
+          className="flex min-w-0 flex-wrap items-center gap-2 px-2 pb-2 [&_[data-slot=button]]:active:translate-y-0!"
           data-testid="calendar-toolbar-controls"
         >
           {filters}
