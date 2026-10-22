@@ -42,6 +42,11 @@ export interface CalendarEmptyProperties {
   className?: string;
   emptiness: CalendarEmptiness;
   /**
+   * Called to drop every filter; offered only when they are what emptied the
+   * period.
+   */
+  onClearFilters?: (() => void) | undefined;
+  /**
    * Called with the first day the data covers.
    */
   onJump: (date: Date) => void;
@@ -56,13 +61,20 @@ export interface CalendarEmptyProperties {
 
 /**
  * Renders why the calendar shows no events: an empty database, a month
- * outside the dates the data covers, which offers to jump to them, or a
- * month inside them that holds nothing.
+ * outside the dates the data covers, which offers to jump to them, filters
+ * that leave nothing, which offer to clear them, or a month inside the dates
+ * that holds nothing. It is announced as a status, never as an alert.
  */
 export function CalendarEmpty(
   properties: Readonly<CalendarEmptyProperties>,
 ): ReactNode {
-  const { className, emptiness, onJump, period = "this month" } = properties;
+  const {
+    className,
+    emptiness,
+    onClearFilters,
+    onJump,
+    period = "this month",
+  } = properties;
 
   // 🪝 Hooks
 
@@ -78,6 +90,7 @@ export function CalendarEmpty(
       <div
         className={className}
         data-testid="calendar-empty"
+        role="status"
       >
         <OutsideDataset
           dataset={emptiness.dataset}
@@ -93,6 +106,7 @@ export function CalendarEmpty(
     <div
       className={className}
       data-testid="calendar-empty"
+      role="status"
     >
       <Empty className="bg-background/90 pointer-events-auto max-w-md border shadow-sm">
         <EmptyHeader>
@@ -101,6 +115,18 @@ export function CalendarEmpty(
             {EMPTY_DESCRIPTIONS[emptiness.kind](period)}
           </EmptyDescription>
         </EmptyHeader>
+        {emptiness.kind === "filter" && onClearFilters !== undefined ? (
+          <EmptyContent>
+            <Button
+              onClick={() => {
+                onClearFilters();
+              }}
+              variant="outline"
+            >
+              Clear filters
+            </Button>
+          </EmptyContent>
+        ) : null}
       </Empty>
     </div>
   );

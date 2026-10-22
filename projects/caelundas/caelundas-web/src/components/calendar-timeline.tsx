@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
   Gantt,
@@ -40,7 +46,7 @@ import type { ReactNode } from "react";
 
 /**
  * The events to lay out, how to group them into rows, the period shown, and
- * the toolbar drawn over it.
+ * where to report how it moves.
  */
 export interface CalendarTimelineProperties {
   anchor: Date;
@@ -63,9 +69,10 @@ export interface CalendarTimelineProperties {
    */
   onDateChange: (date: Date) => void;
   /**
-   * Draws the toolbar row over the timeline, given how it moves.
+   * Called with how the timeline moves, whenever that changes, for the
+   * toolbar that sits above it.
    */
-  renderToolbar: (navigation: CalendarNavigation) => ReactNode;
+  onNavigationChange: (navigation: CalendarNavigation) => void;
   /**
    * The span the timeline shows at once, from a day in columns of minutes
    * to a year in months; a month when absent.
@@ -101,7 +108,7 @@ const TIMELINE_VIEWPORT =
 // 🧩 Component
 
 /**
- * Renders the events as a Gantt timeline under the toolbar: a row per group,
+ * Renders the events as a Gantt timeline: a row per group,
  * nested and collapsible as the grouping nests, each counting its distinct
  * events, with instants drawn as diamonds at their moment and spans as bars
  * of their true length. Markers that would overlap at the scale and zoom
@@ -118,7 +125,7 @@ export function CalendarTimeline(
     facets,
     grouping,
     onDateChange,
-    renderToolbar,
+    onNavigationChange,
     scale = "month",
     timeZone,
   } = properties;
@@ -218,7 +225,7 @@ export function CalendarTimeline(
         zoom={zoom}
         zoomRange={scale === "day" ? DAY_ZOOM : ZOOM}
       >
-        <TimelineToolbar renderToolbar={renderToolbar} />
+        <TimelineNavigation onNavigationChange={onNavigationChange} />
         <GanttView
           className={
             scale === "day"
@@ -293,15 +300,25 @@ function TimelineBarContent(
 }
 
 /**
- * Draws the toolbar with the timeline's own navigation, which only a child
- * of the Gantt can read.
+ * Reports the timeline's own navigation, which only a child of the Gantt can
+ * read, to the toolbar above it, and draws nothing.
  */
-function TimelineToolbar(
+function TimelineNavigation(
   properties: Readonly<{
-    renderToolbar: (navigation: CalendarNavigation) => ReactNode;
+    onNavigationChange: (navigation: CalendarNavigation) => void;
   }>,
 ): ReactNode {
-  return properties.renderToolbar(useGanttNavigation());
+  const { onNavigationChange } = properties;
+  const navigation = useGanttNavigation();
+
+  // Before paint, so the toolbar never shows the title of the view before.
+  // Every render reports, which ends there: the toolbar re-renders only when
+  // the title it is handed differs.
+  useLayoutEffect(() => {
+    onNavigationChange(navigation);
+  });
+
+  return null;
 }
 
 /**

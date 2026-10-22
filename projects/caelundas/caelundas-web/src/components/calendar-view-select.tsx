@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from "react";
+
 import {
   Button,
   DropdownMenu,
@@ -9,6 +11,10 @@ import {
   ToggleGroupItem,
 } from "@codebase/presentation";
 
+import {
+  isDesktopViewport,
+  subscribeToDesktopViewport,
+} from "../lib/calendar/calendar-viewport";
 import {
   CALENDAR_VIEW_LABELS,
   CALENDAR_VIEWS,
@@ -37,8 +43,9 @@ export interface CalendarViewSelectProperties {
 // 🧩 Component
 
 /**
- * Renders one pressed button per view, or on a narrow row a menu button
- * naming the current view that lists every view.
+ * Renders one pressed button per view on a desktop, or on a narrower row, a
+ * tablet's included, a menu button naming the current view that lists every
+ * view.
  */
 export function CalendarViewSelect(
   properties: Readonly<CalendarViewSelectProperties>,
@@ -46,8 +53,15 @@ export function CalendarViewSelect(
   const { className, compact = false, onViewChange, view } = properties;
 
   // 🪝 Hooks
+  const isDesktop = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    isDesktopViewport,
+  );
 
   // 🏗 Setup
+  // Six buttons need a desktop's width; a tablet's row, like a phone's, lists
+  // the views in a menu.
+  const asMenu = compact || !isDesktop;
 
   // 💪 Handlers
   // Pressing the view already shown would release it, leaving no value;
@@ -70,7 +84,7 @@ export function CalendarViewSelect(
       className={className}
       data-testid="calendar-view-select"
     >
-      {compact ? (
+      {asMenu ? (
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -106,6 +120,7 @@ export function CalendarViewSelect(
           aria-label="View"
           onValueChange={handleValueChange}
           size="sm"
+          spacing={0}
           value={[view]}
           variant="outline"
         >
