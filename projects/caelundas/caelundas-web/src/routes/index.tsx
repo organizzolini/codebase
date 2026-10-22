@@ -9,6 +9,7 @@ import { CalendarEmpty } from "../components/calendar-empty";
 import { CalendarError } from "../components/calendar-error";
 import { CalendarFilters } from "../components/calendar-filters";
 import { CalendarSkeleton } from "../components/calendar-skeleton";
+import { CalendarViewOptions } from "../components/calendar-view-options";
 import { EventsCalendar } from "../components/events-calendar";
 import { useCalendarSearch } from "../components/use-calendar-search";
 import { loadCalendar } from "../lib/calendar/calendar-loader";
@@ -20,6 +21,7 @@ import {
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
+  DEFAULT_TIMELINE_SCALE,
   getDefaultCalendarView,
   MAXIMUM_AGENDA_DAYS,
 } from "../lib/calendar/calendar-views";
@@ -170,16 +172,24 @@ function IndexPage(): ReactNode {
               updateSearch({ colors: enabled ? undefined : false }, true);
             }}
             onFilterChange={handleFilterChange}
+            viewOptions={
+              <CalendarViewOptions
+                facets={facets}
+                grouping={grouping}
+                onGroupingChange={(next) => {
+                  updateSearch({ group: next });
+                }}
+                onScaleChange={(scale) => {
+                  updateSearch({ scale });
+                }}
+                scale={search.scale ?? DEFAULT_TIMELINE_SCALE}
+                view={view}
+              />
+            }
           />
         }
         grouping={grouping}
         onDateChange={handleDateChange}
-        onGroupingChange={(next) => {
-          updateSearch({ group: next });
-        }}
-        onScaleChange={(scale) => {
-          updateSearch({ scale });
-        }}
         onShowLater={handleShowLater}
         onViewChange={(next) => {
           // The agenda's extra days stay behind with a view change.

@@ -97,24 +97,28 @@ describe(CalendarToolbar, () => {
     expect(screen.getByRole("button", { name: "Today" })).toBeDefined();
   });
 
-  it("sets the date apart from the views and the controls, and draws it last", () => {
+  it("draws the filters from the left, then the views and the date at the right", () => {
     render(
       <CalendarToolbar
-        filters={<button type="button">Filters</button>}
+        filters={<button type="button">Filter</button>}
         navigation={NAVIGATION}
         onViewChange={() => {}}
         view="month"
       />,
     );
 
-    const filters = screen.getByRole("button", { name: "Filters" });
+    const filter = screen.getByRole("button", { name: "Filter" });
+    const views = screen.getByRole("group", { name: "View" });
     const navigate = screen.getByRole("group", { name: "Navigate" });
 
     expect(
-      filters.compareDocumentPosition(navigate) &
+      filter.compareDocumentPosition(views) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
+    expect(
+      views.compareDocumentPosition(navigate) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeGreaterThan(0);
-    expect(navigate.contains(filters)).toBe(false);
+    expect(views.contains(filter)).toBe(false);
   });
 
   it("holds the date's width however long the period's name runs", () => {

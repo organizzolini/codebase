@@ -31,6 +31,11 @@ import type { ReactNode } from "react";
  * whether events are colored by type, and where to send a change to either.
  */
 export interface CalendarViewMenuProperties {
+  /**
+   * More of the menu, drawn ahead of its own sections: what the view shown
+   * can be arranged by.
+   */
+  children?: ReactNode;
   className?: string;
   /**
    * Whether the views of hours merge events that run together.
@@ -60,6 +65,7 @@ export function CalendarViewMenu(
   properties: Readonly<CalendarViewMenuProperties>,
 ): ReactNode {
   const {
+    children,
     className,
     clusters,
     collections,
@@ -121,6 +127,7 @@ export function CalendarViewMenu(
           align="start"
           className="w-80 max-w-[95vw]"
         >
+          {children}
           <DropdownMenuGroup>
             <DropdownMenuLabel>Collections</DropdownMenuLabel>
           </DropdownMenuGroup>

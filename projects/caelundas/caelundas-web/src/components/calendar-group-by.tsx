@@ -1,11 +1,6 @@
 import { useMemo } from "react";
 
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
 import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
 import { MAXIMUM_GROUP_LEVELS } from "../lib/event-groups/event-groups.constants";
@@ -25,10 +20,6 @@ import type { ReactNode } from "react";
  */
 export interface CalendarGroupByProperties {
   className?: string;
-  /**
-   * Shortens the button for a phone's toolbar row.
-   */
-  compact?: boolean | undefined;
   facets: readonly EventFacet[];
   grouping: readonly EventGroupLevel[];
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
@@ -45,30 +36,20 @@ const SELECT_CLASS_NAME =
 // 🧩 Component
 
 /**
- * Renders the Group by button, naming the grouping, which opens the list of
- * its levels: each a field, a tag root or a period or the duration, and for
- * a tag root how deep into its tree to go, with a sub-group added beneath
- * the last one or any level removed.
+ * Renders the list of the grouping's levels: each a field, a tag root or a
+ * period or the duration, and for a tag root how deep into its tree to go,
+ * with a sub-group added beneath the last one or any level removed. The View
+ * menu holds it in its Group by submenu.
  */
 export function CalendarGroupBy(
   properties: Readonly<CalendarGroupByProperties>,
 ): ReactNode {
-  const {
-    className,
-    compact = false,
-    facets,
-    grouping,
-    onGroupingChange,
-  } = properties;
+  const { className, facets, grouping, onGroupingChange } = properties;
 
   // 🪝 Hooks
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
 
   // 🏗 Setup
-  const labels = grouping.map(
-    (level) =>
-      fields.find((field) => field.id === level.field)?.label ?? level.field,
-  );
   const unused = fields.filter(
     (field) => !grouping.some((level) => level.field === field.id),
   );
@@ -97,55 +78,37 @@ export function CalendarGroupBy(
       className={className}
       data-testid="calendar-group-by"
     >
-      <Popover>
-        <PopoverTrigger
-          render={
-            <Button
-              aria-label={`${TITLE}: ${labels.length === 0 ? "none" : labels.join(", ")}`}
-              size="sm"
-              variant="outline"
-            />
-          }
-        >
-          {compact ? "Group" : TITLE}
-        </PopoverTrigger>
-        <PopoverContent
-          align="end"
-          aria-label={TITLE}
-          className="flex w-80 flex-col gap-2"
-        >
-          <h2 className="text-sm font-semibold">{TITLE}</h2>
-          {grouping.length === 0 ? (
-            <p className="text-muted-foreground text-sm">Not grouped</p>
-          ) : null}
-          {grouping.map((level, index) => (
-            <GroupLevelRow
-              key={level.field}
-              fields={fields.filter(
-                (option) =>
-                  option.id === level.field || unused.includes(option),
-              )}
-              level={level}
-              onChange={(next) => {
-                replaceLevel(index, next);
-              }}
-              position={index + 1}
-            />
-          ))}
-          {grouping.length < MAXIMUM_GROUP_LEVELS && nextField !== undefined ? (
-            <Button
-              className="self-start"
-              onClick={() => {
-                onGroupingChange([...grouping, toLevel(nextField)]);
-              }}
-              size="sm"
-              variant="ghost"
-            >
-              {grouping.length === 0 ? "Add group" : "Add sub-group"}
-            </Button>
-          ) : null}
-        </PopoverContent>
-      </Popover>
+      <div className="flex w-72 flex-col gap-2 p-1">
+        <h2 className="text-sm font-semibold">{TITLE}</h2>
+        {grouping.length === 0 ? (
+          <p className="text-muted-foreground text-sm">Not grouped</p>
+        ) : null}
+        {grouping.map((level, index) => (
+          <GroupLevelRow
+            key={level.field}
+            fields={fields.filter(
+              (option) => option.id === level.field || unused.includes(option),
+            )}
+            level={level}
+            onChange={(next) => {
+              replaceLevel(index, next);
+            }}
+            position={index + 1}
+          />
+        ))}
+        {grouping.length < MAXIMUM_GROUP_LEVELS && nextField !== undefined ? (
+          <Button
+            className="self-start"
+            onClick={() => {
+              onGroupingChange([...grouping, toLevel(nextField)]);
+            }}
+            size="sm"
+            variant="ghost"
+          >
+            {grouping.length === 0 ? "Add group" : "Add sub-group"}
+          </Button>
+        ) : null}
+      </div>
     </div>
   );
 }

@@ -38,21 +38,7 @@ describe(CalendarGroupBy, () => {
     );
   });
 
-  it("names the grouping on its button", () => {
-    render(
-      <CalendarGroupBy
-        facets={FACETS}
-        grouping={[{ depth: 1, field: "tag:type" }, { field: "month" }]}
-        onGroupingChange={() => {}}
-      />,
-    );
-
-    expect(
-      screen.getByRole("button", { name: "Group by: Type, Month" }),
-    ).toBeDefined();
-  });
-
-  it("adds a first group by the first field", async () => {
+  it("adds a first group by the first field", () => {
     const onGroupingChange = vi.fn<(grouping: EventGroupLevel[]) => void>();
 
     render(
@@ -62,15 +48,14 @@ describe(CalendarGroupBy, () => {
         onGroupingChange={onGroupingChange}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Group by: none" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Add group" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add group" }));
 
     expect(onGroupingChange).toHaveBeenCalledWith([
       { depth: 1, field: "tag:type" },
     ]);
   });
 
-  it("changes one level of the grouping and keeps the others", async () => {
+  it("changes one level of the grouping and keeps the others", () => {
     const onGroupingChange = vi.fn<(grouping: EventGroupLevel[]) => void>();
 
     render(
@@ -78,14 +63,10 @@ describe(CalendarGroupBy, () => {
         facets={FACETS}
         grouping={[{ field: "tag:type" }, { field: "month" }]}
         onGroupingChange={onGroupingChange}
-        compact
       />,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Group by: Type, Month" }),
-    );
 
-    const depth = await screen.findByRole<HTMLSelectElement>("combobox", {
+    const depth = screen.getByRole<HTMLSelectElement>("combobox", {
       name: "Group 1 depth",
     });
 

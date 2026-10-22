@@ -108,9 +108,17 @@ describe("calendar timeline", () => {
     await renderRoute("/?view=timeline&scale=day&date=2026-03-04");
 
     fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Scale: Day" }),
+      within(await findToolbar()).getByRole("button", {
+        name: /^View options/u,
+      }),
     );
-    fireEvent.click(await screen.findByRole("menuitemradio", { name: scale }));
+    fireEvent.click(await screen.findByText("Scale"));
+    fireEvent.click(
+      within(await screen.findByRole("group", { name: "Scale" })).getByRole(
+        "button",
+        { name: scale },
+      ),
+    );
 
     // The toolbar is drawn again for the new scale, so the page is searched.
     await expect(

@@ -21,9 +21,7 @@ import {
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import { CalendarAgenda } from "./calendar-agenda";
-import { CalendarGroupBy } from "./calendar-group-by";
 import { CalendarOverflowList } from "./calendar-overflow-list";
-import { CalendarScaleSelect } from "./calendar-scale-select";
 import { CalendarTimeline } from "./calendar-timeline";
 import { CalendarToolbar } from "./calendar-toolbar";
 import { useCalendarClusters } from "./use-calendar-clusters";
@@ -84,15 +82,6 @@ export interface EventsCalendarProperties {
    */
   onDateChange: (date: Date) => void;
   /**
-   * Called with the grouping picked in the toolbar of a view that groups;
-   * grouping is not offered without it.
-   */
-  onGroupingChange?: ((grouping: EventGroupLevel[]) => void) | undefined;
-  /**
-   * Called with the timeline scale picked in the toolbar.
-   */
-  onScaleChange?: ((scale: TimelineScale) => void) | undefined;
-  /**
    * Called when the agenda should list more days; without it, it lists no
    * more.
    */
@@ -147,8 +136,6 @@ export function EventsCalendar(
     filters,
     grouping,
     onDateChange,
-    onGroupingChange,
-    onScaleChange,
     onViewChange,
     scale = DEFAULT_TIMELINE_SCALE,
     timeZone,
@@ -183,28 +170,8 @@ export function EventsCalendar(
         <CalendarToolbar
           compact={compact}
           filters={filters}
-          groupBy={
-            (view === "agenda" || view === "timeline") &&
-            onGroupingChange !== undefined ? (
-              <CalendarGroupBy
-                compact={compact}
-                facets={facets}
-                grouping={grouping}
-                onGroupingChange={onGroupingChange}
-              />
-            ) : undefined
-          }
           navigation={navigation}
           onViewChange={onViewChange}
-          scaleSelect={
-            view === "timeline" && onScaleChange !== undefined ? (
-              <CalendarScaleSelect
-                compact={compact}
-                onScaleChange={onScaleChange}
-                scale={scale}
-              />
-            ) : undefined
-          }
           view={view}
         />
         {view === "timeline" ? (

@@ -89,6 +89,11 @@ export interface CalendarFiltersProperties {
    * once nothing is left.
    */
   onFilterChange: (filter: EventFilterQuery) => void;
+  /**
+   * What the view shown can be arranged by, which the View menu draws ahead of
+   * its own sections.
+   */
+  viewOptions?: ReactNode;
 }
 
 const TITLE = "Filter";
@@ -121,6 +126,7 @@ export function CalendarFilters(
     onClustersChange = () => {},
     onColorsChange = () => {},
     onFilterChange,
+    viewOptions,
   } = properties;
 
   // 🪝 Hooks
@@ -188,7 +194,9 @@ export function CalendarFilters(
           onColorsChange={onColorsChange}
           onSelect={handleCollectionSelect}
           query={query}
-        />
+        >
+          {viewOptions}
+        </CalendarViewMenu>
         <FilterSurface
           isTablet={isTablet}
           trigger={renderFiltersButton(activeCount)}

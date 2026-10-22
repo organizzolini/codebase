@@ -17,6 +17,18 @@ async function findAgendaHeadings(level: number): Promise<string[]> {
 }
 
 /**
+ * Opens the View menu and finds its Group by submenu, which names the
+ * grouping.
+ */
+async function findGroupBy(): Promise<HTMLElement> {
+  fireEvent.click(
+    within(await findToolbar()).getByRole("button", { name: /^View options/u }),
+  );
+
+  return screen.findByText(/^Group by: /u);
+}
+
+/**
  * The calendar's address for the agenda from a day grouped by levels,
  * written the way the router writes a search parameter that holds a list.
  */
@@ -25,14 +37,12 @@ function groupedAgendaLink(date: string, grouping: unknown): string {
 }
 
 /**
- * Opens the toolbar's Group by popover.
+ * Opens the Group by submenu of the View menu.
  */
 async function openGroupBy(): Promise<HTMLElement> {
-  fireEvent.click(
-    within(await findToolbar()).getByRole("button", { name: /^Group by/u }),
-  );
+  fireEvent.click(await findGroupBy());
 
-  return screen.findByRole("dialog", { name: "Group by" });
+  return screen.findByTestId("calendar-group-by");
 }
 
 // Grouping is tested through the `/` route, the way the page uses it; it
@@ -41,11 +51,9 @@ describe("event grouping", () => {
   it("groups the agenda by type unless told otherwise", async () => {
     await renderRoute("/?view=agenda&date=2026-03-04");
 
-    expect(
-      within(await findToolbar()).getByRole("button", {
-        name: "Group by: Type",
-      }),
-    ).toBeDefined();
+    const groupBy = await findGroupBy();
+
+    expect(groupBy.textContent).toBe("Group by: Type");
   });
 
   it("reads the events again with the grouping picked", async () => {
@@ -69,11 +77,12 @@ describe("event grouping", () => {
       1,
       1,
     ]);
-    expect(
-      within(await findToolbar()).getByRole("button", {
-        name: "Group by: Type, Element",
-      }),
-    ).toBeDefined();
+
+    await waitFor(() => {
+      expect(screen.getByText(/^Group by: /u).textContent).toBe(
+        "Group by: Type, Element",
+      );
+    });
   });
 
   it("sections the agenda by type, counting each group's events", async () => {
@@ -168,17 +177,16 @@ describe("event grouping", () => {
     ]);
 
     fireEvent.click(
-      within(screen.getByRole("dialog", { name: "Group by" })).getByRole(
-        "button",
-        { name: "Remove group 1" },
-      ),
+      within(screen.getByTestId("calendar-group-by")).getByRole("button", {
+        name: "Remove group 1",
+      }),
     );
 
-    await expect(
-      within(await findToolbar()).findByRole("button", {
-        name: "Group by: none",
-      }),
-    ).resolves.toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText(/^Group by: /u).textContent).toBe(
+        "Group by: none",
+      );
+    });
   });
 
   it.each([
@@ -211,9 +219,9 @@ describe("event grouping", () => {
         `/?view=agenda&date=2026-03-04&group=${encodeURIComponent(JSON.stringify(group))}`,
       );
 
-      await expect(
-        within(await findToolbar()).findByRole("button", { name: expected }),
-      ).resolves.toBeDefined();
+      const groupBy = await findGroupBy();
+
+      expect(groupBy.textContent).toBe(expected);
     },
   );
 
@@ -227,18 +235,24 @@ describe("event grouping", () => {
     await expect(
       screen.findByTestId("calendar-timeline"),
     ).resolves.toBeDefined();
-    expect(
-      within(await findToolbar()).getByRole("button", {
-        name: "Group by: Month",
-      }),
-    ).toBeDefined();
+
+    const groupBy = await findGroupBy();
+
+    expect(groupBy.textContent).toBe("Group by: Month");
   });
 
   it("offers grouping only in the views that group", async () => {
     await renderRoute("/?view=month&date=2026-03-04");
 
-    expect(
-      within(await findToolbar()).queryByRole("button", { name: /^Group by/u }),
-    ).toBeNull();
+    fireEvent.click(
+      within(await findToolbar()).getByRole("button", {
+        name: /^View options/u,
+      }),
+    );
+    await screen.findByRole("menuitemcheckbox", {
+      name: "Color events by type",
+    });
+
+    expect(screen.queryByText(/^Group by: /u)).toBeNull();
   });
 });
