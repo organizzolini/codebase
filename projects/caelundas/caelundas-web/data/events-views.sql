@@ -1,9 +1,13 @@
--- Views the web app reads, created over the exported tables after every
+-- What the web app reads, created over the exported tables after every
 -- export. The export copies tables only, so everything derived lives here.
+-- The file is read-only once built, so the tag tree's derived rows are
+-- written out as tables, once, rather than recomputed by every query as
+-- views would be: the tree's depth, root and path take a correlated
+-- subquery per tag, which every grouping and filter on a tag would pay again.
 
 -- Every tag with its place in the tree: its depth (the number of ancestors,
 -- so a root is 0), its root, and its full path from that root.
-create view tag_nodes as
+create table tag_nodes as
 select
     t.id,
     t."name",
@@ -43,7 +47,7 @@ from tags t;
 -- One row per event and tag it carries, including every ancestor of the tags
 -- attached to it, so grouping or filtering on a node also finds everything
 -- beneath it. `is_direct` marks the tags the event was given itself.
-create view calendar_event_tags as
+create table calendar_event_tags as
 select
     et.calendar_event_id,
     n.id as tag_id,
@@ -73,6 +77,9 @@ select
     cast(strftime('%H', e."start") as integer) as start_hour
 from calendar_events e;
 
+create index tag_nodes_id on tag_nodes (id);
+create index calendar_event_tags_event on calendar_event_tags (calendar_event_id, tag_root_id, tag_depth);
+create index calendar_event_tags_tag on calendar_event_tags (tag_id, calendar_event_id);
 create index calendar_events_start_end on calendar_events ("start", "end");
 create index calendar_events_tags_tag on calendar_events_tags (tag_id, calendar_event_id);
 create index tags_closure_descendant on tags_closure (id_descendant, id_ancestor);

@@ -1,7 +1,14 @@
 import { compileEventFilter } from "../event-filters/event-filter-compiler";
+import { compileEventGrouping } from "../event-groups/event-group-compiler";
+import {
+  createEventGroupFields,
+  getDefaultGrouping,
+  resolveEventGrouping,
+} from "../event-groups/event-group-fields";
 
 import { getViewWindows, parseCalendarDate } from "./calendar-window";
 
+import type { EventGroupLevel } from "../event-groups/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -42,6 +49,11 @@ export interface CalendarData {
    * Whether a filter with at least one finished rule narrowed the events.
    */
   filtered: boolean;
+  /**
+   * The levels each event's `groups` were read for: the link's grouping, or
+   * the view's default, holding only fields the data has.
+   */
+  grouping: EventGroupLevel[];
   window: EventsWindow;
 }
 
@@ -75,12 +87,22 @@ export async function loadCalendar(
   search: CalendarSearch,
 ): Promise<CalendarData> {
   const anchor = parseCalendarDate(search.date, new Date());
-  const { visible, window } = getViewWindows(search.view, anchor, search.days);
+  const { visible, window } = getViewWindows(search.view, anchor, {
+    agendaDays: search.days,
+    scale: search.scale,
+  });
   const filter = compileEventFilter(search.filter);
-  const [dataset, events, facets] = await Promise.all([
+  // The facets are read once per database, and the grouping is resolved
+  // against them, so a later load waits on nothing here.
+  const facets = await findFacetsOnce(database);
+  const grouping = resolveGrouping(search, facets);
+  const [dataset, events] = await Promise.all([
     database.describeDataset(),
-    findEventsCached(database, { filter, window }),
-    findFacetsOnce(database),
+    findEventsCached(database, {
+      filter,
+      groups: compileEventGrouping(grouping),
+      window,
+    }),
   ]);
   const filtered = filter !== null;
   let emptiness = describeEmptiness({ dataset, events, visible });
@@ -96,7 +118,16 @@ export async function loadCalendar(
     }
   }
 
-  return { anchor, dataset, emptiness, events, facets, filtered, window };
+  return {
+    anchor,
+    dataset,
+    emptiness,
+    events,
+    facets,
+    filtered,
+    grouping,
+    window,
+  };
 }
 
 /**
@@ -154,6 +185,7 @@ async function findEventsCached(
     query.window.start,
     query.window.end,
     query.filter ?? null,
+    query.groups ?? [],
   ]);
   let events = cache.get(key);
 
@@ -197,4 +229,27 @@ async function findFacetsOnce(database: EventsDatabase): Promise<EventFacet[]> {
   }
 
   return facets;
+}
+
+/**
+ * The grouping the search's view shows: the link's, or the view's default,
+ * kept to the fields the data has. Only the agenda and the timeline group;
+ * with no view, the agenda a phone opens on is grouped.
+ */
+function resolveGrouping(
+  search: CalendarSearch,
+  facets: readonly EventFacet[],
+): EventGroupLevel[] {
+  const view = search.view ?? "agenda";
+
+  if (view !== "agenda" && view !== "timeline") {
+    return [];
+  }
+
+  const fields = createEventGroupFields(facets);
+
+  return resolveEventGrouping(
+    search.group ?? getDefaultGrouping(view, fields),
+    fields,
+  );
 }

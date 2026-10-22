@@ -24,7 +24,8 @@ export interface TestEventsDatabaseOptions {
    */
   empty?: boolean;
   /**
-   * More SQL run after the seed, such as rows for a dimension the seed lacks.
+   * More SQL run after the seed and before the post-export SQL, such as rows
+   * for a dimension the seed lacks.
    */
   extraSql?: string;
 }
@@ -121,16 +122,22 @@ export function createTestSqlExecutor(
 ): SqlExecutor {
   const database = new DatabaseSync(":memory:");
   const fileNames = options.empty
-    ? ["events-schema.sql", "events-views.sql"]
-    : ["events-schema.sql", "events-seed.sql", "events-views.sql"];
+    ? ["events-schema.sql"]
+    : ["events-schema.sql", "events-seed.sql"];
 
   for (const fileName of fileNames) {
     database.exec(readFileSync(path.join(DATA_DIRECTORY, fileName), "utf8"));
   }
 
+  // Extra rows go in with the seed, before the post-export SQL derives its
+  // tables from them, as the export's rows would.
   if (options.extraSql !== undefined) {
     database.exec(options.extraSql);
   }
+
+  database.exec(
+    readFileSync(path.join(DATA_DIRECTORY, "events-views.sql"), "utf8"),
+  );
 
   for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
     database.function(name, { deterministic: true }, localTime);
