@@ -7,6 +7,7 @@ import {
   TAG_FIELD_PREFIX,
   TAG_OPERATORS,
   TAG_OPTIONS_EDITOR,
+  TAG_ROOT_DESCRIPTIONS,
   TEMPORALITIES,
   WEEKDAY_LABELS,
 } from "./event-filters.constants";
@@ -131,6 +132,7 @@ const DERIVED_FIELDS: readonly EventFilterField[] = [
   },
   {
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
+    description: "The day of the week an event starts, in its own time zone",
     id: DERIVED_FIELD_IDS.weekday,
     label: "Weekday",
     operators: SET_OPERATORS,
@@ -150,6 +152,8 @@ const DERIVED_FIELDS: readonly EventFilterField[] = [
   },
   {
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
+    description:
+      "How long an event lasts, in steps: an instant, minutes, hours, days, weeks or months",
     id: DERIVED_FIELD_IDS.duration,
     label: "Duration",
     operators: SET_OPERATORS,
@@ -169,6 +173,7 @@ const DERIVED_FIELDS: readonly EventFilterField[] = [
   },
   {
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
+    description: "Whether an event is an instant or lasts for a while",
     id: DERIVED_FIELD_IDS.temporality,
     label: "Temporality",
     operators: SET_OPERATORS,
@@ -230,6 +235,17 @@ export function createEventFilterFields(
 }
 
 /**
+ * What a tag root means, for the list of attributes: its own description, or
+ * a plain one from its name for a root added to the data.
+ */
+function describeRoot(facet: EventFacet): string {
+  return (
+    TAG_ROOT_DESCRIPTIONS[facet.name] ??
+    `The ${facet.name.toLowerCase()} of the event`
+  );
+}
+
+/**
  * Names how many events a tag matches.
  */
 function formatEventCount(count: number): string {
@@ -255,7 +271,7 @@ function toTagField(facet: EventFacet): EventFilterField {
   if (isNumericFacet(facet)) {
     return {
       defaultOperator: NUMBER_OPERATORS.eq,
-      description: `The number in each ${facet.name.toLowerCase()} tag`,
+      description: describeRoot(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       operators: NUMBER_FIELD_OPERATORS,
@@ -284,6 +300,7 @@ function toTagField(facet: EventFacet): EventFilterField {
 
   return {
     defaultOperator: TAG_OPERATORS.isAnyOf,
+    description: describeRoot(facet),
     editor: TAG_OPTIONS_EDITOR,
     id: `${TAG_FIELD_PREFIX}${facet.id}`,
     label: facet.name,

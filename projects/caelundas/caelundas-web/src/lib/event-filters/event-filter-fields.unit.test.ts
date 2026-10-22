@@ -231,4 +231,44 @@ describe(createEventFilterFields, () => {
     expect(counts["tag-square"]).toBe(0);
     expect(counts["tag-ingress"]).toBe(0);
   });
+
+  it("describes every field, those of the data's roots and the derived ones", async () => {
+    const fields = createEventFilterFields(
+      await createTestEventsDatabase({
+        extraSql: MOTION_ROOT_SQL,
+      }).findFacets(),
+    );
+
+    for (const field of fields) {
+      expect([field.label, Boolean(field.description)]).toStrictEqual([
+        field.label,
+        true,
+      ]);
+    }
+  });
+
+  it("describes a known root in its own words and a new one by its name", async () => {
+    const fields = createEventFilterFields(
+      await createTestEventsDatabase({
+        extraSql: MOTION_ROOT_SQL,
+      }).findFacets(),
+    );
+    const describe = (label: string): string | undefined =>
+      fields.find((field) => field.label === label)?.description;
+
+    expect(describe("Planet")).toContain("planets");
+    expect(describe("Element")).toContain("fire");
+
+    // Motion is a root the app knows too; a root it does not know is described
+    // from its name.
+    const [unknown] = createEventFilterFields([
+      {
+        id: "x",
+        name: "Zodiacal Thing",
+        values: [{ count: 0, depth: 1, id: "y", name: "Y", path: "Y" }],
+      },
+    ]);
+
+    expect(unknown?.description).toBe("The zodiacal thing of the event");
+  });
 });
