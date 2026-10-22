@@ -1,6 +1,11 @@
+import { ChevronDown, ChevronRight } from "lucide-react";
+
 import { Checkbox, Input } from "@codebase/presentation";
 
-import type { FilterEditorProps, FilterOption } from "@codebase/presentation";
+import { useTagPicker } from "./use-tag-picker";
+
+import type { TagTreeRow } from "../lib/event-filters/event-filter-tag-tree";
+import type { FilterEditorProps } from "@codebase/presentation";
 import type { KeyboardEvent, ReactNode } from "react";
 
 // 🔖 Type
@@ -13,87 +18,38 @@ export interface FilterTagEditorProperties extends FilterEditorProps {
   className?: string;
 }
 
-/**
- * What a tag option carries beyond its label: how deep the tag sits beneath
- * its root, and its own name, which the row shows in place of the path the
- * chip is labeled with.
- */
-export interface TagOptionData {
-  depth: number;
-  name: string;
-}
-
 const INDENT_REM = 0.875;
 
 // 🧩 Component
 
 /**
- * Renders the value editor of a tag field: a search box over a list with one
- * checkbox for each tag, its own name and not its path, indented beneath the
- * tag it belongs to, with the events it matches. Each tag is ticked or not on
- * its own, and ticking one also takes everything beneath it. Every tick is
- * written at once and the list stays open, so several can be picked together;
- * Escape closes it.
+ * Renders the value editor of a tag field: a search box over the tag tree,
+ * each tag a checkbox by its own name with the events it matches. A tag with
+ * tags beneath it has a handle that opens or closes them, so a deep tree can
+ * be folded down to its first level; it opens already showing the tags the
+ * rule holds, and a closed tag says how many picks are inside it. Searching
+ * lists every match, open or not. Each tag is ticked on its own, and ticking
+ * one also takes everything beneath it. Every tick is written at once and the
+ * list stays open, so several can be picked together; Escape closes it.
  */
 export function FilterTagEditor(
   properties: Readonly<FilterTagEditorProperties>,
 ): ReactNode {
-  const {
-    autoFocusProps,
-    cancel,
-    className,
-    commit,
-    field,
-    onValueChange,
-    options,
-    value,
-  } = properties;
+  const { autoFocusProps, className, field, options } = properties;
 
   // 🪝 Hooks
+  const {
+    handleOpen,
+    handleOptionKeyDown,
+    handleSearchKeyDown,
+    handleToggle,
+    rows,
+    selected,
+  } = useTagPicker(properties);
 
   // 🏗 Setup
-  const selected: readonly unknown[] = Array.isArray(value) ? value : [];
 
   // 💪 Handlers
-  const handleToggle = (id: string): void => {
-    const next = selected.includes(id)
-      ? selected.filter((picked) => picked !== id)
-      : [...selected, id];
-
-    onValueChange(next);
-    commit(next, { close: false });
-  };
-  const handleSearchKeyDown = (
-    event: KeyboardEvent<HTMLInputElement>,
-  ): void => {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      cancel();
-    } else if (event.key === "ArrowDown") {
-      event.preventDefault();
-      event.currentTarget
-        .closest("[data-testid='filter-tag-editor']")
-        ?.querySelector<HTMLElement>("[role='option']")
-        ?.focus();
-    }
-  };
-  const handleOptionKeyDown = (event: KeyboardEvent<HTMLElement>): void => {
-    const rows = [
-      ...(event.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
-        "[role='option']",
-      ) ?? []),
-    ];
-    const index = rows.indexOf(event.currentTarget);
-    const step = { ArrowDown: 1, ArrowUp: -1 }[event.key];
-
-    if (event.key === "Escape") {
-      event.preventDefault();
-      cancel();
-    } else if (step !== undefined) {
-      event.preventDefault();
-      rows[index + step]?.focus();
-    }
-  };
 
   // ♻️ Lifecycle
 
@@ -122,16 +78,17 @@ export function FilterTagEditor(
           className="max-h-72 overflow-y-auto"
           role="listbox"
         >
-          {options.items.map((item) => (
+          {rows.map((row) => (
             <TagRow
-              key={item.value}
-              checked={selected.includes(item.value)}
-              item={item}
+              key={row.item.value}
+              checked={selected.includes(row.item.value)}
               onKeyDown={handleOptionKeyDown}
+              onOpenChange={handleOpen}
               onToggle={handleToggle}
+              row={row}
             />
           ))}
-          {options.items.length === 0 ? (
+          {rows.length === 0 ? (
             <p className="text-muted-foreground px-2 py-3 text-center text-sm">
               No matches
             </p>
@@ -143,66 +100,78 @@ export function FilterTagEditor(
 }
 
 /**
- * Reads what a tag option carries, or nothing for an option of another kind.
- */
-function readTagOptionData(data: unknown): TagOptionData | undefined {
-  if (
-    typeof data === "object" &&
-    data !== null &&
-    "depth" in data &&
-    "name" in data &&
-    typeof data.depth === "number" &&
-    typeof data.name === "string"
-  ) {
-    return { depth: data.depth, name: data.name };
-  }
-
-  return undefined;
-}
-
-/**
- * Draws one tag's row: a checkbox, its name indented by its depth, and the
- * events it matches.
+ * Draws one tag's row: a handle to open or close it when it has tags beneath
+ * it, a checkbox, its name indented by its depth, the picks inside it while
+ * it is closed, and the events it matches.
  */
 function TagRow(
   properties: Readonly<{
     checked: boolean;
-    item: FilterOption;
-    onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
+    onKeyDown: (event: KeyboardEvent<HTMLElement>, row: TagTreeRow) => void;
+    onOpenChange: (id: string, open: boolean) => void;
     onToggle: (id: string) => void;
+    row: TagTreeRow;
   }>,
 ): ReactNode {
-  const { checked, item, onKeyDown, onToggle } = properties;
-  const data = readTagOptionData(item.data);
+  const { checked, onKeyDown, onOpenChange, onToggle, row } = properties;
+  const { item } = row;
 
   return (
     <div
       aria-selected={checked}
-      className="hover:bg-accent focus-visible:bg-accent flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-2 text-sm outline-hidden"
+      className="hover:bg-accent focus-visible:bg-accent flex w-full cursor-default items-center gap-1 rounded-md py-1 pr-2 text-sm outline-hidden"
       onClick={() => {
         onToggle(item.value);
       }}
       onKeyDown={(event) => {
-        if (event.key === " " || event.key === "Enter") {
-          event.preventDefault();
-          onToggle(item.value);
-        } else {
-          onKeyDown(event);
-        }
+        onKeyDown(event, row);
       }}
       role="option"
-      style={{
-        paddingLeft: `${String(0.375 + (data?.depth ?? 0) * INDENT_REM)}rem`,
-      }}
+      style={{ paddingLeft: `${String(0.125 + row.depth * INDENT_REM)}rem` }}
       tabIndex={-1}
     >
+      {row.hasChildren ? (
+        <button
+          aria-expanded={row.isExpanded}
+          aria-label={`${row.isExpanded ? "Collapse" : "Expand"} ${row.name}`}
+          className="text-muted-foreground hover:bg-muted flex size-5 shrink-0 items-center justify-center rounded-sm"
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenChange(item.value, !row.isExpanded);
+          }}
+          tabIndex={-1}
+          type="button"
+        >
+          {row.isExpanded ? (
+            <ChevronDown
+              aria-hidden="true"
+              className="size-4"
+            />
+          ) : (
+            <ChevronRight
+              aria-hidden="true"
+              className="size-4"
+            />
+          )}
+        </button>
+      ) : (
+        <span
+          aria-hidden="true"
+          className="size-5 shrink-0"
+        />
+      )}
       <Checkbox
         aria-hidden="true"
         checked={checked}
         className="pointer-events-none"
         tabIndex={-1}
       />
-      <span className="min-w-0 grow truncate">{data?.name ?? item.label}</span>
+      <span className="min-w-0 grow truncate">{row.name}</span>
+      {row.hasChildren && !row.isExpanded && row.selectedBelow > 0 ? (
+        <span className="bg-primary text-primary-foreground shrink-0 rounded-full px-1.5 text-xs tabular-nums">
+          {row.selectedBelow}
+        </span>
+      ) : null}
       {item.description === undefined ? null : (
         <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
           {item.description}

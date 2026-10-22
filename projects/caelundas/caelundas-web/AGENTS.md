@@ -273,7 +273,10 @@ selector. Times render in the zone the dataset's events carry.
   written to the link as an empty group, never left out.
 - A tag field's value editor (`filter-tag-editor.tsx`) is a searchable list of
   checkboxes, one for each tag by its own name, indented by its depth, not a
-  list of paths. Each tag's count is of the events in the days the view
+  list of paths. A tag with tags beneath it has a handle (or the right and
+  left arrows) that opens and closes them; the list opens folded to the first
+  level, showing the tags the rule holds, and a closed tag counts the picks
+  inside it. A search lists every match flat. Each tag's count is of the events in the days the view
   shows (the facets are read for that window and cached per window), not of
   the whole dataset.
 - The fields come from the data: one per tag root, offering every tag beneath

@@ -73,12 +73,73 @@ describe(FilterTagEditor, () => {
     );
   });
 
-  it("lists each tag by its own name with the events it matches", () => {
+  it("opens folded to the first level, each tag by its own name with its events", () => {
     render(<FilterTagEditor {...createProperties()} />);
 
-    expect(screen.getAllByRole("option")).toHaveLength(3);
+    expect(screen.getAllByRole("option")).toHaveLength(2);
+    expect(screen.queryByText("Compound Aspect")).toBeNull();
+    expect(screen.getByText("400 events")).toBeDefined();
+  });
+
+  it("opens and closes the tags beneath a tag with its handle", () => {
+    render(<FilterTagEditor {...createProperties()} />);
+    fireEvent.click(screen.getByRole("button", { name: "Expand Aspect" }));
+
     expect(screen.getByText("Compound Aspect")).toBeDefined();
     expect(screen.getByText("24 events")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Collapse Aspect" }));
+
+    expect(screen.queryByText("Compound Aspect")).toBeNull();
+  });
+
+  it("does not tick a tag when its handle is pressed", () => {
+    const properties = createProperties();
+
+    render(<FilterTagEditor {...properties} />);
+    fireEvent.click(screen.getByRole("button", { name: "Expand Aspect" }));
+
+    expect(properties.onValueChange).not.toHaveBeenCalled();
+  });
+
+  it("gives only the tags that have tags beneath them a handle", () => {
+    render(<FilterTagEditor {...createProperties()} />);
+
+    expect(screen.getAllByRole("button", { name: /^Expand / })).toHaveLength(1);
+  });
+
+  it("opens already showing the tags the rule holds", () => {
+    render(<FilterTagEditor {...createProperties(["compound"])} />);
+
+    expect(screen.getByText("Compound Aspect")).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Collapse Aspect" }),
+    ).toBeDefined();
+  });
+
+  it("says how many picks lie inside a closed tag", () => {
+    const { rerender } = render(
+      <FilterTagEditor {...createProperties(["compound"])} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Collapse Aspect" }));
+
+    expect(screen.getByText("1")).toBeDefined();
+
+    rerender(<FilterTagEditor {...createProperties([])} />);
+
+    expect(screen.queryByText("1")).toBeNull();
+  });
+
+  it("lists every match while searching, folded or not", () => {
+    render(
+      <FilterTagEditor
+        {...createProperties(undefined, "comp", ITEMS.slice(1, 2))}
+      />,
+    );
+
+    expect(screen.getByText("Compound Aspect")).toBeDefined();
+    expect(screen.queryByRole("button", { name: /^Expand / })).toBeNull();
   });
 
   it("ticks the tags the rule holds", () => {
@@ -94,6 +155,7 @@ describe(FilterTagEditor, () => {
     const properties = createProperties(["ingress"]);
 
     render(<FilterTagEditor {...properties} />);
+    fireEvent.click(screen.getByRole("button", { name: "Expand Aspect" }));
     fireEvent.click(screen.getByText("Compound Aspect"));
 
     expect(properties.onValueChange).toHaveBeenCalledWith([
@@ -119,7 +181,7 @@ describe(FilterTagEditor, () => {
 
     render(<FilterTagEditor {...properties} />);
 
-    const [aspect, compound] = screen.getAllByRole("option") as [
+    const [aspect, ingress] = screen.getAllByRole("option") as [
       HTMLElement,
       HTMLElement,
     ];
@@ -127,15 +189,39 @@ describe(FilterTagEditor, () => {
     aspect.focus();
     fireEvent.keyDown(aspect, { key: "ArrowDown" });
 
-    expect(document.activeElement).toBe(compound);
+    expect(document.activeElement).toBe(ingress);
 
-    fireEvent.keyDown(compound, { key: " " });
+    fireEvent.keyDown(ingress, { key: " " });
 
-    expect(properties.onValueChange).toHaveBeenCalledWith(["compound"]);
+    expect(properties.onValueChange).toHaveBeenCalledWith(["ingress"]);
 
-    fireEvent.keyDown(compound, { key: "ArrowUp" });
+    fireEvent.keyDown(ingress, { key: "ArrowUp" });
 
     expect(document.activeElement).toBe(aspect);
+  });
+
+  it("opens and closes a focused tag with the right and left arrows", () => {
+    render(<FilterTagEditor {...createProperties()} />);
+
+    const [aspect] = screen.getAllByRole("option") as [HTMLElement];
+
+    fireEvent.keyDown(aspect, { key: "ArrowRight" });
+
+    expect(screen.getByText("Compound Aspect")).toBeDefined();
+
+    fireEvent.keyDown(aspect, { key: "ArrowLeft" });
+
+    expect(screen.queryByText("Compound Aspect")).toBeNull();
+  });
+
+  it("leaves the arrows alone on a tag with nothing beneath it", () => {
+    render(<FilterTagEditor {...createProperties()} />);
+
+    const ingress = screen.getAllByRole("option").at(1) ?? document.body;
+
+    fireEvent.keyDown(ingress, { key: "ArrowRight" });
+
+    expect(screen.getAllByRole("option")).toHaveLength(2);
   });
 
   it("searches through the options it is handed", () => {
