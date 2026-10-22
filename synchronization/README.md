@@ -56,6 +56,10 @@ each name every derivation target directly alongside `lint-code` in one
 explicit configuration down `dependsOn`, so an edge there would let
 `lint-code --configuration=write` publish from a branch.
 
+`project-ports` is the odd one out: nothing derives a port from configuration,
+because the project's name is the source. It has no caller of its own yet, so it
+runs only by name (`nx run synchronization:project-ports[:write]`), not in `start`.
+
 `pull-request-labels` needs credentials: its destination is GitHub's label set
 rather than a file in the tree, so reaching it needs a token that neither a
 fork nor a developer's `lint-code` run has. It must not run in
@@ -74,6 +78,7 @@ target, on `opened`/`reopened`, and nothing else names it.
 | `conventional-config`        | `configuration/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
 | `devcontainer-configuration` | `.devcontainer/local/devcontainer.json` | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
 | `installed-skills`           | `skills-lock.json`                      | The installed skills in `.agents/skills/`, restored from their sources. Run by `postinstall`          |
+| `project-ports`              | Each `*-api` and `*-web` name           | The port in `vite.config.mts` or `.env.default`, and the lines about it in the domain folder          |
 | `pull-request-labels`        | `configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
 | `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`      | The template embedded in the PR skill files                                                           |
 | `skill-exclusions`           | `skills-lock.json`                      | The installed-skill exclusion lists in five ignore files                                              |

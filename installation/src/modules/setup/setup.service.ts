@@ -6,6 +6,7 @@ import { LoggerService } from "@codebase/observability";
 
 import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
+import { HelmService } from "../helm/helm.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
@@ -26,7 +27,7 @@ import { STARTUP_FILES } from "./setup.constants";
  * Linux is what a Claude Code cloud session and the devcontainer run. It has
  * no Homebrew and no shell of its own to configure, and `scripts/installation.sh`
  * has already installed its packages, so only the environment files, the SSH
- * signing, and the local services apply.
+ * signing, Helm, and the local services apply.
  */
 @Injectable()
 export class SetupService {
@@ -39,6 +40,7 @@ export class SetupService {
     private readonly dependenciesService: DependenciesService,
     private readonly sshSigningService: SshSigningService,
     private readonly localServicesService: LocalServicesService,
+    private readonly helmService: HelmService,
     private readonly processRunner: ProcessRunnerService,
     private readonly reporter: ReporterService,
     private readonly logger: LoggerService,
@@ -51,6 +53,21 @@ export class SetupService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Installs Helm, which the pre-commit hook lints the charts with, and warns
+   * rather than fails: a machine whose Node toolchain is already done is not
+   * worth stopping over a download.
+   */
+  private installHelm(): void {
+    try {
+      this.helmService.installHelm();
+    } catch (error) {
+      this.reporter.print(
+        `⚠️  Helm was not installed (${error instanceof Error ? error.message : String(error)}). Retry with: pnpm exec nx run installation:start:helm`,
+      );
+    }
+  }
 
   /** Says setup is done, and how to pick the shell configuration up now. */
   private printCompletion(): void {
@@ -76,10 +93,11 @@ export class SetupService {
     }
   }
 
-  /** Sets up a Linux machine: the files, the signing, and the services. */
+  /** Sets up a Linux machine: the files, the signing, Helm, and the services. */
   private async setUpLinux(): Promise<void> {
     this.environmentFilesService.createEnvironmentFiles();
     this.sshSigningService.configureSshSigning();
+    this.installHelm();
     await this.localServicesService.startLocalServices();
     this.reporter.print("");
     this.reporter.print("✅ Linux setup complete.");
