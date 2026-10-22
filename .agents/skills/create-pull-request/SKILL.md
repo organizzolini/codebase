@@ -74,7 +74,7 @@ suffixes do not push the queued commit subject over the header limit.
 | `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
+| `lexico` | TanStack Start SSR Latin dictionary web app |
 | `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |
@@ -234,6 +234,15 @@ gh pr create \
   --label source:agent
 rm /tmp/pr_body.md
 ```
+
+#### Using GitHub MCP tools (cloud sessions)
+
+Claude Cloud sessions have no `gh`. Create the pull request with `create_pull_request`, then set
+the assignee and labels with `issue_write` (`method: update`, same issue number), because
+`create_pull_request` takes neither:
+
+- `assignees`: the session's user, from `get_me`
+- `labels`: `type:<type>`, `scope:<scope>` (one per scope), and `source:agent`
 
 ### 5. Address Review Feedback
 

@@ -7,13 +7,11 @@ import { LoggerService } from "@codebase/observability";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
-import { HelmService } from "../helm/helm.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareService } from "../software/software.service";
-import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
 import { SetupService } from "./setup.service";
 
@@ -23,29 +21,24 @@ import type { DeepMocked } from "@golevelup/ts-vitest";
 interface Steps {
   dependencies: DeepMocked<DependenciesService>;
   environmentFiles: DeepMocked<EnvironmentFilesService>;
-  helm: DeepMocked<HelmService>;
   localServices: DeepMocked<LocalServicesService>;
   service: SetupService;
   shell: DeepMocked<ShellConfigurationService>;
   software: DeepMocked<SoftwareService>;
-  sshSigning: DeepMocked<SshSigningService>;
 }
 
 /** Builds the service over a machine that runs the given operating system. */
 async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
   const dependencies = createMock<DependenciesService>();
   const environmentFiles = createMock<EnvironmentFilesService>();
-  const helm = createMock<HelmService>();
   const localServices = createMock<LocalServicesService>();
   const shell = createMock<ShellConfigurationService>();
   const software = createMock<SoftwareService>();
-  const sshSigning = createMock<SshSigningService>();
   const module = await Test.createTestingModule({
     providers: [
       SetupService,
       { provide: DependenciesService, useValue: dependencies },
       { provide: EnvironmentFilesService, useValue: environmentFiles },
-      { provide: HelmService, useValue: helm },
       { provide: LocalServicesService, useValue: localServices },
       {
         provide: ProcessRunnerService,
@@ -53,7 +46,6 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
       },
       { provide: ShellConfigurationService, useValue: shell },
       { provide: SoftwareService, useValue: software },
-      { provide: SshSigningService, useValue: sshSigning },
       { provide: ReporterService, useValue: createMock<ReporterService>() },
       { provide: LoggerService, useValue: createMock<LoggerService>() },
     ],
@@ -62,12 +54,10 @@ async function createSteps(platform: NodeJS.Platform): Promise<Steps> {
   return {
     dependencies,
     environmentFiles,
-    helm,
     localServices,
     service: await module.resolve(SetupService),
     shell,
     software,
-    sshSigning,
   };
 }
 
@@ -86,7 +76,6 @@ describe(SetupService, () => {
           provide: EnvironmentFilesService,
           useValue: createMock<EnvironmentFilesService>(),
         },
-        { provide: HelmService, useValue: createMock<HelmService>() },
         {
           provide: LocalServicesService,
           useValue: createMock<LocalServicesService>(),
@@ -100,10 +89,6 @@ describe(SetupService, () => {
           useValue: createMock<ShellConfigurationService>(),
         },
         { provide: SoftwareService, useValue: createMock<SoftwareService>() },
-        {
-          provide: SshSigningService,
-          useValue: createMock<SshSigningService>(),
-        },
         { provide: ReporterService, useValue: createMock<ReporterService>() },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
@@ -130,12 +115,10 @@ describe(SetupService, () => {
       steps.environmentFiles.createEnvironmentFiles,
     ).toHaveBeenCalledWith();
     expect(steps.dependencies.installDependencies).toHaveBeenCalledWith();
-    expect(steps.sshSigning.configureSshSigning).not.toHaveBeenCalled();
-    expect(steps.helm.installHelm).not.toHaveBeenCalled();
     expect(steps.localServices.startLocalServices).not.toHaveBeenCalled();
   });
 
-  it("sets up Linux with the files, the SSH signing, Helm, and the local services", async () => {
+  it("sets up Linux with the files, the software it can have, and the local services", async () => {
     expect.hasAssertions();
 
     const steps = await createSteps("linux");
@@ -145,26 +128,10 @@ describe(SetupService, () => {
     expect(
       steps.environmentFiles.createEnvironmentFiles,
     ).toHaveBeenCalledWith();
-    expect(steps.sshSigning.configureSshSigning).toHaveBeenCalledWith();
-    expect(steps.helm.installHelm).toHaveBeenCalledWith();
+    expect(steps.software.installSoftware).toHaveBeenCalledWith();
     expect(steps.localServices.startLocalServices).toHaveBeenCalledWith();
     expect(steps.shell.configureShell).not.toHaveBeenCalled();
-    expect(steps.software.installSoftware).not.toHaveBeenCalled();
     expect(steps.dependencies.installDependencies).not.toHaveBeenCalled();
-  });
-
-  it("carries on to the local services when Helm cannot be installed", async () => {
-    expect.hasAssertions();
-
-    const steps = await createSteps("linux");
-
-    steps.helm.installHelm.mockImplementation(() => {
-      throw new Error("offline");
-    });
-
-    await steps.service.setUp();
-
-    expect(steps.localServices.startLocalServices).toHaveBeenCalledWith();
   });
 
   it("refuses an operating system it has no steps for", async () => {

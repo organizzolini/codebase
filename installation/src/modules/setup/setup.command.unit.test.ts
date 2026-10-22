@@ -21,9 +21,9 @@ import { captureReport } from "../../../testing/report";
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 import { DependenciesService } from "../dependencies/dependencies.service";
 import { EnvironmentFilesService } from "../environment-files/environment-files.service";
-import { HelmService } from "../helm/helm.service";
 import { LocalServicesService } from "../local-services/local-services.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { ReleaseArchivesService } from "../release-archives/release-archives.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareBrewService } from "../software/software-brew.service";
@@ -31,6 +31,7 @@ import { SoftwareDatabaseService } from "../software/software-database.service";
 import { SoftwareDockerService } from "../software/software-docker.service";
 import { SoftwareGpgService } from "../software/software-gpg.service";
 import { SoftwareInfraService } from "../software/software-infra.service";
+import { SoftwareLinuxService } from "../software/software-linux.service";
 import { SoftwareOllamaService } from "../software/software-ollama.service";
 import { SoftwarePythonService } from "../software/software-python.service";
 import { SoftwareService } from "../software/software.service";
@@ -69,7 +70,7 @@ describe(SetupCommand, () => {
       providers: [
         DependenciesService,
         EnvironmentFilesService,
-        HelmService,
+        ReleaseArchivesService,
         LocalServicesService,
         SetupCommand,
         SetupService,
@@ -79,6 +80,7 @@ describe(SetupCommand, () => {
         SoftwareDockerService,
         SoftwareGpgService,
         SoftwareInfraService,
+        SoftwareLinuxService,
         SoftwareOllamaService,
         SoftwarePythonService,
         SoftwareService,

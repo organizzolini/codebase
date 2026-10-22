@@ -72,7 +72,7 @@ The script is a bootstrap. It installs what the real setup needs in order to run
 | 3     | `pnpm install`                                 | Installs the packages the `setup` command is written in                                                                                        |
 | 4     | `installation setup`                           | Configures the shell, installs the remaining tools, creates `.env` files, then runs `pnpm install`, `nx reset`, `uv sync --project configuration`, and Terraform setup |
 
-On Linux, which is what a Claude Code cloud session and the devcontainer run, the script takes a shorter path. It installs the Node version from `.nvmrc`, shims `node-gyp`, installs the packages, creates the `.env` files, installs Helm from its release archive, and then starts the Docker daemon, when the machine carries one and none is running, and the shared Postgres container. It skips Homebrew and the shell, software, and Terraform steps, which are for a Mac; Helm is the one tool from the software step it installs, because the pre-commit hook needs it. It is what a cloud environment's setup script should call.
+On Linux, which is what a Claude Code cloud session and the devcontainer run, the script takes a shorter path. It installs the Node version from `.nvmrc`, shims `node-gyp`, installs the packages, creates the `.env` files, runs the `software` step, which on Linux installs the tools a commit and the security gate need (Helm, kubectl, Terraform, gitleaks, Trivy, uv and Python, squawk, and the PostgreSQL 18 client), and then starts the Docker daemon, when the machine carries one and none is running, and the shared Postgres container. It skips Homebrew and the shell configuration, which are for a Mac. It also sets up the Husky init file, so git hooks find the tools in `~/.local/bin`, and the global `nx`. It is what a cloud environment's setup script should call.
 
 A step that fails stops setup, and every step is safe to run again. To re-run one, run its command directly: `nx run installation:start:<environment-files|dependencies|shell-configuration|software>`. Run from inside Nx, `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; run `nx reset` yourself.
 
@@ -83,7 +83,7 @@ A step that fails stops setup, and every step is safe to run again. To re-run on
 - **Ollama**, and it pulls the `gemma4:e2b` model the affirmancy ReAct agent uses
 - **PostgreSQL** for local database work
 - **GnuPG** and `pinentry-mac`, because commits must be signed
-- **Infrastructure and quality tools** — `gitleaks`, `terraform`, `trivy`, `supabase`, `jq`, `gh`, `helm`, `kubectl`
+- **Infrastructure and quality tools** — `gitleaks`, `terraform`, `trivy`, `jq`, `gh`, `helm`, `kubectl`
 
 Stage 4 copies `.env.default` to `.env` for the workspace root and for **every** project that ships a template — existing `.env` files are never overwritten. It also appends `LOCAL_WORKSPACE_FOLDER` to the root `.env` so `docker-compose` volume mounts resolve.
 
@@ -119,7 +119,6 @@ Alternatively, use the included dev container for a fully configured environment
 | kubectl      | latest                      | Kubernetes cluster management                                |
 | Helm         | latest                      | Kubernetes package manager                                   |
 | GitHub CLI   | latest                      | Repository operations                                        |
-| Supabase CLI | latest                      | Local Supabase stack and migrations for lexico               |
 | Docker       | DooD (local) / DinD (cloud) | Docker-outside-of-Docker on local; Docker-in-Docker in cloud |
 
 The repository pins Node through `.nvmrc`, and `package.json` declares `engines.node` to match. `.nvmrc` is declarative and only takes effect after running `nvm use`, or after enabling automatic `nvm` directory switching in your shell. Use the pinned version — newer Node majors have broken this repository's commit hooks in ways that are hard to read from the error output.
@@ -134,11 +133,6 @@ pnpm is pinned by `packageManager` in the root `package.json`, so Corepack selec
 | 3001  | Open WebUI         | Notify       |
 | 8889  | SearxNG            | Notify       |
 | 11434 | Ollama API         | Silent       |
-| 54321 | Supabase API       | Silent       |
-| 54322 | Supabase Database  | Silent       |
-| 54323 | Supabase Studio    | Notify       |
-| 54324 | Supabase Email     | Silent       |
-| 54325 | Supabase Analytics | Silent       |
 
 See [.devcontainer/README.md](../.devcontainer/README.md) for detailed configuration and troubleshooting.
 
@@ -399,7 +393,7 @@ Format: `<type>(<scope>): <gitmoji> <subject>` — a single line, max 128 charac
 - **Type and scope** come from the tables below, both lowercase
 - **Gitmoji required** as the first token of the subject
 - Subject is lowercase, present-imperative (`add`, not `added` or `adds`), with no trailing period
-- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` trailers. Everything else belongs in the subject or the pull request description
+- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` or `Claude-Session:` trailers. Everything else belongs in the subject or the pull request description
 - Never list multiple changes — summarize at a higher level, or split the commit
 
 Common gitmojis: ✨ `feat` · 🐛 `fix` · 📝 `docs` · 🧪 `test` · ♻️ `refactor` · 🎨 `style` · ⚡️ `perf` · 🔧 `chore` · 👷 `ci` · 📦 `build` · ⏪ `revert`
@@ -457,7 +451,7 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 | `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
+| `lexico` | TanStack Start SSR Latin dictionary web app |
 | `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |

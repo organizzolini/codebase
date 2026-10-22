@@ -20,13 +20,16 @@ import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { captureReport } from "../../../testing/report";
 import { createTemporaryWorkspace } from "../../../testing/temporary-workspace";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { ReleaseArchivesService } from "../release-archives/release-archives.service";
 import { ReporterService } from "../reporter/reporter.service";
+import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
 import { SoftwareBrewService } from "./software-brew.service";
 import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
 import { SoftwareInfraService } from "./software-infra.service";
+import { SoftwareLinuxService } from "./software-linux.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 import { SoftwareCommand } from "./software.command";
@@ -44,7 +47,6 @@ const EVERY_COMMAND = [
   "gitleaks",
   "terraform",
   "trivy",
-  "supabase",
   "jq",
   "gh",
   "helm",
@@ -100,15 +102,18 @@ describe(SoftwareCommand, () => {
     const { commands, detached, runner } = createFakeProcessRunner(machine);
     const module = await Test.createTestingModule({
       providers: [
+        ReleaseArchivesService,
         SoftwareBrewService,
         SoftwareCommand,
         SoftwareDatabaseService,
         SoftwareDockerService,
         SoftwareGpgService,
         SoftwareInfraService,
+        SoftwareLinuxService,
         SoftwareOllamaService,
         SoftwarePythonService,
         SoftwareService,
+        SshSigningService,
         ReporterService,
         { provide: ProcessRunnerService, useValue: runner },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
@@ -224,7 +229,6 @@ describe(SoftwareCommand, () => {
         "brew install gitleaks",
         "brew install terraform",
         "brew install trivy",
-        "brew install supabase/tap/supabase",
         "brew install jq",
         "brew install gh",
         "brew install helm",
