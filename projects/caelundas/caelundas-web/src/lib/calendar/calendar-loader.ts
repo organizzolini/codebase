@@ -25,7 +25,10 @@ import type {
 } from "../events-database/events-database.types";
 import type { CalendarSearch } from "./calendar-search";
 
-const FACETS_BY_DATABASE = new WeakMap<EventsDatabase, Promise<EventFacet[]>>();
+const FACETS_BY_DATABASE = new WeakMap<
+  EventsDatabase,
+  Map<string, Promise<EventFacet[]>>
+>();
 
 const EVENTS_BY_DATABASE = new WeakMap<
   EventsDatabase,
@@ -100,7 +103,7 @@ export async function loadCalendar(
   const { anchor, visible, window } = resolveWindows(search);
   // The facets are read once per database, and the default filter and the
   // grouping are resolved against them, so a later load waits on nothing here.
-  const facets = await findFacetsOnce(database);
+  const facets = await findFacetsCached(database, visible);
   const effectiveFilter = search.filter ?? resolveDefaultFilter(facets);
   const filter = compileEventFilter(effectiveFilter);
   const grouping = resolveGrouping(search, facets);
@@ -222,19 +225,43 @@ async function findEventsCached(
 }
 
 /**
- * Reads a database's facets once and keeps them for every later load: they
- * change only with the data, not with the filter or the month. A failed read
- * is forgotten, so Retry reads them again.
+ * Reads a database's facets for the days a view shows through a small cache,
+ * keeping the most recent windows: the tags are the same whatever the window,
+ * but each counts only the events in it. A failed read is forgotten, so Retry
+ * reads it again.
  */
-async function findFacetsOnce(database: EventsDatabase): Promise<EventFacet[]> {
-  let facets = FACETS_BY_DATABASE.get(database);
+async function findFacetsCached(
+  database: EventsDatabase,
+  window: EventsWindow,
+): Promise<EventFacet[]> {
+  let cache = FACETS_BY_DATABASE.get(database);
+
+  if (cache === undefined) {
+    cache = new Map();
+    FACETS_BY_DATABASE.set(database, cache);
+  }
+
+  const key = `${window.start.toISOString()}|${window.end.toISOString()}`;
+  let facets = cache.get(key);
 
   if (facets === undefined) {
-    facets = database.findFacets();
-    FACETS_BY_DATABASE.set(database, facets);
+    facets = database.findFacets(window);
     facets.catch(() => {
-      FACETS_BY_DATABASE.delete(database);
+      cache.delete(key);
     });
+  } else {
+    // Moved to the back, so the least recently read goes first.
+    cache.delete(key);
+  }
+
+  cache.set(key, facets);
+
+  for (const oldest of cache.keys()) {
+    if (cache.size <= CACHED_READS) {
+      break;
+    }
+
+    cache.delete(oldest);
   }
 
   return facets;

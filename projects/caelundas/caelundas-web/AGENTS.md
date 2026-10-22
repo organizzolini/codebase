@@ -271,6 +271,11 @@ selector. Times render in the zone the dataset's events carry.
   collection, Highlights: major aspects and sign ingresses without the Moon,
   plus stations, eclipses, and the long cycles. "No filter" is therefore
   written to the link as an empty group, never left out.
+- A tag field's value editor (`filter-tag-editor.tsx`) is a searchable list of
+  checkboxes, one for each tag by its own name, indented by its depth, not a
+  list of paths. Each tag's count is of the events in the days the view
+  shows (the facets are read for that window and cached per window), not of
+  the whole dataset.
 - The fields come from the data: one per tag root, offering every tag beneath
   it, so a new root needs no code change. A root whose tags all end in a
   number, such as Aspect Harmonic, offers comparisons (equals, greater and

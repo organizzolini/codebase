@@ -36,10 +36,14 @@ import {
   isSameEventFilter,
   toLinkedEventFilter,
 } from "../lib/event-filters/event-filter-tree";
-import { DATE_RANGE_EDITOR } from "../lib/event-filters/event-filters.constants";
+import {
+  DATE_RANGE_EDITOR,
+  TAG_OPTIONS_EDITOR,
+} from "../lib/event-filters/event-filters.constants";
 
 import { CalendarViewMenu } from "./calendar-view-menu";
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
+import { FilterTagEditor } from "./filter-tag-editor";
 
 import type {
   EventFilterField,
@@ -99,6 +103,7 @@ export interface CalendarFiltersProperties {
 const TITLE = "Filter";
 const EDITORS: FilterEditorRegistry = {
   [DATE_RANGE_EDITOR]: FilterDateRangeEditor,
+  [TAG_OPTIONS_EDITOR]: FilterTagEditor,
 };
 const TABLET_QUERY = "(min-width: 768px)";
 

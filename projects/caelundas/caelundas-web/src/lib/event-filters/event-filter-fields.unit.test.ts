@@ -61,9 +61,9 @@ describe(createEventFilterFields, () => {
         ?.options?.map((option) => [option.value, option.label]),
     ).toStrictEqual([
       ["tag-aspect", "Aspect"],
-      ["tag-major-aspect", "Aspect / Major Aspect"],
-      ["tag-conjunct", "Aspect / Major Aspect / Conjunct"],
-      ["tag-square", "Aspect / Major Aspect / Square"],
+      ["tag-major-aspect", "Major Aspect"],
+      ["tag-conjunct", "Conjunct"],
+      ["tag-square", "Square"],
       ["tag-ingress", "Ingress"],
       ["tag-retrograde", "Retrograde"],
     ]);
@@ -157,5 +157,78 @@ describe(createEventFilterFields, () => {
     expect(
       createEventFilterFields(facets).map((field) => [field.id, field.label]),
     ).toStrictEqual(DERIVED_FIELDS);
+  });
+
+  it("picks the tags with the checkbox editor, each indented by its depth", async () => {
+    const fields = createEventFilterFields(
+      await createTestEventsDatabase().findFacets(),
+    );
+    const type = fields.find((field) => field.id === "tag:tag-type");
+
+    expect(type?.editor).toBe("tag-options");
+    expect(
+      type?.options?.map((option) => [option.value, option.data]),
+    ).toStrictEqual([
+      ["tag-aspect", { depth: 0, name: "Aspect" }],
+      ["tag-major-aspect", { depth: 1, name: "Major Aspect" }],
+      ["tag-conjunct", { depth: 2, name: "Conjunct" }],
+      ["tag-square", { depth: 2, name: "Square" }],
+      ["tag-ingress", { depth: 0, name: "Ingress" }],
+      ["tag-retrograde", { depth: 0, name: "Retrograde" }],
+    ]);
+  });
+
+  it("tells two tags of one name apart by their paths", () => {
+    const [field] = createEventFilterFields([
+      {
+        id: "phase",
+        name: "Phase",
+        values: [
+          { count: 1, depth: 1, id: "a", name: "Mercurian", path: "Mercurian" },
+          {
+            count: 1,
+            depth: 2,
+            id: "b",
+            name: "Evening Set",
+            path: "Mercurian / Evening Set",
+          },
+          { count: 1, depth: 1, id: "c", name: "Venusian", path: "Venusian" },
+          {
+            count: 1,
+            depth: 2,
+            id: "d",
+            name: "Evening Set",
+            path: "Venusian / Evening Set",
+          },
+        ],
+      },
+    ]);
+
+    expect(field?.options?.map((option) => option.label)).toStrictEqual([
+      "Mercurian",
+      "Mercurian / Evening Set",
+      "Venusian",
+      "Venusian / Evening Set",
+    ]);
+  });
+
+  it("counts each tag's events in the window the facets were read for", async () => {
+    const database = createTestEventsDatabase();
+    const march = await database.findFacets({
+      end: new Date("2026-03-06T00:00:00.000Z"),
+      start: new Date("2026-03-03T00:00:00.000Z"),
+    });
+    const counts = Object.fromEntries(
+      march
+        .flatMap((facet) => facet.values)
+        .map((value) => [value.id, value.count]),
+    );
+
+    // The seed's Mars conjunct Venus is on 4 March; the retrograde runs from
+    // 26 February to 20 March, so it overlaps too.
+    expect(counts["tag-conjunct"]).toBe(1);
+    expect(counts["tag-retrograde"]).toBe(1);
+    expect(counts["tag-square"]).toBe(0);
+    expect(counts["tag-ingress"]).toBe(0);
   });
 });

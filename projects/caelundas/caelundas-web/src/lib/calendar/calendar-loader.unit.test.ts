@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { createTestEventsDatabase } from "../../../testing/events-database";
 import { EMPTY_EVENT_FILTER } from "../event-filters/event-filter-tree";
@@ -47,5 +47,37 @@ describe(loadCalendar, () => {
 
     expect(data.filter).toBeUndefined();
     expect(data.filtered).toBe(false);
+  });
+
+  it("counts each tag's events only in the days the view shows", async () => {
+    const database = createTestEventsDatabase();
+    const countOf = (data: Awaited<ReturnType<typeof loadCalendar>>): number =>
+      data.facets
+        .flatMap((facet) => facet.values)
+        .find((value) => value.id === "tag-conjunct")?.count ?? -1;
+    // Mars conjunct Venus is on 4 March, so a day on either side of it holds
+    // it and a week in April does not.
+    const march = await loadCalendar(database, {
+      date: "2026-03-04",
+      view: "day",
+    });
+    const april = await loadCalendar(database, {
+      date: "2026-04-20",
+      view: "week",
+    });
+
+    expect(countOf(march)).toBe(1);
+    expect(countOf(april)).toBe(0);
+  });
+
+  it("reads the counts again for each window, once", async () => {
+    const database = createTestEventsDatabase();
+    const spy = vi.spyOn(database, "findFacets");
+
+    await loadCalendar(database, { date: "2026-03-04", view: "day" });
+    await loadCalendar(database, { date: "2026-03-04", view: "day" });
+    await loadCalendar(database, { date: "2026-03-05", view: "day" });
+
+    expect(spy).toHaveBeenCalledTimes(2);
   });
 });

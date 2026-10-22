@@ -6,6 +6,7 @@ import {
   NUMBER_OPERATORS,
   TAG_FIELD_PREFIX,
   TAG_OPERATORS,
+  TAG_OPTIONS_EDITOR,
   TEMPORALITIES,
   WEEKDAY_LABELS,
 } from "./event-filters.constants";
@@ -263,18 +264,27 @@ function toTagField(facet: EventFacet): EventFilterField {
   }
 
   const options: FilterOption[] = [];
+  const nameCounts = new Map<string, number>();
+
+  // A tag is labeled by its own name, as a chip reads best, unless another
+  // tag under the root has the same name, when its path tells them apart.
+  for (const value of facet.values) {
+    nameCounts.set(value.name, (nameCounts.get(value.name) ?? 0) + 1);
+  }
 
   for (const value of facet.values) {
     options.push({
+      data: { depth: value.depth - 1, name: value.name },
       description: formatEventCount(value.count),
-      keywords: [value.name],
-      label: value.path,
+      keywords: [value.name, value.path],
+      label: (nameCounts.get(value.name) ?? 0) > 1 ? value.path : value.name,
       value: value.id,
     });
   }
 
   return {
     defaultOperator: TAG_OPERATORS.isAnyOf,
+    editor: TAG_OPTIONS_EDITOR,
     id: `${TAG_FIELD_PREFIX}${facet.id}`,
     label: facet.name,
     operators: TAG_FIELD_OPERATORS,

@@ -62,8 +62,8 @@ export function createFailingEventsDatabase(error: Error): {
         failing ? Promise.reject(error) : seeded.describeDataset(),
       findEvents: async (query) =>
         failing ? Promise.reject(error) : seeded.findEvents(query),
-      findFacets: async () =>
-        failing ? Promise.reject(error) : seeded.findFacets(),
+      findFacets: async (window) =>
+        failing ? Promise.reject(error) : seeded.findFacets(window),
     },
     recover: () => {
       failing = false;
@@ -97,7 +97,7 @@ export function createRecordingEventsDatabase(delay = 0): {
 
         return seeded.findEvents(query);
       },
-      findFacets: async () => seeded.findFacets(),
+      findFacets: async (window) => seeded.findFacets(window),
     },
     queries,
   };

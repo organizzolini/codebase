@@ -5,6 +5,7 @@ import {
   EVENTS_IN_WINDOW_SQL,
   FACETS_SQL,
   GROUP_COLUMN_SQL,
+  WHOLE_DATASET_WINDOW,
 } from "./events-database.constants";
 
 import type {
@@ -77,8 +78,13 @@ export function createEventsDatabase(executor: SqlExecutor): EventsDatabase {
       return rows.map((row) => toEventRecord(row, groups.length));
     },
 
-    async findFacets() {
-      return toFacets(await executor.select(FACETS_SQL, []));
+    async findFacets(window = WHOLE_DATASET_WINDOW) {
+      return toFacets(
+        await executor.select(FACETS_SQL, [
+          window.end.toISOString(),
+          window.start.toISOString(),
+        ]),
+      );
     },
   };
 }

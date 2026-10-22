@@ -39,6 +39,12 @@ export const DERIVED_FIELD_IDS = {
 } as const;
 
 /**
+ * The name the tag fields' editor is registered under with the builder: a
+ * searchable list of checkboxes, one for each tag, indented by its depth.
+ */
+export const TAG_OPTIONS_EDITOR = "tag-options";
+
+/**
  * The name the date field's editor is registered under with the builder.
  */
 export const DATE_RANGE_EDITOR = "date-range";

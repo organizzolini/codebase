@@ -73,7 +73,8 @@ export interface EventFacet {
  */
 export interface EventFacetValue {
   /**
-   * The events that carry the tag or any tag beneath it.
+   * The events that carry the tag or any tag beneath it, among those that
+   * overlap the window the facets were read for, or all of them with none.
    */
   count: number;
   /**
@@ -96,7 +97,11 @@ export interface EventFacetValue {
 export interface EventsDatabase {
   describeDataset(): Promise<EventsDataset | null>;
   findEvents(query: EventsQuery): Promise<CalendarEventRecord[]>;
-  findFacets(): Promise<EventFacet[]>;
+  /**
+   * Every tag root and the tags beneath it, each counting the events that
+   * overlap the window, or every event without one.
+   */
+  findFacets(window?: EventsWindow): Promise<EventFacet[]>;
 }
 
 /**
