@@ -393,7 +393,7 @@ Format: `<type>(<scope>): <gitmoji> <subject>` — a single line, max 128 charac
 - **Type and scope** come from the tables below, both lowercase
 - **Gitmoji required** as the first token of the subject
 - Subject is lowercase, present-imperative (`add`, not `added` or `adds`), with no trailing period
-- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` trailers. Everything else belongs in the subject or the pull request description
+- **Body and footer are forbidden**, except lines that are exactly `Co-authored-by:` or `Claude-Session:` trailers. Everything else belongs in the subject or the pull request description
 - Never list multiple changes — summarize at a higher level, or split the commit
 
 Common gitmojis: ✨ `feat` · 🐛 `fix` · 📝 `docs` · 🧪 `test` · ♻️ `refactor` · 🎨 `style` · ⚡️ `perf` · 🔧 `chore` · 👷 `ci` · 📦 `build` · ⏪ `revert`

@@ -22,7 +22,7 @@ This skill teaches how to write commit messages for this codebase. All commits *
    - Must start with gitmoji emoji (`gitmoji-required`, error level 2)
    - Max 128 characters (`header-max-length: 128`)
    - Subject must not be empty (`subject-empty: never`)
-2. **Body**: Forbidden unless every line is a `Co-authored-by:` trailer, in any casing (`body-co-authored-only`, error level 2)
+2. **Body**: Forbidden unless every line is a `Co-authored-by:` or `Claude-Session:` trailer, in any casing (`body-co-authored-only`, error level 2)
 3. **Footer**: Forbidden (`footer-empty: always`, error level 2)
 
 ## Type
@@ -205,7 +205,7 @@ See [gitmoji.dev](https://gitmoji.dev) for the complete emoji list.
 
 **Footer**: Forbidden. Footer sections are not allowed in commit messages in this repository.
 
-**Body**: Forbidden unless every line is a `Co-authored-by:` trailer, in any casing, which coding agents add automatically. Human contributors must not add a body.
+**Body**: Forbidden unless every line is a `Co-authored-by:` or `Claude-Session:` trailer, in any casing, which coding agents add automatically. Human contributors must not add a body.
 
 If you need to provide:
 
@@ -287,7 +287,7 @@ All rules defined in [../commitlint.config.ts](../../../configuration/commitlint
 - `subject-full-stop`: No period at end
 - `subject-empty`: Subject cannot be empty
 - `header-max-length`: Max 128 characters
-- `body-co-authored-only`: Body must be empty or contain only `Co-authored-by:` trailers
+- `body-co-authored-only`: Body must be empty or contain only `Co-authored-by:` or `Claude-Session:` trailers
 - `footer-empty`: Footer is forbidden
 
 ## Validation
