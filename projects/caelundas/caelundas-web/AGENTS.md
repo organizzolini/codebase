@@ -161,6 +161,10 @@ route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
 components are not code-split into lazy chunks under test.
 
+The views' route tests live in `src/lib/calendar/calendar-views.integration.test.tsx`, beside
+the route's own, only to keep each file under the line limit; shared steps
+live in `testing/calendar-page.ts`.
+
 See the [write-react skill](/.agents/skills/write-react/SKILL.md) for
 component conventions and the
 [testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
@@ -168,11 +172,31 @@ test tiers.
 
 ## Layout
 
-The page is the month view across the whole viewport under a single toolbar
-row: today, previous and next, the month's title, the active filters as chips,
-the Filters button with a count of the finished rules, and the view selector,
-which holds only Month so far. Times render in the zone the dataset's events
-carry.
+The page is the calendar across the whole viewport under a single toolbar
+row: today, previous and next, the period's title, the active filters as
+chips, the Filters button with a count of the finished rules, and the view
+selector. Times render in the zone the dataset's events carry.
+
+- The views are month, week, three-day, day, and agenda, listed in
+  `src/lib/calendar/calendar-views.ts`; the app owns that list, so a view is
+  added or cut there. The `view` search parameter holds the one picked.
+  Without it, the view follows the width: the agenda below 768 pixels, the
+  month above, read synchronously so the first render is already right.
+- Below 768 pixels the selector is a menu, and the week scrolls sideways with
+  a sticky hour column (the time grid in page scroll mode inside a scrolling
+  content area).
+- The agenda and a month cell's "+N more" list are the app's own, windowed by
+  `VirtualList` over the pure functions in
+  `src/lib/calendar/calendar-virtual-window.ts`. An event is listed once, on
+  the day it begins, or on the first day for one already under way.
+- Each load reads only the days the view shows plus a day either side
+  (`getViewWindows` in `src/lib/calendar/calendar-window.ts`), through a cache
+  keyed by window and filter. The agenda lists 30 days and grows by 30, up to
+  366, when scrolled to its end or its last row's button is pressed; the
+  `days` search parameter holds how many.
+- The route reads its search from the location and reloads with
+  `shouldReload: true`, rather than through loader dependencies, so a later
+  load runs in the background and the page it replaces stays on screen.
 
 - The Filters button opens the vendored ReUI builder, nested AND/OR groups
   included: as a popover from 1024 pixels wide, a drawer from the side from
@@ -194,11 +218,12 @@ carry.
 - While the database loads, `CalendarSkeleton` stands in for the page.
 - A failed load shows `CalendarError` with Retry; a browser without
   WebAssembly or Web Workers gets an explanation and no retry.
-- A month with no events keeps the calendar and lays `CalendarEmpty` over it:
+- Days with no events keep the calendar and lay `CalendarEmpty` over it:
   "No events yet" for an empty database, "Outside the data" with a jump to the
-  first covered day, or "No events this month" inside the covered dates.
-- The `date` search parameter (`YYYY-MM-DD`) holds the month; one that does
-  not parse falls back to today.
+  first covered day, or "No events this month" (or week, or day) inside the
+  covered dates.
+- The `date` search parameter (`YYYY-MM-DD`) holds the day the view opens on;
+  one that does not parse falls back to today.
 - The `filter` search parameter holds the ReUI filter tree as JSON, validated
   in `src/lib/calendar/calendar-search.ts`; one that does not parse is
   dropped. `compileEventFilter` in `src/lib/event-filters/` turns it into the

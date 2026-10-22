@@ -16,16 +16,21 @@ import type { ReactNode } from "react";
  */
 type PlainEmptiness = Exclude<CalendarEmptiness["kind"], "range">;
 
-const EMPTY_TITLES: Readonly<Record<PlainEmptiness, string>> = {
-  database: "No events yet",
-  filter: "No events match the filters",
-  match: "No events this month",
+const EMPTY_TITLES: Readonly<
+  Record<PlainEmptiness, (period: string) => string>
+> = {
+  database: () => "No events yet",
+  filter: () => "No events match the filters",
+  match: (period) => `No events ${period}`,
 };
 
-const EMPTY_DESCRIPTIONS: Readonly<Record<PlainEmptiness, string>> = {
-  database: "The events database is empty.",
-  filter: "Nothing this month passes the filters; change or clear them.",
-  match: "Nothing in the data falls in this month.",
+const EMPTY_DESCRIPTIONS: Readonly<
+  Record<PlainEmptiness, (period: string) => string>
+> = {
+  database: () => "The events database is empty.",
+  filter: (period) =>
+    `Nothing ${period} passes the filters; change or clear them.`,
+  match: (period) => `Nothing in the data falls ${period}.`,
 };
 
 // 🔖 Type
@@ -40,6 +45,11 @@ export interface CalendarEmptyProperties {
    * Called with the first day the data covers.
    */
   onJump: (date: Date) => void;
+  /**
+   * The days the view shows, as a phrase such as "this week"; "this month"
+   * when absent.
+   */
+  period?: string | undefined;
 }
 
 // 🧩 Component
@@ -52,7 +62,7 @@ export interface CalendarEmptyProperties {
 export function CalendarEmpty(
   properties: Readonly<CalendarEmptyProperties>,
 ): ReactNode {
-  const { className, emptiness, onJump } = properties;
+  const { className, emptiness, onJump, period = "this month" } = properties;
 
   // 🪝 Hooks
 
@@ -86,9 +96,9 @@ export function CalendarEmpty(
     >
       <Empty className="bg-background/90 pointer-events-auto max-w-md border shadow-sm">
         <EmptyHeader>
-          <EmptyTitle>{EMPTY_TITLES[emptiness.kind]}</EmptyTitle>
+          <EmptyTitle>{EMPTY_TITLES[emptiness.kind](period)}</EmptyTitle>
           <EmptyDescription>
-            {EMPTY_DESCRIPTIONS[emptiness.kind]}
+            {EMPTY_DESCRIPTIONS[emptiness.kind](period)}
           </EmptyDescription>
         </EmptyHeader>
       </Empty>
