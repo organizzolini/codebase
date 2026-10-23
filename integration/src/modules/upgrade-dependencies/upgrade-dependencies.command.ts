@@ -10,13 +10,13 @@ import {
 } from "./upgrade-dependencies.constants";
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 
-import type { SkippedStep, UpgradeStep } from "./upgrade-dependencies.types";
+import type { StepReport, UpgradeStep } from "./upgrade-dependencies.types";
 
 /**
  * CLI command that runs the weekly dependency upgrades, each one undone and
  * reported if it fails, and writes the pull request that reports them.
  *
- * Reads `GITHUB_OUTPUT` and sets the `has_dependency_updates` and `body_path`
+ * Reads `GITHUB_OUTPUT` and `GITHUB_RUN_ID` and sets the `has_dependency_updates` and `body_path`
  * outputs. Exits 0 when every step succeeded or was
  * skipped and something changed, and 1 when a failed step could not be undone
  * or skipped steps are all there is to report.
@@ -50,7 +50,7 @@ export class UpgradeDependenciesCommand extends CommandRunner {
    * @returns Whether the run may carry on: only a step that could not be
    *   undone stops it.
    */
-  private runStep(step: UpgradeStep, skipped: SkippedStep[]): boolean {
+  private runStep(step: UpgradeStep, reports: StepReport[]): boolean {
     console.info(`::group::${step.label}`);
 
     const outcome = this.upgradeDependenciesService.attempt(step);
@@ -64,10 +64,11 @@ export class UpgradeDependenciesCommand extends CommandRunner {
       return false;
     }
 
-    if (outcome.kind === "skipped") {
-      skipped.push(outcome.skipped);
+    reports.push(outcome.report);
+
+    if (outcome.report.skipped !== undefined) {
       console.info(
-        skippedAnnotation(outcome.skipped.label, outcome.skipped.exitCode),
+        skippedAnnotation(step.label, outcome.report.skipped.exitCode),
       );
     }
 
@@ -81,10 +82,10 @@ export class UpgradeDependenciesCommand extends CommandRunner {
     // Nothing here is asynchronous; the base class signature is.
     await Promise.resolve();
 
-    const skipped: SkippedStep[] = [];
+    const reports: StepReport[] = [];
 
     for (const step of UPGRADE_STEPS) {
-      if (!this.runStep(step, skipped)) {
+      if (!this.runStep(step, reports)) {
         process.exitCode = 1;
 
         return;
@@ -92,8 +93,8 @@ export class UpgradeDependenciesCommand extends CommandRunner {
     }
 
     if (
-      !this.upgradeDependenciesService.finish(skipped) &&
-      skipped.length > 0
+      !this.upgradeDependenciesService.finish(reports) &&
+      reports.some((report) => report.skipped !== undefined)
     ) {
       console.error(`::error::${NOTHING_SHIPPED_MESSAGE}`);
       process.exitCode = 1;

@@ -9,18 +9,23 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
   PULL_REQUEST_BODY_FILE,
+  RUNS_URL,
   SCRIPT_OPTIONS,
   TAIL_CHARACTERS,
   TAIL_LINES,
   unrestoredMessage,
   WORKFLOW_URL,
 } from "./upgrade-dependencies.constants";
-import { renderPullRequestBody } from "./upgrade-dependencies.utilities";
+import {
+  renderPullRequestBody,
+  summaryOf,
+  warningsOf,
+} from "./upgrade-dependencies.utilities";
 
 import type { Environment } from "../../integration.types";
 import type { CapturedProcess } from "../process-runner/process-runner.types";
 import type {
-  SkippedStep,
+  StepReport,
   UpgradeOutcome,
   UpgradeStep,
 } from "./upgrade-dependencies.types";
@@ -124,7 +129,21 @@ export class UpgradeDependenciesService {
     const output = `${result.stdout}${result.stderr}`;
 
     if (result.status === 0) {
-      return { kind: "succeeded", output };
+      return {
+        kind: "succeeded",
+        output,
+        report: {
+          changes: this.git([
+            "diff",
+            "--shortstat",
+            tree,
+            this.snapshot(),
+          ]).stdout.trim(),
+          label: step.label,
+          summary: summaryOf(output),
+          warnings: warningsOf(output),
+        },
+      };
     }
 
     const problem = this.undo(tree, step.recover);
@@ -140,10 +159,11 @@ export class UpgradeDependenciesService {
     return {
       kind: "skipped",
       output,
-      skipped: {
-        exitCode: result.status,
+      report: {
+        changes: "",
         label: step.label,
-        tail: this.tail(result),
+        skipped: { exitCode: result.status, tail: this.tail(result) },
+        warnings: [],
       },
     };
   }
@@ -155,13 +175,20 @@ export class UpgradeDependenciesService {
    *
    * @returns Whether anything changed, untracked files included.
    */
-  public finish(skipped: readonly SkippedStep[]): boolean {
+  public finish(reports: readonly StepReport[]): boolean {
     const changed = this.git(["status", "--porcelain"]).stdout.trim() !== "";
     const output = this.configService.get("GITHUB_OUTPUT", { infer: true });
     const body = path.join(os.tmpdir(), PULL_REQUEST_BODY_FILE);
+    const runId = this.configService.get("GITHUB_RUN_ID", { infer: true });
 
     if (changed) {
-      fs.writeFileSync(body, renderPullRequestBody(skipped, WORKFLOW_URL));
+      fs.writeFileSync(
+        body,
+        renderPullRequestBody(
+          reports,
+          runId === undefined ? WORKFLOW_URL : `${RUNS_URL}/${runId}`,
+        ),
+      );
     }
 
     if (output !== undefined && output !== "") {

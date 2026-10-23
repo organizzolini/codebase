@@ -21,6 +21,7 @@ describe(UpgradeDependenciesCommand, () => {
   let service: UpgradeDependenciesService;
   let printed: string[];
   let failed: string[];
+  const done = { changes: "", label: "Step", warnings: [] };
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -92,6 +93,7 @@ describe(UpgradeDependenciesCommand, () => {
     vi.mocked(service.attempt).mockReturnValue({
       kind: "succeeded",
       output: "ok",
+      report: done,
     });
     vi.mocked(service.finish).mockReturnValue(true);
 
@@ -107,17 +109,25 @@ describe(UpgradeDependenciesCommand, () => {
   it("carries on past a skipped step, annotating it, and reports it", async () => {
     expect.hasAssertions();
 
-    const skipped = { exitCode: 2, label: "Upgrade pnpm", tail: "boom" };
+    const report = {
+      changes: "",
+      label: "Upgrade pnpm",
+      skipped: { exitCode: 2, tail: "boom" },
+      warnings: [],
+    };
 
     vi.mocked(service.attempt)
-      .mockReturnValueOnce({ kind: "skipped", output: "", skipped })
-      .mockReturnValue({ kind: "succeeded", output: "ok" });
+      .mockReturnValueOnce({ kind: "skipped", output: "", report })
+      .mockReturnValue({ kind: "succeeded", output: "ok", report: done });
     vi.mocked(service.finish).mockReturnValue(true);
 
     await command.run();
 
     expect(service.attempt).toHaveBeenCalledTimes(UPGRADE_STEPS.length);
-    expect(service.finish).toHaveBeenCalledWith([skipped]);
+    expect(service.finish).toHaveBeenCalledWith([
+      report,
+      ...Array.from({ length: UPGRADE_STEPS.length - 1 }, () => done),
+    ]);
     expect(
       printed.some((line) =>
         line.includes("::warning title=Upgrade pnpm skipped::"),
@@ -149,7 +159,7 @@ describe(UpgradeDependenciesCommand, () => {
     vi.mocked(service.attempt).mockReturnValue({
       kind: "skipped",
       output: "",
-      skipped: { exitCode: 1, label: "Step", tail: "x" },
+      report: { ...done, skipped: { exitCode: 1, tail: "x" } },
     });
     vi.mocked(service.finish).mockReturnValue(false);
 
@@ -165,6 +175,7 @@ describe(UpgradeDependenciesCommand, () => {
     vi.mocked(service.attempt).mockReturnValue({
       kind: "succeeded",
       output: "",
+      report: done,
     });
     vi.mocked(service.finish).mockReturnValue(false);
 

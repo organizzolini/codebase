@@ -14,21 +14,19 @@ export const TAIL_CHARACTERS = 2000;
 /** The file, in the OS temp directory, the pull request body is written to. */
 export const PULL_REQUEST_BODY_FILE = "pull-request-body.md";
 
-/** The workflow that runs this command, linked from the pull request body. */
+/** The workflow that runs this command, linked from the pull request body when no run id is known. */
 export const WORKFLOW_URL =
   "https://github.com/organizzolini/codebase/actions/workflows/upgrade-dependencies.yml";
 
-/** What each upgrade does, as the pull request lists them. */
-export const UPGRADE_DETAILS = [
-  "Update node to latest patch of current major",
-  "Update pnpm to latest version",
-  "Deduplicate the lockfile so in-range transitive upgrades land",
-  "Update pnpm lockfile",
-  "Update Python to latest stable 3.x when every dependency supports it",
-  "Update Python dependencies across all projects",
-  "Update vendored skills from their upstream sources",
-  "Update the Impeccable skill bundle to the latest release",
-] as const;
+/** Where this repository's workflow runs live, to which a run id is appended. */
+export const RUNS_URL =
+  "https://github.com/organizzolini/codebase/actions/runs";
+
+/** The most `⚠` lines the pull request quotes from one step. */
+export const WARNING_LIMIT = 10;
+
+/** The most characters it quotes of a warning or of a skipped step's reason. */
+export const LINE_CHARACTERS = 160;
 
 /** Printed when skipped steps are all the run has to show for itself. */
 export const NOTHING_SHIPPED_MESSAGE =
@@ -52,6 +50,7 @@ version=$(pnpm view pnpm version)
 test -n "$version"
 jq --arg v "pnpm@$version" '.packageManager = $v' package.json > package.json.temporary
 mv package.json.temporary package.json
+echo "summary: pnpm $version"
 pnpm --version
 `,
   },
@@ -73,6 +72,7 @@ mv package.json.temporary package.json
     script: String.raw`
 uv python install 3 --upgrade
 LATEST_PYTHON=$(uv run --no-project --python 3 python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+echo "summary: Python $LATEST_PYTHON"
 PYTHON_VER=$(echo "$LATEST_PYTHON" | tr -d '.')
 NEXT_PYTHON="3.$(( $(echo "$LATEST_PYTHON" | cut -d. -f2) + 1 ))"
 for file in \

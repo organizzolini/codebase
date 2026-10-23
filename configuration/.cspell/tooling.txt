@@ -201,6 +201,7 @@ setsid
 sherif
 shiftsmart
 shiki
+shortstat
 signingkey
 smallint
 smol
