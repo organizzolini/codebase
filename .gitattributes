@@ -121,4 +121,8 @@ dist/** linguist-generated
 .agents/skills/wizard/** linguist-vendored
 .agents/skills/writing-for-agents/** linguist-vendored
 .agents/skills/writing-skills/** linguist-vendored
+.claude/agents/impeccable-* linguist-vendored
+.codex/hooks.json linguist-vendored
+.github/agents/impeccable-* linguist-vendored
+.github/hooks/impeccable.json linguist-vendored
 # installed-skills-end

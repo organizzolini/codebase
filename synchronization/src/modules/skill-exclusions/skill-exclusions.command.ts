@@ -12,13 +12,17 @@ import {
   BLOCK_END_LABEL,
   BLOCK_START_LABEL,
   SKILL_EXCLUSION_FILES,
+  VENDORED_SKILL_PATHS,
 } from "./skill-exclusions.constants";
 
 import type {
   SynchronizableCommand,
   SynchronizationMode,
 } from "../synchronization/synchronization.types";
-import type { SkillExclusionFile } from "./skill-exclusions.types";
+import type {
+  SkillExclusionFile,
+  SkillExclusionInputs,
+} from "./skill-exclusions.types";
 
 /**
  * CLI command that syncs the installed-skill exclusion lists from
@@ -33,7 +37,13 @@ import type { SkillExclusionFile } from "./skill-exclusions.types";
  * wholesale, so this repository's own skills in the same directory keep being
  * formatted, measured, attributed, spell-checked, and markdown-linted.
  *
- * Generating them is what keeps the five in step with the lockfile. A skill
+ * Some installers also copy agents and hooks into other harness folders
+ * (`.claude/agents`, `.github/agents`, `.codex`), where the spell check and
+ * ESLint's markdown rules reach them. `VENDORED_SKILL_PATHS` names those files,
+ * and they are listed too, in the same tools plus ESLint, while their skill is
+ * installed.
+ *
+ * Generating them is what keeps the lists in step with the lockfile. A skill
  * `skills update` adds is committed but invisible to all five until someone
  * adds it, and nothing else would notice — the symptom is a silently reformatted
  * upstream file, a badge counting somebody else's code, a language bar dominated
@@ -68,13 +78,11 @@ export class SkillExclusionsCommand
   // 🔏 Private Methods
 
   /** Every file whose generated block differs from what the lockfile implies. */
-  private findStaleFiles(skillNames: string[]): string[] {
+  private findStaleFiles(inputs: SkillExclusionInputs): string[] {
     return SKILL_EXCLUSION_FILES.filter((file) => {
       const { generatedContent } = this.readExclusionFile(file);
 
-      return (
-        generatedContent.trim() !== this.renderBlock(file, skillNames).trim()
-      );
+      return generatedContent.trim() !== this.renderBlock(file, inputs).trim();
     }).map((file) => file.filePath);
   }
 
@@ -111,23 +119,40 @@ export class SkillExclusionsCommand
     };
   }
 
-  /** Reads the skill names the lockfile declares, sorted for a stable block. */
-  private readSkillNames(): string[] {
+  /** Reads the skills the lockfile declares, and the files they install. */
+  private readInputs(): SkillExclusionInputs {
     const lockfilePath = path.join(process.cwd(), "skills-lock.json");
     const { skills = {} } = JSON.parse(
       readFileSync(lockfilePath, "utf8"),
     ) as Record<"skills", Record<string, unknown> | undefined>;
-
-    return Object.keys(skills).toSorted((left, right) =>
+    const skillNames = Object.keys(skills).toSorted((left, right) =>
       left.localeCompare(right),
     );
+
+    return {
+      skillNames,
+      vendoredPaths: skillNames.flatMap(
+        (skillName) => VENDORED_SKILL_PATHS[skillName] ?? [],
+      ),
+    };
   }
 
-  /** Renders one file's entries, one skill per line in that file's syntax. */
-  private renderBlock(file: SkillExclusionFile, skillNames: string[]): string {
-    return skillNames
-      .map((skillName) => file.renderEntry(skillName))
-      .join("\n");
+  /**
+   * Renders one file's entries in that file's syntax: one line per skill, when
+   * it lists skills, then one per vendored file.
+   */
+  private renderBlock(
+    file: SkillExclusionFile,
+    inputs: SkillExclusionInputs,
+  ): string {
+    const { renderEntry } = file;
+
+    return [
+      ...(renderEntry === undefined
+        ? []
+        : inputs.skillNames.map((skillName) => renderEntry(skillName))),
+      ...inputs.vendoredPaths.map((glob) => file.renderPath(glob)),
+    ].join("\n");
   }
 
   /** The comment closing this file's generated block, in its own syntax. */
@@ -141,10 +166,10 @@ export class SkillExclusionsCommand
   }
 
   /** Rewrites every file's generated block. */
-  private writeSync(skillNames: string[]): void {
+  private writeSync(inputs: SkillExclusionInputs): void {
     for (const file of SKILL_EXCLUSION_FILES) {
       const { afterMarker, beforeMarker } = this.readExclusionFile(file);
-      const block = this.renderBlock(file, skillNames);
+      const block = this.renderBlock(file, inputs);
 
       writeFileSync(
         path.join(process.cwd(), file.filePath),
@@ -155,7 +180,8 @@ export class SkillExclusionsCommand
 
     this.logger.log("🧩 Updated the skill exclusion lists", undefined, {
       files: SKILL_EXCLUSION_FILES.map((file) => file.filePath),
-      skills: skillNames.length,
+      skills: inputs.skillNames.length,
+      vendoredPaths: inputs.vendoredPaths.length,
     });
   }
 
@@ -183,14 +209,14 @@ export class SkillExclusionsCommand
     await Promise.resolve();
 
     try {
-      const skillNames = this.readSkillNames();
+      const inputs = this.readInputs();
 
       if (mode === "write") {
-        this.writeSync(skillNames);
+        this.writeSync(inputs);
         return true;
       }
 
-      const staleFiles = this.findStaleFiles(skillNames);
+      const staleFiles = this.findStaleFiles(inputs);
 
       if (staleFiles.length > 0) {
         this.logger.log(
@@ -199,14 +225,14 @@ export class SkillExclusionsCommand
           {
             files: staleFiles,
             hint: "Run 'nx run synchronization:skill-exclusions:write' to sync",
-            skills: skillNames.length,
+            skills: inputs.skillNames.length,
           },
         );
         return false;
       }
 
       this.logger.log("🧩 Verified the skill exclusion lists", undefined, {
-        skills: skillNames.length,
+        skills: inputs.skillNames.length,
       });
       return true;
     } catch (error) {

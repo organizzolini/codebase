@@ -244,6 +244,7 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 
 **Agent-Specific Rules:**
 
+- **Follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md)** in every commit, pull request, issue, and comment. It covers agents.
 - **Never bypass git hooks** with `--no-verify` — fix the underlying issue instead.
 - **Do not run signing-check scripts manually**; Husky already runs these.
 - **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately uninitialized everywhere. If `pnpm install` rewrites its `pnpm-lock.yaml` entry, **revert the lockfile** rather than reconciling it.
