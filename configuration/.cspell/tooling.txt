@@ -103,6 +103,7 @@ joor
 jsts
 jupyter
 jupyterlab
+keycap
 keyid
 keyof
 killport

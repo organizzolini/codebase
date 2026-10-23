@@ -31,7 +31,7 @@ describe(getEventLabel, () => {
       ),
     ).toStrictEqual({
       details: undefined,
-      glyphs: "🎯 🌙 ⚹ ♆",
+      glyphs: "🌙 ⚹ ♆",
       name: "Moon perfective sextile Neptune",
     });
   });
@@ -57,7 +57,7 @@ describe(getEventLabel, () => {
     });
     expect(
       getEventLabel(event("🎯 ☀️ N ♇ Sun perfective novile Pluto")),
-    ).toMatchObject({ glyphs: "🎯 ☀️ N ♇" });
+    ).toMatchObject({ glyphs: "☀️ N ♇" });
   });
 
   it("keeps symbols that run together with no space between them", () => {
@@ -103,6 +103,15 @@ describe(getEventLabel, () => {
     expect(getEventLabel(event("🌠"))).toMatchObject({
       glyphs: "🌠",
       name: "🌠",
+    });
+  });
+
+  it("leaves out the mark of an aspect that is exact, which an instant says", () => {
+    expect(
+      getEventLabel(event("🎯 🌙 ⚹ ♆ Moon perfective sextile Neptune")),
+    ).toMatchObject({
+      glyphs: "🌙 ⚹ ♆",
+      name: "Moon perfective sextile Neptune",
     });
   });
 });

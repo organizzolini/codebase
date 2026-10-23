@@ -66,7 +66,14 @@ export function CalendarEventChip(
             className="text-[1.35em] leading-none"
             data-testid="calendar-event-symbols"
           >
-            {symbols === "glyphs" ? <EventGlyphs glyphs={glyphs} /> : glyphs}
+            {symbols === "glyphs" ? (
+              <EventGlyphs
+                glyphs={glyphs}
+                name={name}
+              />
+            ) : (
+              glyphs
+            )}
           </span>
         )}
       </CalendarEventTooltip>

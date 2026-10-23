@@ -40,17 +40,118 @@ describe(toGlyphParts, () => {
   });
 
   it("leaves what has no icon as it is written", () => {
-    expect(files("🎯 🌚 U")).toStrictEqual(['"🎯 🌚 U"']);
-    expect(files("🌙 → ♊︎2️⃣")).toStrictEqual([
-      "moon-icon.svg",
-      '" → "',
-      "gemini-icon.svg",
-      '"2️⃣"',
+    expect(files("🌐 ☀️🐉▶️")).toStrictEqual([
+      '"🌐 "',
+      "sun-icon.svg",
+      '"🐉▶️"',
     ]);
   });
 
   it("reads an arrow as forming or dissolving only at the start", () => {
     expect(files("➡️")).toStrictEqual(["waxing-icon.png"]);
-    expect(files("☿📏➡️")).toStrictEqual(["mercury-icon.svg", '"📏➡️"']);
+    expect(files("☿📏➡️")).toStrictEqual([
+      "mercury-icon.svg",
+      "elongation-icon.svg",
+      '"➡️"',
+    ]);
+  });
+
+  it("draws the moon at its farthest and nearest as the moon beside the apsis", () => {
+    expect(files("🌙 ☍ 🌚")).toStrictEqual([
+      "moon-icon.svg",
+      '" "',
+      "opposition-180-icon.png",
+      '" "',
+      "moon-icon.svg",
+      "apoapsis-icon.svg",
+    ]);
+    expect(files("🌙 🔥")).toStrictEqual([
+      "moon-icon.svg",
+      '" "',
+      "periapsis-icon.svg",
+    ]);
+    expect(files("🌙 ❄️")).toStrictEqual([
+      "moon-icon.svg",
+      '" "',
+      "apoapsis-icon.svg",
+    ]);
+  });
+
+  it("draws an ingress, its decan and its peak", () => {
+    expect(files("🌙 → ♊︎2️⃣")).toStrictEqual([
+      "moon-icon.svg",
+      '" "',
+      "ingress-icon.svg",
+      '" "',
+      "gemini-icon.svg",
+      "ingress-second-decan-icon.svg",
+    ]);
+    expect(files("🌙 → ♐︎⛰️")).toStrictEqual([
+      "moon-icon.svg",
+      '" "',
+      "ingress-icon.svg",
+      '" "',
+      "sagitarius-icon.svg",
+      "ingress-peak-icon.svg",
+    ]);
+    expect(files("♑︎3️⃣")).toStrictEqual([
+      "capricorn-icon.svg",
+      "ingress-third-decan-icon.svg",
+    ]);
+  });
+
+  it("draws a station's direction and a planet's rise and set", () => {
+    expect(files("♀️ ↩️")).toStrictEqual([
+      "venus-icon.svg",
+      '" "',
+      "retrograde-icon.svg",
+    ]);
+    expect(files("♇ ↪️")).toStrictEqual([
+      "pluto-icon.svg",
+      '" "',
+      "prograde-icon.svg",
+    ]);
+    expect(files("♀️🌄↥")).toStrictEqual([
+      "venus-icon.svg",
+      "morning-star-icon.svg",
+      "rising-icon.svg",
+    ]);
+    expect(files("♀️🌇↧")).toStrictEqual([
+      "venus-icon.svg",
+      "evening-star-icon.svg",
+      "setting-2-icon.svg",
+    ]);
+  });
+
+  it("draws an undecile as its own icon", () => {
+    expect(files("⬅️ ♆ U ☊")).toContain("undecile-32.7-icon.svg");
+  });
+
+  it("draws the day, the night and each hexadecan by the event's name", () => {
+    expect(
+      toGlyphParts("☀️", "Daylight").map((part) =>
+        part.kind === "icon" ? part.file : part.text,
+      ),
+    ).toStrictEqual(["day-icon.svg"]);
+    expect(toGlyphParts("🌃", "Night")).toMatchObject([
+      { file: "night-icon.svg" },
+    ]);
+    expect(toGlyphParts("❄️", "Thirteenth Hexadecan")).toMatchObject([
+      { file: "thirteenth-hexadecan-icon.svg" },
+    ]);
+    expect(toGlyphParts("🍁", "Ninth Hexadecan")).toMatchObject([
+      { file: "ninth-hexadecan-icon.svg" },
+    ]);
+  });
+
+  it("draws a lone sun as the sun, and a name's icon only for its one symbol", () => {
+    expect(toGlyphParts("☀️", "Sunrise")).toMatchObject([
+      { file: "sun-icon.svg" },
+    ]);
+    expect(toGlyphParts("☀️ 🔼", "Daylight")).toMatchObject([
+      { file: "sun-icon.svg" },
+      { kind: "text" },
+      { file: "rising-icon.svg" },
+    ]);
   });
 });

@@ -10,6 +10,10 @@ import type { ReactNode } from "react";
 export interface EventGlyphsProperties {
   className?: string;
   glyphs: string;
+  /**
+   * The event's name, which tells apart the events whose one symbol is shared.
+   */
+  name?: string;
 }
 
 // 🧩 Component
@@ -22,12 +26,12 @@ export interface EventGlyphsProperties {
 export function EventGlyphs(
   properties: Readonly<EventGlyphsProperties>,
 ): ReactNode {
-  const { className = "inline", glyphs } = properties;
+  const { className = "inline", glyphs, name } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const parts = toGlyphParts(glyphs);
+  const parts = toGlyphParts(glyphs, name);
 
   // 💪 Handlers
 
