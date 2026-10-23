@@ -9,7 +9,8 @@
  * every project affected for every target. Only the target that runs
  * `spell-check` should see those files.
  */
-export const DEFAULT_SPELLING_PATHS = String.raw`^configuration/\.cspell/|(^|/)cspell\.config\.yaml$`;
+export const SPELLING_PATTERN =
+  /^configuration\/\.cspell\/|(^|\/)cspell\.config\.yaml$/u;
 
 /**
  * Which changed files count as conformetry templates.
@@ -17,7 +18,7 @@ export const DEFAULT_SPELLING_PATHS = String.raw`^configuration/\.cspell/|(^|/)c
  * `.nxignore` hides some templates from Nx, so a template edit alone selects
  * none of the instance projects generated from it.
  */
-export const DEFAULT_TEMPLATE_PATHS = String.raw`^configuration/conformetry-templates/`;
+export const TEMPLATE_PATTERN = /^configuration\/conformetry-templates\//u;
 
 /**
  * The file added to the change set when a template changed: the conformetry

@@ -53,9 +53,7 @@ describe(RunAffectedCommand, () => {
       "INCLUDE_TEMPLATES",
       "NX_BASE",
       "NX_HEAD",
-      "SPELLING_PATHS",
       "TARGET",
-      "TEMPLATE_PATHS",
     ]) {
       vi.stubEnv(name, undefined);
     }
@@ -299,29 +297,6 @@ describe(RunAffectedCommand, () => {
       expect(runner.captured).toHaveLength(0);
       expect(runner.streamed[0]?.args).toContain("--base=base");
     });
-
-    it("falls back to the default paths when SPELLING_PATHS is empty", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(
-        changing("configuration/.cspell/words.txt", "main.ts"),
-      );
-      await runCommand(runner, { ...base, SPELLING_PATHS: "" });
-
-      expect(runner.streamed[0]?.input).toBe("main.ts\n");
-    });
-
-    it("honours SPELLING_PATHS", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(changing("words.txt", "main.ts"));
-      await runCommand(runner, {
-        ...base,
-        SPELLING_PATHS: String.raw`^words\.txt$`,
-      });
-
-      expect(runner.streamed[0]?.input).toBe("main.ts\n");
-    });
   });
 
   describe("a change set with templates", () => {
@@ -403,21 +378,6 @@ describe(RunAffectedCommand, () => {
       });
 
       expect(runner.streamed[0]?.args).toContain("--base=base");
-    });
-
-    it("honours TEMPLATE_PATHS", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(changing("templates/a.ts"));
-      await runCommand(runner, {
-        ...base,
-        INCLUDE_TEMPLATES: "true",
-        TEMPLATE_PATHS: "^templates/",
-      });
-
-      expect(runner.streamed[0]?.input).toBe(
-        "templates/a.ts\nconfiguration/conformetry.config.ts\n",
-      );
     });
   });
 
