@@ -342,15 +342,11 @@ words:
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.
   - cooldown
-  - litha
-  - mabon
   # Nx's project-discovery ignore file, read when listing a workspace's projects.
   - nxignore
-  - octile
   - openwiki
   # OpenWiki's gitignore-style file of paths it must not treat as source.
   - openwikiignore
-  - ostara
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
   # Observer sites in caelundas reference fixtures, checked against USNO.
@@ -358,9 +354,6 @@ words:
   # The SQLite function that trims characters from a string's end, which reads
   # the number a tag such as "Harmonic 6" is named for.
   - rtrim
-  - sagitarius
-  - tridecile
-  - trioctile
   - tromso
   - Tromsø
   # The markdown heading style written as text underlined by === or ---.

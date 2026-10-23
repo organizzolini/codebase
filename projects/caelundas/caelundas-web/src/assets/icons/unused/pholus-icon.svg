@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<circle cx="12.0001" cy="18.5" r="4.5" stroke="black"/>
+<circle cx="12.0001" cy="18.5" r="4.5" stroke="black"/>
+<circle cx="12.0001" cy="18.5" r="4.5" stroke="black"/>
+<use xlink:href="#stroke0_682_10579" stroke="black"/>
+<use xlink:href="#stroke0_682_10579" stroke="black"/>
+<use xlink:href="#stroke0_682_10579" stroke="black"/>
+<path d="M14 1H12V7M12 14V7M12 7H14" stroke-linecap="round" stroke-linejoin="round" stroke="black"/>
+<defs>
+<path id="stroke0_682_10579" d="M14 1C14.7956 1 15.5587 1.31607 16.1213 1.87868C16.6839 2.44129 17 3.20435 17 4C17 4.79564 16.6839 5.55871 16.1213 6.12132C15.5587 6.68393 14.7957 7 14 7"/>
+</defs>
+</svg>
