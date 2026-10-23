@@ -22,4 +22,4 @@ ADR 0028 moved the Nx CI steps into commands of the `publication` project. The `
 
 - A new CI step is a command of `integration`, unless it must run before `pnpm install` ([ADR 0027](0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md)) or is an action.
 - `setup-codebase` boots the container once instead of four times.
-- The tool installs in `setup-codebase` (Homebrew's gitleaks and Trivy, the PostgreSQL 18 client) are not moved. The `installation` project's `software` command installs the same tools on Linux from checksummed release archives and the PostgreSQL apt repository, but it assumes root and `~/.local/bin`, and a runner has neither. Moving them is a separate change.
+- The tool installs in `setup-codebase` (Homebrew's gitleaks and Trivy, the PostgreSQL 18 client) are not moved. The `installation` project's `software` command installs the same tools on Linux from release archives whose checksums it verifies and the PostgreSQL apt repository, but it assumes root and `~/.local/bin`, and a runner has neither. Moving them is a separate change.
