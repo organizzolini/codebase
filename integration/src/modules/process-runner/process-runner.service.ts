@@ -1,5 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
+import fs from "node:fs";
 import { text } from "node:stream/consumers";
 
 import { Injectable } from "@nestjs/common";
@@ -47,7 +48,8 @@ export class ProcessRunnerService {
 
     return {
       status: result.status ?? ABNORMAL_EXIT_STATUS,
-      stderr: `${result.stderr}${failure}`,
+      // Typed as a string, but absent when the process never started.
+      stderr: [result.stderr, failure].filter(Boolean).join(""),
       stdout: result.stdout,
     };
   }
@@ -91,6 +93,40 @@ export class ProcessRunnerService {
       stderr: stderr.status === "fulfilled" ? stderr.value : "",
       stdout: stdout.status === "fulfilled" ? stdout.value : "",
     };
+  }
+
+  /**
+   * Runs a command to completion with its standard output written to a file,
+   * byte for byte, which suits a download that is not text.
+   *
+   * @param executable - The program to run, looked up on `PATH`.
+   * @param args - Its arguments, passed verbatim with no shell between.
+   * @param file - The file its standard output replaces.
+   * @returns The error stream and the exit code; `stdout` is always empty.
+   */
+  public captureToFile(
+    executable: string,
+    args: readonly string[],
+    file: string,
+  ): CapturedProcess {
+    const descriptor = fs.openSync(file, "w");
+
+    try {
+      const result = spawnSync(executable, [...args], {
+        encoding: "utf8",
+        stdio: ["ignore", descriptor, "pipe"],
+      });
+      const failure = result.error === undefined ? "" : String(result.error);
+
+      return {
+        status: result.status ?? ABNORMAL_EXIT_STATUS,
+        // Typed as a string, but absent when the process never started.
+        stderr: [result.stderr, failure].filter(Boolean).join(""),
+        stdout: "",
+      };
+    } finally {
+      fs.closeSync(descriptor);
+    }
   }
 
   /**

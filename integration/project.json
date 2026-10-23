@@ -31,11 +31,32 @@
         "adopt-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts adopt-task-database"
         },
+        "bound-base-to-push": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts bound-base-to-push"
+        },
+        "cleanup-codebase": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts cleanup-codebase"
+        },
+        "collect-codometer-baseline": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts collect-codometer-baseline"
+        },
+        "import-pr-task-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts import-pr-task-cache"
+        },
         "keep-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts keep-task-database"
         },
+        "merge-task-cache": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts merge-task-cache"
+        },
+        "report-codometer-changes": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts report-codometer-changes"
+        },
         "run-affected": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts run-affected"
+        },
+        "setup-codebase": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts setup-codebase"
         },
         "upgrade-dependencies": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts upgrade-dependencies"

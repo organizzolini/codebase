@@ -1,18 +1,6 @@
 // ♟️ Constants
 
 /**
- * Which changed files count as spelling files: the shared dictionaries and
- * every `cspell.config.yaml`.
- *
- * `spell-check` lists them among its `{workspaceRoot}` inputs, and Nx decides
- * affected per project, not per target, so one new word in a dictionary marks
- * every project affected for every target. Only the target that runs
- * `spell-check` should see those files.
- */
-export const SPELLING_PATTERN =
-  /^configuration\/\.cspell\/|(^|\/)cspell\.config\.yaml$/u;
-
-/**
  * Which changed files count as conformetry templates.
  *
  * `.nxignore` hides some templates from Nx, so a template edit alone selects
@@ -27,9 +15,6 @@ export const TEMPLATE_PATTERN = /^configuration\/conformetry-templates\//u;
  */
 export const TEMPLATE_SELECTOR = "configuration/conformetry.config.ts";
 
-/** The value of `INCLUDE_SPELLING` that keeps spelling files in the change set. */
-export const INCLUDE_SPELLING_VALUE = "true";
-
 /** The value of `INCLUDE_TEMPLATES` that selects every instance on a template change. */
 export const INCLUDE_TEMPLATES_VALUE = "true";
 
@@ -38,10 +23,6 @@ export const TARGET_UNSET_MESSAGE =
 
 export const REVISIONS_UNSET_MESSAGE =
   "❌ NX_BASE and NX_HEAD are unset; run setup-codebase first";
-
-/** Heads the list of spelling files dropped from the change set. */
-export const spellingFilesHeading = (target: string): string =>
-  `✂️ Not affecting ${target} with spelling files:`;
 
 /** Heads the list of changed templates that select every conformetry instance. */
 export const templateFilesHeading = (target: string): string =>

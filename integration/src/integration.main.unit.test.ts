@@ -57,6 +57,41 @@ vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
   KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
 }));
 
+vi.mock("./modules/bound-base-to-push/bound-base-to-push.module", () => ({
+  BoundBaseToPushModule: function BoundBaseToPushModule() {},
+}));
+
+vi.mock("./modules/import-pr-task-cache/import-pr-task-cache.module", () => ({
+  ImportPrTaskCacheModule: function ImportPrTaskCacheModule() {},
+}));
+
+vi.mock("./modules/merge-task-cache/merge-task-cache.module", () => ({
+  MergeTaskCacheModule: function MergeTaskCacheModule() {},
+}));
+
+vi.mock("./modules/cleanup-codebase/cleanup-codebase.module", () => ({
+  CleanupCodebaseModule: function CleanupCodebaseModule() {},
+}));
+
+vi.mock(
+  "./modules/collect-codometer-baseline/collect-codometer-baseline.module",
+  () => ({
+    CollectCodometerBaselineModule:
+      function CollectCodometerBaselineModule() {},
+  }),
+);
+
+vi.mock(
+  "./modules/report-codometer-changes/report-codometer-changes.module",
+  () => ({
+    ReportCodometerChangesModule: function ReportCodometerChangesModule() {},
+  }),
+);
+
+vi.mock("./modules/setup-codebase/setup-codebase.module", () => ({
+  SetupCodebaseModule: function SetupCodebaseModule() {},
+}));
+
 vi.mock("./modules/upgrade-dependencies/upgrade-dependencies.module", () => ({
   UpgradeDependenciesModule: function UpgradeDependenciesModule() {},
 }));

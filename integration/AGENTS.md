@@ -4,7 +4,7 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Continuous Integration plumbing: the steps that run around a CI job, as tested commands. Today that is the affected run, the Nx task-cache database (verify, adopt, keep), and the weekly dependency upgrades; the base bounding and the pull-request cache import are planned here too. "Integration" in this project means Continuous Integration, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
+**Purpose**: Continuous Integration plumbing: the steps that run around a CI job, as tested commands. The affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means Continuous Integration, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
 ### Run Locally
 
@@ -58,11 +58,32 @@ one class.
 
 | Command | Module | Called from |
 | ------- | ------ | ----------- |
-| `run-affected` | `src/modules/run-affected` | the `run-affected` composite action |
-| `verify-task-database` | `src/modules/verify-task-database` | the `cleanup-codebase` composite action |
-| `adopt-task-database` | `src/modules/adopt-task-database` | nothing yet: `setup-codebase` runs it before install, as `scripts/nx/adopt-task-database.sh` |
-| `keep-task-database` | `src/modules/keep-task-database` | the `cleanup-codebase` composite action |
+| `setup-codebase` | `src/modules/setup-codebase` | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it |
+| `bound-base-to-push` | `src/modules/bound-base-to-push` | `setup-codebase`, on a push with `nx-base: push-before` |
+| `import-pr-task-cache` | `src/modules/import-pr-task-cache` | `setup-codebase`, in a merge group |
+| `verify-task-database` | `src/modules/verify-task-database` | `setup-codebase` and `cleanup-codebase` |
+| `adopt-task-database` | `src/modules/adopt-task-database` | `setup-codebase` |
+| `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
+| `keep-task-database` | `src/modules/keep-task-database` | `cleanup-codebase` |
+| `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
+| `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure and Publishable Packages |
+| `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
+| `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
 | `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |
+
+`setup-codebase` and `cleanup-codebase` run the services of the commands above
+themselves, in a command of their own rather than a service: one more layer
+would put the import's call stack over the depth limit. They read `NX_CACHE`
+(and, for `setup-codebase`, `NX_SHAS`, `NX_BASE_SOURCE`, and `GITHUB_EVENT_NAME`)
+to skip what the job did not ask for. The cache restores and saves, and the
+artifact uploads, stay in the composite actions: they are actions, with no
+command to replace them.
+
+`run-affected` no longer drops spelling files: Nx's task-based affected
+(`NX_LEGACY_AFFECTED=false`, set by `setup-codebase`) selects by each task's own
+inputs, so a dictionary edit reaches only `spell-check`. What it still adds is
+the conformetry config when a template changed, because `.nxignore` hides
+templates from Nx.
 
 `src/modules/process-runner` holds the wrapper over `node:child_process`
 (`capture` returns the output, `captureAsync` does so without blocking, and
@@ -87,7 +108,8 @@ Run one locally with `nx run integration:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).
 
 Steps that run before `pnpm install` cannot live here, because a command needs
-the installed dependencies. `scripts/nx/bound-base-to-push.sh` is one.
+the installed dependencies; see
+[ADR 0029](../documentation/adr/0029-keep-the-ci-steps-in-the-integration-project.md).
 
 ## Development
 
