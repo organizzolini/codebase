@@ -132,5 +132,33 @@ describe(CalendarFilters, () => {
         true,
       );
     });
+
+    it("goes back to the default collection when the link's filter is dropped", () => {
+      const properties = {
+        facets: FACETS,
+        fields: [],
+        onFilterChange: vi.fn<(filter: unknown) => void>(),
+      };
+      const { rerender } = render(
+        <CalendarFilters
+          {...properties}
+          filter={COLLECTION.filter}
+        />,
+      );
+
+      rerender(
+        <CalendarFilters
+          {...properties}
+          filter={undefined}
+        />,
+      );
+
+      // The default collection is the one the seed's tags cannot serve, so
+      // nothing is left filtered.
+      expect(screen.getByRole("button", { name: "Clear" })).toHaveProperty(
+        "disabled",
+        true,
+      );
+    });
   });
 });

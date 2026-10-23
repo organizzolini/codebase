@@ -36,4 +36,11 @@ describe(validateCalendarSearch, () => {
       { field: "tag:planet" },
     ]);
   });
+
+  it("reads what the events are colored by like a level of a grouping", () => {
+    expect(
+      validateCalendarSearch({ color: { depth: 2, field: "tag:type" } }).color,
+    ).toMatchObject({ depth: 2, field: "tag:type" });
+    expect(validateCalendarSearch({ color: "nope" }).color).toBeUndefined();
+  });
 });

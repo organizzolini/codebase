@@ -22,6 +22,7 @@ import type {
   EventsDataset,
   EventsQuery,
   EventsWindow,
+  SqlGroupSource,
 } from "../events-database/events-database.types";
 import type { CalendarSearch } from "./calendar-search";
 
@@ -44,6 +45,12 @@ const CACHED_READS = 24;
  */
 export interface CalendarData {
   anchor: Date;
+  /**
+   * The level the events are colored by, read for each event after the
+   * grouping's levels, or nothing when they are colored by type, kind by
+   * kind: the link's, holding only a field the data has.
+   */
+  colorBy: EventGroupLevel | undefined;
   dataset: EventsDataset | null;
   /**
    * Set only when no events were found.
@@ -106,14 +113,10 @@ export async function loadCalendar(
   const facets = await findFacetsCached(database, visible);
   const effectiveFilter = search.filter ?? resolveDefaultFilter(facets);
   const filter = compileEventFilter(effectiveFilter);
-  const grouping = resolveGrouping(search, facets);
+  const { colorBy, grouping, groups } = resolveGroups(search, facets);
   const [dataset, events] = await Promise.all([
     database.describeDataset(),
-    findEventsCached(database, {
-      filter,
-      groups: compileEventGrouping(grouping),
-      window,
-    }),
+    findEventsCached(database, { filter, groups, window }),
   ]);
   const filtered = filter !== null;
   let emptiness = describeEmptiness({ dataset, events, visible });
@@ -131,6 +134,7 @@ export async function loadCalendar(
 
   return {
     anchor,
+    colorBy,
     dataset,
     emptiness,
     events,
@@ -268,6 +272,19 @@ async function findFacetsCached(
 }
 
 /**
+ * The level the search colors events by, kept to a field the data has, or
+ * nothing for the default of type, kind by kind.
+ */
+function resolveColorBy(
+  search: CalendarSearch,
+  facets: readonly EventFacet[],
+): EventGroupLevel | undefined {
+  return search.color === undefined
+    ? undefined
+    : resolveEventGrouping([search.color], createEventGroupFields(facets))[0];
+}
+
+/**
  * The filter a link with none opens on: the default collection's, resolved
  * against the data, or nothing when the data has none of the tags it names.
  */
@@ -304,6 +321,30 @@ function resolveGrouping(
     search.group ?? getDefaultGrouping(view, fields),
     fields,
   );
+}
+
+/**
+ * The levels each event is read with keys for: the grouping's, then the one
+ * the events are colored by, each compiled to its source of keys.
+ */
+function resolveGroups(
+  search: CalendarSearch,
+  facets: readonly EventFacet[],
+): {
+  colorBy: EventGroupLevel | undefined;
+  grouping: EventGroupLevel[];
+  groups: SqlGroupSource[];
+} {
+  const grouping = resolveGrouping(search, facets);
+  const colorBy = resolveColorBy(search, facets);
+
+  return {
+    colorBy,
+    grouping,
+    groups: compileEventGrouping(
+      colorBy === undefined ? grouping : [...grouping, colorBy],
+    ),
+  };
 }
 
 /**

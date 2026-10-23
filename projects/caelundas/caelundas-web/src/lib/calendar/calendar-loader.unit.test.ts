@@ -80,4 +80,36 @@ describe(loadCalendar, () => {
 
     expect(spy).toHaveBeenCalledTimes(2);
   });
+
+  it("reads the keys an event is colored by after its grouping's, for a color in the link", async () => {
+    const database = createTestEventsDatabase();
+    const data = await loadCalendar(database, {
+      ...MARCH,
+      color: { depth: 1, field: "tag:tag-planet" },
+      filter: EMPTY_EVENT_FILTER,
+    });
+    const conjunction = data.events.find(
+      (event) => event.id === "event-mars-conjunct-venus",
+    );
+
+    expect(data.colorBy).toStrictEqual({ depth: 1, field: "tag:tag-planet" });
+    expect(data.grouping).toStrictEqual([]);
+    expect(
+      conjunction?.groups[0]?.map(({ key }) => key).toSorted(),
+    ).toStrictEqual(["tag-mars", "tag-venus"]);
+  });
+
+  it("colors by nothing in particular without a color, or for a field the data lacks", async () => {
+    const database = createTestEventsDatabase();
+
+    await expect(
+      loadCalendar(database, MARCH).then((data) => data.colorBy),
+    ).resolves.toBeUndefined();
+    await expect(
+      loadCalendar(database, {
+        ...MARCH,
+        color: { field: "tag:tag-missing" },
+      }).then((data) => data.colorBy),
+    ).resolves.toBeUndefined();
+  });
 });

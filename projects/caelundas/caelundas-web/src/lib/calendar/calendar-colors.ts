@@ -82,18 +82,20 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
 // 🧩 Functions
 
 /**
- * Draws every event in the color of its kind, or in none: with colors off an
- * event keeps no color, so the views draw it in their default.
+ * Draws every event in the color `colorOf` gives it, by default that of its
+ * kind, or in none: with colors off an event keeps no color, so the views
+ * draw it in their default.
  */
 export function colorEvents(
   events: readonly CalendarEventRecord[],
   enabled: boolean,
+  colorOf: (event: CalendarEventRecord) => null | string = getEventColor,
 ): CalendarEventRecord[] {
   const colored: CalendarEventRecord[] = [];
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
   for (const event of events) {
-    colored.push({ ...event, color: enabled ? getEventColor(event) : null });
+    colored.push({ ...event, color: enabled ? colorOf(event) : null });
   }
 
   return colored;

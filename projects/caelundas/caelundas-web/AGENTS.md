@@ -243,6 +243,19 @@ selector. Times render in the zone the dataset's events carry.
 - Without a `group` search parameter, the agenda groups by Type and the
   timeline by Type, then Planet; an empty list groups by nothing. Levels that
   do not parse or name a field the data lacks are dropped one by one.
+- Events are colored by a level picked the way a grouping's level is: the
+  `color` search parameter holds one, a field and, for a tag root, the tags or
+  the depth of its tree, from the same fields the filters and the grouping
+  offer, and the View menu's Color by submenu picks it with the same field
+  picker and tag tree. The loader reads it as one more level after the
+  grouping's, so each event arrives with its keys for it in `groups`;
+  `createColorScheme` (`src/lib/calendar/calendar-color-schemes.ts`) turns
+  them into colors, handing out the palette in the tree's order, from the
+  weekdays, hours and durations known ahead, or from a key's own text for a
+  period. An event with several values, such as an aspect between two planets,
+  takes the first in the legend's order; one with none keeps the color the
+  data gave it. With no `color`, events are colored by type, kind by kind
+  (`EVENT_COLOR_RULES`); `colors=false` draws none.
 - The timeline is the vendored ReUI Gantt, composed in `CalendarTimeline`:
   a row per group, nested and collapsible, a tag group grouped below its
   root's children nested under each tag between, and a column counting each

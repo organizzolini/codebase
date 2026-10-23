@@ -41,7 +41,14 @@ const DURATION_BUCKET_SQL = `case ${DURATION_BUCKETS.map(
 export function compileEventGrouping(
   grouping: EventGrouping,
 ): SqlGroupSource[] {
-  return grouping.map((level) => compileGroupLevel(level));
+  const sources: SqlGroupSource[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const level of grouping) {
+    sources.push(compileGroupLevel(level));
+  }
+
+  return sources;
 }
 
 /**
@@ -53,7 +60,7 @@ function compileGroupLevel(level: EventGroupLevel): SqlGroupSource {
       parameters: [...level.tags],
       sql: PICKED_TAG_GROUP_SQL.replace(
         "{tags}",
-        level.tags.map(() => "?").join(", "),
+        Array.from({ length: level.tags.length }, () => "?").join(", "),
       ),
     };
   }

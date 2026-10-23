@@ -1,5 +1,4 @@
 import { ListFilter } from "lucide-react";
-import { useMemo, useState } from "react";
 
 import {
   Badge,
@@ -26,16 +25,8 @@ import {
 } from "@codebase/presentation";
 
 import {
-  DEFAULT_EVENT_FILTER_COLLECTION_ID,
-  type ResolvedEventFilterCollection,
-  resolveEventFilterCollections,
-} from "../lib/event-filters/event-filter-collections";
-import { compileEventFilter } from "../lib/event-filters/event-filter-compiler";
-import {
   countActiveEventFilterRules,
   EMPTY_EVENT_FILTER,
-  isSameEventFilter,
-  toLinkedEventFilter,
 } from "../lib/event-filters/event-filter-tree";
 import {
   DATE_RANGE_EDITOR,
@@ -43,9 +34,11 @@ import {
 } from "../lib/event-filters/event-filters.constants";
 
 import { CalendarCollectionPicker } from "./calendar-collection-picker";
+import { CalendarColorOptions } from "./calendar-color-options";
 import { CalendarViewMenu } from "./calendar-view-menu";
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
 import { FilterTagEditor } from "./filter-tag-editor";
+import { useFilterQuery } from "./use-filter-query";
 
 import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
 import type {
@@ -53,6 +46,7 @@ import type {
   EventFilterQuery,
   EventFilterValue,
 } from "../lib/event-filters/event-filters.types";
+import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
 import type { EventFacet } from "../lib/events-database/events-database.types";
 import type { FilterEditorRegistry } from "@codebase/presentation";
 import type { ReactElement, ReactNode } from "react";
@@ -71,6 +65,11 @@ export interface CalendarFiltersProperties {
    */
   clusters?: boolean;
   /**
+   * What the events are colored by, which the View menu's Color by submenu
+   * changes; the type, kind by kind, when absent.
+   */
+  colorBy?: EventGroupLevel | undefined;
+  /**
    * Whether events are colored by type, which the View menu turns on or off;
    * on when absent.
    */
@@ -86,6 +85,11 @@ export interface CalendarFiltersProperties {
    * Called with the merging setting picked in the View menu.
    */
   onClustersChange?: (enabled: boolean) => void;
+  /**
+   * Called with what the events are colored by as picked in the View menu, or
+   * `undefined` for the default.
+   */
+  onColorByChange?: (level: EventGroupLevel | undefined) => void;
   /**
    * Called with the colors setting picked in the View menu; the menu offers
    * no choice without it.
@@ -135,11 +139,13 @@ export function CalendarFilters(
   const {
     className,
     clusters = true,
+    colorBy,
     colors = true,
     facets = [],
     fields,
     filter,
     onClustersChange = () => {},
+    onColorByChange = () => {},
     onColorsChange = () => {},
     onFilterChange,
     onSymbolsChange,
@@ -149,46 +155,13 @@ export function CalendarFilters(
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const collections = useMemo(
-    () => resolveEventFilterCollections(facets),
-    [facets],
-  );
-  // A link with no filter opens on the default collection.
-  const defaultFilter = getDefaultFilter(collections);
-  const [query, setQuery] = useState(filter ?? defaultFilter);
+  const { collections, handleCollectionSelect, handleQueryChange, query } =
+    useFilterQuery(filter, facets, onFilterChange);
   const activeCount = countActiveEventFilterRules(query);
-  const [seenFilter, setSeenFilter] = useState(filter);
 
   // 🏗 Setup
-  // Only a change to the link itself can replace the tree: the link lags an
-  // edit until the calendar has reloaded, and must not undo it meanwhile.
-  if (!isSameEventFilter(filter, seenFilter)) {
-    setSeenFilter(filter);
-
-    if (!isSameEventFilter(filter, toLinkedEventFilter(query))) {
-      setQuery(filter ?? defaultFilter);
-    }
-  }
 
   // 💪 Handlers
-  // An edit that leaves the query as it was, such as a rule that is not
-  // finished yet, stays here rather than reloading the calendar.
-  const handleQueryChange = (next: EventFilterQuery): void => {
-    setQuery(next);
-
-    if (
-      JSON.stringify(compileEventFilter(next)) !==
-      JSON.stringify(compileEventFilter(query))
-    ) {
-      onFilterChange(toLinkedEventFilter(next));
-    }
-  };
-
-  // A collection replaces the whole tree, and is written to the link at once.
-  const handleCollectionSelect = (next: EventFilterQuery): void => {
-    setQuery(next);
-    onFilterChange(toLinkedEventFilter(next));
-  };
 
   // ♻️ Lifecycle
 
@@ -202,6 +175,13 @@ export function CalendarFilters(
     >
       <CalendarViewMenu
         clusters={clusters}
+        colorOptions={
+          <CalendarColorOptions
+            colorBy={colorBy}
+            facets={facets}
+            onColorByChange={onColorByChange}
+          />
+        }
         colors={colors}
         onClustersChange={onClustersChange}
         onColorsChange={onColorsChange}
@@ -346,20 +326,6 @@ function FilterSurface(
         <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
       </SheetContent>
     </Sheet>
-  );
-}
-
-/**
- * The filter of the default collection, or none when the data has no such
- * collection.
- */
-function getDefaultFilter(
-  collections: readonly ResolvedEventFilterCollection[],
-): EventFilterQuery {
-  return (
-    collections.find(
-      (collection) => collection.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
-    )?.filter ?? EMPTY_EVENT_FILTER
   );
 }
 

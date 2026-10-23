@@ -257,10 +257,21 @@ export function resolveEventFilterCollections(
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
   for (const collection of EVENT_FILTER_COLLECTIONS) {
-    const next = resolveEventFilterCollection(collection, facets);
+    // Resolved here rather than through `resolveEventFilterCollection`, which
+    // would be one more call on every stack beneath.
+    const filter = resolveGroup(collection.filter, {
+      collectionId: collection.id,
+      facets,
+      position: "0",
+    });
 
-    if (next !== null) {
-      resolved.push(next);
+    if (filter !== null) {
+      resolved.push({
+        description: collection.description,
+        filter,
+        id: collection.id,
+        name: collection.name,
+      });
     }
   }
 

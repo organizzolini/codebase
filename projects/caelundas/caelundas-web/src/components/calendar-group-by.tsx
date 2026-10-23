@@ -2,16 +2,15 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@codebase/presentation";
 
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import {
+  createEventGroupFields,
+  toGroupLevel,
+} from "../lib/event-groups/event-group-fields";
 import { MAXIMUM_GROUP_LEVELS } from "../lib/event-groups/event-groups.constants";
 
-import { GroupFieldPicker } from "./group-field-picker";
-import { GroupTagPicker } from "./group-tag-picker";
+import { GroupLevelRow } from "./group-level-row";
 
-import type {
-  EventGroupField,
-  EventGroupLevel,
-} from "../lib/event-groups/event-groups.types";
+import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
 import type { EventFacet } from "../lib/events-database/events-database.types";
 import type { ReactNode } from "react";
 
@@ -29,9 +28,6 @@ export interface CalendarGroupByProperties {
 }
 
 const TITLE = "Group by";
-
-// How many picked tags a level names before counting the rest.
-const NAMED_TAGS = 2;
 
 // 🧩 Component
 
@@ -94,20 +90,20 @@ export function CalendarGroupBy(
             )}
             isOpen={openField === level.field}
             level={level}
+            name={`Group ${String(index + 1)}`}
             onChange={(next) => {
               replaceLevel(index, next);
             }}
             onOpenChange={(open) => {
               setOpenField(open ? level.field : undefined);
             }}
-            position={index + 1}
           />
         ))}
         {grouping.length < MAXIMUM_GROUP_LEVELS && nextField !== undefined ? (
           <Button
             className="self-start"
             onClick={() => {
-              onGroupingChange([...grouping, toLevel(nextField)]);
+              onGroupingChange([...grouping, toGroupLevel(nextField)]);
             }}
             size="sm"
             variant="ghost"
@@ -118,112 +114,4 @@ export function CalendarGroupBy(
       </div>
     </div>
   );
-}
-
-/**
- * Names what a level groups by: the tags picked, or the level of the root's
- * tree it goes by, the first unless an older link says otherwise.
- */
-function describeTags(field: EventGroupField, level: EventGroupLevel): string {
-  const tags = level.tags ?? [];
-
-  if (tags.length === 0) {
-    const depth = level.depth ?? 1;
-
-    return depth > 1 ? `Level ${String(depth)}` : "First level";
-  }
-
-  const names = tags.flatMap((tag) => {
-    const option = field.options.find((candidate) => candidate.value === tag);
-
-    return option === undefined ? [] : [option.label];
-  });
-  const shown = names.slice(0, NAMED_TAGS).join(", ");
-
-  return names.length > NAMED_TAGS
-    ? `${shown} +${String(names.length - NAMED_TAGS)}`
-    : shown;
-}
-
-/**
- * Draws one level of the grouping like a filter: its field, what it groups
- * by, and a button that removes it, with the tag tree open beneath it when
- * the value is being picked. It reports the changed level or `null` once
- * removed.
- */
-function GroupLevelRow(
-  properties: Readonly<{
-    fields: readonly EventGroupField[];
-    isOpen: boolean;
-    level: EventGroupLevel;
-    onChange: (level: EventGroupLevel | null) => void;
-    onOpenChange: (open: boolean) => void;
-    position: number;
-  }>,
-): ReactNode {
-  const { fields, isOpen, level, onChange, onOpenChange, position } =
-    properties;
-  const field = fields.find((candidate) => candidate.id === level.field);
-  const name = `Group ${String(position)}`;
-
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-1">
-        <GroupFieldPicker
-          fields={fields}
-          label={`${name} by`}
-          onSelect={(next) => {
-            onOpenChange(false);
-            onChange(toLevel(next));
-          }}
-          value={level.field}
-        />
-        {field === undefined || field.options.length === 0 ? (
-          <span className="grow" />
-        ) : (
-          <Button
-            aria-expanded={isOpen}
-            aria-label={`${name} tags`}
-            className="min-w-0 grow justify-start truncate"
-            onClick={() => {
-              onOpenChange(!isOpen);
-            }}
-            size="sm"
-            variant="outline"
-          >
-            <span className="truncate">{describeTags(field, level)}</span>
-          </Button>
-        )}
-        <Button
-          aria-label={`Remove ${name.toLowerCase()}`}
-          onClick={() => {
-            onOpenChange(false);
-            onChange(null);
-          }}
-          size="sm"
-          variant="ghost"
-        >
-          ×
-        </Button>
-      </div>
-      {isOpen && field !== undefined ? (
-        <GroupTagPicker
-          field={field}
-          onChange={(tags) => {
-            onChange({ field: field.id, tags });
-          }}
-          tags={level.tags ?? []}
-        />
-      ) : null}
-    </div>
-  );
-}
-
-/**
- * A field's first level: a tag root's children, or the derived value.
- */
-function toLevel(field: EventGroupField): EventGroupLevel {
-  return field.levels.length === 0
-    ? { field: field.id }
-    : { depth: 1, field: field.id };
 }

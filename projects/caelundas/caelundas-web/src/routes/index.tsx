@@ -27,7 +27,6 @@ import {
   CALENDAR_VIEW_PERIODS,
   DEFAULT_TIMELINE_SCALE,
   getDefaultCalendarView,
-  MAXIMUM_AGENDA_DAYS,
 } from "../lib/calendar/calendar-views";
 import { parseCalendarDate } from "../lib/calendar/calendar-window";
 import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
@@ -99,7 +98,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // notice over the calendar says why.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { dataset, emptiness, events, facets, grouping } =
+  const { colorBy, dataset, emptiness, events, facets, grouping } =
     Route.useLoaderData();
   const search = Route.useSearch();
   const fields = useMemo(() => createEventFilterFields(facets), [facets]);
@@ -124,32 +123,21 @@ function IndexPage(): ReactNode {
 
   // 💪 Handlers
   const {
+    getShowLater,
     handleClustersChange,
+    handleColorByChange,
     handleColorsChange,
     handleDateChange,
     handleFilterChange,
     handleGroupingChange,
     handleScaleChange,
     handleSymbolsChange,
-    updateSearch,
+    handleViewChange,
   } = useCalendarSearch(timeZone);
   // The agenda grows a month at a time, up to a year, in place: the link
   // is replaced rather than pushed, and the rows already listed stay put.
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
-  const handleShowLater =
-    agendaDays < MAXIMUM_AGENDA_DAYS
-      ? (): void => {
-          updateSearch(
-            {
-              days: Math.min(
-                MAXIMUM_AGENDA_DAYS,
-                agendaDays + AGENDA_DAY_COUNT,
-              ),
-            },
-            true,
-          );
-        }
-      : undefined;
+  const handleShowLater = getShowLater(agendaDays);
 
   // ♻️ Lifecycle
 
@@ -170,6 +158,7 @@ function IndexPage(): ReactNode {
           anchor={anchor}
           className="min-h-0 flex-1"
           clusters={search.clusters !== false}
+          colorBy={colorBy}
           colors={search.colors !== false}
           compact={!isWide}
           events={events}
@@ -178,11 +167,13 @@ function IndexPage(): ReactNode {
             <CalendarFilters
               className="contents"
               clusters={search.clusters !== false}
+              colorBy={colorBy}
               colors={search.colors !== false}
               facets={facets}
               fields={fields}
               filter={filter}
               onClustersChange={handleClustersChange}
+              onColorByChange={handleColorByChange}
               onColorsChange={handleColorsChange}
               onFilterChange={handleFilterChange}
               onSymbolsChange={handleSymbolsChange}
@@ -202,10 +193,7 @@ function IndexPage(): ReactNode {
           grouping={grouping}
           onDateChange={handleDateChange}
           onShowLater={handleShowLater}
-          onViewChange={(next) => {
-            // The agenda's extra days stay behind with a view change.
-            updateSearch({ days: undefined, view: next });
-          }}
+          onViewChange={handleViewChange}
           scale={search.scale}
           timeZone={timeZone}
           view={view}

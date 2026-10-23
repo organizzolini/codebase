@@ -11,13 +11,9 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@codebase/presentation";
 
-import { EVENT_COLOR_RULES } from "../lib/calendar/calendar-colors";
 import { DEFAULT_CALENDAR_SYMBOLS } from "../lib/calendar/calendar-symbols";
 
 import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
@@ -40,6 +36,11 @@ export interface CalendarViewMenuProperties {
    * Whether the views of hours merge events that run together.
    */
   clusters: boolean;
+  /**
+   * What the events are colored by, drawn in the Colors section after its
+   * switch: the Color by submenu.
+   */
+  colorOptions?: ReactNode;
   colors: boolean;
   onClustersChange: (enabled: boolean) => void;
   onColorsChange: (enabled: boolean) => void;
@@ -62,6 +63,7 @@ export function CalendarViewMenu(
     children,
     className,
     clusters,
+    colorOptions,
     colors,
     onClustersChange,
     onColorsChange,
@@ -117,15 +119,10 @@ export function CalendarViewMenu(
                   onColorsChange(checked);
                 }}
               >
-                Color events by type
+                Color events
               </DropdownMenuCheckboxItem>
             </DropdownMenuGroup>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Color legend</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent className="w-56">
-                <ColorLegend />
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
+            {colorOptions}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuLabel>Symbols</DropdownMenuLabel>
@@ -159,28 +156,5 @@ export function CalendarViewMenu(
         </DropdownMenu>
       </ButtonGroup>
     </div>
-  );
-}
-
-/**
- * Names the color of each type of event.
- */
-function ColorLegend(): ReactNode {
-  return (
-    <ul className="grid gap-1 p-2">
-      {EVENT_COLOR_RULES.map((rule) => (
-        <li
-          key={rule.path}
-          className="flex items-center gap-2 text-xs"
-        >
-          <span
-            aria-hidden="true"
-            className="size-2.5 shrink-0 rounded-full"
-            style={{ background: rule.color }}
-          />
-          {rule.label}
-        </li>
-      ))}
-    </ul>
   );
 }

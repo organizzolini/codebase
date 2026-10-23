@@ -8,6 +8,7 @@ import {
 } from "@codebase/presentation";
 
 import { getAgendaRange } from "../lib/calendar/calendar-agenda";
+import { createColorScheme } from "../lib/calendar/calendar-color-schemes";
 import { colorEvents } from "../lib/calendar/calendar-colors";
 import { toCalendarEvent } from "../lib/calendar/calendar-events";
 import { describeEvent } from "../lib/calendar/calendar-format";
@@ -19,6 +20,7 @@ import {
   toEventCalendarView,
 } from "../lib/calendar/calendar-views";
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
+import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
 
 import { CalendarAgenda } from "./calendar-agenda";
 import { CalendarEventChip } from "./calendar-event-chip";
@@ -55,8 +57,12 @@ export interface EventsCalendarProperties {
    */
   clusters?: boolean;
   /**
-   * Whether events are drawn in the color of their kind; they are when
-   * absent.
+   * What the events are colored by, whose keys follow the grouping's levels
+   * in each event's `groups`; the color of their kind when absent.
+   */
+  colorBy?: EventGroupLevel | undefined;
+  /**
+   * Whether events are drawn in color; they are when absent.
    */
   colors?: boolean;
   /**
@@ -131,6 +137,7 @@ export function EventsCalendar(
     agendaDays,
     anchor,
     className,
+    colorBy,
     colors = true,
     compact = false,
     events: loadedEvents,
@@ -152,9 +159,14 @@ export function EventsCalendar(
     timeZone,
     view,
   });
+  const fields = useMemo(() => createEventGroupFields(facets), [facets]);
+  const scheme = useMemo(
+    () => createColorScheme(colorBy, fields, grouping.length),
+    [colorBy, fields, grouping.length],
+  );
   const events = useMemo(
-    () => colorEvents(loadedEvents, colors),
-    [colors, loadedEvents],
+    () => colorEvents(loadedEvents, colors, scheme.colorOf),
+    [colors, loadedEvents, scheme],
   );
 
   // 🏗 Setup

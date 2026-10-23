@@ -124,6 +124,13 @@ export function getTagStates(
 }
 
 /**
+ * Reads how deep a tag option sits, 0 for one with no depth.
+ */
+export function readDepth(item: FilterOption): number {
+  return readData(item)?.depth ?? 0;
+}
+
+/**
  * Toggles a tag with everything beneath it: a checked or partly picked tag is
  * checked, and a checked one cleared, then the tags above it follow from
  * what is beneath them. The picks are written as the fewest tags that cover
@@ -352,13 +359,6 @@ function readData(item: FilterOption): TagOptionData | undefined {
   }
 
   return undefined;
-}
-
-/**
- * Reads how deep a tag option sits, 0 for one with no depth.
- */
-function readDepth(item: FilterOption): number {
-  return readData(item)?.depth ?? 0;
 }
 
 /**

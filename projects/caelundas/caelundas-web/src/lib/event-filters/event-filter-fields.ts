@@ -250,7 +250,9 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
   for (const value of facet.values) {
     options.push({
       data: { depth: value.depth - 1, name: value.name },
-      description: formatEventCount(value.count),
+      // Written here rather than through a function, which would be one more
+      // call on every stack beneath.
+      description: `${String(value.count)} ${EVENT_COUNT_FORMAT.select(value.count) === "one" ? "event" : "events"}`,
       keywords: [value.name, value.path],
       label: (nameCounts.get(value.name) ?? 0) > 1 ? value.path : value.name,
       value: value.id,
@@ -269,15 +271,6 @@ export function describeRoot(facet: EventFacet): string {
     TAG_ROOT_DESCRIPTIONS[facet.name] ??
     `The ${facet.name.toLowerCase()} of the event`
   );
-}
-
-/**
- * Names how many events a tag matches.
- */
-function formatEventCount(count: number): string {
-  const noun = EVENT_COUNT_FORMAT.select(count) === "one" ? "event" : "events";
-
-  return `${String(count)} ${noun}`;
 }
 
 /**

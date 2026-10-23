@@ -1,8 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { EVENT_COLOR_RULES } from "../lib/calendar/calendar-colors";
-
 import { CalendarViewMenu } from "./calendar-view-menu";
 
 function renderMenu(
@@ -55,7 +53,7 @@ describe(CalendarViewMenu, () => {
     renderMenu();
     fireEvent.click(screen.getByRole("button", { name: "View options" }));
     await screen.findByRole("menuitemcheckbox", {
-      name: "Color events by type",
+      name: "Color events",
     });
 
     expect(screen.queryByText("Collections")).toBeNull();
@@ -68,7 +66,7 @@ describe(CalendarViewMenu, () => {
     fireEvent.click(screen.getByRole("button", { name: "View options" }));
     fireEvent.click(
       await screen.findByRole("menuitemcheckbox", {
-        name: "Color events by type",
+        name: "Color events",
       }),
     );
 
@@ -80,7 +78,7 @@ describe(CalendarViewMenu, () => {
     fireEvent.click(screen.getByRole("button", { name: "View options" }));
 
     const checkbox = await screen.findByRole("menuitemcheckbox", {
-      name: "Color events by type",
+      name: "Color events",
     });
 
     expect(checkbox.getAttribute("aria-checked")).toBe("false");
@@ -99,14 +97,11 @@ describe(CalendarViewMenu, () => {
     expect(onClustersChange).toHaveBeenCalledWith(false);
   });
 
-  it("names the color of every kind of event in the legend", async () => {
-    renderMenu();
+  it("draws the Color by submenu it is given after the colors switch", async () => {
+    renderMenu({ colorOptions: <p>Color by: Planet</p> });
     fireEvent.click(screen.getByRole("button", { name: "View options" }));
-    fireEvent.click(await screen.findByText("Color legend"));
 
-    for (const rule of EVENT_COLOR_RULES) {
-      await expect(screen.findByText(rule.label)).resolves.toBeDefined();
-    }
+    await expect(screen.findByText("Color by: Planet")).resolves.toBeDefined();
   });
 
   it("offers glyphs and emojis, glyphs by default, and reports the pick", async () => {

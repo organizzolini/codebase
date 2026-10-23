@@ -1,24 +1,41 @@
 import { useNavigate } from "@tanstack/react-router";
 
+import {
+  AGENDA_DAY_COUNT,
+  MAXIMUM_AGENDA_DAYS,
+} from "../lib/calendar/calendar-views";
 import { formatCalendarDate } from "../lib/calendar/calendar-window";
 
 import type { CalendarSearch } from "../lib/calendar/calendar-search";
 import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
-import type { TimelineScale } from "../lib/calendar/calendar-views";
+import type {
+  CalendarViewName,
+  TimelineScale,
+} from "../lib/calendar/calendar-views";
 import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
-import type { EventGrouping } from "../lib/event-groups/event-groups.types";
+import type {
+  EventGrouping,
+  EventGroupLevel,
+} from "../lib/event-groups/event-groups.types";
 
 /**
  * The ways the page writes a change to the link.
  */
 export interface CalendarSearchUpdates {
+  /**
+   * Answers how to list a month more of the agenda, which is written to the
+   * link in place, or nothing once it lists a year.
+   */
+  getShowLater: (agendaDays: number) => (() => void) | undefined;
   handleClustersChange: (enabled: boolean) => void;
+  handleColorByChange: (level: EventGroupLevel | undefined) => void;
   handleColorsChange: (enabled: boolean) => void;
   handleDateChange: (date: Date) => void;
   handleFilterChange: (filter: EventFilterQuery) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;
   handleScaleChange: (scale: TimelineScale) => void;
   handleSymbolsChange: (symbols: CalendarSymbols) => void;
+  handleViewChange: (view: CalendarViewName) => void;
   /**
    * Writes a change over the search the link already holds, pushing a new
    * entry unless `replace` is set.
@@ -44,8 +61,25 @@ export function useCalendarSearch(timeZone: string): CalendarSearchUpdates {
   };
 
   return {
+    getShowLater: (agendaDays) =>
+      agendaDays < MAXIMUM_AGENDA_DAYS
+        ? (): void => {
+            updateSearch(
+              {
+                days: Math.min(
+                  MAXIMUM_AGENDA_DAYS,
+                  agendaDays + AGENDA_DAY_COUNT,
+                ),
+              },
+              true,
+            );
+          }
+        : undefined,
     handleClustersChange: (enabled) => {
       updateSearch({ clusters: enabled ? undefined : false }, true);
+    },
+    handleColorByChange: (color) => {
+      updateSearch({ color }, true);
     },
     handleColorsChange: (enabled) => {
       updateSearch({ colors: enabled ? undefined : false }, true);
@@ -67,6 +101,10 @@ export function useCalendarSearch(timeZone: string): CalendarSearchUpdates {
         { symbols: symbols === "emojis" ? "emojis" : undefined },
         true,
       );
+    },
+    handleViewChange: (view) => {
+      // The agenda's extra days stay behind with a view change.
+      updateSearch({ days: undefined, view });
     },
     updateSearch,
   };

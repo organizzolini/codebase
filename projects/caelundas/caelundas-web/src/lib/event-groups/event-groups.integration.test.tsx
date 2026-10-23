@@ -246,7 +246,7 @@ describe("event grouping", () => {
       }),
     );
     await screen.findByRole("menuitemcheckbox", {
-      name: "Color events by type",
+      name: "Color events",
     });
 
     expect(screen.queryByText(/^Group by: /u)).toBeNull();

@@ -431,9 +431,9 @@ describe("index", () => {
     const seen = new Set<string>();
 
     for (const name of [
-      "Color events by type",
+      "Color events",
       "Group similar events",
-      "Color events by type",
+      "Color events",
       "Group similar events",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: "View options" }));

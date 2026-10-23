@@ -16,7 +16,10 @@ import {
 } from "./calendar-views";
 
 import type { EventFilterQuery } from "../event-filters/event-filters.types";
-import type { EventGrouping } from "../event-groups/event-groups.types";
+import type {
+  EventGrouping,
+  EventGroupLevel,
+} from "../event-groups/event-groups.types";
 
 const calendarDateSchema = z.iso.date();
 
@@ -78,6 +81,12 @@ export interface CalendarSearch {
    */
   clusters?: false | undefined;
   /**
+   * What the events are colored by, a level like a grouping's: a field and,
+   * for a tag root, the tags or the depth of its tree whose tags each get a
+   * color. Colored by type, kind by kind, when absent.
+   */
+  color?: EventGroupLevel | undefined;
+  /**
    * `false` when events are drawn without their colors; colored when absent.
    */
   colors?: false | undefined;
@@ -127,6 +136,7 @@ export function validateCalendarSearch(
       search["clusters"] === false || search["clusters"] === "false"
         ? false
         : undefined,
+    color: groupLevelSchema.safeParse(search["color"]).data,
     colors:
       search["colors"] === false || search["colors"] === "false"
         ? false
