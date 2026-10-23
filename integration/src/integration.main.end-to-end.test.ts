@@ -20,10 +20,9 @@ const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 /** The commands the container must register, each named in the help. */
 const COMMAND_NAMES = [
   "adopt-task-database",
-  "best-effort",
-  "best-effort-report",
   "keep-task-database",
   "run-affected",
+  "upgrade-dependencies",
   "verify-task-database",
 ];
 
@@ -63,9 +62,9 @@ describe("main end-to-end suite", () => {
     it("allows an empty environment, filling in what Nx itself defaults", () => {
       expect.hasAssertions();
       expect(environmentSchema.parse({})).toStrictEqual({
-        BEST_EFFORT_REPORT: path.join(os.tmpdir(), "best-effort-report.jsonl"),
         MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
+        RUNNER_TEMP: os.tmpdir(),
       });
     });
 
@@ -73,14 +72,14 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
       expect(
         environmentSchema.parse({
-          BEST_EFFORT_REPORT: "",
           MACHINE_ID_FILES: "",
           NX_WORKSPACE_DATA_DIRECTORY: "",
+          RUNNER_TEMP: "",
         }),
       ).toStrictEqual({
-        BEST_EFFORT_REPORT: path.join(os.tmpdir(), "best-effort-report.jsonl"),
         MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
+        RUNNER_TEMP: os.tmpdir(),
       });
     });
   });

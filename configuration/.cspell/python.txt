@@ -32,6 +32,7 @@ nbformat
 ndarray
 noqa
 numpy
+ormsgpack
 pathlib
 pprint
 pygments

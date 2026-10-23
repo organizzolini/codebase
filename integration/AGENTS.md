@@ -4,7 +4,7 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Continuous Integration plumbing: the steps that run around a CI job, as tested commands. Today that is the affected run, the Nx task-cache database (verify, adopt, keep), and best-effort steps (run one, write up the ones skipped); the base bounding and the pull-request cache import are planned here too. "Integration" in this project means Continuous Integration, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
+**Purpose**: Continuous Integration plumbing: the steps that run around a CI job, as tested commands. Today that is the affected run, the Nx task-cache database (verify, adopt, keep), and the weekly dependency upgrades; the base bounding and the pull-request cache import are planned here too. "Integration" in this project means Continuous Integration, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
 ### Run Locally
 
@@ -62,8 +62,7 @@ one class.
 | `verify-task-database` | `src/modules/verify-task-database` | the `cleanup-codebase` composite action |
 | `adopt-task-database` | `src/modules/adopt-task-database` | nothing yet: `setup-codebase` runs it before install, as `scripts/nx/adopt-task-database.sh` |
 | `keep-task-database` | `src/modules/keep-task-database` | the `cleanup-codebase` composite action |
-| `best-effort` | `src/modules/best-effort` | each upgrade step of the `upgrade-dependencies` workflow |
-| `best-effort-report` | `src/modules/best-effort-report` | the `upgrade-dependencies` workflow, before it opens the pull request |
+| `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |
 
 `src/modules/process-runner` holds the wrapper over `node:child_process`
 (`capture` returns the output, `captureAsync` does so without blocking, and
@@ -74,14 +73,14 @@ task-database commands share; it reads `NX_WORKSPACE_DATA_DIRECTORY` and
 `MACHINE_ID_FILES`, and opens the databases with the built-in `node:sqlite`, so
 no `sqlite3` binary is needed.
 
-`best-effort` reads `BEST_EFFORT_LABEL`, `BEST_EFFORT_RUN` (a script, run under
-`bash -e -o pipefail`), `BEST_EFFORT_PATHS` (every file or folder the step may
-change, copied before it runs and restored if it fails, so a later step's
-failure never undoes an earlier step's change), and optionally
-`BEST_EFFORT_RECOVER`. A skipped step exits 0 and is recorded in
-`BEST_EFFORT_REPORT`; `best-effort-report` publishes `count`, `details`, and
-`section` through `GITHUB_OUTPUT` for the pull request. The one failure that
-stops the run is a step that could not be restored.
+`upgrade-dependencies` runs the steps listed in its constants one at a time, each
+as a `bash -e -o pipefail` script. Before each it records the whole working tree
+as a git tree, untracked files included, and a step that fails is undone by
+restoring that tree, which is what the previous step left, so a later failure
+never undoes an earlier success. A skipped step is listed in the pull request
+body the command writes to `RUNNER_TEMP`. Only a step that cannot be undone
+stops the run. To add an upgrade, add a step to `UPGRADE_STEPS`; a step that
+needs the environment rebuilt after it is undone gives a `recover` script.
 
 Run one locally with `nx run integration:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).

@@ -2,9 +2,9 @@ Continuous Integration plumbing: the steps that run around a CI job, as
 commands. `run-affected` runs Nx affected over a change set corrected for
 spelling files and conformetry templates, and the Nx task-database steps
 `verify-task-database`, `adopt-task-database`, and `keep-task-database` carry
-the Nx task-cache database between runs. `best-effort` runs one step of a job
-so that its failure cannot fail the job, restoring the step's files and
-recording it for `best-effort-report` to write up in the pull request. "Integration" here means Continuous
+the Nx task-cache database between runs. `upgrade-dependencies` runs the weekly
+dependency upgrades, undoing and reporting any that fail instead of failing the
+job. "Integration" here means Continuous
 Integration, not the `vitest:integration` test kind. See [AGENTS.md](AGENTS.md).
 
 ## Start
