@@ -23,6 +23,7 @@ function bar(row: string, minute: number, length = 0): GanttEvent<TimelineBar> {
 
   return {
     data: {
+      names: [id],
       records: [
         {
           color: null,
@@ -80,9 +81,20 @@ describe("timeline clusters", () => {
       const [cluster, ...rest] = clusterTimelineBars(crowded, 9 * MINUTE);
 
       expect(rest).toHaveLength(0);
-      expect(cluster?.title).toBe("2000 events");
+      // Titled by a preview of its events, then how many more there are.
+      expect(cluster?.title).toMatch(/, \+1998$/u);
       expect(cluster?.data?.records).toHaveLength(2000);
       expect(cluster?.end.getTime()).toBe(START + 9 * MINUTE);
+    });
+
+    it("colors a count as the first of its markers", () => {
+      const colored = [
+        { ...bar("aspect", 0), color: "#f43f5e" },
+        { ...bar("aspect", 1), color: "#3b82f6" },
+      ];
+      const [cluster] = clusterTimelineBars(colored, 9 * MINUTE);
+
+      expect(cluster?.color).toBe("#f43f5e");
     });
 
     it("keeps markers a marker's width apart", () => {
@@ -95,8 +107,10 @@ describe("timeline clusters", () => {
       const runs = [0, 1, 2, 9, 10].map((minute) => bar("aspect", minute));
 
       expect(
-        clusterTimelineBars(runs, 9 * MINUTE).map(({ title }) => title),
-      ).toStrictEqual(["3 events", "2 events"]);
+        clusterTimelineBars(runs, 9 * MINUTE).map(
+          ({ data }) => data?.records.length,
+        ),
+      ).toStrictEqual([3, 2]);
     });
 
     it("never clusters across rows", () => {

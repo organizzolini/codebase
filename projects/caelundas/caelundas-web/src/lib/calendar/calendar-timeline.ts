@@ -19,6 +19,10 @@ export const ALL_EVENTS_ROW = { id: "all", title: "All events" } as const;
  * What a timeline bar draws: one event, or a cluster of crowded ones.
  */
 export interface TimelineBar {
+  /**
+   * The English name of each record, in order, which a cluster previews.
+   */
+  names: string[];
   records: CalendarEventRecord[];
 }
 
@@ -152,7 +156,7 @@ function toGanttEvent(
   rowId: string,
 ): GanttEvent<TimelineBar> {
   return {
-    data: { records: [record] },
+    data: { names: [getEventLabel(record).name], records: [record] },
     end: record.end,
     id: `${rowId}|${record.id}`,
     readOnly: true,

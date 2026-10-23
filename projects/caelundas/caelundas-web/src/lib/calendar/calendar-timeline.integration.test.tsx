@@ -168,9 +168,12 @@ describe("calendar timeline", () => {
 
     const timeline = await screen.findByTestId("calendar-timeline");
 
-    await expect(
-      within(timeline).findByRole("button", { name: /^500 events/u }),
-    ).resolves.toBeDefined();
+    await waitFor(() => {
+      expect(
+        timeline.querySelector('[data-slot="timeline-cluster"]')?.textContent,
+      ).toBe("500");
+    });
+
     expect(
       timeline.querySelectorAll('[data-slot="gantt-bar"]').length,
     ).toBeLessThan(10);
@@ -185,8 +188,13 @@ describe("calendar timeline", () => {
 
     const timeline = await screen.findByTestId("calendar-timeline");
 
+    await waitFor(() => {
+      expect(
+        timeline.querySelector('[data-slot="timeline-cluster"]'),
+      ).not.toBeNull();
+    });
     fireEvent.click(
-      await within(timeline).findByRole("button", { name: /^500 events/u }),
+      timeline.querySelector('[data-slot="timeline-cluster"]') ?? timeline,
     );
 
     const dialog = await screen.findByRole("dialog");

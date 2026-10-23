@@ -338,7 +338,7 @@ function TimelineBarContent(
         }}
       >
         <span
-          className="flex h-4 min-w-4 items-center justify-center rounded-full border border-(--gantt-event-color) bg-background px-1 text-[10px] leading-none font-semibold tabular-nums"
+          className="flex h-4 min-w-4 items-center justify-center rounded-full bg-(--gantt-event-color) px-1 text-[10px] leading-none font-semibold text-white tabular-nums"
           data-slot="timeline-cluster"
         >
           {records.length}

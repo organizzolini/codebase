@@ -107,7 +107,9 @@ function clusterRow(
     const [first] = run;
 
     if (first !== undefined && marker.start.getTime() >= runEnd) {
-      drawn.push(toCluster(first, run, runEnd));
+      drawn.push(
+        toCluster(first, run, { end: runEnd, title: previewEvents(run) }),
+      );
       run = [];
     }
 
@@ -122,40 +124,86 @@ function clusterRow(
   const [first] = run;
 
   if (first !== undefined) {
-    drawn.push(toCluster(first, run, runEnd));
+    drawn.push(
+      toCluster(first, run, { end: runEnd, title: previewEvents(run) }),
+    );
   }
 
   return drawn;
 }
 
 /**
+ * How many characters of the events' names a cluster's title shows.
+ */
+const PREVIEW_LENGTH = 28;
+
+/**
+ * A cluster's title: its events' names, comma separated and cut short, with
+ * how many more there are beyond those shown.
+ */
+function previewEvents(run: readonly GanttEvent<TimelineBar>[]): string {
+  const names: string[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const marker of run) {
+    names.push(...(marker.data?.names ?? []));
+  }
+
+  let preview = "";
+  let shown = 0;
+
+  for (const name of names) {
+    const next = shown === 0 ? name : `${preview}, ${name}`;
+
+    if (shown > 0 && next.length > PREVIEW_LENGTH) {
+      break;
+    }
+
+    preview = next;
+    shown += 1;
+  }
+
+  const clipped =
+    preview.length > PREVIEW_LENGTH
+      ? `${preview.slice(0, PREVIEW_LENGTH - 1)}…`
+      : preview;
+
+  return shown < names.length
+    ? `${clipped}, +${String(names.length - shown)}`
+    : clipped;
+}
+
+/**
  * One bar for a run of markers, whose first is given apart: the marker
  * itself when it is alone, or a bar counting them that lasts until the run
- * ends.
+ * ends, in the color of the first.
  */
 function toCluster(
   first: GanttEvent<TimelineBar>,
   run: readonly GanttEvent<TimelineBar>[],
-  end: number,
+  bar: Readonly<{ end: number; title: string }>,
 ): GanttEvent<TimelineBar> {
   if (run.length === 1) {
     return first;
   }
 
+  const names: string[] = [];
   const records: CalendarEventRecord[] = [];
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
   for (const marker of run) {
+    names.push(...(marker.data?.names ?? []));
     records.push(...(marker.data?.records ?? []));
   }
 
   return {
-    data: { records },
-    end: new Date(end),
+    data: { names, records },
+    end: new Date(bar.end),
     id: `${first.id}+${String(run.length)}`,
     readOnly: true,
     start: first.start,
-    title: `${String(records.length)} events`,
+    title: records.length === 0 ? "0 events" : bar.title,
+    ...(first.color === undefined ? {} : { color: first.color }),
     ...(first.resourceId === undefined ? {} : { resourceId: first.resourceId }),
   };
 }

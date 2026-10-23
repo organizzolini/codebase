@@ -27,7 +27,7 @@ export interface TimelineLayout {
  * How many marker widths a marker holds its lane for at a day's scale, where
  * its title is drawn beside it.
  */
-const LABELLED_REACH = 5;
+const LABELLED_REACH = 9;
 
 // 🧩 Functions
 
