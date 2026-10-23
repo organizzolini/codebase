@@ -13445,7 +13445,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Repository
 
 ![Lines of Code](https://img.shields.io/badge/Lines_of_Code-59584-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.52_MB-6b7280?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.55_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-151-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-557-3178c6?style=flat-square)
 
@@ -13494,7 +13494,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-44-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7044-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7048-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1035-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-386-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-2571-0284c7?style=flat-square)
@@ -13509,15 +13509,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3400-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3425-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-451-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
 ![YAML Keys](https://img.shields.io/badge/YAML_Keys-1555-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3122-16a34a?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3126-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-600-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-608-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -13533,16 +13533,16 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Shell
 
 ![Shell Files](https://img.shields.io/badge/Shell_Files-19-89e051?style=flat-square)
-![Shell Lines](https://img.shields.io/badge/Shell_Lines-1826-4eaa25?style=flat-square)
+![Shell Lines](https://img.shields.io/badge/Shell_Lines-1831-4eaa25?style=flat-square)
 ![Shell Functions](https://img.shields.io/badge/Shell_Functions-16-16a34a?style=flat-square)
-![Shell Variables](https://img.shields.io/badge/Shell_Variables-161-0284c7?style=flat-square)
+![Shell Variables](https://img.shields.io/badge/Shell_Variables-162-0284c7?style=flat-square)
 ![Shell Exports](https://img.shields.io/badge/Shell_Exports-17-ea580c?style=flat-square)
-![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-136-7c3aed?style=flat-square)
+![Shell Conditionals](https://img.shields.io/badge/Shell_Conditionals-137-7c3aed?style=flat-square)
 ![Shell Loops](https://img.shields.io/badge/Shell_Loops-20-8b5cf6?style=flat-square)
 ![Shell Pipelines](https://img.shields.io/badge/Shell_Pipelines-46-059669?style=flat-square)
 ![Shebangs](https://img.shields.io/badge/Shebangs-20-6b7280?style=flat-square)
-![Shell Comments](https://img.shields.io/badge/Shell_Comments-344-64748b?style=flat-square)
-![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-344-475569?style=flat-square)
+![Shell Comments](https://img.shields.io/badge/Shell_Comments-345-64748b?style=flat-square)
+![Shell Comment Lines](https://img.shields.io/badge/Shell_Comment_Lines-345-475569?style=flat-square)
 
 ### SQL
 
@@ -13628,24 +13628,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-136-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26753-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-132-7c3aed?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-138-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-26694-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-134-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-812-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-716-a78bfa?style=flat-square)
-![H4](https://img.shields.io/badge/H4-86-c4b5fd?style=flat-square)
+![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6193-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6195-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-947-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4495-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4494-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-280-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2743-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-874-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2696-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-883-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-847-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-543-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14879-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-541-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-14688-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
