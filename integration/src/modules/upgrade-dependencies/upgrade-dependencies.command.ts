@@ -16,8 +16,8 @@ import type { SkippedStep, UpgradeStep } from "./upgrade-dependencies.types";
  * CLI command that runs the weekly dependency upgrades, each one undone and
  * reported if it fails, and writes the pull request that reports them.
  *
- * Reads `GITHUB_OUTPUT`, `GITHUB_REPOSITORY`, and `RUNNER_TEMP`, and sets the
- * `has_dependency_updates` output. Exits 0 when every step succeeded or was
+ * Reads `GITHUB_OUTPUT` and sets the `has_dependency_updates` and `body_path`
+ * outputs. Exits 0 when every step succeeded or was
  * skipped and something changed, and 1 when a failed step could not be undone
  * or skipped steps are all there is to report.
  */

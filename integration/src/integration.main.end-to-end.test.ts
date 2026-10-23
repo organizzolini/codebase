@@ -1,5 +1,4 @@
 import { spawnSync } from "node:child_process";
-import os from "node:os";
 import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
@@ -64,7 +63,6 @@ describe("main end-to-end suite", () => {
       expect(environmentSchema.parse({})).toStrictEqual({
         MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
-        RUNNER_TEMP: os.tmpdir(),
       });
     });
 
@@ -74,12 +72,10 @@ describe("main end-to-end suite", () => {
         environmentSchema.parse({
           MACHINE_ID_FILES: "",
           NX_WORKSPACE_DATA_DIRECTORY: "",
-          RUNNER_TEMP: "",
         }),
       ).toStrictEqual({
         MACHINE_ID_FILES: "/var/lib/dbus/machine-id /etc/machine-id",
         NX_WORKSPACE_DATA_DIRECTORY: ".nx/workspace-data",
-        RUNNER_TEMP: os.tmpdir(),
       });
     });
   });

@@ -78,7 +78,8 @@ as a `bash -e -o pipefail` script. Before each it records the whole working tree
 as a git tree, untracked files included, and a step that fails is undone by
 restoring that tree, which is what the previous step left, so a later failure
 never undoes an earlier success. A skipped step is listed in the pull request
-body the command writes to `RUNNER_TEMP`. Only a step that cannot be undone
+body the command writes to the OS temp directory and names in the `body_path`
+output. Only a step that cannot be undone
 stops the run. To add an upgrade, add a step to `UPGRADE_STEPS`; a step that
 needs the environment rebuilt after it is undone gives a `recover` script.
 

@@ -1,5 +1,3 @@
-import os from "node:os";
-
 import { z } from "zod";
 
 /** Where Nx keeps its task-result database unless told otherwise. */
@@ -21,8 +19,6 @@ export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),
   /** The file GitHub Actions reads step outputs from. */
   GITHUB_OUTPUT: z.string().optional(),
-  /** The `owner/name` of the repository the workflow runs in. */
-  GITHUB_REPOSITORY: z.string().optional(),
   INCLUDE_SPELLING: z.string().optional(),
   INCLUDE_TEMPLATES: z.string().optional(),
   /**
@@ -40,11 +36,6 @@ export const environmentSchema = z.object({
     .string()
     .optional()
     .transform((value) => value || DEFAULT_DATA_DIRECTORY),
-  /** The runner's scratch directory, where the pull request body is written. */
-  RUNNER_TEMP: z
-    .string()
-    .optional()
-    .transform((value) => value || os.tmpdir()),
   SPELLING_PATHS: z.string().optional(),
   TARGET: z.string().optional(),
   TEMPLATE_PATHS: z.string().optional(),

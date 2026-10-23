@@ -64,9 +64,8 @@ describe(UpgradeDependenciesService, () => {
     git("add", "-A");
     git("commit", "-qm", "init");
     process.chdir(repository);
-    vi.stubEnv("RUNNER_TEMP", temporary);
+    vi.stubEnv("TMPDIR", temporary);
     vi.stubEnv("GITHUB_OUTPUT", path.join(temporary, "output"));
-    vi.stubEnv("GITHUB_REPOSITORY", "owner/name");
 
     const module = await Test.createTestingModule({
       providers: [
@@ -262,7 +261,7 @@ describe(UpgradeDependenciesService, () => {
 
     expect(changed).toBe(true);
     expect(fs.readFileSync(path.join(temporary, "output"), "utf8")).toBe(
-      "has_dependency_updates=true\n",
+      `has_dependency_updates=true\nbody_path=${path.join(temporary, "pull-request-body.md")}\n`,
     );
     expect(
       fs.readFileSync(path.join(temporary, "pull-request-body.md"), "utf8"),
@@ -285,7 +284,7 @@ describe(UpgradeDependenciesService, () => {
       false,
     );
     expect(fs.readFileSync(path.join(temporary, "output"), "utf8")).toBe(
-      "has_dependency_updates=false\n",
+      `has_dependency_updates=false\nbody_path=${path.join(temporary, "pull-request-body.md")}\n`,
     );
   });
 

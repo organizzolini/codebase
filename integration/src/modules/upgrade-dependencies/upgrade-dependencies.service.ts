@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
@@ -12,6 +13,7 @@ import {
   TAIL_CHARACTERS,
   TAIL_LINES,
   unrestoredMessage,
+  WORKFLOW_URL,
 } from "./upgrade-dependencies.constants";
 import { renderPullRequestBody } from "./upgrade-dependencies.utilities";
 
@@ -47,14 +49,6 @@ export class UpgradeDependenciesService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /** Where the pull request body is written. */
-  private bodyFile(): string {
-    return path.join(
-      this.configService.getOrThrow("RUNNER_TEMP", { infer: true }),
-      PULL_REQUEST_BODY_FILE,
-    );
-  }
 
   /** Runs one git command in the working directory. */
   private git(args: readonly string[]): CapturedProcess {
@@ -156,29 +150,25 @@ export class UpgradeDependenciesService {
 
   /**
    * Ends the run: when the upgrades changed anything, writes the pull request
-   * that reports them, and tells the workflow whether there is one to open.
+   * that reports them, and tells the workflow whether there is one to open and
+   * where its body is.
    *
    * @returns Whether anything changed, untracked files included.
    */
   public finish(skipped: readonly SkippedStep[]): boolean {
     const changed = this.git(["status", "--porcelain"]).stdout.trim() !== "";
     const output = this.configService.get("GITHUB_OUTPUT", { infer: true });
-    const repository = this.configService.getOrThrow("GITHUB_REPOSITORY", {
-      infer: true,
-    });
+    const body = path.join(os.tmpdir(), PULL_REQUEST_BODY_FILE);
 
     if (changed) {
-      fs.writeFileSync(
-        this.bodyFile(),
-        renderPullRequestBody(
-          skipped,
-          `https://github.com/${repository}/actions/workflows/upgrade-dependencies.yml`,
-        ),
-      );
+      fs.writeFileSync(body, renderPullRequestBody(skipped, WORKFLOW_URL));
     }
 
     if (output !== undefined && output !== "") {
-      fs.appendFileSync(output, `has_dependency_updates=${String(changed)}\n`);
+      fs.appendFileSync(
+        output,
+        `has_dependency_updates=${String(changed)}\nbody_path=${body}\n`,
+      );
     }
 
     return changed;

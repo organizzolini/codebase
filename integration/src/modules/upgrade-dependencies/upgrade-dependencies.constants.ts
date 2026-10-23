@@ -11,8 +11,12 @@ export const TAIL_LINES = 20;
 /** The most characters of them it quotes, so one runaway line cannot flood it. */
 export const TAIL_CHARACTERS = 2000;
 
-/** Where in the runner's scratch directory the pull request body is written. */
+/** The file, in the OS temp directory, the pull request body is written to. */
 export const PULL_REQUEST_BODY_FILE = "pull-request-body.md";
+
+/** The workflow that runs this command, linked from the pull request body. */
+export const WORKFLOW_URL =
+  "https://github.com/organizzolini/codebase/actions/workflows/upgrade-dependencies.yml";
 
 /** What each upgrade does, as the pull request lists them. */
 export const UPGRADE_DETAILS = [
