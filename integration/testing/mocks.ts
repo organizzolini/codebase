@@ -2,8 +2,16 @@ import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
+import { onTestFinished } from "vitest";
+
 import type { ProcessRunnerService } from "../src/modules/process-runner/process-runner.service";
 import type { CapturedProcess } from "../src/modules/process-runner/process-runner.types";
+
+/**
+ * Where temporary workspaces are made: inside this project, never the
+ * operating system's temporary directory, and ignored by git.
+ */
+const TEMPORARY_ROOT = path.resolve(import.meta.dirname, "../tmp");
 
 /** One call a command made to the process runner. */
 export interface RecordedCall {
@@ -102,7 +110,7 @@ const lookUp = <Value>(
  */
 export class FakeProcessRunner implements Pick<
   ProcessRunnerService,
-  "capture" | "captureAsync" | "stream"
+  "capture" | "captureAsync" | "captureToFile" | "stream"
 > {
   constructor(
     private readonly script: Readonly<
@@ -164,6 +172,17 @@ export class FakeProcessRunner implements Pick<
     await Promise.resolve();
 
     return this.capture(executable, args);
+  }
+
+  /**
+   * Answers a call whose output goes to a file exactly as `capture` would,
+   * minus the output: a scripted effect writes the file when a test needs it.
+   */
+  public captureToFile(
+    executable: string,
+    args: readonly string[],
+  ): CapturedProcess {
+    return { ...this.capture(executable, args), stdout: "" };
   }
 
   /** Records a streamed call, and ends it with its scripted exit code. */
@@ -245,4 +264,94 @@ export function createTaskDatabaseWorkspace(): TaskDatabaseWorkspace {
       return file;
     },
   };
+}
+
+/** The hashes of every cached result a task database holds, sorted. */
+export function readCachedHashes(file: string): string[] {
+  const connection = new DatabaseSync(file);
+
+  try {
+    return connection
+      .prepare("SELECT hash FROM cache_outputs ORDER BY hash")
+      .all()
+      .map((row) => String(row["hash"]));
+  } finally {
+    connection.close();
+  }
+}
+
+/**
+ * Writes a real Nx task database at the given path, with the two tables a
+ * merge reads, holding one task and one cached result per hash. Foreign keys
+ * match Nx's own: every result names a task.
+ */
+export function writeTaskDatabase(
+  file: string,
+  hashes: readonly string[],
+): void {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const connection = new DatabaseSync(file);
+
+  connection.exec(`
+    CREATE TABLE task_details (hash TEXT PRIMARY KEY NOT NULL, project TEXT NOT NULL, target TEXT NOT NULL, configuration TEXT);
+    CREATE TABLE cache_outputs (hash TEXT PRIMARY KEY NOT NULL, code INTEGER NOT NULL, size INTEGER NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, accessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (hash) REFERENCES task_details (hash));
+  `);
+  for (const hash of hashes) {
+    connection
+      .prepare("INSERT INTO task_details VALUES (?, 'project', 'target', NULL)")
+      .run(hash);
+    connection
+      .prepare("INSERT INTO cache_outputs (hash, code, size) VALUES (?, 0, 1)")
+      .run(hash);
+  }
+  connection.close();
+}
+
+/** A finished process that printed the given output and exited 0. */
+export const succeeded = (stdout = ""): CapturedProcess => ({
+  status: 0,
+  stderr: "",
+  stdout,
+});
+
+/** A finished process that printed the given error and exited non-zero. */
+export const failed = (stderr = "", status = 1): CapturedProcess => ({
+  status,
+  stderr,
+  stdout: "",
+});
+
+/**
+ * Makes an empty directory inside this project for the current test, removed
+ * once that test finishes. Call it from a test or a `beforeEach` hook.
+ *
+ * @returns A function that makes a new directory and returns its path.
+ */
+export function useTemporaryDirectories(): () => string {
+  return () => {
+    fs.mkdirSync(TEMPORARY_ROOT, { recursive: true });
+    const directory = fs.mkdtempSync(path.join(TEMPORARY_ROOT, "workspace-"));
+    onTestFinished(() => {
+      fs.rmSync(directory, { force: true, recursive: true });
+    });
+
+    return directory;
+  };
+}
+
+/**
+ * Writes a file beneath a directory, making its parent directories.
+ *
+ * @param root - The directory the path is relative to.
+ * @param relative - The file's path beneath it.
+ * @param content - What the file holds.
+ */
+export function writeFile(
+  root: string,
+  relative: string,
+  content: string,
+): void {
+  const file = path.join(root, relative);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, content);
 }

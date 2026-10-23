@@ -1,5 +1,7 @@
 # 0028: Run the Nx CI Steps After the Install as Commands
 
+Superseded in part by [ADR 0029](0029-keep-the-ci-steps-in-the-integration-project.md), which moves the commands from `publication` to `integration`. The steps still run after the install.
+
 Supersedes in part [ADR 0027](0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md): its `scripts/nx/` floor entry. Its rule and every other floor entry stand.
 
 ## Context

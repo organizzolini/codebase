@@ -13,7 +13,7 @@ import {
 
 import { LoggerService } from "@codebase/observability";
 
-import { FakeProcessRunner } from "../../../testing/mocks";
+import { failed, FakeProcessRunner, succeeded } from "../../../testing/mocks";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { RunAffectedCommand } from "./run-affected.command";
@@ -21,14 +21,14 @@ import { RunAffectedService } from "./run-affected.service";
 
 import type { CapturedProcess } from "../process-runner/process-runner.types";
 
-const succeeded = (stdout: string): CapturedProcess => ({
-  status: 0,
-  stderr: "",
-  stdout,
-});
+/** The arguments of every streamed call, one line each. */
+const streamedLines = (runner: FakeProcessRunner): string[] =>
+  runner.streamed.map((call) => call.args.join(" "));
 
 const MERGE_BASE = "git merge-base base head";
 const DIFF = "git diff --name-only --no-renames --relative abc1234 head";
+const AFFECTED = "exec nx affected --base=base --head=head --target=";
+const TEMPLATE = "configuration/conformetry-templates/service/src/main.ts";
 
 /** A script whose diff lists these files, one per line. */
 const changing = (...files: string[]): Record<string, CapturedProcess> => ({
@@ -49,7 +49,6 @@ describe(RunAffectedCommand, () => {
     vi.unstubAllEnvs();
     for (const name of [
       "ARGUMENTS",
-      "INCLUDE_SPELLING",
       "INCLUDE_TEMPLATES",
       "NX_BASE",
       "NX_HEAD",
@@ -133,80 +132,90 @@ describe(RunAffectedCommand, () => {
   });
 
   describe("missing inputs", () => {
-    it("fails when TARGET is unset", async () => {
+    it.each([
+      [{ NX_BASE: "base", NX_HEAD: "head" }, "TARGET is unset"],
+      [{ ...base, TARGET: "" }, "TARGET is unset"],
+      [{ ...base, NX_BASE: "" }, "NX_BASE and NX_HEAD are unset"],
+      [{ TARGET: "test-code" }, "NX_BASE and NX_HEAD are unset"],
+    ])("fails for %j", async (environment, message) => {
       expect.hasAssertions();
 
       const runner = new FakeProcessRunner({});
-      await runCommand(runner, { NX_BASE: "base", NX_HEAD: "head" });
 
-      expect(reportLines).toStrictEqual([
-        "❌ TARGET is unset; name the Nx target to run",
-      ]);
-      expect(process.exitCode).toBe(1);
-      expect(runner.streamed).toHaveLength(0);
-    });
-
-    it("treats an empty TARGET as unset", async () => {
-      expect.hasAssertions();
-
-      await runCommand(new FakeProcessRunner({}), { ...base, TARGET: "" });
+      await runCommand(runner, environment);
 
       expect(process.exitCode).toBe(1);
-    });
-
-    it("treats empty revisions as unset", async () => {
-      expect.hasAssertions();
-
-      await runCommand(new FakeProcessRunner({}), {
-        ...base,
-        NX_BASE: "",
-        NX_HEAD: "",
-      });
-
-      expect(process.exitCode).toBe(1);
-    });
-
-    it("fails when NX_BASE or NX_HEAD is unset", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner({});
-      await runCommand(runner, { NX_HEAD: "head", TARGET: "test-code" });
-
-      expect(reportLines).toStrictEqual([
-        "❌ NX_BASE and NX_HEAD are unset; run setup-codebase first",
-      ]);
-      expect(process.exitCode).toBe(1);
+      expect(reportLines.join("\n")).toContain(message);
       expect(runner.streamed).toHaveLength(0);
     });
   });
 
-  describe("a change set with no spelling files", () => {
-    it("hands Nx the revisions rather than the file list", async () => {
+  describe("without templates", () => {
+    it("hands Nx the revisions and the extra flags, and lists no change set", async () => {
       expect.hasAssertions();
 
-      const runner = new FakeProcessRunner(changing("validation/src/main.ts"));
+      const runner = new FakeProcessRunner({});
+
       await runCommand(runner, {
         ...base,
         ARGUMENTS: "--configuration=check  --parallel=4",
       });
 
-      expect(runner.streamed).toStrictEqual([
-        {
-          args: [
-            "exec",
-            "nx",
-            "affected",
-            "--base=base",
-            "--head=head",
-            "--target=test-code",
-            "--configuration=check",
-            "--parallel=4",
-          ],
-          executable: "pnpm",
-        },
+      expect(streamedLines(runner)).toStrictEqual([
+        `${AFFECTED}test-code --configuration=check --parallel=4`,
       ]);
+      expect(process.exitCode).toBe(0);
+    });
+
+    it("leaves a changed template alone without INCLUDE_TEMPLATES", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(changing(TEMPLATE));
+
+      await runCommand(runner, base);
+
+      expect(streamedLines(runner)).toStrictEqual([`${AFFECTED}test-code`]);
+    });
+
+    it("exits with the code Nx ends with", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner({}, 3);
+
+      await runCommand(runner, base);
+
+      expect(process.exitCode).toBe(3);
+    });
+  });
+
+  describe("with INCLUDE_TEMPLATES", () => {
+    const withTemplates = { ...base, INCLUDE_TEMPLATES: "true" };
+
+    it("runs once more over the conformetry config when a template changed", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(
+        changing("projects/a/a.ts", TEMPLATE),
+      );
+
+      await runCommand(runner, withTemplates);
+
+      expect(streamedLines(runner)).toStrictEqual([
+        `${AFFECTED}test-code`,
+        "exec nx affected --files=configuration/conformetry.config.ts --target=test-code",
+      ]);
+      expect(reportLines.join("\n")).toContain(TEMPLATE);
+    });
+
+    it("runs once when no template changed", async () => {
+      expect.hasAssertions();
+
+      const runner = new FakeProcessRunner(changing("projects/a/a.ts"));
+
+      await runCommand(runner, withTemplates);
+
+      expect(streamedLines(runner)).toStrictEqual([`${AFFECTED}test-code`]);
       expect(reportLines).toStrictEqual([]);
-      expect(process.exitCode ?? 0).toBe(0);
     });
 
     it("uses the base itself when there is no merge base", async () => {
@@ -214,184 +223,39 @@ describe(RunAffectedCommand, () => {
 
       const runner = new FakeProcessRunner({
         "git diff --name-only --no-renames --relative base head":
-          succeeded("README.md\n"),
-        [MERGE_BASE]: { status: 1, stderr: "", stdout: "" },
-      });
-      await runCommand(runner, base);
-
-      expect(runner.streamed).toHaveLength(1);
-    });
-
-    it("exits with the code Nx ends with", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(changing("README.md"), 3);
-      await runCommand(runner, base);
-
-      expect(process.exitCode).toBe(3);
-    });
-
-    it("affects nothing, and cleanly, when nothing changed", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(changing());
-      await runCommand(runner, base);
-
-      expect(runner.streamed[0]?.args).toContain("--base=base");
-      expect(process.exitCode ?? 0).toBe(0);
-    });
-  });
-
-  describe("a change set with spelling files", () => {
-    it("drops them and pipes the rest to Nx", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(
-        changing(
-          "configuration/.cspell/words.txt",
-          "validation/src/main.ts",
-          "projects/lexico/lexico-web/cspell.config.yaml",
-          "validation/package.json",
-        ),
-      );
-      await runCommand(runner, { ...base, ARGUMENTS: "--parallel=4" });
-
-      expect(reportLines).toStrictEqual([
-        "✂️ Not affecting test-code with spelling files:",
-        "  configuration/.cspell/words.txt",
-        "  projects/lexico/lexico-web/cspell.config.yaml",
-      ]);
-      expect(runner.streamed).toStrictEqual([
-        {
-          args: [
-            "exec",
-            "nx",
-            "affected",
-            "--stdin",
-            "--target=test-code",
-            "--parallel=4",
-          ],
-          executable: "pnpm",
-          input: "validation/src/main.ts\nvalidation/package.json\n",
-        },
-      ]);
-    });
-
-    it("pipes an empty list when only spelling files changed", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(
-        changing("configuration/.cspell/words.txt"),
-      );
-      await runCommand(runner, base);
-
-      expect(runner.streamed[0]?.input).toBe("\n");
-    });
-
-    it("keeps them when INCLUDE_SPELLING is true", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner({});
-      await runCommand(runner, { ...base, INCLUDE_SPELLING: "true" });
-
-      expect(runner.captured).toHaveLength(0);
-      expect(runner.streamed[0]?.args).toContain("--base=base");
-    });
-  });
-
-  describe("a change set with templates", () => {
-    const TEMPLATE =
-      "configuration/conformetry-templates/nestjs-command-project/{{nameKebabCase}}/AGENTS.md";
-
-    it("adds the conformetry config when INCLUDE_TEMPLATES is true", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(
-        changing(TEMPLATE, "validation/package.json"),
-      );
-      await runCommand(runner, { ...base, INCLUDE_TEMPLATES: "true" });
-
-      expect(reportLines).toStrictEqual([
-        "🧬 Selecting every conformetry instance for test-code, templates changed:",
-        `  ${TEMPLATE}`,
-      ]);
-      expect(runner.streamed[0]?.args).toContain("--stdin");
-      expect(runner.streamed[0]?.input).toBe(
-        `${TEMPLATE}\nvalidation/package.json\nconfiguration/conformetry.config.ts\n`,
-      );
-    });
-
-    it("leaves templates alone without INCLUDE_TEMPLATES", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(changing(TEMPLATE));
-      await runCommand(runner, base);
-
-      expect(runner.streamed[0]?.args).toContain("--base=base");
-      expect(reportLines).toStrictEqual([]);
-    });
-
-    it("lists the change set for templates even when spelling stays in", async () => {
-      expect.hasAssertions();
-
-      const runner = new FakeProcessRunner(
-        changing("configuration/.cspell/words.txt", TEMPLATE),
-      );
-      await runCommand(runner, {
-        ...base,
-        INCLUDE_SPELLING: "true",
-        INCLUDE_TEMPLATES: "true",
+          succeeded("projects/a/a.ts\n"),
+        [MERGE_BASE]: failed("fatal: no merge base"),
       });
 
-      expect(runner.streamed[0]?.input).toBe(
-        `configuration/.cspell/words.txt\n${TEMPLATE}\nconfiguration/conformetry.config.ts\n`,
-      );
+      await runCommand(runner, withTemplates);
+
+      expect(streamedLines(runner)).toStrictEqual([`${AFFECTED}test-code`]);
     });
 
-    it("drops spelling files and adds the config together", async () => {
+    it("skips the second run when the first fails", async () => {
       expect.hasAssertions();
 
-      const runner = new FakeProcessRunner(
-        changing("configuration/.cspell/words.txt", TEMPLATE),
-      );
-      await runCommand(runner, { ...base, INCLUDE_TEMPLATES: "true" });
+      const runner = new FakeProcessRunner(changing(TEMPLATE), 2);
 
-      expect(reportLines).toStrictEqual([
-        "✂️ Not affecting test-code with spelling files:",
-        "  configuration/.cspell/words.txt",
-        "🧬 Selecting every conformetry instance for test-code, templates changed:",
-        `  ${TEMPLATE}`,
-      ]);
-      expect(runner.streamed[0]?.input).toBe(
-        `${TEMPLATE}\nconfiguration/conformetry.config.ts\n`,
-      );
+      await runCommand(runner, withTemplates);
+
+      expect(streamedLines(runner)).toStrictEqual([`${AFFECTED}test-code`]);
+      expect(process.exitCode).toBe(2);
     });
 
-    it("hands Nx the revisions when no template changed", async () => {
+    it("fails with git's exit code when the diff cannot be listed", async () => {
       expect.hasAssertions();
 
-      const runner = new FakeProcessRunner(changing("README.md"));
-      await runCommand(runner, {
-        ...base,
-        INCLUDE_SPELLING: "true",
-        INCLUDE_TEMPLATES: "true",
+      const runner = new FakeProcessRunner({
+        [DIFF]: failed("fatal: bad revision", 128),
+        [MERGE_BASE]: succeeded("abc1234\n"),
       });
 
-      expect(runner.streamed[0]?.args).toContain("--base=base");
+      await runCommand(runner, withTemplates);
+
+      expect(process.exitCode).toBe(128);
+      expect(reportLines.join("\n")).toContain("fatal: bad revision");
+      expect(runner.streamed).toHaveLength(0);
     });
-  });
-
-  it("fails with git's exit code when the diff cannot be listed", async () => {
-    expect.hasAssertions();
-
-    const runner = new FakeProcessRunner({
-      [DIFF]: { status: 128, stderr: "fatal: bad revision\n", stdout: "" },
-      [MERGE_BASE]: succeeded("abc1234\n"),
-    });
-    await runCommand(runner, base);
-
-    expect(reportLines).toStrictEqual(["fatal: bad revision"]);
-    expect(process.exitCode).toBe(128);
-    expect(runner.streamed).toHaveLength(0);
   });
 });

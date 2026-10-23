@@ -38,30 +38,22 @@ runs:
   steps:
     # A cancellation can hit mid-write to the task-result database, and a
     # corrupt one saved here is inherited by every later job's `restore-keys`
-    # fallback. See the `verify-task-database` command of the `integration`
-    # project for why the whole database is discarded. These steps need the
-    # installed dependencies, so a job whose install never finished skips them
-    # rather than failing a second time.
-    - name: 🩺 Verify Nx Cache Database
+    # fallback. The `cleanup-codebase` command of the `integration` project
+    # discards the damaged ones, and warns and keeps only the newest when there
+    # is more than one, which means Nx stopped reading the adopted database. See
+    # the `verify-task-database` and `keep-task-database` commands for why. It
+    # needs the installed dependencies, so a job whose install never finished
+    # skips it rather than failing a second time.
+    - name: 🩺 Tidy Nx Cache Database
       if: |
         always() && inputs.nx-cache == 'true' &&
         hashFiles('node_modules/.modules.yaml') != ''
+      env:
+        NX_CACHE: ${{ inputs.nx-cache }}
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          integration/src/integration.main.ts verify-task-database
-
-    # A second database means Nx stopped reading the adopted one, so warn and
-    # save only the newest. See the `keep-task-database` command of the
-    # `integration` project for the details.
-    - name: 🪪 Keep One Nx Cache Database
-      if: |
-        always() && inputs.nx-cache == 'true' &&
-        hashFiles('node_modules/.modules.yaml') != ''
-      shell: bash
-      run: |
-        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          integration/src/integration.main.ts keep-task-database
+          integration/src/integration.main.ts cleanup-codebase
 
     # `.nx/cache` and `.nx/workspace-data/*.db*` hold a result for every task
     # that finished before a job was cut off, whether by a failure or a

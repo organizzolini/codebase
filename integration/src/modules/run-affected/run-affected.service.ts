@@ -4,10 +4,8 @@ import { ConfigService } from "@nestjs/config";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
-  INCLUDE_SPELLING_VALUE,
   INCLUDE_TEMPLATES_VALUE,
   REVISIONS_UNSET_MESSAGE,
-  SPELLING_PATTERN,
   TARGET_UNSET_MESSAGE,
   TEMPLATE_PATTERN,
   TEMPLATE_SELECTOR,
@@ -15,7 +13,6 @@ import {
 
 import type { Environment } from "../../integration.types";
 import type {
-  RunAffectedCorrections,
   RunAffectedFailure,
   RunAffectedInputs,
   RunAffectedOutcome,
@@ -23,22 +20,14 @@ import type {
 } from "./run-affected.types";
 
 /**
- * Runs one Nx target on the projects a CI change affects, after correcting the
- * changed-file list Nx selects them from.
+ * Runs one Nx target on the projects a CI change affects.
  *
- * Two kinds of file mislead Nx. Spelling files over-select: Nx decides affected
- * per project, so one new dictionary word selected every project; they are
- * dropped unless `INCLUDE_SPELLING`. Conformetry templates under-select:
- * `.nxignore` hides some from Nx, so with `INCLUDE_TEMPLATES` a changed
- * template adds the conformetry config, an input of every instance project.
- *
- * With nothing to correct, Nx gets `--base`/`--head`; otherwise `--stdin`.
- * `--stdin` is the fallback because Nx counts every file it is handed as
- * changed in full, so a lockfile touches every project. Only `--base`/`--head`
- * diff `package.json` and the lockfile field by field. The list is built the
- * way Nx builds its own, from the merge base of the two revisions, falling back
- * to `NX_BASE`. An empty list affects nothing; it never falls back to
- * everything.
+ * Nx's task-based affected selects by each task's own inputs, so a dictionary
+ * edit reaches only `spell-check` and a lockfile edit is diffed field by field
+ * from `--base`/`--head`. One gap remains: `.nxignore` hides some conformetry
+ * templates from Nx, so a template edit alone selects none of the instance
+ * projects generated from it. With `INCLUDE_TEMPLATES`, a changed template adds
+ * a second run over the conformetry config, an input of every instance project.
  */
 @Injectable()
 export class RunAffectedService {
@@ -54,75 +43,6 @@ export class RunAffectedService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /** Builds the run that hands Nx the corrected change set over `--stdin`. */
-  private correctedPlan(
-    inputs: RunAffectedInputs,
-    corrections: RunAffectedCorrections,
-  ): RunAffectedPlan {
-    const { extra, target } = inputs;
-    const { changed, spellingFiles, templateFiles } = corrections;
-    const kept = changed.filter((file) => !spellingFiles.includes(file));
-    const corrected =
-      templateFiles.length > 0 ? [...kept, TEMPLATE_SELECTOR] : kept;
-
-    return {
-      arguments: [
-        "exec",
-        "nx",
-        "affected",
-        "--stdin",
-        `--target=${target}`,
-        ...extra,
-      ],
-      input: `${corrected.join("\n")}\n`,
-      kind: "run",
-      spellingFiles,
-      target,
-      templateFiles,
-    };
-  }
-
-  /**
-   * Picks out the files that mislead Nx for this target, listing the change
-   * set only when the target asks for a correction.
-   */
-  private findCorrections(
-    inputs: RunAffectedInputs,
-  ): RunAffectedCorrections | RunAffectedFailure {
-    const dropSpelling =
-      this.configService.get("INCLUDE_SPELLING", { infer: true }) !==
-      INCLUDE_SPELLING_VALUE;
-    const addTemplates =
-      this.configService.get("INCLUDE_TEMPLATES", { infer: true }) ===
-      INCLUDE_TEMPLATES_VALUE;
-
-    if (!dropSpelling && !addTemplates) {
-      return {
-        changed: [],
-        kind: "corrections",
-        spellingFiles: [],
-        templateFiles: [],
-      };
-    }
-
-    const changed = this.listChangedFiles(inputs.base, inputs.head);
-
-    if (!Array.isArray(changed)) {
-      return changed;
-    }
-
-    return {
-      changed,
-      kind: "corrections",
-      spellingFiles: dropSpelling
-        ? changed.filter((file) => SPELLING_PATTERN.test(file))
-        : [],
-      templateFiles: addTemplates
-        ? changed.filter((file) => TEMPLATE_PATTERN.test(file))
-        : [],
-    };
-  }
 
   /** Lists the files changed between two revisions, or why that failed. */
   private listChangedFiles(
@@ -181,43 +101,65 @@ export class RunAffectedService {
     return { base, extra, head, kind: "inputs", target };
   }
 
-  /** Builds the run that hands Nx the revisions and lets it diff them. */
-  private revisionsPlan(inputs: RunAffectedInputs): RunAffectedPlan {
-    const { base, extra, head, target } = inputs;
+  /** Builds the `nx affected` arguments for one way of selecting projects. */
+  private runOf(
+    selection: readonly string[],
+    inputs: RunAffectedInputs,
+  ): readonly string[] {
+    return [
+      "exec",
+      "nx",
+      "affected",
+      ...selection,
+      `--target=${inputs.target}`,
+      ...inputs.extra,
+    ];
+  }
 
-    return {
-      arguments: [
-        "exec",
-        "nx",
-        "affected",
-        `--base=${base}`,
-        `--head=${head}`,
-        `--target=${target}`,
-        ...extra,
-      ],
-      kind: "run",
-      spellingFiles: [],
-      target,
-      templateFiles: [],
-    };
+  /** Picks out the changed templates, when the target asks for them. */
+  private templatesChanged(
+    inputs: RunAffectedInputs,
+  ): RunAffectedFailure | string[] {
+    const addTemplates =
+      this.configService.get("INCLUDE_TEMPLATES", { infer: true }) ===
+      INCLUDE_TEMPLATES_VALUE;
+
+    if (!addTemplates) {
+      return [];
+    }
+
+    const changed = this.listChangedFiles(inputs.base, inputs.head);
+
+    return Array.isArray(changed)
+      ? changed.filter((file) => TEMPLATE_PATTERN.test(file))
+      : changed;
   }
 
   // 🌎 Public Methods
 
   /**
-   * Runs `nx affected` as planned, with this process's output streams.
+   * Runs `nx affected` as planned, with this process's output streams, and
+   * stops at the first run that fails.
    *
-   * @param plan - The run `plan` produced.
-   * @returns `nx affected`'s exit code.
+   * @param plan - The runs `plan` produced.
+   * @returns The exit code of the first failing run, or 0.
    */
   public execute(plan: RunAffectedPlan): number {
-    return this.processRunner.stream("pnpm", plan.arguments, plan.input);
+    for (const run of plan.runs) {
+      const status = this.processRunner.stream("pnpm", run);
+
+      if (status !== 0) {
+        return status;
+      }
+    }
+
+    return 0;
   }
 
   /**
-   * Works out the `nx affected` run this environment asks for.
+   * Works out the `nx affected` runs this environment asks for.
    *
-   * @returns The run to make, or the reason there is none.
+   * @returns The runs to make, or the reason there are none.
    */
   public plan(): RunAffectedOutcome {
     const inputs = this.readInputs();
@@ -226,15 +168,22 @@ export class RunAffectedService {
       return inputs;
     }
 
-    const corrections = this.findCorrections(inputs);
+    const templateFiles = this.templatesChanged(inputs);
 
-    if (corrections.kind === "failure") {
-      return corrections;
+    if (!Array.isArray(templateFiles)) {
+      return templateFiles;
     }
 
-    return corrections.spellingFiles.length > 0 ||
-      corrections.templateFiles.length > 0
-      ? this.correctedPlan(inputs, corrections)
-      : this.revisionsPlan(inputs);
+    return {
+      kind: "run",
+      runs: [
+        this.runOf([`--base=${inputs.base}`, `--head=${inputs.head}`], inputs),
+        ...(templateFiles.length > 0
+          ? [this.runOf([`--files=${TEMPLATE_SELECTOR}`], inputs)]
+          : []),
+      ],
+      target: inputs.target,
+      templateFiles,
+    };
   }
 }
