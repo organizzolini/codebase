@@ -20,7 +20,7 @@
 # header limit. Every entry below therefore carries the `type:`, `scope:`, and `source:agent` labels its
 # commit-message prefix implies, statically, since nothing derives them for
 # a pull request Dependabot itself opens. `type:chore` matches this
-# repository's own existing `chore(dependencies): ⬆️ Upgrade` convention for
+# repository's own existing `chore(dependencies): ⬆️ upgrade` convention for
 # routine version bumps: `release.config.cjs` maps `chore` to no release
 # significance, so these pull requests don't trigger a version bump on
 # their own.
