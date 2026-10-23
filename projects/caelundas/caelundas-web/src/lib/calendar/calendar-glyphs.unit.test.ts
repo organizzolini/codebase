@@ -31,7 +31,7 @@ describe(getEventLabel, () => {
       ),
     ).toStrictEqual({
       details: undefined,
-      glyphs: "🌙 ⚹ ♆",
+      glyphs: "🌙⚹♆",
       name: "Moon perfective sextile Neptune",
     });
   });
@@ -39,7 +39,7 @@ describe(getEventLabel, () => {
   it("splits at the first word of English when there is no description", () => {
     expect(getEventLabel(event("☀️ ⏬ Solar Nadir"))).toStrictEqual({
       details: undefined,
-      glyphs: "☀️ ⏬",
+      glyphs: "☀️⏬",
       name: "Solar Nadir",
     });
     expect(getEventLabel(event("🌠 Astronomical Dawn"))).toMatchObject({
@@ -52,12 +52,12 @@ describe(getEventLabel, () => {
     expect(
       getEventLabel(event("⬅️ 🌙 U ♄ Moon dissolving undecile Saturn")),
     ).toMatchObject({
-      glyphs: "⬅️ 🌙 U ♄",
+      glyphs: "⬅️🌙U♄",
       name: "Moon dissolving undecile Saturn",
     });
     expect(
       getEventLabel(event("🎯 ☀️ N ♇ Sun perfective novile Pluto")),
-    ).toMatchObject({ glyphs: "☀️ N ♇" });
+    ).toMatchObject({ glyphs: "☀️N♇" });
   });
 
   it("keeps symbols that run together with no space between them", () => {
@@ -110,8 +110,16 @@ describe(getEventLabel, () => {
     expect(
       getEventLabel(event("🎯 🌙 ⚹ ♆ Moon perfective sextile Neptune")),
     ).toMatchObject({
-      glyphs: "🌙 ⚹ ♆",
+      glyphs: "🌙⚹♆",
       name: "Moon perfective sextile Neptune",
     });
+  });
+
+  it("draws the symbols with no space between them", () => {
+    expect(
+      getEventLabel(
+        event("➡️ △ ♃-⚴-🌚 Jupiter, Lunar Apogee, Pallas grand trine"),
+      ),
+    ).toMatchObject({ glyphs: "➡️△♃-⚴-🌚" });
   });
 });

@@ -84,7 +84,7 @@ describe(CalendarEventChip, () => {
     );
 
     expect(container.querySelectorAll("[data-icon]")).toHaveLength(0);
-    expect(screen.getByText("♂ □ ♄")).toBeDefined();
+    expect(screen.getByText("♂□♄")).toBeDefined();
   });
 
   it("draws symbols larger than a name, in glyphs or emojis", () => {

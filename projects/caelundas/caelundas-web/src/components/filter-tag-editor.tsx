@@ -15,10 +15,19 @@ import type { KeyboardEvent, ReactNode } from "react";
  * tag ids, whatever the registry's type says.
  */
 export interface FilterTagEditorProperties extends FilterEditorProps {
+  /**
+   * Whether picking a tag picks everything beneath it and a tag with only some
+   * of its tags picked is shown partly picked; on when absent.
+   */
+  cascade?: boolean | undefined;
   className?: string;
 }
 
 const INDENT_REM = 0.875;
+
+// A partly ticked tag is a box with a dash in place of the check.
+const INDETERMINATE_CLASS_NAME =
+  "pointer-events-none before:hidden before:h-0.5 before:w-2 before:rounded-full before:bg-primary data-indeterminate:border-primary data-indeterminate:before:block data-indeterminate:[&_svg]:hidden";
 
 // 🧩 Component
 
@@ -28,9 +37,10 @@ const INDENT_REM = 0.875;
  * tags beneath it has a handle that opens or closes them, so a deep tree can
  * be folded down to its first level; it opens already showing the tags the
  * rule holds, and a closed tag says how many picks are inside it. Searching
- * lists every match, open or not. Each tag is ticked on its own, and ticking
- * one also takes everything beneath it. Every tick is written at once and the
- * list stays open, so several can be picked together; Escape closes it.
+ * lists every match, open or not. Ticking a tag takes everything beneath it,
+ * and a tag with only some of its tags ticked shows a dash. Every tick is
+ * written at once and the list stays open, so several can be picked together;
+ * Escape closes it.
  */
 export function FilterTagEditor(
   properties: Readonly<FilterTagEditorProperties>,
@@ -44,7 +54,6 @@ export function FilterTagEditor(
     handleSearchKeyDown,
     handleToggle,
     rows,
-    selected,
   } = useTagPicker(properties);
 
   // 🏗 Setup
@@ -81,7 +90,6 @@ export function FilterTagEditor(
           {rows.map((row) => (
             <TagRow
               key={row.item.value}
-              checked={selected.includes(row.item.value)}
               onKeyDown={handleOptionKeyDown}
               onOpenChange={handleOpen}
               onToggle={handleToggle}
@@ -106,15 +114,15 @@ export function FilterTagEditor(
  */
 function TagRow(
   properties: Readonly<{
-    checked: boolean;
     onKeyDown: (event: KeyboardEvent<HTMLElement>, row: TagTreeRow) => void;
     onOpenChange: (id: string, open: boolean) => void;
     onToggle: (id: string) => void;
     row: TagTreeRow;
   }>,
 ): ReactNode {
-  const { checked, onKeyDown, onOpenChange, onToggle, row } = properties;
+  const { onKeyDown, onOpenChange, onToggle, row } = properties;
   const { item } = row;
+  const checked = row.state === "checked";
 
   return (
     <div
@@ -163,7 +171,8 @@ function TagRow(
       <Checkbox
         aria-hidden="true"
         checked={checked}
-        className="pointer-events-none"
+        className={INDETERMINATE_CLASS_NAME}
+        indeterminate={row.state === "partial"}
         tabIndex={-1}
       />
       <span className="min-w-0 grow truncate">{row.name}</span>

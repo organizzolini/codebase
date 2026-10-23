@@ -2,7 +2,9 @@ import { useState } from "react";
 
 import {
   findAncestors,
+  getTagStates,
   type TagTreeRow,
+  toggleTag,
   toTagTreeRows,
 } from "../lib/event-filters/event-filter-tag-tree";
 
@@ -22,7 +24,6 @@ export interface TagPicker {
   handleSearchKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
   handleToggle: (id: string) => void;
   rows: TagTreeRow[];
-  selected: readonly unknown[];
 }
 
 /**
@@ -52,10 +53,24 @@ export function useTagPicker(
     Pick<
       FilterEditorProps,
       "cancel" | "commit" | "field" | "onValueChange" | "options" | "value"
-    >
+    > & {
+      /**
+       * Whether picking a tag picks everything beneath it and a tag with only
+       * some of its tags picked is shown partly picked; on when absent.
+       */
+      cascade?: boolean | undefined;
+    }
   >,
 ): TagPicker {
-  const { cancel, commit, field, onValueChange, options, value } = properties;
+  const {
+    cancel,
+    cascade = true,
+    commit,
+    field,
+    onValueChange,
+    options,
+    value,
+  } = properties;
   // Every tag the field offers, in tree order, which a search narrows only in
   // what it lists: the tree's shape is read from the whole.
   const tree = field.options ?? options.items;
@@ -66,11 +81,14 @@ export function useTagPicker(
     expanded,
     selected,
     showAll: searching,
+    ...(cascade ? { states: getTagStates(tree, selected) } : {}),
   });
   const handleToggle = (id: string): void => {
-    const next = selected.includes(id)
-      ? selected.filter((picked) => picked !== id)
-      : [...selected, id];
+    const next = cascade
+      ? toggleTag(tree, selected, id)
+      : selected.includes(id)
+        ? selected.filter((picked) => picked !== id)
+        : [...selected, id];
 
     onValueChange(next);
     commit(next, { close: false });
@@ -145,7 +163,6 @@ export function useTagPicker(
     handleSearchKeyDown,
     handleToggle,
     rows,
-    selected,
   };
 }
 

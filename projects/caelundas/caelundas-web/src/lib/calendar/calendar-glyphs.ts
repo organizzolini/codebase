@@ -38,6 +38,11 @@ const WORD_START = /(?<=^|\s)\p{L}{2,}/u;
  */
 const PERFECTIVE = /\u{1F3AF}\s*/gu;
 
+/**
+ * The spaces between symbols, which the symbols are drawn without.
+ */
+const SPACES = /\s+/gu;
+
 // 🧩 Functions
 
 /**
@@ -61,7 +66,10 @@ export function getEventLabel(event: CalendarEventRecord): EventLabel {
   const symbols =
     boundary < 0
       ? ""
-      : summary.slice(0, boundary).replaceAll(PERFECTIVE, "").trim();
+      : summary
+          .slice(0, boundary)
+          .replaceAll(PERFECTIVE, "")
+          .replaceAll(SPACES, "");
   const words = boundary < 0 ? "" : summary.slice(boundary).trim();
   const name = words === "" ? summary : words;
 

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { findAncestors, toTagTreeRows } from "./event-filter-tag-tree";
+import {
+  findAncestors,
+  getTagStates,
+  toggleTag,
+  toTagTreeRows,
+} from "./event-filter-tag-tree";
 
 import type { FilterOption } from "@codebase/presentation";
 
@@ -164,6 +169,74 @@ describe("tag tree", () => {
     it("finds nothing above a first-level tag or no tag", () => {
       expect(findAncestors(ITEMS, ["aspect"]).size).toBe(0);
       expect(findAncestors(ITEMS, []).size).toBe(0);
+    });
+  });
+
+  describe(getTagStates, () => {
+    it("checks a tag whose own tags are all picked, and every tag beneath a pick", () => {
+      const states = getTagStates(ITEMS, ["major"]);
+
+      expect(states.get("major")).toBe("checked");
+      expect(states.get("square")).toBe("checked");
+      expect(states.get("trine")).toBe("checked");
+    });
+
+    it("shows a tag with only some of its tags picked as partial, up through every tag above it", () => {
+      const states = getTagStates(ITEMS, ["square"]);
+
+      expect(states.get("square")).toBe("checked");
+      expect(states.get("trine")).toBe("unchecked");
+      expect(states.get("major")).toBe("partial");
+      expect(states.get("aspect")).toBe("partial");
+      expect(states.get("minor")).toBe("unchecked");
+      expect(states.get("ingress")).toBe("unchecked");
+    });
+
+    it("checks a tag once all its tags are picked one by one", () => {
+      const states = getTagStates(ITEMS, ["square", "trine", "minor"]);
+
+      expect(states.get("major")).toBe("checked");
+      expect(states.get("aspect")).toBe("checked");
+    });
+
+    it("leaves every tag unchecked for no picks", () => {
+      expect([...getTagStates(ITEMS, []).values()]).toStrictEqual(
+        ITEMS.map(() => "unchecked"),
+      );
+    });
+  });
+
+  describe(toggleTag, () => {
+    it("picks a tag with everything beneath it, as the tag alone", () => {
+      expect(toggleTag(ITEMS, [], "major")).toStrictEqual(["major"]);
+      expect(toggleTag(ITEMS, [], "aspect")).toStrictEqual(["aspect"]);
+    });
+
+    it("picks a partly picked tag in full", () => {
+      expect(toggleTag(ITEMS, ["square"], "major")).toStrictEqual(["major"]);
+    });
+
+    it("clears a checked tag with everything beneath it", () => {
+      expect(toggleTag(ITEMS, ["aspect"], "major")).toStrictEqual(["minor"]);
+      expect(toggleTag(ITEMS, ["major"], "major")).toStrictEqual([]);
+    });
+
+    it("picks the rest of a tag's tags as the tag when the last is ticked", () => {
+      expect(toggleTag(ITEMS, ["square"], "trine")).toStrictEqual(["major"]);
+      expect(toggleTag(ITEMS, ["major"], "minor")).toStrictEqual(["aspect"]);
+    });
+
+    it("splits a picked tag into the tags left when one beneath it is cleared", () => {
+      expect(toggleTag(ITEMS, ["aspect"], "square")).toStrictEqual([
+        "trine",
+        "minor",
+      ]);
+    });
+
+    it("leaves the picks as they are for a tag it does not know", () => {
+      expect(toggleTag(ITEMS, ["square", 3], "missing")).toStrictEqual([
+        "square",
+      ]);
     });
   });
 });

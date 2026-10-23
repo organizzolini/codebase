@@ -147,8 +147,46 @@ describe(FilterTagEditor, () => {
 
     const [aspect, compound] = screen.getAllByRole("option");
 
-    expect(aspect?.getAttribute("aria-selected")).toBe("false");
+    // The only tag beneath Aspect is picked, so Aspect is picked in full.
+    expect(aspect?.getAttribute("aria-selected")).toBe("true");
     expect(compound?.getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("shows a tag with only some of its tags ticked as partly ticked", () => {
+    const items: FilterOption[] = [
+      ...ITEMS.slice(0, 2),
+      {
+        data: { depth: 1, name: "Major Aspect" },
+        label: "Major Aspect",
+        value: "major",
+      },
+    ];
+
+    render(<FilterTagEditor {...createProperties(["compound"], "", items)} />);
+
+    const [aspect] = screen.getAllByRole("option");
+    const box = aspect?.querySelector('[data-slot="checkbox"]');
+
+    expect(aspect?.getAttribute("aria-selected")).toBe("false");
+    expect(box?.getAttributeNames()).toContain("data-indeterminate");
+    expect(box?.getAttributeNames()).not.toContain("data-checked");
+  });
+
+  it("ticks everything beneath a tag with it, and clears it all together", () => {
+    const items: FilterOption[] = [
+      ...ITEMS.slice(0, 2),
+      {
+        data: { depth: 1, name: "Major Aspect" },
+        label: "Major Aspect",
+        value: "major",
+      },
+    ];
+    const properties = createProperties(["compound"], "", items);
+
+    render(<FilterTagEditor {...properties} />);
+    fireEvent.click(screen.getByText("Aspect"));
+
+    expect(properties.onValueChange).toHaveBeenCalledWith(["aspect"]);
   });
 
   it("writes a tag it is ticked on at once, leaving the list open", () => {
@@ -158,11 +196,12 @@ describe(FilterTagEditor, () => {
     fireEvent.click(screen.getByRole("button", { name: "Expand Aspect" }));
     fireEvent.click(screen.getByText("Compound Aspect"));
 
+    // Compound is Aspect's only tag, so ticking it picks Aspect in full.
     expect(properties.onValueChange).toHaveBeenCalledWith([
+      "aspect",
       "ingress",
-      "compound",
     ]);
-    expect(properties.commit).toHaveBeenCalledWith(["ingress", "compound"], {
+    expect(properties.commit).toHaveBeenCalledWith(["aspect", "ingress"], {
       close: false,
     });
   });

@@ -3,6 +3,12 @@ import type { FilterOption } from "@codebase/presentation";
 // 🔖 Type
 
 /**
+ * Whether a tag is picked, with everything beneath it, or only some of what
+ * is beneath it is, or none of it.
+ */
+export type TagCheckState = "checked" | "partial" | "unchecked";
+
+/**
  * What a tag option carries beyond its label: how deep the tag sits beneath
  * its root, and its own name, which its row shows in place of the path the
  * chip is labeled with.
@@ -29,6 +35,20 @@ export interface TagTreeRow {
    * says there are picks inside it.
    */
   selectedBelow: number;
+  /**
+   * Whether the tag is picked, partly picked through the tags beneath it, or
+   * not picked.
+   */
+  state: TagCheckState;
+}
+
+/**
+ * Where each tag's own tags end in the depth-first list, and which tags have
+ * none beneath them.
+ */
+interface TagShape {
+  end: number[];
+  leaf: boolean[];
 }
 
 // 🧩 Functions
@@ -67,6 +87,83 @@ export function findAncestors(
 }
 
 /**
+ * Each tag's state for the tags picked, where picking a tag picks everything
+ * beneath it: checked when it, or all the tags beneath it, are picked, partial
+ * when only some of what is beneath it is, and unchecked otherwise.
+ */
+export function getTagStates(
+  items: readonly FilterOption[],
+  selected: readonly unknown[],
+): Map<string, TagCheckState> {
+  const shape = measureTags(items);
+  const covered = coverLeaves(items, selected, shape);
+  const full = fillFromLeaves(shape, covered);
+  const states = new Map<string, TagCheckState>();
+
+  // Running counts of the leaves covered, so what lies beneath a tag is read
+  // as one difference.
+  const counts = [0];
+  let total = 0;
+
+  for (const flag of covered) {
+    total += Number(flag);
+    counts.push(total);
+  }
+
+  for (const [index, item] of items.entries()) {
+    const below =
+      numberAt(counts, numberAt(shape.end, index)) - numberAt(counts, index);
+
+    states.set(
+      item.value,
+      full[index] ? "checked" : below > 0 ? "partial" : "unchecked",
+    );
+  }
+
+  return states;
+}
+
+/**
+ * Toggles a tag with everything beneath it: a checked or partly picked tag is
+ * checked, and a checked one cleared, then the tags above it follow from
+ * what is beneath them. The picks are written as the fewest tags that cover
+ * them: a tag with all of its tags picked stands for them.
+ */
+export function toggleTag(
+  items: readonly FilterOption[],
+  selected: readonly unknown[],
+  id: string,
+): string[] {
+  const index = items.findIndex((item) => item.value === id);
+  const shape = measureTags(items);
+
+  if (index === -1) {
+    return selected.filter((pick) => typeof pick === "string");
+  }
+
+  const covered = coverLeaves(items, selected, shape);
+  const wasFull = fillFromLeaves(shape, covered)[index] ?? false;
+
+  for (let leaf = index; leaf < numberAt(shape.end, index); leaf += 1) {
+    covered[leaf] = shape.leaf[leaf] === true && !wasFull;
+  }
+
+  const full = fillFromLeaves(shape, covered);
+  const picks: string[] = [];
+
+  for (let at = 0; at < items.length;) {
+    if (full[at]) {
+      picks.push(items[at]?.value ?? "");
+      at = shape.end[at] ?? at + 1;
+    } else {
+      at += 1;
+    }
+  }
+
+  return picks;
+}
+
+/**
  * Lays the tags out as the picker draws them, in the order they are given,
  * depth first: a tag beneath one that is closed is left out. With
  * `showAll`, as while searching, every tag shows and none has a handle.
@@ -77,9 +174,14 @@ export function toTagTreeRows(
     expanded: ReadonlySet<string>;
     selected: readonly unknown[];
     showAll: boolean;
+    /**
+     * Each tag's state where picking a tag takes what is beneath it; every
+     * tag is checked or not by whether it is picked itself without it.
+     */
+    states?: ReadonlyMap<string, TagCheckState>;
   }>,
 ): TagTreeRow[] {
-  const { expanded, selected, showAll } = options;
+  const { expanded, selected, showAll, states } = options;
   const rows: TagTreeRow[] = [];
   let closedAt: number | undefined;
 
@@ -108,6 +210,9 @@ export function toTagTreeRows(
       selectedBelow: hasChildren
         ? countSelectedBelow(items, { depth, index }, selected)
         : 0,
+      state:
+        states?.get(item.value) ??
+        (selected.includes(item.value) ? "checked" : "unchecked"),
     });
   }
 
@@ -136,6 +241,96 @@ function countSelectedBelow(
   }
 
   return count;
+}
+
+/**
+ * Marks the tags with none beneath them that the picks cover: those picked,
+ * and those beneath a tag picked.
+ */
+function coverLeaves(
+  items: readonly FilterOption[],
+  selected: readonly unknown[],
+  shape: TagShape,
+): boolean[] {
+  const covered: boolean[] = [];
+  let coveredUntil = 0;
+
+  for (const [index, item] of items.entries()) {
+    const picked = selected.includes(item.value);
+
+    if (picked) {
+      coveredUntil = Math.max(coveredUntil, numberAt(shape.end, index));
+    }
+
+    covered.push(shape.leaf[index] === true && index < coveredUntil);
+  }
+
+  return covered;
+}
+
+/**
+ * Marks every tag whose own tags are all covered, working up from the tags
+ * with none beneath them.
+ */
+function fillFromLeaves(
+  shape: TagShape,
+  covered: readonly boolean[],
+): boolean[] {
+  const full: boolean[] = [];
+
+  for (let index = covered.length - 1; index >= 0; index -= 1) {
+    const isLeaf = shape.leaf[index] === true;
+    let all = isLeaf ? covered[index] === true : true;
+
+    for (
+      let child = index + 1;
+      !isLeaf && child < numberAt(shape.end, index);
+      child = numberAt(shape.end, child)
+    ) {
+      all = all && full[child] === true;
+    }
+
+    full[index] = all;
+  }
+
+  return full;
+}
+
+/**
+ * Finds where each tag's own tags end in the depth-first list, and which
+ * tags have none.
+ */
+function measureTags(items: readonly FilterOption[]): TagShape {
+  const depths: number[] = [];
+  const end: number[] = [];
+  const leaf: boolean[] = [];
+
+  for (const item of items) {
+    depths.push(readDepth(item));
+  }
+
+  for (let index = items.length - 1; index >= 0; index -= 1) {
+    let next = index + 1;
+
+    while (
+      next < items.length &&
+      numberAt(depths, next) > numberAt(depths, index)
+    ) {
+      next = numberAt(end, next);
+    }
+
+    end[index] = next;
+    leaf[index] = next === index + 1;
+  }
+
+  return { end, leaf };
+}
+
+/**
+ * Reads a number from a list the caller has filled to that index.
+ */
+function numberAt(list: readonly number[], index: number): number {
+  return Number(list[index]);
 }
 
 /**

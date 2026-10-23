@@ -96,4 +96,21 @@ describe(GroupTagPicker, () => {
     expect(screen.queryByRole("option", { name: /Aspect/u })).toBeNull();
     expect(screen.getByRole("option", { name: /Ingress/u })).toBeDefined();
   });
+
+  it("clears a tag that is ticked again, each tag on its own", () => {
+    const onChange = vi.fn<(tags: string[]) => void>();
+
+    render(
+      <GroupTagPicker
+        field={FIELD}
+        onChange={onChange}
+        tags={["ingress", "aspect"]}
+      />,
+    );
+    fireEvent.click(screen.getByRole("option", { name: /Ingress/u }));
+
+    // A group is made of each tag ticked, so ticking Aspect's tags is not
+    // ticking Aspect, and none of them is partly ticked.
+    expect(onChange).toHaveBeenCalledWith(["aspect"]);
+  });
 });

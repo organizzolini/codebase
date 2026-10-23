@@ -95,7 +95,10 @@ export function GroupTagPicker(
       className={className}
       data-testid="group-tag-picker"
     >
-      <FilterTagEditor {...editorProperties} />
+      <FilterTagEditor
+        {...editorProperties}
+        cascade={false}
+      />
     </div>
   );
 }
