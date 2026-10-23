@@ -313,7 +313,7 @@ runs:
     # it too, rather than failing a second time. None of its steps feeds the
     # install, and the install opens no Nx task database, so nothing reaches
     # the restored one first.
-    - name: 🩺 Prepare Nx
+    - name: 🩺 Setup Codebase
       if: hashFiles('node_modules/.modules.yaml') != ''
       env:
         BEFORE: ${{ github.event.before }}

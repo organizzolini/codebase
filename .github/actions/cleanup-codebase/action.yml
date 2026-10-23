@@ -44,7 +44,7 @@ runs:
     # the `verify-task-database` and `keep-task-database` commands for why. It
     # needs the installed dependencies, so a job whose install never finished
     # skips it rather than failing a second time.
-    - name: 🩺 Tidy Nx Cache Database
+    - name: 🩺 Cleanup Codebase
       if: |
         always() && inputs.nx-cache == 'true' &&
         hashFiles('node_modules/.modules.yaml') != ''
