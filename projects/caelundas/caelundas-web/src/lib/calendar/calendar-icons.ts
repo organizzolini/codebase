@@ -139,15 +139,28 @@ const FILE_BY_DECAN: Readonly<Record<string, string>> = {
 
 /**
  * The icon of an event that is nothing but its one symbol, by its name, where
- * the symbol alone is shared with another event: the day, the night, and each
- * of the hexadecans, whose emoji are a season's.
+ * the symbol alone is shared with another event: the day, the night, each of the
+ * of the hexadecans, whose emoji are a season's, and the dawns, dusks and
+ * twilights, whose emoji the inner planets' phases and the daily cycle share.
  */
 const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
+  "Astronomical Dawn": "astronomical-dawn-icon.svg",
+  "Astronomical Dusk": "astronomical-dusk-icon.svg",
+  "Astronomical Twilight (Evening)": "astronomical-dusk-icon.svg",
+  "Astronomical Twilight (Morning)": "astronomical-dawn-icon.svg",
+  "Civil Dawn": "civil-dawn-icon.svg",
+  "Civil Dusk": "civil-dusk-icon.svg",
+  "Civil Twilight (Evening)": "civil-dusk-icon.svg",
+  "Civil Twilight (Morning)": "civil-dawn-icon.svg",
   Daylight: "day-icon.svg",
   "Eleventh Hexadecan": "eleventh-hexadecan-icon.svg",
   "Fifteenth Hexadecan": "fifteenth-hexadecan-icon.svg",
   "Fifth Hexadecan": "fifth-hexadecan-icon.svg",
   "First Hexadecan": "first-hexadecan-icon.svg",
+  "Nautical Dawn": "nautical-dawn-icon.svg",
+  "Nautical Dusk": "nautical-dusk-icon.svg",
+  "Nautical Twilight (Evening)": "nautical-dusk-icon.svg",
+  "Nautical Twilight (Morning)": "nautical-dawn-icon.svg",
   Night: "night-icon.svg",
   "Ninth Hexadecan": "ninth-hexadecan-icon.svg",
   "Seventh Hexadecan": "seventh-hexadecan-icon.svg",

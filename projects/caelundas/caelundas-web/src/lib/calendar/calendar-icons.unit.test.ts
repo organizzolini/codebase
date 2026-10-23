@@ -154,4 +154,46 @@ describe(toGlyphParts, () => {
       { file: "rising-icon.svg" },
     ]);
   });
+
+  it("draws each dawn, dusk and twilight by the event's name, as the dawn or dusk", () => {
+    const fileOf = (glyphs: string, name: string): string | undefined => {
+      const [part] = toGlyphParts(glyphs, name);
+
+      return part?.kind === "icon" ? part.file : undefined;
+    };
+
+    expect(fileOf("🌄", "Civil Dawn")).toBe("civil-dawn-icon.svg");
+    expect(fileOf("🌇", "Civil Dusk")).toBe("civil-dusk-icon.svg");
+    expect(fileOf("🌅", "Nautical Dawn")).toBe("nautical-dawn-icon.svg");
+    expect(fileOf("🌉", "Nautical Dusk")).toBe("nautical-dusk-icon.svg");
+    expect(fileOf("🌠", "Astronomical Dawn")).toBe(
+      "astronomical-dawn-icon.svg",
+    );
+    expect(fileOf("🌌", "Astronomical Dusk")).toBe(
+      "astronomical-dusk-icon.svg",
+    );
+    expect(fileOf("🌠", "Astronomical Twilight (Morning)")).toBe(
+      "astronomical-dawn-icon.svg",
+    );
+    expect(fileOf("🌌", "Astronomical Twilight (Evening)")).toBe(
+      "astronomical-dusk-icon.svg",
+    );
+    expect(fileOf("🌅", "Nautical Twilight (Morning)")).toBe(
+      "nautical-dawn-icon.svg",
+    );
+    expect(fileOf("🌉", "Nautical Twilight (Evening)")).toBe(
+      "nautical-dusk-icon.svg",
+    );
+    expect(fileOf("🌄", "Civil Twilight (Morning)")).toBe(
+      "civil-dawn-icon.svg",
+    );
+    expect(fileOf("🌇", "Civil Twilight (Evening)")).toBe(
+      "civil-dusk-icon.svg",
+    );
+  });
+
+  it("still draws the morning and evening star beside a planet", () => {
+    expect(files("♀️🌄↥")).toContain("morning-star-icon.svg");
+    expect(files("♀️🌇↧")).toContain("evening-star-icon.svg");
+  });
 });
