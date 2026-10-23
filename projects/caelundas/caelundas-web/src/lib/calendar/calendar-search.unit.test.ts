@@ -22,4 +22,18 @@ describe(validateCalendarSearch, () => {
       expect(validateCalendarSearch({ clusters }).clusters).toBeUndefined();
     }
   });
+
+  it("reads the tags a grouping level picks, and forgets what is not a list of ids", () => {
+    expect(
+      validateCalendarSearch({
+        group: [
+          { field: "tag:type", tags: ["a", "b"] },
+          { field: "tag:planet", tags: [1, 2] },
+        ],
+      }).group,
+    ).toMatchObject([
+      { field: "tag:type", tags: ["a", "b"] },
+      { field: "tag:planet" },
+    ]);
+  });
 });

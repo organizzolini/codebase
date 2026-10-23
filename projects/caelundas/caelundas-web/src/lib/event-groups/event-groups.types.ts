@@ -1,4 +1,5 @@
 import type { CalendarEventRecord } from "../events-database/events-database.types";
+import type { FilterOption } from "@codebase/presentation";
 
 /**
  * A derived field's id: a period an event starts in, or its duration.
@@ -29,6 +30,11 @@ export interface EventGroupField {
    * for a derived field.
    */
   levels: readonly (readonly string[])[];
+  /**
+   * For a tag root, its tags in tree order as the filter lists them, so the
+   * grouping picks from the same tree; empty for a derived field.
+   */
+  options: readonly FilterOption[];
 }
 
 /**
@@ -37,12 +43,15 @@ export interface EventGroupField {
 export type EventGrouping = readonly EventGroupLevel[];
 
 /**
- * One level of a grouping: the field it groups by and, for a tag root, how
- * far beneath the root it goes, 1 being the root's children.
+ * One level of a grouping: the field it groups by and, for a tag root, the
+ * tags it makes a group of, each holding the events under it. With none
+ * picked it groups by the root's children, or by the tags `depth` beneath the
+ * root of a link from before tags could be picked.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;
   field: string;
+  tags?: readonly string[] | undefined;
 }
 
 /**

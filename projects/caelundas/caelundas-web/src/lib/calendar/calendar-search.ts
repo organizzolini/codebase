@@ -36,6 +36,11 @@ const groupLevelSchema = z.object({
     .transform((depth) => groupDepthSchema.safeParse(depth).data)
     .optional(),
   field: z.string().min(1),
+  // Anything but a list of ids is forgotten, like a depth out of range.
+  tags: z
+    .unknown()
+    .transform((tags) => z.array(z.string()).safeParse(tags).data)
+    .optional(),
 });
 
 const filterValueSchema = z.union([

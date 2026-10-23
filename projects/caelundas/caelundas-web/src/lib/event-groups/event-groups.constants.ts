@@ -108,3 +108,14 @@ export const TAG_GROUP_SQL = `
       )
     )
 `;
+
+/**
+ * The picked tags an event falls under, with `{tags}` in place of one
+ * placeholder for each. An event is attached to every tag above its own, so a
+ * picked tag finds everything beneath it.
+ */
+export const PICKED_TAG_GROUP_SQL = `
+  select t.tag_id as "key", t.tag_name as label, t.tag_path as "path"
+  from calendar_event_tag_nodes t
+  where t.calendar_event_id = e.id and t.tag_id in ({tags})
+`;

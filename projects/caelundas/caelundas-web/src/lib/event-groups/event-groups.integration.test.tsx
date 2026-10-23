@@ -147,15 +147,11 @@ describe("event grouping", () => {
     const popover = await openGroupBy();
 
     expect(
-      within(popover).getByRole<HTMLSelectElement>("combobox", {
-        name: "Group 1 by",
-      }).value,
-    ).toBe("tag:tag-planet");
+      within(popover).getByRole("combobox", { name: "Group 1 by" }).textContent,
+    ).toContain("Planet");
     expect(
-      within(popover).getByRole<HTMLSelectElement>("combobox", {
-        name: "Group 2 depth",
-      }).value,
-    ).toBe("2");
+      within(popover).getByRole("button", { name: "Group 2 tags" }).textContent,
+    ).toBe("Level 2");
     await expect(findAgendaHeadings(4)).resolves.toContain(
       "Major Aspect 1 event",
     );
@@ -164,12 +160,14 @@ describe("event grouping", () => {
   it("keeps the grouping picked in the link", async () => {
     await renderRoute("/?view=agenda&date=2026-03-04");
 
-    fireEvent.change(
+    fireEvent.click(
       within(await openGroupBy()).getByRole("combobox", {
         name: "Group 1 by",
       }),
-      { target: { value: "month" } },
     );
+    fireEvent.keyDown(await screen.findByRole("option", { name: "Month" }), {
+      key: "Enter",
+    });
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
       "February 2026 1 event",

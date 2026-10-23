@@ -225,16 +225,21 @@ selector. Times render in the zone the dataset's events carry.
   load runs in the background and the page it replaces stays on screen.
 
 - The agenda and the timeline group their events, through the Group by
-  popover in the toolbar: an ordered list of up to three levels, each a tag
-  root, taken to a chosen depth of its tree, or a year, quarter, month, week,
-  day, weekday, hour, or duration bucket read in each event's own zone.
+  submenu of the View menu: an ordered list of up to three levels, each laid
+  out like a filter rule, a field and what to group it by. A tag root opens
+  the filter's own tag tree (`GroupTagPicker` over `FilterTagEditor`), and
+  each tag ticked becomes a group of the events under it, so several tags are
+  one pick; with none ticked it groups by the root's first level, and a link
+  from before tags could be picked still names a `depth`. A level may instead
+  be a year, quarter, month, week, day, weekday, hour, or duration bucket
+  read in each event's own zone.
   `compileEventGrouping` in `src/lib/event-groups/` turns a grouping into one
   SQL source of group keys per level, which `findEvents` reads into each
   event's `groups`; `buildEventGroups` builds the tree from them. An event
   falls in every group of a level it has a key for, so an event of two
   planets is listed under both, and a group counts its distinct events. A
   tag above the chosen depth stands for itself, and events with no key at a
-  level gather in a last "No …" group.
+  level, or under none of the tags ticked, gather in a last "No …" group.
 - Without a `group` search parameter, the agenda groups by Type and the
   timeline by Type, then Planet; an empty list groups by nothing. Levels that
   do not parse or name a field the data lacks are dropped one by one.

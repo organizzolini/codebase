@@ -143,4 +143,14 @@ describe(compileEventGrouping, () => {
 
     expect(keys["event-mars-conjunct-venus"]).toStrictEqual([[]]);
   });
+
+  it("makes a group of each tag picked, holding the events under it", async () => {
+    const keys = await findGroupKeys([
+      { field: "tag:tag-type", tags: ["tag-aspect", "tag-ingress"] },
+    ]);
+
+    expect(keys["event-mars-conjunct-venus"]).toStrictEqual([["tag-aspect"]]);
+    expect(keys["event-sun-ingress-aries"]).toStrictEqual([["tag-ingress"]]);
+    expect(keys["event-mercury-retrograde"]).toStrictEqual([[]]);
+  });
 });

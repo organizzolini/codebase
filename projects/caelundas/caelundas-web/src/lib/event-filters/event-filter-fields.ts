@@ -235,6 +235,32 @@ export function createEventFilterFields(
 }
 
 /**
+ * Lists a tag root's tags as options in tree order. Each is labeled by its own
+ * name, as a chip reads best, unless another tag under the root has the same
+ * name, when its path tells them apart; its depth is beneath the root.
+ */
+export function createTagOptions(facet: EventFacet): FilterOption[] {
+  const options: FilterOption[] = [];
+  const nameCounts = new Map<string, number>();
+
+  for (const value of facet.values) {
+    nameCounts.set(value.name, (nameCounts.get(value.name) ?? 0) + 1);
+  }
+
+  for (const value of facet.values) {
+    options.push({
+      data: { depth: value.depth - 1, name: value.name },
+      description: formatEventCount(value.count),
+      keywords: [value.name, value.path],
+      label: (nameCounts.get(value.name) ?? 0) > 1 ? value.path : value.name,
+      value: value.id,
+    });
+  }
+
+  return options;
+}
+
+/**
  * What a tag root means, for the list of attributes: its own description, or
  * a plain one from its name for a root added to the data.
  */
@@ -279,24 +305,7 @@ function toTagField(facet: EventFacet): EventFilterField {
     };
   }
 
-  const options: FilterOption[] = [];
-  const nameCounts = new Map<string, number>();
-
-  // A tag is labeled by its own name, as a chip reads best, unless another
-  // tag under the root has the same name, when its path tells them apart.
-  for (const value of facet.values) {
-    nameCounts.set(value.name, (nameCounts.get(value.name) ?? 0) + 1);
-  }
-
-  for (const value of facet.values) {
-    options.push({
-      data: { depth: value.depth - 1, name: value.name },
-      description: formatEventCount(value.count),
-      keywords: [value.name, value.path],
-      label: (nameCounts.get(value.name) ?? 0) > 1 ? value.path : value.name,
-      value: value.id,
-    });
-  }
+  const options = createTagOptions(facet);
 
   return {
     defaultOperator: TAG_OPERATORS.isAnyOf,
