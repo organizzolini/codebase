@@ -118,12 +118,11 @@ ignorePaths:
   - "**/.agents/skills/wizard/**"
   - "**/.agents/skills/writing-for-agents/**"
   - "**/.agents/skills/writing-skills/**"
-  # installed-skills-end
-  # 🎨 Impeccable's agent definitions, which `impeccable update` copies into
-  # `.github/agents/`. Vendored like the skills above, but not skills in
-  # skills-lock.json, so the generated block cannot list them: their prose
-  # keeps the spelling upstream gave it, and each release can add words.
+  - "**/.claude/agents/impeccable-*"
+  - "**/.codex/hooks.json"
   - "**/.github/agents/impeccable-*"
+  - "**/.github/hooks/impeccable.json"
+  # installed-skills-end
   - "**/node_modules"
   - "**/projects/common/presentation/src/components/**"
   - "**/projects/common/presentation/src/hooks/**"

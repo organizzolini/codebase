@@ -145,6 +145,10 @@ projectStructure.cache.json
 **/.agents/skills/wizard/**
 **/.agents/skills/writing-for-agents/**
 **/.agents/skills/writing-skills/**
+**/.claude/agents/impeccable-*
+**/.codex/hooks.json
+**/.github/agents/impeccable-*
+**/.github/hooks/impeccable.json
 # installed-skills-end
 
 # Callidescope writes this report and then checks the file back against what a
