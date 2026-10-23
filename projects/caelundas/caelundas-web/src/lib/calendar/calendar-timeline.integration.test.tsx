@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { findToolbar } from "../../../testing/calendar-page";
@@ -174,6 +174,42 @@ describe("calendar timeline", () => {
     expect(
       timeline.querySelectorAll('[data-slot="gantt-bar"]').length,
     ).toBeLessThan(10);
+  });
+
+  it("lists the events behind a count when it is clicked", async () => {
+    await renderRoute("/?view=timeline&date=2026-03-10", {
+      eventsDatabase: createTestEventsDatabase({
+        extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 500),
+      }),
+    });
+
+    const timeline = await screen.findByTestId("calendar-timeline");
+
+    fireEvent.click(
+      await within(timeline).findByRole("button", { name: /^500 events/u }),
+    );
+
+    const dialog = await screen.findByRole("dialog");
+
+    expect(within(dialog).getByText("500 events")).toBeDefined();
+
+    fireEvent.keyDown(dialog, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+  });
+
+  it("opens one event by its name when its marker is clicked", async () => {
+    await renderRoute("/?view=timeline&date=2026-03-04");
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: /^Mercury Retrograde/u }),
+    );
+
+    const dialog = await screen.findByRole("dialog");
+
+    expect(within(dialog).getAllByText(/Mercury Retrograde/u)).toHaveLength(2);
   });
 
   it("draws every event in one row when not grouped", async () => {

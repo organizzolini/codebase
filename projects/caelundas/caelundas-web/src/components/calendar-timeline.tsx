@@ -1,4 +1,5 @@
 import {
+  createElement,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -9,12 +10,14 @@ import {
 import {
   Gantt,
   type GanttColumn,
+  type GanttOccurrence,
   type GanttRenderEventProps,
   type GanttScale,
   GanttView,
   useGanttNavigation,
 } from "@codebase/presentation";
 
+import { getEventLabel } from "../lib/calendar/calendar-glyphs";
 import {
   type TimelineBar,
   type TimelineRows,
@@ -34,6 +37,7 @@ import {
 } from "../lib/calendar/calendar-timeline-window";
 import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
 
+import { CalendarClusterDialog } from "./calendar-cluster-dialog";
 import { CalendarEventChip } from "./calendar-event-chip";
 import { CalendarEventTooltip } from "./calendar-event-tooltip";
 
@@ -144,6 +148,7 @@ export function CalendarTimeline(
     visible: null | ReadonlySet<string>;
   }>({ rows: null, visible: null });
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const { dialog, handleEventClick } = useBarDialog(timeZone);
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const rows = useMemo(
@@ -214,6 +219,7 @@ export function CalendarTimeline(
         interval={TIMELINE_DAY_INTERVAL}
         metrics={TIMELINE_METRICS}
         onDateChange={onDateChange}
+        onEventClick={handleEventClick}
         onZoomChange={(next: number) => {
           setZoomed({ scale, zoom: next });
         }}
@@ -237,8 +243,32 @@ export function CalendarTimeline(
           }
         />
       </Gantt>
+      {dialog}
     </div>
   );
+}
+
+/**
+ * What opens when a marker is clicked: the events it holds, titled by their
+ * count, or by the name of the one event.
+ */
+function describeBar(
+  bar: TimelineBar | undefined,
+): undefined | { records: readonly CalendarEventRecord[]; title: string } {
+  const records = bar?.records ?? [];
+  const [first] = records;
+
+  if (first === undefined) {
+    return undefined;
+  }
+
+  return {
+    records,
+    title:
+      records.length > 1
+        ? `${String(records.length)} events`
+        : getEventLabel(first).name,
+  };
 }
 
 /**
@@ -279,43 +309,48 @@ function TimelineBarContent(
   properties: Readonly<Pick<GanttRenderEventProps<TimelineBar>, "occurrence">>,
 ): ReactNode {
   const { occurrence } = properties;
-  const count = occurrence.event.data?.records.length ?? 1;
+  const records = occurrence.event.data?.records ?? [];
+  const [record] = records;
 
-  if (count > 1) {
+  if (record === undefined) {
     return (
-      <span className="w-full text-center font-semibold tabular-nums">
-        {count}
-      </span>
+      <span className="truncate font-medium">{occurrence.event.title}</span>
     );
   }
 
-  const [record] = occurrence.event.data?.records ?? [];
-
-  if (occurrence.start.getTime() === occurrence.end.getTime()) {
-    const diamond = (
-      <span
-        className="size-2.5 shrink-0 rotate-45 rounded-[2px] border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
-        data-slot="timeline-instant"
-        aria-hidden
-      />
-    );
-
-    // The diamond says nothing of what the event is, so it has the tooltip.
-    return record === undefined ? (
-      diamond
-    ) : (
+  if (records.length > 1) {
+    // A count says nothing of what is behind it, so it has a tooltip too.
+    return (
       <CalendarEventTooltip
-        className="flex"
+        className="flex w-full justify-center"
         event={record}
+        label={{
+          details: "Click to list them.",
+          name: `${String(records.length)} events`,
+        }}
       >
-        {diamond}
+        <span className="font-semibold tabular-nums">{records.length}</span>
       </CalendarEventTooltip>
     );
   }
 
-  return record === undefined ? (
-    <span className="truncate font-medium">{occurrence.event.title}</span>
-  ) : (
+  if (occurrence.start.getTime() === occurrence.end.getTime()) {
+    // The diamond says nothing of what the event is, so it has the tooltip.
+    return (
+      <CalendarEventTooltip
+        className="flex"
+        event={record}
+      >
+        <span
+          className="size-2.5 shrink-0 rotate-45 rounded-[2px] border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
+          data-slot="timeline-instant"
+          aria-hidden
+        />
+      </CalendarEventTooltip>
+    );
+  }
+
+  return (
     <CalendarEventChip
       className="min-w-0 font-medium"
       event={record}
@@ -359,6 +394,34 @@ function toCountColumns(counts: ReadonlyMap<string, number>): GanttColumn[] {
       width: 64,
     },
   ];
+}
+
+/**
+ * Holds the marker clicked and the dialog that lists its events: the handler
+ * to give the Gantt, and the dialog to draw.
+ */
+function useBarDialog(timeZone: string): {
+  dialog: ReactNode;
+  handleEventClick: (occurrence: GanttOccurrence<TimelineBar>) => void;
+} {
+  const [opened, setOpened] = useState<{
+    records: readonly CalendarEventRecord[];
+    title: string;
+  }>();
+
+  return {
+    dialog: createElement(CalendarClusterDialog, {
+      members: opened?.records,
+      onClose: () => {
+        setOpened(undefined);
+      },
+      timeZone,
+      title: opened?.title ?? "",
+    }),
+    handleEventClick: (occurrence) => {
+      setOpened(describeBar(occurrence.event.data));
+    },
+  };
 }
 
 /**

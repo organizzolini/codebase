@@ -50,4 +50,22 @@ describe(CalendarEventTooltip, () => {
       screen.findByText("Mars and Saturn stand ninety degrees apart"),
     ).resolves.toBeDefined();
   });
+
+  it("says a label of its own in place of the event's", async () => {
+    render(
+      <CalendarEventTooltip
+        event={EVENT}
+        label={{ details: "Click to list them.", name: "2 events" }}
+      >
+        2
+      </CalendarEventTooltip>,
+    );
+    fireEvent.focus(screen.getByText("2"));
+
+    await expect(screen.findByText("2 events")).resolves.toBeDefined();
+    await expect(
+      screen.findByText("Click to list them."),
+    ).resolves.toBeDefined();
+    expect(screen.queryByText("Mars perfective square Saturn")).toBeNull();
+  });
 });

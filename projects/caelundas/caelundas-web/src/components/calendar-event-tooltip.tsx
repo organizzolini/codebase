@@ -19,6 +19,11 @@ export interface CalendarEventTooltipProperties {
   children?: ReactNode;
   className?: string;
   event: CalendarEventRecord;
+  /**
+   * What the tooltip says in place of the event's own name and description,
+   * for a marker that stands for several events.
+   */
+  label?: undefined | { details?: string; name: string };
 }
 
 // 🧩 Component
@@ -30,12 +35,12 @@ export interface CalendarEventTooltipProperties {
 export function CalendarEventTooltip(
   properties: Readonly<CalendarEventTooltipProperties>,
 ): ReactNode {
-  const { children, className, event } = properties;
+  const { children, className, event, label } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const { details, name } = getEventLabel(event);
+  const { details, name } = label ?? getEventLabel(event);
 
   // 💪 Handlers
 
