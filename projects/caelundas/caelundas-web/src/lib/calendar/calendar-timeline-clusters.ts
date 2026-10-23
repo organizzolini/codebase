@@ -1,3 +1,4 @@
+import type { CalendarEventRecord } from "../events-database/events-database.types";
 import type { TimelineBar } from "./calendar-timeline";
 import type { GanttEvent, GanttScale } from "@codebase/presentation";
 
@@ -141,7 +142,12 @@ function toCluster(
     return first;
   }
 
-  const records = run.flatMap((marker) => marker.data?.records ?? []);
+  const records: CalendarEventRecord[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const marker of run) {
+    records.push(...(marker.data?.records ?? []));
+  }
 
   return {
     data: { records },

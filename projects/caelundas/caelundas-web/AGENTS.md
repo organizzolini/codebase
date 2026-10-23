@@ -252,7 +252,11 @@ selector. Times render in the zone the dataset's events carry.
   Instants are drawn as diamonds at their moment, spans as bars of their
   true length, and markers closer than one marker's width at the scale and
   zoom shown are clustered into a count
-  (`src/lib/calendar/calendar-timeline-clusters.ts`).
+  (`src/lib/calendar/calendar-timeline-clusters.ts`). Bars that still overlap
+  are packed into lanes (`calendar-timeline-lanes.ts`): a row that needs more
+  than one gets a row without a title beneath it for each further lane, so
+  nothing is drawn over anything else. Lanes are packed over every bar of the
+  row, not only those on screen, so scrolling never moves a row.
 - The Gantt draws every row and bar it is handed, windowing neither, so the
   timeline hands bars only to the rows scrolled into view and a few beyond
   (`src/lib/calendar/calendar-timeline-window.ts`). Rows keep one track

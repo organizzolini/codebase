@@ -20,15 +20,16 @@ import {
 import { getEventLabel } from "../lib/calendar/calendar-glyphs";
 import {
   type TimelineBar,
-  type TimelineRows,
   toTimelineRows,
 } from "../lib/calendar/calendar-timeline";
 import {
-  clusterTimelineBars,
-  getClusterSpan,
   TIMELINE_DAY_INTERVAL,
   TIMELINE_UNIT_WIDTHS,
 } from "../lib/calendar/calendar-timeline-clusters";
+import {
+  createTimelineLayout,
+  type TimelineLayout,
+} from "../lib/calendar/calendar-timeline-lanes";
 import {
   getVisibleTimelineRows,
   isSameRowSet,
@@ -99,6 +100,11 @@ const ZOOM = { max: 3, min: 0.5, step: 0.25 };
 // Beside a marker, a title runs into its neighbors' at any scale coarser than
 // a day, so there titles are left to each bar's own label and only a day's
 // are drawn.
+// The lanes of one row read as one: the line between a row and the lane
+// beneath it is not drawn.
+const LANE_ROWS =
+  "[&_[data-slot=gantt-row-group]:has(+[data-gantt-row-id*='#'])]:border-b-transparent";
+
 const QUIET_LABELS = "[&_[data-slot=gantt-bar-label]]:hidden";
 
 // The column widths the clusters are sized by, handed to the Gantt rather
@@ -144,9 +150,9 @@ export function CalendarTimeline(
   // The rows on screen, which alone are handed their bars, as last measured
   // for the rows then laid out; `null` until the body is laid out.
   const [measured, setMeasured] = useState<{
-    rows: null | TimelineRows;
+    layout: null | TimelineLayout;
     visible: null | ReadonlySet<string>;
-  }>({ rows: null, visible: null });
+  }>({ layout: null, visible: null });
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const { dialog, handleEventClick } = useBarDialog(timeZone);
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
@@ -155,16 +161,17 @@ export function CalendarTimeline(
     () => toTimelineRows(events, grouping, fields),
     [events, fields, grouping],
   );
-  const bars = useMemo(
-    () => clusterTimelineBars(rows.events, getClusterSpan(scale, zoom)),
+  // Overlapping bars are moved into lanes, so nothing is drawn over anything.
+  const layout = useMemo(
+    () => createTimelineLayout(rows, { scale, zoom }),
     [rows, scale, zoom],
   );
   // A measure of other rows, such as before a regrouping, would leave the
   // new rows bare, so every row counts as visible until they are measured.
-  const visibleRows = measured.rows === rows ? measured.visible : null;
+  const visibleRows = measured.layout === layout ? measured.visible : null;
   const shownBars = useMemo(
-    () => windowTimelineBars(bars, visibleRows),
-    [bars, visibleRows],
+    () => windowTimelineBars(layout.bars, visibleRows),
+    [layout, visibleRows],
   );
   const renderEvent = useCallback(
     (eventProperties: GanttRenderEventProps<TimelineBar>) => (
@@ -190,12 +197,13 @@ export function CalendarTimeline(
         ? undefined
         : watchVisibleRows(container, (visible) => {
             setMeasured((previous) =>
-              previous.rows === rows && isSameRowSet(previous.visible, visible)
+              previous.layout === layout &&
+              isSameRowSet(previous.visible, visible)
                 ? previous
-                : { rows, visible },
+                : { layout, visible },
             );
           }),
-    [container, rows],
+    [container, layout],
   );
 
   // 🏁 Early Returns
@@ -209,7 +217,7 @@ export function CalendarTimeline(
     >
       <Gantt<TimelineBar>
         barLabel="auto"
-        className="h-full"
+        className={`h-full ${LANE_ROWS}`}
         columns={columns}
         date={anchor}
         events={shownBars}
@@ -224,7 +232,7 @@ export function CalendarTimeline(
           setZoomed({ scale, zoom: next });
         }}
         renderEvent={renderEvent}
-        resources={rows.resources}
+        resources={layout.resources}
         rowCheckboxes={false}
         scale={scale}
         scheduleMode="single"

@@ -215,7 +215,12 @@ describe("calendar timeline", () => {
   it("draws every event in one row when not grouped", async () => {
     await renderRoute("/?view=timeline&date=2026-03-04&group=%5B%5D");
 
-    await expect(findTimelineRows()).resolves.toStrictEqual(["All events4"]);
+    // The events that overlap in time are drawn in a second lane beneath,
+    // a row with no title.
+    await expect(findTimelineRows()).resolves.toStrictEqual([
+      "All events4",
+      "",
+    ]);
   });
 
   it("nests a tag grouped below its root's children under each tag between", async () => {
