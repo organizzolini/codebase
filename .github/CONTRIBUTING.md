@@ -2,6 +2,8 @@
 
 Thank you for contributing! This guide covers the development workflow, code standards, and release process.
 
+By participating, you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 [AGENTS.md](../AGENTS.md) is the deeper reference for conventions, project layout, and the toolchains this repository publishes. This guide is the shorter path: what to install, what to run, and what the checks will reject.
 
 ## Table of Contents
@@ -645,6 +647,7 @@ pnpm add -w <package>
 - **Issues:** [GitHub Issues](https://github.com/Organizzolini/codebase/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/Organizzolini/codebase/discussions)
 - **Security:** [SECURITY.md](SECURITY.md)
+- **Conduct:** [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - **Owner:** [@JimmyPaolini](https://github.com/JimmyPaolini)
 
 ## License
