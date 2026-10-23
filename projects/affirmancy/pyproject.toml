@@ -2,7 +2,7 @@
 name = "affirmancy"
 version = "0.1.0"
 description = "TODO: add project description"
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.15,<3.16"
 dependencies = [
   "langchain>=1.4.5",
   "langchain-core>=1.6.7",
