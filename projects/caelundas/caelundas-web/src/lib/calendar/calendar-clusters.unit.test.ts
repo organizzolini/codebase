@@ -193,7 +193,7 @@ describe(clusterEvents, () => {
 
   it.each([
     ["twilights", "Type / Twilight / Civil Dawn"],
-    ["a station", "Type / Station / Retrograde"],
+    ["a direction", "Type / Direction / Retrograde"],
     ["a daily cycle", "Type / Cycle / Daily Solar Cycle / Sunrise"],
     ["an ingress", "Type / Ingress / Sign Ingress"],
     ["an event of no kind", "Planet / Mars"],

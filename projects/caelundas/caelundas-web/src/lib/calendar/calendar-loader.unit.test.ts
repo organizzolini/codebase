@@ -9,7 +9,7 @@ import { loadCalendar } from "./calendar-loader";
 // added and given to a single event.
 const STATION_SQL = `
   insert into tags (id, created_at, updated_at, "name", parent_id) values
-    ('tag-station', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Station', 'tag-type');
+    ('tag-station', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Direction', 'tag-type');
   insert into tags_closure (ancestor_id, descendant_id) values
     ('tag-station', 'tag-station'),
     ('tag-type', 'tag-station');

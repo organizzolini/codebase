@@ -44,7 +44,7 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
     path: "Type / Aspect / Compound Aspect",
   },
   { color: "#10b981", label: "Ingresses", path: "Type / Ingress" },
-  { color: "#f97316", label: "Stations", path: "Type / Station" },
+  { color: "#f97316", label: "Directions", path: "Type / Direction" },
   {
     color: "#06b6d4",
     label: "Planetary phases",

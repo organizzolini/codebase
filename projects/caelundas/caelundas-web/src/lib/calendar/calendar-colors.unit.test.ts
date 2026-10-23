@@ -98,14 +98,14 @@ describe("calendar colors", () => {
 
   describe(colorEvents, () => {
     const events = [
-      eventWith(["Type / Station"], "#123456"),
+      eventWith(["Type / Direction"], "#123456"),
       eventWith(["Planet / Mars"]),
     ];
 
     it("colors each event when enabled", () => {
       expect(
         colorEvents(events, true).map((event) => event.color),
-      ).toStrictEqual([colorOf("Type / Station"), null]);
+      ).toStrictEqual([colorOf("Type / Direction"), null]);
     });
 
     it("leaves every event uncolored when disabled, the data's color too", () => {

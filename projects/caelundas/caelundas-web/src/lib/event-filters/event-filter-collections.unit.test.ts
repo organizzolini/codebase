@@ -30,7 +30,7 @@ const FACETS = [
   facet("type", "Type", [
     "Aspect / Simple Aspect / Major Aspect",
     "Ingress / Sign Ingress",
-    "Station",
+    "Direction",
   ]),
   facet("planet", "Planet", ["Moon", "Sun"]),
 ];
@@ -79,7 +79,7 @@ describe("event filter collections", () => {
           {
             operator: "is_any_of",
             path: ["tag:type"],
-            value: ["type:Station"],
+            value: ["type:Direction"],
           },
         ],
       });

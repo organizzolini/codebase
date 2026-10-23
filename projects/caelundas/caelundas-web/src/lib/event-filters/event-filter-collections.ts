@@ -72,7 +72,7 @@ const WITHOUT_THE_MOON: CollectionRule = {
 const LONG_CYCLES: CollectionRule = {
   operator: TAG_OPERATORS.isAnyOf,
   paths: [
-    "Station",
+    "Direction",
     "Planetary Phase",
     "Eclipse",
     "Cycle / Monthly Lunar Cycle",
@@ -182,7 +182,7 @@ export const EVENT_FILTER_COLLECTIONS: readonly EventFilterCollection[] = [
   },
   {
     description:
-      "Stations, planetary phases, eclipses, and the monthly lunar, annual solar and apsis cycles.",
+      "Directions, planetary phases, eclipses, and the monthly lunar, annual solar and apsis cycles.",
     filter: { combinator: "and", rules: [LONG_CYCLES] },
     id: "planetary-cycles",
     name: "Planetary cycles",
