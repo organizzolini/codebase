@@ -53,6 +53,8 @@ import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
 export const Route = createFileRoute("/")({
   component: IndexPage,
   errorComponent: IndexError,
+  // The tab is named for the application, not for the project it is built in.
+  head: () => ({ meta: [{ title: "Caelundas" }] }),
   pendingComponent: IndexPending,
   pendingMs: 200,
   shouldReload: true,

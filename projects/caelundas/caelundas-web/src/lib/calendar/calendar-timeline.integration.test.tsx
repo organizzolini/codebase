@@ -142,7 +142,7 @@ describe("calendar timeline", () => {
     ]);
   });
 
-  it("draws an instant as a diamond and a span as a bar", async () => {
+  it("draws an instant as a circle and a span as a bar", async () => {
     await renderRoute("/?view=timeline&date=2026-03-04");
 
     // Under Mars and under Venus.

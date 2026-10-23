@@ -249,7 +249,7 @@ selector. Times render in the zone the dataset's events carry.
   row's events. The `scale` search parameter holds the span it shows, from a
   day in fifteen-minute columns (zoomed up to fifteen times, so minutes read
   apart) to a year in months, and a load reads only the span the scale shows.
-  Instants are drawn as diamonds at their moment, spans as bars of their
+  Instants are drawn as circles, and a cluster of them as a circle holding its count, at their moment, spans as bars of their
   true length, and markers closer than one marker's width at the scale and
   zoom shown are clustered into a count
   (`src/lib/calendar/calendar-timeline-clusters.ts`). Bars that still overlap

@@ -123,7 +123,7 @@ const TIMELINE_VIEWPORT =
 /**
  * Renders the events as a Gantt timeline: a row per group,
  * nested and collapsible as the grouping nests, each counting its distinct
- * events, with instants drawn as diamonds at their moment and spans as bars
+ * events, with instants drawn as circles at their moment and spans as bars
  * of their true length. Markers that would overlap at the scale and zoom
  * shown are clustered into counts. Nothing on it can be moved or created.
  */
@@ -309,8 +309,8 @@ function readViewport(viewport: HTMLElement): {
 }
 
 /**
- * Draws what a bar holds: a diamond for an instant, at its moment and never
- * narrower than a lane is tall; the count of a cluster of crowded markers;
+ * Draws what a bar holds: a circle for an instant, at its moment and never
+ * narrower than a lane is tall; the count of a cluster of crowded markers, in a circle;
  * or a span's title.
  */
 function TimelineBarContent(
@@ -337,20 +337,25 @@ function TimelineBarContent(
           name: `${String(records.length)} events`,
         }}
       >
-        <span className="font-semibold tabular-nums">{records.length}</span>
+        <span
+          className="flex h-4 min-w-4 items-center justify-center rounded-full border border-(--gantt-event-color) bg-background px-1 text-[10px] leading-none font-semibold tabular-nums"
+          data-slot="timeline-cluster"
+        >
+          {records.length}
+        </span>
       </CalendarEventTooltip>
     );
   }
 
   if (occurrence.start.getTime() === occurrence.end.getTime()) {
-    // The diamond says nothing of what the event is, so it has the tooltip.
+    // The circle says nothing of what the event is, so it has the tooltip.
     return (
       <CalendarEventTooltip
         className="flex"
         event={record}
       >
         <span
-          className="size-2.5 shrink-0 rotate-45 rounded-[2px] border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
+          className="block size-3.5 shrink-0 rounded-full border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
           data-slot="timeline-instant"
           aria-hidden
         />

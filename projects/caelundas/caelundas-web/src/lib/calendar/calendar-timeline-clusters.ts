@@ -6,7 +6,7 @@ const MINUTE_MILLISECONDS = 60_000;
 const DAY_MINUTES = 1440;
 
 /**
- * The width a marker takes on the axis, in rem: a diamond is as wide as a
+ * The width a marker takes on the axis, in rem: a circle is as wide as a
  * lane is tall, and a little more keeps neighbors from touching.
  */
 const MARKER_REM = 1.5;

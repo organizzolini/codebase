@@ -60,7 +60,7 @@ interface RowLayout {
  * draws Aspect, then Major Aspect, then Conjunct, each collapsible. An event
  * is drawn once in every innermost row it falls in, and each row counts its
  * distinct events. Instants keep no length, which the Gantt draws as a
- * diamond at its moment; spans keep their true length.
+ * circle at its moment; spans keep their true length.
  */
 export function toTimelineRows(
   events: readonly CalendarEventRecord[],
