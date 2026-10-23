@@ -205,7 +205,7 @@ describe(toGlyphParts, () => {
       "sun-icon.svg",
       "north-node-icon.svg",
       "south-node-icon.svg",
-      "waxing-icon.png",
+      '"▶️"',
     ]);
     expect(files("📍 🌙🐉◀️")).toStrictEqual([
       "local-eclipse-icon.svg",
@@ -213,7 +213,7 @@ describe(toGlyphParts, () => {
       "moon-icon.svg",
       "north-node-icon.svg",
       "south-node-icon.svg",
-      "waning-icon.png",
+      '"◀️"',
     ]);
   });
 });
