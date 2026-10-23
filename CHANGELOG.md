@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.25.0](https://github.com/organizzolini/codebase/compare/v3.24.1...v3.25.0) (2026-10-23)
+
+### ✨ Features
+
+* **documentation:** ✨ add refresh-documentation command project ([#1800](https://github.com/organizzolini/codebase/issues/1800)) ([64e4646](https://github.com/organizzolini/codebase/commit/64e464656b7f94d6463cd20e40589f5754ebfac7))
+
 ## [3.24.1](https://github.com/organizzolini/codebase/compare/v3.24.0...v3.24.1) (2026-10-23)
 
 ### 🐛 Bug Fixes
