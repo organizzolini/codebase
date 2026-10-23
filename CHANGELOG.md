@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.24.0](https://github.com/organizzolini/codebase/compare/v3.23.1...v3.24.0) (2026-10-23)
+
+### ✨ Features
+
+* **integration,deployments:** ✨ run the dependency upgrades as one command that reports skips ([#1796](https://github.com/organizzolini/codebase/issues/1796)) ([705e640](https://github.com/organizzolini/codebase/commit/705e640463a2077dde2ebd31d4058dded6ace2ec))
+
+### ♻️ Code Refactoring
+
+* **integration:** ♻️ hardcode the spelling and template paths of run-affected ([#1797](https://github.com/organizzolini/codebase/issues/1797)) ([a635398](https://github.com/organizzolini/codebase/commit/a635398ea11127ea455063e51fb0a63f7ef72e04))
+
 ## [3.23.1](https://github.com/organizzolini/codebase/compare/v3.23.0...v3.23.1) (2026-10-22)
 
 ## [3.23.0](https://github.com/organizzolini/codebase/compare/v3.22.1...v3.23.0) (2026-10-22)
