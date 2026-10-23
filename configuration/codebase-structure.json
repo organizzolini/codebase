@@ -246,6 +246,298 @@
       ],
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
+    "documentation-project": {
+      "children": [
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "ruleId": "module-folder"
+                }
+              ],
+              "name": "modules"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "components"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "lib"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "routes"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "hooks"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "styles"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "assets"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "executors"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "generators"
+            },
+            {
+              "enforceExistence": "__plugin_entrypoints_are_forbidden__",
+              "name": "plugin.ts"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "source-python-file"
+                }
+              ],
+              "name": "python"
+            },
+            {
+              "ruleId": "source-entry-file"
+            },
+            {
+              "ruleId": "source-entry-support-file"
+            },
+            {
+              "ruleId": "source-python-file"
+            }
+          ],
+          "name": "src"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "testing"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "scripts"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "examples"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "skills"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "data"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "coverage"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "output"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "public"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "adr"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "agents"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "development"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "openwiki"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "planning"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "research"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
+    },
     "infrastructure-project": {
       "children": [
         {
@@ -486,15 +778,8 @@
         "name": "docs"
       },
       {
-        "children": [
-          {
-            "ruleId": "kebab-case-folder"
-          },
-          {
-            "ruleId": "any-file"
-          }
-        ],
-        "name": "documentation"
+        "name": "documentation",
+        "ruleId": "documentation-project"
       },
       {
         "ruleId": "infrastructure-project"

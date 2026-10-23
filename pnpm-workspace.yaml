@@ -1,5 +1,6 @@
 packages:
   - configuration
+  - documentation
   - infrastructure
   - installation
   - integration

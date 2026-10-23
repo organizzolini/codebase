@@ -193,6 +193,7 @@ Symbols and logic shared across projects
 **👀 [observability](projects/common/observability)** - Shared pino-backed NestJS `LoggerService` and `LoggerModule`
 
 **🛠️ [configuration](configuration)** - The workspace's tool configuration, git hooks, and the Nx targets that lint, format, scan, and measure the repository's own files\
+**📚 [documentation](documentation)** - NestJS CLI that refreshes the repository documentation from code, and is what the scheduled 🧑‍🏫 Refresh Documentation workflow runs\
 **🏗️ [infrastructure](infrastructure)** - Docker Compose services, the `kubernetes-job` Helm chart, and Terraform for the Linode LKE cluster\
 **🛠️ [installation](installation)** - NestJS CLI that sets up a developer machine once Node is installed: environment files, project dependencies, shell configuration, and the remaining tools\
 **🔁 [integration](integration)** - NestJS CLI for the Continuous Integration plumbing steps: the affected run and the Nx task-cache database\
@@ -305,6 +306,7 @@ graph LR
   conformetry_nx["conformetry-nx"]
   conformetry_output["conformetry-output"]
   conformetry_validation["conformetry-validation"]
+  documentation["documentation"]
   infrastructure["infrastructure"]
   installation["installation"]
   integration["integration"]
@@ -321,41 +323,57 @@ graph LR
   publication["publication"]
   synchronization["synchronization"]
   validation["validation"]
+  affirmancy --> configuration
+  caelundas_cli --> configuration
   caelundas_cli --> observability
   caelundas_cli --> persistence
+  caelundas_web --> configuration
+  callidescope_agents --> configuration
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
   callidescope_cli --> callidescope_output
+  callidescope_cli --> configuration
   callidescope_cli --> observability
   callidescope_configuration --> callidescope_core
+  callidescope_configuration --> configuration
+  callidescope_core --> configuration
   callidescope_examples -.-> callidescope_cli
   callidescope_examples --> callidescope_configuration
   callidescope_examples --> callidescope_core
+  callidescope_examples --> configuration
   callidescope_graph --> callidescope_configuration
   callidescope_graph --> callidescope_core
+  callidescope_graph --> configuration
   callidescope_graph --> observability
   callidescope_nx --> callidescope_cli
   callidescope_nx --> callidescope_configuration
   callidescope_nx --> callidescope_core
   callidescope_nx --> callidescope_graph
   callidescope_nx --> callidescope_output
+  callidescope_nx --> configuration
   callidescope_nx --> observability
   callidescope_output --> callidescope_configuration
   callidescope_output --> callidescope_core
   callidescope_output --> callidescope_graph
+  callidescope_output --> configuration
   callidescope_output --> observability
+  codependix_agents --> configuration
   codependix_boundaries --> codependix_configuration
   codependix_boundaries --> codependix_core
   codependix_boundaries --> codependix_file_imports
   codependix_boundaries --> codependix_nestjs_modules
   codependix_boundaries --> codependix_nx_projects
+  codependix_boundaries --> configuration
   codependix_cli --> codependix_boundaries
   codependix_cli --> codependix_configuration
   codependix_cli --> codependix_core
   codependix_cli --> codependix_output
+  codependix_cli --> configuration
   codependix_cli --> observability
   codependix_configuration --> codependix_core
+  codependix_configuration --> configuration
+  codependix_core --> configuration
   codependix_examples --> codependix_boundaries
   codependix_examples -.-> codependix_cli
   codependix_examples --> codependix_configuration
@@ -364,82 +382,123 @@ graph LR
   codependix_examples --> codependix_nestjs_modules
   codependix_examples --> codependix_nx_projects
   codependix_examples --> codependix_output
+  codependix_examples --> configuration
   codependix_examples --> observability
+  codependix_file_imports --> configuration
+  codependix_nestjs_modules --> configuration
   codependix_nestjs_modules --> observability
   codependix_nx --> codependix_cli
   codependix_nx --> codependix_configuration
+  codependix_nx --> configuration
+  codependix_nx_projects --> configuration
   codependix_output --> codependix_boundaries
   codependix_output --> codependix_configuration
   codependix_output --> codependix_core
   codependix_output --> codependix_file_imports
   codependix_output --> codependix_nestjs_modules
   codependix_output --> codependix_nx_projects
+  codependix_output --> configuration
   codependix_output --> observability
+  codometer_agents --> configuration
   codometer_cli --> codometer_configuration
   codometer_cli --> codometer_core
   codometer_cli --> codometer_measurement
   codometer_cli --> codometer_output
+  codometer_cli --> configuration
   codometer_cli --> observability
   codometer_configuration --> codometer_core
+  codometer_configuration --> configuration
+  codometer_core --> configuration
   codometer_examples -.-> codometer_cli
   codometer_examples --> codometer_configuration
   codometer_examples --> codometer_core
+  codometer_examples --> configuration
   codometer_languages --> codometer_configuration
   codometer_languages --> codometer_core
+  codometer_languages --> configuration
   codometer_languages --> observability
   codometer_measurement --> codometer_configuration
   codometer_measurement --> codometer_core
   codometer_measurement --> codometer_languages
+  codometer_measurement --> configuration
   codometer_measurement --> observability
   codometer_output --> codometer_configuration
   codometer_output --> codometer_core
   codometer_output --> codometer_measurement
+  codometer_output --> configuration
   codometer_output --> observability
+  conformetry_agents --> configuration
+  conformetry_cli --> configuration
   conformetry_cli --> conformetry_configuration
   conformetry_cli --> conformetry_core
   conformetry_cli --> conformetry_generation
   conformetry_cli --> conformetry_output
   conformetry_cli --> conformetry_validation
   conformetry_cli --> observability
+  conformetry_configuration --> configuration
   conformetry_configuration --> conformetry_core
+  conformetry_core --> configuration
+  conformetry_examples --> configuration
   conformetry_examples -.-> conformetry_cli
   conformetry_examples --> conformetry_configuration
   conformetry_examples --> conformetry_generation
   conformetry_examples --> conformetry_nx
   conformetry_examples --> conformetry_output
   conformetry_examples --> conformetry_validation
+  conformetry_generation --> configuration
   conformetry_generation --> conformetry_configuration
   conformetry_generation --> conformetry_core
+  conformetry_languages --> configuration
   conformetry_languages --> conformetry_configuration
   conformetry_languages --> conformetry_core
+  conformetry_nx --> configuration
   conformetry_nx --> conformetry_configuration
   conformetry_nx --> conformetry_generation
   conformetry_nx --> conformetry_output
   conformetry_nx --> conformetry_validation
   conformetry_nx --> observability
+  conformetry_output --> configuration
   conformetry_output --> conformetry_core
   conformetry_output --> conformetry_languages
+  conformetry_validation --> configuration
   conformetry_validation --> conformetry_configuration
   conformetry_validation --> conformetry_core
   conformetry_validation --> conformetry_languages
+  documentation --> configuration
+  documentation --> observability
+  installation --> configuration
   installation --> observability
+  integration --> configuration
   integration --> observability
+  interface --> configuration
+  lexico_api --> configuration
   lexico_api --> interface
   lexico_api --> lexico_entities
   lexico_api --> observability
   lexico_api --> persistence
+  lexico_cli --> configuration
   lexico_cli --> lexico_entities
   lexico_cli --> observability
   lexico_cli --> persistence
+  lexico_entities --> configuration
   lexico_entities --> persistence
+  lexico_web --> configuration
   lexico_web --> interface
   lexico_web --> presentation
+  meanderaw_cli --> configuration
   meanderaw_cli --> observability
   meanderaw_cli --> persistence
+  meanderaw_web --> configuration
+  observability --> configuration
+  persistence --> configuration
   persistence --> observability
+  presentation --> configuration
+  publication --> configuration
   publication --> observability
+  synchronization --> configuration
   synchronization --> conformetry_configuration
   synchronization --> observability
+  validation --> configuration
   validation --> observability
 ```
 
@@ -851,6 +910,10 @@ graph LR
   module_conformetry_validation_TextModule["conformetry-validation/TextModule"]
   module_conformetry_validation_TypescriptModule["conformetry-validation/TypescriptModule"]
   module_conformetry_validation_ValidationModule["conformetry-validation/ValidationModule"]
+  module_documentation_DiscoveryModule["documentation/DiscoveryModule"]
+  module_documentation_LoggerModule["documentation/LoggerModule"]
+  module_documentation_MainModule["documentation/MainModule"]
+  module_documentation_RefreshDocumentationModule["documentation/RefreshDocumentationModule"]
   module_installation_DependenciesModule["installation/DependenciesModule"]
   module_installation_DiscoveryModule["installation/DiscoveryModule"]
   module_installation_EnvironmentFilesModule["installation/EnvironmentFilesModule"]
@@ -1649,6 +1712,8 @@ graph LR
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_LanguagesModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_RunnerModule
   module_conformetry_validation_ValidationModule --> module_conformetry_validation_ScoringModule
+  module_documentation_MainModule --> module_documentation_DiscoveryModule
+  module_documentation_MainModule --> module_documentation_RefreshDocumentationModule
   module_installation_DependenciesModule --> module_installation_ProcessRunnerModule
   module_installation_DependenciesModule --> module_installation_ReporterModule
   module_installation_EnvironmentFilesModule --> module_installation_ProcessRunnerModule
@@ -3739,6 +3804,25 @@ graph LR
   file_conformetry_validation_testing_setup_ts["conformetry-validation/testing/setup.ts"]
   file_conformetry_validation_vite_config_ts["conformetry-validation/vite.config.ts"]
   file_conformetry_validation_vitest_config_ts["conformetry-validation/vitest.config.ts"]
+  file_documentation_callidescope_config_ts["documentation/callidescope.config.ts"]
+  file_documentation_codependix_config_ts["documentation/codependix.config.ts"]
+  file_documentation_codometer_config_ts["documentation/codometer.config.ts"]
+  file_documentation_eslint_config_ts["documentation/eslint.config.ts"]
+  file_documentation_src_documentation_constants_ts["documentation/src/documentation.constants.ts"]
+  file_documentation_src_documentation_main_end_to_end_test_ts["documentation/src/documentation.main.end-to-end.test.ts"]
+  file_documentation_src_documentation_main_ts["documentation/src/documentation.main.ts"]
+  file_documentation_src_documentation_module_ts["documentation/src/documentation.module.ts"]
+  file_documentation_src_documentation_repl_ts["documentation/src/documentation.repl.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_command_ts["documentation/src/modules/refresh-documentation/refresh-documentation.command.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts["documentation/src/modules/refresh-documentation/refresh-documentation.command.unit.test.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_constants_ts["documentation/src/modules/refresh-documentation/refresh-documentation.constants.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_module_ts["documentation/src/modules/refresh-documentation/refresh-documentation.module.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_service_ts["documentation/src/modules/refresh-documentation/refresh-documentation.service.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts["documentation/src/modules/refresh-documentation/refresh-documentation.service.unit.test.ts"]
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_types_ts["documentation/src/modules/refresh-documentation/refresh-documentation.types.ts"]
+  file_documentation_testing_mocks_ts["documentation/testing/mocks.ts"]
+  file_documentation_testing_setup_ts["documentation/testing/setup.ts"]
+  file_documentation_vitest_config_ts["documentation/vitest.config.ts"]
   file_installation_callidescope_config_ts["installation/callidescope.config.ts"]
   file_installation_codependix_config_ts["installation/codependix.config.ts"]
   file_installation_codometer_config_ts["installation/codometer.config.ts"]
@@ -8841,6 +8925,18 @@ graph LR
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_module_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_service_ts
   file_conformetry_validation_src_modules_validation_validation_service_unit_test_ts --> file_conformetry_validation_src_modules_validation_validation_types_ts
+  file_documentation_src_documentation_main_end_to_end_test_ts --> file_documentation_src_documentation_constants_ts
+  file_documentation_src_documentation_main_ts --> file_documentation_src_documentation_module_ts
+  file_documentation_src_documentation_module_ts --> file_documentation_src_documentation_constants_ts
+  file_documentation_src_documentation_module_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_module_ts
+  file_documentation_src_documentation_repl_ts --> file_documentation_src_documentation_module_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_command_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_service_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_command_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_command_unit_test_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_service_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_module_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_command_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_module_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_service_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_service_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_constants_ts
+  file_documentation_src_modules_refresh_documentation_refresh_documentation_service_unit_test_ts --> file_documentation_src_modules_refresh_documentation_refresh_documentation_service_ts
   file_installation_src_installation_main_end_to_end_test_ts --> file_installation_src_installation_constants_ts
   file_installation_src_installation_main_ts --> file_installation_src_installation_module_ts
   file_installation_src_installation_module_ts --> file_installation_src_installation_constants_ts

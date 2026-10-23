@@ -38,7 +38,7 @@ jobs:
           uv: "false"
 
       - name: 🧑‍🏫 Refresh Documentation
-        run: pnpm exec nx run configuration:openwiki
+        run: pnpm exec nx run documentation:refresh-documentation
 
       - name: 🔀 Upsert Pull Request
         uses: peter-evans/create-pull-request@v8
