@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.24.1](https://github.com/organizzolini/codebase/compare/v3.24.0...v3.24.1) (2026-10-23)
+
+### 🐛 Bug Fixes
+
+* **synchronization,configuration:** 🐛 ignore every file a vendored skill installs ([#1798](https://github.com/organizzolini/codebase/issues/1798)) ([896b81f](https://github.com/organizzolini/codebase/commit/896b81f2aba13e27e0c996a0a94cda717230206a))
+
+### 📝 Documentation
+
+* **documentation:** 📝 add a code of conduct ([#1799](https://github.com/organizzolini/codebase/issues/1799)) ([4cd49e6](https://github.com/organizzolini/codebase/commit/4cd49e643e628f6334ad886da1a6141e07d0aa2b))
+
 ## [3.24.0](https://github.com/organizzolini/codebase/compare/v3.23.1...v3.24.0) (2026-10-23)
 
 ### ✨ Features
