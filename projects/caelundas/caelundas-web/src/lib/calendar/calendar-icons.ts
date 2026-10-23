@@ -103,6 +103,8 @@ const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
   "↧": "setting-2-icon.svg",
   "↩": "retrograde-icon.svg",
   "↪": "prograde-icon.svg",
+  "▶": "waxing-icon.png",
+  "◀": "waning-icon.png",
   "⛰": "ingress-peak-icon.svg",
   "❄": "apoapsis-icon.svg",
   "➡": "east-elongation-icon.svg",
