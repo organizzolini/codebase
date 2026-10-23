@@ -31,9 +31,9 @@
   ],
   "entry": [
     "**/scripts/**/*.{js,mjs,ts,sh}",
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/index.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/index.ts",
     // The one file each application bootstraps from, named for its project.
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/*.main.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/*.main.ts",
     // Vendored shadcn and ReUI source in components, written by `shadcn add`
     // and mostly not imported by anything yet. Each file is an entry point so
     // none reads as unused, and the packages it imports still count as used —
@@ -41,16 +41,16 @@
     "projects/common/presentation/src/components/**/*.{ts,tsx}",
     "projects/common/presentation/src/hooks/**/*.{ts,tsx}",
     "projects/common/presentation/src/lib/**/*.ts",
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/modules/**/*.module.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/modules/**/*.module.ts",
     // Nx resolves these from executors.json and generators.json, which is not
     // an import, so nothing reaches them through the module graph.
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/executors/**/executor.ts",
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/generators/**/generator.ts",
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/generators.ts",
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/*.repl.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/executors/**/executor.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/generators/**/generator.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/generators.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/*.repl.ts",
     // A worker thread's entry point is spawned by URL, never imported.
-    "{projects/**,installation,integration,publication,synchronization,validation}/src/worker.ts",
-    "{projects/**,installation,integration,publication,synchronization,validation}/testing/**/*.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/src/worker.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/testing/**/*.ts",
     // conformetry-examples: every example is read and run rather than imported,
     // so nothing in the module graph reaches one. knip names the same paths in
     // its own entry list for the same reason.
@@ -58,8 +58,8 @@
     // codometer finds these by walking up from the project it is measuring,
     // never by importing them, so nothing in the module graph reaches one.
     // knip names the root file in its own entry list for the same reason.
-    "{projects/**,installation,integration,publication,synchronization,validation}/codometer.config.cjs",
-    "{projects/**,installation,integration,publication,synchronization,validation}/codometer.config.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codometer.config.cjs",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codometer.config.ts",
     "codometer.config.ts",
     // Read by the codometer command line, one per documented behavior, and
     // reached by nothing in the module graph for the same reason.
@@ -68,12 +68,12 @@
     // resolves one beside every project it traces, by name, never by import.
     // The workspace file this repository passes with `--config` sits under
     // `configuration/` and is already covered by the entry below.
-    "{projects/**,installation,integration,publication,synchronization,validation}/callidescope.config.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/callidescope.config.ts",
     // A project's own codependix configuration, found the same way: a run
     // resolves one beside every project it maps, by name, never by import.
     // The workspace file this repository passes with `--config` sits under
     // `configuration/` and is already covered by the entry below.
-    "{projects/**,installation,integration,publication,synchronization,validation}/codependix.config.ts",
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codependix.config.ts",
     "configuration/**",
     // Every fixture in the callidescope examples package exists to be traced,
     // not imported — an orphan-root fixture is *defined* by having no caller.
@@ -174,7 +174,7 @@
     "@swc/helpers",
     // Invoked by the Nx target named after it rather than imported.
     "license-checker",
-    // Invoked by the openwiki target rather than imported.
+    // Invoked by the documentation project's refresh-documentation command rather than imported.
     "openwiki",
     // Started by the `@nx/js:verdaccio` executor behind the root
     // `local-registry` target, which resolves it by name rather than importing

@@ -558,19 +558,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "openwiki": {
-      "cache": false,
-      "description": "Update OpenWiki content from code using the OpenWiki CLI (prints changes). Runs from the workspace root because the wiki is written through the root `openwiki` symlink.",
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "pnpm exec openwiki code --update --print",
-          "rm -f CLAUDE.md"
-        ],
-        "cwd": "{workspaceRoot}",
-        "parallel": false
-      }
-    },
     "oxfmt": {
       "cache": true,
       "configurations": {

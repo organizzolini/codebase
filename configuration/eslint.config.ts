@@ -1534,9 +1534,13 @@ export default [
   // `.last-update.json` is written by the OpenWiki CLI with `updatedAt` ahead
   // of `model`. The generator rewrites it on every refresh, so sorting its keys
   // here would be undone by the next scheduled run — and `documentation/` is
-  // linted as a whole, which reaches it now that `openwiki/` lives inside.
+  // linted as a whole, by the root run and by its own project, whose paths
+  // start at `openwiki/` rather than `documentation/openwiki/`.
   {
-    files: ["documentation/openwiki/.last-update.json"],
+    files: [
+      "documentation/openwiki/.last-update.json",
+      "openwiki/.last-update.json",
+    ],
     rules: {
       "jsonc/sort-keys": "off",
     },
@@ -1668,7 +1672,7 @@ export default [
   // skills. Placement above is judged for those pages regardless.
   {
     files: ["**/*.md"],
-    ignores: [".agents/**", "documentation/openwiki/**"],
+    ignores: [".agents/**", "documentation/openwiki/**", "openwiki/**"],
     rules: {
       // Enable markdown-specific rules
       "markdown/fenced-code-language": "warn",
