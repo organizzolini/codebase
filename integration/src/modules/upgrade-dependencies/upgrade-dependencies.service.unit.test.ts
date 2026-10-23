@@ -97,8 +97,34 @@ describe(UpgradeDependenciesService, () => {
       script: "echo changed > package.json; echo hello",
     });
 
-    expect(outcome).toStrictEqual({ kind: "succeeded", output: "hello\n" });
+    expect(outcome).toStrictEqual({
+      kind: "succeeded",
+      output: "hello\n",
+      report: {
+        changes: "1 file changed, 1 insertion(+), 1 deletion(-)",
+        label: "Good",
+        summary: undefined,
+        warnings: [],
+      },
+    });
     expect(read("package.json")).toBe("changed\n");
+  });
+
+  it("reports what a step printed as its summary and warnings", () => {
+    expect.hasAssertions();
+
+    const outcome = service.attempt({
+      label: "Good",
+      script: "echo 'summary: tool 2'; echo '⚠ one skill is stale'",
+    });
+
+    expect(outcome).toMatchObject({
+      report: {
+        changes: "",
+        summary: "tool 2",
+        warnings: ["⚠ one skill is stale"],
+      },
+    });
   });
 
   it("undoes a failed step and reports why", () => {
@@ -111,7 +137,10 @@ describe(UpgradeDependenciesService, () => {
 
     expect(outcome).toMatchObject({
       kind: "skipped",
-      skipped: { exitCode: 3, label: "Bad", tail: "no such version" },
+      report: {
+        label: "Bad",
+        skipped: { exitCode: 3, tail: "no such version" },
+      },
     });
     expect(read("package.json")).toBe("original");
   });
@@ -168,7 +197,8 @@ describe(UpgradeDependenciesService, () => {
       label: "Bad",
       script: "seq 1 100 >&2; exit 1",
     });
-    const tail = outcome.kind === "skipped" ? outcome.skipped.tail : "";
+    const tail =
+      outcome.kind === "skipped" ? (outcome.report.skipped?.tail ?? "") : "";
 
     expect(tail.split("\n")).toHaveLength(20);
     expect(tail.endsWith("100")).toBe(true);
@@ -182,7 +212,9 @@ describe(UpgradeDependenciesService, () => {
       script: "echo only on stdout; exit 1",
     });
 
-    expect(outcome).toMatchObject({ skipped: { tail: "only on stdout" } });
+    expect(outcome).toMatchObject({
+      report: { skipped: { tail: "only on stdout" } },
+    });
   });
 
   it("runs the recovery script after undoing a failed step", () => {
@@ -256,7 +288,12 @@ describe(UpgradeDependenciesService, () => {
     service.attempt({ label: "Good", script: "echo changed > package.json" });
 
     const changed = service.finish([
-      { exitCode: 1, label: "Bad", tail: "boom" },
+      {
+        changes: "",
+        label: "Bad",
+        skipped: { exitCode: 1, tail: "boom" },
+        warnings: [],
+      },
     ]);
 
     expect(changed).toBe(true);
@@ -265,7 +302,19 @@ describe(UpgradeDependenciesService, () => {
     );
     expect(
       fs.readFileSync(path.join(temporary, "pull-request-body.md"), "utf8"),
-    ).toContain("Skipped **Bad**");
+    ).toContain("**Bad** skipped");
+  });
+
+  it("links the run in the body when GitHub names one", () => {
+    expect.hasAssertions();
+
+    vi.stubEnv("GITHUB_RUN_ID", "42");
+    service.attempt({ label: "Good", script: "echo changed > package.json" });
+    service.finish([]);
+
+    expect(
+      fs.readFileSync(path.join(temporary, "pull-request-body.md"), "utf8"),
+    ).toContain("/actions/runs/42)");
   });
 
   it("counts a new untracked file as a change", () => {
