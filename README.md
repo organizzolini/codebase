@@ -231,7 +231,7 @@ Skills are specialized instruction files used by our automated agents, but they 
 - **Tooling:** [Nx Workspaces](.agents/skills/nx-workspace/SKILL.md) / [Generators](.agents/skills/nx-generate/SKILL.md) / [Task Running](.agents/skills/nx-run-tasks/SKILL.md)
 - **Triage:** [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Rejected Commits](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
 
-Other important files include [CHANGELOG.md](CHANGELOG.md) and [SECURITY.md](.github/SECURITY.md).
+Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.github/SECURITY.md), and [CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md).
 
 ## 👔 Conformetry
 
