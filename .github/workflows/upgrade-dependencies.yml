@@ -59,10 +59,10 @@ jobs:
             ${{ steps.import-gpg.outputs.name }}
             <${{ steps.import-gpg.outputs.email }}>
           sign-commits: true
-          commit-message: "chore(dependencies): ⬆️ Upgrade"
+          commit-message: "chore(dependencies): ⬆️ upgrade"
           branch: chore/dependencies-upgrade
           delete-branch: true
-          title: "chore(dependencies): ⬆️ Upgrade"
+          title: "chore(dependencies): ⬆️ upgrade"
           body-path: ${{ steps.upgrade.outputs.body_path }}
           # The type:, scope:, and source: labels and the assignee are what
           # 🧑‍⚖️ Validate Conventions requires of every pull request, this
