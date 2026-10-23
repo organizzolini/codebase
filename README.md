@@ -13564,19 +13564,19 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-61813-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.67_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-62077-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.66_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-156-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-592-3178c6?style=flat-square)
 
 ### TypeScript
 
 ![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-585-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-143-0ea5e9?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-144-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-246-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1399-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1413-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
@@ -13585,15 +13585,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![Test Files](https://img.shields.io/badge/Test_Files-187-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-199-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2789-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-875-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2717-4ade80?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2816-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-876-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2745-4ade80?style=flat-square)
 ![Async Functions](https://img.shields.io/badge/Async_Functions-947-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2967-dc2626?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2979-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-2772-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-783-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2969-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5676-475569?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-789-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2983-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5691-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13749,23 +13749,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-142-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27470-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27643-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-137-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-834-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-748-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-835-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-751-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6329-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6336-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-962-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4561-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-282-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2708-0ea5e9?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2777-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-909-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-559-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14840-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-564-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15093-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13778,9 +13778,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6736 |
+| Callables | 6749 |
 | Files | 2029 |
-| Calls traced | 7462 |
+| Calls traced | 7478 |
 | Call stacks | 1850 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
@@ -13790,7 +13790,7 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
-| `integration` | 6 | 6 | 0 | 6 |
+| `integration` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/common/persistence` | 7 | 7 | 0 | 7 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |

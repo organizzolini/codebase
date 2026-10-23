@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.0](https://github.com/organizzolini/codebase/compare/v3.25.2...v3.26.0) (2026-10-23)
+
+### ✨ Features
+
+* **integration:** ✨ report each upgrade step in the pull request body ([#1804](https://github.com/organizzolini/codebase/issues/1804)) ([c3e7a70](https://github.com/organizzolini/codebase/commit/c3e7a70adbbc3d9bd9971a5f5ca72696cf27c943))
+
 ## [3.25.2](https://github.com/organizzolini/codebase/compare/v3.25.1...v3.25.2) (2026-10-23)
 
 ## [3.25.1](https://github.com/organizzolini/codebase/compare/v3.25.0...v3.25.1) (2026-10-23)
