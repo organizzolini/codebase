@@ -873,12 +873,19 @@ graph LR
   module_installation_SshSigningModule["installation/SshSigningModule"]
   module_installation_UpdateReuiSkillModule["installation/UpdateReuiSkillModule"]
   module_integration_AdoptTaskDatabaseModule["integration/AdoptTaskDatabaseModule"]
+  module_integration_BoundBaseToPushModule["integration/BoundBaseToPushModule"]
+  module_integration_CleanupCodebaseModule["integration/CleanupCodebaseModule"]
+  module_integration_CollectCodometerBaselineModule["integration/CollectCodometerBaselineModule"]
   module_integration_DiscoveryModule["integration/DiscoveryModule"]
+  module_integration_ImportPrTaskCacheModule["integration/ImportPrTaskCacheModule"]
   module_integration_KeepTaskDatabaseModule["integration/KeepTaskDatabaseModule"]
   module_integration_LoggerModule["integration/LoggerModule"]
   module_integration_MainModule["integration/MainModule"]
+  module_integration_MergeTaskCacheModule["integration/MergeTaskCacheModule"]
   module_integration_ProcessRunnerModule["integration/ProcessRunnerModule"]
+  module_integration_ReportCodometerChangesModule["integration/ReportCodometerChangesModule"]
   module_integration_RunAffectedModule["integration/RunAffectedModule"]
+  module_integration_SetupCodebaseModule["integration/SetupCodebaseModule"]
   module_integration_TaskDatabaseModule["integration/TaskDatabaseModule"]
   module_integration_UpgradeDependenciesModule["integration/UpgradeDependenciesModule"]
   module_integration_VerifyTaskDatabaseModule["integration/VerifyTaskDatabaseModule"]
@@ -971,24 +978,17 @@ graph LR
   module_persistence_MainModule["persistence/MainModule"]
   module_persistence_PostgresqlModule["persistence/PostgresqlModule"]
   module_persistence_PostgresqlUtilitiesModule["persistence/PostgresqlUtilitiesModule"]
-  module_publication_AdoptTaskDatabaseModule["publication/AdoptTaskDatabaseModule"]
-  module_publication_BoundBaseToPushModule["publication/BoundBaseToPushModule"]
   module_publication_DiscoveryModule["publication/DiscoveryModule"]
-  module_publication_ImportPrTaskCacheModule["publication/ImportPrTaskCacheModule"]
-  module_publication_KeepTaskDatabaseModule["publication/KeepTaskDatabaseModule"]
   module_publication_LinkPackagesModule["publication/LinkPackagesModule"]
   module_publication_LoggerModule["publication/LoggerModule"]
   module_publication_MainModule["publication/MainModule"]
   module_publication_MainTipModule["publication/MainTipModule"]
-  module_publication_MergeTaskCacheModule["publication/MergeTaskCacheModule"]
   module_publication_ProcessRunnerModule["publication/ProcessRunnerModule"]
   module_publication_PublishablePackagesGateModule["publication/PublishablePackagesGateModule"]
   module_publication_PublishPackagesModule["publication/PublishPackagesModule"]
   module_publication_ReleaseGroupModule["publication/ReleaseGroupModule"]
   module_publication_TagCodebaseModule["publication/TagCodebaseModule"]
   module_publication_TagPackagesModule["publication/TagPackagesModule"]
-  module_publication_TaskDatabaseModule["publication/TaskDatabaseModule"]
-  module_publication_VerifyTaskDatabaseModule["publication/VerifyTaskDatabaseModule"]
   module_publication_VersionPackagesModule["publication/VersionPackagesModule"]
   module_synchronization_ConfigModule["synchronization/ConfigModule"]
   module_synchronization_ConfigurationModule["synchronization/ConfigurationModule"]
@@ -1692,14 +1692,30 @@ graph LR
   module_installation_SshSigningModule --> module_installation_ReporterModule
   module_installation_UpdateReuiSkillModule --> module_installation_ReporterModule
   module_integration_AdoptTaskDatabaseModule --> module_integration_TaskDatabaseModule
+  module_integration_BoundBaseToPushModule --> module_integration_ProcessRunnerModule
+  module_integration_CleanupCodebaseModule --> module_integration_TaskDatabaseModule
+  module_integration_ImportPrTaskCacheModule --> module_integration_ProcessRunnerModule
+  module_integration_ImportPrTaskCacheModule --> module_integration_TaskDatabaseModule
   module_integration_KeepTaskDatabaseModule --> module_integration_TaskDatabaseModule
   module_integration_MainModule --> module_integration_AdoptTaskDatabaseModule
+  module_integration_MainModule --> module_integration_BoundBaseToPushModule
+  module_integration_MainModule --> module_integration_CleanupCodebaseModule
+  module_integration_MainModule --> module_integration_CollectCodometerBaselineModule
   module_integration_MainModule --> module_integration_DiscoveryModule
+  module_integration_MainModule --> module_integration_ImportPrTaskCacheModule
   module_integration_MainModule --> module_integration_KeepTaskDatabaseModule
+  module_integration_MainModule --> module_integration_MergeTaskCacheModule
+  module_integration_MainModule --> module_integration_ReportCodometerChangesModule
   module_integration_MainModule --> module_integration_RunAffectedModule
+  module_integration_MainModule --> module_integration_SetupCodebaseModule
   module_integration_MainModule --> module_integration_UpgradeDependenciesModule
   module_integration_MainModule --> module_integration_VerifyTaskDatabaseModule
+  module_integration_MergeTaskCacheModule --> module_integration_TaskDatabaseModule
+  module_integration_ReportCodometerChangesModule --> module_integration_ProcessRunnerModule
   module_integration_RunAffectedModule --> module_integration_ProcessRunnerModule
+  module_integration_SetupCodebaseModule --> module_integration_BoundBaseToPushModule
+  module_integration_SetupCodebaseModule --> module_integration_ImportPrTaskCacheModule
+  module_integration_SetupCodebaseModule --> module_integration_TaskDatabaseModule
   module_integration_UpgradeDependenciesModule --> module_integration_ProcessRunnerModule
   module_integration_VerifyTaskDatabaseModule --> module_integration_TaskDatabaseModule
   module_lexico_api_DatabaseModule --> module_lexico_api_PostgresqlModule
@@ -1845,28 +1861,16 @@ graph LR
   module_persistence_MainModule --> module_persistence_DiscoveryModule
   module_persistence_MainModule --> module_persistence_ExportModule
   module_persistence_MainModule --> module_persistence_ImportModule
-  module_publication_AdoptTaskDatabaseModule --> module_publication_TaskDatabaseModule
-  module_publication_BoundBaseToPushModule --> module_publication_ProcessRunnerModule
-  module_publication_ImportPrTaskCacheModule --> module_publication_ProcessRunnerModule
-  module_publication_ImportPrTaskCacheModule --> module_publication_TaskDatabaseModule
-  module_publication_KeepTaskDatabaseModule --> module_publication_TaskDatabaseModule
   module_publication_LinkPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_LinkPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_MainModule --> module_publication_AdoptTaskDatabaseModule
-  module_publication_MainModule --> module_publication_BoundBaseToPushModule
   module_publication_MainModule --> module_publication_DiscoveryModule
-  module_publication_MainModule --> module_publication_ImportPrTaskCacheModule
-  module_publication_MainModule --> module_publication_KeepTaskDatabaseModule
   module_publication_MainModule --> module_publication_LinkPackagesModule
-  module_publication_MainModule --> module_publication_MergeTaskCacheModule
   module_publication_MainModule --> module_publication_PublishablePackagesGateModule
   module_publication_MainModule --> module_publication_PublishPackagesModule
   module_publication_MainModule --> module_publication_TagCodebaseModule
   module_publication_MainModule --> module_publication_TagPackagesModule
-  module_publication_MainModule --> module_publication_VerifyTaskDatabaseModule
   module_publication_MainModule --> module_publication_VersionPackagesModule
   module_publication_MainTipModule --> module_publication_ProcessRunnerModule
-  module_publication_MergeTaskCacheModule --> module_publication_TaskDatabaseModule
   module_publication_PublishablePackagesGateModule --> module_publication_ProcessRunnerModule
   module_publication_PublishPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_PublishPackagesModule --> module_publication_ReleaseGroupModule
@@ -1876,7 +1880,6 @@ graph LR
   module_publication_TagPackagesModule --> module_publication_MainTipModule
   module_publication_TagPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_TagPackagesModule --> module_publication_ReleaseGroupModule
-  module_publication_VerifyTaskDatabaseModule --> module_publication_TaskDatabaseModule
   module_publication_VersionPackagesModule --> module_publication_MainTipModule
   module_publication_VersionPackagesModule --> module_publication_ProcessRunnerModule
   module_publication_VersionPackagesModule --> module_publication_TagPackagesModule
@@ -3896,12 +3899,48 @@ graph LR
   file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts["integration/src/modules/adopt-task-database/adopt-task-database.module.ts"]
   file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["integration/src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
   file_integration_src_modules_adopt_task_database_adopt_task_database_types_ts["integration/src/modules/adopt-task-database/adopt-task-database.types.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.command.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.command.unit.test.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_constants_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.constants.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.module.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.module.unit.test.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.service.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.service.unit.test.ts"]
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_types_ts["integration/src/modules/bound-base-to-push/bound-base-to-push.types.ts"]
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts["integration/src/modules/cleanup-codebase/cleanup-codebase.command.ts"]
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_unit_test_ts["integration/src/modules/cleanup-codebase/cleanup-codebase.command.unit.test.ts"]
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_constants_ts["integration/src/modules/cleanup-codebase/cleanup-codebase.constants.ts"]
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_ts["integration/src/modules/cleanup-codebase/cleanup-codebase.module.ts"]
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_unit_test_ts["integration/src/modules/cleanup-codebase/cleanup-codebase.module.unit.test.ts"]
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_types_ts["integration/src/modules/cleanup-codebase/cleanup-codebase.types.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.command.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_unit_test_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.command.unit.test.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_constants_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.constants.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.module.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.module.unit.test.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.service.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.service.unit.test.ts"]
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_types_ts["integration/src/modules/collect-codometer-baseline/collect-codometer-baseline.types.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.command.unit.test.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.constants.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.module.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.module.unit.test.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.service.unit.test.ts"]
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts["integration/src/modules/import-pr-task-cache/import-pr-task-cache.types.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_command_ts["integration/src/modules/keep-task-database/keep-task-database.command.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["integration/src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_constants_ts["integration/src/modules/keep-task-database/keep-task-database.constants.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_module_ts["integration/src/modules/keep-task-database/keep-task-database.module.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["integration/src/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
   file_integration_src_modules_keep_task_database_keep_task_database_types_ts["integration/src/modules/keep-task-database/keep-task-database.types.ts"]
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts["integration/src/modules/merge-task-cache/merge-task-cache.command.ts"]
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts["integration/src/modules/merge-task-cache/merge-task-cache.command.unit.test.ts"]
+  file_integration_src_modules_merge_task_cache_merge_task_cache_constants_ts["integration/src/modules/merge-task-cache/merge-task-cache.constants.ts"]
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts["integration/src/modules/merge-task-cache/merge-task-cache.module.ts"]
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts["integration/src/modules/merge-task-cache/merge-task-cache.module.unit.test.ts"]
+  file_integration_src_modules_merge_task_cache_merge_task_cache_types_ts["integration/src/modules/merge-task-cache/merge-task-cache.types.ts"]
   file_integration_src_modules_process_runner_process_runner_constants_ts["integration/src/modules/process-runner/process-runner.constants.ts"]
   file_integration_src_modules_process_runner_process_runner_module_ts["integration/src/modules/process-runner/process-runner.module.ts"]
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts["integration/src/modules/process-runner/process-runner.module.unit.test.ts"]
@@ -3911,6 +3950,14 @@ graph LR
   file_integration_src_modules_process_runner_process_runner_types_ts["integration/src/modules/process-runner/process-runner.types.ts"]
   file_integration_src_modules_process_runner_process_runner_utilities_ts["integration/src/modules/process-runner/process-runner.utilities.ts"]
   file_integration_src_modules_process_runner_process_runner_utilities_unit_test_ts["integration/src/modules/process-runner/process-runner.utilities.unit.test.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.command.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.command.unit.test.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_constants_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.constants.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.module.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_unit_test_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.module.unit.test.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.service.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_unit_test_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.service.unit.test.ts"]
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_types_ts["integration/src/modules/report-codometer-changes/report-codometer-changes.types.ts"]
   file_integration_src_modules_run_affected_run_affected_command_ts["integration/src/modules/run-affected/run-affected.command.ts"]
   file_integration_src_modules_run_affected_run_affected_command_unit_test_ts["integration/src/modules/run-affected/run-affected.command.unit.test.ts"]
   file_integration_src_modules_run_affected_run_affected_constants_ts["integration/src/modules/run-affected/run-affected.constants.ts"]
@@ -3919,6 +3966,12 @@ graph LR
   file_integration_src_modules_run_affected_run_affected_service_ts["integration/src/modules/run-affected/run-affected.service.ts"]
   file_integration_src_modules_run_affected_run_affected_service_unit_test_ts["integration/src/modules/run-affected/run-affected.service.unit.test.ts"]
   file_integration_src_modules_run_affected_run_affected_types_ts["integration/src/modules/run-affected/run-affected.types.ts"]
+  file_integration_src_modules_setup_codebase_setup_codebase_command_ts["integration/src/modules/setup-codebase/setup-codebase.command.ts"]
+  file_integration_src_modules_setup_codebase_setup_codebase_command_unit_test_ts["integration/src/modules/setup-codebase/setup-codebase.command.unit.test.ts"]
+  file_integration_src_modules_setup_codebase_setup_codebase_constants_ts["integration/src/modules/setup-codebase/setup-codebase.constants.ts"]
+  file_integration_src_modules_setup_codebase_setup_codebase_module_ts["integration/src/modules/setup-codebase/setup-codebase.module.ts"]
+  file_integration_src_modules_setup_codebase_setup_codebase_module_unit_test_ts["integration/src/modules/setup-codebase/setup-codebase.module.unit.test.ts"]
+  file_integration_src_modules_setup_codebase_setup_codebase_types_ts["integration/src/modules/setup-codebase/setup-codebase.types.ts"]
   file_integration_src_modules_task_database_task_database_constants_ts["integration/src/modules/task-database/task-database.constants.ts"]
   file_integration_src_modules_task_database_task_database_module_ts["integration/src/modules/task-database/task-database.module.ts"]
   file_integration_src_modules_task_database_task_database_module_unit_test_ts["integration/src/modules/task-database/task-database.module.unit.test.ts"]
@@ -5116,34 +5169,6 @@ graph LR
   file_publication_codependix_config_ts["publication/codependix.config.ts"]
   file_publication_codometer_config_ts["publication/codometer.config.ts"]
   file_publication_eslint_config_ts["publication/eslint.config.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts["publication/src/modules/adopt-task-database/adopt-task-database.command.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-database.command.unit.test.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_constants_ts["publication/src/modules/adopt-task-database/adopt-task-database.constants.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts["publication/src/modules/adopt-task-database/adopt-task-database.module.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts["publication/src/modules/adopt-task-database/adopt-task-database.module.unit.test.ts"]
-  file_publication_src_modules_adopt_task_database_adopt_task_database_types_ts["publication/src/modules/adopt-task-database/adopt-task-database.types.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.command.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.command.unit.test.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_constants_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.constants.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.module.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.module.unit.test.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.service.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.service.unit.test.ts"]
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_types_ts["publication/src/modules/bound-base-to-push/bound-base-to-push.types.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.command.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.command.unit.test.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.constants.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.module.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.module.unit.test.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.service.unit.test.ts"]
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts["publication/src/modules/import-pr-task-cache/import-pr-task-cache.types.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_command_ts["publication/src/modules/keep-task-database/keep-task-database.command.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts["publication/src/modules/keep-task-database/keep-task-database.command.unit.test.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_constants_ts["publication/src/modules/keep-task-database/keep-task-database.constants.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_module_ts["publication/src/modules/keep-task-database/keep-task-database.module.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts["publication/src/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
-  file_publication_src_modules_keep_task_database_keep_task_database_types_ts["publication/src/modules/keep-task-database/keep-task-database.types.ts"]
   file_publication_src_modules_link_packages_link_packages_command_ts["publication/src/modules/link-packages/link-packages.command.ts"]
   file_publication_src_modules_link_packages_link_packages_command_unit_test_ts["publication/src/modules/link-packages/link-packages.command.unit.test.ts"]
   file_publication_src_modules_link_packages_link_packages_constants_ts["publication/src/modules/link-packages/link-packages.constants.ts"]
@@ -5158,12 +5183,6 @@ graph LR
   file_publication_src_modules_main_tip_main_tip_service_ts["publication/src/modules/main-tip/main-tip.service.ts"]
   file_publication_src_modules_main_tip_main_tip_service_unit_test_ts["publication/src/modules/main-tip/main-tip.service.unit.test.ts"]
   file_publication_src_modules_main_tip_main_tip_types_ts["publication/src/modules/main-tip/main-tip.types.ts"]
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_ts["publication/src/modules/merge-task-cache/merge-task-cache.command.ts"]
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts["publication/src/modules/merge-task-cache/merge-task-cache.command.unit.test.ts"]
-  file_publication_src_modules_merge_task_cache_merge_task_cache_constants_ts["publication/src/modules/merge-task-cache/merge-task-cache.constants.ts"]
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts["publication/src/modules/merge-task-cache/merge-task-cache.module.ts"]
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts["publication/src/modules/merge-task-cache/merge-task-cache.module.unit.test.ts"]
-  file_publication_src_modules_merge_task_cache_merge_task_cache_types_ts["publication/src/modules/merge-task-cache/merge-task-cache.types.ts"]
   file_publication_src_modules_process_runner_process_runner_constants_ts["publication/src/modules/process-runner/process-runner.constants.ts"]
   file_publication_src_modules_process_runner_process_runner_module_ts["publication/src/modules/process-runner/process-runner.module.ts"]
   file_publication_src_modules_process_runner_process_runner_module_unit_test_ts["publication/src/modules/process-runner/process-runner.module.unit.test.ts"]
@@ -5211,20 +5230,6 @@ graph LR
   file_publication_src_modules_tag_packages_tag_packages_service_ts["publication/src/modules/tag-packages/tag-packages.service.ts"]
   file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts["publication/src/modules/tag-packages/tag-packages.service.unit.test.ts"]
   file_publication_src_modules_tag_packages_tag_packages_types_ts["publication/src/modules/tag-packages/tag-packages.types.ts"]
-  file_publication_src_modules_task_database_task_database_constants_ts["publication/src/modules/task-database/task-database.constants.ts"]
-  file_publication_src_modules_task_database_task_database_module_ts["publication/src/modules/task-database/task-database.module.ts"]
-  file_publication_src_modules_task_database_task_database_module_unit_test_ts["publication/src/modules/task-database/task-database.module.unit.test.ts"]
-  file_publication_src_modules_task_database_task_database_service_ts["publication/src/modules/task-database/task-database.service.ts"]
-  file_publication_src_modules_task_database_task_database_service_unit_test_ts["publication/src/modules/task-database/task-database.service.unit.test.ts"]
-  file_publication_src_modules_task_database_task_database_types_ts["publication/src/modules/task-database/task-database.types.ts"]
-  file_publication_src_modules_task_database_task_database_utilities_ts["publication/src/modules/task-database/task-database.utilities.ts"]
-  file_publication_src_modules_task_database_task_database_utilities_unit_test_ts["publication/src/modules/task-database/task-database.utilities.unit.test.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_command_ts["publication/src/modules/verify-task-database/verify-task-database.command.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["publication/src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_constants_ts["publication/src/modules/verify-task-database/verify-task-database.constants.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_module_ts["publication/src/modules/verify-task-database/verify-task-database.module.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts["publication/src/modules/verify-task-database/verify-task-database.module.unit.test.ts"]
-  file_publication_src_modules_verify_task_database_verify_task_database_types_ts["publication/src/modules/verify-task-database/verify-task-database.types.ts"]
   file_publication_src_modules_version_packages_version_packages_command_ts["publication/src/modules/version-packages/version-packages.command.ts"]
   file_publication_src_modules_version_packages_version_packages_command_unit_test_ts["publication/src/modules/version-packages/version-packages.command.unit.test.ts"]
   file_publication_src_modules_version_packages_version_packages_constants_ts["publication/src/modules/version-packages/version-packages.constants.ts"]
@@ -9210,8 +9215,15 @@ graph LR
   file_integration_src_integration_main_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_integration_constants_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_keep_task_database_keep_task_database_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_run_affected_run_affected_module_ts
+  file_integration_src_integration_module_ts --> file_integration_src_modules_setup_codebase_setup_codebase_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts
   file_integration_src_integration_module_ts --> file_integration_src_modules_verify_task_database_verify_task_database_module_ts
   file_integration_src_integration_repl_ts --> file_integration_src_integration_module_ts
@@ -9225,6 +9237,71 @@ graph LR
   file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_command_ts
   file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_integration_src_modules_adopt_task_database_adopt_task_database_module_ts
   file_integration_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_command_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_constants_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_types_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts --> file_integration_src_modules_cleanup_codebase_cleanup_codebase_constants_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_unit_test_ts --> file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_ts --> file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_unit_test_ts --> file_integration_src_modules_cleanup_codebase_cleanup_codebase_command_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_unit_test_ts --> file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_ts
+  file_integration_src_modules_cleanup_codebase_cleanup_codebase_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_unit_test_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_unit_test_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_constants_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_types_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_integration_src_modules_task_database_task_database_types_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_keep_task_database_keep_task_database_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_integration_src_modules_keep_task_database_keep_task_database_command_ts
   file_integration_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
@@ -9234,15 +9311,46 @@ graph LR
   file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_integration_src_modules_keep_task_database_keep_task_database_command_ts
   file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_integration_src_modules_keep_task_database_keep_task_database_module_ts
   file_integration_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_constants_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_integration_testing_mocks_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts
+  file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
   file_integration_src_modules_process_runner_process_runner_module_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
   file_integration_src_modules_process_runner_process_runner_service_integration_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_process_runner_process_runner_service_integration_test_ts --> file_integration_testing_mocks_ts
   file_integration_src_modules_process_runner_process_runner_service_ts --> file_integration_src_modules_process_runner_process_runner_constants_ts
   file_integration_src_modules_process_runner_process_runner_service_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_modules_process_runner_process_runner_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
   file_integration_src_modules_process_runner_process_runner_utilities_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_modules_process_runner_process_runner_utilities_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_utilities_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_command_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_module_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_integration_src_modules_collect_codometer_baseline_collect_codometer_baseline_constants_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_constants_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_types_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_unit_test_ts --> file_integration_src_modules_report_codometer_changes_report_codometer_changes_types_ts
+  file_integration_src_modules_report_codometer_changes_report_codometer_changes_service_unit_test_ts --> file_integration_testing_mocks_ts
   file_integration_src_modules_run_affected_run_affected_command_ts --> file_integration_src_modules_run_affected_run_affected_constants_ts
   file_integration_src_modules_run_affected_run_affected_command_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
   file_integration_src_modules_run_affected_run_affected_command_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
@@ -9263,12 +9371,31 @@ graph LR
   file_integration_src_modules_run_affected_run_affected_service_ts --> file_integration_src_modules_run_affected_run_affected_types_ts
   file_integration_src_modules_run_affected_run_affected_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
   file_integration_src_modules_run_affected_run_affected_service_unit_test_ts --> file_integration_src_modules_run_affected_run_affected_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_ts --> file_integration_src_integration_types_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_ts --> file_integration_src_modules_setup_codebase_setup_codebase_constants_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_unit_test_ts --> file_integration_src_modules_setup_codebase_setup_codebase_command_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_ts --> file_integration_src_modules_setup_codebase_setup_codebase_command_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_integration_src_modules_bound_base_to_push_bound_base_to_push_module_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_integration_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_integration_src_modules_setup_codebase_setup_codebase_command_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_integration_src_modules_setup_codebase_setup_codebase_module_ts
+  file_integration_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
   file_integration_src_modules_task_database_task_database_module_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_task_database_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
   file_integration_src_modules_task_database_task_database_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_integration_types_ts
   file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_modules_task_database_task_database_constants_ts
   file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_modules_task_database_task_database_types_ts
+  file_integration_src_modules_task_database_task_database_service_ts --> file_integration_src_modules_task_database_task_database_utilities_ts
   file_integration_src_modules_task_database_task_database_service_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_task_database_task_database_utilities_ts --> file_integration_src_modules_task_database_task_database_constants_ts
   file_integration_src_modules_task_database_task_database_utilities_unit_test_ts --> file_integration_src_modules_task_database_task_database_utilities_ts
@@ -12674,67 +12801,6 @@ graph LR
   file_presentation_src_components_ui_sidebar_tsx --> file_presentation_src_components_ui_tooltip_tsx
   file_presentation_src_components_ui_sidebar_tsx --> file_presentation_src_hooks_use_mobile_ts
   file_presentation_src_components_ui_toggle_group_tsx --> file_presentation_src_components_ui_toggle_tsx
-  file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_command_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts
-  file_publication_src_modules_adopt_task_database_adopt_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_command_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_constants_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_types_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_ts
-  file_publication_src_modules_bound_base_to_push_bound_base_to_push_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_publication_src_modules_task_database_task_database_types_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
-  file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_publication_src_modules_keep_task_database_keep_task_database_command_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_module_ts --> file_publication_src_modules_keep_task_database_keep_task_database_command_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_publication_src_modules_keep_task_database_keep_task_database_command_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_publication_src_modules_keep_task_database_keep_task_database_module_ts
-  file_publication_src_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
   file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_link_packages_link_packages_service_ts
   file_publication_src_modules_link_packages_link_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
   file_publication_src_modules_link_packages_link_packages_command_unit_test_ts --> file_publication_src_modules_link_packages_link_packages_command_ts
@@ -12777,16 +12843,6 @@ graph LR
   file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
   file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_types_ts
   file_publication_src_modules_main_tip_main_tip_service_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_constants_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_command_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_command_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_command_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts
-  file_publication_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
   file_publication_src_modules_process_runner_process_runner_module_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
   file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_module_ts
   file_publication_src_modules_process_runner_process_runner_module_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
@@ -12916,25 +12972,6 @@ graph LR
   file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_process_runner_process_runner_service_ts
   file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_release_group_release_group_service_ts
   file_publication_src_modules_tag_packages_tag_packages_service_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_service_ts
-  file_publication_src_modules_task_database_task_database_module_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_task_database_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_task_database_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_modules_task_database_task_database_constants_ts
-  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_modules_task_database_task_database_types_ts
-  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_modules_task_database_task_database_utilities_ts
-  file_publication_src_modules_task_database_task_database_service_ts --> file_publication_src_publication_types_ts
-  file_publication_src_modules_task_database_task_database_service_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_task_database_task_database_utilities_ts --> file_publication_src_modules_task_database_task_database_constants_ts
-  file_publication_src_modules_task_database_task_database_utilities_unit_test_ts --> file_publication_src_modules_task_database_task_database_utilities_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_command_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_publication_src_modules_task_database_task_database_service_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_publication_src_modules_verify_task_database_verify_task_database_command_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_publication_testing_mocks_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_module_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_module_ts --> file_publication_src_modules_verify_task_database_verify_task_database_command_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_publication_src_modules_task_database_task_database_module_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_publication_src_modules_verify_task_database_verify_task_database_command_ts
-  file_publication_src_modules_verify_task_database_verify_task_database_module_unit_test_ts --> file_publication_src_modules_verify_task_database_verify_task_database_module_ts
   file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_process_runner_process_runner_utilities_ts
   file_publication_src_modules_version_packages_version_packages_command_ts --> file_publication_src_modules_version_packages_version_packages_service_ts
   file_publication_src_modules_version_packages_version_packages_command_unit_test_ts --> file_publication_src_modules_main_tip_main_tip_service_ts
@@ -12974,17 +13011,11 @@ graph LR
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
   file_publication_src_publication_main_unit_test_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_adopt_task_database_adopt_task_database_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_bound_base_to_push_bound_base_to_push_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_keep_task_database_keep_task_database_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_link_packages_link_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_publish_packages_publish_packages_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_publishable_packages_gate_publishable_packages_gate_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_tag_codebase_tag_codebase_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_tag_packages_tag_packages_module_ts
-  file_publication_src_publication_module_ts --> file_publication_src_modules_verify_task_database_verify_task_database_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_modules_version_packages_version_packages_module_ts
   file_publication_src_publication_module_ts --> file_publication_src_publication_constants_ts
   file_publication_src_publication_repl_ts --> file_publication_src_publication_module_ts
@@ -13533,36 +13564,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-61582-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.64_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-61813-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.65_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-156-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-590-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-592-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-583-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-144-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-585-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-143-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-243-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1398-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-246-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1399-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-186-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-187-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-197-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2782-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-888-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2719-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-951-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2939-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2733-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-775-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2957-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5639-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-199-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2789-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-875-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2717-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-947-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-2967-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2772-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-783-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2969-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5676-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13583,30 +13614,30 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-47-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7431-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-1139-7c3aed?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7434-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-1140-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-419-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-2741-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-2582-16a34a?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-2743-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-2583-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-39-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-189-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
 ![JSON Items](https://img.shields.io/badge/JSON_Items-1587-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4368-dc2626?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-4370-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-11-ea580c?style=flat-square)
 
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3293-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3195-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-443-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-437-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1539-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3099-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1518-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3058-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-586-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-585-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -13674,13 +13705,13 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Conventions
 
 ![Module Files](https://img.shields.io/badge/Module_Files-66-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-70-0284c7?style=flat-square)
-![Command Files](https://img.shields.io/badge/Command_Files-50-16a34a?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-71-0284c7?style=flat-square)
+![Command Files](https://img.shields.io/badge/Command_Files-51-16a34a?style=flat-square)
 ![Constants Files](https://img.shields.io/badge/Constants_Files-68-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-62-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-7-0ea5e9?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-176-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-177-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-4-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -13717,24 +13748,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-141-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27558-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-136-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-832-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-142-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27638-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-137-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-835-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-751-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6322-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-961-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4558-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6336-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-962-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4561-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2777-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-905-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2772-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-909-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-563-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15040-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-564-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15068-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13747,13 +13778,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6752 |
-| Files | 2028 |
-| Calls traced | 7472 |
-| Call stacks | 1849 |
+| Callables | 6736 |
+| Files | 2029 |
+| Calls traced | 7462 |
+| Call stacks | 1850 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 368 |
+| Unfollowable calls | 369 |
 
 ### Projects
 

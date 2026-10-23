@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.25.1](https://github.com/organizzolini/codebase/compare/v3.25.0...v3.25.1) (2026-10-23)
+
+### ♻️ Code Refactoring
+
+* **integration,documentation:** ♻️ move the CI steps into integration commands ([#1801](https://github.com/organizzolini/codebase/issues/1801)) ([dc1c4df](https://github.com/organizzolini/codebase/commit/dc1c4df98cee03a2ceedf60f9ed39ae6e5c71d98))
+
 ## [3.25.0](https://github.com/organizzolini/codebase/compare/v3.24.1...v3.25.0) (2026-10-23)
 
 ### ✨ Features
