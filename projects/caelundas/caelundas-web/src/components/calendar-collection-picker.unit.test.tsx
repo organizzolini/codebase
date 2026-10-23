@@ -41,7 +41,7 @@ describe(CalendarCollectionPicker, () => {
     );
   });
 
-  it("shows the collection whose filters the tree holds, with what it holds", () => {
+  it("shows the collection whose filters the tree holds", () => {
     render(
       <CalendarCollectionPicker
         collections={[COLLECTION]}
@@ -50,15 +50,12 @@ describe(CalendarCollectionPicker, () => {
       />,
     );
 
-    const picker = screen.getByRole<HTMLSelectElement>("combobox", {
-      name: "Collection",
-    });
-
-    expect(picker.value).toBe("planet-sign-events");
-    expect(screen.getByText("Every ingress.")).toBeDefined();
+    expect(
+      screen.getByRole("combobox", { name: "Collection" }).textContent,
+    ).toContain("Planet-sign events");
   });
 
-  it("shows all events when nothing is filtered", () => {
+  it("shows all events when nothing is filtered, with no label or note", () => {
     render(
       <CalendarCollectionPicker
         collections={[COLLECTION]}
@@ -68,13 +65,13 @@ describe(CalendarCollectionPicker, () => {
     );
 
     expect(
-      screen.getByRole<HTMLSelectElement>("combobox", { name: "Collection" })
-        .value,
-    ).toBe("all-events");
-    expect(screen.getByText(/every event in the data/u)).toBeDefined();
+      screen.getByRole("combobox", { name: "Collection" }).textContent,
+    ).toContain("All events");
+    expect(screen.queryByText(/every event in the data/u)).toBeNull();
+    expect(screen.queryByText("Collection")).toBeNull();
   });
 
-  it("shows custom for filters no collection holds, and cannot be picked", () => {
+  it("shows custom for filters no collection holds, and cannot be picked", async () => {
     render(
       <CalendarCollectionPicker
         collections={[COLLECTION]}
@@ -89,18 +86,18 @@ describe(CalendarCollectionPicker, () => {
       />,
     );
 
-    const picker = screen.getByRole<HTMLSelectElement>("combobox", {
-      name: "Collection",
-    });
-    const custom = screen.getByRole<HTMLOptionElement>("option", {
-      name: "Custom",
-    });
+    const picker = screen.getByRole("combobox", { name: "Collection" });
 
-    expect(picker.value).toBe("custom");
-    expect(custom.disabled).toBe(true);
+    expect(picker.textContent).toContain("Custom");
+
+    fireEvent.click(picker);
+
+    const custom = await screen.findByRole("option", { name: "Custom" });
+
+    expect(custom.getAttribute("aria-disabled")).toBe("true");
   });
 
-  it("applies a collection picked", () => {
+  it("applies a collection picked", async () => {
     const onSelect = vi.fn<(filter: unknown) => void>();
 
     render(
@@ -110,14 +107,18 @@ describe(CalendarCollectionPicker, () => {
         query={EMPTY_EVENT_FILTER}
       />,
     );
-    fireEvent.change(screen.getByRole("combobox", { name: "Collection" }), {
-      target: { value: "planet-sign-events" },
-    });
+    fireEvent.click(screen.getByRole("combobox", { name: "Collection" }));
+    fireEvent.keyDown(
+      await screen.findByRole("option", { name: "Planet-sign events" }),
+      {
+        key: "Enter",
+      },
+    );
 
     expect(onSelect).toHaveBeenCalledWith(COLLECTION.filter);
   });
 
-  it("clears the filters when all events is picked", () => {
+  it("clears the filters when all events is picked", async () => {
     const onSelect = vi.fn<(filter: unknown) => void>();
 
     render(
@@ -127,9 +128,13 @@ describe(CalendarCollectionPicker, () => {
         query={COLLECTION.filter}
       />,
     );
-    fireEvent.change(screen.getByRole("combobox", { name: "Collection" }), {
-      target: { value: "all-events" },
-    });
+    fireEvent.click(screen.getByRole("combobox", { name: "Collection" }));
+    fireEvent.keyDown(
+      await screen.findByRole("option", { name: "All events" }),
+      {
+        key: "Enter",
+      },
+    );
 
     expect(onSelect).toHaveBeenCalledWith(EMPTY_EVENT_FILTER);
   });

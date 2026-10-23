@@ -1,4 +1,10 @@
-import { useId } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@codebase/presentation";
 
 import { compileEventFilter } from "../lib/event-filters/event-filter-compiler";
 import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
@@ -22,14 +28,12 @@ export interface CalendarCollectionPickerProperties {
 
 const ALL_EVENTS_ID = "all-events";
 const CUSTOM_ID = "custom";
-const SELECT_CLASS_NAME =
-  "border-input bg-background h-8 w-full min-w-0 rounded-md border px-2 text-sm";
 
 // 🧩 Component
 
 /**
- * Renders the collection the filters below come from, as a list to pick
- * another from, with what the one picked holds. The collection whose filters
+ * Renders the collection the filters below come from, as a dropdown to pick
+ * another from. The collection whose filters
  * the tree holds is the one shown, "All events" when the tree filters
  * nothing, and anything else as custom, an edit made in the builder.
  */
@@ -39,7 +43,6 @@ export function CalendarCollectionPicker(
   const { className, collections, onSelect, query } = properties;
 
   // 🪝 Hooks
-  const id = useId();
 
   // 🏗 Setup
   // The compiled SQL says whether two trees filter alike, whatever their ids.
@@ -52,14 +55,17 @@ export function CalendarCollectionPicker(
     }
   }
 
-  const description =
-    collections.find((collection) => collection.id === value)?.description ??
-    (value === ALL_EVENTS_ID
-      ? "No filters: every event in the data."
-      : "Your own filters, as edited below.");
+  const items = [
+    ...collections.map((collection) => ({
+      label: collection.name,
+      value: collection.id,
+    })),
+    { label: "All events", value: ALL_EVENTS_ID },
+    ...(value === CUSTOM_ID ? [{ label: "Custom", value: CUSTOM_ID }] : []),
+  ];
 
   // 💪 Handlers
-  const handleChange = (picked: string): void => {
+  const handleChange = (picked: unknown): void => {
     const collection = collections.find((candidate) => candidate.id === picked);
 
     if (collection !== undefined || picked === ALL_EVENTS_ID) {
@@ -77,41 +83,29 @@ export function CalendarCollectionPicker(
       className={className}
       data-testid="calendar-collection-picker"
     >
-      <div className="flex flex-col gap-1.5">
-        <label
-          className="text-sm font-medium"
-          htmlFor={id}
+      <Select
+        items={items}
+        onValueChange={handleChange}
+        value={value}
+      >
+        <SelectTrigger
+          aria-label="Collection"
+          className="w-full"
         >
-          Collection
-        </label>
-        <select
-          className={SELECT_CLASS_NAME}
-          id={id}
-          onChange={(event) => {
-            handleChange(event.target.value);
-          }}
-          value={value}
-        >
-          {collections.map((collection) => (
-            <option
-              key={collection.id}
-              value={collection.id}
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent align="start">
+          {items.map((item) => (
+            <SelectItem
+              key={item.value}
+              disabled={item.value === CUSTOM_ID}
+              value={item.value}
             >
-              {collection.name}
-            </option>
+              {item.label}
+            </SelectItem>
           ))}
-          <option value={ALL_EVENTS_ID}>All events</option>
-          {value === CUSTOM_ID ? (
-            <option
-              value={CUSTOM_ID}
-              disabled
-            >
-              Custom
-            </option>
-          ) : null}
-        </select>
-        <p className="text-muted-foreground text-xs">{description}</p>
-      </div>
+        </SelectContent>
+      </Select>
     </div>
   );
 }

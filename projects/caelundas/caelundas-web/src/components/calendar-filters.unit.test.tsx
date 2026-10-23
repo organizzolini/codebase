@@ -67,11 +67,11 @@ describe(CalendarFilters, () => {
       );
       fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
 
-      const picker = await screen.findByRole<HTMLSelectElement>("combobox", {
+      const picker = await screen.findByRole("combobox", {
         name: "Collection",
       });
 
-      expect(picker.value).toBe("planet-sign-events");
+      expect(picker.textContent).toContain("Planet-sign events");
     });
 
     it("applies a collection picked in the filter panel", async () => {
@@ -86,9 +86,14 @@ describe(CalendarFilters, () => {
         />,
       );
       fireEvent.click(screen.getByRole("button", { name: /^Filter/u }));
-      fireEvent.change(
+      fireEvent.click(
         await screen.findByRole("combobox", { name: "Collection" }),
-        { target: { value: "planet-sign-events" } },
+      );
+      fireEvent.keyDown(
+        await screen.findByRole("option", { name: "Planet-sign events" }),
+        {
+          key: "Enter",
+        },
       );
 
       expect(onFilterChange).toHaveBeenCalledWith(COLLECTION.filter);
