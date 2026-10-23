@@ -187,7 +187,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       const event = service.buildAphelionEvent(timestamp);
 
-      expect(event.summary).toBe("☀️ ❄️ Solar Aphelion");
+      expect(event.summary).toBe("☀️❄️ Solar Aphelion");
       expect(event.description).toBe("Solar Aphelion");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
@@ -203,7 +203,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       const event = service.buildPerihelionEvent(timestamp);
 
-      expect(event.summary).toBe("☀️ 🔥 Solar Perihelion");
+      expect(event.summary).toBe("☀️🔥 Solar Perihelion");
       expect(event.description).toBe("Solar Perihelion");
       expect(event.tags).toContain("Perihelion");
     });

@@ -64,7 +64,7 @@ describe("main end-to-end suite", () => {
     describe("iCS file generation", () => {
       it("generates valid ICS file structure", () => {
         const events = [
-          detectable("☀️ → ♈ Sun ingress Aries", "2025-03-20T09:06:00Z"),
+          detectable("☀️→♈ Sun ingress Aries", "2025-03-20T09:06:00Z"),
           detectable("🌕 Full Moon", "2025-03-29T10:58:00Z"),
         ];
 

@@ -149,7 +149,7 @@ export class LunarApsidesService {
         this.buildApsisEvent({
           date: minute,
           description: "Lunar Apogee (Moon farthest from Earth)",
-          summary: "🌙 ❄️ Lunar Apogee",
+          summary: "🌙❄️ Lunar Apogee",
           tag: LUNAR_APOGEE_TAG,
         }),
       );
@@ -159,7 +159,7 @@ export class LunarApsidesService {
         this.buildApsisEvent({
           date: minute,
           description: "Lunar Perigee (Moon nearest to Earth)",
-          summary: "🌙 🔥 Lunar Perigee",
+          summary: "🌙🔥 Lunar Perigee",
           tag: LUNAR_PERIGEE_TAG,
         }),
       );

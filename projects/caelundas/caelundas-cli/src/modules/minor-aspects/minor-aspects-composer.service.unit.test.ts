@@ -56,7 +56,7 @@ describe(MinorAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Sun perfective semisextile Moon",
-        summary: "🎯 ☀️ ⚺ 🌙 Sun perfective semisextile Moon",
+        summary: "🎯☀️⚺🌙 Sun perfective semisextile Moon",
         tags: [
           "Astronomy",
           "Astrology",
@@ -81,7 +81,7 @@ describe(MinorAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Sun forming semisextile Moon",
-        summary: "➡️ ☀️ ⚺ 🌙 Sun forming semisextile Moon",
+        summary: "➡️☀️⚺🌙 Sun forming semisextile Moon",
         tags: [
           "Astronomy",
           "Astrology",
@@ -106,7 +106,7 @@ describe(MinorAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Sun dissolving semisextile Moon",
-        summary: "⬅️ ☀️ ⚺ 🌙 Sun dissolving semisextile Moon",
+        summary: "⬅️☀️⚺🌙 Sun dissolving semisextile Moon",
         tags: [
           "Astronomy",
           "Astrology",
@@ -181,7 +181,7 @@ describe(MinorAspectsComposerService, () => {
       description: "Sun forming semisextile Moon",
       end: minute,
       start: minute,
-      summary: "➡️ ☀️ ⚺ 🌙 Sun forming semisextile Moon",
+      summary: "➡️☀️⚺🌙 Sun forming semisextile Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -198,7 +198,7 @@ describe(MinorAspectsComposerService, () => {
       description: "Sun dissolving semisextile Moon",
       end: minute.clone().add(1, "hour"),
       start: minute.clone().add(1, "hour"),
-      summary: "⬅️ ☀️ ⚺ 🌙 Sun dissolving semisextile Moon",
+      summary: "⬅️☀️⚺🌙 Sun dissolving semisextile Moon",
       tags: beginning.tags.map((tag) =>
         tag === "Forming" ? "Dissolving" : tag,
       ),

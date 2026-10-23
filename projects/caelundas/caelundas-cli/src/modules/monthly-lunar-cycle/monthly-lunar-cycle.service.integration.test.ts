@@ -90,22 +90,22 @@ describe("monthly-lunar-cycle.events integration", () => {
   it.each([
     {
       elongations: { current: 0.1, next: 0.6, previous: 359.6 },
-      summary: "🌙 🌑 New Moon",
+      summary: "🌙🌑 New Moon",
       tag: "New",
     },
     {
       elongations: { current: 90.1, next: 90.6, previous: 89.6 },
-      summary: "🌙 🌓 First Quarter Moon",
+      summary: "🌙🌓 First Quarter Moon",
       tag: "First Quarter",
     },
     {
       elongations: { current: 180.1, next: 180.6, previous: 179.6 },
-      summary: "🌙 🌕 Full Moon",
+      summary: "🌙🌕 Full Moon",
       tag: "Full",
     },
     {
       elongations: { current: 270.1, next: 270.6, previous: 269.6 },
-      summary: "🌙 🌗 Last Quarter Moon",
+      summary: "🌙🌗 Last Quarter Moon",
       tag: "Last Quarter",
     },
   ])(

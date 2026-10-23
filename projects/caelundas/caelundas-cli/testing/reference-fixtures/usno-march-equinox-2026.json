@@ -1,6 +1,6 @@
 {
   "counts": {
-    "☀️ → ♈ Sun ingress Aries": 1,
+    "☀️→♈ Sun ingress Aries": 1,
     "🌸 Vernal Equinox": 1
   },
   "events": [
@@ -12,7 +12,7 @@
     {
       "note": "The Sun reaches ecliptic longitude 0 at the March equinox",
       "start": "2026-03-20T14:46:00Z",
-      "summary": "☀️ → ♈ Sun ingress Aries"
+      "summary": "☀️→♈ Sun ingress Aries"
     }
   ],
   "name": "The 2026 March equinox",

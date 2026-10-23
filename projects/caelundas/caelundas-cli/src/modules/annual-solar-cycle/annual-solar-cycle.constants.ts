@@ -18,8 +18,8 @@ export const SOLAR_ADVANCING_DESCRIPTION =
 export const SOLAR_RETREATING_DESCRIPTION =
   "Solar Retreating (Perihelion to Aphelion)";
 
-export const SOLAR_ADVANCING_SUMMARY = "☀️ 🔥 Solar Advancing";
-export const SOLAR_RETREATING_SUMMARY = "☀️ ❄️ Solar Retreating";
+export const SOLAR_ADVANCING_SUMMARY = "☀️🔥 Solar Advancing";
+export const SOLAR_RETREATING_SUMMARY = "☀️❄️ Solar Retreating";
 
 export const SOLAR_CYCLE_EVENT_TIMEZONE = "America/New_York";
 

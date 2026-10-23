@@ -121,7 +121,7 @@ describe("quintuple-aspects.events integration", () => {
         end: moment.utc("2024-06-15T14:23:00.000Z"),
         start: moment.utc("2024-06-15T14:23:00.000Z"),
         summary:
-          "➡️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram forming",
+          "➡️⬠☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -142,7 +142,7 @@ describe("quintuple-aspects.events integration", () => {
         end: moment.utc("2024-06-15T14:30:00.000Z"),
         start: moment.utc("2024-06-15T14:30:00.000Z"),
         summary:
-          "⬅️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
+          "⬅️⬠☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
         tags: [
           "Astronomy",
           "Astrology",

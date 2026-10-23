@@ -122,8 +122,8 @@ describe("progressiveService span pairing", () => {
       station("direct", "2026-07-23T21:00:00Z"),
     ]);
 
-    expect(spans(between, "☿ ↩️ Mercury Retrograde")).toStrictEqual([]);
-    expect(spans(control, "☿ ↩️ Mercury Retrograde")).toStrictEqual([
+    expect(spans(between, "☿↩️ Mercury Retrograde")).toStrictEqual([]);
+    expect(spans(control, "☿↩️ Mercury Retrograde")).toStrictEqual([
       { end: "2026-07-23T21:00:00.000Z", start: "2026-06-29T17:00:00.000Z" },
     ]);
 

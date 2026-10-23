@@ -119,14 +119,14 @@ describe(QuadrupleAspectsBaseService, () => {
       description: "Mars, Moon, Sun, Venus grand cross forming (Mars focal)",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
-      summary: "➡️ ⊞ ☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross forming",
+      summary: "➡️⊞☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross forming",
       tags: ["Quadruple Aspect", "Grand Cross", "Forming", "Sun"],
     };
     const dissolvingEvent: DetectedCalendarEvent = {
       description: "Mars, Moon, Sun, Venus grand cross dissolving (Mars focal)",
       end: moment.utc("2024-03-21T14:00:00.000Z"),
       start: moment.utc("2024-03-21T14:00:00.000Z"),
-      summary: "⬅️ ⊞ ☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross dissolving",
+      summary: "⬅️⊞☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross dissolving",
       tags: ["Quadruple Aspect", "Grand Cross", "Dissolving", "Sun"],
     };
 
@@ -140,7 +140,7 @@ describe(QuadrupleAspectsBaseService, () => {
       "Mars, Moon, Sun, Venus grand cross",
     );
     expect(progressiveEvent.summary).toBe(
-      "⊞ ☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross",
+      "⊞☉-☽-♂-♀ Mars, Moon, Sun, Venus grand cross",
     );
   });
 

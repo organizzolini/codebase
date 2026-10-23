@@ -104,7 +104,7 @@ export class AspectEventFormattingService {
       body2Capitalized,
       phase,
     });
-    const summary = `${phaseEmoji} ${symbolByBody[body1]} ${aspectSymbol} ${symbolByBody[body2]} ${description}`;
+    const summary = `${phaseEmoji}${symbolByBody[body1]}${aspectSymbol}${symbolByBody[body2]} ${description}`;
     log("🗓️ Built a calendar event", {
       at: timestamp.toISOString(),
       summary,
@@ -167,14 +167,14 @@ export class AspectEventFormattingService {
    */
   getPhaseEmoji(phase: AspectPhase): string {
     if (phase === "forming") {
-      return "➡️ ";
+      return "➡️";
     }
 
     if (phase === "perfective") {
-      return "🎯 ";
+      return "🎯";
     }
 
-    return "⬅️ ";
+    return "⬅️";
   }
 
   /**
@@ -183,7 +183,7 @@ export class AspectEventFormattingService {
    */
   spanTitle(boundarySummary: string): string {
     return boundarySummary
-      .replace(/^(?:➡️|🎯|⬅️)\s/u, "")
+      .replace(/^(?:➡️|🎯|⬅️)/u, "")
       .replace(/ (?:forming|exact|perfective|dissolving)(?= \(|$)/u, "");
   }
 }

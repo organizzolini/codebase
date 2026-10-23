@@ -71,7 +71,7 @@ export class DailyCyclesService {
    *   currentMinute: moment('2026-01-21T12:15:00Z'),
    *   sunAzimuthElevationEphemeris: ephemeris
    * });
-   * // Returns: [{ summary: "☀️ ⬆️ Solar Zenith", start: ..., ... }]
+   * // Returns: [{ summary: "☀️⬆️ Solar Zenith", start: ..., ... }]
    * ```
    */
   /**

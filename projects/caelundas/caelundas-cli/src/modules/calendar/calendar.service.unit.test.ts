@@ -48,7 +48,7 @@ describe(CalendarService, () => {
       description: "Sun ingress Aries",
       end: moment.utc("2025-03-20T09:06:00Z"),
       start: moment.utc("2025-03-20T09:06:00Z"),
-      summary: "☀️ → ♈ Sun ingress Aries",
+      summary: "☀️→♈ Sun ingress Aries",
       tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
     };
 
@@ -61,7 +61,7 @@ describe(CalendarService, () => {
       expect(vevent).toContain("DTSTAMP:");
       expect(vevent).toContain("DTSTART;TZID=America/New_York:");
       expect(vevent).toContain("DTEND;TZID=America/New_York:");
-      expect(vevent).toContain("SUMMARY:☀️ → ♈ Sun ingress Aries");
+      expect(vevent).toContain("SUMMARY:☀️→♈ Sun ingress Aries");
       expect(vevent).toContain("DESCRIPTION:Sun ingress Aries");
       expect(vevent).toContain("STATUS:CONFIRMED");
       expect(vevent).toContain("CLASS:PUBLIC");

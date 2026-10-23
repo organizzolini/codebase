@@ -52,7 +52,7 @@ export class EclipseEventService {
 
   /**
    * Builds one eclipse contact event, titled with its type, body and phase,
-   * for example "🌐 🌙🐉▶️ Total Lunar Eclipse begins".
+   * for example "🌐🌙🐉▶️ Total Lunar Eclipse begins".
    */
   private buildEclipseEvent(args: {
     body: "Lunar" | "Solar";
@@ -68,7 +68,7 @@ export class EclipseEventService {
     const typeLabel = eclipseTypeLabelByType[type];
     const { symbol, word } = this.phaseLabelByPhase[phase];
     const title = `${typeLabel} ${body} Eclipse ${word}`;
-    const summary = `${frameSymbol} ${this.symbolByBody[body]}${symbol} ${title}`;
+    const summary = `${frameSymbol}${this.symbolByBody[body]}${symbol} ${title}`;
     const dateString = date.clone().tz("America/New_York").toISOString(true);
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
@@ -107,7 +107,7 @@ export class EclipseEventService {
       description: title,
       end: ending.start,
       start: beginning.start,
-      summary: `${frameSymbol} ${this.symbolByBody[body]} ${title}`,
+      summary: `${frameSymbol}${this.symbolByBody[body]} ${title}`,
       tags: [...this.tags, body, frameLabel, ...(typeLabel ? [typeLabel] : [])],
     };
   }

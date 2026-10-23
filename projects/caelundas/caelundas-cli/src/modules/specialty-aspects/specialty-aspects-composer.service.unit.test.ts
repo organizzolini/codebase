@@ -64,7 +64,7 @@ describe(SpecialtyAspectsComposerService, () => {
     ).toStrictEqual(
       expect.objectContaining({
         description: "Sun quintile Moon",
-        summary: "🎯 ☀️ ⬠ 🌙 Sun quintile Moon",
+        summary: "🎯☀️⬠🌙 Sun quintile Moon",
       }),
     );
 
@@ -73,7 +73,7 @@ describe(SpecialtyAspectsComposerService, () => {
       undefined,
       {
         at: timestamp.toISOString(),
-        summary: "🎯 ☀️ ⬠ 🌙 Sun quintile Moon",
+        summary: "🎯☀️⬠🌙 Sun quintile Moon",
       },
     );
   });
@@ -114,7 +114,7 @@ describe(SpecialtyAspectsComposerService, () => {
       description: "Sun forming quintile Moon",
       end: minute,
       start: minute,
-      summary: "➡️ ☀️⬠🌙 Sun forming quintile Moon",
+      summary: "➡️☀️⬠🌙 Sun forming quintile Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -131,7 +131,7 @@ describe(SpecialtyAspectsComposerService, () => {
       description: "Sun dissolving quintile Moon",
       end: minute.clone().add(1, "hour"),
       start: minute.clone().add(1, "hour"),
-      summary: "⬅️ ☀️⬠🌙 Sun dissolving quintile Moon",
+      summary: "⬅️☀️⬠🌙 Sun dissolving quintile Moon",
       tags: beginning.tags.map((tag) =>
         tag === "Forming" ? "Dissolving" : tag,
       ),

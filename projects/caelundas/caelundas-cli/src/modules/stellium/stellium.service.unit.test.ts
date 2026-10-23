@@ -248,9 +248,9 @@ describe(StelliumService, () => {
         ].map((event) => event.summary);
 
         expect(titles).toStrictEqual([
-          "➡️ 🌟 ♂️-☿-☀️-♀️ Mars, Mercury, Sun, Venus stellium forming",
-          "⬅️ 🌟 ♂️-☿-☀️-♀️ Mars, Mercury, Sun, Venus stellium dissolving",
-          "🌟 ♂️-☿-☀️-♀️ Mars, Mercury, Sun, Venus stellium",
+          "➡️🌟♂️-☿-☀️-♀️ Mars, Mercury, Sun, Venus stellium forming",
+          "⬅️🌟♂️-☿-☀️-♀️ Mars, Mercury, Sun, Venus stellium dissolving",
+          "🌟♂️-☿-☀️-♀️ Mars, Mercury, Sun, Venus stellium",
         ]);
       });
 
@@ -402,7 +402,7 @@ describe(StelliumService, () => {
         description: "Mars, Moon, Sun, Venus stellium forming",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+        summary: "➡️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -421,7 +421,7 @@ describe(StelliumService, () => {
         description: "Mars, Moon, Sun, Venus stellium dissolving",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+        summary: "⬅️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
         tags: [
           "Astronomy",
           "Astrology",
@@ -459,7 +459,7 @@ describe(StelliumService, () => {
         description: "Mars, Moon, Sun, Venus stellium forming",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+        summary: "➡️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -484,7 +484,7 @@ describe(StelliumService, () => {
         description: "Mars, Moon, Sun, Venus stellium dissolving",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+        summary: "⬅️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
         tags: [
           "Astronomy",
           "Astrology",
@@ -510,7 +510,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          summary: "➡️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -528,7 +528,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium dissolving",
           end: moment.utc("2024-03-21T14:00:00.000Z"),
           start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          summary: "⬅️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -546,7 +546,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-22T10:00:00.000Z"),
           start: moment.utc("2024-03-22T10:00:00.000Z"),
-          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          summary: "➡️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -564,7 +564,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium dissolving",
           end: moment.utc("2024-03-22T14:00:00.000Z"),
           start: moment.utc("2024-03-22T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          summary: "⬅️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -604,7 +604,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          summary: "➡️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -622,7 +622,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium dissolving",
           end: moment.utc("2024-03-21T14:00:00.000Z"),
           start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          summary: "⬅️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -641,7 +641,7 @@ describe(StelliumService, () => {
           description: "Jupiter, Mars, Saturn, Sun stellium forming",
           end: moment.utc("2024-03-21T11:00:00.000Z"),
           start: moment.utc("2024-03-21T11:00:00.000Z"),
-          summary: "➡️ ✨ ☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium forming",
+          summary: "➡️✨☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -659,8 +659,7 @@ describe(StelliumService, () => {
           description: "Jupiter, Mars, Saturn, Sun stellium dissolving",
           end: moment.utc("2024-03-21T15:00:00.000Z"),
           start: moment.utc("2024-03-21T15:00:00.000Z"),
-          summary:
-            "⬅️ ✨ ☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium dissolving",
+          summary: "⬅️✨☉-♂-♃-♄ Jupiter, Mars, Saturn, Sun stellium dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -692,7 +691,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "➡️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
+          summary: "➡️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -710,7 +709,7 @@ describe(StelliumService, () => {
           description: "Mars, Moon, Sun, Venus stellium dissolving",
           end: moment.utc("2024-03-21T14:00:00.000Z"),
           start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary: "⬅️ ✨ ☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
+          summary: "⬅️✨☉-☽-♂-♀ Mars, Moon, Sun, Venus stellium dissolving",
           tags: [
             "Astronomy",
             "Astrology",
@@ -730,7 +729,7 @@ describe(StelliumService, () => {
           end: moment.utc("2024-03-21T11:00:00.000Z"),
           start: moment.utc("2024-03-21T11:00:00.000Z"),
           summary:
-            "➡️ ✨ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium forming",
+            "➡️✨☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium forming",
           tags: [
             "Astronomy",
             "Astrology",
@@ -750,7 +749,7 @@ describe(StelliumService, () => {
           end: moment.utc("2024-03-21T15:00:00.000Z"),
           start: moment.utc("2024-03-21T15:00:00.000Z"),
           summary:
-            "⬅️ ✨ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium dissolving",
+            "⬅️✨☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus stellium dissolving",
           tags: [
             "Astronomy",
             "Astrology",

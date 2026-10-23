@@ -312,7 +312,7 @@ export class QuadrupleAspectsBaseService {
     });
     const phaseEmoji = this.getPhaseEmoji(phase);
     const symbolsPart = `${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]}-${symbolByBody[body4]}`;
-    const summary = `${phaseEmoji}${symbolByQuadrupleAspect[quadrupleAspect]} ${symbolsPart} ${description}`;
+    const summary = `${phaseEmoji}${symbolByQuadrupleAspect[quadrupleAspect]}${symbolsPart} ${description}`;
     const tags = this.makeQuadrupleAspectTags({
       body1Capitalized: body1DisplayName,
       body2Capitalized: body2DisplayName,

@@ -162,7 +162,7 @@ describe("sextuple-aspects.events integration", () => {
         end: moment.utc("2024-09-22T18:42:00.000Z"),
         start: moment.utc("2024-09-22T18:42:00.000Z"),
         summary:
-          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          "➡️✡☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -185,7 +185,7 @@ describe("sextuple-aspects.events integration", () => {
         end: moment.utc("2024-09-22T19:00:00.000Z"),
         start: moment.utc("2024-09-22T19:00:00.000Z"),
         summary:
-          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          "⬅️✡☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
         tags: [
           "Astronomy",
           "Astrology",
