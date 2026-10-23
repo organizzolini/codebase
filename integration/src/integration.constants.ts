@@ -36,7 +36,5 @@ export const environmentSchema = z.object({
     .string()
     .optional()
     .transform((value) => value || DEFAULT_DATA_DIRECTORY),
-  SPELLING_PATHS: z.string().optional(),
   TARGET: z.string().optional(),
-  TEMPLATE_PATHS: z.string().optional(),
 });

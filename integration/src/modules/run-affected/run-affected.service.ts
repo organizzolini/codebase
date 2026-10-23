@@ -4,12 +4,12 @@ import { ConfigService } from "@nestjs/config";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
-  DEFAULT_SPELLING_PATHS,
-  DEFAULT_TEMPLATE_PATHS,
   INCLUDE_SPELLING_VALUE,
   INCLUDE_TEMPLATES_VALUE,
   REVISIONS_UNSET_MESSAGE,
+  SPELLING_PATTERN,
   TARGET_UNSET_MESSAGE,
+  TEMPLATE_PATTERN,
   TEMPLATE_SELECTOR,
 } from "./run-affected.constants";
 
@@ -112,17 +112,14 @@ export class RunAffectedService {
       return changed;
     }
 
-    const spelling = this.pattern("SPELLING_PATHS", DEFAULT_SPELLING_PATHS);
-    const templates = this.pattern("TEMPLATE_PATHS", DEFAULT_TEMPLATE_PATHS);
-
     return {
       changed,
       kind: "corrections",
       spellingFiles: dropSpelling
-        ? changed.filter((file) => spelling.test(file))
+        ? changed.filter((file) => SPELLING_PATTERN.test(file))
         : [],
       templateFiles: addTemplates
-        ? changed.filter((file) => templates.test(file))
+        ? changed.filter((file) => TEMPLATE_PATTERN.test(file))
         : [],
     };
   }
@@ -156,18 +153,6 @@ export class RunAffectedService {
     }
 
     return diff.stdout.split("\n").filter((line) => line !== "");
-  }
-
-  /** Builds the pattern a variable names, or its default when unset. */
-  private pattern(
-    variable: "SPELLING_PATHS" | "TEMPLATE_PATHS",
-    fallback: string,
-  ): RegExp {
-    const configured = this.configService.get(variable, { infer: true });
-
-    return new RegExp(
-      configured === undefined || configured === "" ? fallback : configured,
-    );
   }
 
   /** Reads the target, the revisions, and the extra flags, or what is unset. */

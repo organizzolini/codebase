@@ -17,7 +17,7 @@ import { RunAffectedService } from "./run-affected.service";
  *
  * Reads its inputs from the environment, as the `run-affected` composite action
  * sets them: `TARGET`, `ARGUMENTS`, `INCLUDE_SPELLING`, `INCLUDE_TEMPLATES`,
- * `SPELLING_PATHS`, `TEMPLATE_PATHS`, `NX_BASE`, and `NX_HEAD`. Exits with `nx affected`'s own code, or 1 when an
+ * `NX_BASE`, and `NX_HEAD`. Exits with `nx affected`'s own code, or 1 when an
  * input is missing.
  */
 @Command({
