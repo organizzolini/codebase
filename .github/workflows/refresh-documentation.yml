@@ -17,11 +17,17 @@ jobs:
   refresh-documentation:
     name: 🧑‍🏫 Refresh Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
     env:
-      OPENWIKI_PROVIDER: gemini
-      OPENWIKI_MODEL: gemini-3.6-flash
-      GEMINI_API_KEY: ${{ secrets.OPENWIKI_GEMINI_API_KEY }}
+      # A free OpenRouter model: the weekly update is small and may take as
+      # long as it needs. OpenRouter caps free models at 20 requests a minute
+      # and, until credits are bought, 50 a day, and a run that exceeds the
+      # daily cap fails without keeping its partial work.
+      OPENWIKI_PROVIDER: openrouter
+      OPENWIKI_MODEL_ID: nvidia/nemotron-3-super-120b-a12b:free
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
+      OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "5"
       OPENWIKI_TELEMETRY_DISABLED: "true"
 
     steps:
