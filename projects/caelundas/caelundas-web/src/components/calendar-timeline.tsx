@@ -109,7 +109,8 @@ const QUIET_LABELS = "[&_[data-slot=gantt-bar-label]]:hidden";
 
 // The column widths the clusters are sized by, handed to the Gantt rather
 // than left to its defaults, so the two always agree.
-const TIMELINE_METRICS = { unitWidths: TIMELINE_UNIT_WIDTHS };
+// The lanes are taller than the Gantt's own, to give the symbols room.
+const TIMELINE_METRICS = { laneHeight: 1.75, unitWidths: TIMELINE_UNIT_WIDTHS };
 
 // A phone gives the row names a narrow column and the time the rest.
 const COMPACT_TREE = { minWidth: 120, nameColumnWidth: 104, width: 168 };

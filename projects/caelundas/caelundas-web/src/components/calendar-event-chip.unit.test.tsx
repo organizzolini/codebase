@@ -91,7 +91,7 @@ describe(CalendarEventChip, () => {
     const { rerender } = render(<CalendarEventChip event={EVENT} />);
 
     expect(screen.getByTestId("calendar-event-symbols").className).toContain(
-      "text-[1.35em]",
+      "text-[1.7em]",
     );
 
     rerender(
@@ -101,7 +101,7 @@ describe(CalendarEventChip, () => {
     );
 
     expect(screen.getByTestId("calendar-event-symbols").className).toContain(
-      "text-[1.35em]",
+      "text-[1.7em]",
     );
 
     rerender(
