@@ -514,7 +514,7 @@ graph LR
 ![Client entry JavaScript Size](https://img.shields.io/badge/Client_entry_JavaScript_Size-194.71_kB_gzip-6b7280?style=flat-square)
 ![Client route JavaScript Size](https://img.shields.io/badge/Client_route_JavaScript_Size-43.45_kB_gzip-6b7280?style=flat-square)
 ![Client CSS Size](https://img.shields.io/badge/Client_CSS_Size-46.92_kB_gzip-6b7280?style=flat-square)
-![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-204.00_kB_gzip-6b7280?style=flat-square)
+![Server JavaScript Size](https://img.shields.io/badge/Server_JavaScript_Size-204.01_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
