@@ -107,6 +107,8 @@ const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
   "❄": "apoapsis-icon.svg",
   "➡": "east-elongation-icon.svg",
   "⬅": "west-elongation-icon.svg",
+  "🌐": "geocentric-eclipse-icon.svg",
+  "📍": "local-eclipse-icon.svg",
   "📏": "elongation-icon.svg",
   "🔥": "periapsis-icon.svg",
   // Seasons
@@ -122,11 +124,13 @@ const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
 
 /**
  * The symbols drawn as more than one icon: the moon at its farthest and its
- * nearest, which are the moon with the apsis beside it.
+ * nearest, which are the moon with the apsis beside it, and the dragon of an
+ * eclipse, which is the lunar nodes, its head and its tail.
  */
 const FILES_BY_COMPOSITE_SYMBOL: Readonly<Record<string, readonly string[]>> = {
   "🌚": ["moon-icon.svg", "apoapsis-icon.svg"],
   "🌝": ["moon-icon.svg", "periapsis-icon.svg"],
+  "🐉": ["north-node-icon.svg", "south-node-icon.svg"],
 };
 
 /**

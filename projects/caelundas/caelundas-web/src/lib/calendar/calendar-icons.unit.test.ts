@@ -40,11 +40,7 @@ describe(toGlyphParts, () => {
   });
 
   it("leaves what has no icon as it is written", () => {
-    expect(files("🌐 ☀️🐉▶️")).toStrictEqual([
-      '"🌐 "',
-      "sun-icon.svg",
-      '"🐉▶️"',
-    ]);
+    expect(files("▶️ ◀️")).toStrictEqual(['"▶️ ◀️"']);
   });
 
   it("reads an arrow as forming or dissolving only at the start", () => {
@@ -200,5 +196,24 @@ describe(toGlyphParts, () => {
   it("still draws the morning and evening star beside a planet", () => {
     expect(files("♀️🌄↥")).toContain("morning-star-icon.svg");
     expect(files("♀️🌇↧")).toContain("evening-star-icon.svg");
+  });
+
+  it("draws an eclipse's frame, its body and the dragon of the lunar nodes", () => {
+    expect(files("🌐 ☀️🐉▶️")).toStrictEqual([
+      "geocentric-eclipse-icon.svg",
+      '" "',
+      "sun-icon.svg",
+      "north-node-icon.svg",
+      "south-node-icon.svg",
+      '"▶️"',
+    ]);
+    expect(files("📍 🌙🐉◀️")).toStrictEqual([
+      "local-eclipse-icon.svg",
+      '" "',
+      "moon-icon.svg",
+      "north-node-icon.svg",
+      "south-node-icon.svg",
+      '"◀️"',
+    ]);
   });
 });
