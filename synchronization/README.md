@@ -81,7 +81,7 @@ target, on `opened`/`reopened`, and nothing else names it.
 | `project-ports`              | Each `*-api` and `*-web` name           | The port in `vite.config.mts` or `.env.default`, and the lines about it in the domain folder          |
 | `pull-request-labels`        | `configuration/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
 | `pull-request-template`      | `.github/PULL_REQUEST_TEMPLATE.md`      | The template embedded in the PR skill files                                                           |
-| `skill-exclusions`           | `skills-lock.json`                      | The installed-skill exclusion lists in five ignore files                                              |
+| `skill-exclusions`           | `skills-lock.json`                      | Installed skills and their vendored files, in six tool files                                          |
 | `vscode-extensions`          | `.vscode/extensions.json`               | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
 | `vscode-settings`            | `.vscode/settings.json`                 | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
 
