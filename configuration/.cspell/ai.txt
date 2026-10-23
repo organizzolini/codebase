@@ -14,7 +14,6 @@ lcel
 metasearch
 milvus
 multimodality
-nemotron
 nomic
 ollama
 opencode
@@ -27,6 +26,7 @@ searx
 searxng
 Serp
 Tavily
+thinkingmachines
 trafilatura
 vectorstore
 vectorstores
