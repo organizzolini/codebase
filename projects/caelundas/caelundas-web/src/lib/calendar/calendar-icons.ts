@@ -105,6 +105,8 @@ const FILE_BY_SYMBOL: Readonly<Record<string, string>> = {
   "↪": "prograde-icon.svg",
   "⛰": "ingress-peak-icon.svg",
   "❄": "apoapsis-icon.svg",
+  "➡": "east-elongation-icon.svg",
+  "⬅": "west-elongation-icon.svg",
   "📏": "elongation-icon.svg",
   "🔥": "periapsis-icon.svg",
   // Seasons
@@ -172,7 +174,8 @@ const KEYCAP = "\u20E3";
 
 /**
  * The icons of the arrows that open an aspect's name: forming and
- * dissolving. Elsewhere the same arrows mean east and west, which have none.
+ * dissolving. Elsewhere the same arrows mean east and west, which draw the
+ * elongation's own.
  */
 const FILE_BY_LEADING_SYMBOL: Readonly<Record<string, string>> = {
   "➡": "waxing-icon.png",

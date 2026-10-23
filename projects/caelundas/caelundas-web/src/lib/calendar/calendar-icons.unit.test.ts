@@ -52,7 +52,12 @@ describe(toGlyphParts, () => {
     expect(files("☿📏➡️")).toStrictEqual([
       "mercury-icon.svg",
       "elongation-icon.svg",
-      '"➡️"',
+      "east-elongation-icon.svg",
+    ]);
+    expect(files("☿⬅️📏")).toStrictEqual([
+      "mercury-icon.svg",
+      "west-elongation-icon.svg",
+      "elongation-icon.svg",
     ]);
   });
 
