@@ -17,6 +17,8 @@ const DEFAULT_MACHINE_ID_FILES = "/var/lib/dbus/machine-id /etc/machine-id";
  */
 export const environmentSchema = z.object({
   ARGUMENTS: z.string().optional(),
+  /** The file GitHub Actions reads step outputs from. */
+  GITHUB_OUTPUT: z.string().optional(),
   INCLUDE_SPELLING: z.string().optional(),
   INCLUDE_TEMPLATES: z.string().optional(),
   /**

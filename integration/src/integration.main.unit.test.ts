@@ -57,6 +57,10 @@ vi.mock("./modules/keep-task-database/keep-task-database.module", () => ({
   KeepTaskDatabaseModule: function KeepTaskDatabaseModule() {},
 }));
 
+vi.mock("./modules/upgrade-dependencies/upgrade-dependencies.module", () => ({
+  UpgradeDependenciesModule: function UpgradeDependenciesModule() {},
+}));
+
 describe("main bootstrap", () => {
   const originalExitCode = process.exitCode;
 

@@ -37,6 +37,9 @@
         "run-affected": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts run-affected"
         },
+        "upgrade-dependencies": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts upgrade-dependencies"
+        },
         "verify-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts verify-task-database"
         }

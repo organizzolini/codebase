@@ -8,6 +8,7 @@ import { environmentSchema } from "./integration.constants";
 import { AdoptTaskDatabaseModule } from "./modules/adopt-task-database/adopt-task-database.module";
 import { KeepTaskDatabaseModule } from "./modules/keep-task-database/keep-task-database.module";
 import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
+import { UpgradeDependenciesModule } from "./modules/upgrade-dependencies/upgrade-dependencies.module";
 import { VerifyTaskDatabaseModule } from "./modules/verify-task-database/verify-task-database.module";
 
 /**
@@ -26,6 +27,7 @@ import { VerifyTaskDatabaseModule } from "./modules/verify-task-database/verify-
     KeepTaskDatabaseModule,
     LoggerModule,
     RunAffectedModule,
+    UpgradeDependenciesModule,
     VerifyTaskDatabaseModule,
   ],
 })

@@ -21,6 +21,7 @@ const COMMAND_NAMES = [
   "adopt-task-database",
   "keep-task-database",
   "run-affected",
+  "upgrade-dependencies",
   "verify-task-database",
 ];
 
