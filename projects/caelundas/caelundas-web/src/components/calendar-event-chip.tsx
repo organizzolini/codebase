@@ -58,10 +58,16 @@ export function CalendarEventChip(
       data-testid="calendar-event-chip"
     >
       <CalendarEventTooltip event={event}>
-        {symbols === "glyphs" && glyphs !== name ? (
-          <EventGlyphs glyphs={glyphs} />
-        ) : (
+        {glyphs === name ? (
           glyphs
+        ) : (
+          // Symbols are drawn larger than the text of an event's name.
+          <span
+            className="text-[1.35em] leading-none"
+            data-testid="calendar-event-symbols"
+          >
+            {symbols === "glyphs" ? <EventGlyphs glyphs={glyphs} /> : glyphs}
+          </span>
         )}
       </CalendarEventTooltip>
       {spoken === undefined ? null : <span className="sr-only">{spoken}</span>}

@@ -86,4 +86,30 @@ describe(CalendarEventChip, () => {
     expect(container.querySelectorAll("[data-icon]")).toHaveLength(0);
     expect(screen.getByText("🎯 ♂ □ ♄")).toBeDefined();
   });
+
+  it("draws symbols larger than a name, in glyphs or emojis", () => {
+    const { rerender } = render(<CalendarEventChip event={EVENT} />);
+
+    expect(screen.getByTestId("calendar-event-symbols").className).toContain(
+      "text-[1.35em]",
+    );
+
+    rerender(
+      <CalendarSymbolsContext value="emojis">
+        <CalendarEventChip event={EVENT} />
+      </CalendarSymbolsContext>,
+    );
+
+    expect(screen.getByTestId("calendar-event-symbols").className).toContain(
+      "text-[1.35em]",
+    );
+
+    rerender(
+      <CalendarEventChip
+        event={{ ...EVENT, description: "", summary: "Mars Retrograde" }}
+      />,
+    );
+
+    expect(screen.queryByTestId("calendar-event-symbols")).toBeNull();
+  });
 });
