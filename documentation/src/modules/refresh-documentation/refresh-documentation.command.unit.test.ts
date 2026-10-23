@@ -10,6 +10,7 @@ import { RefreshDocumentationService } from "./refresh-documentation.service";
 describe(RefreshDocumentationCommand, () => {
   const refresh = vi.fn<() => boolean>();
   let command: RefreshDocumentationCommand;
+  let logger: LoggerService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -24,10 +25,12 @@ describe(RefreshDocumentationCommand, () => {
     }).compile();
 
     command = await module.resolve(RefreshDocumentationCommand);
+    logger = await module.resolve(LoggerService);
   });
 
   afterEach(() => {
     process.exitCode = undefined;
+    vi.clearAllMocks();
   });
 
   it("is defined", () => {
@@ -61,6 +64,7 @@ describe(RefreshDocumentationCommand, () => {
     await command.run();
 
     expect(process.exitCode).toBeUndefined();
+    expect(logger.error).not.toHaveBeenCalled();
   });
 
   it("fails the process when the refresh fails", async () => {
@@ -69,5 +73,8 @@ describe(RefreshDocumentationCommand, () => {
     await command.run();
 
     expect(process.exitCode).toBe(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      "❌ Failed refreshing the documentation with OpenWiki",
+    );
   });
 });

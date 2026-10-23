@@ -3,8 +3,6 @@ import { rmSync } from "node:fs";
 
 import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from "@codebase/observability";
-
 import {
   OPENWIKI_ARGUMENTS,
   OPENWIKI_EXECUTABLE,
@@ -21,9 +19,7 @@ import {
 export class RefreshDocumentationService {
   // 🏗 Dependency Injection
 
-  constructor(private readonly logger: LoggerService) {
-    this.logger.setContext(RefreshDocumentationService.name);
-  }
+  constructor() {}
 
   // 🔐 Private Fields
 
@@ -40,19 +36,12 @@ export class RefreshDocumentationService {
    * @returns Whether OpenWiki started and exited with status zero.
    */
   public refresh(): boolean {
-    this.logger.log("🧑‍🏫 Refreshing the OpenWiki documentation");
-
     const completion = spawnSync(OPENWIKI_EXECUTABLE, [...OPENWIKI_ARGUMENTS], {
       cwd: process.cwd(),
       stdio: "inherit",
     });
     rmSync(OPENWIKI_LEFTOVER_FILE, { force: true });
 
-    if (completion.error !== undefined || completion.status !== 0) {
-      this.logger.error("❌ Failed refreshing the documentation with OpenWiki");
-      return false;
-    }
-
-    return true;
+    return completion.error === undefined && completion.status === 0;
   }
 }

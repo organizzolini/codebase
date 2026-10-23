@@ -1,11 +1,8 @@
 import { spawnSync } from "node:child_process";
 import { rmSync } from "node:fs";
 
-import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-
-import { LoggerService } from "@codebase/observability";
 
 import { RefreshDocumentationService } from "./refresh-documentation.service";
 
@@ -37,10 +34,7 @@ describe(RefreshDocumentationService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [
-        RefreshDocumentationService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
+      providers: [RefreshDocumentationService],
     }).compile();
 
     service = await module.resolve(RefreshDocumentationService);

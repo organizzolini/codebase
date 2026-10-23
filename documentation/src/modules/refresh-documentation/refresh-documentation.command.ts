@@ -40,7 +40,10 @@ export class RefreshDocumentationCommand extends CommandRunner {
     // Nothing here is asynchronous; `CommandRunner.run` is.
     await Promise.resolve();
 
+    this.logger.log("🧑‍🏫 Refreshing the OpenWiki documentation");
+
     if (!this.refreshDocumentationService.refresh()) {
+      this.logger.error("❌ Failed refreshing the documentation with OpenWiki");
       process.exitCode = 1;
     }
   }
