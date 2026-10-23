@@ -16,6 +16,7 @@ nx run installation:start:setup                  # Everything this project does,
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 nx run installation:start:local-services         # Start a Docker daemon where this machine can run one, then the local Postgres container
 nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
+nx run installation:start:tools -- gitleaks trivy postgres-client   # Just these, on Linux (the setup-codebase action runs it too)
 ```
 
 ## What belongs here, and what deliberately does not
@@ -33,6 +34,9 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `dependencies`        | `modules/dependencies`                    |
 | `local-services`      | `modules/local-services`                  |
 | `update-reui-skill`   | `modules/update-reui-skill`               |
+| `tools`               | `modules/tools`                           |
+
+`tools` installs only the tools it is named, on Linux: `gitleaks`, `trivy`, and `postgres-client` (PostgreSQL 18's `pg_dump` and `pg_restore`). They are the installs `software` makes, so a laptop, a devcontainer, and a CI runner run one version of each; the `setup-codebase` composite action runs it after `pnpm install` with the tools its inputs ask for. It differs from `software` in two ways: a tool that cannot be installed fails the run instead of warning, since it was asked for by name, and the apt steps go through `sudo` when this is not root, as on a runner. It puts `~/.local/bin` first on `PATH`, and in `GITHUB_PATH` when that is set. See [ADR 0030](../documentation/adr/0030-install-tools-from-the-installation-project.md).
 
 From inside Nx (`nx run installation:start:*`), `dependencies` skips `nx reset`, which would delete the workspace data of the Nx process running it; `installation.sh` runs the command with plain `node`, so the reset happens there.
 

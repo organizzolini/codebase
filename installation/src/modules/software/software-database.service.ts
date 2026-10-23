@@ -44,6 +44,42 @@ export class SoftwareDatabaseService {
 
   // 🔏 Private Methods
 
+  /**
+   * Adds the PostgreSQL apt source and its signing key. Both are made in a
+   * scratch location first and installed from there, because `/etc` is root's.
+   */
+  private addAptRepository(codename: string): void {
+    const scratch = path.join(os.tmpdir(), "postgresql-apt");
+    const key = `${scratch}.asc`;
+    const keyring = `${scratch}.gpg`;
+    const source = `${scratch}.list`;
+
+    fs.writeFileSync(
+      source,
+      `deb ${PGDG_REPOSITORY_URL} ${codename}-pgdg main\n`,
+    );
+    this.processRunner.runOrThrow("curl", ["-fsSL", "-o", key, PGDG_KEY_URL]);
+    this.processRunner.runOrThrow("gpg", [
+      "--batch",
+      "--yes",
+      "--dearmor",
+      "-o",
+      keyring,
+      key,
+    ]);
+    this.asRoot("install", ["-m", "644", source, PGDG_APT_SOURCE_FILE]);
+    this.asRoot("install", ["-m", "644", keyring, PGDG_KEY_FILE]);
+  }
+
+  /** Runs a command as root: directly when this process is root, else through `sudo`. */
+  private asRoot(command: string, args: string[]): void {
+    if (this.isRoot()) {
+      this.processRunner.runOrThrow(command, args);
+    } else {
+      this.processRunner.runOrThrow("sudo", [command, ...args]);
+    }
+  }
+
   /** Whether `pg_dump` exists and is PostgreSQL 18. */
   private hasPostgres18(): boolean {
     return (
@@ -69,8 +105,8 @@ export class SoftwareDatabaseService {
     }
 
     if (
-      process.getuid?.() !== 0 ||
-      this.processRunner.locate("apt-get") === undefined
+      this.processRunner.locate("apt-get") === undefined ||
+      (!this.isRoot() && this.processRunner.locate("sudo") === undefined)
     ) {
       throw new Error(
         "apt-get is not usable here; install postgresql-client-18 by hand",
@@ -80,7 +116,7 @@ export class SoftwareDatabaseService {
     this.installPostgresWithApt();
   }
 
-  /** Installs the PostgreSQL 18 client from the PostgreSQL apt repository, as root. */
+  /** Installs PostgreSQL 18 from the PostgreSQL apt repository, as root or through `sudo`. */
   private installPostgresWithApt(): void {
     const codename = /^VERSION_CODENAME=(\S+)$/mu.exec(
       fs.readFileSync("/etc/os-release", "utf8"),
@@ -90,32 +126,23 @@ export class SoftwareDatabaseService {
       throw new Error("/etc/os-release does not name a VERSION_CODENAME");
     }
 
-    const key = path.join(os.tmpdir(), "postgresql-key.asc");
+    this.addAptRepository(codename);
+    this.asRoot("apt-get", ["update", "-qq"]);
+    this.asRoot("apt-get", ["install", "-y", "-qq", POSTGRES_APT_PACKAGE]);
+    this.linkPostgresTools();
+  }
 
-    fs.writeFileSync(
-      PGDG_APT_SOURCE_FILE,
-      `deb ${PGDG_REPOSITORY_URL} ${codename}-pgdg main\n`,
-    );
-    this.processRunner.runOrThrow("curl", ["-fsSL", "-o", key, PGDG_KEY_URL]);
-    this.processRunner.runOrThrow("gpg", [
-      "--batch",
-      "--yes",
-      "--dearmor",
-      "-o",
-      PGDG_KEY_FILE,
-      key,
-    ]);
-    this.processRunner.runOrThrow("apt-get", ["update", "-qq"]);
-    this.processRunner.runOrThrow("apt-get", [
-      "install",
-      "-y",
-      "-qq",
-      POSTGRES_APT_PACKAGE,
-    ]);
+  /** Whether this process is root, which needs no `sudo`. */
+  private isRoot(): boolean {
+    return process.getuid?.() === 0;
+  }
 
-    // A PostgreSQL server of another version on this machine steers the
-    // `pg_dump` wrapper in /usr/bin to its own version, so 18's are linked
-    // ahead of it.
+  /**
+   * Links 18's tools into `~/.local/bin`. A PostgreSQL server of another
+   * version on this machine steers the `pg_dump` wrapper in /usr/bin to its
+   * own version, so 18's are linked ahead of it.
+   */
+  private linkPostgresTools(): void {
     const binaryDirectory = path.join(os.homedir(), ".local", "bin");
 
     this.processRunner.runOrThrow("mkdir", ["-p", binaryDirectory]);

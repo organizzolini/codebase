@@ -21,7 +21,7 @@ import { SoftwareService } from "./software.service";
 /** Provides the command that installs the developer tools after Node. */
 @Module({
   controllers: [],
-  exports: [SoftwareCommand, SoftwareService],
+  exports: [SoftwareCommand, SoftwareDatabaseService, SoftwareService],
   imports: [
     LoggerModule,
     ProcessRunnerModule,

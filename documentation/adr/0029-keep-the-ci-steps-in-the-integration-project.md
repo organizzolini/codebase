@@ -1,5 +1,7 @@
 # 0029: Keep the CI Steps in the Integration Project
 
+Superseded in part by [ADR 0030](0030-install-tools-from-the-installation-project.md), which moves the tool installs into `installation`.
+
 Supersedes in part [ADR 0028](0028-run-the-nx-ci-steps-after-the-install-as-commands.md): where the Nx steps live and how `setup-codebase` runs them. Its decision that they run after `pnpm install`, and its measurement, stand.
 
 ## Context

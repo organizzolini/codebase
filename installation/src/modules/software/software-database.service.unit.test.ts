@@ -48,6 +48,9 @@ vi.mock("node:fs", async (importOriginal) => {
 });
 
 const BINARY_DIRECTORY = path.join(os.homedir(), ".local", "bin");
+const APT_SCRATCH = path.join(os.tmpdir(), "postgresql-apt");
+const APT_SOURCE_SCRATCH = `${APT_SCRATCH}.list`;
+const APT_KEYRING_SCRATCH = `${APT_SCRATCH}.gpg`;
 
 /** Builds the service over a fake machine, and returns it with the command lines it ran. */
 async function build(machine: FakeMachine = {}): Promise<{
@@ -145,16 +148,45 @@ describe(SoftwareDatabaseService, () => {
 
       installer.installPostgres();
 
-      expect(files.written.get("/etc/apt/sources.list.d/pgdg.list")).toBe(
+      expect(files.written.get(APT_SOURCE_SCRATCH)).toBe(
         "deb http://apt.postgresql.org/pub/repos/apt noble-pgdg main\n",
       );
+      expect(commands).toContain(
+        `install -m 644 ${APT_SOURCE_SCRATCH} /etc/apt/sources.list.d/pgdg.list`,
+      );
+      expect(commands).toContain(
+        `install -m 644 ${APT_KEYRING_SCRATCH} /etc/apt/trusted.gpg.d/postgresql.gpg`,
+      );
       expect(commands).toContain("apt-get install -y -qq postgresql-client-18");
+      expect(commands.some((line) => line.startsWith("sudo "))).toBe(false);
       expect(commands).toContain(`mkdir -p ${BINARY_DIRECTORY}`);
       expect(commands).toContain(
         `ln -sf /usr/lib/postgresql/18/bin/pg_dump ${BINARY_DIRECTORY}/pg_dump`,
       );
       expect(commands).toContain(
         `ln -sf /usr/lib/postgresql/18/bin/pg_restore ${BINARY_DIRECTORY}/pg_restore`,
+      );
+    });
+
+    it("goes through sudo for the root steps when it is not root", async () => {
+      vi.spyOn(process, "getuid").mockReturnValue(1000);
+
+      const { commands, service: installer } = await build({
+        installed: ["apt-get", "sudo"],
+        platform: "linux",
+      });
+
+      installer.installPostgres();
+
+      expect(commands).toContain(
+        `sudo install -m 644 ${APT_SOURCE_SCRATCH} /etc/apt/sources.list.d/pgdg.list`,
+      );
+      expect(commands).toContain("sudo apt-get update -qq");
+      expect(commands).toContain(
+        "sudo apt-get install -y -qq postgresql-client-18",
+      );
+      expect(commands).toContain(
+        `ln -sf /usr/lib/postgresql/18/bin/pg_dump ${BINARY_DIRECTORY}/pg_dump`,
       );
     });
 
@@ -171,7 +203,7 @@ describe(SoftwareDatabaseService, () => {
       }).toThrow("VERSION_CODENAME");
     });
 
-    it("fails when it is not root", async () => {
+    it("fails when it is not root and has no sudo", async () => {
       vi.spyOn(process, "getuid").mockReturnValue(1000);
 
       const { service: installer } = await build({
