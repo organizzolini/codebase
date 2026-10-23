@@ -264,7 +264,7 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
  * What a tag root means, for the list of attributes: its own description, or
  * a plain one from its name for a root added to the data.
  */
-function describeRoot(facet: EventFacet): string {
+export function describeRoot(facet: EventFacet): string {
   return (
     TAG_ROOT_DESCRIPTIONS[facet.name] ??
     `The ${facet.name.toLowerCase()} of the event`

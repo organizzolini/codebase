@@ -54,6 +54,22 @@ export const DERIVED_GROUP_LABELS: Readonly<Record<DerivedGroupId, string>> = {
 };
 
 /**
+ * What each derived field groups by, as the field picker describes it.
+ */
+export const DERIVED_GROUP_DESCRIPTIONS: Readonly<
+  Record<DerivedGroupId, string>
+> = {
+  day: "The day an event starts on",
+  duration: "How long an event lasts, from an instant to months",
+  hour: "The hour of the day an event starts in",
+  month: "The month an event starts in",
+  quarter: "The quarter of the year an event starts in",
+  week: "The week, Sunday to Saturday, an event starts in",
+  weekday: "The day of the week an event starts on",
+  year: "The year an event starts in",
+};
+
+/**
  * The local day an event starts on, `YYYY-MM-DD`, which every time-based
  * group key is cut from.
  */

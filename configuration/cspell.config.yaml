@@ -266,9 +266,10 @@ patterns:
   # External identifiers that embed a banned abbreviation and cannot be renamed: the
   # `mdast-util-*` packages, Zod's `RefinementCtx` type, pytest's `tmp_path` fixture,
   # Python's `secrets.token_hex()`, the `git config --bool` flag, and the Universal
-  # Dependencies `NUM` part-of-speech tag.
+  # Dependencies `NUM` part-of-speech tag, and ReUI's `CascaderNav` component with
+  # the `cascader-nav` file it lives in.
   - name: external-identifier
-    pattern: /\bmdast-util-[\w-]+|\bRefinementCtx\b|\btmp_path\b|\btoken_hex\b|--bool\b|(?<=")NUM(?=")/g
+    pattern: /\bmdast-util-[\w-]+|\bRefinementCtx\b|\btmp_path\b|\btoken_hex\b|--bool\b|(?<=")NUM(?=")|\bCascaderNav\b|\bcascader-nav\b/g
   # HTML element names quoted as a React type argument (`ComponentProps<"nav">`,
   # `ComponentPropsWithoutRef<"img">`). The tag names come from HTML, so `nav` is the
   # element rather than an abbreviation anyone here chose.

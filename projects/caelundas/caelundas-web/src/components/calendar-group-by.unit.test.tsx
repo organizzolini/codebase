@@ -66,11 +66,8 @@ describe(CalendarGroupBy, () => {
         onGroupingChange={onGroupingChange}
       />,
     );
-    fireEvent.click(screen.getByRole("combobox", { name: "Group 2 by" }));
-
-    const year = await screen.findByRole("option", { name: "Year" });
-
-    fireEvent.keyDown(year, { key: "Enter" });
+    fireEvent.click(screen.getByRole("button", { name: "Group 2 by" }));
+    fireEvent.click(await screen.findByRole("option", { name: /^Year/u }));
 
     expect(onGroupingChange).toHaveBeenCalledWith([
       { field: "tag:type" },

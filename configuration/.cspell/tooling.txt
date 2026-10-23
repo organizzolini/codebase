@@ -18,6 +18,7 @@ callsites
 callidescopeignore
 capitalisation
 capitalised
+cascader
 categorise
 checkpointing
 cipe

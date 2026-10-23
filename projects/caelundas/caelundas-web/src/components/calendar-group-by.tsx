@@ -1,17 +1,11 @@
 import { useMemo, useState } from "react";
 
-import {
-  Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
 import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
 import { MAXIMUM_GROUP_LEVELS } from "../lib/event-groups/event-groups.constants";
 
+import { GroupFieldPicker } from "./group-field-picker";
 import { GroupTagPicker } from "./group-tag-picker";
 
 import type {
@@ -171,44 +165,19 @@ function GroupLevelRow(
     properties;
   const field = fields.find((candidate) => candidate.id === level.field);
   const name = `Group ${String(position)}`;
-  const items = fields.map((option) => ({
-    label: option.label,
-    value: option.id,
-  }));
 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1">
-        <Select
-          items={items}
-          onValueChange={(picked) => {
-            const next = fields.find((candidate) => candidate.id === picked);
-
-            if (next !== undefined) {
-              onOpenChange(false);
-              onChange(toLevel(next));
-            }
+        <GroupFieldPicker
+          fields={fields}
+          label={`${name} by`}
+          onSelect={(next) => {
+            onOpenChange(false);
+            onChange(toLevel(next));
           }}
           value={level.field}
-        >
-          <SelectTrigger
-            aria-label={`${name} by`}
-            className="w-32 shrink-0"
-            size="sm"
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent align="start">
-            {items.map((item) => (
-              <SelectItem
-                key={item.value}
-                value={item.value}
-              >
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        />
         {field === undefined || field.options.length === 0 ? (
           <span className="grow" />
         ) : (

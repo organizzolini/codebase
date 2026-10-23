@@ -1,7 +1,11 @@
-import { createTagOptions } from "../event-filters/event-filter-fields";
+import {
+  createTagOptions,
+  describeRoot,
+} from "../event-filters/event-filter-fields";
 import { TAG_FIELD_PREFIX } from "../event-filters/event-filters.constants";
 
 import {
+  DERIVED_GROUP_DESCRIPTIONS,
   DERIVED_GROUP_LABELS,
   DERIVED_GROUP_ORDER,
   MAXIMUM_GROUP_LEVELS,
@@ -45,6 +49,7 @@ export function createEventGroupFields(
     }
 
     tagFields.push({
+      description: describeRoot(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       levels: levels.map((names) => [...new Set(names)]),
@@ -53,6 +58,7 @@ export function createEventGroupFields(
   }
 
   const derivedFields = DERIVED_GROUP_ORDER.map((id) => ({
+    description: DERIVED_GROUP_DESCRIPTIONS[id],
     id,
     label: DERIVED_GROUP_LABELS[id],
     levels: [],

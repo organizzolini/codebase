@@ -147,7 +147,7 @@ describe("event grouping", () => {
     const popover = await openGroupBy();
 
     expect(
-      within(popover).getByRole("combobox", { name: "Group 1 by" }).textContent,
+      within(popover).getByRole("button", { name: "Group 1 by" }).textContent,
     ).toContain("Planet");
     expect(
       within(popover).getByRole("button", { name: "Group 2 tags" }).textContent,
@@ -161,13 +161,11 @@ describe("event grouping", () => {
     await renderRoute("/?view=agenda&date=2026-03-04");
 
     fireEvent.click(
-      within(await openGroupBy()).getByRole("combobox", {
+      within(await openGroupBy()).getByRole("button", {
         name: "Group 1 by",
       }),
     );
-    fireEvent.keyDown(await screen.findByRole("option", { name: "Month" }), {
-      key: "Enter",
-    });
+    fireEvent.click(await screen.findByRole("option", { name: /^Month/u }));
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
       "February 2026 1 event",

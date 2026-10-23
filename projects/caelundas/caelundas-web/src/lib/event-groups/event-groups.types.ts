@@ -20,6 +20,11 @@ export type DerivedGroupId =
  */
 export interface EventGroupField {
   /**
+   * What the field groups by, in a sentence the field picker shows beneath
+   * its name.
+   */
+  description: string;
+  /**
    * `tag:` and the root's id for a tag root, or a derived field's id.
    */
   id: string;
