@@ -19,6 +19,6 @@ Supersedes in part [ADR 0029](0029-keep-the-ci-steps-in-the-integration-project.
 ## Consequences
 
 - A runner, a devcontainer, and a laptop install one version of gitleaks, Trivy, and the PostgreSQL client. Bumping one is a change to the release archive constants.
-- The jobs that ask for this software download it on every run: gitleaks and Trivy are archives of a few megabytes to about fifty, with no cache. The Homebrew prefix cache is gone.
+- The Homebrew prefix cache is gone. gitleaks and Trivy are cached as the two binaries in `~/.local/bin`, keyed on the file that pins their versions, so a version bump is the only miss. A hit downloads nothing and takes the release hosts out of the job. The PostgreSQL client is installed from apt on every run, which is the longest of the installs and the one not cached.
 - The software is installed after the dependencies, not before, so a job that skips the install gets none of it.
 - Naming a release archive tool on a Mac is an error that points to running `software` with no names, which installs it through Homebrew.
