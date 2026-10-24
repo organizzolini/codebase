@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.1](https://github.com/organizzolini/codebase/compare/v3.26.0...v3.26.1) (2026-10-24)
+
+### ♻️ Code Refactoring
+
+* **installation,integration:** ♻️ let the software command install named tools ([#1809](https://github.com/organizzolini/codebase/issues/1809)) ([bc43c4c](https://github.com/organizzolini/codebase/commit/bc43c4c40e61d8a81036e4d233031173d41ff9b1))
+
 ## [3.26.0](https://github.com/organizzolini/codebase/compare/v3.25.2...v3.26.0) (2026-10-23)
 
 ### ✨ Features

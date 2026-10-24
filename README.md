@@ -3848,6 +3848,8 @@ graph LR
   file_installation_src_modules_software_software_infra_service_unit_test_ts["installation/src/modules/software/software-infra.service.unit.test.ts"]
   file_installation_src_modules_software_software_linux_service_ts["installation/src/modules/software/software-linux.service.ts"]
   file_installation_src_modules_software_software_linux_service_unit_test_ts["installation/src/modules/software/software-linux.service.unit.test.ts"]
+  file_installation_src_modules_software_software_named_service_ts["installation/src/modules/software/software-named.service.ts"]
+  file_installation_src_modules_software_software_named_service_unit_test_ts["installation/src/modules/software/software-named.service.unit.test.ts"]
   file_installation_src_modules_software_software_ollama_service_ts["installation/src/modules/software/software-ollama.service.ts"]
   file_installation_src_modules_software_software_ollama_service_unit_test_ts["installation/src/modules/software/software-ollama.service.unit.test.ts"]
   file_installation_src_modules_software_software_python_service_ts["installation/src/modules/software/software-python.service.ts"]
@@ -9103,6 +9105,18 @@ graph LR
   file_installation_src_modules_software_software_linux_service_unit_test_ts --> file_installation_src_modules_software_software_linux_service_ts
   file_installation_src_modules_software_software_linux_service_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
   file_installation_src_modules_software_software_linux_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_software_software_named_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_named_service_ts --> file_installation_src_modules_release_archives_release_archives_constants_ts
+  file_installation_src_modules_software_software_named_service_ts --> file_installation_src_modules_release_archives_release_archives_service_ts
+  file_installation_src_modules_software_software_named_service_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_named_service_ts --> file_installation_src_modules_software_software_constants_ts
+  file_installation_src_modules_software_software_named_service_ts --> file_installation_src_modules_software_software_types_ts
+  file_installation_src_modules_software_software_named_service_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
+  file_installation_src_modules_software_software_named_service_unit_test_ts --> file_installation_src_modules_release_archives_release_archives_service_ts
+  file_installation_src_modules_software_software_named_service_unit_test_ts --> file_installation_src_modules_release_archives_release_archives_types_ts
+  file_installation_src_modules_software_software_named_service_unit_test_ts --> file_installation_src_modules_software_software_database_service_ts
+  file_installation_src_modules_software_software_named_service_unit_test_ts --> file_installation_src_modules_software_software_named_service_ts
+  file_installation_src_modules_software_software_named_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
   file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_reporter_reporter_service_ts
   file_installation_src_modules_software_software_ollama_service_ts --> file_installation_src_modules_software_software_brew_service_ts
@@ -9119,6 +9133,7 @@ graph LR
   file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_reporter_reporter_service_ts
   file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_software_software_brew_service_ts
   file_installation_src_modules_software_software_python_service_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
+  file_installation_src_modules_software_software_command_ts --> file_installation_src_modules_software_software_named_service_ts
   file_installation_src_modules_software_software_command_ts --> file_installation_src_modules_software_software_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_process_runner_process_runner_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_release_archives_release_archives_service_ts
@@ -9129,6 +9144,7 @@ graph LR
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_gpg_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_infra_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_linux_service_ts
+  file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_named_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_ollama_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_python_service_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_src_modules_software_software_command_ts
@@ -9138,6 +9154,7 @@ graph LR
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_fake_process_runner_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_report_ts
   file_installation_src_modules_software_software_command_unit_test_ts --> file_installation_testing_temporary_workspace_ts
+  file_installation_src_modules_software_software_constants_ts --> file_installation_src_modules_release_archives_release_archives_constants_ts
   file_installation_src_modules_software_software_constants_ts --> file_installation_src_modules_software_software_types_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_release_archives_release_archives_module_ts
@@ -9148,6 +9165,7 @@ graph LR
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_gpg_service_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_infra_service_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_linux_service_ts
+  file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_named_service_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_ollama_service_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_python_service_ts
   file_installation_src_modules_software_software_module_ts --> file_installation_src_modules_software_software_command_ts
@@ -9173,6 +9191,7 @@ graph LR
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_software_software_service_ts
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
   file_installation_src_modules_software_software_service_unit_test_ts --> file_installation_testing_fake_process_runner_ts
+  file_installation_src_modules_software_software_types_ts --> file_installation_src_installation_constants_ts
   file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_process_runner_process_runner_module_ts
   file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_reporter_reporter_module_ts
   file_installation_src_modules_ssh_signing_ssh_signing_module_ts --> file_installation_src_modules_ssh_signing_ssh_signing_service_ts
@@ -13564,36 +13583,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-62077-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.66_MB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-62632-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.69_MB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-156-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-592-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-594-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-585-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-587-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-144-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-246-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1413-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-247-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1425-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-187-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-188-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-199-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2816-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-876-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2745-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-947-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-2979-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2772-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-789-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-2983-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5691-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-200-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2850-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-887-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2774-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-963-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3024-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2806-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-798-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-2999-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5733-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13629,15 +13648,15 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3195-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3132-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
-![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-437-7c3aed?style=flat-square)
+![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-430-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1518-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3058-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1492-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3008-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-585-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-576-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -13705,13 +13724,13 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Conventions
 
 ![Module Files](https://img.shields.io/badge/Module_Files-66-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-71-0284c7?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-72-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-51-16a34a?style=flat-square)
 ![Constants Files](https://img.shields.io/badge/Constants_Files-68-ea580c?style=flat-square)
 ![Types Files](https://img.shields.io/badge/Types_Files-62-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-177-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-178-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-4-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -13748,24 +13767,24 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Markdown
 
-![Markdown Files](https://img.shields.io/badge/Markdown_Files-142-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27643-1f6feb?style=flat-square)
-![H1](https://img.shields.io/badge/H1-137-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-835-8b5cf6?style=flat-square)
+![Markdown Files](https://img.shields.io/badge/Markdown_Files-143-083fa1?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27707-1f6feb?style=flat-square)
+![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
+![H2](https://img.shields.io/badge/H2-838-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-751-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6336-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-962-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4561-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6348-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-963-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4565-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2777-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-909-059669?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2784-0ea5e9?style=flat-square)
+![Links](https://img.shields.io/badge/Links-912-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-564-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15093-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15173-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13778,10 +13797,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6749 |
-| Files | 2029 |
-| Calls traced | 7478 |
-| Call stacks | 1850 |
+| Callables | 6764 |
+| Files | 2030 |
+| Calls traced | 7501 |
+| Call stacks | 1852 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
 | Unfollowable calls | 369 |
@@ -13816,13 +13835,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-output` | 11 | 14 | 3 | 7 |
 | `projects/lexico/lexico-entities` | 0 | 3 | 3 | 0 |
 | `documentation` | 2 | 6 | 4 | 1 |
+| `installation` | 13 | 17 | 4 | 8 |
 | `projects/common/interface` | 3 | 7 | 4 | 2 |
 | `projects/ic-suite/codependix/codependix-nx-projects` | 0 | 4 | 4 | 8 |
 | `projects/ic-suite/conformetry/conformetry-configuration` | 10 | 14 | 4 | 5 |
 | `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
 | `projects/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
 | `projects/lexico/lexico-web` | 4 | 9 | 5 | 8 |
-| `installation` | 11 | 17 | 6 | 8 |
 | `projects/caelundas/caelundas-web` | 0 | 6 | 6 | 0 |
 | `projects/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
 | `projects/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
