@@ -50,7 +50,6 @@ export class CalendarEventsService {
     coordinates: Coordinates,
   ): Omit<CalendarEvent, keyof UpdatableEntity> {
     return {
-      categories: event.categories,
       color: event.color ?? null,
       description: event.description,
       end: event.end,
@@ -59,6 +58,7 @@ export class CalendarEventsService {
       longitude: formatCoordinate(coordinates.longitude),
       start: event.start,
       summary: event.summary,
+      tags: event.tags,
     };
   }
 

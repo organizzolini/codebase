@@ -28,11 +28,11 @@ const input: Input = {
 
 function detectedEvent(summary: string, start: string): DetectedCalendarEvent {
   return {
-    categories: ["aspects"],
     description: summary,
     end: moment.utc(start),
     start: moment.utc(start),
     summary,
+    tags: ["aspects"],
   };
 }
 

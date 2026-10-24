@@ -46,7 +46,7 @@ describe(SpecialtyAspectsProgressiveService, () => {
       aspectCapitalized: string;
       body1Capitalized: string;
       body2Capitalized: string;
-      categories: string[];
+      tags: string[];
     }) => { aspect: string; body1: string; body2: string };
     getSpecialtyAspectProgressiveEvent: (
       beginning: DetectedCalendarEvent,
@@ -63,14 +63,14 @@ describe(SpecialtyAspectsProgressiveService, () => {
     expect(service).toBeDefined();
   });
 
-  it("returns an empty group key for incomplete categories", () => {
+  it("returns an empty group key for incomplete tags", () => {
     expect(
       specialtyAspectsProgressiveService.specialtyAspectGroupKey({
-        categories: ["Astronomy", "Astrology"],
-        description: "Incomplete categories",
+        description: "Incomplete tags",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "Incomplete categories",
+        summary: "Incomplete tags",
+        tags: ["Astronomy", "Astrology"],
       }),
     ).toBe("");
   });
@@ -81,25 +81,25 @@ describe(SpecialtyAspectsProgressiveService, () => {
     ).toStrictEqual([]);
   });
 
-  it("throws when categories do not include a complete specialty aspect", () => {
+  it("throws when tags do not include a complete specialty aspect", () => {
     expect(() =>
       specialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent(
         {
-          categories: ["Astronomy", "Astrology", "Specialty Aspect", "Sun"],
           description: "Invalid beginning",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary: "Invalid beginning",
+          tags: ["Astronomy", "Astrology", "Specialty Aspect", "Sun"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Specialty Aspect", "Sun"],
           description: "Invalid ending",
           end: moment.utc("2024-03-21T11:00:00.000Z"),
           start: moment.utc("2024-03-21T11:00:00.000Z"),
           summary: "Invalid ending",
+          tags: ["Astronomy", "Astrology", "Specialty Aspect", "Sun"],
         },
       ),
-    ).toThrow("Could not extract aspect info from categories");
+    ).toThrow("Could not extract aspect info from tags");
   });
 
   it("throws when extracted specialty values cannot be cast to typed values", () => {
@@ -108,9 +108,9 @@ describe(SpecialtyAspectsProgressiveService, () => {
         aspectCapitalized: "Not Specialty",
         body1Capitalized: "Sun",
         body2Capitalized: "Moon",
-        categories: ["Not Specialty", "Sun", "Moon"],
+        tags: ["Not Specialty", "Sun", "Moon"],
       }),
-    ).toThrow("Could not extract typed values from categories");
+    ).toThrow("Could not extract typed values from tags");
   });
 
   it("falls back to empty body strings when sorted bodies include undefined", () => {
@@ -121,7 +121,11 @@ describe(SpecialtyAspectsProgressiveService, () => {
     expect(() =>
       specialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent(
         {
-          categories: [
+          description: "invalid beginning",
+          end: moment.utc("2024-03-21T10:00:00.000Z"),
+          start: moment.utc("2024-03-21T10:00:00.000Z"),
+          summary: "invalid beginning",
+          tags: [
             "Astronomy",
             "Astrology",
             "Simple Aspect",
@@ -131,13 +135,13 @@ describe(SpecialtyAspectsProgressiveService, () => {
             "Quintile",
             "Forming",
           ],
-          description: "invalid beginning",
-          end: moment.utc("2024-03-21T10:00:00.000Z"),
-          start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "invalid beginning",
         },
         {
-          categories: [
+          description: "invalid ending",
+          end: moment.utc("2024-03-21T11:00:00.000Z"),
+          start: moment.utc("2024-03-21T11:00:00.000Z"),
+          summary: "invalid ending",
+          tags: [
             "Astronomy",
             "Astrology",
             "Simple Aspect",
@@ -147,13 +151,9 @@ describe(SpecialtyAspectsProgressiveService, () => {
             "Quintile",
             "Dissolving",
           ],
-          description: "invalid ending",
-          end: moment.utc("2024-03-21T11:00:00.000Z"),
-          start: moment.utc("2024-03-21T11:00:00.000Z"),
-          summary: "invalid ending",
         },
       ),
-    ).toThrow("Could not extract typed values from categories");
+    ).toThrow("Could not extract typed values from tags");
 
     sortBySpy.mockRestore();
   });
@@ -166,7 +166,11 @@ describe(SpecialtyAspectsProgressiveService, () => {
     expect(() =>
       specialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent(
         {
-          categories: [
+          description: "invalid beginning",
+          end: moment.utc("2024-03-21T10:00:00.000Z"),
+          start: moment.utc("2024-03-21T10:00:00.000Z"),
+          summary: "invalid beginning",
+          tags: [
             "Astronomy",
             "Astrology",
             "Simple Aspect",
@@ -176,13 +180,13 @@ describe(SpecialtyAspectsProgressiveService, () => {
             "Quintile",
             "Forming",
           ],
-          description: "invalid beginning",
-          end: moment.utc("2024-03-21T10:00:00.000Z"),
-          start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "invalid beginning",
         },
         {
-          categories: [
+          description: "invalid ending",
+          end: moment.utc("2024-03-21T11:00:00.000Z"),
+          start: moment.utc("2024-03-21T11:00:00.000Z"),
+          summary: "invalid ending",
+          tags: [
             "Astronomy",
             "Astrology",
             "Simple Aspect",
@@ -192,13 +196,9 @@ describe(SpecialtyAspectsProgressiveService, () => {
             "Quintile",
             "Dissolving",
           ],
-          description: "invalid ending",
-          end: moment.utc("2024-03-21T11:00:00.000Z"),
-          start: moment.utc("2024-03-21T11:00:00.000Z"),
-          summary: "invalid ending",
         },
       ),
-    ).toThrow("Could not extract typed values from categories");
+    ).toThrow("Could not extract typed values from tags");
 
     sortBySpy.mockRestore();
   });
@@ -207,7 +207,11 @@ describe(SpecialtyAspectsProgressiveService, () => {
     progressiveUtilitiesService.pairProgressiveEvents.mockReturnValueOnce([
       [
         {
-          categories: [
+          description: "Sun quintile Moon",
+          end: moment.utc("2024-03-21T10:00:00.000Z"),
+          start: moment.utc("2024-03-21T10:00:00.000Z"),
+          summary: "⬠ Sun quintile Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Simple Aspect",
@@ -217,13 +221,13 @@ describe(SpecialtyAspectsProgressiveService, () => {
             "Quintile",
             "Forming",
           ],
-          description: "Sun quintile Moon",
-          end: moment.utc("2024-03-21T10:00:00.000Z"),
-          start: moment.utc("2024-03-21T10:00:00.000Z"),
-          summary: "⬠ Sun quintile Moon",
         },
         {
-          categories: [
+          description: "Sun quintile Moon",
+          end: moment.utc("2024-03-21T11:00:00.000Z"),
+          start: moment.utc("2024-03-21T11:00:00.000Z"),
+          summary: "⬠ Sun quintile Moon",
+          tags: [
             "Astronomy",
             "Astrology",
             "Simple Aspect",
@@ -233,17 +237,17 @@ describe(SpecialtyAspectsProgressiveService, () => {
             "Quintile",
             "Dissolving",
           ],
-          description: "Sun quintile Moon",
-          end: moment.utc("2024-03-21T11:00:00.000Z"),
-          start: moment.utc("2024-03-21T11:00:00.000Z"),
-          summary: "⬠ Sun quintile Moon",
         },
       ],
     ]);
 
     const progressiveEvents = mockService.detectProgressive([
       {
-        categories: [
+        description: "Sun quintile Moon",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary: "⬠ Sun quintile Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -253,13 +257,13 @@ describe(SpecialtyAspectsProgressiveService, () => {
           "Quintile",
           "Forming",
         ],
-        description: "Sun quintile Moon",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "⬠ Sun quintile Moon",
       },
       {
-        categories: [
+        description: "Sun quintile Moon",
+        end: moment.utc("2024-03-21T11:00:00.000Z"),
+        start: moment.utc("2024-03-21T11:00:00.000Z"),
+        summary: "⬠ Sun quintile Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -269,10 +273,6 @@ describe(SpecialtyAspectsProgressiveService, () => {
           "Quintile",
           "Dissolving",
         ],
-        description: "Sun quintile Moon",
-        end: moment.utc("2024-03-21T11:00:00.000Z"),
-        start: moment.utc("2024-03-21T11:00:00.000Z"),
-        summary: "⬠ Sun quintile Moon",
       },
     ]);
 

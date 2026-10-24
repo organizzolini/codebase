@@ -76,7 +76,7 @@ export class QuadrupleAspectsService {
     const progressiveEvents: DetectedCalendarEvent[] = [];
 
     const quadrupleAspectEvents = events.filter((event) =>
-      event.categories.includes("Quadruple Aspect"),
+      event.tags.includes("Quadruple Aspect"),
     );
 
     const groupedEvents = _.groupBy(quadrupleAspectEvents, (event) =>

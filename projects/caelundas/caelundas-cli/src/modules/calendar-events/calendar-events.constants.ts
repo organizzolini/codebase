@@ -3,7 +3,11 @@
 /** The most bind parameters one Postgres statement accepts. */
 export const POSTGRES_MAXIMUM_PARAMETERS = 65_535;
 
-/** The database columns an upsert writes, each one bind parameter per row. */
+/**
+ * The database columns an upsert writes, each one bind parameter per row. The
+ * `tags` property persists to the `categories` column until the schema change
+ * replaces it.
+ */
 export const CALENDAR_EVENT_INSERT_COLUMNS = [
   "categories",
   "color",

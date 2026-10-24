@@ -301,30 +301,30 @@ describe(AnnualSolarCycleService, () => {
   describe("detectProgressive", () => {
     it("creates advancing progressive event from aphelion to perihelion", () => {
       const aphelionEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Aphelion",
+        end: moment.utc("2024-07-05T12:00:00.000Z"),
+        start: moment.utc("2024-07-05T12:00:00.000Z"),
+        summary: "☀️ ❄️ Solar Aphelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Aphelion",
         ],
-        description: "Solar Aphelion",
-        end: moment.utc("2024-07-05T12:00:00.000Z"),
-        start: moment.utc("2024-07-05T12:00:00.000Z"),
-        summary: "☀️ ❄️ Solar Aphelion",
       };
       const perihelionEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Perihelion",
+        end: moment.utc("2025-01-03T12:00:00.000Z"),
+        start: moment.utc("2025-01-03T12:00:00.000Z"),
+        summary: "☀️ 🔥 Solar Perihelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Perihelion",
         ],
-        description: "Solar Perihelion",
-        end: moment.utc("2025-01-03T12:00:00.000Z"),
-        start: moment.utc("2025-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
       };
 
       const progressiveEvents: DetectedCalendarEvent[] =
@@ -338,47 +338,47 @@ describe(AnnualSolarCycleService, () => {
 
       expect(advancingDuration).toStrictEqual(
         expect.objectContaining({
-          categories: [
+          description: "Solar Advancing (Aphelion to Perihelion)",
+          end: perihelionEvent.start,
+          start: aphelionEvent.start,
+          summary: "☀️ 🔥 Solar Advancing",
+          tags: [
             "Astronomy",
             "Astrology",
             "Annual Solar Cycle",
             "Solar",
             "Advancing",
           ],
-          description: "Solar Advancing (Aphelion to Perihelion)",
-          end: perihelionEvent.start,
-          start: aphelionEvent.start,
-          summary: "☀️ 🔥 Solar Advancing",
         }),
       );
     });
 
     it("creates retreating progressive event from perihelion to aphelion", () => {
       const perihelionEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Perihelion",
+        end: moment.utc("2024-01-03T12:00:00.000Z"),
+        start: moment.utc("2024-01-03T12:00:00.000Z"),
+        summary: "☀️ 🔥 Solar Perihelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Perihelion",
         ],
-        description: "Solar Perihelion",
-        end: moment.utc("2024-01-03T12:00:00.000Z"),
-        start: moment.utc("2024-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
       };
       const aphelionEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Aphelion",
+        end: moment.utc("2024-07-05T12:00:00.000Z"),
+        start: moment.utc("2024-07-05T12:00:00.000Z"),
+        summary: "☀️ ❄️ Solar Aphelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Aphelion",
         ],
-        description: "Solar Aphelion",
-        end: moment.utc("2024-07-05T12:00:00.000Z"),
-        start: moment.utc("2024-07-05T12:00:00.000Z"),
-        summary: "☀️ ❄️ Solar Aphelion",
       };
 
       const progressiveEvents: DetectedCalendarEvent[] =
@@ -392,17 +392,17 @@ describe(AnnualSolarCycleService, () => {
 
       expect(retreatingDuration).toStrictEqual(
         expect.objectContaining({
-          categories: [
+          description: "Solar Retreating (Perihelion to Aphelion)",
+          end: aphelionEvent.start,
+          start: perihelionEvent.start,
+          summary: "☀️ ❄️ Solar Retreating",
+          tags: [
             "Astronomy",
             "Astrology",
             "Annual Solar Cycle",
             "Solar",
             "Retreating",
           ],
-          description: "Solar Retreating (Perihelion to Aphelion)",
-          end: aphelionEvent.start,
-          start: perihelionEvent.start,
-          summary: "☀️ ❄️ Solar Retreating",
         }),
       );
     });
@@ -412,13 +412,6 @@ describe(AnnualSolarCycleService, () => {
         kind: "Aphelion" | "Perihelion",
         at: string,
       ): DetectedCalendarEvent => ({
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Annual Solar Cycle",
-          "Solar",
-          kind,
-        ],
         description: `Solar ${kind}`,
         end: moment.utc(at),
         start: moment.utc(at),
@@ -426,6 +419,7 @@ describe(AnnualSolarCycleService, () => {
           kind === "Perihelion"
             ? "☀️ 🔥 Solar Perihelion"
             : "☀️ ❄️ Solar Aphelion",
+        tags: ["Astronomy", "Astrology", "Annual Solar Cycle", "Solar", kind],
       });
       // The old duplicate-perihelion pattern, then a correct year.
       const events: DetectedCalendarEvent[] = [
@@ -453,43 +447,43 @@ describe(AnnualSolarCycleService, () => {
 
     it("handles full year cycle with both advancing and retreating", () => {
       const perihelion1: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Perihelion",
+        end: moment.utc("2024-01-03T12:00:00.000Z"),
+        start: moment.utc("2024-01-03T12:00:00.000Z"),
+        summary: "☀️ 🔥 Solar Perihelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Perihelion",
         ],
-        description: "Solar Perihelion",
-        end: moment.utc("2024-01-03T12:00:00.000Z"),
-        start: moment.utc("2024-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
       };
       const aphelion: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Aphelion",
+        end: moment.utc("2024-07-05T12:00:00.000Z"),
+        start: moment.utc("2024-07-05T12:00:00.000Z"),
+        summary: "☀️ ❄️ Solar Aphelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Aphelion",
         ],
-        description: "Solar Aphelion",
-        end: moment.utc("2024-07-05T12:00:00.000Z"),
-        start: moment.utc("2024-07-05T12:00:00.000Z"),
-        summary: "☀️ ❄️ Solar Aphelion",
       };
       const perihelion2: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Perihelion",
+        end: moment.utc("2025-01-03T12:00:00.000Z"),
+        start: moment.utc("2025-01-03T12:00:00.000Z"),
+        summary: "☀️ 🔥 Solar Perihelion",
+        tags: [
           "Astronomy",
           "Astrology",
           "Annual Solar Cycle",
           "Solar",
           "Perihelion",
         ],
-        description: "Solar Perihelion",
-        end: moment.utc("2025-01-03T12:00:00.000Z"),
-        start: moment.utc("2025-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -514,11 +508,11 @@ describe(AnnualSolarCycleService, () => {
 
     it("filters out non-annual solar cycle events", () => {
       const nonApsisEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Something Else"],
         description: "Not an apsis event",
         end: moment.utc("2024-01-03T12:00:00.000Z"),
         start: moment.utc("2024-01-03T12:00:00.000Z"),
         summary: "Some other event",
+        tags: ["Astronomy", "Something Else"],
       };
 
       const progressiveEvents = service.detectProgressive([nonApsisEvent]);

@@ -30,24 +30,22 @@ export class ProgressiveAspectService {
   /**
    * Create a stable group key from sorted body labels and aspect label.
    */
-  buildAspectGroupKeyFromCategories({
+  buildAspectGroupKeyFromTags({
     aspects,
     bodies,
-    categories,
+    tags,
   }: {
     aspects: readonly string[];
     bodies: readonly string[];
-    categories: string[];
+    tags: string[];
   }): string {
     const bodyLabels = new Set(bodies.map((body) => bodyDisplayName(body)));
     const aspectLabels = new Set(aspects.map((aspect) => _.startCase(aspect)));
 
     const bodiesCapitalized = _.sortBy(
-      categories.filter((category) => bodyLabels.has(category)),
+      tags.filter((tag) => bodyLabels.has(tag)),
     );
-    const aspectCapitalized = categories.find((category) =>
-      aspectLabels.has(category),
-    );
+    const aspectCapitalized = tags.find((tag) => aspectLabels.has(tag));
 
     if (bodiesCapitalized.length === 2 && aspectCapitalized !== undefined) {
       return `${bodiesCapitalized[0]}-${aspectCapitalized}-${bodiesCapitalized[1]}`;
@@ -57,18 +55,17 @@ export class ProgressiveAspectService {
   }
 
   /**
-   * Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
+   * Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
    */
   buildProgressiveAspectEvents({
-    aspectCategory,
-    categoryLabel,
+    aspectTag,
     events,
     getAspectGroupKey,
     getProgressiveEvent,
     pairProgressiveEvents,
+    tagLabel,
   }: {
-    aspectCategory: string;
-    categoryLabel: string;
+    aspectTag: string;
     events: DetectedCalendarEvent[];
     getAspectGroupKey: (event: DetectedCalendarEvent) => string;
     getProgressiveEvent: (
@@ -80,9 +77,10 @@ export class ProgressiveAspectService {
       endings: DetectedCalendarEvent[],
       label: string,
     ) => [DetectedCalendarEvent, DetectedCalendarEvent][];
+    tagLabel: string;
   }): DetectedCalendarEvent[] {
     const aspectEvents = events.filter((event) =>
-      event.categories.includes(aspectCategory),
+      event.tags.includes(aspectTag),
     );
 
     const groupedAspectEvents = _.groupBy(aspectEvents, (event) =>
@@ -98,25 +96,25 @@ export class ProgressiveAspectService {
           "📐 Skipping progressive aspect events with an empty group key",
           undefined,
           {
-            aspectCategory,
+            aspectTag,
             events: aspectGroupEvents.length,
-            sample: aspectGroupEvents[0]?.categories,
+            sample: aspectGroupEvents[0]?.tags,
           },
         );
         continue;
       }
 
       const formingEvents = aspectGroupEvents.filter((event) =>
-        event.categories.includes("Forming"),
+        event.tags.includes("Forming"),
       );
       const dissolvingEvents = aspectGroupEvents.filter((event) =>
-        event.categories.includes("Dissolving"),
+        event.tags.includes("Dissolving"),
       );
 
       const pairs = pairProgressiveEvents(
         formingEvents,
         dissolvingEvents,
-        `${categoryLabel} ${aspectGroupKey}`,
+        `${tagLabel} ${aspectGroupKey}`,
       );
 
       progressiveEvents.push(
@@ -133,16 +131,15 @@ export class ProgressiveAspectService {
    * Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
    */
   buildSimpleAspectFamilyProgressiveEvents({
-    aspectCategory,
-    categoryLabel,
+    aspectTag,
     events,
     fixedAspectGroupKey,
     getAspectGroupKey,
     getProgressiveEvent,
     pairProgressiveEvents,
+    tagLabel,
   }: {
-    aspectCategory: string;
-    categoryLabel: string;
+    aspectTag: string;
     events: DetectedCalendarEvent[];
     fixedAspectGroupKey?: string;
     getAspectGroupKey: (event: DetectedCalendarEvent) => string;
@@ -155,10 +152,10 @@ export class ProgressiveAspectService {
       endings: DetectedCalendarEvent[],
       label: string,
     ) => [DetectedCalendarEvent, DetectedCalendarEvent][];
+    tagLabel: string;
   }): DetectedCalendarEvent[] {
     return this.buildProgressiveAspectEvents({
-      aspectCategory,
-      categoryLabel,
+      aspectTag,
       events,
       getAspectGroupKey:
         fixedAspectGroupKey === undefined
@@ -166,6 +163,7 @@ export class ProgressiveAspectService {
           : () => fixedAspectGroupKey,
       getProgressiveEvent,
       pairProgressiveEvents,
+      tagLabel,
     });
   }
 
@@ -176,8 +174,8 @@ export class ProgressiveAspectService {
     TAspect extends string,
     TBody extends string,
   >({
-    aspectCategory,
     aspects,
+    aspectTag,
     beginning,
     bodies,
     ending,
@@ -186,8 +184,8 @@ export class ProgressiveAspectService {
     symbolByAspect,
     symbolByBody,
   }: {
-    aspectCategory: string;
     aspects: readonly TAspect[];
+    aspectTag: string;
     beginning: DetectedCalendarEvent;
     bodies: readonly TBody[];
     ending: DetectedCalendarEvent;
@@ -206,9 +204,9 @@ export class ProgressiveAspectService {
     } = this.extractTypedAspectParts<TAspect, TBody>({
       aspects,
       bodies,
-      categories: beginning.categories,
       isAspect,
       isBody,
+      tags: beginning.tags,
     });
 
     const body1Symbol = symbolByBody[body1];
@@ -216,51 +214,49 @@ export class ProgressiveAspectService {
     const aspectSymbol = symbolByAspect[aspect];
 
     return {
-      categories: [
-        "Astronomy",
-        "Astrology",
-        "Simple Aspect",
-        aspectCategory,
-        body1Capitalized,
-        body2Capitalized,
-        aspectCapitalized,
-      ],
       description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
       end: ending.start,
       start: beginning.start,
       summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      tags: [
+        "Astronomy",
+        "Astrology",
+        "Simple Aspect",
+        aspectTag,
+        body1Capitalized,
+        body2Capitalized,
+        aspectCapitalized,
+      ],
     };
   }
 
   /**
-   * Extract typed body/aspect values from event categories using aspect/body registries.
+   * Extract typed body/aspect values from event tags using aspect/body registries.
    */
   extractTypedAspectParts<TAspect extends string, TBody extends string>({
     aspects,
     bodies,
-    categories,
     isAspect,
     isBody,
+    tags,
   }: {
     aspects: readonly TAspect[];
     bodies: readonly TBody[];
-    categories: string[];
     isAspect: (value: string) => value is TAspect;
     isBody: (value: string) => value is TBody;
+    tags: string[];
   }): TypedAspectParts<TAspect, TBody> {
     const bodyLabels = new Set(bodies.map((body) => bodyDisplayName(body)));
     const aspectLabels = new Set(aspects.map((aspect) => _.startCase(aspect)));
 
     const bodiesCapitalized = _.sortBy(
-      categories.filter((category) => bodyLabels.has(category)),
+      tags.filter((tag) => bodyLabels.has(tag)),
     );
-    const aspectCapitalized = categories.find((category) =>
-      aspectLabels.has(category),
-    );
+    const aspectCapitalized = tags.find((tag) => aspectLabels.has(tag));
 
     if (bodiesCapitalized.length !== 2 || aspectCapitalized === undefined) {
       throw new Error(
-        `Could not extract aspect info from categories: ${categories.join(", ")}`,
+        `Could not extract aspect info from tags: ${tags.join(", ")}`,
       );
     }
 
@@ -272,7 +268,7 @@ export class ProgressiveAspectService {
 
     if (!isAspect(aspectLower) || !isBody(body1Lower) || !isBody(body2Lower)) {
       throw new Error(
-        `Could not extract typed values from categories: ${categories.join(", ")}`,
+        `Could not extract typed values from tags: ${tags.join(", ")}`,
       );
     }
 
@@ -292,33 +288,33 @@ export class ProgressiveAspectService {
   extractTypedAspectPartsOrThrow<TAspect extends string, TBody extends string>({
     aspects,
     bodies,
-    categories,
     errorMessage,
     isAspect,
     isBody,
+    tags,
   }: {
     aspects: readonly TAspect[];
     bodies: readonly TBody[];
-    categories: string[];
     errorMessage: string;
     isAspect: (value: string) => value is TAspect;
     isBody: (value: string) => value is TBody;
+    tags: string[];
   }): TypedAspectParts<TAspect, TBody> {
     try {
       return this.extractTypedAspectParts({
         aspects,
         bodies,
-        categories,
         isAspect,
         isBody,
+        tags,
       });
     } catch (originalError) {
       this.logger.error("📐 Failed extracting typed aspect parts", undefined, {
-        categories,
         reason:
           originalError instanceof Error
             ? originalError.message
             : String(originalError),
+        tags,
       });
       throw new Error(errorMessage, { cause: originalError });
     }

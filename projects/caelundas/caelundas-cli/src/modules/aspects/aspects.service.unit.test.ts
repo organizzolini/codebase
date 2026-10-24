@@ -184,7 +184,11 @@ describe(AspectsService, () => {
       phase: "Dissolving" | "Forming" | "Perfective";
     }): DetectedCalendarEvent {
       return {
-        categories: [
+        description: "",
+        end: timestamp,
+        start: timestamp,
+        summary: `${args.body1} ${args.phase.toLowerCase()} ${args.aspectType} ${args.body2}`,
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -194,10 +198,6 @@ describe(AspectsService, () => {
           args.aspectType,
           args.phase,
         ],
-        description: "",
-        end: timestamp,
-        start: timestamp,
-        summary: `${args.body1} ${args.phase.toLowerCase()} ${args.aspectType} ${args.body2}`,
       };
     }
 
@@ -315,11 +315,11 @@ describe(AspectsService, () => {
         [],
         [
           {
-            categories: ["Astronomy", "Ingress", "Moon", "Aries"],
             description: "",
             end: timestamp,
             start: timestamp,
             summary: "Moon enters Aries",
+            tags: ["Astronomy", "Ingress", "Moon", "Aries"],
           },
         ],
       );
@@ -332,7 +332,11 @@ describe(AspectsService, () => {
         [],
         [
           {
-            categories: [
+            description: "",
+            end: timestamp,
+            start: timestamp,
+            summary: "Sun conjunct Moon",
+            tags: [
               "Astronomy",
               "Astrology",
               "Simple Aspect",
@@ -341,10 +345,6 @@ describe(AspectsService, () => {
               "Moon",
               "Conjunct",
             ],
-            description: "",
-            end: timestamp,
-            start: timestamp,
-            summary: "Sun conjunct Moon",
           },
         ],
       );
@@ -357,7 +357,11 @@ describe(AspectsService, () => {
         [],
         [
           {
-            categories: [
+            description: "",
+            end: timestamp,
+            start: timestamp,
+            summary: "Invalid",
+            tags: [
               "Astronomy",
               "Astrology",
               "Simple Aspect",
@@ -367,10 +371,6 @@ describe(AspectsService, () => {
               "NotAnAspect",
               "Forming",
             ],
-            description: "",
-            end: timestamp,
-            start: timestamp,
-            summary: "Invalid",
           },
         ],
       );
@@ -383,7 +383,11 @@ describe(AspectsService, () => {
         [],
         [
           {
-            categories: [
+            description: "",
+            end: timestamp,
+            start: timestamp,
+            summary: "Invalid body count",
+            tags: [
               "Astronomy",
               "Astrology",
               "Simple Aspect",
@@ -392,10 +396,6 @@ describe(AspectsService, () => {
               "Conjunct",
               "Forming",
             ],
-            description: "",
-            end: timestamp,
-            start: timestamp,
-            summary: "Invalid body count",
           },
         ],
       );
@@ -455,7 +455,11 @@ describe(AspectsService, () => {
     it("emits a compound aspect once when detectors repeat it", () => {
       const minute = moment.utc("2026-10-20T12:00:00Z");
       const kite = (order: string[]): DetectedCalendarEvent => ({
-        categories: [
+        description: "Jupiter, Mars, Moon, Venus kite forming (Venus focal)",
+        end: minute,
+        start: minute,
+        summary: `➡️ 🪁 ${order.join("-")} kite forming`,
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -465,10 +469,6 @@ describe(AspectsService, () => {
           ...order,
           "Venus Focal",
         ],
-        description: "Jupiter, Mars, Moon, Venus kite forming (Venus focal)",
-        end: minute,
-        start: minute,
-        summary: `➡️ 🪁 ${order.join("-")} kite forming`,
       });
       const repeatingDetector = {
         detect: vi
@@ -499,7 +499,11 @@ describe(AspectsService, () => {
     it("combines detector outputs and progressive events", () => {
       const minute = moment.utc("2026-01-21T12:00:00Z");
       const simpleEvent = {
-        categories: [
+        description: "Sun forming conjunct Moon",
+        end: minute,
+        start: minute,
+        summary: "Sun forming conjunct Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -509,24 +513,20 @@ describe(AspectsService, () => {
           "Conjunct",
           "Forming",
         ],
-        description: "Sun forming conjunct Moon",
-        end: minute,
-        start: minute,
-        summary: "Sun forming conjunct Moon",
       } satisfies DetectedCalendarEvent;
       const compositeEvent = {
-        categories: ["Astronomy", "Astrology", "Composite"],
         description: "Composite",
         end: minute,
         start: minute,
         summary: "Composite",
+        tags: ["Astronomy", "Astrology", "Composite"],
       } satisfies DetectedCalendarEvent;
       const progressiveEvent = {
-        categories: ["Astronomy", "Astrology", "Progressive"],
         description: "Progressive",
         end: minute,
         start: minute,
         summary: "Progressive",
+        tags: ["Astronomy", "Astrology", "Progressive"],
       } satisfies DetectedCalendarEvent;
 
       const mockSimpleAspectDetector = {
@@ -583,11 +583,11 @@ describe(AspectsService, () => {
     it("returns every aspect already in orb and composes compounds from an empty past", () => {
       const minute = moment.utc("2026-10-01T04:00:00Z");
       const compositeEvent = {
-        categories: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
         description: "T-Square",
         end: minute,
         start: minute,
         summary: "T-Square",
+        tags: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
       } satisfies DetectedCalendarEvent;
       const majorActive = [
         { aspect: "opposite", bodies: ["mars", "pluto"] },

@@ -1,16 +1,16 @@
 // ♟️ Constants
 
-export const PHASE_EVENT_BASE_CATEGORIES = [
+export const PHASE_EVENT_BASE_TAGS = [
   "Astronomy",
   "Astrology",
   "Planetary Phase",
 ] as const;
 
-export const PLANETARY_PHASE_CATEGORY = "Planetary Phase";
+export const PLANETARY_PHASE_TAG = "Planetary Phase";
 
-export const VENUSIAN_CATEGORY = "Venusian";
-export const MERCURIAN_CATEGORY = "Mercurian";
-export const MARTIAN_CATEGORY = "Martian";
+export const VENUSIAN_TAG = "Venusian";
+export const MERCURIAN_TAG = "Mercurian";
+export const MARTIAN_TAG = "Martian";
 
 /**
  * The largest phase angle at which a magnitude minimum counts as greatest brilliancy.
@@ -24,10 +24,10 @@ export const MAXIMUM_BRILLIANCY_PHASE_ANGLE_DEGREES = 160;
 /** Elongation from the Sun, in degrees, at which an inner planet rises out of or sets into its glare. */
 export const RISE_SET_ELONGATION_DEGREES = 6;
 
-export const MORNING_RISE_CATEGORY = "Morning Rise";
-export const MORNING_SET_CATEGORY = "Morning Set";
-export const EVENING_RISE_CATEGORY = "Evening Rise";
-export const EVENING_SET_CATEGORY = "Evening Set";
+export const MORNING_RISE_TAG = "Morning Rise";
+export const MORNING_SET_TAG = "Morning Set";
+export const EVENING_RISE_TAG = "Evening Rise";
+export const EVENING_SET_TAG = "Evening Set";
 
 export const VENUS_EVENING_VISIBILITY_DESCRIPTION =
   "Venus Evening Star (Evening Visibility)";

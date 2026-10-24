@@ -88,9 +88,9 @@ describe("ingresses.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Aries");
-      expect(events[0]?.categories).toContain("Ingress");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Aries");
+      expect(events[0]?.tags).toContain("Ingress");
       expect(events[0]?.summary).toContain("☀️");
       expect(events[0]?.summary).toContain("♈");
     });
@@ -113,8 +113,8 @@ describe("ingresses.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Moon");
-      expect(events[0]?.categories).toContain("Gemini");
+      expect(events[0]?.tags).toContain("Moon");
+      expect(events[0]?.tags).toContain("Gemini");
     });
 
     it("does not generate event when body stays in same sign", () => {
@@ -154,9 +154,9 @@ describe("ingresses.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Decan");
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Aries");
+      expect(events[0]?.tags).toContain("Decan");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Aries");
     });
 
     it("does not generate decan event when crossing sign boundary (sign event takes precedence)", () => {
@@ -200,9 +200,9 @@ describe("ingresses.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Peak");
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Taurus");
+      expect(events[0]?.tags).toContain("Peak");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Taurus");
     });
   });
 
@@ -210,25 +210,25 @@ describe("ingresses.events integration", () => {
     it("creates progressive events from consecutive sign ingresses", () => {
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
           description: "Sun ingress Aries",
           end: moment.utc("2025-03-20T09:06:00Z"),
           start: moment.utc("2025-03-20T09:06:00Z"),
           summary: "☀️ → ♈ Sun ingress Aries",
+          tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Aries"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Taurus"],
           description: "Sun ingress Taurus",
           end: moment.utc("2025-04-19T20:00:00Z"),
           start: moment.utc("2025-04-19T20:00:00Z"),
           summary: "☀️ → ♉︎ Sun ingress Taurus",
+          tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Taurus"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Gemini"],
           description: "Sun ingress Gemini",
           end: moment.utc("2025-05-20T19:00:00Z"),
           start: moment.utc("2025-05-20T19:00:00Z"),
           summary: "☀️ → ♊︎ Sun ingress Gemini",
+          tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Gemini"],
         },
       ];
 
@@ -258,32 +258,32 @@ describe("ingresses.events integration", () => {
     it("handles events for multiple bodies separately", () => {
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Aquarius"],
           description: "Sun ingress Aquarius",
           end: moment.utc("2025-01-10T10:00:00Z"),
           start: moment.utc("2025-01-10T10:00:00Z"),
           summary: "Sun ingress Aquarius",
+          tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Aquarius"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Moon", "Gemini"],
           description: "Moon ingress Gemini",
           end: moment.utc("2025-01-12T08:00:00Z"),
           start: moment.utc("2025-01-12T08:00:00Z"),
           summary: "Moon ingress Gemini",
+          tags: ["Astronomy", "Astrology", "Ingress", "Moon", "Gemini"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Moon", "Cancer"],
           description: "Moon ingress Cancer",
           end: moment.utc("2025-01-14T15:00:00Z"),
           start: moment.utc("2025-01-14T15:00:00Z"),
           summary: "Moon ingress Cancer",
+          tags: ["Astronomy", "Astrology", "Ingress", "Moon", "Cancer"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Ingress", "Sun", "Pisces"],
           description: "Sun ingress Pisces",
           end: moment.utc("2025-02-18T12:00:00Z"),
           start: moment.utc("2025-02-18T12:00:00Z"),
           summary: "Sun ingress Pisces",
+          tags: ["Astronomy", "Astrology", "Ingress", "Sun", "Pisces"],
         },
       ];
 
@@ -292,11 +292,9 @@ describe("ingresses.events integration", () => {
       // Should have: Sun in Aquarius, Moon in Gemini
       expect(progressiveEvents).toHaveLength(2);
 
-      const sunDuration = progressiveEvents.find((e) =>
-        e.categories.includes("Sun"),
-      );
+      const sunDuration = progressiveEvents.find((e) => e.tags.includes("Sun"));
       const moonDuration = progressiveEvents.find((e) =>
-        e.categories.includes("Moon"),
+        e.tags.includes("Moon"),
       );
 
       expect(sunDuration).toBeDefined();

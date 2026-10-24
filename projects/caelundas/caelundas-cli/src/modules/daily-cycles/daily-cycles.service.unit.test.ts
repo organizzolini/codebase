@@ -73,7 +73,6 @@ describe(DailyCyclesService, () => {
           provide: CalendarService,
           useValue: {
             buildInstantEvent: (args: {
-              categories: string[];
               date: Moment;
               description: string;
               logger: {
@@ -84,27 +83,22 @@ describe(DailyCyclesService, () => {
                 ) => void;
               };
               summary: string;
+              tags: string[];
               timezone: string;
             }) => {
-              const {
-                categories,
-                date,
-                description,
-                logger,
-                summary,
-                timezone,
-              } = args;
+              const { date, description, logger, summary, tags, timezone } =
+                args;
               const dateString = date.clone().tz(timezone).toISOString(true);
               logger.info("🗓️ Built a calendar event", undefined, {
                 at: dateString,
                 summary,
               });
               return {
-                categories,
                 description,
                 end: date,
                 start: date,
                 summary,
+                tags,
               };
             },
           },
@@ -139,7 +133,7 @@ describe(DailyCyclesService, () => {
 
         expect(events).toHaveLength(1);
         expect(events[0]?.summary).toContain("Solar Zenith");
-        expect(events[0]?.categories).toContain("Daily Solar Cycle");
+        expect(events[0]?.tags).toContain("Daily Solar Cycle");
       });
 
       it("detects solar nadir when sun reaches minimum elevation", () => {
@@ -161,7 +155,7 @@ describe(DailyCyclesService, () => {
 
         expect(events).toHaveLength(1);
         expect(events[0]?.summary).toContain("Solar Nadir");
-        expect(events[0]?.categories).toContain("Daily Solar Cycle");
+        expect(events[0]?.tags).toContain("Daily Solar Cycle");
       });
 
       it("returns empty array when no events occur", () => {
@@ -195,9 +189,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Sunrise");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Solar Cycle");
-        expect(event.categories).toContain("Solar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Solar Cycle");
+        expect(event.tags).toContain("Solar");
       });
     });
 
@@ -211,9 +205,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Solar Zenith");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Solar Cycle");
-        expect(event.categories).toContain("Solar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Solar Cycle");
+        expect(event.tags).toContain("Solar");
       });
     });
 
@@ -227,9 +221,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Sunset");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Solar Cycle");
-        expect(event.categories).toContain("Solar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Solar Cycle");
+        expect(event.tags).toContain("Solar");
       });
     });
 
@@ -243,9 +237,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Solar Nadir");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Solar Cycle");
-        expect(event.categories).toContain("Solar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Solar Cycle");
+        expect(event.tags).toContain("Solar");
       });
     });
   });
@@ -276,7 +270,7 @@ describe(DailyCyclesService, () => {
         expect(events).toHaveLength(1);
         expect(events[0]).toBeDefined();
         expect(events[0]?.summary).toContain("Lunar Zenith");
-        expect(events[0]?.categories).toContain("Daily Lunar Cycle");
+        expect(events[0]?.tags).toContain("Daily Lunar Cycle");
       });
 
       it("detects lunar nadir when moon reaches minimum elevation", () => {
@@ -299,7 +293,7 @@ describe(DailyCyclesService, () => {
         expect(events).toHaveLength(1);
         expect(events[0]).toBeDefined();
         expect(events[0]?.summary).toContain("Lunar Nadir");
-        expect(events[0]?.categories).toContain("Daily Lunar Cycle");
+        expect(events[0]?.tags).toContain("Daily Lunar Cycle");
       });
 
       it("returns empty array when no events occur", () => {
@@ -333,9 +327,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Moonrise");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Lunar Cycle");
-        expect(event.categories).toContain("Lunar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Lunar Cycle");
+        expect(event.tags).toContain("Lunar");
       });
     });
 
@@ -349,9 +343,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Lunar Zenith");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Lunar Cycle");
-        expect(event.categories).toContain("Lunar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Lunar Cycle");
+        expect(event.tags).toContain("Lunar");
       });
     });
 
@@ -365,9 +359,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Moonset");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Lunar Cycle");
-        expect(event.categories).toContain("Lunar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Lunar Cycle");
+        expect(event.tags).toContain("Lunar");
       });
     });
 
@@ -381,9 +375,9 @@ describe(DailyCyclesService, () => {
         expect(event.description).toBe("Lunar Nadir");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
-        expect(event.categories).toContain("Astronomy");
-        expect(event.categories).toContain("Daily Lunar Cycle");
-        expect(event.categories).toContain("Lunar");
+        expect(event.tags).toContain("Astronomy");
+        expect(event.tags).toContain("Daily Lunar Cycle");
+        expect(event.tags).toContain("Lunar");
       });
     });
   });

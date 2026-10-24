@@ -134,13 +134,13 @@ describe("main end-to-end suite", () => {
       it("handles events with all optional fields", () => {
         const events = [
           {
-            categories: ["Astronomy", "Eclipse", "Solar"],
             color: "red",
             description: "Total Solar Eclipse visible from North America",
             end: moment.utc("2025-04-08T20:00:00Z"),
             location: "Dallas, Texas, USA",
             start: moment.utc("2025-04-08T18:00:00Z"),
             summary: "Total Solar Eclipse",
+            tags: ["Astronomy", "Eclipse", "Solar"],
           },
         ];
 
@@ -382,13 +382,13 @@ describe("main end-to-end suite", () => {
 
       // A row no detector reports can only reach the files through the table.
       await calendarEvents.insert({
-        categories: ["e2e"],
         description: "stored directly",
         end: moment.utc("2026-03-05T00:00:00Z"),
         latitude: "39.949309",
         longitude: "-75.171690",
         start: moment.utc("2026-03-05T00:00:00Z"),
         summary: "Planted",
+        tags: ["e2e"],
       });
       const { ics, json } = await run(philadelphia, marchFirstHalf);
 

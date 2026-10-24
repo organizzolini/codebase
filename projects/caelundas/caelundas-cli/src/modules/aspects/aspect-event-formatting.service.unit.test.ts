@@ -21,9 +21,9 @@ describe(AspectEventFormattingService, () => {
 
   it("names multi-word bodies in start case for simple aspects", () => {
     const event = service.assembleSimpleAspectEvent({
-      aspectCategory: "Specialty Aspect",
       aspectName: "quintile",
       aspectSymbol: "Q",
+      aspectTag: "Specialty Aspect",
       body1: "lunar apogee",
       body2: "sun",
       log: () => undefined,
@@ -32,7 +32,7 @@ describe(AspectEventFormattingService, () => {
     });
 
     expect(event.description).toBe("Lunar Apogee forming quintile Sun");
-    expect(event.categories).toContain("Lunar Apogee");
-    expect(event.categories).not.toContain("Lunar apogee");
+    expect(event.tags).toContain("Lunar Apogee");
+    expect(event.tags).not.toContain("Lunar apogee");
   });
 });

@@ -58,7 +58,7 @@ export class IngressesComposerService {
     taurus: { maximum: 60, minimum: 30 },
     virgo: { maximum: 180, minimum: 150 },
   };
-  private static readonly ingressBaseCategories = [
+  private static readonly ingressBaseTags = [
     "Astronomy",
     "Astrology",
     "Ingress",
@@ -121,16 +121,16 @@ export class IngressesComposerService {
     const description = `${bodyCapitalized} ingress decan ${decan} ${signCapitalized}`;
     const summary = `${symbolByBody[body]} → ${symbolBySign[sign]}${symbolByDecan[decan]} ${description}`;
     return {
-      categories: [
-        ...IngressesComposerService.ingressBaseCategories,
-        "Decan",
-        bodyCapitalized,
-        signCapitalized,
-      ],
       description,
       end: date,
       start: date,
       summary,
+      tags: [
+        ...IngressesComposerService.ingressBaseTags,
+        "Decan",
+        bodyCapitalized,
+        signCapitalized,
+      ],
     };
   }
 
@@ -162,16 +162,16 @@ export class IngressesComposerService {
     });
 
     const peakIngressEvent: DetectedCalendarEvent = {
-      categories: [
-        ...IngressesComposerService.ingressBaseCategories,
-        "Peak",
-        bodyCapitalized,
-        signCapitalized,
-      ],
       description,
       end: date,
       start: date,
       summary,
+      tags: [
+        ...IngressesComposerService.ingressBaseTags,
+        "Peak",
+        bodyCapitalized,
+        signCapitalized,
+      ],
     };
 
     return peakIngressEvent;
@@ -225,25 +225,25 @@ export class IngressesComposerService {
     });
 
     const signIngressEvent: DetectedCalendarEvent = {
-      categories: [
-        ...IngressesComposerService.ingressBaseCategories,
-        bodyCapitalized,
-        signCapitalized,
-      ],
       description,
       end: date,
       start: date,
       summary,
+      tags: [
+        ...IngressesComposerService.ingressBaseTags,
+        bodyCapitalized,
+        signCapitalized,
+      ],
     };
 
     return signIngressEvent;
   }
 
   /**
-   * Extracts sign and body from categories.
+   * Extracts sign and body from tags.
    */
-  extractSignAndBodyFromCategories(
-    categories: string[],
+  extractSignAndBodyFromTags(
+    tags: string[],
     bodyCapitalized: string,
   ): {
     body: Body;
@@ -251,19 +251,17 @@ export class IngressesComposerService {
     sign: Sign;
     signCapitalized: string;
   } {
-    const signCapitalized = categories.find((category) =>
-      signs.map((sign) => _.startCase(sign)).includes(category),
+    const signCapitalized = tags.find((tag) =>
+      signs.map((sign) => _.startCase(sign)).includes(tag),
     );
     if (!signCapitalized) {
-      throw new Error(
-        `Could not extract sign from categories: ${categories.join(", ")}`,
-      );
+      throw new Error(`Could not extract sign from tags: ${tags.join(", ")}`);
     }
     const bodyFromName = bodyFromDisplayName(bodyCapitalized);
     const signLower = signCapitalized.toLowerCase();
     if (bodyFromName === undefined || !isSign(signLower)) {
       throw new Error(
-        `Could not extract typed values from categories: ${categories.join(", ")}`,
+        `Could not extract typed values from tags: ${tags.join(", ")}`,
       );
     }
     return {
@@ -282,9 +280,9 @@ export class IngressesComposerService {
   ): DetectedCalendarEvent[] {
     return events.filter(
       (event) =>
-        event.categories.includes("Ingress") &&
-        !event.categories.includes("Decan") &&
-        !event.categories.includes("Peak"),
+        event.tags.includes("Ingress") &&
+        !event.tags.includes("Decan") &&
+        !event.tags.includes("Peak"),
     );
   }
 
@@ -328,25 +326,24 @@ export class IngressesComposerService {
     exiting: DetectedCalendarEvent,
     bodyCapitalized: string,
   ): DetectedCalendarEvent {
-    const { body, sign, signCapitalized } =
-      this.extractSignAndBodyFromCategories(
-        entering.categories,
-        bodyCapitalized,
-      );
+    const { body, sign, signCapitalized } = this.extractSignAndBodyFromTags(
+      entering.tags,
+      bodyCapitalized,
+    );
     const bodySymbol = symbolByBody[body];
     const signSymbol = symbolBySign[sign];
     return {
-      categories: [
+      description: `${bodyCapitalized} in ${signCapitalized}`,
+      end: exiting.start,
+      start: entering.start,
+      summary: `${bodySymbol} ${signSymbol} ${bodyCapitalized} in ${signCapitalized}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Ingress",
         bodyCapitalized,
         signCapitalized,
       ],
-      description: `${bodyCapitalized} in ${signCapitalized}`,
-      end: exiting.start,
-      start: entering.start,
-      summary: `${bodySymbol} ${signSymbol} ${bodyCapitalized} in ${signCapitalized}`,
     };
   }
 
@@ -357,10 +354,10 @@ export class IngressesComposerService {
     events: DetectedCalendarEvent[],
   ): Record<string, DetectedCalendarEvent[]> {
     return _.groupBy(events, (event) => {
-      const bodyCapitalized = event.categories.find((category) =>
+      const bodyCapitalized = event.tags.find((tag) =>
         signIngressBodies
           .map((signIngressBody) => bodyDisplayName(signIngressBody))
-          .includes(category),
+          .includes(tag),
       );
       return bodyCapitalized || "";
     });

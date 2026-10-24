@@ -55,7 +55,9 @@ describe(MinorAspectsComposerService, () => {
       }),
     ).toStrictEqual(
       expect.objectContaining({
-        categories: [
+        description: "Sun perfective semisextile Moon",
+        summary: "🎯 ☀️ ⚺ 🌙 Sun perfective semisextile Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -65,8 +67,6 @@ describe(MinorAspectsComposerService, () => {
           "Semisextile",
           "Perfective",
         ],
-        description: "Sun perfective semisextile Moon",
-        summary: "🎯 ☀️ ⚺ 🌙 Sun perfective semisextile Moon",
       }),
     );
 
@@ -80,7 +80,9 @@ describe(MinorAspectsComposerService, () => {
       }),
     ).toStrictEqual(
       expect.objectContaining({
-        categories: [
+        description: "Sun forming semisextile Moon",
+        summary: "➡️ ☀️ ⚺ 🌙 Sun forming semisextile Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -90,8 +92,6 @@ describe(MinorAspectsComposerService, () => {
           "Semisextile",
           "Forming",
         ],
-        description: "Sun forming semisextile Moon",
-        summary: "➡️ ☀️ ⚺ 🌙 Sun forming semisextile Moon",
       }),
     );
 
@@ -105,7 +105,9 @@ describe(MinorAspectsComposerService, () => {
       }),
     ).toStrictEqual(
       expect.objectContaining({
-        categories: [
+        description: "Sun dissolving semisextile Moon",
+        summary: "⬅️ ☀️ ⚺ 🌙 Sun dissolving semisextile Moon",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -115,8 +117,6 @@ describe(MinorAspectsComposerService, () => {
           "Semisextile",
           "Dissolving",
         ],
-        description: "Sun dissolving semisextile Moon",
-        summary: "⬅️ ☀️ ⚺ 🌙 Sun dissolving semisextile Moon",
       }),
     );
   });
@@ -131,7 +131,7 @@ describe(MinorAspectsComposerService, () => {
     });
 
     expect(event.description).toBe("Moon forming semisextile North Lunar Node");
-    expect(event.categories).toContain("North Lunar Node");
+    expect(event.tags).toContain("North Lunar Node");
     expect(service.buildGroupKey(event)).toBe(
       "Moon-Semisextile-North Lunar Node",
     );
@@ -162,7 +162,7 @@ describe(MinorAspectsComposerService, () => {
         aspectCapitalized: "Semisextile",
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
-        categories: ["Semisextile", "Moon", "Sun"],
+        tags: ["Semisextile", "Moon", "Sun"],
       }),
     ).toStrictEqual({
       aspect: "semisextile",
@@ -178,7 +178,11 @@ describe(MinorAspectsComposerService, () => {
   it("builds progressive events and grouping keys", () => {
     const minute = moment.utc("2024-03-21T12:00:00.000Z");
     const beginning = {
-      categories: [
+      description: "Sun forming semisextile Moon",
+      end: minute,
+      start: minute,
+      summary: "➡️ ☀️ ⚺ 🌙 Sun forming semisextile Moon",
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -188,20 +192,16 @@ describe(MinorAspectsComposerService, () => {
         "Semisextile",
         "Forming",
       ],
-      description: "Sun forming semisextile Moon",
-      end: minute,
-      start: minute,
-      summary: "➡️ ☀️ ⚺ 🌙 Sun forming semisextile Moon",
     };
     const ending = {
       ...beginning,
-      categories: beginning.categories.map((category) =>
-        category === "Forming" ? "Dissolving" : category,
-      ),
       description: "Sun dissolving semisextile Moon",
       end: minute.clone().add(1, "hour"),
       start: minute.clone().add(1, "hour"),
       summary: "⬅️ ☀️ ⚺ 🌙 Sun dissolving semisextile Moon",
+      tags: beginning.tags.map((tag) =>
+        tag === "Forming" ? "Dissolving" : tag,
+      ),
     };
 
     progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
@@ -209,15 +209,14 @@ describe(MinorAspectsComposerService, () => {
     ]);
 
     expect(service.buildGroupKey(beginning)).toBe("Moon-Semisextile-Sun");
-    expect(service.buildGroupKey({ ...beginning, categories: ["Moon"] })).toBe(
-      "",
-    );
+    expect(service.buildGroupKey({ ...beginning, tags: ["Moon"] })).toBe("");
 
     expect(
       service.getMinorAspectProgressiveEvent(beginning, ending),
     ).toStrictEqual(
       expect.objectContaining({
-        categories: [
+        description: "Moon semisextile Sun",
+        tags: [
           "Astronomy",
           "Astrology",
           "Simple Aspect",
@@ -226,7 +225,6 @@ describe(MinorAspectsComposerService, () => {
           "Sun",
           "Semisextile",
         ],
-        description: "Moon semisextile Sun",
       }),
     );
 
@@ -269,12 +267,12 @@ describe(MinorAspectsComposerService, () => {
         aspectCapitalized: "Not An Aspect",
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
-        categories: ["Moon", "Sun"],
+        tags: ["Moon", "Sun"],
       }),
     ).toThrow("Could not extract typed values");
   });
 
-  it("falls back to empty first body when sorted category output is sparse", () => {
+  it("falls back to empty first body when sorted tag output is sparse", () => {
     const toSortedSpy = vi
       .spyOn(Array.prototype, "toSorted")
       .mockReturnValueOnce([undefined, "Sun"]);
@@ -294,7 +292,7 @@ describe(MinorAspectsComposerService, () => {
     toSortedSpy.mockRestore();
   });
 
-  it("falls back to empty second body when sorted category output is sparse", () => {
+  it("falls back to empty second body when sorted tag output is sparse", () => {
     const toSortedSpy = vi
       .spyOn(Array.prototype, "toSorted")
       .mockReturnValueOnce(["Moon", undefined]);
