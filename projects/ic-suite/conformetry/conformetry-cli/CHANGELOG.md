@@ -1,3 +1,17 @@
+## 0.0.50 (2026-10-24)
+
+### 📦 Build
+
+- **ic-suite,presentation:** 👷 infer the vite build target instead of @nx/vite:build ([#1823](https://github.com/organizzolini/codebase/pull/1823))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.50
+- Updated conformetry-generation to 0.0.50
+- Updated conformetry-validation to 0.0.49
+- Updated conformetry-output to 0.0.49
+- Updated conformetry-core to 0.0.49
+
 ## 0.0.49 (2026-10-23)
 
 ### 🧱 Updated Dependencies
