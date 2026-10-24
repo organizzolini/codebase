@@ -17,7 +17,7 @@ jobs:
   upgrade-dependencies:
     name: 🧑‍🚒 Upgrade Dependencies
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: 📥 Checkout Repository
@@ -58,7 +58,9 @@ jobs:
           author: >-
             ${{ steps.import-gpg.outputs.name }}
             <${{ steps.import-gpg.outputs.email }}>
-          sign-commits: true
+          # No sign-commits: that rebuilds the commit through the API, one
+          # request per file, and took 20+ minutes here. The key imported
+          # above signs the commit locally instead.
           commit-message: "chore(dependencies): ⬆️ upgrade"
           branch: chore/dependencies-upgrade
           delete-branch: true
