@@ -292,6 +292,7 @@ pnpm exec nx run persistence:start:import --args="--target-uri postgresql://user
 | `--schema <name>`    | both    | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
 | `--data`, `--ddl`    | both    | Rows, table definitions (DDL), or both; at least one is required                  |
 | `--file <path>`      | both    | Required. The dump to write or read                                               |
+| `--sqlite`           | export  | Write a SQLite file instead of a dump; `import` rejects it                        |
 | `--overwrite`        | export  | Replace `--file` when it exists                                                   |
 | `--clean`            | import  | Clear the selected tables before restoring, with no confirmation                  |
 | `--dry-run`          | both    | Validate and print the plan without connecting to a database or changing anything |
@@ -302,7 +303,8 @@ runs, naming it. Naming one table twice moves it once.
 
 ### Export
 
-`export` writes a custom-format dump, the only format it produces. It passes
+`export` writes a custom-format dump, or with `--sqlite` a SQLite file (see
+[Export to SQLite](#export-to-sqlite)). It passes
 `--strict-names` to `pg_dump`, so a table that does not exist fails the run
 with a message naming it and the source, never a smaller dump. An existing
 `--file` is refused unless `--overwrite` is given.
@@ -312,6 +314,55 @@ once the dump succeeds. A failed `--overwrite` therefore keeps the old dump,
 and the partial file is removed. `--dry-run` still checks that `pg_dump` is
 installed, then prints the source database, what each table would export, and
 whether `--file` would be created or overwritten.
+
+### Export to SQLite
+
+`export --sqlite` writes the selected tables to a SQLite file through a
+separate service, `SqliteExportService`, that reads rows through the `pg`
+driver and writes them with `node:sqlite`. It never starts `pg_dump`, needs
+none of the PostgreSQL client tools, and adds no native SQLite dependency, so
+it runs anywhere Node 24 runs. `--source-uri`, `--table`, `--schema`,
+`--file`, `--overwrite`, and `--dry-run` mean what they mean for the default
+export, and the overwrite guard and the missing-table error behave as they do
+there; only `--dry-run` differs, in checking no client tool. The service
+names no table of its own, so any table in any schema can be exported:
+
+```bash
+pnpm exec nx run persistence:start:export --args="--sqlite --source-uri postgresql://user:password@localhost:5432/source --schema caelundas --table calendar_events --data --ddl --file events.sqlite"
+```
+
+`--ddl` writes each table's definition: its columns, `NOT NULL` where the
+source forbids null, and its primary key, which Postgres shows only for a
+table the role owns or can write to, so a read-only role gets none. `--data`
+writes its rows. A SQLite
+file cannot hold rows without their table, so `--data` alone still creates the
+tables, with the same definition. Indexes, foreign keys, defaults, and
+comments are not carried over; create what a reader needs afterwards. Each
+table takes its name without its schema, and two tables that would share a
+name fail the export. Every table is read from one snapshot, as `pg_dump`
+reads, through a cursor a thousand rows at a time, and written in one SQLite
+transaction, to a `.partial` file that replaces
+`--file` only once the export succeeds.
+
+Postgres column types become SQLite types a browser can query:
+
+| Postgres                                         | SQLite    | Stored as                           |
+| ------------------------------------------------ | --------- | ----------------------------------- |
+| `timestamptz`                                    | `TEXT`    | ISO 8601 in UTC, to the millisecond |
+| `date`                                           | `TEXT`    | `YYYY-MM-DD`                        |
+| `numeric`, `real`, `double precision`            | `REAL`    | A real number                       |
+| `smallint`, `integer`, `bigint`                  | `INTEGER` | The number, exactly                 |
+| `boolean`                                        | `INTEGER` | 0 or 1                              |
+| `text`, `character`, `character varying`, `uuid` | `TEXT`    | The text                            |
+| any array such as `text[]`, `json`, `jsonb`      | `TEXT`    | JSON text                           |
+
+A null stays null. A column of any other type fails the export before it
+writes anything, naming the column, its Postgres type, and the table, so
+nothing is silently dropped.
+
+`import` rejects `--sqlite` with a message that names the option, before any
+process starts or connection opens: nothing imports a SQLite file into
+Postgres, and the file extension is never checked.
 
 ### Import
 
@@ -343,7 +394,8 @@ sequences behind them.
 ### Requirements
 
 Both commands need the PostgreSQL 18 client tools, `pg_dump` for export and
-`pg_restore` for import, and check their version before any database work. A
+`pg_restore` for import, and check their version before any database work.
+The exception is `export --sqlite`, which needs none. A
 missing tool or another major version fails with the setup script to run:
 `scripts/local/software/persistence.sh` installs them with Homebrew, and the
 devcontainer installs them too.

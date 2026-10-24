@@ -16,6 +16,7 @@ export interface ImportCommandOptions {
   dryRun?: boolean;
   file?: string;
   schema?: string;
+  sqlite?: boolean;
   table?: string[];
   targetUri?: string;
 }
