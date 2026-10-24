@@ -1,3 +1,14 @@
+## 0.0.36 (2026-10-24)
+
+### 📦 Build
+
+- **ic-suite,presentation:** 👷 infer the vite build target instead of @nx/vite:build ([#1823](https://github.com/organizzolini/codebase/pull/1823))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.49
+- Updated codependix-cli to 0.0.50
+
 ## 0.0.35 (2026-10-24)
 
 ### 🩹 Fixes

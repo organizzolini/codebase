@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.3](https://github.com/organizzolini/codebase/compare/v3.26.2...v3.26.3) (2026-10-24)
+
+### 📦 Build System
+
+* **ic-suite,presentation:** 👷 infer the vite build target instead of @nx/vite:build ([#1823](https://github.com/organizzolini/codebase/issues/1823)) ([20be9c5](https://github.com/organizzolini/codebase/commit/20be9c5d9a12fcaee3a4a523023cc8ee1c63f650)), closes [organizzolini/codebase#1821](https://github.com/organizzolini/codebase/issues/1821) [organizzolini/codebase#1819](https://github.com/organizzolini/codebase/issues/1819)
+
 ## [3.26.2](https://github.com/organizzolini/codebase/compare/v3.26.1...v3.26.2) (2026-10-24)
 
 ### 🐛 Bug Fixes

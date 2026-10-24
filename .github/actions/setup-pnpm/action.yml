@@ -17,7 +17,7 @@ description: |
 
   The action's own `cache` input does not help, and neither does `version` or
   `standalone`. `cache` caches the pnpm *store* — dependency tarballs, keyed
-  on `pnpm-lock.yaml` — which `actions/setup-node` already caches here, and it
+  on `pnpm-lock.yaml` — which `setup-codebase` caches separately, and it
   works by running `pnpm store path`, so it can only run after the install it
   would need to skip. `version` changes which version `self-update` moves to
   but not the `npm ci`, which installs from that bundled lockfile either way.

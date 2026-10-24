@@ -93,7 +93,6 @@ runs:
       uses: actions/setup-node@v7
       with:
         node-version-file: .nvmrc
-        cache: pnpm
 
     - name: 🎯 Set Nx SHAs
       if: inputs.nx-shas == 'true'
@@ -172,6 +171,11 @@ runs:
         # installs, so a runner, a devcontainer, and a laptop run one uv. A
         # test holds the three equal.
         version: 0.12.3
+        # The action's cache key does not name the uv version, so a cache an
+        # older or newer uv filled would match and be useless: uv re-downloads
+        # everything and, the key being taken, never saves its own. The same
+        # version again, so a bump starts a fresh cache.
+        cache-suffix: uv-0.12.3
         enable-cache: true
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
@@ -213,6 +217,26 @@ runs:
           || echo "No bundled gyp_main.py found; nothing to repair."
       shell: bash
 
+    # The pnpm store, kept after the install that filled it. `setup-node`'s own
+    # `cache: pnpm` saved whichever job finished first, and the jobs that skip
+    # native builds finish first: the entry held a partial store with no
+    # compiled `sweph` or `cpu-features`, so every job that needs them
+    # downloaded the rest and compiled them again. The `v1` retires that entry.
+    - name: 🗄️ Resolve pnpm Store
+      if: inputs.install == 'true'
+      id: pnpm-store
+      run: echo "path=$(pnpm store path --silent)" >>"$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: ♻️ Sync pnpm Store
+      if: inputs.install == 'true'
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.pnpm-store.outputs.path }}
+        key: pnpm-store-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-v1-${{ runner.os }}-${{ runner.arch }}-
+
     # The root `postinstall` script already runs `installed-skills write`
     # after this, which is idempotent and only boots its command, restoring
     # nothing, when every locked skill is already on disk (true here since
@@ -222,6 +246,10 @@ runs:
     # source on every job — that duplicate work is why this step is gone.
     - name: 📚 Install Node Dependencies
       if: inputs.install == 'true'
+      # node-gyp builds with one make job unless told otherwise; `sweph` takes
+      # half as long on all the runner's cores.
+      env:
+        JOBS: max
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
 
