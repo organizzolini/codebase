@@ -63,11 +63,9 @@ inputs:
     default: "false"
   uv:
     description: |
-      Install uv, at the version the devcontainers pin. Required by far more
-      than the Python projects — yaml-lint and sqlfluff shell out to
-      `uv run --project configuration` on every TypeScript project too. It is
-      installed by the `software` command, so after the dependencies: a job
-      with `install` off gets none.
+      Install uv. Required by far more than the Python projects — yaml-lint
+      and sqlfluff shell out to `uv run --project configuration` on every
+      TypeScript project too.
     default: "true"
 
 outputs:
@@ -166,22 +164,23 @@ runs:
           'pnpm-lock.yaml') }}-
           nx-cache-${{ inputs.nx-cache-scope }}-${{ runner.os }}-
 
-    # What `uv sync` downloads, keyed on the lockfile it syncs from. The uv
-    # binary itself is not here: the `software` command installs it below, and
-    # the Python it fetches is three seconds of download, not worth keeping.
-    # The sync step prunes this to the downloaded wheels before the job saves
-    # it, as `setup-uv` did: unpruned it is over 600 MB, and every job restores
-    # it. `v2` retires the entry saved before that pruning existed.
-    - name: ♻️ Sync uv Cache
+    - name: 🌌 Setup uv
       if: inputs.uv == 'true'
-      uses: actions/cache@v6
+      uses: astral-sh/setup-uv@v10.3.0
       with:
-        path: ~/.cache/uv
-        key: |
-          uv-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
-          'configuration/uv.lock') }}
-        restore-keys: |
-          uv-cache-v2-${{ runner.os }}-${{ runner.arch }}-
+        enable-cache: true
+        cache-dependency-glob: configuration/uv.lock
+        add-problem-matchers: "false"
+
+    # Guarded on `uv` as well as its own input: `python-dependencies` defaults
+    # on, so a job that opts out of installing uv would otherwise inherit a sync
+    # it has no binary to run.
+    - name: 🐍 Install Python Dependencies
+      if: inputs.uv == 'true' && inputs.python-dependencies == 'true'
+      # Syncs every uv workspace member into the shared root `.venv` via the
+      # workspace definition in configuration/pyproject.toml.
+      run: uv sync --frozen --quiet --project configuration
+      shell: bash
 
     - name: ♻️ Sync ESLint Cache
       if: inputs.eslint-cache == 'true'
@@ -222,30 +221,25 @@ runs:
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
 
-    # gitleaks, Trivy, and uv are single releases the `software` command
-    # downloads into `~/.local/bin`, so that is all this keeps. Exact match
-    # only: the key names the pinned versions through the file that holds them,
-    # so a version bump is a miss and anything else is a hit. A hit makes the
-    # command find them already installed and download nothing, which also takes
-    # the release hosts out of the job. PostgreSQL comes from apt and is not
-    # kept. The caches a pull request saves are readable only by itself, so
-    # `main`'s is what a pull request and a merge group restore.
+    # gitleaks and Trivy are single binaries the `software` command downloads
+    # into `~/.local/bin`, so that is all this keeps. Exact match only: the key
+    # names the pinned versions through the file that holds them, so a version
+    # bump is a miss and anything else is a hit. A hit makes the command find
+    # both already installed and download nothing, which also takes the
+    # release hosts out of the job. PostgreSQL comes from apt and is not kept.
+    # The caches a pull request saves are readable only by itself, so `main`'s
+    # is what a pull request and a merge group restore.
     - name: ♻️ Sync Release Archive Tools Cache
-      if: |
-        inputs.gitleaks == 'true' || inputs.trivy == 'true'
-        || inputs.uv == 'true'
+      if: inputs.gitleaks == 'true' || inputs.trivy == 'true'
       uses: actions/cache@v6
       with:
         path: |
           ~/.local/bin/gitleaks
           ~/.local/bin/trivy
-          ~/.local/bin/uv
-          ~/.local/bin/uvx
         key: |
           release-archive-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
           'installation/src/modules/release-archives/release-archives.constants.ts')
-          }}-gitleaks-${{ inputs.gitleaks }}-trivy-${{ inputs.trivy }}-uv-${{
-          inputs.uv }}
+          }}-gitleaks-${{ inputs.gitleaks }}-trivy-${{ inputs.trivy }}
 
     # The `software` command of the `installation` project, given names,
     # installs just the software the job asked for, from the same pinned
@@ -255,7 +249,7 @@ runs:
     - name: 🧰 Software
       if: |
         (inputs.gitleaks == 'true' || inputs.trivy == 'true'
-        || inputs.postgres-client == 'true' || inputs.uv == 'true')
+        || inputs.postgres-client == 'true')
         && hashFiles('node_modules/.modules.yaml') != ''
       shell: bash
       run: |
@@ -263,21 +257,7 @@ runs:
           installation/src/installation.main.ts software \
           ${{ inputs.gitleaks == 'true' && 'gitleaks' || '' }} \
           ${{ inputs.trivy == 'true' && 'trivy' || '' }} \
-          ${{ inputs.postgres-client == 'true' && 'postgres-client' || '' }} \
-          ${{ inputs.uv == 'true' && 'uv' || '' }}
-
-    # Guarded on `uv` as well as its own input: `python-dependencies` defaults
-    # on, so a job that opts out of installing uv would otherwise inherit a sync
-    # it has no binary to run. It runs after `software`, which installs uv.
-    - name: 🐍 Install Python Dependencies
-      if: inputs.uv == 'true' && inputs.python-dependencies == 'true'
-      # Syncs every uv workspace member into the shared root `.venv` via the
-      # workspace definition in configuration/pyproject.toml. The prune keeps
-      # only the downloaded wheels in the cache the job saves afterwards.
-      run: |
-        uv sync --frozen --quiet --project configuration
-        uv cache prune --ci --quiet
-      shell: bash
+          ${{ inputs.postgres-client == 'true' && 'postgres-client' || '' }}
 
     # The `setup-codebase` command of the `integration` project runs these in
     # order: it bounds a push's base to the push's own previous tip (CI only,
