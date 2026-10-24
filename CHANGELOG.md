@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.2](https://github.com/organizzolini/codebase/compare/v3.26.1...v3.26.2) (2026-10-24)
+
+### 🐛 Bug Fixes
+
+* **codependix:** 🐛 replace the gate's custom hasher with a cache check ([#1819](https://github.com/organizzolini/codebase/issues/1819)) ([7fea157](https://github.com/organizzolini/codebase/commit/7fea157d662e25652bf807dff49bfab994c047ee))
+
 ## [3.26.1](https://github.com/organizzolini/codebase/compare/v3.26.0...v3.26.1) (2026-10-24)
 
 ### ♻️ Code Refactoring

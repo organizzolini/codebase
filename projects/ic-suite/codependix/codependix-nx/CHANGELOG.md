@@ -1,3 +1,9 @@
+## 0.0.35 (2026-10-24)
+
+### 🩹 Fixes
+
+- **codependix:** 🐛 replace the gate's custom hasher with a cache check ([#1819](https://github.com/organizzolini/codebase/pull/1819))
+
 ## 0.0.34 (2026-10-23)
 
 ### 🧱 Updated Dependencies
