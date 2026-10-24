@@ -34,7 +34,6 @@ export default [
             "vite",
             "@vitejs/plugin-react",
             "vite-plugin-dts",
-            "@nx/vite",
           ],
           ignoredFiles: [
             "{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}",

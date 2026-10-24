@@ -1477,9 +1477,6 @@ importers:
       '@headless-tree/core':
         specifier: 'catalog:'
         version: 1.7.0
-      '@nx/vite':
-        specifier: 'catalog:'
-        version: 23.3.0(cc8f632d34852aa5dcb9b656a5b63e92)
       '@tanstack/react-table':
         specifier: 'catalog:'
         version: 9.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -5868,16 +5865,6 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
       msw: ^2.0.0
-
-  '@graphql-codegen/typescript-operations@5.1.0':
-    resolution: {integrity: sha512-JlmjbFl0EnsfMDIYvTE1Q0kAOrntVEZ+ZfBqWTP91g4e0F/TzuwJ/V4tiFmeDf5dx/rf9AK4VkPehIdxu7TYhw==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      graphql-sock: ^1.0.0
-    peerDependenciesMeta:
-      graphql-sock:
-        optional: true
 
   '@graphql-codegen/typescript-operations@6.1.10':
     resolution: {integrity: sha512-hTnwAwQI+/lV0mAlWV0Jg7jBo2XCC++8+njr0meDHQbeAJSH6Pew1ZIcmLVvQUsQNSQwNoR4SKftHbDvq6KoNA==}
@@ -18529,15 +18516,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
-
-  '@graphql-codegen/typescript-operations@5.1.0(graphql@16.14.2)':
-    dependencies:
-      '@graphql-codegen/plugin-helpers': 6.3.0(graphql@16.14.2)
-      '@graphql-codegen/typescript': 5.0.10(graphql@16.14.2)
-      '@graphql-codegen/visitor-plugin-common': 6.3.0(graphql@16.14.2)
-      auto-bind: 4.0.0
-      graphql: 16.14.2
-      tslib: 2.8.1
 
   '@graphql-codegen/typescript-operations@6.1.10(graphql@16.14.2)':
     dependencies:

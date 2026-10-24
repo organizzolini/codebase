@@ -12,15 +12,7 @@
     "type:package"
   ],
   "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "options": {
-        "configFile": "projects/ic-suite/conformetry/conformetry-validation/vite.config.ts",
-        "generatePackageJson": false,
-        "outputPath": "projects/ic-suite/conformetry/conformetry-validation/dist"
-      },
-      "outputs": ["{options.outputPath}"]
-    },
+    "build": {},
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},
