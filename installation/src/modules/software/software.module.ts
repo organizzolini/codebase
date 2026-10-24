@@ -13,6 +13,7 @@ import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
 import { SoftwareInfraService } from "./software-infra.service";
 import { SoftwareLinuxService } from "./software-linux.service";
+import { SoftwareNamedService } from "./software-named.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 import { SoftwareCommand } from "./software.command";
@@ -21,7 +22,7 @@ import { SoftwareService } from "./software.service";
 /** Provides the command that installs the developer tools after Node. */
 @Module({
   controllers: [],
-  exports: [SoftwareCommand, SoftwareDatabaseService, SoftwareService],
+  exports: [SoftwareCommand, SoftwareService],
   imports: [
     LoggerModule,
     ProcessRunnerModule,
@@ -37,6 +38,7 @@ import { SoftwareService } from "./software.service";
     SoftwareGpgService,
     SoftwareInfraService,
     SoftwareLinuxService,
+    SoftwareNamedService,
     SoftwareOllamaService,
     SoftwarePythonService,
     SoftwareService,

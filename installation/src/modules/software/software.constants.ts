@@ -1,5 +1,7 @@
 // ♟️ Constants
 
+import { RELEASE_ARCHIVE_TOOLS } from "../release-archives/release-archives.constants";
+
 import type { InfrastructureTool } from "./software.types";
 
 /** The check that asks Python whether it is new enough. */
@@ -71,3 +73,31 @@ export const INFRASTRUCTURE_TOOLS: InfrastructureTool[] = [
   { name: "helm" },
   { formula: "kubernetes-cli", name: "kubectl" },
 ];
+
+/** The name that asks for PostgreSQL 18's `pg_dump` and `pg_restore`. */
+export const POSTGRES_CLIENT_NAME = "postgres-client";
+
+/** The tools installed from a release archive, which only Linux uses. */
+export const ARCHIVE_TOOL_NAMES: ReadonlySet<string> = new Set(
+  RELEASE_ARCHIVE_TOOLS.map(({ name }) => name),
+);
+
+/** Every name `software` accepts to install just that software. */
+export const NAMED_SOFTWARE: readonly string[] = [
+  ...ARCHIVE_TOOL_NAMES,
+  POSTGRES_CLIENT_NAME,
+];
+
+/** What `pg_dump --version` prints for the PostgreSQL release the database tests need. */
+export const POSTGRES_VERSION_MARKER = "18.";
+
+export const POSTGRES_NOT_18_MESSAGE =
+  "pg_dump is not PostgreSQL 18 after the install; the database tests need 18's client tools";
+
+/** Reports names that `software` cannot install by name. */
+export const unknownNamesMessage = (names: readonly string[]): string =>
+  `Unknown software ${names.join(", ")}; choose from ${NAMED_SOFTWARE.join(", ")}`;
+
+/** Reports a release archive tool asked for by name on a Mac, where Homebrew installs it. */
+export const archiveToolOnMacMessage = (name: string): string =>
+  `${name} is installed from a release archive, which only Linux uses; run software with no names to install it through Homebrew`;

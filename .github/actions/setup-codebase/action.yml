@@ -221,13 +221,13 @@ runs:
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
 
-    # The `tools` command of the `installation` project installs the tools the
-    # job asked for, from the same pinned release archives and apt repository a
-    # developer's Linux machine uses, and adds them to `PATH` for the steps
-    # after. It needs the installed dependencies, so a job that skips the
+    # The `software` command of the `installation` project, given names,
+    # installs just the software the job asked for, from the same pinned
+    # release archives and apt repository a developer's Linux machine uses, and
+    # adds it to `PATH` for the steps after. It needs the installed dependencies, so a job that skips the
     # install skips it too. Unlike the tools it replaces, it needs neither
     # Homebrew nor a cache of it.
-    - name: 🧰 Tools
+    - name: 🧰 Software
       if: |
         (inputs.gitleaks == 'true' || inputs.trivy == 'true'
         || inputs.postgres-client == 'true')
@@ -235,7 +235,7 @@ runs:
       shell: bash
       run: |
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          installation/src/installation.main.ts tools \
+          installation/src/installation.main.ts software \
           ${{ inputs.gitleaks == 'true' && 'gitleaks' || '' }} \
           ${{ inputs.trivy == 'true' && 'trivy' || '' }} \
           ${{ inputs.postgres-client == 'true' && 'postgres-client' || '' }}

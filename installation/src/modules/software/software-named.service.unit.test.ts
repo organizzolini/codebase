@@ -20,36 +20,39 @@ import { LoggerService } from "@codebase/observability";
 import { createFakeProcessRunner } from "../../../testing/fake-process-runner";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReleaseArchivesService } from "../release-archives/release-archives.service";
-import { SoftwareDatabaseService } from "../software/software-database.service";
 
-import { ToolsService } from "./tools.service";
+import { SoftwareDatabaseService } from "./software-database.service";
+import { SoftwareNamedService } from "./software-named.service";
 
 import type { FakeMachine } from "../../../testing/fake-process-runner";
 import type { ReleaseArchiveTool } from "../release-archives/release-archives.types";
 
 const BINARY_DIRECTORY = path.join(os.homedir(), ".local", "bin");
 
-describe(ToolsService, () => {
+describe(SoftwareNamedService, () => {
   const originalPath = process.env["PATH"];
   const install = vi.fn<ReleaseArchivesService["install"]>();
   const installPostgres = vi.fn<SoftwareDatabaseService["installPostgres"]>();
-  let service: ToolsService;
+  let service: SoftwareNamedService;
 
   /** Builds the service over a fake machine, with only the path file variable set. */
   const build = async (
     environment: Record<string, string> = {},
     machine: FakeMachine = {},
-  ): Promise<ToolsService> => {
+  ): Promise<SoftwareNamedService> => {
     vi.unstubAllEnvs();
     vi.stubEnv("GITHUB_PATH", undefined);
     for (const [name, value] of Object.entries(environment)) {
       vi.stubEnv(name, value);
     }
 
-    const { runner } = createFakeProcessRunner(machine);
+    const { runner } = createFakeProcessRunner({
+      platform: "linux",
+      ...machine,
+    });
     const module = await Test.createTestingModule({
       providers: [
-        ToolsService,
+        SoftwareNamedService,
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ReleaseArchivesService, useValue: { install } },
         { provide: SoftwareDatabaseService, useValue: { installPostgres } },
@@ -58,7 +61,7 @@ describe(ToolsService, () => {
       ],
     }).compile();
 
-    return module.resolve(ToolsService);
+    return module.resolve(SoftwareNamedService);
   };
 
   /** The names of the archive tools `install` was asked for, in order. */
@@ -68,7 +71,7 @@ describe(ToolsService, () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        ToolsService,
+        SoftwareNamedService,
         { provide: ConfigService, useValue: createMock<ConfigService>() },
         {
           provide: ReleaseArchivesService,
@@ -86,7 +89,7 @@ describe(ToolsService, () => {
       ],
     }).compile();
 
-    service = await module.resolve(ToolsService);
+    service = await module.resolve(SoftwareNamedService);
   });
 
   beforeEach(() => {
@@ -104,26 +107,59 @@ describe(ToolsService, () => {
     expect(service).toBeDefined();
   });
 
-  it("fails, touching nothing, when no tool is named", async () => {
+  it("fails on a name that is not software, before installing any", async () => {
     expect.hasAssertions();
 
     const subject = await build();
 
     expect(() => {
-      subject.install([]);
-    }).toThrow("Name at least one tool");
-    expect(process.env["PATH"]).toBe(originalPath);
+      subject.install(["gitleaks", "git"]);
+    }).toThrow("Unknown software git");
+    expect(install).not.toHaveBeenCalled();
   });
 
-  it("fails on a name that is not a tool, before installing any", async () => {
+  it("accepts every tool software installs from a release archive", async () => {
     expect.hasAssertions();
 
     const subject = await build();
 
+    subject.install(["helm", "kubectl", "terraform", "uv"]);
+
+    expect(installedNames()).toStrictEqual([
+      "helm",
+      "kubectl",
+      "terraform",
+      "uv",
+    ]);
+  });
+
+  it("refuses a release archive tool on a Mac, where Homebrew installs it", async () => {
+    expect.hasAssertions();
+
+    const subject = await build({}, { platform: "darwin" });
+
     expect(() => {
-      subject.install(["gitleaks", "helm"]);
-    }).toThrow("Unknown tool helm");
+      subject.install(["trivy"]);
+    }).toThrow("run software with no names");
     expect(install).not.toHaveBeenCalled();
+  });
+
+  it("installs the PostgreSQL client on a Mac too", async () => {
+    expect.hasAssertions();
+
+    const subject = await build(
+      {},
+      {
+        platform: "darwin",
+        responses: {
+          "pg_dump --version": { stdout: "pg_dump (PostgreSQL) 18.6\n" },
+        },
+      },
+    );
+
+    subject.install(["postgres-client"]);
+
+    expect(installPostgres).toHaveBeenCalledTimes(1);
   });
 
   it("installs gitleaks and Trivy from their release archives, in the order named", async () => {
@@ -185,7 +221,7 @@ describe(ToolsService, () => {
   it("puts the install directory first on PATH, and in the file Actions reads", async () => {
     expect.hasAssertions();
 
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "tools-"));
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "software-"));
     const pathFile = path.join(directory, "github-path");
     const subject = await build({ GITHUB_PATH: pathFile });
 

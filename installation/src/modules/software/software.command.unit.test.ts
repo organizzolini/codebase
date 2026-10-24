@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { createMock } from "@golevelup/ts-vitest";
+import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 import {
   afterEach,
@@ -30,6 +31,7 @@ import { SoftwareDockerService } from "./software-docker.service";
 import { SoftwareGpgService } from "./software-gpg.service";
 import { SoftwareInfraService } from "./software-infra.service";
 import { SoftwareLinuxService } from "./software-linux.service";
+import { SoftwareNamedService } from "./software-named.service";
 import { SoftwareOllamaService } from "./software-ollama.service";
 import { SoftwarePythonService } from "./software-python.service";
 import { SoftwareCommand } from "./software.command";
@@ -81,6 +83,10 @@ describe(SoftwareCommand, () => {
       providers: [
         SoftwareCommand,
         { provide: SoftwareService, useValue: createMock<SoftwareService>() },
+        {
+          provide: SoftwareNamedService,
+          useValue: createMock<SoftwareNamedService>(),
+        },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
     }).compile();
@@ -110,11 +116,13 @@ describe(SoftwareCommand, () => {
         SoftwareGpgService,
         SoftwareInfraService,
         SoftwareLinuxService,
+        SoftwareNamedService,
         SoftwareOllamaService,
         SoftwarePythonService,
         SoftwareService,
         SshSigningService,
         ReporterService,
+        { provide: ConfigService, useValue: new ConfigService() },
         { provide: ProcessRunnerService, useValue: runner },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
@@ -151,6 +159,10 @@ describe(SoftwareCommand, () => {
       providers: [
         SoftwareCommand,
         { provide: SoftwareService, useValue: createMock<SoftwareService>() },
+        {
+          provide: SoftwareNamedService,
+          useValue: createMock<SoftwareNamedService>(),
+        },
         { provide: LoggerService, useValue: createMock<LoggerService>() },
       ],
     }).compile();
@@ -502,6 +514,34 @@ describe(SoftwareCommand, () => {
       await subject.run();
 
       expect(report).toContain("   Key ID: AAAA1111BBBB2222");
+    });
+  });
+
+  describe("named software", () => {
+    it("installs only what is named, leaving everything else alone", async () => {
+      expect.hasAssertions();
+
+      const { command: subject, commands } = await createCommand({
+        installed: ["gitleaks"],
+        platform: "linux",
+      });
+
+      await subject.run(["gitleaks"]);
+
+      expect(report).toContain("👍 gitleaks is already installed");
+      expect(
+        commands.filter((line) => /^(brew|pnpm add|uv )/u.test(line)),
+      ).toStrictEqual([]);
+    });
+
+    it("fails on a name that is not software", async () => {
+      expect.hasAssertions();
+
+      const { command: subject } = await createCommand({ platform: "linux" });
+
+      await expect(subject.run(["git"])).rejects.toThrow(
+        "Unknown software git",
+      );
     });
   });
 
