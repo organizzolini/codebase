@@ -2,19 +2,19 @@
   "boundaries": [
     {
       "start": "2025-12-19T08:16:00Z",
-      "summary": "➡️ 🌟 🌙-☀️-♀️-⚵ Juno, Moon, Sun, Venus stellium forming"
+      "summary": "➡️🌟🌙-☀️-♀️-⚵ Juno, Moon, Sun, Venus stellium forming"
     },
     {
       "start": "2025-12-19T19:44:00Z",
-      "summary": "➡️ 🌟 ♂️-🌙-☀️-⚵ Juno, Mars, Moon, Sun stellium forming"
+      "summary": "➡️🌟♂️-🌙-☀️-⚵ Juno, Mars, Moon, Sun stellium forming"
     },
     {
       "start": "2025-12-20T10:06:00Z",
-      "summary": "⬅️ 🌟 🌙-☀️-♀️-⚵ Juno, Moon, Sun, Venus stellium dissolving"
+      "summary": "⬅️🌟🌙-☀️-♀️-⚵ Juno, Moon, Sun, Venus stellium dissolving"
     },
     {
       "start": "2025-12-20T14:19:00Z",
-      "summary": "⬅️ 🌟 ♂️-🌙-☀️-⚵ Juno, Mars, Moon, Sun stellium dissolving"
+      "summary": "⬅️🌟♂️-🌙-☀️-⚵ Juno, Mars, Moon, Sun stellium dissolving"
     }
   ],
   "longitudesByMinute": {
@@ -121,12 +121,12 @@
     {
       "end": "2025-12-20T10:06:00Z",
       "start": "2025-12-19T08:16:00Z",
-      "summary": "🌟 🌙-☀️-♀️-⚵ Juno, Moon, Sun, Venus stellium"
+      "summary": "🌟🌙-☀️-♀️-⚵ Juno, Moon, Sun, Venus stellium"
     },
     {
       "end": "2025-12-20T14:19:00Z",
       "start": "2025-12-19T19:44:00Z",
-      "summary": "🌟 ♂️-🌙-☀️-⚵ Juno, Mars, Moon, Sun stellium"
+      "summary": "🌟♂️-🌙-☀️-⚵ Juno, Mars, Moon, Sun stellium"
     }
   ]
 }

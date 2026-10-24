@@ -131,7 +131,7 @@ export class StelliumService {
 
     const description = `${_.sortBy([...bodiesCapitalized]).join(", ")} stellium ${phase}`;
     const phaseEmoji = this.phaseEmojiFor(phase);
-    const summary = `${phaseEmoji}${stelliumSymbol} ${bodySymbols.join("-")} ${description}`;
+    const summary = `${phaseEmoji}${stelliumSymbol}${bodySymbols.join("-")} ${description}`;
 
     return {
       description,
@@ -253,7 +253,7 @@ export class StelliumService {
    * Handles phase emoji for.
    */
   private phaseEmojiFor(phase: StelliumPhase): string {
-    return phase === "forming" ? "➡️ " : "⬅️ ";
+    return phase === "forming" ? "➡️" : "⬅️";
   }
 
   /**

@@ -467,7 +467,7 @@ describe(SpecialtyAspectsService, () => {
         description: "Sun forming quintile Mercury",
         end: moment.utc("2024-03-21T10:00:00.000Z"),
         start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "➡️ ☀️ ⬠ ☿ Sun forming quintile Mercury",
+        summary: "➡️☀️⬠☿ Sun forming quintile Mercury",
         tags: [
           "Astronomy",
           "Astrology",
@@ -483,7 +483,7 @@ describe(SpecialtyAspectsService, () => {
         description: "Sun dissolving quintile Mercury",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "⬅️ ☀️ ⬠ ☿ Sun dissolving quintile Mercury",
+        summary: "⬅️☀️⬠☿ Sun dissolving quintile Mercury",
         tags: [
           "Astronomy",
           "Astrology",

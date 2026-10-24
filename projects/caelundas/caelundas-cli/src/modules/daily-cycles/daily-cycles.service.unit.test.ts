@@ -185,7 +185,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildSunriseEvent(date);
 
-        expect(event.summary).toBe("☀️ 🔼 Sunrise");
+        expect(event.summary).toBe("☀️🔼 Sunrise");
         expect(event.description).toBe("Sunrise");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -201,7 +201,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildSolarZenithEvent(date);
 
-        expect(event.summary).toBe("☀️ ⏫ Solar Zenith");
+        expect(event.summary).toBe("☀️⏫ Solar Zenith");
         expect(event.description).toBe("Solar Zenith");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -217,7 +217,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildSunsetEvent(date);
 
-        expect(event.summary).toBe("☀️ 🔽 Sunset");
+        expect(event.summary).toBe("☀️🔽 Sunset");
         expect(event.description).toBe("Sunset");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -233,7 +233,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildSolarNadirEvent(date);
 
-        expect(event.summary).toBe("☀️ ⏬ Solar Nadir");
+        expect(event.summary).toBe("☀️⏬ Solar Nadir");
         expect(event.description).toBe("Solar Nadir");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -323,7 +323,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildMoonriseEvent(date);
 
-        expect(event.summary).toBe("🌙 🔼 Moonrise");
+        expect(event.summary).toBe("🌙🔼 Moonrise");
         expect(event.description).toBe("Moonrise");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -339,7 +339,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildLunarZenithEvent(date);
 
-        expect(event.summary).toBe("🌙 ⏫ Lunar Zenith");
+        expect(event.summary).toBe("🌙⏫ Lunar Zenith");
         expect(event.description).toBe("Lunar Zenith");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -355,7 +355,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildMoonsetEvent(date);
 
-        expect(event.summary).toBe("🌙 🔽 Moonset");
+        expect(event.summary).toBe("🌙🔽 Moonset");
         expect(event.description).toBe("Moonset");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -371,7 +371,7 @@ describe(DailyCyclesService, () => {
 
         const event = service.buildLunarNadirEvent(date);
 
-        expect(event.summary).toBe("🌙 ⏬ Lunar Nadir");
+        expect(event.summary).toBe("🌙⏬ Lunar Nadir");
         expect(event.description).toBe("Lunar Nadir");
         expect(event.start).toStrictEqual(date);
         expect(event.end).toStrictEqual(date);
@@ -384,10 +384,10 @@ describe(DailyCyclesService, () => {
 
   describe("rise and set", () => {
     const minute = moment.utc("2026-03-20T11:04:00.000Z");
-    const sunriseSummary = "☀️ 🔼 Sunrise";
-    const sunsetSummary = "☀️ 🔽 Sunset";
-    const moonriseSummary = "🌙 🔼 Moonrise";
-    const moonsetSummary = "🌙 🔽 Moonset";
+    const sunriseSummary = "☀️🔼 Sunrise";
+    const sunsetSummary = "☀️🔽 Sunset";
+    const moonriseSummary = "🌙🔼 Moonrise";
+    const moonsetSummary = "🌙🔽 Moonset";
 
     function solarSummaries(
       trueElevations: [number, number, number],

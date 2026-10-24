@@ -99,7 +99,7 @@ export class MajorAspectEventService {
 
     return {
       description,
-      summary: `${phaseEmoji} ${body1Symbol} ${majorAspectSymbol} ${body2Symbol} ${description}`,
+      summary: `${phaseEmoji}${body1Symbol}${majorAspectSymbol}${body2Symbol} ${description}`,
       tags: [
         "Astronomy",
         "Astrology",

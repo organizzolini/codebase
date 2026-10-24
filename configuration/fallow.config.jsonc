@@ -50,6 +50,9 @@
     "{projects/**,installation,integration,publication,synchronization,validation}/src/*.repl.ts",
     // A worker thread's entry point is spawned by URL, never imported.
     "{projects/**,installation,integration,publication,synchronization,validation}/src/worker.ts",
+    // So is a browser Web Worker's, which the bundler emits from the
+    // `new Worker(new URL(…))` that starts it.
+    "projects/**/src/**/*.worker.ts",
     "{projects/**,installation,integration,publication,synchronization,validation}/testing/**/*.ts",
     // conformetry-examples: every example is read and run rather than imported,
     // so nothing in the module graph reaches one. knip names the same paths in

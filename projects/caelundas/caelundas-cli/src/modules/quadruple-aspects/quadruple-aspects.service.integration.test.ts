@@ -130,8 +130,7 @@ describe("quadruple-aspects.events integration", () => {
         description: "Jupiter, Mars, Moon, Sun grand cross forming",
         end: formingStart,
         start: formingStart,
-        summary:
-          "➡️ ➕ ☀️-♂️-🌙-♃ Jupiter, Mars, Moon, Sun grand cross forming",
+        summary: "➡️➕☀️-♂️-🌙-♃ Jupiter, Mars, Moon, Sun grand cross forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -151,7 +150,7 @@ describe("quadruple-aspects.events integration", () => {
         end: dissolvingStart,
         start: dissolvingStart,
         summary:
-          "⬅️ ➕ ☀️-♂️-🌙-♃ Jupiter, Mars, Moon, Sun grand cross dissolving",
+          "⬅️➕☀️-♂️-🌙-♃ Jupiter, Mars, Moon, Sun grand cross dissolving",
         tags: [
           "Astronomy",
           "Astrology",
@@ -277,7 +276,7 @@ describe("quadruple-aspects.events integration", () => {
         end: formingStart,
         start: formingStart,
         summary:
-          "➡️ 🪁 ☀️-🌙-♂️-♀️ Mars, Moon, Sun, Venus kite forming (Venus focal)",
+          "➡️🪁☀️-🌙-♂️-♀️ Mars, Moon, Sun, Venus kite forming (Venus focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -298,7 +297,7 @@ describe("quadruple-aspects.events integration", () => {
         end: dissolvingStart,
         start: dissolvingStart,
         summary:
-          "⬅️ 🪁 ☀️-🌙-♂️-♀️ Mars, Moon, Sun, Venus kite dissolving (Venus focal)",
+          "⬅️🪁☀️-🌙-♂️-♀️ Mars, Moon, Sun, Venus kite dissolving (Venus focal)",
         tags: [
           "Astronomy",
           "Astrology",

@@ -42,12 +42,12 @@ export const MARS_EVENING_VISIBILITY_DESCRIPTION =
 export const MARS_MORNING_VISIBILITY_DESCRIPTION =
   "Mars Morning Star (Morning Visibility)";
 
-export const VENUS_EVENING_VISIBILITY_SUMMARY = "♀️ 🌇 Venus Evening Star";
-export const VENUS_MORNING_VISIBILITY_SUMMARY = "♀️ 🌄 Venus Morning Star";
-export const MERCURY_EVENING_VISIBILITY_SUMMARY = "☿ 🌇 Mercury Evening Star";
-export const MERCURY_MORNING_VISIBILITY_SUMMARY = "☿ 🌄 Mercury Morning Star";
-export const MARS_EVENING_VISIBILITY_SUMMARY = "♂️ 🌇 Mars Evening Star";
-export const MARS_MORNING_VISIBILITY_SUMMARY = "♂️ 🌄 Mars Morning Star";
+export const VENUS_EVENING_VISIBILITY_SUMMARY = "♀️🌇 Venus Evening Star";
+export const VENUS_MORNING_VISIBILITY_SUMMARY = "♀️🌄 Venus Morning Star";
+export const MERCURY_EVENING_VISIBILITY_SUMMARY = "☿🌇 Mercury Evening Star";
+export const MERCURY_MORNING_VISIBILITY_SUMMARY = "☿🌄 Mercury Morning Star";
+export const MARS_EVENING_VISIBILITY_SUMMARY = "♂️🌇 Mars Evening Star";
+export const MARS_MORNING_VISIBILITY_SUMMARY = "♂️🌄 Mars Morning Star";
 
 export const VENUS_EVENING_VISIBILITY_PAIR_LABEL = "Venus Evening Visibility";
 export const VENUS_MORNING_VISIBILITY_PAIR_LABEL = "Venus Morning Visibility";

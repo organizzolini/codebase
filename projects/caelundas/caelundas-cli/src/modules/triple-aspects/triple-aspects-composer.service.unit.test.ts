@@ -170,7 +170,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Moon, Sun, Mars grand trine forming",
         end: minute,
         start: minute,
-        summary: "➡️ ✶ Moon-Sun-Mars Moon, Sun, Mars grand trine forming",
+        summary: "➡️✶ Moon-Sun-Mars Moon, Sun, Mars grand trine forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -189,7 +189,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Moon, Sun, Mars grand trine dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
-        summary: "⬅️ ✶ Moon-Sun-Mars Moon, Sun, Mars grand trine dissolving",
+        summary: "⬅️✶ Moon-Sun-Mars Moon, Sun, Mars grand trine dissolving",
         tags: forming.tags.map((tag) =>
           tag === "Forming" ? "Dissolving" : tag,
         ),
@@ -292,7 +292,7 @@ describe(TripleAspectsComposerService, () => {
         getPhaseEmoji: (phase: string) => string;
       };
 
-      expect(internals.getPhaseEmoji("dissolving")).toBe("⬅️ ");
+      expect(internals.getPhaseEmoji("dissolving")).toBe("⬅️");
     });
 
     it("returns the perfective phase emoji", () => {
@@ -300,7 +300,7 @@ describe(TripleAspectsComposerService, () => {
         getPhaseEmoji: (phase: string) => string;
       };
 
-      expect(internals.getPhaseEmoji("perfective")).toBe("🎯 ");
+      expect(internals.getPhaseEmoji("perfective")).toBe("🎯");
     });
 
     it("skips progressive pairs without a recognized aspect label", () => {
@@ -350,7 +350,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Sun, Moon, Mars grand trine forming",
         end: minute,
         start: minute,
-        summary: "➡️ ✶ Sun-Moon-Mars",
+        summary: "➡️✶ Sun-Moon-Mars",
         tags: [
           "Astronomy",
           "Astrology",
@@ -368,7 +368,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Sun, Moon, Mars grand trine dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
-        summary: "⬅️ ✶ Sun-Moon-Mars",
+        summary: "⬅️✶ Sun-Moon-Mars",
         tags: forming.tags.map((tag) =>
           tag === "Forming" ? "Dissolving" : tag,
         ),
@@ -388,7 +388,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Sun, Moon, Mars grand trine forming",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
-        summary: "➡️ ✶ Sun-Moon-Mars",
+        summary: "➡️✶ Sun-Moon-Mars",
         tags: [
           "Astronomy",
           "Astrology",
@@ -406,7 +406,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Sun, Moon, Mars grand trine dissolving",
         end: minute,
         start: minute,
-        summary: "⬅️ ✶ Sun-Moon-Mars",
+        summary: "⬅️✶ Sun-Moon-Mars",
         tags: laterForming.tags.map((tag) =>
           tag === "Forming" ? "Dissolving" : tag,
         ),
@@ -436,7 +436,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Mars, Moon, Sun t-square forming (Mars focal)",
         end: minute,
         start: minute,
-        summary: "➡️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
+        summary: "➡️⊤☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -455,8 +455,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
         end: minute.clone().add(2, "hours"),
         start: minute.clone().add(2, "hours"),
-        summary:
-          "⬅️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
+        summary: "⬅️⊤☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
         tags: forming.tags.map((tag) =>
           tag === "Forming" ? "Dissolving" : tag,
         ),
@@ -514,7 +513,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Sun, Moon, Mars grand trine forming",
         end: minute,
         start: minute,
-        summary: "➡️ ✶ Sun-Moon-Mars",
+        summary: "➡️✶ Sun-Moon-Mars",
         tags: [
           "Astronomy",
           "Astrology",
@@ -532,7 +531,7 @@ describe(TripleAspectsComposerService, () => {
         description: "Sun, Moon, Mars grand trine dissolving",
         end: minute.clone().add(1, "hour"),
         start: minute.clone().add(1, "hour"),
-        summary: "⬅️ ✶ Sun-Moon-Mars",
+        summary: "⬅️✶ Sun-Moon-Mars",
         tags: forming.tags.map((tag) =>
           tag === "Forming" ? "Dissolving" : tag,
         ),

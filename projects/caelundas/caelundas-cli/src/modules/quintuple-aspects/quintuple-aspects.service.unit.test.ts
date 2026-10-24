@@ -576,8 +576,8 @@ describe(QuintupleAspectsService, () => {
     it.each([
       {
         caseName: "removes phase emojis from summary",
-        dissolvingSummary: "⬅️ Pentagram dissolving",
-        formingSummary: "➡️ Pentagram forming",
+        dissolvingSummary: "⬅️Pentagram dissolving",
+        formingSummary: "➡️Pentagram forming",
         validateProgressiveEvent: (
           event: DetectedCalendarEvent | undefined,
         ): void => {
@@ -707,7 +707,7 @@ describe(QuintupleAspectsService, () => {
     });
 
     it("returns perfective phase emoji in composer helper", () => {
-      expect(getComposer().getPhaseEmoji("perfective")).toBe("🎯 ");
+      expect(getComposer().getPhaseEmoji("perfective")).toBe("🎯");
     });
 
     it("returns no pentagrams when fewer than five unique bodies are present", () => {

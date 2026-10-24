@@ -18,6 +18,7 @@ callsites
 callidescopeignore
 capitalisation
 capitalised
+cascader
 categorise
 checkpointing
 cipe
@@ -102,6 +103,7 @@ joor
 jsts
 jupyter
 jupyterlab
+keycap
 keyid
 keyof
 killport

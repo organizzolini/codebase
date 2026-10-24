@@ -27,7 +27,7 @@ function buildTSquareBoundary(
     description: `Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
     end: minute,
     start: minute,
-    summary: `➡️ ⊤ 🌚-🌙-♀️ Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
+    summary: `➡️⊤🌚-🌙-♀️ Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
     tags: [
       "Astronomy",
       "Astrology",

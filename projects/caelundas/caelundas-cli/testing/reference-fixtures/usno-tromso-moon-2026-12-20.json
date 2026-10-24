@@ -1,19 +1,19 @@
 {
-  "absent": ["☀️ 🔼 Sunrise", "☀️ 🔽 Sunset"],
+  "absent": ["☀️🔼 Sunrise", "☀️🔽 Sunset"],
   "counts": {
-    "🌙 🔼 Moonrise": 1,
-    "🌙 🔽 Moonset": 1
+    "🌙🔼 Moonrise": 1,
+    "🌙🔽 Moonset": 1
   },
   "events": [
     {
       "note": "USNO 2026-12-20: Moon Set 05:47 CET (UTC+1)",
       "start": "2026-12-20T04:47:00Z",
-      "summary": "🌙 🔽 Moonset"
+      "summary": "🌙🔽 Moonset"
     },
     {
       "note": "USNO 2026-12-20: Moon Rise 09:45 CET (UTC+1). USNO lists the Moon continuously above the horizon on 21 December, and the Sun continuously below it on both days",
       "start": "2026-12-20T08:45:00Z",
-      "summary": "🌙 🔼 Moonrise"
+      "summary": "🌙🔼 Moonrise"
     }
   ],
   "name": "Tromsø moonrise and moonset in the polar night of 20 and 21 December 2026",

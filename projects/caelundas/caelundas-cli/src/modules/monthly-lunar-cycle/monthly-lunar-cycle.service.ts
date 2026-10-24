@@ -68,10 +68,10 @@ export class MonthlyLunarCycleService {
    * @example
    * ```typescript
    * const duration = getMonthlyLunarCycleProgressiveEvent(
-   *   { summary: "🌕 🌑 New Moon", start: Jan 1, tags: [..., "New"] },
-   *   { summary: "🌕 🌓 First Quarter Moon", start: Jan 8, tags: [..., "First"] }
+   *   { summary: "🌕🌑 New Moon", start: Jan 1, tags: [..., "New"] },
+   *   { summary: "🌕🌓 First Quarter Moon", start: Jan 8, tags: [..., "First"] }
    * );
-   * // Returns: { summary: "🌕 🌑 New Moon", start: Jan 1, end: Jan 8, tags: [..., "New"] }
+   * // Returns: { summary: "🌕🌑 New Moon", start: Jan 1, end: Jan 8, tags: [..., "New"] }
    * ```
    */
   private extractLunarPhaseFromTags(
@@ -169,7 +169,7 @@ export class MonthlyLunarCycleService {
       description: `${lunarPhaseCapitalized} Moon`,
       end: exiting.start,
       start: entering.start,
-      summary: `🌙 ${lunarPhaseSymbol} ${lunarPhaseCapitalized} Moon`,
+      summary: `🌙${lunarPhaseSymbol} ${lunarPhaseCapitalized} Moon`,
       tags: [
         "Astronomy",
         "Astrology",
@@ -216,8 +216,8 @@ export class MonthlyLunarCycleService {
    *
    * @remarks
    * - Summary format: `🌕 [phaseSymbol] [Phase] Moon`
-   * - Example new: "🌕 🌑 New Moon"
-   * - Example full: "🌕 🌕 Full Moon"
+   * - Example new: "🌕🌑 New Moon"
+   * - Example full: "🌕🌕 Full Moon"
    * - Phase symbols from {@link symbolByLunarPhase}: 🌑 (new), 🌓 (first), 🌕 (full), 🌗 (third)
    * - Tags include capitalized phase name for filtering (e.g., "New", "Full")
    * - Logs event to console with America/New_York timezone for readability
@@ -232,7 +232,7 @@ export class MonthlyLunarCycleService {
    *   date: new Date('2026-01-28T20:15:00Z'),
    *   lunarPhase: "full"
    * });
-   * // Returns: { summary: "🌕 🌕 Full Moon", start: ..., tags: [..., "Full"], ... }
+   * // Returns: { summary: "🌕🌕 Full Moon", start: ..., tags: [..., "Full"], ... }
    * ```
    */
   buildMonthlyLunarCycleEvent(args: {
@@ -243,7 +243,7 @@ export class MonthlyLunarCycleService {
 
     const lunarPhaseCapitalized = _.startCase(lunarPhase);
     const description = `${lunarPhaseCapitalized} Moon`;
-    const summary = `🌙 ${symbolByLunarPhase[lunarPhase]} ${description}`;
+    const summary = `🌙${symbolByLunarPhase[lunarPhase]} ${description}`;
 
     return this.calendarService.buildInstantEvent({
       date,
@@ -278,7 +278,7 @@ export class MonthlyLunarCycleService {
    *   moonCoordinateEphemeris,
    *   sunCoordinateEphemeris,
    * });
-   * // Returns: [{ summary: "🌙 🌕 Full Moon", start: 2026-10-26T04:12Z, ... }]
+   * // Returns: [{ summary: "🌙🌕 Full Moon", start: 2026-10-26T04:12Z, ... }]
    * ```
    */
   detect(args: DetectMonthlyLunarCycleArguments): DetectedCalendarEvent[] {
@@ -322,22 +322,22 @@ export class MonthlyLunarCycleService {
    * @example
    * ```typescript
    * const allEvents = [
-   *   { summary: "🌙 🌑 New Moon", start: Oct 10, tags: [..., "New"] },
-   *   { summary: "🌙 🌒 Waxing Crescent Moon", start: Oct 14, tags: [..., "Waxing Crescent"] },
-   *   { summary: "🌙 🌓 First Quarter Moon", start: Oct 18, tags: [..., "First Quarter"] },
-   *   { summary: "🌙 🌔 Waxing Gibbous Moon", start: Oct 22, tags: [..., "Waxing Gibbous"] },
-   *   { summary: "🌙 🌕 Full Moon", start: Oct 26, tags: [..., "Full"] },
-   *   { summary: "🌙 🌖 Waning Gibbous Moon", start: Oct 29, tags: [..., "Waning Gibbous"] },
-   *   { summary: "🌙 🌗 Last Quarter Moon", start: Nov 1, tags: [..., "Last Quarter"] },
-   *   { summary: "🌙 🌘 Waning Crescent Moon", start: Nov 5, tags: [..., "Waning Crescent"] },
+   *   { summary: "🌙🌑 New Moon", start: Oct 10, tags: [..., "New"] },
+   *   { summary: "🌙🌒 Waxing Crescent Moon", start: Oct 14, tags: [..., "Waxing Crescent"] },
+   *   { summary: "🌙🌓 First Quarter Moon", start: Oct 18, tags: [..., "First Quarter"] },
+   *   { summary: "🌙🌔 Waxing Gibbous Moon", start: Oct 22, tags: [..., "Waxing Gibbous"] },
+   *   { summary: "🌙🌕 Full Moon", start: Oct 26, tags: [..., "Full"] },
+   *   { summary: "🌙🌖 Waning Gibbous Moon", start: Oct 29, tags: [..., "Waning Gibbous"] },
+   *   { summary: "🌙🌗 Last Quarter Moon", start: Nov 1, tags: [..., "Last Quarter"] },
+   *   { summary: "🌙🌘 Waning Crescent Moon", start: Nov 5, tags: [..., "Waning Crescent"] },
    * ];
    * const durations = service.detectProgressive(allEvents);
    * // Returns one span per consecutive pair, seven in all:
    * // [
-   * //   { summary: "🌙 🌑 New Moon", start: Oct 10, end: Oct 14, ... },
-   * //   { summary: "🌙 🌒 Waxing Crescent Moon", start: Oct 14, end: Oct 18, ... },
+   * //   { summary: "🌙🌑 New Moon", start: Oct 10, end: Oct 14, ... },
+   * //   { summary: "🌙🌒 Waxing Crescent Moon", start: Oct 14, end: Oct 18, ... },
    * //   ...
-   * //   { summary: "🌙 🌗 Last Quarter Moon", start: Nov 1, end: Nov 5, ... }
+   * //   { summary: "🌙🌗 Last Quarter Moon", start: Nov 1, end: Nov 5, ... }
    * // ]
    * ```
    */

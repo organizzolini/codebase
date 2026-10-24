@@ -121,7 +121,7 @@ export class IngressesComposerService {
     const bodyCapitalized = bodyDisplayName(body);
     const signCapitalized = capitalize(sign);
     const description = `${bodyCapitalized} ingress decan ${decan} ${signCapitalized}`;
-    const summary = `${symbolByBody[body]} → ${symbolBySign[sign]}${symbolByDecan[decan]} ${description}`;
+    const summary = `${symbolByBody[body]}→${symbolBySign[sign]}${symbolByDecan[decan]} ${description}`;
     return {
       description,
       end: date,
@@ -157,7 +157,7 @@ export class IngressesComposerService {
     const signSymbol = symbolBySign[sign];
 
     const description = `${bodyCapitalized} peak ingress ${signCapitalized}`;
-    const summary = `${bodySymbol} → ${signSymbol}⛰️ ${description}`;
+    const summary = `${bodySymbol}→${signSymbol}⛰️ ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: date.toISOString(),
@@ -220,7 +220,7 @@ export class IngressesComposerService {
     const signSymbol = symbolBySign[sign];
 
     const description = `${bodyCapitalized} ingress ${signCapitalized}`;
-    const summary = `${bodySymbol} → ${signSymbol} ${description}`;
+    const summary = `${bodySymbol}→${signSymbol} ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: date.toISOString(),
@@ -339,7 +339,7 @@ export class IngressesComposerService {
       description: `${bodyCapitalized} in ${signCapitalized}`,
       end: exiting.start,
       start: entering.start,
-      summary: `${bodySymbol} ${signSymbol} ${bodyCapitalized} in ${signCapitalized}`,
+      summary: `${bodySymbol}${signSymbol} ${bodyCapitalized} in ${signCapitalized}`,
       tags: [
         "Astronomy",
         "Astrology",

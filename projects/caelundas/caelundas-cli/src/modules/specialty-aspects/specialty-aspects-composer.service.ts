@@ -71,7 +71,7 @@ export class SpecialtyAspectsComposerService {
       tags,
       timestamp,
     } = args;
-    const summary = `${phaseEmoji} ${body1Symbol} ${specialtyAspectSymbol} ${body2Symbol} ${description}`;
+    const summary = `${phaseEmoji}${body1Symbol}${specialtyAspectSymbol}${body2Symbol} ${description}`;
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),
       summary,

@@ -145,7 +145,7 @@ export class SextupleAspectsComposerService {
     const phaseEmoji = this.getPhaseEmoji(phase);
     const symbolChain = symbols.join("-");
 
-    return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
+    return `${phaseEmoji}${aspectSymbol}${symbolChain} ${description}`;
   }
 
   /**

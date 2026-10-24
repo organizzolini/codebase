@@ -156,7 +156,7 @@ export class AnnualSolarCycleEventsService {
     return this.buildSolarCycleEvent({
       date,
       description: "Solar Aphelion",
-      summary: "☀️ ❄️ Solar Aphelion",
+      summary: "☀️❄️ Solar Aphelion",
       tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, APHELION_TAG],
     });
   }
@@ -256,7 +256,7 @@ export class AnnualSolarCycleEventsService {
     return this.buildSolarCycleEvent({
       date,
       description: "Solar Perihelion",
-      summary: "☀️ 🔥 Solar Perihelion",
+      summary: "☀️🔥 Solar Perihelion",
       tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, PERIHELION_TAG],
     });
   }

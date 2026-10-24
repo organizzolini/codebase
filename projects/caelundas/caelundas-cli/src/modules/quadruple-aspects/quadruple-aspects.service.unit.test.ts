@@ -48,7 +48,7 @@ function buildKiteBoundary(
     description: `Jupiter, Mars, Moon, Venus kite ${phase} (Venus focal)`,
     end: minute,
     start: minute,
-    summary: `➡️ 🪁 🌙-♂️-♃-♀️ Jupiter, Mars, Moon, Venus kite ${phase} (Venus focal)`,
+    summary: `➡️🪁🌙-♂️-♃-♀️ Jupiter, Mars, Moon, Venus kite ${phase} (Venus focal)`,
     tags: [
       "Astronomy",
       "Astrology",
@@ -385,7 +385,7 @@ describe(QuadrupleAspectsService, () => {
         .map((span) => span.summary);
 
       expect(spanTitles).toStrictEqual([
-        formingTitle.replace("➡️ ", "").replace(" forming", ""),
+        formingTitle.replace("➡️", "").replace(" forming", ""),
       ]);
       expect(spanTitles[0]).not.toMatch(/forming|dissolving/u);
     });
@@ -731,8 +731,8 @@ describe(QuadrupleAspectsService, () => {
     it.each([
       {
         caseName: "removes phase emojis from summary",
-        dissolvingSummary: "⬅️ Grand Cross dissolving",
-        formingSummary: "➡️ Grand Cross forming",
+        dissolvingSummary: "⬅️Grand Cross dissolving",
+        formingSummary: "➡️Grand Cross forming",
         validateProgressiveEvent: (
           event: DetectedCalendarEvent | undefined,
         ): void => {
@@ -859,7 +859,7 @@ describe(QuadrupleAspectsService, () => {
         ) => boolean;
       };
 
-      expect(internals.getPhaseEmoji("perfective")).toBe("🎯 ");
+      expect(internals.getPhaseEmoji("perfective")).toBe("🎯");
       expect(
         internals.findGrandTrines(
           [
@@ -1234,7 +1234,7 @@ describe(QuadrupleAspectsService, () => {
     it("returns perfective phase marker in base helper", () => {
       const baseInternals = getBaseInternals();
 
-      expect(baseInternals.getPhaseEmoji("perfective")).toBe("🎯 ");
+      expect(baseInternals.getPhaseEmoji("perfective")).toBe("🎯");
     });
 
     it("returns false when a required square is missing during verification", () => {
@@ -1256,7 +1256,7 @@ describe(QuadrupleAspectsService, () => {
     it("returns the dissolving phase emoji in the base helper", () => {
       const baseInternals = getBaseInternals();
 
-      expect(baseInternals.getPhaseEmoji("dissolving")).toBe("⬅️ ");
+      expect(baseInternals.getPhaseEmoji("dissolving")).toBe("⬅️");
     });
 
     it("omits focal tags when no focal body is provided", () => {

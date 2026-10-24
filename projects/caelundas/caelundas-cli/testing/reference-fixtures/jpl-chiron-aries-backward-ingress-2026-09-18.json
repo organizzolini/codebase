@@ -1,13 +1,13 @@
 {
-  "absent": ["⚷ → ♈⛰️ Chiron peak ingress Aries"],
+  "absent": ["⚷→♈⛰️ Chiron peak ingress Aries"],
   "counts": {
-    "⚷ → ♈ Chiron ingress Aries": 1
+    "⚷→♈ Chiron ingress Aries": 1
   },
   "events": [
     {
       "note": "Horizons ObsEcLon crosses 30 degrees backwards at 2026-09-18T01:50:00Z; the re-entry into Aries is a sign ingress, not a peak; window dates are Philadelphia local, so 17-18 September covers 01:50 UT on the 18th",
       "start": "2026-09-18T01:50:00Z",
-      "summary": "⚷ → ♈ Chiron ingress Aries"
+      "summary": "⚷→♈ Chiron ingress Aries"
     }
   ],
   "name": "Chiron re-enters Aries backwards on 18 September 2026",

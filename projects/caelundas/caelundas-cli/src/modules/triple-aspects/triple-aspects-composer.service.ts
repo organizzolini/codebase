@@ -260,7 +260,7 @@ export class TripleAspectsComposerService {
       description: `${descBodies} ${aspect}`,
       end: args.dissolving.start,
       start: args.forming.start,
-      summary: `${symbolByTripleAspect[aspect]} ${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${descBodies} ${aspect}${extraInfo}`,
+      summary: `${symbolByTripleAspect[aspect]}${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${descBodies} ${aspect}${extraInfo}`,
       tags: [
         "Astronomy",
         "Astrology",
@@ -309,7 +309,7 @@ export class TripleAspectsComposerService {
       phase,
       tripleAspect,
     });
-    const summary = `${this.getPhaseEmoji(phase)}${symbolByTripleAspect[tripleAspect]} ${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${description}`;
+    const summary = `${this.getPhaseEmoji(phase)}${symbolByTripleAspect[tripleAspect]}${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),

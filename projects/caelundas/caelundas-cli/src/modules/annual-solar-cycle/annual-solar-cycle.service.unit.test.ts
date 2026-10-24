@@ -156,7 +156,7 @@ describe(AnnualSolarCycleService, () => {
       });
 
       expect(events).toStrictEqual([
-        expect.objectContaining({ summary: "☀️ 🔥 Solar Perihelion" }),
+        expect.objectContaining({ summary: "☀️🔥 Solar Perihelion" }),
       ]);
       expect(events[0]?.start.toISOString()).toBe("2026-01-03T17:18:00.000Z");
     });
@@ -193,7 +193,7 @@ describe(AnnualSolarCycleService, () => {
       });
 
       expect(events).toStrictEqual([
-        expect.objectContaining({ summary: "☀️ ❄️ Solar Aphelion" }),
+        expect.objectContaining({ summary: "☀️❄️ Solar Aphelion" }),
       ]);
       expect(events[0]?.start.toISOString()).toBe("2026-07-06T17:30:00.000Z");
     });
@@ -226,7 +226,7 @@ describe(AnnualSolarCycleService, () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]).toStrictEqual(
-        expect.objectContaining({ summary: "☀️ 🔥 Solar Perihelion" }),
+        expect.objectContaining({ summary: "☀️🔥 Solar Perihelion" }),
       );
       // Sample 29 is |-0.4|, sample 30 is |0.6|: nearest minute is sample 29.
       expect(events[0]?.start.toISOString()).toBe("2026-01-03T17:17:00.000Z");
@@ -252,7 +252,7 @@ describe(AnnualSolarCycleService, () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]).toStrictEqual(
-        expect.objectContaining({ summary: "☀️ 🔥 Solar Perihelion" }),
+        expect.objectContaining({ summary: "☀️🔥 Solar Perihelion" }),
       );
     });
 
@@ -276,7 +276,7 @@ describe(AnnualSolarCycleService, () => {
 
       expect(events).toHaveLength(1);
       expect(events[0]).toStrictEqual(
-        expect.objectContaining({ summary: "☀️ ❄️ Solar Aphelion" }),
+        expect.objectContaining({ summary: "☀️❄️ Solar Aphelion" }),
       );
     });
 
@@ -304,7 +304,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Aphelion",
         end: moment.utc("2024-07-05T12:00:00.000Z"),
         start: moment.utc("2024-07-05T12:00:00.000Z"),
-        summary: "☀️ ❄️ Solar Aphelion",
+        summary: "☀️❄️ Solar Aphelion",
         tags: [
           "Astronomy",
           "Astrology",
@@ -317,7 +317,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Perihelion",
         end: moment.utc("2025-01-03T12:00:00.000Z"),
         start: moment.utc("2025-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
+        summary: "☀️🔥 Solar Perihelion",
         tags: [
           "Astronomy",
           "Astrology",
@@ -341,7 +341,7 @@ describe(AnnualSolarCycleService, () => {
           description: "Solar Advancing (Aphelion to Perihelion)",
           end: perihelionEvent.start,
           start: aphelionEvent.start,
-          summary: "☀️ 🔥 Solar Advancing",
+          summary: "☀️🔥 Solar Advancing",
           tags: [
             "Astronomy",
             "Astrology",
@@ -358,7 +358,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Perihelion",
         end: moment.utc("2024-01-03T12:00:00.000Z"),
         start: moment.utc("2024-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
+        summary: "☀️🔥 Solar Perihelion",
         tags: [
           "Astronomy",
           "Astrology",
@@ -371,7 +371,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Aphelion",
         end: moment.utc("2024-07-05T12:00:00.000Z"),
         start: moment.utc("2024-07-05T12:00:00.000Z"),
-        summary: "☀️ ❄️ Solar Aphelion",
+        summary: "☀️❄️ Solar Aphelion",
         tags: [
           "Astronomy",
           "Astrology",
@@ -395,7 +395,7 @@ describe(AnnualSolarCycleService, () => {
           description: "Solar Retreating (Perihelion to Aphelion)",
           end: aphelionEvent.start,
           start: perihelionEvent.start,
-          summary: "☀️ ❄️ Solar Retreating",
+          summary: "☀️❄️ Solar Retreating",
           tags: [
             "Astronomy",
             "Astrology",
@@ -417,8 +417,8 @@ describe(AnnualSolarCycleService, () => {
         start: moment.utc(at),
         summary:
           kind === "Perihelion"
-            ? "☀️ 🔥 Solar Perihelion"
-            : "☀️ ❄️ Solar Aphelion",
+            ? "☀️🔥 Solar Perihelion"
+            : "☀️❄️ Solar Aphelion",
         tags: ["Astronomy", "Astrology", "Annual Solar Cycle", "Solar", kind],
       });
       // The old duplicate-perihelion pattern, then a correct year.
@@ -450,7 +450,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Perihelion",
         end: moment.utc("2024-01-03T12:00:00.000Z"),
         start: moment.utc("2024-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
+        summary: "☀️🔥 Solar Perihelion",
         tags: [
           "Astronomy",
           "Astrology",
@@ -463,7 +463,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Aphelion",
         end: moment.utc("2024-07-05T12:00:00.000Z"),
         start: moment.utc("2024-07-05T12:00:00.000Z"),
-        summary: "☀️ ❄️ Solar Aphelion",
+        summary: "☀️❄️ Solar Aphelion",
         tags: [
           "Astronomy",
           "Astrology",
@@ -476,7 +476,7 @@ describe(AnnualSolarCycleService, () => {
         description: "Solar Perihelion",
         end: moment.utc("2025-01-03T12:00:00.000Z"),
         start: moment.utc("2025-01-03T12:00:00.000Z"),
-        summary: "☀️ 🔥 Solar Perihelion",
+        summary: "☀️🔥 Solar Perihelion",
         tags: [
           "Astronomy",
           "Astrology",

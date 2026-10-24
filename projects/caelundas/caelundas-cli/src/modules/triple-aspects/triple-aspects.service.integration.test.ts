@@ -118,7 +118,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun t-square forming (Mars focal)",
         end: formingStart,
         start: formingStart,
-        summary: "➡️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
+        summary: "➡️⊤☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -137,8 +137,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
         end: dissolvingStart,
         start: dissolvingStart,
-        summary:
-          "⬅️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
+        summary: "⬅️⊤☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -321,7 +320,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun grand trine forming",
         end: formingStart,
         start: formingStart,
-        summary: "➡️ △ ☀️-🌙-♂️ Mars, Moon, Sun grand trine forming",
+        summary: "➡️△☀️-🌙-♂️ Mars, Moon, Sun grand trine forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -339,7 +338,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun grand trine dissolving",
         end: dissolvingStart,
         start: dissolvingStart,
-        summary: "⬅️ △ ☀️-🌙-♂️ Mars, Moon, Sun grand trine dissolving",
+        summary: "⬅️△☀️-🌙-♂️ Mars, Moon, Sun grand trine dissolving",
         tags: [
           "Astronomy",
           "Astrology",
