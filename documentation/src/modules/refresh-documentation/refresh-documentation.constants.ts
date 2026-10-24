@@ -14,3 +14,12 @@ export const OPENWIKI_ARGUMENTS = [
 
 /** The agent instruction file OpenWiki leaves behind, which is never committed. */
 export const OPENWIKI_LEFTOVER_FILE = "CLAUDE.md";
+
+/**
+ * Where the wiki is written, relative to the workspace root. A symlink here
+ * points at the directory the documentation project keeps its pages in.
+ */
+export const OPENWIKI_LINK = "openwiki";
+
+/** The directory the wiki's pages are committed in. */
+export const OPENWIKI_STORAGE = "documentation/openwiki";
