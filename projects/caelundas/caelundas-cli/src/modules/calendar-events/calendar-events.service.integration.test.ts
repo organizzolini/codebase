@@ -11,6 +11,7 @@ import { DatabaseModule } from "../database/database.module";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { Tag } from "../database/entities/tag.entity";
 import { Migration1792416080531 } from "../database/migrations/1792416080531-migration";
+import { Migration1792854507000 } from "../database/migrations/1792854507000-migration";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
@@ -73,7 +74,7 @@ describe("calendar events service integration", () => {
       database: DatabaseModule,
       entities: DATABASE_ENTITIES,
       imports: [LoggerModule, CalendarEventsModule],
-      migrations: [Migration1792416080531],
+      migrations: [Migration1792416080531, Migration1792854507000],
       project: "caelundas",
       validate: (config) => environmentSchema.parse(config),
     });
@@ -162,6 +163,49 @@ describe("calendar events service integration", () => {
     await service.upsert([twice, twice], philadelphia);
 
     await expect(repository.countBy({ summary: "Twice" })).resolves.toBe(1);
+  });
+
+  it("stores a boundary and a span of the same title and start as two rows", async () => {
+    expect.hasAssertions();
+
+    const start = "2026-05-10T00:00:00Z";
+    await service.upsert(
+      [
+        tagged("Shared title", start, ["boundary only"]),
+        {
+          ...tagged("Shared title", start, ["span only"]),
+          end: moment.utc("2026-05-12T00:00:00Z"),
+        },
+      ],
+      philadelphia,
+    );
+    const rows = await service.findInRange({
+      end: moment.utc("2026-05-11T00:00:00Z"),
+      latitude: philadelphia.latitude,
+      longitude: philadelphia.longitude,
+      start: moment.utc("2026-05-09T00:00:00Z"),
+    });
+    const own = rows
+      .filter(({ summary }) => summary === "Shared title")
+      .map(({ tags }) =>
+        tags.filter((tag) => tag === "boundary only" || tag === "span only"),
+      );
+
+    expect(own).toHaveLength(2);
+    expect(own.toSorted()).toStrictEqual([["boundary only"], ["span only"]]);
+  });
+
+  it("stores a title with its stray whitespace tidied", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [event("  Spaced   out ", "2026-05-20T00:00:00Z")],
+      philadelphia,
+    );
+
+    await expect(repository.countBy({ summary: "Spaced out" })).resolves.toBe(
+      1,
+    );
   });
 
   /**

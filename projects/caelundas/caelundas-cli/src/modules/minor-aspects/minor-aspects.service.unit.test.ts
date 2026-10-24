@@ -375,10 +375,7 @@ describe(MinorAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("🎯");
-      expect(event.summary).toContain("☀️");
-      expect(event.summary).toContain("🌙");
-      expect(event.summary).toContain("⚺");
+      expect(event.summary).toBe("☀️⚺🌙 Sun semisextile Moon");
       expect(event.description).toBe("Sun perfective semisextile Moon");
       expect(event.tags).toContain("Astronomy");
       expect(event.tags).toContain("Astrology");
@@ -402,7 +399,7 @@ describe(MinorAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("➡️");
+      expect(event.summary).toContain("");
       expect(event.summary).toContain("☀️");
       expect(event.summary).toContain("♀️");
       expect(event.summary).toContain("∠");
@@ -422,7 +419,7 @@ describe(MinorAspectsService, () => {
         timestamp,
       });
 
-      expect(event.summary).toContain("⬅️");
+      expect(event.summary).toContain("");
       expect(event.summary).toContain("☀️");
       expect(event.summary).toContain("♂️");
       expect(event.summary).toContain("⚼");

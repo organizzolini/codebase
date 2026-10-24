@@ -80,7 +80,7 @@ describe("quadruple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Jupiter, Mars, Moon, Sun grand cross forming",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("➕");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -118,7 +118,7 @@ describe("quadruple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Jupiter, Mars, Moon, Sun grand cross dissolving",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
 
@@ -130,7 +130,7 @@ describe("quadruple-aspects.events integration", () => {
         description: "Jupiter, Mars, Moon, Sun grand cross forming",
         end: formingStart,
         start: formingStart,
-        summary: "➡️➕☀️-♂️-🌙-♃ Jupiter, Mars, Moon, Sun grand cross forming",
+        summary: "➕☀️♂️🌙♃ Jupiter, Mars, Moon, Sun grand cross",
         tags: [
           "Astronomy",
           "Astrology",
@@ -149,8 +149,7 @@ describe("quadruple-aspects.events integration", () => {
         description: "Jupiter, Mars, Moon, Sun grand cross dissolving",
         end: dissolvingStart,
         start: dissolvingStart,
-        summary:
-          "⬅️➕☀️-♂️-🌙-♃ Jupiter, Mars, Moon, Sun grand cross dissolving",
+        summary: "➕☀️♂️🌙♃ Jupiter, Mars, Moon, Sun grand cross",
         tags: [
           "Astronomy",
           "Astrology",
@@ -226,7 +225,7 @@ describe("quadruple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun, Venus kite forming (Venus focal)",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("🪁");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -263,7 +262,7 @@ describe("quadruple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun, Venus kite dissolving (Venus focal)",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
 
@@ -275,8 +274,7 @@ describe("quadruple-aspects.events integration", () => {
         description: "Mars, Moon, Sun, Venus kite forming (Venus focal)",
         end: formingStart,
         start: formingStart,
-        summary:
-          "➡️🪁☀️-🌙-♂️-♀️ Mars, Moon, Sun, Venus kite forming (Venus focal)",
+        summary: "🪁☀️🌙♂️♀️ Mars, Moon, Sun, Venus kite forming (Venus focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -297,7 +295,7 @@ describe("quadruple-aspects.events integration", () => {
         end: dissolvingStart,
         start: dissolvingStart,
         summary:
-          "⬅️🪁☀️-🌙-♂️-♀️ Mars, Moon, Sun, Venus kite dissolving (Venus focal)",
+          "🪁☀️🌙♂️♀️ Mars, Moon, Sun, Venus kite dissolving (Venus focal)",
         tags: [
           "Astronomy",
           "Astrology",

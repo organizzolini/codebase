@@ -5,7 +5,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -27,7 +26,7 @@ function buildTSquareBoundary(
     description: `Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
     end: minute,
     start: minute,
-    summary: `➡️⊤🌚-🌙-♀️ Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
+    summary: `⊤🌚-🌙-♀️ Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
     tags: [
       "Astronomy",
       "Astrology",
@@ -51,7 +50,6 @@ describe(TripleAspectsService, () => {
       providers: [
         LoggerService,
         AspectGraphService,
-        AspectPhaseEmojiService,
         CompoundPhaseService,
         ProgressiveUtilitiesService,
         TripleAspectsComposerService,

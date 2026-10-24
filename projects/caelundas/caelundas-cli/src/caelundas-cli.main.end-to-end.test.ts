@@ -20,6 +20,7 @@ import { CalendarService } from "./modules/calendar/calendar.service";
 import { DatabaseModule } from "./modules/database/database.module";
 import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
 import { Migration1792416080531 } from "./modules/database/migrations/1792416080531-migration";
+import { Migration1792854507000 } from "./modules/database/migrations/1792854507000-migration";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";
@@ -364,7 +365,7 @@ describe("main end-to-end suite", () => {
       database = await startDatabaseTestingModule({
         database: DatabaseModule,
         entities: [CalendarEvent],
-        migrations: [Migration1792416080531],
+        migrations: [Migration1792416080531, Migration1792854507000],
         project: "caelundas",
         validate: (config) => environmentSchema.parse(config),
       });

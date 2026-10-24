@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -29,7 +28,6 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 const aspectGraphService = new AspectGraphService();
 const composerService = new TripleAspectsComposerService(
   aspectGraphService,
-  new AspectPhaseEmojiService(),
   new LoggerService(),
   new ProgressiveUtilitiesService(new LoggerService()),
 );
@@ -73,7 +71,7 @@ describe("triple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun t-square forming (Mars focal)",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("⊤");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -106,7 +104,7 @@ describe("triple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun t-square dissolving (Mars focal)",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
 
@@ -118,7 +116,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun t-square forming (Mars focal)",
         end: formingStart,
         start: formingStart,
-        summary: "➡️⊤☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
+        summary: "⊤☀️-🌙-♂️ Mars, Moon, Sun t-square (Mars focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -137,7 +135,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
         end: dissolvingStart,
         start: dissolvingStart,
-        summary: "⬅️⊤☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
+        summary: "⊤☀️-🌙-♂️ Mars, Moon, Sun t-square (Mars focal)",
         tags: [
           "Astronomy",
           "Astrology",
@@ -171,8 +169,11 @@ describe("triple-aspects.events integration", () => {
         "Mars, Moon, Sun t-square",
       );
       expect(progressiveEvents[0]?.summary).toContain("⊤");
-      expect(progressiveEvents[0]?.summary).toContain("(focal: Mars)");
-      expect(progressiveEvents[0]?.summary).not.toMatch(/^➡️/);
+      expect(progressiveEvents[0]?.summary).toContain("(Mars focal)");
+      expect(progressiveEvents[0]?.summary).not.toMatch(
+        /forming|perfective|dissolving/u,
+      );
+      expect(progressiveEvents[0]?.summary).toBe(formingEvent.summary);
     });
   });
 
@@ -208,7 +209,7 @@ describe("triple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Jupiter, Saturn, Venus yod forming (Saturn focal)",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("⚛");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -241,7 +242,7 @@ describe("triple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Jupiter, Saturn, Venus yod dissolving (Saturn focal)",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
   });
@@ -277,7 +278,7 @@ describe("triple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun grand trine forming",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("△");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -308,7 +309,7 @@ describe("triple-aspects.events integration", () => {
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun grand trine dissolving",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
 
@@ -320,7 +321,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun grand trine forming",
         end: formingStart,
         start: formingStart,
-        summary: "➡️△☀️-🌙-♂️ Mars, Moon, Sun grand trine forming",
+        summary: "△☀️-🌙-♂️ Mars, Moon, Sun grand trine",
         tags: [
           "Astronomy",
           "Astrology",
@@ -338,7 +339,7 @@ describe("triple-aspects.events integration", () => {
         description: "Mars, Moon, Sun grand trine dissolving",
         end: dissolvingStart,
         start: dissolvingStart,
-        summary: "⬅️△☀️-🌙-♂️ Mars, Moon, Sun grand trine dissolving",
+        summary: "△☀️-🌙-♂️ Mars, Moon, Sun grand trine",
         tags: [
           "Astronomy",
           "Astrology",

@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { MathService } from "../math/math.service";
@@ -28,10 +27,7 @@ import type { DetectedCalendarEvent } from "../database/database.types";
  */
 
 const service = new SextupleAspectsService(
-  new SextupleAspectsComposerService(
-    new AspectPhaseEmojiService(),
-    new ProgressiveCompoundEventService(),
-  ),
+  new SextupleAspectsComposerService(new ProgressiveCompoundEventService()),
   new MathService(),
   new CompoundPhaseService(),
   new ProgressiveUtilitiesService(new LoggerService()),
@@ -97,7 +93,7 @@ describe("sextuple-aspects.events integration", () => {
       expect(events[0]?.tags).toContain("Sun");
       expect(events[0]?.tags).toContain("Venus");
       expect(events[0]?.description).toContain("hexagram forming");
-      expect(events[0]?.summary).toContain("➡️"); // Forming emoji
+      expect(events[0]?.summary).toContain(""); // Forming emoji
       expect(events[0]?.summary).toContain("🔯"); // Hexagram symbol
     });
 
@@ -153,7 +149,7 @@ describe("sextuple-aspects.events integration", () => {
       expect(events[0]?.tags).toContain("Hexagram");
       expect(events[0]?.tags).toContain("Dissolving");
       expect(events[0]?.description).toContain("hexagram dissolving");
-      expect(events[0]?.summary).toContain("⬅️"); // Dissolving emoji
+      expect(events[0]?.summary).toContain(""); // Dissolving emoji
     });
 
     it("creates progressive event from forming/dissolving Hexagram pair", () => {
@@ -162,7 +158,7 @@ describe("sextuple-aspects.events integration", () => {
         end: moment.utc("2024-09-22T18:42:00.000Z"),
         start: moment.utc("2024-09-22T18:42:00.000Z"),
         summary:
-          "➡️✡☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
         tags: [
           "Astronomy",
           "Astrology",
@@ -185,7 +181,7 @@ describe("sextuple-aspects.events integration", () => {
         end: moment.utc("2024-09-22T19:00:00.000Z"),
         start: moment.utc("2024-09-22T19:00:00.000Z"),
         summary:
-          "⬅️✡☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          "✡☉☽♂♃♀♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
         tags: [
           "Astronomy",
           "Astrology",

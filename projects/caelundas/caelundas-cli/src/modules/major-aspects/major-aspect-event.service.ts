@@ -4,6 +4,7 @@ import _ from "lodash";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { majorAspects } from "../caelundas/caelundas.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 import {
@@ -36,13 +37,10 @@ export class MajorAspectEventService {
   // 🔐 Private Fields
 
   private readonly phaseMetadata = {
-    dissolving: { emoji: "⬅️", label: "Dissolving", verb: "dissolving" },
-    forming: { emoji: "➡️", label: "Forming", verb: "forming" },
-    perfective: { emoji: "🎯", label: "Perfective", verb: "perfective" },
-  } as const satisfies Record<
-    AspectPhase,
-    { emoji: string; label: string; verb: string }
-  >;
+    dissolving: { label: "Dissolving", verb: "dissolving" },
+    forming: { label: "Forming", verb: "forming" },
+    perfective: { label: "Perfective", verb: "perfective" },
+  } as const satisfies Record<AspectPhase, { label: string; verb: string }>;
 
   // 🔑 Public Fields
 
@@ -94,12 +92,12 @@ export class MajorAspectEventService {
     const body1Symbol = symbolByBody[body1];
     const body2Symbol = symbolByBody[body2];
     const majorAspectSymbol = symbolByMajorAspect[majorAspect];
-    const { emoji: phaseEmoji, label, verb } = this.phaseMetadata[phase];
+    const { label, verb } = this.phaseMetadata[phase];
     const description = `${body1Capitalized} ${verb} ${majorAspect} ${body2Capitalized}`;
 
     return {
       description,
-      summary: `${phaseEmoji}${body1Symbol}${majorAspectSymbol}${body2Symbol} ${description}`,
+      summary: `${body1Symbol}${majorAspectSymbol}${body2Symbol} ${description.replace(PHASE_WORD_PATTERN, "")}`,
       tags: [
         "Astronomy",
         "Astrology",

@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
@@ -181,8 +182,6 @@ export class ProgressiveAspectService {
     ending,
     isAspect,
     isBody,
-    symbolByAspect,
-    symbolByBody,
   }: {
     aspects: readonly TAspect[];
     aspectTag: string;
@@ -191,33 +190,21 @@ export class ProgressiveAspectService {
     ending: DetectedCalendarEvent;
     isAspect: (value: string) => value is TAspect;
     isBody: (value: string) => value is TBody;
-    symbolByAspect: Readonly<Record<TAspect, string>>;
-    symbolByBody: Readonly<Record<TBody, string>>;
   }): DetectedCalendarEvent {
-    const {
-      aspect,
-      aspectCapitalized,
-      body1,
-      body1Capitalized,
-      body2,
-      body2Capitalized,
-    } = this.extractTypedAspectParts<TAspect, TBody>({
-      aspects,
-      bodies,
-      isAspect,
-      isBody,
-      tags: beginning.tags,
-    });
-
-    const body1Symbol = symbolByBody[body1];
-    const body2Symbol = symbolByBody[body2];
-    const aspectSymbol = symbolByAspect[aspect];
+    const { aspectCapitalized, body1Capitalized, body2Capitalized } =
+      this.extractTypedAspectParts<TAspect, TBody>({
+        aspects,
+        bodies,
+        isAspect,
+        isBody,
+        tags: beginning.tags,
+      });
 
     return {
-      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      description: beginning.description.replace(PHASE_WORD_PATTERN, ""),
       end: ending.start,
       start: beginning.start,
-      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      summary: beginning.summary.replace(PHASE_WORD_PATTERN, ""),
       tags: [
         "Astronomy",
         "Astrology",

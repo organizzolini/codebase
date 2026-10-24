@@ -4,7 +4,7 @@ import _ from "lodash";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { aspectBodies as tripleAspectBodies } from "../caelundas/caelundas.constants";
 import {
   bodyDisplayName,
@@ -36,7 +36,6 @@ export class TripleAspectsComposerService {
 
   constructor(
     private readonly aspectGraphService: AspectGraphService,
-    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
     private readonly logger: LoggerService,
     private readonly progressiveUtilitiesService: ProgressiveUtilitiesService,
   ) {
@@ -134,35 +133,6 @@ export class TripleAspectsComposerService {
   }
 
   /**
-   * Derives focal extra info.
-   */
-  private getFocalExtraInfo(
-    formingTags: string[],
-    aspect: TripleAspect,
-  ): string {
-    const focalTag = formingTags.find((tag) => tag.includes(" Focal"));
-    if (!focalTag) {
-      return "";
-    }
-
-    const focalBody = focalTag.replace(" Focal", "");
-    if (aspect === "t-square") {
-      return ` (focal: ${focalBody})`;
-    }
-    if (aspect === "yod") {
-      return ` (apex: ${focalBody})`;
-    }
-    return "";
-  }
-
-  /**
-   * Derives phase emoji.
-   */
-  private getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
-  }
-
-  /**
    * Resolves aspect type.
    */
   private resolveAspectType(aspectCapitalized: string): null | TripleAspect {
@@ -244,23 +214,15 @@ export class TripleAspectsComposerService {
       return null;
     }
 
-    const {
-      aspect,
-      body1,
-      body1Capitalized,
-      body2,
-      body2Capitalized,
-      body3,
-      body3Capitalized,
-    } = meta;
-    const extraInfo = this.getFocalExtraInfo(args.forming.tags, aspect);
+    const { aspect, body1Capitalized, body2Capitalized, body3Capitalized } =
+      meta;
     const descBodies = `${body1Capitalized}, ${body2Capitalized}, ${body3Capitalized}`;
 
     return {
       description: `${descBodies} ${aspect}`,
       end: args.dissolving.start,
       start: args.forming.start,
-      summary: `${symbolByTripleAspect[aspect]}${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${descBodies} ${aspect}${extraInfo}`,
+      summary: args.forming.summary.replace(PHASE_WORD_PATTERN, ""),
       tags: [
         "Astronomy",
         "Astrology",
@@ -309,7 +271,7 @@ export class TripleAspectsComposerService {
       phase,
       tripleAspect,
     });
-    const summary = `${this.getPhaseEmoji(phase)}${symbolByTripleAspect[tripleAspect]}${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${description}`;
+    const summary = `${symbolByTripleAspect[tripleAspect]}${symbolByBody[body1]}${symbolByBody[body2]}${symbolByBody[body3]} ${description.replace(PHASE_WORD_PATTERN, "")}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),

@@ -35,7 +35,7 @@ export function assertReferenceEvents(
     .map((comparison) => describeFailure(comparison));
   const unexpected = (fixture.absent ?? []).flatMap((summary) =>
     events
-      .filter((event) => event.summary === summary)
+      .filter((event) => isNamed(event, summary))
       .map(
         (event) =>
           `${summary}: must not be detected, found at ${event.start.toISOString()}`,
@@ -43,7 +43,7 @@ export function assertReferenceEvents(
   );
   const miscounted = Object.entries(fixture.counts ?? {}).flatMap(
     ([summary, count]) => {
-      const found = events.filter((event) => event.summary === summary);
+      const found = events.filter((event) => isNamed(event, summary));
 
       return found.length === count
         ? []
@@ -159,6 +159,15 @@ function formatInstant(instant: string): string {
   return new Date(instant).toISOString();
 }
 
+/**
+ * Whether `name` is the event's title or its description. A boundary event and
+ * its span share a title, so a fixture tells a perfective one apart by the
+ * description, which keeps the phase word.
+ */
+function isNamed(event: DetectedCalendarEvent, name: string): boolean {
+  return event.summary === name || event.description === name;
+}
+
 /** Minutes from `reference` to `actual`: positive when the detected moment is later. */
 function minutesBetween(reference: string, actual: Date): number {
   return (actual.getTime() - Date.parse(reference)) / MILLISECONDS_PER_MINUTE;
@@ -166,7 +175,9 @@ function minutesBetween(reference: string, actual: Date): number {
 
 /**
  * Pairs each reference with a detected event of the same summary, nearest
- * start first, so that every detected event satisfies at most one reference.
+ * start and end first (a boundary reference has no end, so its event is the
+ * one that starts and ends together), so that every detected event satisfies
+ * at most one reference.
  */
 function pairEvents(
   events: readonly DetectedCalendarEvent[],
@@ -177,9 +188,14 @@ function pairEvents(
       events
         .filter((event) => event.summary === reference.summary)
         .map((event) => ({
-          distance: Math.abs(
-            event.start.valueOf() - Date.parse(reference.start),
-          ),
+          distance:
+            Math.abs(event.start.valueOf() - Date.parse(reference.start)) +
+            Math.abs(
+              event.end.valueOf() -
+                (reference.end === undefined
+                  ? event.start.valueOf()
+                  : Date.parse(reference.end)),
+            ),
           event,
           referenceIndex,
         })),

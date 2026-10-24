@@ -6,6 +6,10 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
+import {
+  symbolByBody,
+  symbolByMajorAspect,
+} from "../caelundas/symbol-caelundas.constants";
 import { MathService } from "../math/math.service";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -13,6 +17,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { MajorAspectEventService } from "./major-aspect-event.service";
 import { MajorAspectProgressiveService } from "./major-aspect-progressive.service";
 
+import type { Body, MajorAspect } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 
 vi.mock("fs", () => ({
@@ -88,10 +93,10 @@ describe(MajorAspectProgressiveService, () => {
       phase: string,
       timestamp: Moment,
     ): DetectedCalendarEvent => ({
-      description: `${body1} ${phase} ${aspect} ${body2}`,
+      description: `${body1} ${phase.toLowerCase()} ${aspect.toLowerCase()} ${body2}`,
       end: timestamp,
       start: timestamp,
-      summary: `${body1} ${aspect} ${body2}`,
+      summary: `${symbolByBody[body1.toLowerCase() as Body]}${symbolByMajorAspect[aspect.toLowerCase() as MajorAspect]}${symbolByBody[body2.toLowerCase() as Body]} ${body1} ${aspect.toLowerCase()} ${body2}`,
       tags: [
         "Astronomy",
         "Astrology",
@@ -161,9 +166,10 @@ describe(MajorAspectProgressiveService, () => {
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolving.start);
       expect(progressiveEvents[0]?.tags).toContain("Simple Aspect");
       expect(progressiveEvents[0]?.tags).toContain("Major Aspect");
-      expect(progressiveEvents[0]?.summary).toContain("☀️");
-      expect(progressiveEvents[0]?.summary).toContain("☿");
-      expect(progressiveEvents[0]?.summary).toContain("☌");
+      expect(progressiveEvents[0]?.summary).toBe("☀️☌☿ Sun conjunct Mercury");
+      expect(progressiveEvents[0]?.summary).toBe(
+        forming.summary.replace(" forming", ""),
+      );
     });
 
     it("handles multiple aspect types for same body pair", () => {
@@ -408,14 +414,9 @@ describe(MajorAspectProgressiveService, () => {
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.start).toStrictEqual(forming.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolving.start);
-      expect(progressiveEvents[0]?.summary).toContain("☿");
-      expect(progressiveEvents[0]?.summary).toContain("♀️");
-      expect(progressiveEvents[0]?.summary).toContain("☌");
+      expect(progressiveEvents[0]?.summary).toBe("☿☌♀️ Mercury conjunct Venus");
       expect(
-        progressiveEvents.filter(
-          (event) =>
-            event.summary.includes("🎯") || event.tags.includes("Perfective"),
-        ),
+        progressiveEvents.filter((event) => event.tags.includes("Perfective")),
       ).toHaveLength(0);
     });
 

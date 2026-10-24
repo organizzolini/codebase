@@ -21,6 +21,7 @@ export const CALENDAR_EVENT_INSERT_COLUMNS = [
 export const CALENDAR_EVENT_CONFLICT_COLUMNS = [
   "summary",
   "start",
+  "end",
   "latitude",
   "longitude",
 ] as const;
@@ -29,7 +30,6 @@ export const CALENDAR_EVENT_CONFLICT_COLUMNS = [
 export const CALENDAR_EVENT_UPDATE_COLUMNS = [
   "color",
   "description",
-  "end",
   "location",
   "timezone",
 ] as const;
@@ -52,9 +52,15 @@ export const CALENDAR_EVENT_RETURNING_COLUMNS = [
   "id",
   "summary",
   "start",
+  "end",
 ] as const;
 
 /** What an upsert reads back from each row it writes: its id and its key. */
 export const WRITTEN_ROWS_SCHEMA = z.array(
-  z.object({ id: z.string(), start: z.date(), summary: z.string() }),
+  z.object({
+    end: z.date(),
+    id: z.string(),
+    start: z.date(),
+    summary: z.string(),
+  }),
 );

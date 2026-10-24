@@ -5,10 +5,6 @@ import {
   minorAspects,
 } from "../caelundas/caelundas.constants";
 import { isBody, isMinorAspect } from "../caelundas/caelundas.types";
-import {
-  symbolByBody,
-  symbolByMinorAspect,
-} from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -109,8 +105,6 @@ export class MinorAspectsProgressiveService {
       ending,
       isAspect: isMinorAspect,
       isBody,
-      symbolByAspect: symbolByMinorAspect,
-      symbolByBody,
     });
   }
 

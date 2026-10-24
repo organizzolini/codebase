@@ -7,6 +7,7 @@ import {
   calendarEventKey,
   formatCoordinate,
   mapWrittenIds,
+  tidyText,
   toTagLinks,
 } from "./calendar-events.utilities";
 
@@ -23,37 +24,63 @@ describe("calendar events utilities", () => {
     });
   });
 
+  describe(tidyText, () => {
+    it("trims the ends and collapses runs of whitespace", () => {
+      expect(tidyText("  ☀️☌🌙   Sun conjunct  Moon ")).toBe(
+        "☀️☌🌙 Sun conjunct Moon",
+      );
+    });
+
+    it("leaves tidy text alone", () => {
+      expect(tidyText("☀️☌🌙 Sun conjunct Moon")).toBe(
+        "☀️☌🌙 Sun conjunct Moon",
+      );
+    });
+  });
+
   describe(calendarEventKey, () => {
     it("keys a moment and a date at the same instant alike", () => {
       const start = "2026-01-10T00:00:00.000Z";
 
-      expect(calendarEventKey("Sunrise", moment.utc(start))).toBe(
-        calendarEventKey("Sunrise", new Date(start)),
+      expect(
+        calendarEventKey("Sunrise", moment.utc(start), moment.utc(start)),
+      ).toBe(calendarEventKey("Sunrise", new Date(start), new Date(start)));
+    });
+
+    it("tells a span from a boundary of the same title and start", () => {
+      const start = new Date("2026-01-10T00:00:00.000Z");
+      const end = new Date("2026-01-12T00:00:00.000Z");
+
+      expect(calendarEventKey("Mars trine Venus", start, start)).not.toBe(
+        calendarEventKey("Mars trine Venus", start, end),
       );
     });
   });
 
   describe(mapWrittenIds, () => {
     const start = new Date("2026-01-10T00:00:00.000Z");
+    const end = new Date("2026-01-12T00:00:00.000Z");
 
     it("keys each id by the summary and start read back with it", () => {
       expect(
         mapWrittenIds([
-          { createdAt: start, id: "b", start, summary: "Sunset" },
-          { id: "a", start, summary: "Sunrise" },
+          { createdAt: start, end: start, id: "b", start, summary: "Sunset" },
+          { end: start, id: "a", start, summary: "Sunrise" },
+          { end, id: "c", start, summary: "Sunrise" },
         ]),
       ).toStrictEqual(
         new Map([
-          [calendarEventKey("Sunrise", start), "a"],
-          [calendarEventKey("Sunset", start), "b"],
+          [calendarEventKey("Sunrise", start, end), "c"],
+          [calendarEventKey("Sunrise", start, start), "a"],
+          [calendarEventKey("Sunset", start, start), "b"],
         ]),
       );
     });
 
     it("rejects a row read back without its id", () => {
-      expect(() => mapWrittenIds([{ start, summary: "Sunrise" }])).toThrow(
-        /id/u,
-      );
+      expect(() =>
+        mapWrittenIds([{ end: start, start, summary: "Sunrise" }]),
+      ).toThrow(/id/u);
     });
   });
 

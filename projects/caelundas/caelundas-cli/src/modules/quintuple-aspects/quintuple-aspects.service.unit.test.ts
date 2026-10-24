@@ -5,7 +5,6 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { MathService } from "../math/math.service";
@@ -54,7 +53,6 @@ describe(QuintupleAspectsService, () => {
         QuintupleAspectsService,
         QuintupleAspectsComposerService,
         CompoundPhaseService,
-        AspectPhaseEmojiService,
         ProgressiveCompoundEventService,
         MathService,
         LoggerService,
@@ -576,8 +574,8 @@ describe(QuintupleAspectsService, () => {
     it.each([
       {
         caseName: "removes phase emojis from summary",
-        dissolvingSummary: "⬅️Pentagram dissolving",
-        formingSummary: "➡️Pentagram forming",
+        dissolvingSummary: "Pentagram dissolving",
+        formingSummary: "Pentagram forming",
         validateProgressiveEvent: (
           event: DetectedCalendarEvent | undefined,
         ): void => {
@@ -704,10 +702,6 @@ describe(QuintupleAspectsService, () => {
       expect(pattern).toBeNull();
 
       countSpy.mockRestore();
-    });
-
-    it("returns perfective phase emoji in composer helper", () => {
-      expect(getComposer().getPhaseEmoji("perfective")).toBe("🎯");
     });
 
     it("returns no pentagrams when fewer than five unique bodies are present", () => {
