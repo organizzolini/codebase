@@ -168,6 +168,10 @@ runs:
       if: inputs.uv == 'true'
       uses: astral-sh/setup-uv@v10.3.0
       with:
+        # The version the devcontainers pin and the `software` command
+        # installs, so a runner, a devcontainer, and a laptop run one uv. A
+        # test holds the three equal.
+        version: 0.12.3
         enable-cache: true
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
@@ -221,12 +225,31 @@ runs:
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
 
+    # gitleaks and Trivy are single binaries the `software` command downloads
+    # into `~/.local/bin`, so that is all this keeps. Exact match only: the key
+    # names the pinned versions through the file that holds them, so a version
+    # bump is a miss and anything else is a hit. A hit makes the command find
+    # both already installed and download nothing, which also takes the
+    # release hosts out of the job. PostgreSQL comes from apt and is not kept.
+    # The caches a pull request saves are readable only by itself, so `main`'s
+    # is what a pull request and a merge group restore.
+    - name: ♻️ Sync Release Archive Tools Cache
+      if: inputs.gitleaks == 'true' || inputs.trivy == 'true'
+      uses: actions/cache@v6
+      with:
+        path: |
+          ~/.local/bin/gitleaks
+          ~/.local/bin/trivy
+        key: |
+          release-archive-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
+          'installation/src/modules/release-archives/release-archives.constants.ts')
+          }}-gitleaks-${{ inputs.gitleaks }}-trivy-${{ inputs.trivy }}
+
     # The `software` command of the `installation` project, given names,
     # installs just the software the job asked for, from the same pinned
     # release archives and apt repository a developer's Linux machine uses, and
-    # adds it to `PATH` for the steps after. It needs the installed dependencies, so a job that skips the
-    # install skips it too. Unlike the tools it replaces, it needs neither
-    # Homebrew nor a cache of it.
+    # adds it to `PATH` for the steps after. It needs the installed
+    # dependencies, so a job that skips the install skips it too.
     - name: 🧰 Software
       if: |
         (inputs.gitleaks == 'true' || inputs.trivy == 'true'
