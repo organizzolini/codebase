@@ -241,6 +241,10 @@ runs:
     # source on every job — that duplicate work is why this step is gone.
     - name: 📚 Install Node Dependencies
       if: inputs.install == 'true'
+      # node-gyp builds with one make job unless told otherwise; `sweph` takes
+      # half as long on all the runner's cores.
+      env:
+        JOBS: max
       run: CI=true pnpm install --frozen-lockfile --reporter=append-only
       shell: bash
 
