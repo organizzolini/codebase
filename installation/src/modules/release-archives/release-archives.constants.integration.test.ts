@@ -54,4 +54,14 @@ describe("release archive tools", () => {
 
     expect(pinned?.[1]).toBe(uv?.version);
   });
+
+  // setup-uv keys its cache on the lockfile and the Python version, not the uv
+  // version. A cache another uv filled matches and is useless, so the version
+  // goes in the key through the suffix.
+  it("names the pinned uv in the setup-uv cache key", () => {
+    const uv = RELEASE_ARCHIVE_TOOLS.find(({ name }) => name === "uv");
+    const suffix = /cache-suffix:\s*uv-(\S+)/u.exec(SETUP_CODEBASE_ACTION);
+
+    expect(suffix?.[1]).toBe(uv?.version);
+  });
 });
