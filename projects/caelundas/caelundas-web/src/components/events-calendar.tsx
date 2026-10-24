@@ -311,7 +311,7 @@ function CalendarGrid(
     <>
       <EventCalendar<CalendarEventRecord>
         agendaDayCount={agendaDays}
-        className="min-h-0 flex-1"
+        className="min-h-0 flex-1 [--ec-event-min-h:2.25rem]"
         classNames={layout.classNames}
         date={anchor}
         dayCount={calendarView.dayCount}

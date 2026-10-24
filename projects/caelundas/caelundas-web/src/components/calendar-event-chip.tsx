@@ -63,7 +63,7 @@ export function CalendarEventChip(
         ) : (
           // Symbols are drawn larger than the text of an event's name.
           <span
-            className="px-1.5 py-1 text-[1.7em] leading-none"
+            className="py-0.5 text-[1.4em] leading-none"
             data-testid="calendar-event-symbols"
           >
             {symbols === "glyphs" ? (
