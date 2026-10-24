@@ -1,0 +1,69 @@
+name: 🧪 Probe OpenRouter Free Models
+
+on:
+  push:
+    branches:
+      - chore/documentation-probe-free-models
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: 🧪 Probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - name: 🧪 Probe Free Models With A Tool-Calling Request
+        run: |
+          # Only ids ending in :free are ever sent, so this costs nothing. It
+          # stops after three models answer with a tool call, to spare the free
+          # tier's daily request cap.
+          models=(
+            nvidia/nemotron-3.5-super-vl:free
+            thinkingmachines/inkling-small:free
+            nvidia/nemotron-3-ultra-550b-a55b:free
+            google/gemma-4-26b-a4b-it:free
+            google/gemma-4-31b-it:free
+            nvidia/nemotron-3.5-lightning:free
+            poolside/laguna-s-2.1:free
+            cohere/north-mini-code:free
+          )
+          tools='[
+            {"type":"function","function":{"name":"ls","description":"List a directory","parameters":{"type":"object","properties":{"path":{"type":"string"}},"required":["path"]}}},
+            {"type":"function","function":{"name":"read_file","description":"Read a file","parameters":{"type":"object","properties":{"path":{"type":"string"}},"required":["path"]}}},
+            {"type":"function","function":{"name":"glob","description":"Find files","parameters":{"type":"object","properties":{"pattern":{"type":"string"}},"required":["pattern"]}}},
+            {"type":"function","function":{"name":"grep","description":"Search file contents","parameters":{"type":"object","properties":{"pattern":{"type":"string"}},"required":["pattern"]}}},
+            {"type":"function","function":{"name":"submit_plan","description":"Submit the wiki page plan","parameters":{"type":"object","properties":{"pages":{"type":"array","items":{"type":"string"}}},"required":["pages"]}}}
+          ]'
+          passes=0
+          for model in "${models[@]}"; do
+            [[ "$model" == *:free ]] || { echo "PROBE skip non-free model=$model"; continue; }
+            body=$(jq -n --arg model "$model" --arg tools "$tools" '{
+              model: $model, max_tokens: 1024, stream: false, tool_choice: "auto", tools: ($tools | fromjson),
+              messages: [
+                {role: "system", content: "You are a documentation agent for a TypeScript monorepo. Always act by calling a tool."},
+                {role: "user", content: "List the repository root with the ls tool, then plan a six page wiki."}
+              ]}')
+            started=$(date +%s)
+            reply=$(curl -sS --max-time 150 -w '\n%{http_code}' https://openrouter.ai/api/v1/chat/completions \
+              -H "Authorization: Bearer ${OPENROUTER_API_KEY}" -H 'Content-Type: application/json' -d "$body")
+            code=${reply##*$'\n'}
+            json=${reply%$'\n'*}
+            seconds=$(( $(date +%s) - started ))
+            calls=$(printf '%s' "$json" | jq -r '[.choices[0].message.tool_calls // [] | .[] | .function.name] | join(",")' 2>/dev/null)
+            finish=$(printf '%s' "$json" | jq -r '.choices[0].finish_reason // "-"' 2>/dev/null)
+            problem=$(printf '%s' "$json" | jq -r '.error.message // empty' 2>/dev/null | cut -c1-160)
+            echo "PROBE model=$model http=$code seconds=$seconds finish=$finish tool_calls=[${calls}] error=[${problem}]"
+            if [[ "$code" == 200 && -n "$calls" ]]; then
+              passes=$((passes + 1))
+              [[ $passes -ge 3 ]] && break
+            fi
+          done
+          echo "PROBE passes=$passes"
