@@ -27,7 +27,6 @@ searx
 searxng
 Serp
 Tavily
-thinkingmachines
 trafilatura
 vectorstore
 vectorstores

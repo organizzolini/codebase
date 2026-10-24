@@ -19,11 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      # Nemotron on OpenRouter, paid: the weekly update is small, so a run
-      # costs cents, and OpenRouter serves the paid model from several healthy
-      # providers. The free variant has one upstream, which has been down.
+      # OpenRouter's free Nemotron 3 Ultra, which is never billed. Free models
+      # are capped at 20 requests a minute and, once $10 of credit has been
+      # bought, 1,000 a day. A free endpoint can go down or be gated to
+      # approved apps, so a failed run is worth checking the model's health.
       OPENWIKI_PROVIDER: openrouter
-      OPENWIKI_MODEL_ID: nvidia/nemotron-3-super-120b-a12b
+      OPENWIKI_MODEL_ID: nvidia/nemotron-3-ultra-550b-a55b:free
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
       OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "5"
@@ -49,6 +50,10 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # The repository requires signed commits, which a runner cannot make
+          # with a local `git commit` and its pre-commit hook. This has the
+          # action commit through the GitHub API as the bot, which signs them.
+          sign-commits: true
           base: main
           branch: docs/codebase-refresh-documentation
           delete-branch: true
