@@ -13,6 +13,14 @@ const DEVCONTAINER = readFileSync(
   "utf8",
 );
 
+const SETUP_CODEBASE_ACTION = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../.github/actions/setup-codebase/action.yml",
+  ),
+  "utf8",
+);
+
 /** Where the cloud devcontainer pins each tool: a feature option, or an environment variable. */
 const PINS: Record<string, RegExp> = {
   gitleaks: /"GITLEAKS_VERSION":\s*"([^"]+)"/u,
@@ -34,4 +42,16 @@ describe("release archive tools", () => {
       expect(pinned?.[1]).toBe(tool.version);
     },
   );
+
+  // CI installs uv through the setup-uv action, not this command, so its pin
+  // is a third place the version has to match.
+  it("pins the uv that setup-codebase installs to the same version", () => {
+    const uv = RELEASE_ARCHIVE_TOOLS.find(({ name }) => name === "uv");
+    const pinned =
+      /setup-uv@[^\n]*\n\s*with:\n(?:\s*#[^\n]*\n)*\s*version:\s*(\S+)/u.exec(
+        SETUP_CODEBASE_ACTION,
+      );
+
+    expect(pinned?.[1]).toBe(uv?.version);
+  });
 });

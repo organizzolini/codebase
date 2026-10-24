@@ -168,6 +168,10 @@ runs:
       if: inputs.uv == 'true'
       uses: astral-sh/setup-uv@v10.3.0
       with:
+        # The version the devcontainers pin and the `software` command
+        # installs, so a runner, a devcontainer, and a laptop run one uv. A
+        # test holds the three equal.
+        version: 0.12.3
         enable-cache: true
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
