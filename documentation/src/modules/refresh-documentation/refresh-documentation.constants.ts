@@ -23,3 +23,14 @@ export const OPENWIKI_LINK = "openwiki";
 
 /** The directory the wiki's pages are committed in. */
 export const OPENWIKI_STORAGE = "documentation/openwiki";
+
+/**
+ * How many times OpenWiki is started before the refresh gives up. The free
+ * model's only provider overloads for minutes at a time, and OpenWiki's own
+ * retries do not cover every such failure, so a failed run is started again;
+ * it picks up the progress it left in the wiki directory.
+ */
+export const OPENWIKI_ATTEMPTS = 4;
+
+/** The wait before the second attempt; each later wait is one step longer. */
+export const OPENWIKI_RETRY_DELAY_MS = 120_000;

@@ -37,12 +37,9 @@ export class RefreshDocumentationCommand extends CommandRunner {
 
   /** Refreshes the documentation, failing the process when that fails. */
   public async run(): Promise<void> {
-    // Nothing here is asynchronous; `CommandRunner.run` is.
-    await Promise.resolve();
-
     this.logger.log("🧑‍🏫 Refreshing the OpenWiki documentation");
 
-    if (!this.refreshDocumentationService.refresh()) {
+    if (!(await this.refreshDocumentationService.refresh())) {
       this.logger.error("❌ Failed refreshing the documentation with OpenWiki");
       process.exitCode = 1;
     }

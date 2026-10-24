@@ -6,14 +6,17 @@ import {
   symlinkSync,
   unlinkSync,
 } from "node:fs";
+import { setTimeout } from "node:timers/promises";
 
 import { Injectable } from "@nestjs/common";
 
 import {
   OPENWIKI_ARGUMENTS,
+  OPENWIKI_ATTEMPTS,
   OPENWIKI_EXECUTABLE,
   OPENWIKI_LEFTOVER_FILE,
   OPENWIKI_LINK,
+  OPENWIKI_RETRY_DELAY_MS,
   OPENWIKI_STORAGE,
 } from "./refresh-documentation.constants";
 
@@ -63,23 +66,33 @@ export class RefreshDocumentationService {
   // 🌎 Public Methods
 
   /**
-   * Updates the wiki from code, then puts the `openwiki` symlink back and
-   * deletes the instruction file OpenWiki leaves behind — whether or not the
-   * update succeeded.
+   * Updates the wiki from code, starting OpenWiki again after a growing wait
+   * when it fails, then puts the `openwiki` symlink back and deletes the
+   * instruction file OpenWiki leaves behind — whether or not it succeeded.
    *
    * @returns Whether OpenWiki started and exited with status zero.
    */
-  public refresh(): boolean {
+  public async refresh(): Promise<boolean> {
     const exposed = this.exposeWiki();
 
     try {
-      const completion = spawnSync(
-        OPENWIKI_EXECUTABLE,
-        [...OPENWIKI_ARGUMENTS],
-        { cwd: process.cwd(), stdio: "inherit" },
-      );
+      for (let attempt = 1; attempt <= OPENWIKI_ATTEMPTS; attempt++) {
+        const completion = spawnSync(
+          OPENWIKI_EXECUTABLE,
+          [...OPENWIKI_ARGUMENTS],
+          { cwd: process.cwd(), stdio: "inherit" },
+        );
 
-      return completion.error === undefined && completion.status === 0;
+        if (completion.error === undefined && completion.status === 0) {
+          return true;
+        }
+
+        if (attempt < OPENWIKI_ATTEMPTS) {
+          await setTimeout(attempt * OPENWIKI_RETRY_DELAY_MS);
+        }
+      }
+
+      return false;
     } finally {
       if (exposed) {
         this.restoreWiki();
