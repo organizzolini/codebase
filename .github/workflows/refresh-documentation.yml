@@ -30,6 +30,9 @@ jobs:
       OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
       OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "12"
       OPENWIKI_TELEMETRY_DISABLED: "true"
+      # Groups every OpenRouter request of this run in its Sessions view. The
+      # OpenRouter client in OpenWiki reads this variable by itself.
+      OPENROUTER_SESSION_ID: ${{ github.repository }}/refresh-documentation/${{ github.run_id }}/${{ github.run_attempt }}
 
     steps:
       - name: 📥 Checkout Repository
@@ -47,13 +50,29 @@ jobs:
       - name: 🧑‍🏫 Refresh Documentation
         run: pnpm exec nx run documentation:refresh-documentation
 
+      # The repository requires signed commits, and its pre-commit hook rejects
+      # an unsigned one, which the action makes locally before it pushes. The
+      # key is imported here, after the model has finished, so it is not in the
+      # job while the model's tools run.
+      - name: 🔐 Import GPG Key
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@v7
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - name: 🔀 Upsert Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # The repository requires signed commits, which a runner cannot make
-          # with a local `git commit` and its pre-commit hook. This has the
-          # action commit through the GitHub API as the bot, which signs them.
+          committer: >-
+            ${{ steps.import-gpg.outputs.name }}
+            <${{ steps.import-gpg.outputs.email }}>
+          author: >-
+            ${{ steps.import-gpg.outputs.name }}
+            <${{ steps.import-gpg.outputs.email }}>
           sign-commits: true
           base: main
           branch: docs/codebase-refresh-documentation
