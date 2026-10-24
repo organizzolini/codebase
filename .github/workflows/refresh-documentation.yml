@@ -19,12 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      # A free OpenRouter model: the weekly update is small and may take as
-      # long as it needs. OpenRouter caps free models at 20 requests a minute
-      # and, until credits are bought, 50 a day, and a run that exceeds the
-      # daily cap fails without keeping its partial work.
+      # Nemotron on OpenRouter, paid: the weekly update is small, so a run
+      # costs cents, and OpenRouter serves the paid model from several healthy
+      # providers. The free variant has one upstream, which has been down.
       OPENWIKI_PROVIDER: openrouter
-      OPENWIKI_MODEL_ID: thinkingmachines/inkling:free
+      OPENWIKI_MODEL_ID: nvidia/nemotron-3-super-120b-a12b
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
       OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "5"
