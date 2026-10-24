@@ -10,14 +10,7 @@
     "type:package"
   ],
   "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "options": {
-        "generatePackageJson": false,
-        "outputPath": "projects/common/presentation/dist"
-      },
-      "outputs": ["{options.outputPath}"]
-    },
+    "build": {},
     "build-projects": {},
     "codometer": {},
     "dependency-cruiser": {},

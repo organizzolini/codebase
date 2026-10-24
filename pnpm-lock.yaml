@@ -1477,9 +1477,6 @@ importers:
       '@headless-tree/core':
         specifier: 'catalog:'
         version: 1.7.0
-      '@nx/vite':
-        specifier: 'catalog:'
-        version: 24.0.0(c613c59ded06e2fa4364198df78f8fd1)
       '@tanstack/react-table':
         specifier: 'catalog:'
         version: 9.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

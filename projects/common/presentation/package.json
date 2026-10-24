@@ -7,7 +7,6 @@
     "@dnd-kit/sortable": "catalog:",
     "@dnd-kit/utilities": "catalog:",
     "@headless-tree/core": "catalog:",
-    "@nx/vite": "catalog:",
     "@tanstack/react-table": "catalog:",
     "@tanstack/react-virtual": "catalog:",
     "class-variance-authority": "catalog:",
