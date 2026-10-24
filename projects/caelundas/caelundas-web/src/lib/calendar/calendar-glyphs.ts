@@ -33,12 +33,6 @@ export interface EventLabel {
 const WORD_START = /(?<=^|\s)\p{L}{2,}/u;
 
 /**
- * The mark of an aspect that is exact, which is no mark worth drawing: an
- * instant says as much. It stays in the event's own name.
- */
-const PERFECTIVE = /\u{1F3AF}\s*/gu;
-
-/**
  * The spaces between symbols, which the symbols are drawn without.
  */
 const SPACES = /\s+/gu;
@@ -64,12 +58,7 @@ export function getEventLabel(event: CalendarEventRecord): EventLabel {
       ? summary.length - description.length
       : summary.search(WORD_START);
   const symbols =
-    boundary < 0
-      ? ""
-      : summary
-          .slice(0, boundary)
-          .replaceAll(PERFECTIVE, "")
-          .replaceAll(SPACES, "");
+    boundary < 0 ? "" : summary.slice(0, boundary).replaceAll(SPACES, "");
   const words = boundary < 0 ? "" : summary.slice(boundary).trim();
   const name = words === "" ? summary : words;
 

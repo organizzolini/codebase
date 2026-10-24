@@ -25,7 +25,7 @@ describe(getEventLabel, () => {
     expect(
       getEventLabel(
         event(
-          "🎯 🌙 ⚹ ♆ Moon perfective sextile Neptune",
+          "🌙 ⚹ ♆ Moon perfective sextile Neptune",
           "Moon perfective sextile Neptune",
         ),
       ),
@@ -56,7 +56,7 @@ describe(getEventLabel, () => {
       name: "Moon dissolving undecile Saturn",
     });
     expect(
-      getEventLabel(event("🎯 ☀️ N ♇ Sun perfective novile Pluto")),
+      getEventLabel(event("☀️ N ♇ Sun perfective novile Pluto")),
     ).toMatchObject({ glyphs: "☀️N♇" });
   });
 
@@ -106,20 +106,11 @@ describe(getEventLabel, () => {
     });
   });
 
-  it("leaves out the mark of an aspect that is exact, which an instant says", () => {
-    expect(
-      getEventLabel(event("🎯 🌙 ⚹ ♆ Moon perfective sextile Neptune")),
-    ).toMatchObject({
-      glyphs: "🌙⚹♆",
-      name: "Moon perfective sextile Neptune",
-    });
-  });
-
   it("draws the symbols with no space between them", () => {
     expect(
       getEventLabel(
-        event("➡️ △ ♃-⚴-🌚 Jupiter, Lunar Apogee, Pallas grand trine"),
+        event("△ ♃ ⚴ 🌚 Jupiter, Lunar Apogee, Pallas grand trine"),
       ),
-    ).toMatchObject({ glyphs: "➡️△♃-⚴-🌚" });
+    ).toMatchObject({ glyphs: "△♃⚴🌚" });
   });
 });

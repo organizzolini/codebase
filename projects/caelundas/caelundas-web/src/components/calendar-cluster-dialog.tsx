@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@codebase/presentation";
 
-import { AGENDA_ROW_HEIGHTS } from "../lib/calendar/calendar-agenda";
+import { getEventRowHeight } from "../lib/calendar/calendar-agenda";
 
 import { CalendarEventRow } from "./calendar-event-row";
 import { VirtualList } from "./virtual-list";
@@ -84,7 +84,7 @@ export function CalendarClusterDialog(
           </DialogHeader>
           <VirtualList
             className="h-96 max-h-[60dvh]"
-            getRowHeight={getEventRowHeight}
+            getRowHeight={getRowHeight}
             getRowKey={getEventRowKey}
             label={title}
             renderRow={renderRow}
@@ -97,15 +97,15 @@ export function CalendarClusterDialog(
 }
 
 /**
- * Every row of the list is one event's.
- */
-function getEventRowHeight(): number {
-  return AGENDA_ROW_HEIGHTS.event;
-}
-
-/**
  * Names a row by its event.
  */
 function getEventRowKey(record: CalendarEventRecord): string {
   return record.id;
+}
+
+/**
+ * Every row of the list is one event's, as tall as its tags need.
+ */
+function getRowHeight(record: CalendarEventRecord, width: number): number {
+  return getEventRowHeight(record.tags, width);
 }

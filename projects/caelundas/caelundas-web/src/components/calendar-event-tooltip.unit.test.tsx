@@ -14,7 +14,7 @@ const EVENT: CalendarEventRecord = {
   id: "event-mars-square-saturn",
   location: null,
   start: new Date("2026-03-03T10:00:00.000Z"),
-  summary: "🎯 ♂ □ ♄ Mars perfective square Saturn",
+  summary: "♂ □ ♄ Mars perfective square Saturn",
   tags: [],
   timezone: "America/New_York",
 };
@@ -34,14 +34,14 @@ describe(CalendarEventTooltip, () => {
   });
 
   it("draws what it is given", () => {
-    render(<CalendarEventTooltip event={EVENT}>🎯 ♂ □ ♄</CalendarEventTooltip>);
+    render(<CalendarEventTooltip event={EVENT}>♂ □ ♄</CalendarEventTooltip>);
 
-    expect(screen.getByText("🎯 ♂ □ ♄")).toBeDefined();
+    expect(screen.getByText("♂ □ ♄")).toBeDefined();
   });
 
   it("says the name in English and the description on hover", async () => {
-    render(<CalendarEventTooltip event={EVENT}>🎯 ♂ □ ♄</CalendarEventTooltip>);
-    fireEvent.focus(screen.getByText("🎯 ♂ □ ♄"));
+    render(<CalendarEventTooltip event={EVENT}>♂ □ ♄</CalendarEventTooltip>);
+    fireEvent.focus(screen.getByText("♂ □ ♄"));
 
     await expect(
       screen.findByText("Mars perfective square Saturn"),
@@ -67,5 +67,23 @@ describe(CalendarEventTooltip, () => {
       screen.findByText("Click to list them."),
     ).resolves.toBeDefined();
     expect(screen.queryByText("Mars perfective square Saturn")).toBeNull();
+  });
+
+  it("shows the event's tags as pills on hover", async () => {
+    render(
+      <CalendarEventTooltip
+        event={{
+          ...EVENT,
+          tags: [
+            { depth: 1, id: "square", name: "Square", path: "Type / Square" },
+          ],
+        }}
+      >
+        ♂ □ ♄
+      </CalendarEventTooltip>,
+    );
+    fireEvent.focus(screen.getByText("♂ □ ♄"));
+
+    await expect(screen.findByText("Square")).resolves.toBeDefined();
   });
 });

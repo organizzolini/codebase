@@ -7,6 +7,8 @@
  * group sources that replace `{groups}`, then the window's end, then its
  * start, then whatever condition replaces `{filter}`; ends are compared
  * inclusively so an instant at the window's first moment is still found.
+ * The instants where an aspect begins forming or dissolves are left out, since
+ * the event that spans the aspect says as much; they stay in the data.
  */
 export const EVENTS_IN_WINDOW_SQL = `
   select
@@ -36,7 +38,13 @@ export const EVENTS_IN_WINDOW_SQL = `
       ) t
     ) as tags {groups}
   from calendar_events_derived e
-  where e."start" < ? and e."end" >= ? {filter}
+  where e."start" < ? and e."end" >= ?
+    and not exists (
+      select 1
+      from calendar_event_tag_nodes n
+      where n.calendar_event_id = e.id
+        and n.tag_path in ('Phase / Forming', 'Phase / Dissolving')
+    ) {filter}
   order by e."start", e."summary"
 `;
 

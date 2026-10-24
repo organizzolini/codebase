@@ -6,6 +6,8 @@ import {
 
 import { getEventLabel } from "../lib/calendar/calendar-glyphs";
 
+import { EventTagPills } from "./event-tag-pills";
+
 import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
 import type { ReactNode } from "react";
 
@@ -30,7 +32,7 @@ export interface CalendarEventTooltipProperties {
 
 /**
  * Wraps what is drawn for an event, its glyphs, in a tooltip with the event's
- * name in English and whatever the database says of it.
+ * name in English, whatever the database says of it, and its tags as pills.
  */
 export function CalendarEventTooltip(
   properties: Readonly<CalendarEventTooltipProperties>,
@@ -68,6 +70,11 @@ export function CalendarEventTooltip(
           <span className="font-medium">{name}</span>
           {details === undefined ? null : (
             <span className="opacity-80">{details}</span>
+          )}
+          {event.tags.length === 0 ? null : (
+            <span className="mt-1 block max-w-xs">
+              <EventTagPills tags={event.tags} />
+            </span>
           )}
         </TooltipContent>
       </Tooltip>

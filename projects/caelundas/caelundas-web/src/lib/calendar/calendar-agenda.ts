@@ -8,7 +8,22 @@ import type {
   EventGrouping,
   EventGroupNode,
 } from "../event-groups/event-groups.types";
-import type { CalendarEventRecord } from "../events-database/events-database.types";
+import type {
+  CalendarEventRecord,
+  CalendarEventTag,
+} from "../events-database/events-database.types";
+
+// An event row's chrome beside its text: padding, the time, the dot and the
+// gaps between them, and a scrollbar.
+const EVENT_ROW_CHROME_WIDTH = 160;
+// What an event row holds above its tags: padding, the name and the duration.
+const EVENT_ROW_BASE_HEIGHT = 52;
+// A pill is drawn at about this width per character, plus its border and
+// padding, and a gap of 4px lies between pills and between lines of them.
+const PILL_CHARACTER_WIDTH = 5.8;
+const PILL_CHROME_WIDTH = 14;
+const PILL_GAP = 4;
+const PILL_LINE_HEIGHT = 20;
 
 /**
  * How tall each kind of agenda row is drawn, in pixels, so the list can be
@@ -65,6 +80,36 @@ export function getAgendaRange(
   dayCount = AGENDA_DAY_COUNT,
 ): AgendaRange {
   return { from, through: addCalendarDays(from, dayCount), timeZone };
+}
+
+/**
+ * How tall an event row is drawn in a list `width` pixels wide: as tall as
+ * its name and duration, and a line for every line its tags wrap onto, so
+ * that all of them show.
+ */
+export function getEventRowHeight(
+  tags: readonly CalendarEventTag[],
+  width: number,
+): number {
+  const available = width - EVENT_ROW_CHROME_WIDTH;
+  let lines = 0;
+  let used = 0;
+
+  for (const tag of tags) {
+    const pill = tag.name.length * PILL_CHARACTER_WIDTH + PILL_CHROME_WIDTH;
+
+    if (lines === 0 || used + PILL_GAP + pill > available) {
+      lines += 1;
+      used = pill;
+    } else {
+      used += PILL_GAP + pill;
+    }
+  }
+
+  return Math.max(
+    AGENDA_ROW_HEIGHTS.event,
+    EVENT_ROW_BASE_HEIGHT + lines * PILL_LINE_HEIGHT,
+  );
 }
 
 /**

@@ -16,7 +16,7 @@ const EVENT: CalendarEventRecord = {
   id: "event-mars-square-saturn",
   location: null,
   start: new Date("2026-03-03T10:00:00.000Z"),
-  summary: "🎯 ♂ □ ♄ Mars perfective square Saturn",
+  summary: "♂ □ ♄ Mars perfective square Saturn",
   tags: [],
   timezone: "America/New_York",
 };
