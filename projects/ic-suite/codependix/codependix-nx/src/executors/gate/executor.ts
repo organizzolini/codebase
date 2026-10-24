@@ -23,7 +23,14 @@ export default async function gateExecutor(
   context: ExecutorContext,
 ): Promise<{ success: boolean }> {
   const gateService = await resolveGateService();
+  const targetConfiguration =
+    context.projectName === undefined || context.targetName === undefined
+      ? undefined
+      : context.projectGraph.nodes[context.projectName]?.data.targets?.[
+          context.targetName
+        ];
   const success = await gateService.run({
+    cached: targetConfiguration?.cache === true,
     options,
     projectName: context.projectName,
     workspaceRoot: context.root,

@@ -36,7 +36,7 @@ holds it to that.
 
 - **Framework**: NestJS application context (`NestFactory.createApplicationContext`),
   built once per process and cached on `globalThis`
-- **Nx**: `@nx/devkit` — `createNodes`, an executor, a custom hasher, and
+- **Nx**: `@nx/devkit` — `createNodes`, an executor, and
   Nx's `logger` for warnings
 - **Loader**: `@swc-node/register`, registered by this package's own shim
 - **Language**: Strict TypeScript
@@ -53,8 +53,6 @@ src/index.ts — createNodes
   ├─ resolveTsconfigInputs (plugin-tsconfig.utilities.ts) ← the loader's tsconfig chain
   └─ PluginService.inferTargets                       ← one gate per project.json
 
-src/executors/gate/hasher.ts → GateService.hashTask   ← own-project runs hashed by Nx,
-                                                        selection of other projects never replayed
 src/executors/gate/executor.ts → GateService.run
   └─ node --import <loader URL> <@codependix/cli/main> map --check boundaries …
 ```
@@ -67,7 +65,6 @@ src/
   codependix-nx.module.ts  # Root module: GateModule, PluginModule
   executors/gate/
     executor.ts                     # Nx executor → GateService.run
-    hasher.ts                       # Nx hasher → GateService.hashTask
     loader.mjs                      # Registers the swc hooks; passed to --import
     schema.json                     # Executor options; shipped as-is in the tarball
   modules/
@@ -79,7 +76,7 @@ src/
 testing/                            # Shared test setup
 ```
 
-`executors.json` names the executor and hasher by package specifier
+`executors.json` names the executor by package specifier
 (`@codependix/nx/src/executors/gate/*`), which Nx resolves through this
 package's exports — the TypeScript sources here, `dist/` in an installed copy.
 The schema is named by path and listed in `files`, so the tarball ships it.
@@ -108,9 +105,9 @@ The schema is named by path and listed in `files`, so the tarball ships it.
   computation reads only positive `{workspaceRoot}` inputs and ignores a
   `!`-prefixed one, so a negated input would not stop a test-only edit from
   selecting every gate.
-- **Selection runs are never cached.** A gate whose effective `projects` or
-  `tags` (target options, then configuration, then command line) select any
-  project but its own gets a random hash from `GateService.hashTask`.
+- **Selection runs are never cached.** `GateService.run` throws when a cached
+  target's effective `projects` or `tags` select any project but its own; such
+  a target must set `cache: false`.
 
 ### Key Commands
 
@@ -126,7 +123,7 @@ nx run codependix-nx:pack            # Tarball in dist/tarballs — never publis
 ### Testing
 
 ```bash
-nx run codependix-nx:vitest:unit          # Services, the hasher, the loader, tool and tsconfig inputs
+nx run codependix-nx:vitest:unit          # Services, the loader, tool and tsconfig inputs
 nx run codependix-nx:vitest:integration   # The real executor against a fixture workspace
 ```
 
@@ -149,7 +146,7 @@ See the [testing-strategy skill](../../../../.agents/skills/testing-strategy/SKI
 - [src/modules/plugin/plugin-inputs.utilities.ts](src/modules/plugin/plugin-inputs.utilities.ts): Tool inputs
 - [src/modules/plugin/plugin-tsconfig.utilities.ts](src/modules/plugin/plugin-tsconfig.utilities.ts): Tsconfig inputs
 - [src/executors/gate/loader.mjs](src/executors/gate/loader.mjs): The `--import` shim
-- [executors.json](executors.json): Executor, hasher, and schema
+- [executors.json](executors.json): Executor and schema
 - [project.json](project.json): Nx targets
 
 See the [triage-integration skill](../../../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.

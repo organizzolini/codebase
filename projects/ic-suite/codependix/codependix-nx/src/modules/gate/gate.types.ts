@@ -1,7 +1,5 @@
 // 🏷️ Types
 
-import type { HasherContext, Task } from "@nx/devkit";
-
 /** Arguments for building the command line one gate runs. */
 export interface BuildCommandArguments extends GateSelection {
   /** Filesystem path of the codependix command line's entry. */
@@ -12,14 +10,6 @@ export interface BuildCommandArguments extends GateSelection {
   readonly loaderUrl: string;
   readonly workspaceRoot: string;
 }
-
-/**
- * What Nx hands an executor's hasher: its declared context, plus the task's
- * own environment, which it passes without declaring.
- */
-export type GateHasherContext = HasherContext & {
-  readonly env?: NodeJS.ProcessEnv | undefined;
-};
 
 /** Options the gate executor accepts. */
 export interface GateOptions {
@@ -39,14 +29,10 @@ export interface GateSelection {
   readonly tags: string[];
 }
 
-/** Arguments for hashing one gate task. */
-export interface HashGateTaskArguments {
-  readonly context: GateHasherContext;
-  readonly task: Task;
-}
-
 /** Arguments for one gate run. */
 export interface RunGateArguments {
+  /** Whether Nx caches the target this gate runs as. */
+  readonly cached: boolean;
   readonly options: GateOptions;
   /** The project the target belongs to, absent when run against none. */
   readonly projectName: string | undefined;
