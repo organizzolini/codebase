@@ -176,7 +176,11 @@ runs:
         # everything and, the key being taken, never saves its own. The same
         # version again, so a bump starts a fresh cache.
         cache-suffix: uv-0.12.3
-        enable-cache: true
+        # Only a job that syncs may save the cache. The first job to finish
+        # reserves the key and every later save is refused, so a job that
+        # installs nothing, like `build-projects`, would keep a cache with no
+        # packages in it for every sync after it.
+        enable-cache: ${{ inputs.python-dependencies }}
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
 
