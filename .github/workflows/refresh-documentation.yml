@@ -47,8 +47,26 @@ jobs:
           python-dependencies: "false"
           uv: "false"
 
+      # A runner starts empty, so a run that fails loses its finished pages.
+      # They are cached after every run and restored into the next one on the
+      # same commit, which OpenWiki resumes from. A new commit starts clean,
+      # because pages written against older sources are not worth resuming.
+      - name: ♻️ Restore OpenWiki Progress
+        uses: actions/cache/restore@v6
+        with:
+          path: documentation/openwiki
+          key: openwiki-progress-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: openwiki-progress-${{ github.sha }}-
+
       - name: 🧑‍🏫 Refresh Documentation
         run: pnpm exec nx run documentation:refresh-documentation
+
+      - name: 💾 Save OpenWiki Progress
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v6
+        with:
+          path: documentation/openwiki
+          key: openwiki-progress-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       # The repository requires signed commits, and its pre-commit hook rejects
       # an unsigned one, which the action makes locally before it pushes. The
