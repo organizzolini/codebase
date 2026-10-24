@@ -167,17 +167,21 @@ runs:
           nx-cache-${{ inputs.nx-cache-scope }}-${{ runner.os }}-
 
     # What `uv sync` downloads, keyed on the lockfile it syncs from. The uv
-    # binary itself is not here: the `software` command installs it below.
+    # binary itself is not here: the `software` command installs it below, and
+    # the Python it fetches is three seconds of download, not worth keeping.
+    # The sync step prunes this to the downloaded wheels before the job saves
+    # it, as `setup-uv` did: unpruned it is over 600 MB, and every job restores
+    # it. `v2` retires the entry saved before that pruning existed.
     - name: ♻️ Sync uv Cache
       if: inputs.uv == 'true'
       uses: actions/cache@v6
       with:
         path: ~/.cache/uv
         key: |
-          uv-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
+          uv-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
           'configuration/uv.lock') }}
         restore-keys: |
-          uv-cache-${{ runner.os }}-${{ runner.arch }}-
+          uv-cache-v2-${{ runner.os }}-${{ runner.arch }}-
 
     - name: ♻️ Sync ESLint Cache
       if: inputs.eslint-cache == 'true'
@@ -268,8 +272,11 @@ runs:
     - name: 🐍 Install Python Dependencies
       if: inputs.uv == 'true' && inputs.python-dependencies == 'true'
       # Syncs every uv workspace member into the shared root `.venv` via the
-      # workspace definition in configuration/pyproject.toml.
-      run: uv sync --frozen --quiet --project configuration
+      # workspace definition in configuration/pyproject.toml. The prune keeps
+      # only the downloaded wheels in the cache the job saves afterwards.
+      run: |
+        uv sync --frozen --quiet --project configuration
+        uv cache prune --ci --quiet
       shell: bash
 
     # The `setup-codebase` command of the `integration` project runs these in
