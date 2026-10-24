@@ -73,7 +73,7 @@ catalog:
   "@nx/devkit": ^23.3.0
   "@nx/eslint": ^23.3.0
   "@nx/eslint-plugin": ^23.3.0
-  "@nx/js": ^23.3.0
+  "@nx/js": ^24.0.0
   "@nx/react": ^23.3.0
   "@nx/vite": ^23.3.0
   "@nx/vitest": ^23.3.0
