@@ -172,6 +172,11 @@ runs:
         # installs, so a runner, a devcontainer, and a laptop run one uv. A
         # test holds the three equal.
         version: 0.12.3
+        # The action's cache key does not name the uv version, so a cache an
+        # older or newer uv filled would match and be useless: uv re-downloads
+        # everything and, the key being taken, never saves its own. The same
+        # version again, so a bump starts a fresh cache.
+        cache-suffix: uv-0.12.3
         enable-cache: true
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
