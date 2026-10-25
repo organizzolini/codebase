@@ -11,6 +11,12 @@ export const TAIL_LINES = 20;
 /** The most characters of them it quotes, so one runaway line cannot flood it. */
 export const TAIL_CHARACTERS = 2000;
 
+/**
+ * Git's empty tree. Naming it as the source of attributes makes a diff ignore
+ * `.gitattributes`, whose `-diff` on the lockfile would count its changes as 0.
+ */
+export const EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
+
 /** The file, in the OS temp directory, the pull request body is written to. */
 export const PULL_REQUEST_BODY_FILE = "pull-request-body.md";
 
@@ -27,6 +33,14 @@ export const WARNING_LIMIT = 10;
 
 /** The most characters it quotes of a warning or of a skipped step's reason. */
 export const LINE_CHARACTERS = 160;
+
+/**
+ * Formats the files an upgrade wrote. The repository keeps vendored skills
+ * formatted, so what upstream ships unformatted would otherwise be reformatted
+ * by the commit hook, and the pull request would report changes that the
+ * commit does not hold.
+ */
+const FORMAT_UPGRADED_FILES = "pnpm exec nx run configuration:oxfmt:write";
 
 /** Printed when skipped steps are all the run has to show for itself. */
 export const NOTHING_SHIPPED_MESSAGE =
@@ -67,11 +81,19 @@ mv package.json.temporary package.json
     // the newest stable release, then `uv sync` proves the lockfile installs
     // on it, since a lock alone would not catch a dependency with no wheel
     // (ormsgpack, #1491). The template must stay identical to the application.
+    // A newest release older than the one already in use changes nothing: uv
+    // installs the newest stable Python it knows, and that once was 3.14 on
+    // a repository already on 3.15.
     label: "Upgrade Python",
     recover: "uv sync --frozen --quiet --project configuration",
     script: String.raw`
 uv python install 3 --upgrade
 LATEST_PYTHON=$(uv run --no-project --python 3 python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+CURRENT_PYTHON=$(sed -n 's/^requires-python = ">=\([0-9.]*\),.*/\1/p' projects/affirmancy/pyproject.toml)
+if [ "$(printf '%s\n%s\n' "$CURRENT_PYTHON" "$LATEST_PYTHON" | sort -V | tail -1)" != "$LATEST_PYTHON" ]; then
+  echo "summary: Python $CURRENT_PYTHON (the newest uv installs is $LATEST_PYTHON)"
+  exit 0
+fi
 echo "summary: Python $LATEST_PYTHON"
 PYTHON_VER=$(echo "$LATEST_PYTHON" | tr -d '.')
 NEXT_PYTHON="3.$(( $(echo "$LATEST_PYTHON" | cut -d. -f2) + 1 ))"
@@ -112,15 +134,16 @@ pnpm exec nx show projects
     // its skill as a JSON bundle, which `skills update` skips, so the
     // installation project's command re-fetches and re-pins it.
     label: "Upgrade skills",
-    script: String.raw`
+    script:
+      String.raw`
 pnpm exec skills update --yes
 rm -rf agent/
 NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill
-`,
+` + FORMAT_UPGRADED_FILES,
   },
   {
     label: "Upgrade Impeccable",
-    script: "npx impeccable update",
+    script: `npx impeccable update\n${FORMAT_UPGRADED_FILES}`,
   },
 ];
 

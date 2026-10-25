@@ -51,6 +51,13 @@ describe("upgrade-dependencies utilities", () => {
       ]);
     });
 
+    it("ignores a line that only mentions a warning", () => {
+      expect.hasAssertions();
+      expect(
+        warningsOf('. postinstall$ echo "⚠️  could not run"'),
+      ).toStrictEqual([]);
+    });
+
     it("caps how many it keeps", () => {
       expect.hasAssertions();
       expect(

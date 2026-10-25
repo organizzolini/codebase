@@ -8,6 +8,7 @@ import { ConfigService } from "@nestjs/config";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import {
+  EMPTY_TREE,
   PULL_REQUEST_BODY_FILE,
   RUNS_URL,
   SCRIPT_OPTIONS,
@@ -134,6 +135,8 @@ export class UpgradeDependenciesService {
         output,
         report: {
           changes: this.git([
+            "--attr-source",
+            EMPTY_TREE,
             "diff",
             "--shortstat",
             tree,

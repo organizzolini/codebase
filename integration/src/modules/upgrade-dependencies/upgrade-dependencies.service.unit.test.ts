@@ -110,6 +110,27 @@ describe(UpgradeDependenciesService, () => {
     expect(read("package.json")).toBe("changed\n");
   });
 
+  it("counts the lines of a file git treats as binary", () => {
+    expect.hasAssertions();
+
+    fs.writeFileSync(
+      path.join(repository, ".gitattributes"),
+      "*.lock binary\n",
+    );
+    fs.writeFileSync(path.join(repository, "pnpm.lock"), "one\n");
+    git("add", "-A");
+    git("commit", "-qm", "lockfile");
+
+    const outcome = service.attempt({
+      label: "Good",
+      script: String.raw`printf 'one\ntwo\n' > pnpm.lock`,
+    });
+
+    expect(outcome).toMatchObject({
+      report: { changes: "1 file changed, 1 insertion(+)" },
+    });
+  });
+
   it("reports what a step printed as its summary and warnings", () => {
     expect.hasAssertions();
 
