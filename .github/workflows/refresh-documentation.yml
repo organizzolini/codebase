@@ -47,14 +47,17 @@ jobs:
 
       # A runner starts empty, so a run that fails loses its finished pages.
       # They are cached after every run and restored into the next one on the
-      # same commit, which OpenWiki resumes from. A new commit starts clean,
-      # because pages written against older sources are not worth resuming.
+      # same commit, which OpenWiki resumes from. When there is none for this
+      # commit, the newest earlier one is used: OpenWiki re-checks each page
+      # against the sources, so an older run still saves most of the work.
       - name: ♻️ Restore OpenWiki Progress
         uses: actions/cache/restore@v6
         with:
           path: documentation/openwiki
           key: openwiki-progress-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: openwiki-progress-${{ github.sha }}-
+          restore-keys: |
+            openwiki-progress-${{ github.sha }}-
+            openwiki-progress-
 
       - name: 🧑‍🏫 Refresh Documentation
         run: pnpm exec nx run documentation:refresh-documentation
