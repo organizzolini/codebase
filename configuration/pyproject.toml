@@ -25,7 +25,7 @@ dev = [
 # [tool.ruff] extend = "../../configuration/pyproject.toml"
 
 [tool.ruff]
-target-version = "py315"
+target-version = "py314"
 line-length = 100
 
 exclude = ["configuration/conformetry-templates/**"]
@@ -41,7 +41,7 @@ quote-style = "double"
 # pyproject.toml of the directory it runs in. These sections apply to tools run
 # from the workspace root; projects repeat what they need in their own file.
 [tool.pyright]
-pythonVersion = "3.15"
+pythonVersion = "3.14"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = "none"
 reportMissingModuleSource = "none"
