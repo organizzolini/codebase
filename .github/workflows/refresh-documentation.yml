@@ -44,8 +44,6 @@ jobs:
         uses: ./.github/actions/setup-codebase
         with:
           nx-shas: "false"
-          python-dependencies: "false"
-          uv: "false"
 
       # A runner starts empty, so a run that fails loses its finished pages.
       # They are cached after every run and restored into the next one on the
