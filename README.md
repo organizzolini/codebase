@@ -49,6 +49,7 @@
 [![LangChain](https://img.shields.io/badge/LangChain-AI-1C3C3C?logo=langchain)](https://python.langchain.com/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Agents-1C3C3C?logo=langchain)](https://langchain-ai.github.io/langgraph/)
 [![Ollama](https://img.shields.io/badge/Ollama-Local%20LLM-000000?logo=ollama)](https://ollama.com/)
+[![OpenRouter](https://img.shields.io/badge/OpenRouter-LLM%20Gateway-6467F2?logo=openrouter&logoColor=white)](https://openrouter.ai/)
 [![Open WebUI](https://img.shields.io/badge/Open%20WebUI-Chat-000000)](https://openwebui.com/)
 [![SearXNG](https://img.shields.io/badge/SearXNG-Search-3050FF?logo=searxng)](https://docs.searxng.org/)
 [![Pydantic](https://img.shields.io/badge/Pydantic-Validation-E92063?logo=pydantic)](https://docs.pydantic.dev/)
