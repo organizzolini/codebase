@@ -546,6 +546,53 @@ export default [
               ],
               sourceTag: "name:codometer-cli",
             },
+            // Coinagerie package graph, on the ic-suite spine:
+            // `core <- configuration <- languages <- vocabulary <- output <- cli`.
+            // No coinagerie package depends on another toolchain.
+            {
+              onlyDependOnLibsWithTags: [],
+              sourceTag: "name:coinagerie-core",
+            },
+            {
+              onlyDependOnLibsWithTags: ["name:coinagerie-core"],
+              sourceTag: "name:coinagerie-configuration",
+            },
+            {
+              onlyDependOnLibsWithTags: [
+                "name:coinagerie-configuration",
+                "name:coinagerie-core",
+                "name:observability",
+              ],
+              sourceTag: "name:coinagerie-languages",
+            },
+            {
+              onlyDependOnLibsWithTags: [
+                "name:coinagerie-configuration",
+                "name:coinagerie-core",
+                "name:coinagerie-languages",
+                "name:observability",
+              ],
+              sourceTag: "name:coinagerie-vocabulary",
+            },
+            {
+              onlyDependOnLibsWithTags: [
+                "name:coinagerie-configuration",
+                "name:coinagerie-core",
+                "name:coinagerie-vocabulary",
+                "name:observability",
+              ],
+              sourceTag: "name:coinagerie-output",
+            },
+            {
+              onlyDependOnLibsWithTags: [
+                "name:coinagerie-configuration",
+                "name:coinagerie-core",
+                "name:coinagerie-output",
+                "name:coinagerie-vocabulary",
+                "name:observability",
+              ],
+              sourceTag: "name:coinagerie-cli",
+            },
             // Conformetry package graph, on the ic-suite five-layer spine:
             // core, configuration, analysis, output, cli. `conformetry-core`
             // is the contracts leaf and holds no service, so nothing above it
