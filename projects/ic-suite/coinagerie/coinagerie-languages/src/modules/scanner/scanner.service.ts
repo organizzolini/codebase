@@ -33,14 +33,22 @@ export class ScannerService {
     keys: readonly KeyPattern[],
   ): boolean {
     const end = match.index + match[0].length;
-    const lineStart = content.lastIndexOf("\n", match.index - 1) + 1;
-    const linePrefix = content.slice(lineStart, match.index);
+    let linePrefix: string | undefined;
 
     for (const { after, before } of keys) {
+      if (before !== undefined) {
+        // Found only for a pattern that asks, so a long line stays linear.
+        linePrefix ??= content.slice(
+          content.lastIndexOf("\n", match.index - 1) + 1,
+          match.index,
+        );
+      }
+
       after.lastIndex = end;
 
       if (
-        (before === undefined || before.test(linePrefix)) &&
+        (before === undefined ||
+          (linePrefix !== undefined && before.test(linePrefix))) &&
         after.test(content)
       ) {
         return true;

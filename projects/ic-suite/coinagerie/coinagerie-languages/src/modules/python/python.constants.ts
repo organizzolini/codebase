@@ -11,12 +11,20 @@ export const PYTHON_EXTENSIONS: readonly string[] = [".py", ".pyi"];
  * How Python is read: `#` comments, single and triple quoted strings with
  * backslash escapes, and a dictionary key as a string followed by a colon.
  *
+ * A string compared or matched, as in `if kind == "circle":`, is a value and
+ * not a key.
+ *
  * A string prefix such as `r` or `f` is skipped on its own, so the letter is
  * not read as a name. Docstrings are strings, and so contribute nothing.
  */
 export const PYTHON_GRAMMAR: LexicalGrammar = {
   identifier: PLAIN_IDENTIFIER,
-  keys: [{ after: /:/y }],
+  keys: [
+    {
+      after: /:/y,
+      before: /^(?!.*(?:\b(?:if|elif|while|case|assert)\b|[=!]=))/,
+    },
+  ],
   rules: [
     { kind: "comment", pattern: /#[^\n]*/y },
     {

@@ -65,6 +65,13 @@ describe(PythonService, () => {
       ["config", "key"],
     ],
     ["a string not followed by a separator", 'print("hello")', ["print"]],
+    [
+      "a compared string",
+      'if kind == "circle":\n    pass',
+      ["if", "kind", "pass"],
+    ],
+    ["an elif string", 'elif mode != "fast":', ["elif", "mode"]],
+    ["a matched string", 'case "circle":', ["case"]],
     ["a number literal", "x = 0x1F + 10e3", ["x"]],
     ["an underscore name", "_private_name = 1", ["_private_name"]],
     ["a non-ascii name", "café = 1", ["café"]],

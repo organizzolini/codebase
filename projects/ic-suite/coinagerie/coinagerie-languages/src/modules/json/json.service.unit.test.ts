@@ -56,4 +56,13 @@ describe(JsonService, () => {
   ])("reads %s", (_name, source, expected) => {
     expect(service.tokenize(source)).toStrictEqual(expected);
   });
+
+  it("reads a long minified document in linear time", () => {
+    const keys = Array.from(
+      { length: 50_000 },
+      (_unused, index) => `"k${String(index)}":1`,
+    );
+
+    expect(service.tokenize(`{${keys.join(",")}}`)).toHaveLength(50_000);
+  }, 10_000);
 });

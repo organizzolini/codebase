@@ -60,7 +60,16 @@ describe(ShellService, () => {
       ["cat", "after"],
     ],
     ["an empty here-document", "cat <<EOF\nEOF\nafter", ["cat", "after"]],
-    ["an unterminated here-document", "cat <<EOF\nhidden words", ["cat"]],
+    [
+      "an unterminated here-document is not one",
+      "cat <<EOF\nword",
+      ["cat", "EOF", "word"],
+    ],
+    [
+      "an arithmetic shift",
+      "x=$((1 << shift))\necho after",
+      ["x", "shift", "echo", "after"],
+    ],
     ["a here-string", 'cat <<<"hidden" after', ["cat", "after"]],
     [
       "an associative array key",

@@ -28,7 +28,7 @@ export const SHELL_GRAMMAR: LexicalGrammar = {
     {
       kind: "comment",
       pattern:
-        /(?<!<)<<(?!<)-?[ \t]*(['"]?)([\p{L}_][\p{L}\p{N}_]*)\1[^\n]*(?:[\s\S]*?\n[ \t]*\2[ \t]*(?=\n|$)|[\s\S]*)/uy,
+        /(?<!<)<<(?!<)-?[ \t]*(['"]?)([\p{L}_][\p{L}\p{N}_]*)\1[^\n]*(?:[\s\S]*?\n[ \t]*\2[ \t]*(?=\n|$))/uy,
     },
     { kind: "string", pattern: /\$'((?:\\[\s\S]|[^'\\])*)'?/y },
     { kind: "string", pattern: /'([^']*)'?/y },
