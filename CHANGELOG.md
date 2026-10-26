@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.37.0](https://github.com/organizzolini/codebase/compare/v3.36.0...v3.37.0) (2026-10-26)
+
+### ✨ Features
+
+* **lexico:** ✨ show fuzzy match edit distance in lexico-web ([#1856](https://github.com/organizzolini/codebase/issues/1856)) ([85e243e](https://github.com/organizzolini/codebase/commit/85e243e3992ae1a744f1c9218bc8e9e5a05f907d))
+
 ## [3.36.0](https://github.com/organizzolini/codebase/compare/v3.35.0...v3.36.0) (2026-10-26)
 
 ### ✨ Features

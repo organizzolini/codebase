@@ -14542,9 +14542,9 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7395 |
+| Callables | 7396 |
 | Files | 2143 |
-| Calls traced | 8089 |
+| Calls traced | 8090 |
 | Call stacks | 2068 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
