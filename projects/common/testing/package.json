@@ -12,6 +12,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./setup": "./src/setup.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -27,6 +28,10 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./setup": {
+        "default": "./dist/src/setup.js",
+        "types": "./dist/src/setup.d.ts"
       },
       "./package.json": "./package.json"
     },
