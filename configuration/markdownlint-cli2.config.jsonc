@@ -114,7 +114,6 @@
     ".agents/skills/writing-for-agents/**",
     ".agents/skills/writing-skills/**",
     ".claude/agents/impeccable-*",
-    ".codex/hooks.json",
     ".github/agents/impeccable-*",
     ".github/hooks/impeccable.json",
     // installed-skills-end

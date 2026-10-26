@@ -38,7 +38,7 @@ import type {
  * formatted, measured, attributed, spell-checked, and markdown-linted.
  *
  * Some installers also copy agents and hooks into other harness folders
- * (`.claude/agents`, `.github/agents`, `.codex`), where the spell check and
+ * (`.claude/agents`, `.github/agents`), where the spell check and
  * ESLint's markdown rules reach them. `VENDORED_SKILL_PATHS` names those files,
  * and they are listed too, in the same tools plus ESLint, while their skill is
  * installed.

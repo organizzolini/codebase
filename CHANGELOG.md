@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.7](https://github.com/organizzolini/codebase/compare/v3.26.6...v3.26.7) (2026-10-26)
+
+### 🐛 Bug Fixes
+
+* **integration,deployments:** 🐛 upgrade node and run the weekly upgrades without shell scripts ([#1827](https://github.com/organizzolini/codebase/issues/1827)) ([dfc6069](https://github.com/organizzolini/codebase/commit/dfc606931576117520f8a3527048399c6581140e))
+
 ## [3.26.6](https://github.com/organizzolini/codebase/compare/v3.26.5...v3.26.6) (2026-10-25)
 
 ## [3.26.5](https://github.com/organizzolini/codebase/compare/v3.26.4...v3.26.5) (2026-10-24)
