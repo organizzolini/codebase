@@ -86,4 +86,28 @@ describe(CalendarEventTooltip, () => {
 
     await expect(screen.findByText("Square")).resolves.toBeDefined();
   });
+
+  it("draws the event's symbols above its name, so a cut-off chip can be read", async () => {
+    render(<CalendarEventTooltip event={EVENT}>♂ □ ♄</CalendarEventTooltip>);
+    fireEvent.focus(screen.getByText("♂ □ ♄"));
+
+    await expect(
+      screen.findByTestId("calendar-event-tooltip-symbols"),
+    ).resolves.toBeDefined();
+  });
+
+  it("draws no symbols for a marker with a label of its own", async () => {
+    render(
+      <CalendarEventTooltip
+        event={EVENT}
+        label={{ name: "2 events" }}
+      >
+        2
+      </CalendarEventTooltip>,
+    );
+    fireEvent.focus(screen.getByText("2"));
+    await screen.findByText("2 events");
+
+    expect(screen.queryByTestId("calendar-event-tooltip-symbols")).toBeNull();
+  });
 });

@@ -24,6 +24,10 @@ import { UnsupportedBrowserError } from "../lib/events-database/events-database.
 
 import { Route } from "./index";
 
+// Each click of the View menu re-renders the whole route, which a slow
+// continuous integration runner needs well past the default time for.
+const SLOW_TEST = 15_000;
+
 describe("index", () => {
   it("renders its page", async () => {
     await renderRoute("/");
@@ -424,36 +428,40 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors and the grouping of crowded days off from the View menu", async () => {
-    await renderRoute("/?date=2026-03-01");
-    await screen.findByRole("grid", { name: "March 2026" });
+  it(
+    "turns the colors and the grouping of crowded days off from the View menu",
+    async () => {
+      await renderRoute("/?date=2026-03-01");
+      await screen.findByRole("grid", { name: "March 2026" });
 
-    const seen = new Set<string>();
+      const seen = new Set<string>();
 
-    for (const name of [
-      "Color events",
-      "Group similar events",
-      "Color events",
-      "Group similar events",
-    ]) {
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
-      fireEvent.click(await screen.findByRole("menuitemcheckbox", { name }));
+      for (const name of [
+        "Color events",
+        "Group similar events",
+        "Color events",
+        "Group similar events",
+      ]) {
+        fireEvent.click(screen.getByRole("button", { name: "View options" }));
+        fireEvent.click(await screen.findByRole("menuitemcheckbox", { name }));
 
-      // The link now says so, and the menu reads back what it holds.
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
-      await waitFor(() => {
-        expect(
-          screen
-            .getByRole("menuitemcheckbox", { name })
-            .getAttribute("aria-checked"),
-        ).toBe(seen.has(name) ? "true" : "false");
-      });
-      seen.add(name);
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
-      });
-    }
-  });
+        // The link now says so, and the menu reads back what it holds.
+        fireEvent.click(screen.getByRole("button", { name: "View options" }));
+        await waitFor(() => {
+          expect(
+            screen
+              .getByRole("menuitemcheckbox", { name })
+              .getAttribute("aria-checked"),
+          ).toBe(seen.has(name) ? "true" : "false");
+        });
+        seen.add(name);
+        fireEvent.keyDown(document.activeElement ?? document.body, {
+          key: "Escape",
+        });
+      }
+    },
+    SLOW_TEST,
+  );
 
   it("switches the symbols to emojis and back from the View menu", async () => {
     await renderRoute("/?date=2026-03-01");

@@ -123,6 +123,12 @@ const SCROLLING_WEEK_CLASS_NAMES = {
   timeGutter: "bg-background sticky start-0 z-[15]",
 };
 
+// The calendar sets each event's native `title` unless this drops it, and
+// the tooltip the events are wrapped in says more.
+const NO_NATIVE_TOOLTIP = {
+  functions: { formatEventLabel: (): undefined => undefined },
+};
+
 // 🧩 Component
 
 /**
@@ -316,6 +322,7 @@ function CalendarGrid(
         date={anchor}
         dayCount={calendarView.dayCount}
         events={calendarEvents}
+        i18n={NO_NATIVE_TOOLTIP}
         interactions={{ drag: false, resize: false, selectSlot: false }}
         onDateChange={onDateChange}
         onEventClick={handleEventClick}

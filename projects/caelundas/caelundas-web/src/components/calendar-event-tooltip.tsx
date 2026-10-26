@@ -1,3 +1,5 @@
+import { useContext } from "react";
+
 import {
   Tooltip,
   TooltipContent,
@@ -5,7 +7,9 @@ import {
 } from "@codebase/presentation";
 
 import { getEventLabel } from "../lib/calendar/calendar-glyphs";
+import { CalendarSymbolsContext } from "../lib/calendar/calendar-symbols";
 
+import { EventGlyphs } from "./event-glyphs";
 import { EventTagPills } from "./event-tag-pills";
 
 import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
@@ -31,7 +35,7 @@ export interface CalendarEventTooltipProperties {
 // 🧩 Component
 
 /**
- * Wraps what is drawn for an event, its glyphs, in a tooltip with the event's
+ * Wraps what is drawn for an event, its glyphs, in a tooltip that follows the pointer, with the event's
  * name in English, whatever the database says of it, and its tags as pills.
  */
 export function CalendarEventTooltip(
@@ -40,9 +44,17 @@ export function CalendarEventTooltip(
   const { children, className, event, label } = properties;
 
   // 🪝 Hooks
+  const symbols = useContext(CalendarSymbolsContext);
 
   // 🏗 Setup
-  const { details, name } = label ?? getEventLabel(event);
+  const eventLabel = getEventLabel(event);
+  const { details, name } = label ?? eventLabel;
+  // A marker that stands for several events has no symbols of its own, and
+  // an event drawn by its name has none to add.
+  const glyphs =
+    label === undefined && eventLabel.glyphs !== eventLabel.name
+      ? eventLabel.glyphs
+      : undefined;
 
   // 💪 Handlers
 
@@ -56,7 +68,7 @@ export function CalendarEventTooltip(
       className={className}
       data-testid="calendar-event-tooltip"
     >
-      <Tooltip>
+      <Tooltip trackCursorAxis="both">
         <TooltipTrigger
           closeDelay={0}
           delay={100}
@@ -66,7 +78,25 @@ export function CalendarEventTooltip(
         >
           {children}
         </TooltipTrigger>
-        <TooltipContent className="bg-popover text-popover-foreground border-border flex-col items-start gap-0.5 border shadow-md [&>div:last-child]:hidden">
+        <TooltipContent
+          className="bg-popover text-popover-foreground border-border flex-col items-start gap-0.5 border shadow-md [&>div:last-child]:hidden"
+          sideOffset={12}
+        >
+          {glyphs === undefined ? null : (
+            <span
+              className="py-1 text-[1.5em] leading-none"
+              data-testid="calendar-event-tooltip-symbols"
+            >
+              {symbols === "glyphs" ? (
+                <EventGlyphs
+                  glyphs={glyphs}
+                  name={name}
+                />
+              ) : (
+                glyphs
+              )}
+            </span>
+          )}
           <span className="font-medium">{name}</span>
           {details === undefined ? null : (
             <span className="opacity-80">{details}</span>
