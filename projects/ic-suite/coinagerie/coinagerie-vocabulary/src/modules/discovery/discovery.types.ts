@@ -35,6 +35,8 @@ export interface ReadIgnoreScopeArguments {
 export interface WalkArguments {
   /** The folder being read, absolute. */
   absoluteDirectory: string;
+  /** What the whole walk was asked for. */
+  discover: DiscoverArguments;
   /** The repository root every ignore scope is anchored to. */
   repositoryRoot: string;
   scopes: IgnoreScope[];

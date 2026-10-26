@@ -72,12 +72,19 @@ export class VocabularyService {
       include: configuration.include,
       skip: configuration.outputs.map((output) => output.path),
     });
-    const fileWords = await Promise.all(
-      files.map(async (relativePath) =>
-        this.collectFile(configuration.directory, relativePath),
-      ),
-    );
+    const words = new Set<string>();
 
-    return [...new Set(fileWords.flat())].toSorted();
+    // One file at a time: reading every file at once opens them all at once,
+    // which exhausts the file descriptors of a large repository.
+    for (const relativePath of files) {
+      for (const word of await this.collectFile(
+        configuration.directory,
+        relativePath,
+      )) {
+        words.add(word);
+      }
+    }
+
+    return [...words].toSorted();
   }
 }

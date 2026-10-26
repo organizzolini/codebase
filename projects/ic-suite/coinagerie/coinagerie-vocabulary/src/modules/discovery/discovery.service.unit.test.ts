@@ -173,6 +173,18 @@ describe(DiscoveryService, () => {
     ).toStrictEqual(["src/a.ts", "src/deep/b.ts"]);
   });
 
+  it("leaves out everything in a folder an exclusion names outright", () => {
+    writeTree({
+      "dist/bundle.js": "",
+      "packages/one/node_modules/library/index.js": "",
+      "packages/one/src/a.ts": "",
+    });
+
+    expect(discover({ exclude: ["dist", "**/node_modules"] })).toStrictEqual([
+      "packages/one/src/a.ts",
+    ]);
+  });
+
   it("leaves out the files a run writes", () => {
     writeTree({ "GLOSSARY.md": "", "README.md": "" });
 

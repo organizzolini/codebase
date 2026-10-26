@@ -50,6 +50,21 @@ export class DiscoveryService {
     }
   }
 
+  /**
+   * Whether an `exclude.paths` glob names a folder outright, which excludes
+   * everything in it — so `exclude: ["dist"]` reads the way a `.gitignore`
+   * line does, and the folder is never walked.
+   */
+  private isExcludedFolder(args: WalkArguments, absolutePath: string): boolean {
+    const relativePath = this.toPosix(
+      path.relative(args.discover.directory, absolutePath),
+    );
+
+    return args.discover.exclude.some((pattern) =>
+      path.matchesGlob(relativePath, pattern),
+    );
+  }
+
   /** Whether the configuration's globs keep a root-relative file. */
   private isSelected(args: DiscoverArguments, relativePath: string): boolean {
     return (
@@ -120,9 +135,13 @@ export class DiscoveryService {
           return [];
         }
 
-        return isDirectory
-          ? this.walk({ ...args, absoluteDirectory: absolutePath, scopes })
-          : [absolutePath];
+        if (!isDirectory) {
+          return [absolutePath];
+        }
+
+        return this.isExcludedFolder(args, absolutePath)
+          ? []
+          : this.walk({ ...args, absoluteDirectory: absolutePath, scopes });
       });
   }
 
@@ -138,6 +157,7 @@ export class DiscoveryService {
 
     return this.walk({
       absoluteDirectory: args.directory,
+      discover: args,
       repositoryRoot,
       scopes: this.readAncestorScopes(repositoryRoot, args.directory),
     })
