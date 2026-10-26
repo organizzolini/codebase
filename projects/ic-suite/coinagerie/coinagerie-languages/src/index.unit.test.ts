@@ -6,6 +6,10 @@ describe("coinagerie-languages index", () => {
   it("exports the language modules and their services", () => {
     expect(Object.keys(languages).toSorted()).toStrictEqual(
       [
+        "CssModule",
+        "CssService",
+        "HclModule",
+        "HclService",
         "LanguagesModule",
         "LanguagesService",
         "PythonModule",
@@ -14,6 +18,8 @@ describe("coinagerie-languages index", () => {
         "ShellService",
         "SqlModule",
         "SqlService",
+        "TomlModule",
+        "TomlService",
         "TypescriptModule",
         "TypescriptService",
       ].toSorted(),

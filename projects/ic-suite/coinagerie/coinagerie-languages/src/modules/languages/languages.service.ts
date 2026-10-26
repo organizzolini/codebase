@@ -2,9 +2,12 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
+import { CssService } from "../css/css.service";
+import { HclService } from "../hcl/hcl.service";
 import { PythonService } from "../python/python.service";
 import { ShellService } from "../shell/shell.service";
 import { SqlService } from "../sql/sql.service";
+import { TomlService } from "../toml/toml.service";
 import { TypescriptService } from "../typescript/typescript.service";
 
 import type { Language, Tokenizer } from "./languages.types";
@@ -27,12 +30,18 @@ export class LanguagesService {
     pythonService: PythonService,
     sqlService: SqlService,
     shellService: ShellService,
+    cssService: CssService,
+    hclService: HclService,
+    tomlService: TomlService,
   ) {
     const languages: Language[] = [
       typescriptService,
       pythonService,
       sqlService,
       shellService,
+      cssService,
+      hclService,
+      tomlService,
     ];
 
     for (const language of languages) {

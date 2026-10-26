@@ -1,9 +1,12 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { CssModule } from "../css/css.module";
+import { HclModule } from "../hcl/hcl.module";
 import { PythonModule } from "../python/python.module";
 import { ShellModule } from "../shell/shell.module";
 import { SqlModule } from "../sql/sql.module";
+import { TomlModule } from "../toml/toml.module";
 import { TypescriptModule } from "../typescript/typescript.module";
 
 import { LanguagesService } from "./languages.service";
@@ -13,7 +16,15 @@ describe(LanguagesService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [PythonModule, ShellModule, SqlModule, TypescriptModule],
+      imports: [
+        CssModule,
+        HclModule,
+        PythonModule,
+        ShellModule,
+        SqlModule,
+        TomlModule,
+        TypescriptModule,
+      ],
       providers: [LanguagesService],
     }).compile();
 
@@ -53,6 +64,11 @@ describe(LanguagesService, () => {
     ["run.zsh", "# hidden\nrunName", "runName"],
     ["run.ksh", "# hidden\nrunName", "runName"],
     ["QUERY.SQL", "-- hidden\ntableName", "tableName"],
+    ["style.css", "/* hidden */ .cardName {}", "cardName"],
+    ["main.tf", "# hidden\nregionName = 1", "regionName"],
+    ["vars.tfvars", "# hidden\nregionName = 1", "regionName"],
+    ["config.hcl", "# hidden\nregionName = 1", "regionName"],
+    ["pyproject.toml", "# hidden\nprojectName = 1", "projectName"],
   ])("finds a lexical tokenizer for %s", (filePath, source, expected) => {
     expect(service.tokenizerFor(filePath)?.(source, filePath)).toContain(
       expected,
