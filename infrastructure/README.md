@@ -6,10 +6,11 @@
 
 ## Contents
 
-| Directory                                  | Purpose                                                        |
-| ------------------------------------------ | -------------------------------------------------------------- |
-| [helm/kubernetes-job](helm/kubernetes-job) | Reusable Helm chart for batch job deployments with PVC storage |
-| [terraform/](terraform)                    | Linode LKE (Kubernetes) cluster provisioning                   |
+| Directory                                    | Purpose                                                           |
+| -------------------------------------------- | ----------------------------------------------------------------- |
+| [helm/kubernetes-job](helm/kubernetes-job)   | Reusable Helm chart for batch job deployments with PVC storage    |
+| [terraform/](terraform)                      | Linode LKE (Kubernetes) cluster provisioning                      |
+| [terraform/openrouter](terraform/openrouter) | OpenRouter workspace, API key, guardrail, and ranked-model preset |
 
 ## Quick Start
 
@@ -28,6 +29,19 @@ kubectl get jobs -w
 # Clean up
 helm uninstall <release-name>
 ```
+
+### Manage OpenRouter with Terraform
+
+The `terraform/openrouter` root keeps its state in a Linode Object Storage bucket. Export `TF_STATE_BUCKET`, `AWS_ENDPOINT_URL_S3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `TF_VAR_openrouter_management_key`, then:
+
+```bash
+nx run infrastructure:terraform-format    # fmt -check, part of lint-code
+nx run infrastructure:terraform-validate  # no backend or credentials needed, part of lint-code
+nx run infrastructure:terraform-plan      # writes plan.tfplan and plan.json
+nx run infrastructure:terraform-apply     # applies; CI does this on main
+```
+
+Continuous Integration plans a pull request that changes the root and comments the creates, updates, replaces, and deletes on it. Continuous Deployment applies a push to `main` that changes it. Both read the `TERRAFORM_STATE_BUCKET` and `TERRAFORM_STATE_ENDPOINT` repository variables, and the `TERRAFORM_STATE_ACCESS_KEY_ID`, `TERRAFORM_STATE_SECRET_ACCESS_KEY`, and `OPENROUTER_MANAGEMENT_KEY` repository secrets.
 
 ### Run Local Services
 
@@ -68,15 +82,15 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 
 ## Nx Targets
 
-| Target                              | Does                                                                      |
-| ----------------------------------- | ------------------------------------------------------------------------- |
-| `postgres`                          | `up`, `down`, `recreate` (removes the volume) for the local PostgreSQL    |
-| `searxng`                           | `up`, `down`, `open` for the SearxNG metasearch service                   |
-| `open-webui`                        | `up`, `down`, `open` for the Open WebUI service                           |
-| `terraform`                         | `plan` (default) or `import` against the cluster                          |
-| `trivy-config`                      | Trivy misconfiguration scan of the Terraform code                         |
-| `helm-lint`                         | Lint the `kubernetes-job` chart against its base values                   |
-| `compose-config`                    | Validate the Docker Compose file                                          |
+| Target           | Does                                                                   |
+| ---------------- | ---------------------------------------------------------------------- |
+| `postgres`       | `up`, `down`, `recreate` (removes the volume) for the local PostgreSQL |
+| `searxng`        | `up`, `down`, `open` for the SearxNG metasearch service                |
+| `open-webui`     | `up`, `down`, `open` for the Open WebUI service                        |
+| `terraform`      | `plan` (default) or `import` against the cluster                       |
+| `trivy-config`   | Trivy misconfiguration scan of the Terraform code                      |
+| `helm-lint`      | Lint the `kubernetes-job` chart against its base values                |
+| `compose-config` | Validate the Docker Compose file                                       |
 
 `helm-lint` and `compose-config` also run in CI: `lint-code` depends on both, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. They need `helm` and `docker compose`; `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 

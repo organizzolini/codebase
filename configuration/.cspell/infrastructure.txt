@@ -50,6 +50,7 @@ nodegroup
 nodeuser
 nslookup
 opencontainers
+openrouter
 orioledb
 pgaudit
 PGDATA

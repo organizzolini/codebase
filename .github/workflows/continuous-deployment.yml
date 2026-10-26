@@ -62,6 +62,15 @@ jobs:
             name: Releases
             emoji: 🦸
             timeout: 32
+          # Applies the OpenRouter Terraform when a push to main changes it.
+          # Plans of the same change are reported on the pull request by
+          # Continuous Integration. State is in a Linode Object Storage bucket
+          # with no lock, so this workflow's per-ref concurrency group, which
+          # never cancels, is what keeps two applies from overlapping.
+          - id: apply-terraform
+            name: Infrastructure
+            emoji: 🏗️
+            timeout: 20
 
     steps:
       # Decides from the GitHub API alone, before any checkout, so a run with
@@ -130,6 +139,29 @@ jobs:
             else
               echo "🦸 $SHA holds main's tip, releasing"
             fi
+          fi
+
+          if [ "$TARGET_ID" = "apply-terraform" ]; then
+            if [ "$EVENT_NAME" = "pull_request" ]; then
+              echo "⏭️ Pull requests never apply infrastructure"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            if [ "$EVENT_NAME" != "workflow_dispatch" ] \
+              && [ -n "$PUSH_BEFORE" ] && [[ ! "$PUSH_BEFORE" =~ ^0+$ ]]; then
+              COMPARISON="$(gh api "repos/$REPOSITORY/compare/${PUSH_BEFORE}...${SHA}")"
+              FILE_COUNT="$(jq '.files | length' <<< "$COMPARISON")"
+              APPLY_PATTERN='^(infrastructure/terraform/openrouter/|\.github/workflows/continuous-deployment\.yml$)'
+
+              if [ "$FILE_COUNT" -lt 300 ] \
+                && ! jq -r '.files[].filename' <<< "$COMPARISON" | grep -qE "$APPLY_PATTERN"; then
+                echo "⏭️ No OpenRouter Terraform changes detected; skipping the apply."
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
+            echo "🏗️ Applying the OpenRouter Terraform"
           fi
 
           echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -391,6 +423,37 @@ jobs:
         with:
           subject-checksums: ${{ runner.temp }}/attestation-subjects.txt
           create-storage-record: false
+
+      # Infrastructure Steps
+      - name: 🕋 Setup Codebase for Infrastructure
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform'
+        uses: ./.github/actions/setup-codebase
+        with:
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
+
+      - name: 🏗️ Setup Terraform
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform'
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: 🏗️ Apply Terraform
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL_S3: ${{ vars.TERRAFORM_STATE_ENDPOINT }}
+          TF_STATE_BUCKET: ${{ vars.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+        run: pnpm exec nx run infrastructure:terraform-apply
 
       # The only save of this workflow's Nx cache, which the next release
       # restores. Every project is built above, at the versions the release

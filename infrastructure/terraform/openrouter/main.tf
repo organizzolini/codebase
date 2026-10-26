@@ -1,6 +1,24 @@
 terraform {
   required_version = ">= 1.6"
 
+  # State lives in a Linode Object Storage bucket, which speaks the S3 API. The
+  # bucket comes from `-backend-config="bucket=..."`, the endpoint from
+  # AWS_ENDPOINT_URL_S3, and the credentials from AWS_ACCESS_KEY_ID and
+  # AWS_SECRET_ACCESS_KEY; see the `terraform-init` target. Linode does not
+  # implement the AWS account, region, or checksum calls, so those are skipped.
+  # There is no state lock: CI serializes applies with a workflow concurrency
+  # group instead.
+  backend "s3" {
+    key    = "openrouter/terraform.tfstate"
+    region = "us-east-1"
+
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+    skip_region_validation      = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
+  }
+
   required_providers {
     openrouter = {
       source  = "OpenRouterTeam/openrouter"

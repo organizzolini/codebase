@@ -164,6 +164,16 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
 
+      # The infrastructure project's `terraform-format` and `terraform-validate`
+      # run as part of lint-code, and the runner image no longer ships terraform.
+      - name: 🏗️ Setup Terraform
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'lint-code'
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -247,3 +257,130 @@ jobs:
           eslint-cache: >-
             ${{ matrix.check.target == 'lint-code' &&
             github.event_name != 'merge_group' && 'true' || 'false' }}
+
+  # Plans the OpenRouter Terraform when a pull request changes it, and reports
+  # what the plan would create, update, replace, and delete in one comment that
+  # each push updates. It is a comment, not part of the body, so it cannot race
+  # the Codometer report that rewrites the body. Nothing is applied: that
+  # happens in Continuous Deployment once the change reaches `main`. The plan
+  # needs secrets, which a fork's pull request is not given, so forks skip it.
+  # Planning reads the real workspace, so a plan that fails to authenticate is
+  # reported in the comment rather than hidden.
+  terraform-plan:
+    name: 🏗️ Terraform Plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: >-
+      github.event_name == 'pull_request' &&
+      !github.event.pull_request.draft &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+      AWS_ENDPOINT_URL_S3: ${{ vars.TERRAFORM_STATE_ENDPOINT }}
+      TF_STATE_BUCKET: ${{ vars.TERRAFORM_STATE_BUCKET }}
+      TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 🚦 Detect Terraform Changes
+        id: changes
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if git diff --name-only "origin/${BASE_REF}...HEAD" \
+            | grep -qE '^infrastructure/terraform/openrouter/'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⏭️ No OpenRouter Terraform changes; skipping the plan."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 🕋 Setup Codebase
+        if: steps.changes.outputs.changed == 'true'
+        uses: ./.github/actions/setup-codebase
+        with:
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
+
+      - name: 🏗️ Setup Terraform
+        if: steps.changes.outputs.changed == 'true'
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: 🏗️ Plan
+        id: plan
+        if: steps.changes.outputs.changed == 'true'
+        continue-on-error: true
+        run: pnpm exec nx run infrastructure:terraform-plan
+
+      # Reads addresses and actions only. The plan file also holds values,
+      # sensitive ones among them, and none of those reaches the comment.
+      - name: 📊 Report Plan
+        if: always() && steps.changes.outputs.changed == 'true'
+        uses: actions/github-script@v8
+        env:
+          PLAN_OUTCOME: ${{ steps.plan.outcome }}
+          PLAN_FILE: infrastructure/terraform/openrouter/plan.json
+        with:
+          script: |
+            const fs = require("node:fs");
+            const marker = "<!-- terraform-plan -->";
+            const icons = {
+              create: "➕", update: "✏️", replace: "♻️", delete: "🗑️", import: "📥",
+            };
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            let body = `${marker}\n## 🏗️ Terraform Plan\n\n`;
+            if (process.env.PLAN_OUTCOME !== "success") {
+              body += `❌ The plan failed. See [the run](${run}) for the output.\n`;
+            } else {
+              const plan = JSON.parse(fs.readFileSync(process.env.PLAN_FILE, "utf8"));
+              const kindOf = (change) => {
+                if (change.importing) return "import";
+                const actions = change.actions;
+                if (actions.includes("delete") && actions.includes("create")) return "replace";
+                if (actions.includes("create")) return "create";
+                if (actions.includes("update")) return "update";
+                if (actions.includes("delete")) return "delete";
+                return undefined;
+              };
+              const rows = (plan.resource_changes ?? [])
+                .map((resource) => ({ address: resource.address, kind: kindOf(resource.change) }))
+                .filter((row) => row.kind !== undefined);
+              if (rows.length === 0) {
+                body += "✅ No changes. The infrastructure matches the configuration.\n";
+              } else {
+                const count = (kind) => rows.filter((row) => row.kind === kind).length;
+                body += Object.keys(icons)
+                  .map((kind) => `${icons[kind]} ${count(kind)} to ${kind}`)
+                  .join(" · ");
+                body += "\n\n| | Action | Resource |\n|--|--------|----------|\n";
+                body += rows
+                  .map((row) => `| ${icons[row.kind]} | ${row.kind} | \`${row.address}\` |`)
+                  .join("\n");
+                body += "\n";
+              }
+              body += `\n[Run](${run}) · applied on merge by Continuous Deployment\n`;
+            }
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number,
+            });
+            const existing = comments.find((comment) => comment.body?.startsWith(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      - name: 🏗️ Fail on Plan Error
+        if: steps.plan.outcome == 'failure'
+        run: exit 1

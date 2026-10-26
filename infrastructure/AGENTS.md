@@ -29,6 +29,7 @@ infrastructure/
 ├── helm/
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning
+    └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
 
 ### kubernetes-job Chart
@@ -64,3 +65,4 @@ See [README.md](README.md) for the Helm deploy commands and the `nx run infrastr
 - [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
 - [terraform/main.tf](terraform/main.tf): Cluster definition
+- [terraform/openrouter/main.tf](terraform/openrouter/main.tf): OpenRouter resources and the S3-compatible state backend

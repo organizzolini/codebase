@@ -150,6 +150,19 @@ updates:
     labels:
       - type:chore
       - scope:infrastructure
+
+  # infrastructure/terraform/openrouter pins the OpenRouterTeam/openrouter
+  # provider version.
+  - package-ecosystem: terraform
+    directory: /infrastructure/terraform/openrouter
+    schedule:
+      interval: weekly
+      day: friday
+    commit-message:
+      prefix: "chore(infrastructure): 🔧 "
+    labels:
+      - type:chore
+      - scope:infrastructure
       - source:agent
     assignees:
       - JimmyPaolini
