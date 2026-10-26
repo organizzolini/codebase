@@ -58,20 +58,42 @@ export const SCORE_TRANSLATION_FULLTEXT = 0.6;
 export const SCORE_FUZZY = 0.4;
 
 /**
+ * What each edit of distance takes off `SCORE_FUZZY`, so a closer fuzzy match
+ * ranks higher and every fuzzy score stays below the prefix tier.
+ */
+export const SCORE_FUZZY_STEP = 0.1;
+
+/**
+ * Shortest search term fuzzy matching applies to, and the shortest one allowed
+ * two edits instead of one.
+ */
+export const FUZZY_MINIMUM_LENGTH = 3;
+export const FUZZY_TWO_EDIT_LENGTH = 6;
+
+/**
  * The tier a Latin match's best score names. Every Latin tier scores
  * differently, so a lexeme's score alone says which tier ranked it highest.
  */
 export const LATIN_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
   new Map([
     [SCORE_ENCLITIC, SearchMatchSource.ENCLITIC],
-    [SCORE_FUZZY, SearchMatchSource.FUZZY],
     [SCORE_LEMMA_EXACT, SearchMatchSource.LEMMA_EXACT],
     [SCORE_PREFIX, SearchMatchSource.PREFIX],
     [SCORE_WORD_EXACT, SearchMatchSource.WORD_EXACT],
   ]);
 
 /**
- * Most lexemes a prefix or substring headword match ranks per search term,
+ * The tier an English match's best score names, where any score below a
+ * prefix match is a full-text one.
+ */
+export const ENGLISH_TIER_SOURCES: ReadonlyMap<number, SearchMatchSource> =
+  new Map([
+    [SCORE_TRANSLATION_EXACT, SearchMatchSource.TRANSLATION_EXACT],
+    [SCORE_TRANSLATION_PREFIX, SearchMatchSource.TRANSLATION_PREFIX],
+  ]);
+
+/**
+ * Most lexemes a prefix headword match or fuzzy match ranks per search term,
  * the first by id, before translations are checked.
  */
 export const LATIN_TIER_RESULT_LIMIT = 50;

@@ -17,6 +17,7 @@ export interface EncliticDecompositionResult {
  * the `LexemeSearchResult` the API returns.
  */
 export interface LexemeSearchMatch {
+  distance: null | number;
   enclitic: null | string;
   identifiers: string[];
   lexeme: Lexeme;
