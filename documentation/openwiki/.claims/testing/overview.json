@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d408dbe4cb9e2b480df3373c2df401cf0270709a5137c9ccf452e178a3ebc00f",
+  "claims": [
+    {
+      "id": "claim_6ba1f48fb60e4cdc8e8e767e2f7a6779",
+      "statement": "The workspace enforces Test-Driven Development (TDD) with a strict red-green-refactor cycle: write a failing test first (RED), watch it fail for the right reason, write minimal code to pass (GREEN), verify full suite passes, then refactor as a separate step (REFACTOR).",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L31-L68",
+          "version": "repo-lines-v1:sha256:83b3e8e48ea014c212b3d22ca141ddf56bf6d693e5ac30f5010a10c1dc823643:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxOWRhNjBhNjEyOTAwNzkyZTZkNTg0MGU2YWU2OTc3YjhhMTdhZDU0NzVlYzJjNThkNzU5NmM2ZDFkYzIxNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzljNTJlZmIwYzZiZjQyYTM2OTAwZTM2YzQzMDgzY2ZlMDBiODExODc3YjYxOTZhN2IyMDIyYzMzZDliZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3ZDE2YWRlMzlkOGYxZjEzYmRmNTAzYWQ4NWI1OTY5YmUxNzc4ZWFmMTY5M2Q1NzQ3NWRiMDdiOTcyZGY4ZTMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L71-L202",
+          "version": "repo-lines-v1:sha256:031b244f6ed07c7a06d64229680e97312a6b428c17614806c9821bac98fd05f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYzE2NmNmNTM0OTU0MTVhMjZkNDNlMTIyNTQxNmE5Y2E4NDdhZWRlYjgzYjA3MTExMjBiMTNlYTQ1MzI3Nzc3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMTI0MmM5NTk0ZTU5YTViNzVjMjViZGQ4NmRjZDBmMWQ5YzZmMmQ1MmU0OTVhMjZhNGU1MGRjMWUzZWNhYTE5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4ODA5MThhYzY0MzA3MDQwMzAwNDMyNzhhYmIxNjcwMDFjNjgzNDNmYzVhM2FkZjdmODJiNjE2OTUyOWI4NGFmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5NGE5NDQ5MWY4MzU3Y2VlNDQwNTZmZmVmZmJmMmZiNzhiODRhODNjZjQzMzU5MDk3ZWQxOGI0MTMyNDZkY2FjIn0"
+        },
+        {
+          "resource": "repo://AGENTS.md#L228-L231",
+          "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5f07381e8bc142e1b396b687610ab2c3",
+      "statement": "Tests must accompany all production code; no code is merged without a test written first and watched fail. Exceptions for throwaway prototypes, generated code, and configuration files require explicit human partner approval.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L16-L29",
+          "version": "repo-lines-v1:sha256:a544a6d1bb9ac4339cee3a88cd5417dcb9616b4e8698e06ed511b898b26d0cc2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3YTQxZDU5NDVmNGVjMWVjODkwYjYxYmY1NDFiNjZkYjY4YjU2MDkzZWRjZWEwNGVjYmZkODFhZmEzMDIyN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhOTNhNThjMzZmZDY2NWVkYWUyZGMzMmM2MzdhOTI2MDAyMmM4YjViNGYzYTM1ZTI1Y2Y4YjEzYjI5Y2VkY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YTM2MWM2Y2MxNzAwNjkzZDhjNjBmYTM1OWZlZDUyYTMwYmJjOTk1YzY4MTA1MmRjMTg3OTgzZGE0OWYyOWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkNDc0MzBmZGYyODVlZDZhNjI5ZTUyMWQ5NTYxYzU3ZmI0YjkyOWNkMzkxNjdmNDA3MWYzNDk4NjIxMzgyMjMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L31-L45",
+          "version": "repo-lines-v1:sha256:befcaa738db89f478f309e834a990edd07ad1388785d09e6d99bdabc2ef1141c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxOWRhNjBhNjEyOTAwNzkyZTZkNTg0MGU2YWU2OTc3YjhhMTdhZDU0NzVlYzJjNThkNzU5NmM2ZDFkYzIxNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZjQ1M2M4MWI0ZjI0YWY0NDdhZDk5MmQwZjc3NzVkMDAyODczZDFmMTQ3MmQyMzk1N2M0ZjdlNmZjMmUxYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzljNTJlZmIwYzZiZjQyYTM2OTAwZTM2YzQzMDgzY2ZlMDBiODExODc3YjYxOTZhN2IyMDIyYzMzZDliZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNWJiMDQ2Yzg4NzRkYWMzOTUwZjgzNGQ5MmEzMTNlYjM4ZGRiNWFhNWQzMmMxZmNmMDNlZTZmNDJhMTIyMzUifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L228-L231",
+          "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0819b80d7c2484c9200a7f268b9d20e",
+      "statement": "Three test types exist with standardized naming: unit tests (*.unit.test.ts) for isolated fast tests with mocked dependencies; integration tests (*.integration.test.ts) for real Postgres via Testcontainers with real module wiring and selective mocks; end-to-end tests (*.end-to-end.test.ts) for full application stack (rare).",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L20-L25",
+          "version": "repo-lines-v1:sha256:1a681b8971abab4569726431814c3c3c3d32246589dc05394c809a2545d5e099:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmYzNThhNTdjYjgzNmE3OWQzZTdmZTk0ZjdlZmNiN2ZmZDYxODRmYmI5MDFkODg1NTQ4MTVlZmZlZGFmYTQ2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTI2MmFhZDViNjNmZThjN2Y0ODI2ZDFmOGYwNDBmNTkyMGE1OTI4ZDgyZDRhYWVmZWExMjM1YTFlZmJhY2IzYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmRmNTQ0NDBiNDg2ZTMwMGYzNWFiMDAwNTYxZWFlNTAwZDI1Mjk5NGM4NWE0Yzg0MDAzYzA0M2U2NTk5YWUwMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1313c4752dcf490aa7ce86a11b136c0d",
+      "statement": "Tests are executed via Nx targets per project: nx run <project>:vitest:unit, nx run <project>:vitest:integration, nx run <project>:vitest:end-to-end. The standard CI and local validation command is nx affected --target=vitest --base=main which runs all vitest configurations for affected projects and their dependents.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L26-L33",
+          "version": "repo-lines-v1:sha256:1c870b27e68a09c080fed5f8baeefdc915bcebf00b88862194ec21da06c130bb:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODY4ZWU4ZGJiNzBiYTczMDhjNzdiYzlmOWMzMTdkNDc1YzJkMzc1ZDNkNGIzNDg2ZTRmZGNjNDhiMmZhZDk2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQwZWEyOTViMWI4ODRjNmZkNTE4NTYxZmRlYTFhYjU3YjY2YTFhOGYxY2ZjNDdjOWYyMmI4YWNmYzc3ZTA3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE0ZmU1YTc5NGM4Y2EzN2E4MmJjMmZmYWMzNDljZDg3ODc0YmNmNTIxZjM1OTU4ZDM2MzMyYTM5Y2EwMzM3NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_173d819cfc4243589a55b81a26196cce",
+      "statement": "Four quality gates must pass: test coverage (96% branches/functions/lines/statements from configuration/vitest.config.ts), type coverage (per-project in package.json as typeCoverage.atLeast, most at 100% with strict:true), compiled size (per-project in codometer.config.ts), and duplication (advisory only via jscpd). Lowering any threshold to pass CI is not allowed.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L35-L70",
+          "version": "repo-lines-v1:sha256:12c6159aed45ce83ae2c0fb20ca48fbb0a79b802fd31f4ae0753eb71482f1ef0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzOGY3ZTFhY2QwZDgwZmQ0NDAyNmQ5ZDc2NmFmNzc2MTMzMjQwOWNmYmI4OWFhNjFhYjI1MzcyYTJhMDc1MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhOGI0OTAxOTdhMzUxNzAyZjJhODE4YzlmMTlmMjMxMTIzYWU5NGIyYTIyMDVhZjAyNzZlYzc5NmY4M2YzYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlN2Y5NzU2YzI4ZTgyYjEyN2I3MjgwOGY4YmU4MjQzMmRkNWYwZjE1NGZlNzAwMDYwNDM4NTk1ZmUwYjkzNjIifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L83-L85",
+          "version": "repo-lines-v1:sha256:1d26140f2987ef5914a250f4497116fc7b60b16f25fddf27a699750b6cd64f49:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGRmNzY2NWUzZGZlOGJkN2Y0YmEyMGMwNTg3ZWVkYTQwNmI4MWFhYjY2MmY2NDU2NGFmMDUwZjk4ZmIyYjE5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTY4MDU0Mzc2OTY0N2Y3MmE4OGU5M2Y2OTY3NjkxNzdiODVhNmZmZTM5ZTJkODE4N2I5YWNjMGE5MGNkMTI1ZiJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L228-L231",
+          "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2467739c5be74373891dba069f1b19cb",
+      "statement": "Coverage practices: after structural refactors always re-run coverage; if branch coverage is below threshold, add focused tests for uncovered guard/fallback branches first; use hotspot-first loop (generate coverage, sort lowest branch-coverage files, patch highest-impact offenders, re-run); raise coverage with behavior-first assertions not synthetic inflation; keep Vitest configs thin inheriting from configuration/vitest.config.ts via mergeConfig; run CI-shaped command locally before PR: nx affected --target=vitest --configuration=coverage --base=main.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L43-L56",
+          "version": "repo-lines-v1:sha256:ca05c4283930e2a4de6c2fc9702cebacd63fc1e569581db6f7ad22e2520699d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkZjllMmY4ZDZiNDEzOGYzYjIzZmQwMTJiMjg0YjViOTYxZTc5MmJhNTNjZWIwYjljOTZjNDUwMWRjOWNlYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2N2Q1MWRkMDhhZDA3NmM3YzU0ODkzOTYwYzM5ODhmMWQ0NjFkODZkZDUzNzRlMzUwNmM5NjgxMjQ0MGNlNmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1Mzk1OTI4YWI1MzcyNzg5NjljMTI0ZDRhYTNjNmE4N2YzNTJlY2M5NTQwYTFhZDAzNGE2YWMxY2U0MjM1NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0ZmZkOWI1NTg4ZjVmMWVhYjUyNjI3ZjUxZGE0YjZjZWYwOWFjZDEzNTBlOGJmNDJiMmVlNmVjZjU3NGZmY2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eec9c2ace7564ab083aebcef83ab1cdf",
+      "statement": "Mocking uses @golevelup/ts-vitest's createMock<T>() for all injectable classes/interfaces, returning fully-typed DeepMocked<T> with every method as vi.fn() and properties recursively mocked via Proxy. Manual stub objects are forbidden. Mocks declared at describe scope with let, instantiated in beforeAll/beforeEach via module.get().",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L21-L30",
+          "version": "repo-lines-v1:sha256:a99d46ccfbbfa764e0aaf5b97b13b70e66d71510ca4a748c2a7bd7c318003ec5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNmJlOTk1NzkzMWYxZGM1ZjVlYjRkODBjOWFjOTJhNzU4ZmZjZjI1ZjA3MTJkNmQwZDc0NWQ5ZGZmN2EzNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyN2ZlMTI4OWZhYTI3YjZjZWMzNTM5MmRmNWI1ZTUwMWE2MzJjMjJkNGIzODY3MWEyYjcxZDAzNzA2ZDA2YzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmODRmNDU4ODRhYmNkYjJjYjljMWYzNTNkNWRkNGZjMzBmOWIyYThlNTVlOWYwYWNkNmFlYWEwNmNhZGRjMTMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L265-L315",
+          "version": "repo-lines-v1:sha256:d013bcea26c49c01e545f2b8e1ac01880fab06af71d336807dcd68babe7e82bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNWNlMjkwMGVkY2Q0ZjZlYjA2ZWMwYWUxZTYxNGEyZWUxMzliNzRjNzQ3YjE2Zjk4Mzc1ZDIwMzAyOWQ3ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhY2JmNWYwNzc3YTZlY2RlZjliNDkyNjYxODIzMmMxNjc0N2RjODY0NzhhNWUzYTVhZTM2N2UxMzU0NWNiNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L32-L59",
+          "version": "repo-lines-v1:sha256:a74bdaaae1df4dd81e3f670a88e6a452eb7e9a04e7fe2c1dc158dd1bc662bf0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzM1MmE1OTVkNjg3N2RlOTg5ODRiZjBmNjdhOTgwNDVhMmI2MzYyY2JkZWNjNjAwMDYyZTk3MzcwNzc3MWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzY2VlZTQ0MjlkNTEyN2JkYjk4ZThmMmNiYTYzNmYzOGVhOTM1NmM2MGYyNTczMTVkOTNmMjU0MDgwMTg1OWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzZjhlODNlYmYxZDMwYjRjZjY2ZGI3YTdiYWUyZTM1YjQ3ODkwYzE0MzgwM2NiZjFhMzMyYzFhOGIxMWI0ZGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2b7d22cfcc5d46f0885de87ec8fbbb13",
+      "statement": "NestJS DI mocking patterns: provide mocks in providers[] (never imports[]); for TypeORM repositories use getRepositoryToken(Entity) as provider token; annotate mocks with DeepMocked<T> using satisfies for type safety and ESLint compliance; each NestJS project tsconfig.json must include paths entry for @golevelup/ts-vitest.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L107-L145",
+          "version": "repo-lines-v1:sha256:3519f82712d30a02214eb3f71cccdd47d52db40d2783600ed8366bdbeb555869:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MDUwZDJjN2JmOTM2NTg2ZjM0NTczNTg3MWI3YzYzOWE0YmQ0ZWMzYmY3YWQ1ZGEwODMyMmVhMDc0MmM3MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkNzk3MjNkYmQ5YmZiNTYwOGMxZjA2ZTI2MTc0NzRlMzVlZGNkYjhjMzMwYjRhMmY2ZDlhMTA3ZmM3NjQyOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlNjgxZmM3NTlkNTg0YWI1NTFkYzQ5OGNlNmY5Mzk5MTUwNDQzNzVmODNiMWI3MDUzMmNkOGY3YTk0NThjZTcifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L242-L266",
+          "version": "repo-lines-v1:sha256:7234bd79f64645c90813380e16177c13d49bb1da697d88fe2b76a52ec026dbd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2YTFlNzA5NWIyN2I5MWNiNDIzNWM2ODFmYmJmZDM5ZjMwZmNhNTJmMGZkYjY5NjEwZGY1NzU3MGNlNDQ1YzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5M2Y3YzQ1YTkzYTQxMGVjNGZkZDcxODM1ZThjNzQxYzI5OTkyZDFiOGQ3ODI2YmQwMGVhOTcyODNjYTEyODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzMTU3ZGM4MjkxN2RmZGIxNTcwZGFjMjI5MzVkNjk1ZDRhNWNmODg2NjczNjIzNmVkMmIwNTkxNTIwNTEyMjUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L68-L106",
+          "version": "repo-lines-v1:sha256:87cf6ec41561fabf56b67f8ae63158c3ad0667f45e3a2875b5a63bf6c1097e41:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZjUwNDU0MzdhMjZmNzczODg5MzM0YjU3NTQ5NTUzYTZlNDQ0MWRhYTFmNTVkODRiM2Q4MjBhYjBiMWFkODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3NGRjYjUyYjY4Y2UxZWU2OWIzOTVjZDk2YmZhNDFhOGVmOWFlNTcwY2IyNDQ5N2EzOGM4YjFlZmUzYTgyZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2MGVmYTVkMDIxNTQ5NGNhZjUwNmIyZjdhMTU2MGQzNzAxYTdjMjI2ZGNhNDI2ZWQzMTk0YjQ3MGMyY2U2NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b85c17c334046ebbffc21c1355a685f",
+      "statement": "Module-level mocking with vi.mock() and vi.hoisted() for external modules/third-party libraries; vi.hoisted() creates function mocks before import; always return spread actual module plus overrides; check module type before spreading; call vi.resetModules() in beforeEach() to clear module cache.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L146-L196",
+          "version": "repo-lines-v1:sha256:14986fb467074eda93d02ca2168ff69e4a29ca41d74e8a725ea7e69b0b2bf440:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiYmY0NzM3Mzc5OWYxZWUyY2UwYzUxYmU5NDM1Njg5ZWYxMjgwZjEzNjZmZjMyZjZjNTQ0MzQyOTU2MzEwOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4NTlhNzE5Nzk1YTc2YTMyNjcyMDU0ZTFhOGZlMjVkMWVkZjJjOTJkOWVjZTI4M2ZiMDk4NWNmNjQxMTIxMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4NDJiMzc3NTEyZmFkZTRmN2I1ZjU3OTg4MWU5MDNmY2RhMWIwN2MzM2E5OTYwZmY0NmVhZTk1NjcwYjZmYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_48a78c6830c94332a408ce019c5d37ee",
+      "statement": "@codebase/interface/testing exports graphqlMockServer (MSW server for client GraphQL tests) with lifecycle: startGraphqlMockServer() starts MSW with onUnhandledRequest:error, resetGraphqlMockServer() calls resetHandlers(), stopGraphqlMockServer() calls close(). Client tests add typed handlers via graphqlMockServer.use() using GraphQL Code Generator mocks.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/testing/graphql-mock-server.ts#L5-L30",
+          "version": "repo-lines-v1:sha256:cf07107c41f28b6a569f4915901bbc2520d6a24599f348001d0abfb907160a3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjODMxNGU0NjAzYzNhMTAyODU2MzM2ODNmODAyYjdlNGQ4YjI1MGFjNTNmNDJmMDk1M2U0YWViYWU4MGY4ZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzNzJmZGVkYmIxODRmMWVmOGFiYjg1NjNhMWJhOGY0MGM5MGMwMDYxN2U0NmU3YzA5M2RiMmUzMWQwNmE1ZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiYTRiNGUxZWVhYmIyZWRiZmZmNjdiNTI4YmEwZDliNTgzZTg3YWRlMTMwNDljZjEwY2QxNWIxZTlmYmRmZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/testing/index.ts#L1-L10",
+          "version": "repo-lines-v1:sha256:ce31c46cae1fddfc49089db7aec52d4ff5146d7d8dde242e8c4ddfdc92c73027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNzQ0MjkwOTg3MDNlNjM0Y2M2NjRlNDk3NWQxNGFjNDkxMjc0OWU1MTYyNGFiMWEzNTNiZTI0NzNmOWMxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNzQwOTIyMGQxNzU4MzE2NGQ5NTUzNDVmZjgxMDdmNTE3YTQ5NTdiZjJhZTU2MzQwZjZmMmMwNmNhYTQwM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNTljOWM4ZDhkZDJlZGU0MWRlODU3MTZkNjZiMmFlMTJiNzJmNDI0MmFhM2U1MDI5ZTY0YjE1ZDE0NTNmNmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_76df69aa4be9467f93726651e81226f7",
+      "statement": "@codebase/interface/testing provides server-side pagination oracle: paginateArray() slices arrays per Relay args as ground truth; expectedPage() returns PageSummary for a request; paginationMatrix() generates comprehensive cursor/count test matrix (first/middle/last cursors, outsider ID, undecodable/non-canonical cursors, ordered/equal/crossed after/before pairs, various limits); summarize() reduces GraphQL connection to PageSummary. Integration tests assert SQL pagination matches oracle on every boundary.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/testing/index.ts#L1-L10",
+          "version": "repo-lines-v1:sha256:ce31c46cae1fddfc49089db7aec52d4ff5146d7d8dde242e8c4ddfdc92c73027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNzQ0MjkwOTg3MDNlNjM0Y2M2NjRlNDk3NWQxNGFjNDkxMjc0OWU1MTYyNGFiMWEzNTNiZTI0NzNmOWMxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNzQwOTIyMGQxNzU4MzE2NGQ5NTUzNDVmZjgxMDdmNTE3YTQ5NTdiZjJhZTU2MzQwZjZmMmMwNmNhYTQwM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNTljOWM4ZDhkZDJlZGU0MWRlODU3MTZkNjZiMmFlMTJiNzJmNDI0MmFhM2U1MDI5ZTY0YjE1ZDE0NTNmNmMifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/testing/pagination.ts#L73-L94",
+          "version": "repo-lines-v1:sha256:68287f7d78b9a2512f4028c1726282b20571c9613f8dc897d383b0f5e2c86bf3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhY2U1MDM0MGYyM2NiZWQ4ZjhkOTlmZGYwZjcyMGYzNmY0MDZhZjMxYjMxMGVhMDZmNWY5NjQ2ZjU3MGUyNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViY2UwN2IzMmFhZDQ1YTMxZGQxOGNmZDk5OWQzOGI2ZmM5ZGE4NTI4OWQ1OWFhOGQwMmE0OTc0YTFlOGFlZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4YTA2NDI0ODFmYmNlYjczYzIzZDA0ODBhYzQ2N2JiMzU4YmE0MTk1YTBiMDhiYzdlYjZhOWU4ZTAzZThhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzNTcxY2RkZDA2Y2JjMTc0NjVlZjE3YTZlM2MxMmIyZTg4OWJlNWVhMThlMjNjODk4ZWNlNjMxYzllMTU4OTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9283944daefc4c1aadb1a00aee69ad83",
+      "statement": "@codebase/persistence/testing exports startPostgresContainer() starting throwaway postgres:18-alpine container (with Docker Hub mirror fallback) matching local Docker layout: <project>_username role, <project>_testing database, <project> schema, runs real migrations before tests. Returns connection and environment for ConfigModule/PostgresqlModule. startDatabaseTestingModule() wraps it and compiles Nest testing module with ConfigModule, PostgresqlModule.forRoot (or project's database module), TypeOrmModule.forFeature(entities), and additional imports/providers. Both require Docker.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts#L33-L80",
+          "version": "repo-lines-v1:sha256:b64c625511b019b511ee593c33de7389e627fdfeeee1d408165bd4afbc612aaa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYTAwNzRmMGI5YjdmNjMzM2VmYWNjZGJlMTYyNDMyZDVlNTdmYWFhY2ZlOGI1ZGQ0MWVhMTRhZTA2ZWJkMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhZTRkNWFiYWZjNTQyZGZhMzZlMmE5MjU3MmZhODBkMWU2ZDVmZTcxZTFkNDZkOGQ0MWQ4OGNhNGYwNGUyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3Y2NmMmVhZWYxNDNlNmU4OWYxZDRiZWFkNzljNmE1MTk1OGFiYzM3YTY5ZjU5NWU1MDk4MzI5YjEyNDEyNzMifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts#L20-L53",
+          "version": "repo-lines-v1:sha256:7c78b3cc13afca76c32c468b341a66f87bbce686b6344db7365943dd82f61ecb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0MmY3ODI0Y2QyYjg0OTEzNGE4NzQ1MTk4OWMyOTcyOTYyNDUyMjEyNGZjNjI0ZjI1NjhkZWYyNzExMzgzNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYmI2MDIzOWI5OTFmZGM2YmY2ODFmZDZkYzAyYmZlN2ZlOTNjZWEzMjYwM2JhNWVkNGZjYmVkNTc1NjQxNWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhNWFmOGRmYmNkNWE1ZjEyZjc3OTAwYWZlYmEwZGY1NTA4ZGExMmMxYzBmZTRlNGFiZTIyZGRmZDJkMzFhY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiZmM4ZjQ2MTk4OGQ2MThhMzNjYzRmMDQ0Y2M0ZDI1NTA5ZDFhMjlmNjcxMGZiOTdjOWU3YzhlMDJkMDAzOTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e05e79c65ec40bca4e2a358a2924a85",
+      "statement": "Lexico-web uses GraphQL Code Generator via @codebase/interface/client's createGraphqlCodegenConfig to produce three typed artifacts in src/graphql/generated/: operations.ts (typed document nodes with typescript-operations + typed-document-node), validation.ts (Zod v4 schemas for variables and results with withOperationType: true, importing from ./operations), and mocks.ts (MSW handlers via typescript-msw with mock<OperationName>Query/Mutation helpers). Scalars DateTime and ID are mapped to string wire representation. Generation runs via nx run lexico-web:codegen (one-shot) or nx run lexico-web:codegen-watch (watch mode).",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.constants.ts#L1-L22",
+          "version": "repo-lines-v1:sha256:556afdd4515b52a8acbfb648f9b20a6edf95cff72b2c1bc24a9f8bd7fb49cbeb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts#L15-L51",
+          "version": "repo-lines-v1:sha256:49c67b9e4c7d5b519cf7226ad1878d5064258ae8b65ec48d1debe57a22789e4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NDY2NGU3MDQwMGMxNGM4ZjQ1NjBjNTA1MGRhMTgzNzY3Y2Y4OGIzMGI5MWE1Y2VjNGRhNGRmYzdjOTA5OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2ZjBmNGRhMmFjNjM1YjMyYjQ3NTdiMWNiYzAyNTFjNmE3NGNjNjk2MTUxOTAxNDU4ZTcyMjFkODIxYTcxN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/README.md#L38-L40",
+          "version": "repo-lines-v1:sha256:0d635c040814a43165257447fe0351934a7a4eb16e6ead4626bb9d08c0f1187a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI0Y2RjMTQ3NDQ2NmVlNjIwZjkzMzc5NDk2ZmY4M2U1MmRhODNiNzJmMDg0NDNlZmQ2N2Y5MjBkYzI4YjgzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmExMDllNGU5MzBkOWZiOTA0MWY0ZmM3YWY0YzlmNGI2OThlYzZiOGI0NWEzYWRiZGUzNjY3MTllMTUwMjFkNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDJhZTM2NjllZWMxMjU5MzQ0ZTkyOWRkZWJlY2M3ZmU2YmJlYjIzOGZkMGZkZDE3YzMxOTA0MzE1Zjc0NDUzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjk3ZjI3ZWJlYTc0NDBmZjgxNDgzM2NmMTk4NTNiNjViNDY3NmYyZWFjZDhlNGM5YTE2NDFlY2JmNzE3Mjc0NyJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/README.md#L67-L69",
+          "version": "repo-lines-v1:sha256:6f0c09573a6dfdd2ce8c09db3020120b3357f3fe10e0efde4606d817691f6e22:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkyOGU2OWY1ZjRjODk4OTM2NWM0OWJmOTFmODE1M2IxMDI0YmE4MDAwYTc4MmQzNGU2NjBkNDEyN2U5YzVkNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTAwNTAwYmRiODA1NzFmOWE2MDNmOTE1ZWM4ZDc3MmExNjFhZDZlOTdhNGIyMzNlMWFiY2M0ODJlOTM5NDMyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjNmMzc1ZDAwZGEzNmJjZGFjOGUxNjE5MjE5OGZkZmU3ZDc2ZmJjZDRmNTBiYmQzN2QyNTcwNmUyMTc2OWU0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDEyYmIyZmM3YzFjZWFhMTk3NjA4NThlN2VkOWNmYWU1NTA0NjFjNjBjN2RlNzQ4NDFmMjIzMTU0MjVlMzZkMiJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/codegen.ts",
+          "version": "repo-file-v1:sha256:87bd5e311df586096e0d54af4b2fb9e37da6755a7474e991eef71568c6c7e58a"
+        }
+      ]
+    },
+    {
+      "id": "claim_01da2e1e55a94d58bd8e17b624f5d9fb",
+      "statement": "CI test execution is sharded into four parallel jobs in .github/workflows/continuous-integration.yml: general (default test-code job excluding meanderaw-cli, caelundas, ic-suite), caelundas (only projects/caelundas/**, runs separately due to ephemeris download), meanderaw (only meanderaw-cli, heavy integration suite), and ic-suite (only projects/ic-suite/**, 37 packages). Each shard runs nx affected --target=vitest --configuration=coverage with its exclude pattern. The postgres-client tool is installed for the general test-code target.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L154-L156",
+          "version": "repo-lines-v1:sha256:04a7da28f9d58c0db9915e076d192e887b69cea5d010bc177f30516f96c7154e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ0MzYxNjEzODdhMjRkNDMxMTNjNmM4OTFkN2ViZmQ2NmQ5ZDAyMGZkMTViNmU1NzYwMDRjOGI1ODNmZjE4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2Y4MTc3OTIyMjNiMzZlMjZlNjI0NTQ5OWUxNTVmYWVlNTA4NzBmOTkzYTdhNTU0OWM5NjM5ODE5NmNkODE5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYzMTQwYjcwOTAzM2E5YmY3ZjNlZTNmODQ3NTVlZTM3Mjc3ZmQzMjE4NGVhZjhhMjgwYWQ0NzdjMDVjMzIyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzczMDU0MWI2MGUyZTI3NDBjOTUxZjJmNWQ5YWY1ZTJiYzk5ZDY5Y2RhNjZjZTBlZjllMjJjMzI1MDQyYzM5NiJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L195-L201",
+          "version": "repo-lines-v1:sha256:f192288a6d4383d93aa9d95fa2247449141463adeabb2bb8310eb4a7243eb9f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY5NWRjMTk5NjY1MzkwNWQwZmUzNTQyMTM4YTY1NTcwMTAzZWQ5NjFiMzdhYzlkZmNhMDYxMmZlN2Q5ZDVjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M4MTJhMmJhNTBjOWNkZGU1ZDg2NjgyOWIwYTU2NDY5ZTY1MDRiMWQzYzM0M2JmZjgzOGJhMGZiNzY5ODlkNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDIwMTBlYWMwYWU4YTEwYTdjMmUxNzliMjk4YzE5NzIxYmIwMmI2ZmIzYzA0YWUwNGM5ZWIwOGJhNzczM2EzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFhYTAwYzkxM2NhN2I1YmM2YTE4ZTM0YWQxY2Y3N2RmMjI1ZTM0YzdkMGIyMjMxNTVkZDk2NzEwOGUzZmZjNCJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L64-L92",
+          "version": "repo-lines-v1:sha256:573d183bc962cdc30776e2bae4e02ebc9f1ce50ad7525e543019d57bc8e71a4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWM3MGU4NDgxNWNkMGYyZGYxYTAzNzg1YjM3ODdkY2Y0NzEwZWZiMzg1M2U4OTYzNjNlZDRlMjJhNDIyMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OTAxYWI2MDNiNTgwODM3NDJjMjc2YWUwZjBlN2Q3M2NiY2NhYjk0NDBiNTY4ZDNhMDUwYjFmMTc1Y2YxMGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyYjdjNGQyMGJhNmQzOWU3Yjk2NmZhNzFhOGFiZTljMGY2Njk4MmQwN2ViNmYyYTZlZmMxNzRiOTQyNjZkOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjNDgyOGNkN2UwMDMwODgwMjU3NzBhYTg3OWM5ZmJjMDc0YTI4NzgyNzUwMGI4MTg5ZTIzYTdiZDg4ZGVjOTYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

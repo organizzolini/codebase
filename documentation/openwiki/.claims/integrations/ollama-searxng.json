@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4c912d590bed4b1988a9b6f93bf822024738303943104756bd82015769dd2717",
+  "claims": [
+    {
+      "id": "claim_24456e6e3d964d199b8eeb0802e8fc55",
+      "statement": "The Affirmancy application integrates Ollama and SearxNG through a LangGraph StateGraph pipeline (8 nodes) that researches subjects via SearxNG metasearch and generates affirmations via Ollama, with Pydantic validation at each stage.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/AGENTS.md#L7-L12",
+          "version": "repo-lines-v1:sha256:34aab4502a36c33fdbf1aaca8894dad848046392925365051ba6c2f4dd0772f5:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEzZTEzZjI0MTZlY2RiODY0OTMyZWNjYzcxZTJjNjdhMDhiNTM4ZjczZDRjZWNiYjZiNGNjYjQyMjJlMzZiMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI4YmY5MTU4ZmI4YmY5Zjc3MWYyNmU0MGZjMzNjYzMwYTFjNmViMWQ5ZjgxM2EwZjU3ZWQ0NmFhNGU1YzFiOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTdhNzU3OTk3M2ZiMDZkZGEzZjcwYzIyMzhjNDIxYTFlMDBkZjE2MjEwZGUzMjY3ZGJhYTgyZDRhZTZmNjJkYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjAyNGY1NDhjZGZmMGMxMzcxZmQxNzJhZGRiMWRlMjgzOTIzM2RiNDBjZjYxYzZlZTRlMDMzNjZiOWNmMjNjMiJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L382-L387",
+          "version": "repo-lines-v1:sha256:f8d8c192b033fd5ef549354e9dd6eb8d3f8d976cdd75653aa1474d6e1d80255b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2I4ODY1NWNlYWJiNDBmODliYTg2NmRiZTk1MTJlMDMzMzc1Y2I4MGY0YzEyNzg0MDBhNmY2MjZkYjUyZjViYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWViNDUwZGJmNDY2M2JkMWI0Njk2MDU5MTBkNjQ1NDgyODI1Yzc5ZTdkMzMzMThmZjYyMTQ5YzU3ODBmMWQ1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI2OGI4MWRhY2ViNDkxN2FmYWY4ZDE5YTcxNmY2Mjc1ZmZkOTU5ZjI5YzRjOGQyMDg0NGE5NTA5ZTVkYmQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmYwZTQ1YWVmMDk3MmRkZjRkYjY0YWVlNmM4Mjk4ODc2ZjNkZmIzYTA4YTEzN2FmNjg2MzcyOTE4NzdlZWJiYSJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L551-L569",
+          "version": "repo-lines-v1:sha256:3f2d0593b6eb1b80648ddb9c50f971a3828407a0841ba04ef6f4dd217247bba4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNDFmZmIyNTkxMzBmZTJhNzk2MzMyMzk0NDBjZDIwMTI4NDFmZGQ1OWRhMzE4NTQwNWM5NTI0MGRiN2NmYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MDQ2OTA4MGVlZWQzNzE0NDkwZmRhNDlkODQ3NDJlMTYwZmY3MWQ4ZTdjYjgwZjVkZWFhMjkzNGVjNDk4MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1NjQ1OTM0MjhjZDQ3ZDc2ODMwNjQwN2UwMDJhNGUzNjUzZWJhYjRjM2U2YmE5ZmE3M2Q2YTdkNzczYTQxZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ODY0MjMxMzJlZTU4N2YyODRjYjM1NWY4OTk0ZTJiNDI5YjE4ZTVmMWZjOWI1YjI4YTMxNWMyNWUxYjhjZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_565951457b4242578b9e64be12760692",
+      "statement": "SearxNG is configured via searxng.settings.yml with use_default_settings: true, layering custom settings on top of SearxNG's built-in defaults.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L10-L12",
+          "version": "repo-lines-v1:sha256:62ae50d7652994c86995dac528c5fb87f38aa8b08b3888d4e5a59f901e39bdf5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGMyNzg1YmMwYmIyODM5ODE4ZDUwYmE5OWJhZjljM2Y2NjMwYTdlZDNmMDRjMzRlZWZhMDJkYzA1NmMyMGI1ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmNiMDg0NTRiN2QzNTIzYTg5MGVkNGZhYTgzOWMxNDJiN2M0MDc2ODFlODA1MzdlNDU1ZjIyOTA0MGNlMTQ0ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzEzMTkxMzc5NDY4ZGUyNmI3ZjdiMzJkZjMyZTlhNzIzMDZjZmM1OTE5Mzc1MTg5MTEzNzAzN2JhMWI5YTU0NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTMzY2VlODI2MWQ5MWM3NTU3OWJlYzgwMGYyMzQxMTgzZTRlNzdmOTdiZTZhYjE0YmRhYzk5YzAzNTExZmNmYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_38b20de4dd904f6485afe769c7419e57",
+      "statement": "SearxNG configuration defines 135+ engines across four weight tiers: Tier 1 (wikisource, openlibrary) at weight 2.0 for primary sources; Tier 2 (wikipedia, startpage) at 1.5 for encyclopedic references; Tier 3 (reddit) at 1.2 for practitioner discussions; Tier 4 (duckduckgo 1.0, brave 0.9, bing 0.7) for general web; google and wikidata are disabled.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L246-L363",
+          "version": "repo-lines-v1:sha256:2d2adbea5ce99366698c5482ca03f2f01cb72e976108b58954a1ac6f99d6ffb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiNTlhMWU2OTY2ZGNjMjgyM2NiM2MxYmEwNTBkMjE2MjJlNDBlZTU3Yzg0ODg5YWU2NjI5ZWNmZGY4ZGE2NjQ1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjNmU0ZWJhOTlmMTllODhjODI5NzE4NTQ3OWQxZjlkYzdhMzMxOTU0ZTcwNzllZGY4MDE2NDFlZTgwMGRlMGE2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmYzcwMTQzNWQ3OWM1NzgwODVhZjBiNjA0NjJjNjBlZTc2ZWIxNTRlNGEwMzQ5M2E4OTcxODEyZWU5ZjJkYjVkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_010791775d094a0285b408a1de8b88e5",
+      "statement": "Hostname boosting promotes ~70 high-priority spiritual/occult domains (sacred-texts.com, hermetic.com, biddytarot.com, astro.com, chabad.org, etc.), demotes thin SEO sites and generic references, and removes non-English content farms, medical sites, image-only sites, and affiliate marketplaces.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L62-L239",
+          "version": "repo-lines-v1:sha256:9f0d46489e02f19916cef251760270f41bf2ff3fc0bfb2e0712a29632afc6a96:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyY2FlYmQ5NDU0OGE1ZDg3Yzc2MWUzYzViNDdkNWY1ZGYwZDk2ZWYxNTQyMjQ4NjE1NWE3Y2VkZTEyNmRmYzk1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3NTJkZjBiYTgyYzU4MzYyYjI1NTI4ZjRlMDgxNTI3OWUxZjdhOGE3YzE2NjEyMmQ5ZTM3NzU3MTQ0NTU5OGNkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzM2JkMGQ2ZDYwMmFjODNiOWE4NmRmNjhmZjM3YmM0ZDIyNjRiZDAyY2U0OGZkMGY2ZWRhOTNjZjE0ZWY5NzlhIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_aea1538bbd2c4aeda07355707fee8b8e",
+      "statement": "SearxNG rate limiter is disabled (limiter: false) because the instance is only queried by the LangGraph agent, not end users; engine ban times are reduced (5s initial, 30s max) for fast recovery during iterative development.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L22-L24",
+          "version": "repo-lines-v1:sha256:f8e4cf8569324325eade8f74e573c07bf6c8cc8434f49ddf5f43d04dd287cc68:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRkY2I4OTRjOTg0Y2FlMGEzNTE5MDE2MDYxZDQ3YTg0MDFlNTc4ZTg1ZDNhZDdiMzA2ZDlhMzc3YjA0NDhhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTAyZjQ4NmUwYTUxZjdiZTkxYjQxNmRkZTliY2M5ZWVlM2Y3MWQ2MjExOTNhZTIyYWY3ZmY5MWE1MTNhZjBiMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGY2MTg2ZmI1YjJlM2ZiMDViYTg2YjliYTgwNzMyNWViYzcwZTU3MDIxYTUxNzM4NzE1NjMwNDkzMzczZWQzNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGUyY2YzNTNjMzQ0ZDljNGRhYmY4MDZkNTRjZDdiYTQ2NGQ3YzVhODBmNjhjYjE3NmVmYTNmM2QxZWVkZmJkMyJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L50-L59",
+          "version": "repo-lines-v1:sha256:22057b9f1da3a6179d70d8dff5d290a4cec0b237ba31b036956bbace1af8fcdd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNzUyMmJiMGEyMzcwYjRlNzZiNDU0YWQ5NzY3ODA0Mjc3MTU2YWM2MmQwZDNiNjQwYzNkMjI5NzE5YjNlMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2NTBkZWZlNzVlNWU1ZTk5NGQzYTNjYjUzYWE4MzU1ODdjZjYxMWEzZGFmOWY5YmM3ODQ5NmFkMzgxYWZmNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3OTFjZDA4ZWExNTU2NTI4ZTA5NGE0OGNmMWJjZDhjNGYxMGIzYjI5NDgzMjI5OTE5MGE0ODc5OTk1ZjI2ZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkY2JkNTRmZjJmMWYxNmNmMmJmZDg4ZWQxYzAyMTgxZWNkZDA0ZjMzNjIyNDRiNTQ5MmIyYTcyOWIxYTFmNGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bbbd120b51c84c719b6c45b6f7ba796d",
+      "statement": "Safe search is disabled (safe_search: 0) because occult/spiritual content is frequently misclassified as unsafe by content filters; autocomplete is disabled since queries are generated by the agent.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L36-L41",
+          "version": "repo-lines-v1:sha256:75adbd6cb4d65f0f48fa8b070637e5a9fdbac5e145274ea49a65ddda21816f34:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAzOGIyYjI5Yjg5YjM4ZmQxOTkyYTZkNjdmMmMxYTAyNjIzMDk5NGY5ZDU3MWIzMjlkMjUyM2QzYjBlNmJmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzkxNmZkODQ4NjljZmQ1MjMwNTA5ODNmNmEwYWZiMTYwOWNhODg1MzFiN2FhYzhkODA4ODNlNjNiYTg0MzhmYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWRiMjVlZmI4ODRkNzY5MTFmYTk4NmQ2YTcyY2Y5NzJkMTU5YWI3OWRlZTYzYmU3ZWJhYjg5N2ExYWU5NDE4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE3NTczNWQ3MDQzYmY4ZWUzMzY4OGQyODBlOTNlNzYxODMwOGU3YjNmY2I0MGJmOWNhMWJhYjQyMzcyODNjMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_71863f257baa4cc2ab795659e21f1c66",
+      "statement": "SearxNG output formats include html (for browser UI) and json (for LangGraph agent's SearxNG tool).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L43-L45",
+          "version": "repo-lines-v1:sha256:4675a33f773745e1b0fa0ba0e1e866d6f88766c50133c7a174c29241f01c083e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmY1MWQ5YTQwOGYwYTgzYzZmZGI2ZmY3ZjAwMmQ4MjdmOGNhZTcyM2YwZDNkOWNkODU5OGQzYjdjZTg1MWJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDlhMmYyZTNlMmI5YzUzZmQzNzMzODY0MTY1MmNjYWQ5ODU3ZmZiNjJmYTUyZWMxODUzZTQ5Nzc5MDI3MjFmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2YwZjIwMmYzZmZlNGIxN2YwNWYyZmJlNDViY2ExYmMzYmY3OWYzOGY1MzY2MzY5ZDdlMzg1NDAyZjQyNzlkNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTY5ZTlkOTY5NTNjNmQzMWE1Yzk0OThlOWIxZmVjZTdhZjljMDI1OTEzMmE4ZTIwYjBhZjY3N2Q5OWIyMDI0YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_50f9510369d74ce18a5fc555f28ea529",
+      "statement": "Environment variables OLLAMA_HOST (default http://localhost:11434) and SEARXNG_HOST (default http://localhost:8889) configure service endpoints for ChatOllama and SearxSearchWrapper respectively.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L59-L60",
+          "version": "repo-lines-v1:sha256:3b6d71433e6faee7960d7134f5da48ae36dff8baa3dbb1a4eddb2f434fd77442:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDhjZjZjZDJkZTA1NWE3MjcwMDJmZDBiZjMyODNhZjVjZGQ1YzQ3MGFkNjhmNTg4MTVhNDk5NTE5NjBiN2UyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQ4NDkxNGJhY2RhZDhiNWM0ZGY0Y2QxOWQzZTA5ZDczYWJjNDJjN2I2OWMyNDhkYTQ4NTQ4YWQ2OWM2MDdmMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmMxZGE4MTllMzRiYWM5YWQ3MDI4MTA3NjFhNTljMThlNDNmZDgxYjBhYmYwNjVjZjU4MzU3YzlkYWZmM2Q2MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGJjNDFkM2Q3NmNmOTk4ODMwOTc5OGUyNGUyYTJjYjU4ZTg4N2FjOTQzNDA1OTcyMjRlMjJmMGRmYWZkMTYyMSJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L95-L96",
+          "version": "repo-lines-v1:sha256:a608f9178889d8a4ebe33e32393114b97ed924eafde08e5ba213424688744ab8:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmVjOWI0OTJjOGJhYWQwYmIwMDVmMDVkNTBhY2IzYTRkZTdjYzY0YTAwOThlNWFlODVlMjUwYjkzNGI2MTcwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODIzZTM4MDY0OGFjMmQ0ZjczZGQ0N2NhMzYyMDFkMTgxNTExYjc5N2M4ZDAwNmQ5YjE3ZTMyMTk4ODUwMGJjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZiMzRlYjdkMDEyZjg5MTA2M2I2OTA0MWM1YjQ3OWQzMTUyY2ExOGQwZjRmYWVlZjQ5NjRhYWQ0ZjUxZThiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjFhZDUwOTA0MmZkMDU4MzNiNTRlNTJiYWQ4MWNmYjMxYzQxZmM4OTFiNDkzNDQ1Zjg3MDcwMzhiMjBmZTI1ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3fdacc127594828a4b563a713c53daa",
+      "statement": "Three Gemma4 model variants are available: gemma4:e2b (default, ~2B params, CPU-only), gemma4:e4b (medium, ~4B), gemma4:e26b (large, ~26B); pulled via Nx commands pull-small, pull-medium, pull-large.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/project.json#L21-L27",
+          "version": "repo-lines-v1:sha256:1a9d4c02b539f32f47c66a28809a77c71e718f5ed4037134a697d9ffb576e850:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTA4Zjg4ZTkwNWRmMmYwY2RlOWRlZjJmZmZhMzJkYWFhNjQzNTMyOGRlNzlkN2JjNTY0YzJiYjE5YmQ5OTBmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNlZDA4OWUxOTQ5MDUxZDU4ZmM1NjU1YzViOTI1ZDIzOWQ3OWRkMTU2ZWIzMGNkNDBmM2VhNjcwYWM3MWU2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWQ2NThiNGU0OGFhZDA0Njc2M2UzZWEzZjllYWJmYmIwYmI2N2M3Njg0NjA4ODIzOTdkNzIxNTRjZGI1MDU2MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTY1YTc2YWNmYTQyYzEwYTdhMTAwZTUzOGYwNjJmMzJiZGQ1MzNhMTQ2YTEzMjFjMjJlMzAwNDFlZGY1NDAwOCJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L61-L61",
+          "version": "repo-lines-v1:sha256:7c15ec0024003e22cba37147c11c1a467447bf18263028fc2a3e9060a0b344a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2MxNWVjMDAyNDAwM2UyMmNiYTM3MTQ3YzExYzFhNDY3NDQ3YmYxODI2MzAyOGZjMmEzZTkwNjBhMGIzNDRhOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2MxNWVjMDAyNDAwM2UyMmNiYTM3MTQ3YzExYzFhNDY3NDQ3YmYxODI2MzAyOGZjMmEzZTkwNjBhMGIzNDRhOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjc2OTQ1ZGVkZjQyYjE0NTNlY2JmNDNmMGJmODljY2I3YTcwZjc5YTA2NjJmM2Y3MmZkZWI5N2Y1M2VjYzk5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGI4ZDZlMTU1YmJkOTBmODhiZGQ4YWYyNzRmYTJmY2QzYWQ2MTMwODYwZTk2YzZiOGNmNWQxYjQyZGQwMjZjMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a2271940c5284e9ca154b5a7bedabb02",
+      "statement": "All four ChatOllama instances share model=gemma4:e2b, keep_alive=12m, reasoning=False, with temperature tiers: validator=0.06, analytical=0.12, generative=0.24, creative=0.48.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L57-L71",
+          "version": "repo-lines-v1:sha256:76ed331dbe4fa0b8cae35174451500d061e4562a493ae1316283df5ec5756e38:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZmNlMGJhOTFkYjRkYmUyN2E3MGQyNjM5NmNmMGNlMjg3NTAxMDNlZDY4Y2FhZDQ2Y2JlZmM5YTNmODAzZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1N2FkZWJiYzg0ZWUwNTM2YjljY2Y2MzE1MzdhMzhiNmY1Y2I3ZTllMjA0ODhlZDY2NDQ3Y2YzMDI3MmRjYjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkxMTNmZTA5Njc2YTUxODM0NTU5YzQzNzNlMDg2NDI3ZTViMDQ2ZTBiM2NiYTFmYzhjMDliMmMzNzFkNWY3NmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1ZTc0MmIxMDNjY2FhNjc3MjFmY2IyMzUxODMyZTNkZjIzMGFjM2ViMjU2YjcwYzQwNzA5YTA3ZTExYzA0ZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f30ff3c283bb45c4b3b3e6237c3ce424",
+      "statement": "Context budget management: gemma4:e2b has 128k token window (~4 chars/token); pipeline fetches 12 SearxNG results, extracts via Trafilatura, truncates each source to 32,000 chars (MAX_CHARS_PER_SOURCE), yielding ~288k chars (~72k tokens) for sources with margin for prompts and output.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L118-L151",
+          "version": "repo-lines-v1:sha256:22c9592713ee1a66add907bb0361af0ce1a07a428a3b151ebeab34190a2ae046:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkYzVjNDQ1MzJhOTZmNGVhOGE5NTgxYmMyNzVjM2ZlNmU1OWNlNzMyOWRjNGVkN2RlMjE3MDlmZDgzODM0NDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMzk4ODRlOTNlY2UzOWE1MWU0MDFhZWMzNWUxYWExN2M3NjlmZmMxY2ViNjc0ZDIyZjRhMDFiODg5NzdlNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxZjBmNTZmZThiY2UzYjljMWY1MzMwMDI1NDliZTFjMTExMTIwODhjYjA4NzI0Yzk4YWIxZTQwOWY3Zjk1NjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzYTFiOTk5ZjAwNjY5Yjc3YWU0ZWMwZmYwMWQ2ODkzODU2MTI0ZmM4ZjZhZjc5NWZkMGY0ZTgwNTYxMTZjMTMifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L98-L101",
+          "version": "repo-lines-v1:sha256:4bc46dad7e2cc3432a49ee29f0d1738993e4a278dfbe178e8831581c60fcb40b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGFlZTg2YWFmOWIwNDAwZDNkNjE4MmRmNWRiYjhiMDQyZGQ2MjBkMWZjNDk5NjUzOGVkMmEzM2E0NzZkYWIzNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNmNTJiODRiMzZkYjQ1Y2Y3YTA0YTE0OTVmNTEyODUzMjY1Y2Q1Y2RiODQ1ZmEzMWMyMjc1OGY0ZjExNzhjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWJjOTdlM2NiMmJkYTI2ODJkMDk0ZGRjM2ZmZDA0OTZkNzk3MTBkOGNjYjQ4NTFmNmZkMjdjMzcyOWVjZTVlOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWFiNTVjYTlkMzU1MTA3YWQxODVjYjZhYmQ4ZWNjOGZlOTA4M2Y3MjcwODExMjg0MzhmMDk0OGVhYmIzYmIyNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_987b57f04da249c4a8e579535d40a98e",
+      "statement": "The ReAct agent is an 8-node LangGraph StateGraph: search_sources -> analyze_sources -> generate_document -> analyze_document -> generate_affirmations -> validate_affirmations_grammars -> validate_affirmations_subject -> write_affirmations.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L551-L569",
+          "version": "repo-lines-v1:sha256:3f2d0593b6eb1b80648ddb9c50f971a3828407a0841ba04ef6f4dd217247bba4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNDFmZmIyNTkxMzBmZTJhNzk2MzMyMzk0NDBjZDIwMTI4NDFmZGQ1OWRhMzE4NTQwNWM5NTI0MGRiN2NmYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MDQ2OTA4MGVlZWQzNzE0NDkwZmRhNDlkODQ3NDJlMTYwZmY3MWQ4ZTdjYjgwZjVkZWFhMjkzNGVjNDk4MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1NjQ1OTM0MjhjZDQ3ZDc2ODMwNjQwN2UwMDJhNGUzNjUzZWJhYjRjM2U2YmE5ZmE3M2Q2YTdkNzczYTQxZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ODY0MjMxMzJlZTU4N2YyODRjYjM1NWY4OTk0ZTJiNDI5YjE4ZTVmMWZjOWI1YjI4YTMxNWMyNWUxYjhjZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_00d9fd25766c49e8a32f436c93edba14",
+      "statement": "State schema (GenerateAffirmationsState) includes subject, query, sources, document, source_analysis, document_analysis, grammars, grammar_affirmations, and validation_failures (accumulated via operator.add across validation nodes).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L382-L387",
+          "version": "repo-lines-v1:sha256:f8d8c192b033fd5ef549354e9dd6eb8d3f8d976cdd75653aa1474d6e1d80255b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2I4ODY1NWNlYWJiNDBmODliYTg2NmRiZTk1MTJlMDMzMzc1Y2I4MGY0YzEyNzg0MDBhNmY2MjZkYjUyZjViYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWViNDUwZGJmNDY2M2JkMWI0Njk2MDU5MTBkNjQ1NDgyODI1Yzc5ZTdkMzMzMThmZjYyMTQ5YzU3ODBmMWQ1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI2OGI4MWRhY2ViNDkxN2FmYWY4ZDE5YTcxNmY2Mjc1ZmZkOTU5ZjI5YzRjOGQyMDg0NGE5NTA5ZTVkYmQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmYwZTQ1YWVmMDk3MmRkZjRkYjY0YWVlNmM4Mjk4ODc2ZjNkZmIzYTA4YTEzN2FmNjg2MzcyOTE4NzdlZWJiYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fc8708fbdae241ca89f54008cd5602ab",
+      "statement": "All LLM calls use a shared retry policy: up to 6 attempts with exponential backoff (multiplier=1, min=1s, max=10s), logging each failure before retry.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L247-L261",
+          "version": "repo-lines-v1:sha256:0cc681893f16f4dbf28a38dcd8ce473eb7c13d4dd11a6296cc4178eecbbfdced:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NDU4YzA2ZGZmZDIxZGNiZmQ5ZjQxOTg4NWY1MTFlNGQ1MDRlOTAwMzQ0NjIzMjg5YTU3NTdjYWY4NzAzZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNzc3MjlkZTMyNmQ5OWY2OTZjMTI5MmU4YTVmNWU5MmExMjc2ODEzZWNjNzFhOWQyMjZjYjBhYjI3YTM3MTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxYzMwNGRjMTI5Zjk2NTFhNjZlMzA4OGE5NWJmZDYyODdmYmMyNThhOGI5MGE4YjRhOWUzOGQ2MmJkNDAwNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMzhmOThhY2E5MjQzYmVkYmJiOWIxYzc5OTQ0MjRjZTY5ZjIwODIyZjNkMDgyNDA2OTEyNGRhMjgxZjRjMmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff2e1175e2184edfbfb962f33b3fa8c1",
+      "statement": "The require_searxng() utility performs a fast health check: any HTTP response (including 4xx/5xx) proves the server is up; only connection failures (refused, DNS, timeout) trigger a RuntimeError with the nx run infrastructure:searxng:up start command.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/services.py#L10-L26",
+          "version": "repo-lines-v1:sha256:bef55310c17014e52a804637f250b14b72bc56c4fd46a8a26c1db575b76444ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZjY5MzdlZjdlZDBkZjg3NWNiNjViZWFlZmMyZTFkYzJlMjRiMDQwZTFhYmZlMzU5ZWNlNzYxNWRmN2VlZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZTRlNmQzYmUzMzVjMGJkZmRmMzkwNTA4NDBkNjMwNTNkZWQ2ZmQ3ZDQ0NjNmOTU2NTJiNjBkNWQzZjAxNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjNTJkNDlhYjEwYTg1NzNlNDZhMDNkMDUxNmE4NTY0OTU1MmE2Njg5NzE1ZGRmNzUwZjk4MDBiMWUwZWIyZmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxMmYyNGFkNzQ4ZTRmZTEzZTJmNjVkNTEyZjZjZWQyZDk1YTYwZjk3MjMyM2M1Y2YwMWY3ZGQ4OWFlNjViZWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_877da23895f8482aa8a21cf1d2517e26",
+      "statement": "Service ports: Ollama on 11434 (http://localhost:11434), SearxNG on 8889 (http://localhost:8889), Open WebUI on 3001 (http://localhost:3001).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/AGENTS.md#L98-L100",
+          "version": "repo-lines-v1:sha256:7c0eed616b3d4beca0b0af9ae7565883ce4a32fdf0eff953406f051efef0a1e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDIzNWJlZDUxNWIxMmMyOTA3YTUwZjYyZjZjZTYzMDE1MmMwY2M2NTlhMDcxNjg0OTI1OWIwZDAxZjdkNTAwMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDlkY2U5M2Y5MDc5NjE2MDc4MjAxYjZkOTlhYTkwNjU3NGE5YTkzMDdhODI5MjYwNjZlMThmMTc4MDk3ZTk5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWMyYWEyMjQxYTdjMDc3MTM0OGMyYTcwZGNkNTA2ZmMwNDZiMGU4ZDMxZmFiM2VkNTMxZGRlZTNlNDM0NzZkMCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

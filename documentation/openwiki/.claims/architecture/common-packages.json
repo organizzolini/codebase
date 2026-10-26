@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e85128865830290b82f9bddad195b7a17ea712a3e2e589ce7e905a387b44ed01",
+  "claims": [
+    {
+      "id": "claim_356fc8a2a59d41c4a391947e95843215",
+      "statement": "The codebase maintains four shared packages under projects/common/ (persistence, interface, presentation, observability) that application domains depend on via workspace protocol imports like @codebase/persistence.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L186-L193",
+          "version": "repo-lines-v1:sha256:f95648a8be0917cfa27759a6e41d9c2a8b93dac6a32ca006f3077ff67187736a:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc4Y2M3NGVhYjQ5Y2VlNGUwYjhiMzIwMWI1OWFkZTRjZGU4YmFiYWY0MTU2Y2JmMmRhMWY3M2I1YzBkYjUxZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODA0ODJiZmY0NmYxYTg5ZWZhODAzY2ZiYjc3ZTI3MWZlYTA4Y2JkYWRiMGRlNjcxZGI0M2NjMmUxODRlNDk3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQxN2Y2MmEyZjFhM2U5MWNhYTg1OGI4MThlZmQ0NzY5MzA0MmQ0MjRhMDYzNmFiYjhjMDY1ZTNhYjhmYjI3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQyNjQ2MGIyYWNiNGU4N2E1YWI2NzAyMDM1ZGEwODlkY2M2NmIwNWUwZDY0NGMxMDg3OTA0M2QwODI1ZTI2ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e8ef689d27b5478f8c4140c21b01065f",
+      "statement": "The persistence package exports postgresEnvironmentSchema (Zod fragment for <PROJECT>_POSTGRES_* variables), postgresConnection, postgresDataSourceOptions, PostgresqlModule.forRoot, createDataSource, base entities (IdentifiableEntity, CreatableEntity, UpdatableEntity, DeletableEntity), and testing helpers startPostgresContainer and startDatabaseTestingModule.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L20-L37",
+          "version": "repo-lines-v1:sha256:de5e5bfb0ed151e9ea02b9b395323c827f4d39d85f9ca8d516bcbeb3e15bd43c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMmQyZDRiNjlkYTY5ODc4YTE3YTI3ZDQ0MDE5YzRiODY3YzMxYTU4Nzg5YjNhMzhkZGM5MGYzMmQ0Y2VjMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMDgwYzIxNjA1NDY3N2UwMDlkOGMzNWYzYWFiZjk0YWE2YmVhZWViMmE1ZWYwMmRiZmVmMjE3YWUwMjZmMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5M2FkYTc0MDJmN2Y3NWE2OTdhZGJhMTBlYWFhZGJlN2ZhMGE1ZGEyZjY3YmNiMmE4ZTIzMWZiMTk1NTNiYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MTkwYmIxNDY4YTMxNTM4YTE5YTg5MWQ4NDUyZTM3YWNiYmQzZjA1MTFlNDM4NWVhMTAwNjgxOGI1MWY1ZjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_555d9e10539441148d9d2a93bab1f470",
+      "statement": "The persistence package enforces a database/schema/role naming convention where local Docker uses <project>_development database with <project> schema and <project>_username role, while Testcontainers uses <project>_testing database with the same schema and role; the schema carries no environment suffix so migrations apply unchanged.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L12-L18",
+          "version": "repo-lines-v1:sha256:ec8a6728bfb3853ca21d30cef73080254c6941a27fd197857bf62b3e0353b359:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2ZGFmNzdlM2ViZDc3ZWIwYjMyNGZmOTk0Yjc1MjdhZTEyZmFjOWEwM2MzMmFkZmJiMDQ1ZjRjNWE4YTc5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFlNDYyODJhZWQ2NTdjZjAzYjA4MDJiYjQyNjBlNTljM2MzMGQ4YmU2ZjhmYmIwZGY5NzUwYTUzNGM5YTQ3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjFmYzkwZjdhY2NiMGM4Njg5ZDc0MzBiMzkwNGM0NDhmNjlhYWQwODljZjAzOGUwMTU3OWZjY2MzY2ZmZGYzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzc1MGM4YzcwMGE1MzllODg5ZjJlY2U3Mzg5NDU4NDE4MDYzZjc3YThmYTczOGVlMDBiZWJkY2EyZjY4YmE1ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1210d54daf71447c84e4b8a9ea606442",
+      "statement": "Applications consume persistence by spreading postgresEnvironmentSchema into their Zod environment schema with a project name, creating a database module that imports PostgresqlModule.forRoot with entities and project name, and exporting a CLI DataSource via createDataSource with migrations.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L40-L97",
+          "version": "repo-lines-v1:sha256:e213d891a2e2e69a14e1a6cd4fd617bb082b87647370702fd1409ce452343278:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3NjI1NGZhZDFhNmNhZGUyNWM3MWYzMGVjNzI1MzIyNTYzY2YxNjlkNTBkM2JiMzU3ZjM0YWRiYWQ1M2FmZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiNGRkOWZhOWI2ZGNmMjQxZTQ4Y2M5YTIxZDI2NTIyMWRkMzUxYTY2NGIxOTE5OGIxZTEyNGE1NTdkMzA5YTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_665bb5373d624025a71e9a2d5c76748b",
+      "statement": "The persistence package never synchronizes or runs migrations on application start; synchronize and migrationsRun are both false, and migrations run only via the migration Nx target as a separate step.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L149-L150",
+          "version": "repo-lines-v1:sha256:a4dbef1bcdaf9487b987ff9c5e89e39f8f96b2974600c3f948ac18f3dfbef45a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODM4YTNiZjBkNzlmM2UwNzE0MTY2ZWU4ZTRmOTAyYWI2ZGJkMjAwNTYyZTlmOGM5NzRjZDc1MGVjZTZiY2MyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTUxYjNhMzVmY2I1YzUyNjRlYTg3YzBjMWMwZDM3YjI4ZGI3MmEzOTFiYzU3YjE4MDg3ODdmN2UwZmM2MDQ0ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWJjMmQxMzdkOWE4YjY5OGQyN2JjNzExZDJjYjg4MjZhMGQ1MzRlZjM4NThhM2VkODAxMDE2ZDk2ZDM2ZDdhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWFlZmFmODI0NGU2ZDA3ZTVhNWZiMmE2OGU4ZTA1OGMyNzNlNjcxODQ5ODFiMjM0NGQ4MWVhODU4NWRmYTU5YSJ9"
+        },
+        {
+          "resource": "repo://projects/common/persistence/README.md#L99-L100",
+          "version": "repo-lines-v1:sha256:a8d2972a0c8fa58f445526877d2a9e98b35fd572d83f0cbc6f05a718b4c042f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjI1MWExMmIzNmQ0N2MzNzQxNGQyMmI3OTVhODUyY2Y4ZDVjNjZkODQ0ZWNkZmYwMDUwOGU0Y2NkOTM2OWFiNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDM3Y2M1N2VlM2Y4YWYyNWM1MzQ2NWQyYzU1MDYxMjViZDZjYmVlM2IwY2RiMGI2NDQ4YzYwYTRlYjlkMjk4YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGEwYmUzOTFkNWEwOTI0NDM2MDU0OTQ1MDgxMzM5YzBmZGYzYTc1NDcwZmVhN2Q0OTNkYzFiNjllMzMzMDNlZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDY2NzUxMjc5MTA5ZmZjOGZlMGE3MTE1MzkyZGM4ZDRlZTRiNjRkMGQ2ZGMwYjQ3NzYxMzA4YzBmNWRlODBlMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4acb2de399774d5f9d230cf9a6bfb597",
+      "statement": "The interface package splits GraphQL server and client into separate entry points: @codebase/interface exports server-side types and utilities (PageInfo, Paginated, createEdgeType, Relay connection/edge/cursor helpers, relation mapping, entity-to-GraphQL type contracts), while @codebase/interface/client exports createGraphqlCodegenConfig for client code generation.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/README.md#L3-L26",
+          "version": "repo-lines-v1:sha256:02d4c3c20f2ac69a093861b354558274fb25d764ea0179892b61cb3f8cab18c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzMjg0MzVhOWFlZTQxNzVjNTQ0MjdmODE2YjQ0NTlkYmQzMWY0MWUwN2M2NzAzODExYTE5ZDhkYWI3ZWU3M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2ZmY0NTQwY2U5NDdiOTM0ZTYyODgyNmQzMGZiNjk1ZmVlNzJlNTEyYjk3ZDFjNTdjNGI4NjA0MTZkY2QxYmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2NTJjN2NlMzY0ZWY2MjQwMjIwMDMyODkzN2Q3Njk2NzlmZGVmYjYwZGQ5ZGZhMjA0NTZhOWUyN2Y5YjA3NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlZGFiN2Y5MzY4MjE4NTJkMjIwNjYzZjE1NzAxMjJjYjhiNDQ3MTI4OTM2OWY2OWI3MDYyNDViMTQ4OTMyMzEifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/src/index.ts#L1-L31",
+          "version": "repo-lines-v1:sha256:23fbb1d249e87771eeb313e221b7e3f11eca42ac8b6c4a73c8a89b30aa0d82ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNWYwYjg5MzMyN2E1ZGE1N2ZkNjY5YmZmYzE0ZTgyZjFiMTVmMjVkY2RlZTU0NTYyZTAxNjExM2FlYzc3NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ZTIxODUyY2EwYjllOTBjNmEyMzcxMmUyMjFhNGMzNTU4ZjA4MTc0Yjg3ZWE3NGJlZmQ2YzQ5MzQyNTNiNWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fbbd49a22e26492388f6541cdc7f3008",
+      "statement": "The interface package provides testing helpers at @codebase/interface/testing: for clients, graphqlMockServer with start/reset/stop functions (MSW server); for servers, paginateArray, paginationMatrix, expectedPage, and summarize (oracle for SQL-backed pagination).",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/README.md#L28-L36",
+          "version": "repo-lines-v1:sha256:979981885f6b474bf0568ba98f7840e1729c7ba913ed7813c0db11a3fafe6392:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlODZmNjg3ZWExZWEwNGJhOTZjYzg3OWYyZmY5MjkyODA0NTg1ZWZhNTg2ZTc2MDc4NjA3ODg1ZWM5MzAyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE0YWM3MzFmOGVkYzM1MWI0MGNiYzA1NWQyMjQ4NTAyY2E0YmIwZGEyZThiMWEwYzZlY2U0ODExNmY4MzQyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWNjNjk1ZGJiY2I1OTZhZTYxYTdmNmU1ZTI0Y2FhNmQ1MDhhNTBjZTUyNThmMDVhNTZhYTYyYmRlMGRmNjkyYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYxNDZiYzViYzY2NDA5MWRjNzlmYWU1NjgwYzU2NzYwMTMzNDZjY2E5YjFmNGExMDIyZjdjMDIxMDE0ZWU2MCJ9"
+        },
+        {
+          "resource": "repo://projects/common/interface/testing/index.ts#L1-L12",
+          "version": "repo-lines-v1:sha256:754cd6778cad5b3e878c306288b7a3b60373111772cac81f0f27034d17028dbe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNzQ0MjkwOTg3MDNlNjM0Y2M2NjRlNDk3NWQxNGFjNDkxMjc0OWU1MTYyNGFiMWEzNTNiZTI0NzNmOWMxMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NGM1ZjVmNjQ2MTc1ZTkyZjNkYTAzMzU3YWQxMTgwMDE1ZmYyNzhjYzNkOTJhMjliMTJlOWY3MjUyNzhkZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5MzA2OGYzMzM5MzE3NjQ5ZmJkMDkzM2YyZDNkOWRmNjNmNWFlMmY0NmZkODI1ZjZjYjdjNzExNzk2ZWYwMGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4f4cfc99004e4dcaa16194ca1a08ca3d",
+      "statement": "The presentation package is a shared React component library built on shadcn/ui (New York style) and Base UI primitives with Tailwind CSS, exporting 50+ components (Card, Button, Input, Dialog, etc.), hooks (useMediaQuery, useMobile, etc.), and utilities (cn) from src/index.ts.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/presentation/README.md#L1-L5",
+          "version": "repo-lines-v1:sha256:1f3aebfe5fbe6e032d4fa0bb02ee8c7f2003edfbb3551e470b405644058a3278:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM0ZDEyNGI0YzUwMmUxZDc3NzcwNzVjN2IxYmY0NGIzZWEzZDRhMDM4NzUxM2U5NDg1N2I5N2NlODY2NjhmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjlhN2ViMmU0YWVmMmUxMjA5NjNmNDA1MzYxMGJiZmNiMzlhNDdjYTAxZWRlNDkwNjAyMzQ3MTY5MzE5ZTdkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2E1NzBkYTMxZGZjNzEzNjA1NWE4Y2VkMGRlZDZmMGE1YWJmZGVjZjZjYzcyNTkxNWZkMGJjMzY3NWViMmI4NyJ9"
+        },
+        {
+          "resource": "repo://projects/common/presentation/src/index.ts#L1-L60",
+          "version": "repo-lines-v1:sha256:50774f6f46872869c4eee4ca52db8141885beda45a1bc97d88b4f04ad519eb71:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MzQ1YjhjNGMzYWQ3YzJlNmYxOGI3MDk0ZmEyZjAyYWEwNzk5YWM2NDIxZGNkM2UxNmE4MTRiODQwY2EyODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNGNjMjljZTBlYjhmNzE1YjhkYzY0ODhkZjQ4YjhmMWRlNDM3MGRjY2FmZTU1OWViOTU0YTJjODBjNGIzNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_022981a97cf14eef9c102d9159726208",
+      "statement": "Applications consume presentation by importing components from @codebase/presentation and importing @codebase/presentation/styles/globals.css once in the root layout.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/presentation/README.md#L29-L49",
+          "version": "repo-lines-v1:sha256:05556147532d93d28ff61be4b059574759feea897ee7dd2e1afb485a76e750d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1YTA3YTc4MGMyNDE3OGE1NTU4NzA1MDFjNjBjNTYwY2U0MDRiNzgwM2E5MGNjMGJlN2JkOTI0YjY0MjQ4OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3YWZlMmE5NjlhMWUwMjM5ZDNhMGEzN2ZiZWYyOTM0NDEzZGMyNmVjNDgxMjdkYmRmYzgwMzhjNzE5OWFmYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5ODlhZTQyNWI5MjJlYzI4ZDYzN2EzMzlmNTI4OWRkMjA3NmQxNjI0NmYzZDkzNGNjMjZhZjZiMDFlNmM4Y2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_614f1eca7d3f4f088bc1b78354b9c3a3",
+      "statement": "Components are added via pnpx shadcn@latest add <component-name> in projects/common/presentation, then exported in src/index.ts; custom project-specific components go in src/components/ (not ui/), and files in src/components/ui/ are never modified directly as they are managed by shadcn CLI.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/presentation/README.md#L111-L161",
+          "version": "repo-lines-v1:sha256:c54ffccf6080ead0605bc0ad4ad6b021a04577dbe92a1b8fe471b426b6c7b6a2:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3OGM4YzAxYzAxNzNlMDQ0YTMyNzhkNDU2NzQ3MzA3N2ZlOWIzNjY1OWYxZjVmY2U3NmY3OGFlYjRiZjk2ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1MDkwOTIxZTc4ZjNhMjE2NDRiOWZjYjc4ODkxMmRmNTFmNTYzMWIzMTNhOTExNjllNGY3YzM5YzNkNmU5ZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliNzM1ZDUwMWQ5NWJhMWQ5MjQ5MDg3ZTdmZjlmNzg3ODBjYmMxYzY3MjgxZTk1ZGQ0OTc0ZGIyMTk4ODE5MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxOWQ0ODI5OTM2ODYyYTJkMGIzOTA3NDM2M2YwYjIxYWJmYmVjMDA1NDNmMDFkMTUwYzYyYTcwZDVhMTFkZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9a41cfb04784ca1a08a3cc619168eba",
+      "statement": "The observability package exports LoggerService (transient-scoped, pino-backed, implementing Nest's LoggerService) and LoggerModule (@Global() module providing LoggerService); applications import LoggerModule once in the root module and call setContext in each injecting class constructor.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/observability/README.md#L12-L17",
+          "version": "repo-lines-v1:sha256:d8c45e83671a958935d995cd4cc23cc471e2e64fb11332573a5e6cff4c759ed9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRlMjA2ZGQ2OTYxNTQ3M2M3NmZjNDdhZDY1NDAxZjUwYmVkYWYyZGZjYmU0MTI1MWRiNWNiMjYxMzk4ZDMyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRlMjc2MWQwZWZjNmE4YmE0Y2VhMzgwZTE5Y2MwNTc5OGQ2NzVjMmJjMzliYzljNzMzOGM3NjQxNThlY2M2ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRkMGQxMTY4NTJmYmFlYWFhZGJlYWZlZWQ0OGI1ODJhMzgwNjM5NTg1YjliZDFlZGI2MDA4NmQ2MGM2MDBjMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjUxOTBiYjE0NjhhMzE1MzhhMTlhODkxZDg0NTJlMzdhY2JiZDNmMDUxMWU0Mzg1ZWExMDA2ODE4YjUxZjVmOSJ9"
+        },
+        {
+          "resource": "repo://projects/common/observability/README.md#L19-L46",
+          "version": "repo-lines-v1:sha256:896c60c9b67715fbfbed60078c08fbf32a26c4bc6d80b8ee202468041a61c837:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhMmJmODIwNzg0MzY0NmQ4MDFjZWFhMjI4YmVlNzNiYjdiNmVhYWIyNWFkMzkyMjM3MDI0ZTYzYTIwNmJjYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NDIwZmJjMjJjMzNhYTg5ODI5YWNiZDE5ZmY1N2I5NDY4YzdlNzM5MDgxOTdhMWMyMTUwYmRkYzY3MzIxN2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmM2JmMjRmNWJmY2MyNWQ4MjIwNjU4YjVjMjNiZjc3OWQ1ZjZhZTE3MGVlMWU5OGMxOWRiNDdlNmZlMDBkZmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3c21067b05eb43f688ad142b3360b909",
+      "statement": "Observability output modes: production emits structured JSON on stdout; non-production uses human-readable colorized pino-pretty single lines; LOG_LEVEL sets pino level (default info).",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/observability/README.md#L48-L55",
+          "version": "repo-lines-v1:sha256:d1b34f4a77a14e1e6b68a365467fd7421fad421e16d8907cee81f0fed5352cdd:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTMxYjY3ZWIwNDE5YjJhOWYyNmM1YmM3MzllMTQ5YzMwOWJiOTVlN2E2MWM4NzU4YWNhY2EyZTE4MWY1YTM2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWUzZDVkYTY4MmU0YjBlMzJkN2I1ZWQ4NGI5YzI4N2E0MjEzNDRjZWRmOTQzMDVkZWY4NDNlMjY2YWZlNjkxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODgwOTE4YWM2NDMwNzA0MDMwMDQzMjc4YWJiMTY3MDAxYzY4MzQzZmM1YTNhZGY3ZjgyYjYxNjk1MjliODRhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmU2ZWFmYTZkMjdmMTMxYzYzNzI1ODU5ZTg0MTZlMTc5NGFmYjcwM2IzODg3OGE1NDBhNGE5NzRmMWY4NTI4NyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

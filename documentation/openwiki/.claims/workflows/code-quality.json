@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:020098130c269e5ce5a8cc4ea7cf3e39af0a3960035d376e790aac565365c9e8",
+  "claims": [
+    {
+      "id": "claim_73033318978f447286a11036a4344a08",
+      "statement": "The workspace enforces four IC-Suite toolchains as quality gates: callidescope (depth/breadth), codependix (boundaries), codometer (limits), and conformetry (threshold).",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L204-L213",
+          "version": "repo-lines-v1:sha256:b014f6fb682b691016252efcd2224e586988a41016ef054889eba236e7a2f828:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYzhlNTViZGU1MDg5N2ZhZDE5M2Q5YmNmYjlkZWRhMDRjNmJlYmRjZThiZTVhMGYzOWFhY2FlZjVjYzRiNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDYwNTJjMmQxNjQxNjU4NWU1M2U1Njg4NjRjZjU3MmUyNzMyOWI1NDVjN2MzNzYzMDUxNzhjOWQyZDA1ZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjZWM1YmU0MDI3Y2JlMmJlNGEyYjVmNjkxZWZjMDZkMjNhZmY5MjZmOGFmZjQxMGVjMDM2Yjk1YWM1MGQxMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMmNjZmRiYzdkMzY2MWU0NjFhZmJlM2EwZTJmOTdkNjcyZDI0Zjc2Zjg4ZmNmMzQwOGFiMzg5ZWQ3NjQyYWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_17086d2264dc40d5a2387da28cb56f48",
+      "statement": "Each toolchain has a gating word: callidescope=depth, codependix=boundaries, codometer=limits, conformetry=threshold.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L204-L213",
+          "version": "repo-lines-v1:sha256:b014f6fb682b691016252efcd2224e586988a41016ef054889eba236e7a2f828:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYzhlNTViZGU1MDg5N2ZhZDE5M2Q5YmNmYjlkZWRhMDRjNmJlYmRjZThiZTVhMGYzOWFhY2FlZjVjYzRiNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDYwNTJjMmQxNjQxNjU4NWU1M2U1Njg4NjRjZjU3MmUyNzMyOWI1NDVjN2MzNzYzMDUxNzhjOWQyZDA1ZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjZWM1YmU0MDI3Y2JlMmJlNGEyYjVmNjkxZWZjMDZkMjNhZmY5MjZmOGFmZjQxMGVjMDM2Yjk1YWM1MGQxMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMmNjZmRiYzdkMzY2MWU0NjFhZmJlM2EwZTJmOTdkNjcyZDI0Zjc2Zjg4ZmNmMzQwOGFiMzg5ZWQ3NjQyYWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_79fc7e49c915455885c38b28d0153c2c",
+      "statement": "callidescope infers four Nx targets per project: callidescope-trace, callidescope-depth, callidescope-breadth, and callidescope-gate.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.constants.ts#L15-L31",
+          "version": "repo-lines-v1:sha256:1871dd4cca8098b8256708171813c20a22a2a716a6c215ebfd62aba7d8853eff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNTRjYjg0MmY3ZDc5ZTVkNWZhNzhlOGI1MzZlOWRmNmFmODUwNzM0NjdkZjYyYmFjNDVjMDQyYjkxMzFiMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2OWQzNTRlMTFjOGZkNjYxMDQ2MGI4MTNkNWNhNWQyNjhkZDMwNGMzYWQzMTJiMzc5ZWNjOGYyZjljOGEwYzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2M2JiMjI1NGY2NzkzODY1ZmExYmRlZmMxMGI0MDYxZGRjYmFmZjY2YjIyZDlmNjg3MTJhMDgyYzJkYzUxOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2N2MyNzVjMDZlOTE5ZDg2N2M4NzYxMjdjZDZjNGM5MzY0MjMyMDUzNGE3MDMwYjJmZjc2YjEzMTBjMzY3YTkifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts#L144-L177",
+          "version": "repo-lines-v1:sha256:30bb852b7036fa18117d2e2c119becc4efe37fd388b6bcac66fccf9e27518cd1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMDYwNDYwNjc4ZjcxYzkwMzMwMzAxOTNhZTM2NGExNzU5Mzk3ZDM1NjM4ZTRhNmVjYmY4NWJlNTc4ZWYzOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4MjMxMTcwMDljMGQ2Nzc5YzMzZmE2ZmEyOGMxOTlkZWI2OWRiNDZlYTE4MGI0NTU2YTYyZGUyMTY1OTU2YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhOTI5M2ZkODA1NGI2ZTQ3MjQ4MzczZjM5ZjRkZDc3ODAwMTA1ZWI3NTgzNDg2ODcyNTQyODVjZDEyODJiNzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_06ad58158ec9474ea161262f5e910162",
+      "statement": "callidescope-gate fails a project if its call stacks exceed declared maximumDepth or maximumBreadth limits.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts#L13-L30",
+          "version": "repo-lines-v1:sha256:30bfb3cc29136de75d6d476c0cba6d40f921dc2f3a865fe415a8a83a48f8de29:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1OTIzNjg0MTRmMGE2MmMxMDU4NjQ2M2RmYjlhYmRmN2MxODlhMjhiYTgxMjhmMWE2YzVkZWNmZTc5NjAzMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3OGYwMmQ3ODI2NTcyZDcxOGE4Yjg0ODYwMDkyZDJiYWEyNjdmMzQxNjJlZTY1MjkzNWVjNTMwZDljNTlkODkifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts#L266-L296",
+          "version": "repo-lines-v1:sha256:3d76e56e53a0e663bdc63abf818a5c4847137752a5ee21c944c5b293d7b2e486:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZGZhMTYyYWI0ZDFjNmQ3NDUxOTNlN2VlMjQ2YjI5NmI3YjFhZjc1YjNjZGRiYTFlOGFmYzJkMWQ3MDdiNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlNTA1NTdhNTRiNDFkOGIzNzI2MmE2ODE0MzJmNDU3ZTZiM2U5ZDgyM2IzYmQ5N2JiNjNiNTRmZjMwOTgyYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM5NjRmN2FkNzJkMDAyZTNkOTRlYTgxNjQyYjdkZjZmMzkwNTQ4NDE0YjljMDI3YzI2MDI1M2RjMzYwOGQ3NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7bac124e7d00472c86b657bb96542e2f",
+      "statement": "codependix infers codependix-gate target onto every project (except workspace root) to enforce boundary rules.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts#L8-L20",
+          "version": "repo-lines-v1:sha256:0749f78de0ec0e329611c68c2be82f34b6a9fdae602f345914449f8f35f2273d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1OTIzNjg0MTRmMGE2MmMxMDU4NjQ2M2RmYjlhYmRmN2MxODlhMjhiYTgxMjhmMWE2YzVkZWNmZTc5NjAzMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3OGYwMmQ3ODI2NTcyZDcxOGE4Yjg0ODYwMDkyZDJiYWEyNjdmMzQxNjJlZTY1MjkzNWVjNTMwZDljNTlkODkifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/index.ts#L34-L45",
+          "version": "repo-lines-v1:sha256:527e2d8fafd0b75bc602964402c7e63f8162e9dd7e93f40625fa689d8624dca6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzYTA1Zjc4YmUzZTkxZjJjNDhmNzAxNTY3ZDMwYzQyOGUyZDQ3YTg5ODQzZDU2MDNjMGQxN2E4MjU0OWE1ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmNGNlMmJiYzYxODVlNDFiNWVjYThiYmM3NTUyOWI4Y2NkOTllNzA2NTVkNDY1Njc3OWUxNjA3NWRkYzMwMDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczN2NjMmZiNjIxMjA1OTJjZTRlMjg5ODQxM2NiOTBmYWI1ZTFhYWUzY2ZiMzlkMzRhMjMxMzAzYzc3MjA1M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2MDAzOWNkY2Y1YzcxNjk4MDliZmJkY2RlYTMwOGFhNWMwOGUxMTYxZjhhYzA3YWM5ZDVlMmZlMzQwZTAwNGYifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/modules/plugin/plugin.constants.ts#L46-L46",
+          "version": "repo-lines-v1:sha256:311bfbc37aff7c6088edd83c496fbe57a7a2444d3861489af635304ca94ed340:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzExYmZiYzM3YWZmN2M2MDg4ZWRkODNjNDk2ZmJlNTdhN2EyNDQ0ZDM4NjE0ODlhZjYzNTMwNGNhOTRlZDM0MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzExYmZiYzM3YWZmN2M2MDg4ZWRkODNjNDk2ZmJlNTdhN2EyNDQ0ZDM4NjE0ODlhZjYzNTMwNGNhOTRlZDM0MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmI3MDg4OTEzNGI5ZTc3ODI0MjlkOTcwMTdlNjc3NWRkY2Y3ZWMxNDVkNzdiYzVhZDllNDcwZjhmODhjMTZkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmQ2ZWNhYWM2ZDkwOWMxNTJlZmMzOTliOTgyZDc4MGM2MzI5Mzk1N2Q1YWM0MGZlNDAyNzIwMzRkOGM1ZDBmOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_854db035e63e4052a74f762b90149f52",
+      "statement": "codependix boundary rules are defined in configuration/codependix.config.ts under boundaries, with generic layer:* rules and per-package name:* rules that are ANDed together.",
+      "evidence": [
+        {
+          "resource": "repo://configuration/codependix.config.ts#L78-L100",
+          "version": "repo-lines-v1:sha256:7bea5a51ef3950dd8a28f1669258ecae759b06a4d4ed7cf2b0c41a57749f5b49:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjNjY2ODY3YmM3YTFlZGYxYTBkOTQ3Y2U0ODgyNDFkODIxMTk5OTAxMDE5NWFlYTA2YzQxYWJlNDc4ZjQ4MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0OTgzYTM1YzllMDdjYzU3ZjE1MjNlZmJhZGM5M2UzMjcxNGU1NjRhODU5M2IyYTQ3OWJhZDdkOTc0MTU2NTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhZGRiNGY3NDU4OTM2YTI2YjU0MzcyZmI2MDE4ZGY3MzNhMDEzMDUxNjhjNDE2YTRiNTA2MjBmMjEzMWU2Y2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3ZGFmMzZmNzg0ZWVlNTE2NmRkOTI2MmU5MDMzY2Q4YWQ4NDRhM2M3YmIyMDQwZDQyNTA2MjgwNDJkZTMzYzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e5666b650614455c953f6f7bca5491de",
+      "statement": "codometer is integrated via a per-project Nx target with check and write configurations, running measure command from the project root.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L250-L282",
+          "version": "repo-lines-v1:sha256:033cbfee64c63dfbe051470206ea2c4ed9862abc8e575cd8822ab321d50240db:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNmYxMjk1ZDBmYjljN2UwZjgyMDMxZWIzYTNkNDAxYWIxNjU5ZGU5NjQ1YmFiMWM0MDY2ZjkzNTFkNjUwNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5MjdkYjVmODQwOWZhNzAyNDExMmEwMmJlNGNmYTUxY2QxNjk2MWYxMWY5MjcwNDI3OGQyMGIyZTFkY2EyNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ODVlNzFkZDVkMTRmMWU0MDc5N2JlZTI1MWRjMzIxNjBiZTdiMTk4YmJlZGJmMmI1ZDYzN2ZmODBmMTU4Y2YifQ"
+        },
+        {
+          "resource": "repo://nx.json#L283-L326",
+          "version": "repo-lines-v1:sha256:3729850bb8f3bba3d0882740f4c3d535d1fcb09ec916b79e27b4eb1f031270a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5NWI4YzViZjg2Mzc0MzY3MWRlZjNmNjMwZWIyMzJkNTlhN2E2MzRhMDcwZmM0MzZlZWMzN2E4Njc0ZTZjMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZGFjMmU1YWVkMTg0YzJiMDA0N2IxMDE1YzVlZDk4MjY1YzRkZGI4N2IxYjMxY2JlNGJlYWM5MjFkZmVjNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjZWMwODM4N2VhNmQyNDA2MmFhMGFlOTgwNWQ2ODYwN2FlOTY4NDMxNjAzMDlkYWQxOTNiYmRiNGZlZDk3NzIifQ"
+        },
+        {
+          "resource": "repo://nx.json#L318-L390",
+          "version": "repo-lines-v1:sha256:627b5aa81db7ab5843532a162ec8d83fd5b290c7559ffe9c9f7d5dc3f568b4d6:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5NWI4YzViZjg2Mzc0MzY3MWRlZjNmNjMwZWIyMzJkNTlhN2E2MzRhMDcwZmM0MzZlZWMzN2E4Njc0ZTZjMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlZGFjMmU1YWVkMTg0YzJiMDA0N2IxMDE1YzVlZDk4MjY1YzRkZGI4N2IxYjMxY2JlNGJlYWM5MjFkZmVjNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ODVlNzFkZDVkMTRmMWU0MDc5N2JlZTI1MWRjMzIxNjBiZTdiMTk4YmJlZGJmMmI1ZDYzN2ZmODBmMTU4Y2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d0d79e1221344c7887f025ea28ef3532",
+      "statement": "codometer enforces max 512 lines per file and max 128 words per comment block (256 for shell) via custom statistics and zero-tolerance limits.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L232-L234",
+          "version": "repo-lines-v1:sha256:8064716f7c038def4b94c369202476620451d24e83fa6f2de90a4b9bdd33d92d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWIzZDc1OTUwM2I5ODU2NGUyMzc5NzIyOWNjZGQ5NjY1ODgxZjFhNDhjYzQwNDhkYTBhZDY5ZGFkZTI2NzE4YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDlkYmI4YmJlM2NmNmM2MTY4Yzg0NTNiOWEzMTQ5NmE0YjE0ZWVmYWQzM2MxM2E3NjUxMGFiYmJiZWRlN2NlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDM0Y2JmZmY5MmUyMTBmNDA4NjA0ZDZmMzQyOWY2OTQwNzdhYzI0MzVmZjAyNjNhOTlmNDg4MjRhMDVkMDQ0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDJjZTJkN2YxYzEyNzA2ZjU0ZDA5NWI1NTdmNzIzZTVkYWRiYTk0ZDNkZGFmNDJlMDlmOWY3ZjVmYWJlOWUyOSJ9"
+        },
+        {
+          "resource": "repo://configuration/codometer.config.ts#L137-L141",
+          "version": "repo-lines-v1:sha256:b4db727791ec28c0c1c0c07ad3cbe6227fb15a36f7a9520b41e4b149dd2c89ba:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTdlMWQxZDk4MzlkZmI4YTljNTdmOTJmZjk2ZWNlM2YxOWYwY2JmMDQ5YTU1MmNiOWU2YTI2Yjc3YWQ1OWE0NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ5ODM1NDk5ZTViYTkxZjg3MjY3Yzk1MmI3OGVhZWRkNmM0NjZmOTViNjg4MWIwN2I0NmNjYWVjMGNkZjE0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDRmN2YzYTBkZDAwNTJmNWMzMjA4MjIwODQ3ZGU5YzQzZjczNDQzMTRmYzA5YWY5ZTMzZjEwYmMzZWNhZDZiNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWFhYmU4NTk0NzFhNDFjMjcwYzBmMzVlMWI4NWMzODE2N2M5NTFmZjU2ZTIyNDg2NDU2OTQ2YTAwMDI5OGQyMSJ9"
+        },
+        {
+          "resource": "repo://configuration/codometer.config.ts#L43-L63",
+          "version": "repo-lines-v1:sha256:e5064f953a0ee5906cbc8f7903a6d4454a4eec3e0ca0bd39c587df10f011ece3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmNjYyZDI3YjdhY2E4YmQ0OTdjNTFjOGE2ZTQwYTNjYzdlYzE4MzdlOTUxNmFjMTM4YWNiZTA4N2EzNWUxY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5OTQyNTEwYWNjMmQxNTA4NzJkN2M3ZWExOTE5YmQ4YzA2MzcyN2IwODMwNmVlMTg4NWEzNzhkYjUwYjgzOTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c26c0ddc07424abe958104ecee414e8c",
+      "statement": "conformetry infers conformetry-validate target onto every project holding instances, validating generated code against templates.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/src/executors/validate/executor.ts#L8-L15",
+          "version": "repo-lines-v1:sha256:313f743eecd8cc6138e00d82b747850bd0dd18207207187ad81b3bfd71dbd037:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcyYTQyOTM4MmIyZTE0NzE4ZTBlMzdiMDU3MGE4YTE3MDI5OTFmY2Q4NDk4Y2Q4NDA2MGE4YmY0ZjA1MDE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2YxYTZmODAwMTg4NDM1NmY1ZWUzY2M2Zjk5MzNkMmM4Zjk0MDg0NTE5NWYwYmY1ZTMyZTljZDk3ZDVlMjhmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWEyMjBjMzVkNWQzN2VlNTZmYTY1YmJiNzQ5MjI0ODY3NTc2ZWJlNThmYTgzMjFkMjQyZjI1NmRjMDAwMDkzZiJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/src/index.ts#L41-L46",
+          "version": "repo-lines-v1:sha256:4d6dcdd333fc5e14132ea3f6592fb700c95b8c8d81528db731cf1b4ece746ac3:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzgwNjY0NjhjNjc5YmE5NDE1ZWFlYmI0N2VlZTc3ZDc2YzE5YzAzN2JkNDE5MjkyODkwNDI3YjJhNjhhMDBiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcyYTQyOTM4MmIyZTE0NzE4ZTBlMzdiMDU3MGE4YTE3MDI5OTFmY2Q4NDk4Y2Q4NDA2MGE4YmY0ZjA1MDE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTA1M2IwNjQ3NWNlNTRjN2U2NDc1ZGJkOTQ3YjgxZWYxZWIwYTAxNjkzYWRhOTMxOGRiYWJjOGY1MDNkYjFlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQyN2FkOTU3ZDY5YTI4NWU3MjMxZDkzN2Y2ZTlhZjIzNzY2YzNjMjQ1MGM0NmU5MTE3MzIzYmRiNzYwMTcyNiJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/src/modules/options/options.constants.ts#L26-L26",
+          "version": "repo-lines-v1:sha256:89acd7fd15b2179bf1635a70dc2172dc7686a4d7bb4847c24901b215cebc4eb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODlhY2Q3ZmQxNWIyMTc5YmYxNjM1YTcwZGMyMTcyZGM3Njg2YTRkN2JiNDg0N2MyNDkwMWIyMTVjZWJjNGViMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODlhY2Q3ZmQxNWIyMTc5YmYxNjM1YTcwZGMyMTcyZGM3Njg2YTRkN2JiNDg0N2MyNDkwMWIyMTVjZWJjNGViMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTFhYmI3N2IwZGE5Yjk5MzIyYmIwYmY4OGRmNTNlODc2YTlhYmYyZDEyNDEwY2FkYzM5ZTE4ZWNkZjcwYWI4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzI5YTgxMjcyMjhhNWU2ODUzYTkwNTU3MjE3NTkzODg2ZjMwYzk4ODEyMGI5NTgwZWNmYTVlZmU0MDhkMjQ3MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd7462a65db2421eac506e599c3ea6cf",
+      "statement": "guard-code aggregator target depends on callidescope-gate, codependix-gate, conformetry-validate, and other checks, integrating all four IC-Suite gates into CI.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L634-L653",
+          "version": "repo-lines-v1:sha256:ebb50ee6fd6986a6c5a8de5ac44fe5625a5e769f03806d56403aa41c1cf6c269:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYTRlMDg5YzYzMDQ0YzFhYzMwNTRlYzk4OTYyMGZlNWZlMDYzOTg2NGM3MTNhMGRiZDU2NzQyOThhMDVhMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmYzVkMDIxMWRjNjQ2NDYyNmQ3Y2ZhODk3MTNiNGU1ZDU3NTJjNTNlYmViMDdkMTEzZjU2MDJkNDVmODVjNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlMDU3MzM3OTNlYTY3MjIxNWZlMWQwMzk3NmE2NjVmYjQ4NjFmZDhkY2Q5NzAxZjViNTlhZGM3OGE2OGU4ODMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a803b9bdefa74ff4b098e9f30a8dcae7",
+      "statement": "build-projects aggregator depends on build and codometer, so size-limit breaches fail the build.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L243-L249",
+          "version": "repo-lines-v1:sha256:c90c36c1ee6597876afbb5f42d317bc4ce0954c6a8877deee1857a3f7f9d76d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc4OWZiYTZmN2E5ZGU4ZmI1YThiNjlmOWNiYTQzNmM2ZTc5YjRmOTUwYTBkOWMxNzM1NzcxOWJjODdlOTU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ3ZmVlNGFjY2EzMDkwMjE3MzAxMTVjOGFmZDBkOThkMGM0MTI5ZDA2NzkzOThmOTc4NWZhM2Q3YzJmYzg2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjA2Y2IxZjlhNGRkM2IxMzRlN2I3NzRiMGE5YWNlZWY3YWJlN2Q5ODhkYjk0YjY0ODVlYWMyMThiOGZmMTcyYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fdf27277642c47b5bcc65da4fce08899",
+      "statement": "Pre-commit hooks run nx affected with guard-code target, executing all four IC-Suite gates on staged changes.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L80-L90",
+          "version": "repo-lines-v1:sha256:07fd5b87e77d338f49f082863502bdf536cfa7a9f72bc75656f396ddb291886f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2M2RkMTJmMDQwODBiZGZmZjQyMjAxMzdiNmY0MWJjZTY0MWQyMWQwNzc1MjhhMDRmZWJiMDg0Yjk0YjA2ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY4MjNlZDM4OTAxYTUzMTdmNDAzNWU1ZTVmODBmNDQ2MTY0ODdkNmZkYTQ1N2QxOGYxNDg5ZDVlODIxMWVkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3Y2ViNGM2YWRkMWNlZWI1ZmYxOWExNWQ4NjFkOTY1MTM4NzZjNTk0YWMzYWQyNjU0YTIyMTZiMTRiOGQ1MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac5a0a8135b8457c90d3e39fc2a3e92f",
+      "statement": "Suppression comments (// eslint-disable, @ts-ignore) are forbidden; fix root cause instead.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L247-L249",
+          "version": "repo-lines-v1:sha256:940bf03ff558fe62fdfdc1b3d55dac23faa231ba95dc5b45e2663a60b4faefb5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWYyYTNmYTMzZTU3MzljNTQ2ZDExNDAzYzdlMmQwZTkwNGQ4NDk0ODkwZjljOGFlMGI1Y2NhZTBjYWY4MjY2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM1NzM2Yzg2NjJlNjU4Yzc4ZTcwZjgwNWYwMTA3YzhmZDljMjQwNjcxMWE4MGEyMDFmMWU2ZDI1OThmOGViOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmZhOWVmNmE1MTJlZDVmNzg0ZGVmZmVlOTIyYzkxNThkN2E5YWRhOGQwZTk0NGIwOGE1ZTI2ODk5ZjVjNDhiYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzEwYTMxYTFmZmExZjIwYmRhYWM3ZjUxMzIwMDg3NzIwNjAxNDY4ZGVhMTVlYmE4NGZlNjM1ZmYwMmIxNjcwNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c72fc044433c496c90ec6fdc99ad7b94",
+      "statement": "validate-code skill runs the full validation workflow (auto-fix then verify), and triage-integration skill diagnoses failures.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L1-L17",
+          "version": "repo-lines-v1:sha256:a7ec57e47275fb47725a04f6f4fa2628501482186ad2c6c4c237412655480279:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhZTAwMzQ2NjBlOGEwNGRhNTEyYWU3OGQxYTY0OWQyOTVjZDliZWEwOGU0MzliNjlmMDE3MmE3Mzk2NDFkZmYifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L36-L72",
+          "version": "repo-lines-v1:sha256:cd4f60bdd99ecb00c862c9716971520e748f3b7031c0570c1e14600cc815481f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxMzRlNmQxMmY4YmQ1MGY1YWRmYjIzY2JkMDY5N2ZhODgzNzU2MWFlNjFmYmE0NThiZDYxNzJkNjc4NTFhZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3M2Q3N2I2Y2M1NWQ0ZWNlOTZhZDkwMGMwNzhjYTg2NTJmMjQyMGEwZjkxOGIyOTI5OWVmYTExNDUzNmZkZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMGRkYmMzZGUzNzE0MjVhMDEwMDFiNzM2NGJjZjhlZTkzYjY2OTNhNDcxZWQ4NGI0ZjhlNWFkNmFhMmE0MmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmYzdhZDNlYmU1NzE0MWRmYTRmZTUxODgxODBhMWYwZDgyNDdhZGFmMTU0NTlhMWJhYTY0YWY5OTU0NTMyY2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f1f552dfcd284c57adf48efae276450c",
+      "statement": "All four IC-Suite tools use a two-gate pattern: breach gates (--check depth,breadth,limits,boundaries) run on every branch, while staleness gates (--check reports) run only on the default branch during release.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/README.md#L97-L144",
+          "version": "repo-lines-v1:sha256:f0d8fe945c9e5e10e25429bf8f284419ec18d4fc5108880f04edc77610562a9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYzBhMTliMDQ4NDY4NGI0ZTQ4ZDc4YjY3Mzg3NmI0YmMxNjY4MWY2MjJhMTIzOGQ4M2Q1MmZkOTYzMmE4NDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyZWI4ODM3ZmFkNTI5MzIyNmY0MmQyY2RkZTAzMDA1YjU5ODdjMjU5ZmZkNTIwYTdkNjkwMjU0Nzg5Y2JmM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5ZmY3OTI5NjhiNDBiMDkyOGUwZGE3MGI5ZTA2MDVjYjdhYTMzNWMxMWRhNmI1ODkzYTQwOTQ0MTEyNmMyOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhMGIxZmFkOGYwMjcxNGViNTU1OTFjMTkwMDM3YjVjMzNlOTMxMjk0YjVkZDdmN2Q4YzRkNjFiMjk5YWM2YmMifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/README.md#L55-L84",
+          "version": "repo-lines-v1:sha256:a1aeab2810f02d04efcc29e9959730cc7913a0ac536a933274370a43ca4b8773:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZmMwZGZmYmYzNzIyMTgzNGJmNmE1NWE5MzkzOGI3NzU2YTQ1NjYyZDY5OTcxMDk2NjQ1ZTA3NWQyNTA2Y2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ODBhYTIxNTFmNTQ4MGU5ZDA3NzVkZjVkNWVlMGI1NDYzMGJlZGRmYmU5NDI1NDE1ZWM0YjNhODFlNmU4NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5OWUwOTM3ZGI4MmRmNDljMTg0OWIyYzllMzYyZjllNTVmMzk1ODEyZjNlOTNkNmI2OGZhZDVhMjJkZTJhN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1NGRjYTcwNDkzZGEyYzcwZTdhOWVkOGU2NGE3ZGI3MTAxOTE4MzM2MzAxMTliMDRmZmRjN2FmYzU2ZmVlMGMifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-cli/README.md#L70-L98",
+          "version": "repo-lines-v1:sha256:ae0637ebfe7bba972a299327892774bbc2f185c0f61fdc6434fc64acdeb47496:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGM5MTYxZWEyNjQ1YTU4MmI1ZWU4YmJlMmJiNDRiODg1OWFiMjE3OTY2MTAyYTI2OTY1YzBjODk1YmQzMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzNGYxNzAxZGVmODc1M2MyZDU0ZGM4N2Q4YzdhYjQ2ZGQxOGY2Y2EwNzMxNjhmYjM5NDZjYjk3OTMyYmU4YTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmMjU1MzY5NjJiZTU0NzNkYTRiMmM3ZjhmNGNjYTE5MWRiNDVjYzY4NTE0M2U0N2FmM2MzMGYzNWFiNjU1YjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e401b05cadb645bda9686f12b808ed38",
+      "statement": "callidescope --check accepts depth, breadth, and reports as separate values; depth and breadth are breach gates, reports is a staleness gate.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/README.md#L119-L144",
+          "version": "repo-lines-v1:sha256:fe34edb7ac285325df7a1adca3484672caa88dd5cb56f6edb6741274408432a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYTI2NGE0M2ViNzE5NmJkZTYzMTcwYjI5NTFhYWFkNWZiZTNkMTQ5NWQ3ZDkwYmJkYmQ4Y2JjODYwMWZmNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyZWI4ODM3ZmFkNTI5MzIyNmY0MmQyY2RkZTAzMDA1YjU5ODdjMjU5ZmZkNTIwYTdkNjkwMjU0Nzg5Y2JmM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiZDg4YzgxNjZlZmUyN2VkMGFkMGIwNTQ3MTc5MWMxZGY2ZmI5MTViMzBmYWJmMzUyZTBlYTJhMTJmMzczNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhMGIxZmFkOGYwMjcxNGViNTU1OTFjMTkwMDM3YjVjMzNlOTMxMjk0YjVkZDdmN2Q4YzRkNjFiMjk5YWM2YmMifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/README.md#L97-L110",
+          "version": "repo-lines-v1:sha256:12eb239210325d4d82367f3379215f3fc8945696e58adaa293909485385eb446:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYzBhMTliMDQ4NDY4NGI0ZTQ4ZDc4YjY3Mzg3NmI0YmMxNjY4MWY2MjJhMTIzOGQ4M2Q1MmZkOTYzMmE4NDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5ZmY3OTI5NjhiNDBiMDkyOGUwZGE3MGI5ZTA2MDVjYjdhYTMzNWMxMWRhNmI1ODkzYTQwOTQ0MTEyNmMyOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyMjhkYjJkMGViZDA3MTA4NzNiZTJlNzNlY2E1NDI1NzJjN2NhYzY3YjZjZTMwNjk5NWY4MWYyYTVmNjA1ODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_805449666a564819b157409b8bbcd067",
+      "statement": "codependix --check accepts boundaries and reports; boundaries is a breach gate, reports is a staleness gate.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/README.md#L55-L64",
+          "version": "repo-lines-v1:sha256:a5d4d5f0fbafed8ff79ba8d90e51dad9fbfb7ae2adae812caa58f5fbedbdd6b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZmMwZGZmYmYzNzIyMTgzNGJmNmE1NWE5MzkzOGI3NzU2YTQ1NjYyZDY5OTcxMDk2NjQ1ZTA3NWQyNTA2Y2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5OWUwOTM3ZGI4MmRmNDljMTg0OWIyYzllMzYyZjllNTVmMzk1ODEyZjNlOTNkNmI2OGZhZDVhMjJkZTJhN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwMmY5YjgyZjc4MzI0YjNhODg2NDI5MzViNGExMDUwYjQ5MzlkMTAyYWJkMzY1YmMyOWQzNjMyOTVhM2Y3N2YifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/README.md#L65-L84",
+          "version": "repo-lines-v1:sha256:b177512ea93cdd392cebadc2f29667a0974288953e1f36bcd5c6417e78b3fd93:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1OWVlMzY2YmE2MWViYzE1NWViNTA5ZmI1NmYxMjllMzU5ZGRlMjQ5YmU2NWMzNTVkMTkxNWZkMDQ1OTI0NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ODBhYTIxNTFmNTQ4MGU5ZDA3NzVkZjVkNWVlMGI1NDYzMGJlZGRmYmU5NDI1NDE1ZWM0YjNhODFlNmU4NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhNDhjNDQ2MDBiMzhlMmU1Yjg3YzdkODZmOTVkYWVjYzVkYmUxMGNiZTAzYzJiODA0YjE2OGJmNGUyMmUxNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1NGRjYTcwNDkzZGEyYzcwZTdhOWVkOGU2NGE3ZGI3MTAxOTE4MzM2MzAxMTliMDRmZmRjN2FmYzU2ZmVlMGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_925c82c0baef4c72b53474f405973f34",
+      "statement": "codometer --check accepts limits and reports; limits is a breach gate (runs via build-projects on every build), reports is a staleness gate (runs on default branch via configuration:codometer:write).",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L243-L249",
+          "version": "repo-lines-v1:sha256:c90c36c1ee6597876afbb5f42d317bc4ce0954c6a8877deee1857a3f7f9d76d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc4OWZiYTZmN2E5ZGU4ZmI1YThiNjlmOWNiYTQzNmM2ZTc5YjRmOTUwYTBkOWMxNzM1NzcxOWJjODdlOTU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ3ZmVlNGFjY2EzMDkwMjE3MzAxMTVjOGFmZDBkOThkMGM0MTI5ZDA2NzkzOThmOTc4NWZhM2Q3YzJmYzg2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjA2Y2IxZjlhNGRkM2IxMzRlN2I3NzRiMGE5YWNlZWY3YWJlN2Q5ODhkYjk0YjY0ODVlYWMyMThiOGZmMTcyYiJ9"
+        },
+        {
+          "resource": "repo://nx.json#L250-L282",
+          "version": "repo-lines-v1:sha256:033cbfee64c63dfbe051470206ea2c4ed9862abc8e575cd8822ab321d50240db:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNmYxMjk1ZDBmYjljN2UwZjgyMDMxZWIzYTNkNDAxYWIxNjU5ZGU5NjQ1YmFiMWM0MDY2ZjkzNTFkNjUwNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5MjdkYjVmODQwOWZhNzAyNDExMmEwMmJlNGNmYTUxY2QxNjk2MWYxMWY5MjcwNDI3OGQyMGIyZTFkY2EyNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ODVlNzFkZDVkMTRmMWU0MDc5N2JlZTI1MWRjMzIxNjBiZTdiMTk4YmJlZGJmMmI1ZDYzN2ZmODBmMTU4Y2YifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-cli/README.md#L55-L98",
+          "version": "repo-lines-v1:sha256:5e8a4a2943e94e0d3e6fb4f4115a907e89a58c5c34d23ef33177ba8182235e60:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNDhjMDI4N2Q2NGMyNTQ5MGFjYjUyYWNhYTI4ZjI1NGU1YTg4NjI0ZGQ0ZmZlNWI3NWIzYzIxYjE1NmMxMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGM5MTYxZWEyNjQ1YTU4MmI1ZWU4YmJlMmJiNDRiODg1OWFiMjE3OTY2MTAyYTI2OTY1YzBjODk1YmQzMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhMmU5Y2Y3ODA4NzQxNzQxZjAxYTFmMWRhMWMxY2EzZmEwYTI5YzQ2MmFkZWUwZTIzM2FlMjdmYjkxYjI4NjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmMjU1MzY5NjJiZTU0NzNkYTRiMmM3ZjhmNGNjYTE5MWRiNDVjYzY4NTE0M2U0N2FmM2MzMGYzNWFiNjU1YjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a6c6424911c84c0e8a7ed100d820062c",
+      "statement": "conformetry has only a breach gate (threshold, default 1.0 = perfect match) and no staleness gate concept; generated code is either conformant or not.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L196-L212",
+          "version": "repo-lines-v1:sha256:13347775e81dd6c8f177c78798ae0e7d991915fff94e23096d5da525429fd8b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ZTcyOTQzNjBlOTU0ZDM0MWFkMjcxYzI5MTVhZjJiMWYzZDQ5ODNlZmNkZDg2YWM3NzEwMzQ3NjJkN2Y1ZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZjg4Zjk3ZTk0NjZmMDhkNGJiOTVjYjM1OWQ0N2I2MTgzNjZhMDI0ZTkxMjhiZTE2ZjRkOTZkNWFlYTYzNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwNjgyMjM2MTQ5MWRjY2Q3ZTUwMmRkYWUyZWEwZWU5MDI1MjljZWZhN2VkMjNkM2YyYmE0MjdiMTYzZTgyZWQifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L291-L300",
+          "version": "repo-lines-v1:sha256:f1a630849f73ddb703836aee472dae1a378fbaec69af4ef2e299d6df1c6018cc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0MTkwY2NkM2U5M2Q1ZDNjNjkxNWViNjY2YjJhNWUwODdmYzkzMzQ2YzZlZmRiMDY1OWQyZGQzMjFkM2FlM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyM2UyZjEzYjYyZjdlZTZjMjlmZjMzMDcyMjVhYzhjYjdmNTFmZGMyZTlmNTM0MTA5NDEyNjU5NjZjNTFiZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3MTM2NGU1N2FjYzEzMDZmYmFmNDE1MmI2YzQzZWJhYjcxMjkxNjg5NWE5OTZiMWE2NjIwNDljMGY5NjBiYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjM2Q3YzExNzJkOTY1N2U2NDgxNTc0YjE5MzVlZGQ3ZGMyMGIxODRjZmY0MTY2ODg4MTgzNDdjNjQxMmQxMDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e1bbc3821b8244faae07d80ac4c49129",
+      "statement": "The canonical local validation command runs nx affected with typecheck-code,lint-code,format-code,deprecate-code,guard-code in write configuration first, then check configuration.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L38-L60",
+          "version": "repo-lines-v1:sha256:c51a010663e3971ef3f32105a263a9227844a260ae6dc4d171d50654d0800f72:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5OTZkNjEwZGRlM2RlY2QxNzY3YTQ1MWQ0MjE1ODUwOTFkNzdjNDhhZGZhMzQxNWFlZmQ4MGUxYTU4YmRmZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0ZWEzZWI2NTZhNTA3Y2IxZDAxNzEyYTBlNTY3YjBhOTVmNDdjNWFjZGY4NTA2NzczOTBmOWJlYmM2YzE4Y2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmMjkxZjExNGZjNmExN2FmOWE2ZmZmZmEzNTE0OTYyZTEzZjhkYTg4N2I0ZTU0YTQ5NWI3NzRiMzRhNzE3N2YifQ"
+        },
+        {
+          "resource": "repo://configuration/lint-staged.config.ts#L223-L225",
+          "version": "repo-lines-v1:sha256:bc46b66231ff6e2f34aa9b40983be8d24b162b2770152e38b2c8f7dfc06412ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmMxOGQ4YjJhZWQzNmU5ZGEwMzQyZDY0YjY5NjI4OTJlMDE4ZDVmZDc1YWYwZWJmZTVkNTRkYTFkN2Q4NTA4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY0ZDhjMDczNDI5ODkzMTAxNTc2ZDg4ZDk5MTI3ZTg5ZDY4OTFkM2IxN2U4OWRmMDJlYzlhZTcwNzA1ZDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzNjN2UxZTQzYmYzMjBkZjRlYTUzMzNjYzczMGZiZmI1ZDJhYzUxNDAyMTc3MTc0NDg3MzViMmFlMjU1MTA1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODlmOWI2OTI1ODZmNTNhYzQ3ODAxZmQ2ZTRkZjg3MWY2NmRjMjFlMTZjODU0ZDkxNzA1NmQ0MWNiZWI3MjE4MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9ea887570574346ae531f707dc339d0",
+      "statement": "When a TypeScript project defines a type-coverage target, both typecheck and type-coverage must pass as required gates.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L88-L98",
+          "version": "repo-lines-v1:sha256:c31ddee82652c6ea6b51251cbe60d711fcf71b83cf891a81ba102994de7bcf91:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZTdmN2ZkNGJjZTBiYTY4ODhkM2M2ZDE2ZTA5YzE2MjY4ZjBjMDcwNzU0ZTQzZDg2ZmZjODNlNjZhZjg3ZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwZTYzOTE0NDMwZTk2MDEwOGQ4NWU3YTJjYzlmODY3MTM5ZTQyOGNhNGVmNzg2NzFhZTAwZDkyZjdhYmQwOWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjYTlkZGYwNzQ2OWFiYTAxMDY0OWYzZTFmOTUyNTI5MjFhZTYzMTZjNWNkNTA2NDk0ZDdhMjE5MDUwN2MwNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_49bd50d68c1f4c83b09f97984bc000b0",
+      "statement": "callidescope-gate runs over the project and its Nx dependencies, but only findings charged to the project itself fail its gate; dependency breaches fail the dependency's own gate.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/executors/gate/executor.ts#L25-L30",
+          "version": "repo-lines-v1:sha256:d84043359e5979ab7bb0def89d6dec80cd3c26ad9a760e37119b2318a2a2e585:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEwMmVmMzhlODg2ZmYwNjYxZWJiMGRiM2M0ZjNmNDljZWUxMjIzYjYxNDg1MjAwYWRkNDNlMjQxNzdkZDAyZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcyYTQyOTM4MmIyZTE0NzE4ZTBlMzdiMDU3MGE4YTE3MDI5OTFmY2Q4NDk4Y2Q4NDA2MGE4YmY0ZjA1MDE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDY2ZjMzYjUxMjE5MDRjMzRmMGE2ZmM5ZDNiMzljNDg0MDZlYWE2ZjZkZGUyYTRjMDg4ZTIzZDVmMmU2MTY5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTc4ZjAyZDc4MjY1NzJkNzE4YThiODQ4NjAwOTJkMmJhYTI2N2YzNDE2MmVlNjUyOTM1ZWM1MzBkOWM1OWQ4OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_21220336f729498ba3c24d2057a9f491",
+      "statement": "codependix-gate builds graphs over the project and its dependencies, but only findings charged to the project fail it; dependency findings are logged as notes.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/README.md#L86-L100",
+          "version": "repo-lines-v1:sha256:9dd82f9999d26f81903553bc7f9f34ed56b7681abeb95bd94b8313c06f4dcaba:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMDRlNTM1YWMwNzEwODdkYWVjOTJiNzMyODVhZjRlZDMwYWYyYTAzNjFmYmIzNGFmNTI0Yzc3MDlhNWExMjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZjczMWVhZTk3ZjllYjE2ZWJlYWViMmM0OTcyM2NhNTg2NmNkOGE0YjAzYTg1NTFkNGRhMzczNmQzOWJjNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1Y2YwMDc4MzkwOWI1NDFkNzE0ZmUzZmFkZDFlNWExOTViNjNmMzA3YmU1YjRhZjhmZTMxNTc1ZGRkMTVhM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljOThiYTc0ZDgwY2IxNzQyYzM5OTJmYjhlOTBlYWZkY2ZjNTAzZjIzZjBmNjBlMjRkMDMxNTA1MWVkN2VhYTkifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/src/executors/gate/executor.ts#L16-L19",
+          "version": "repo-lines-v1:sha256:b7cd2dcc9d976a8043e4ffa53404945ace2c74deae9f1e8ff53278502217e295:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmM3ODRlYjczNDg1YThiZDg1NzYwYzUxZDBjNWUzM2RmYTUzZjNmMTc4NzRhZDExN2EyYzgzNDY2ZThjMTUxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNhYzg0ODhjNjgyZTdkYTkxMzg4NmNiNTU1MWMzZDkzNDA0ZDIyMGQzMjdhMTYzM2VlZTViODhlMDhjMTI2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQ3OThlMTEyNmU4MDg1NzU1N2JiNDdmM2U2OGFlN2Y5NTg2N2JhNWZmYjhmN2Y3NzcwZTBhYzQwMGQ2ZThlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWFmZTFjNTUxZjVmN2RhYWZlMWZiOGVkY2E3NzA5Nzc5YjQ2Y2M0N2QwZDVmMTM4YWY1NWJmNDBjN2NiNGQ1OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e7825829a5b4de0b0318b735c1aef70",
+      "statement": "guard-code is an nx:noop aggregator that depends on callidescope-gate, codependix-gate, conformetry-validate, and other checks; it has no configurations so the passed configuration falls through to the inferred gates.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L634-L653",
+          "version": "repo-lines-v1:sha256:ebb50ee6fd6986a6c5a8de5ac44fe5625a5e769f03806d56403aa41c1cf6c269:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYTRlMDg5YzYzMDQ0YzFhYzMwNTRlYzk4OTYyMGZlNWZlMDYzOTg2NGM3MTNhMGRiZDU2NzQyOThhMDVhMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmYzVkMDIxMWRjNjQ2NDYyNmQ3Y2ZhODk3MTNiNGU1ZDU3NTJjNTNlYmViMDdkMTEzZjU2MDJkNDVmODVjNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlMDU3MzM3OTNlYTY3MjIxNWZlMWQwMzk3NmE2NjVmYjQ4NjFmZDhkY2Q5NzAxZjViNTlhZGM3OGE2OGU4ODMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60858ac8c1074468b5d019d3d0050c41",
+      "statement": "build-projects is an nx:noop aggregator depending on build and codometer, so every build is measured by codometer and size-limit breaches fail the build.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L243-L249",
+          "version": "repo-lines-v1:sha256:c90c36c1ee6597876afbb5f42d317bc4ce0954c6a8877deee1857a3f7f9d76d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc4OWZiYTZmN2E5ZGU4ZmI1YThiNjlmOWNiYTQzNmM2ZTc5YjRmOTUwYTBkOWMxNzM1NzcxOWJjODdlOTU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ3ZmVlNGFjY2EzMDkwMjE3MzAxMTVjOGFmZDBkOThkMGM0MTI5ZDA2NzkzOThmOTc4NWZhM2Q3YzJmYzg2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjA2Y2IxZjlhNGRkM2IxMzRlN2I3NzRiMGE5YWNlZWY3YWJlN2Q5ODhkYjk0YjY0ODVlYWMyMThiOGZmMTcyYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_dc857101f9c24c65a76eeb4b289e957f",
+      "statement": "lint-staged runs nx affected with guard-code target on every staged file, executing all four IC-Suite gates before commit.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L80-L90",
+          "version": "repo-lines-v1:sha256:07fd5b87e77d338f49f082863502bdf536cfa7a9f72bc75656f396ddb291886f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2M2RkMTJmMDQwODBiZGZmZjQyMjAxMzdiNmY0MWJjZTY0MWQyMWQwNzc1MjhhMDRmZWJiMDg0Yjk0YjA2ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY4MjNlZDM4OTAxYTUzMTdmNDAzNWU1ZTVmODBmNDQ2MTY0ODdkNmZkYTQ1N2QxOGYxNDg5ZDVlODIxMWVkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3Y2ViNGM2YWRkMWNlZWI1ZmYxOWExNWQ4NjFkOTY1MTM4NzZjNTk0YWMzYWQyNjU0YTIyMTZiMTRiOGQ1MzQifQ"
+        },
+        {
+          "resource": "repo://configuration/lint-staged.config.ts#L223-L225",
+          "version": "repo-lines-v1:sha256:bc46b66231ff6e2f34aa9b40983be8d24b162b2770152e38b2c8f7dfc06412ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmMxOGQ4YjJhZWQzNmU5ZGEwMzQyZDY0YjY5NjI4OTJlMDE4ZDVmZDc1YWYwZWJmZTVkNTRkYTFkN2Q4NTA4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY0ZDhjMDczNDI5ODkzMTAxNTc2ZDg4ZDk5MTI3ZTg5ZDY4OTFkM2IxN2U4OWRmMDJlYzlhZTcwNzA1ZDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzNjN2UxZTQzYmYzMjBkZjRlYTUzMzNjYzczMGZiZmI1ZDJhYzUxNDAyMTc3MTc0NDg3MzViMmFlMjU1MTA1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODlmOWI2OTI1ODZmNTNhYzQ3ODAxZmQ2ZTRkZjg3MWY2NmRjMjFlMTZjODU0ZDkxNzA1NmQ0MWNiZWI3MjE4MiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}
