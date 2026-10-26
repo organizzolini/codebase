@@ -123,7 +123,6 @@
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Agents-D97757?logo=claude&logoColor=white)](https://claude.com/claude-code)
 [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-Agents-000000?logo=githubcopilot)](https://github.com/features/copilot)
 [![MCP](https://img.shields.io/badge/MCP-Tool%20Servers-000000?logo=modelcontextprotocol)](https://modelcontextprotocol.io/)
-[![OpenAI Codex](https://img.shields.io/badge/OpenAI%20Codex-Agents-000000)](https://openai.com/codex/)
 [![GitHub CLI](https://img.shields.io/badge/GitHub%20CLI-Command%20Line-181717?logo=github)](https://cli.github.com/)
 
 ## 💽 Projects
