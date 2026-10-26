@@ -42,3 +42,11 @@ export const YAML_RULES: readonly YamlRule[] = [
 
 /** What a position that no rule matches counts as: one skipped character. */
 export const YAML_UNMATCHED: YamlHit = { effect: "skip", keys: [], length: 1 };
+
+/**
+ * The literal words of YAML, lowercased as the vocabulary compares words.
+ *
+ * A plain array, so a configuration spreads it into `exclude.words` and the
+ * tool excludes nothing it was not asked to.
+ */
+export const YAML_KEYWORDS: string[] = ["false", "null", "true"];

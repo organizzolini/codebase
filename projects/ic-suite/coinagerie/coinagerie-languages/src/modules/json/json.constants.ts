@@ -20,3 +20,11 @@ export const JSON_GRAMMAR: LexicalGrammar = {
     { kind: "string", pattern: /"((?:\\.|[^"\\\n])*)"?/y },
   ],
 };
+
+/**
+ * The literal words of JSON, lowercased as the vocabulary compares words.
+ *
+ * A plain array, so a configuration spreads it into `exclude.words` and the
+ * tool excludes nothing it was not asked to.
+ */
+export const JSON_KEYWORDS: string[] = ["false", "null", "true"];

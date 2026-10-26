@@ -33,3 +33,11 @@ export const TOML_GRAMMAR: LexicalGrammar = {
     NUMBER_RULE,
   ],
 };
+
+/**
+ * The literal words of TOML, lowercased as the vocabulary compares words.
+ *
+ * A plain array, so a configuration spreads it into `exclude.words` and the
+ * tool excludes nothing it was not asked to.
+ */
+export const TOML_KEYWORDS: string[] = ["false", "inf", "nan", "true"];

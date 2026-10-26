@@ -36,3 +36,51 @@ export const PYTHON_GRAMMAR: LexicalGrammar = {
     NUMBER_RULE,
   ],
 };
+
+/**
+ * The reserved words and literals of Python, lowercased as the vocabulary
+ * compares words.
+ *
+ * The hard keywords only: a soft keyword such as `match` or `type` is a
+ * keyword only in one position, and it is a common word everywhere else.
+ *
+ * A plain array, so a configuration spreads it into `exclude.words` and the
+ * tool excludes nothing it was not asked to.
+ */
+export const PYTHON_KEYWORDS: string[] = [
+  "and",
+  "as",
+  "assert",
+  "async",
+  "await",
+  "break",
+  "class",
+  "continue",
+  "def",
+  "del",
+  "elif",
+  "else",
+  "except",
+  "false",
+  "finally",
+  "for",
+  "from",
+  "global",
+  "if",
+  "import",
+  "in",
+  "is",
+  "lambda",
+  "none",
+  "nonlocal",
+  "not",
+  "or",
+  "pass",
+  "raise",
+  "return",
+  "true",
+  "try",
+  "while",
+  "with",
+  "yield",
+];

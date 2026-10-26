@@ -31,3 +31,39 @@ export const CSS_GRAMMAR: LexicalGrammar = {
     NUMBER_RULE,
   ],
 };
+
+/**
+ * The at-rule names and global values of CSS, lowercased as the vocabulary
+ * compares words.
+ *
+ * One word each: an at-rule such as `font-face` is split into its words by the
+ * vocabulary, and `font` and `face` are ordinary words, so only the at-rules
+ * that are a single word are listed.
+ *
+ * A plain array, so a configuration spreads it into `exclude.words` and the
+ * tool excludes nothing it was not asked to.
+ */
+export const CSS_KEYWORDS: string[] = [
+  "and",
+  "charset",
+  "container",
+  "document",
+  "import",
+  "important",
+  "inherit",
+  "initial",
+  "keyframes",
+  "layer",
+  "media",
+  "namespace",
+  "not",
+  "only",
+  "or",
+  "page",
+  "property",
+  "revert",
+  "scope",
+  "starting",
+  "supports",
+  "unset",
+];

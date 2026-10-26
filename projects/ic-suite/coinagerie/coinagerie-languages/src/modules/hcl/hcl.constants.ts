@@ -38,3 +38,25 @@ export const HCL_GRAMMAR: LexicalGrammar = {
     NUMBER_RULE,
   ],
 };
+
+/**
+ * The keywords of HCL, lowercased as the vocabulary compares words.
+ *
+ * The language's own words, not Terraform's: `resource` and `variable` are
+ * block types a Terraform configuration chooses, and HCL does not reserve
+ * them.
+ *
+ * A plain array, so a configuration spreads it into `exclude.words` and the
+ * tool excludes nothing it was not asked to.
+ */
+export const HCL_KEYWORDS: string[] = [
+  "else",
+  "endfor",
+  "endif",
+  "false",
+  "for",
+  "if",
+  "in",
+  "null",
+  "true",
+];
