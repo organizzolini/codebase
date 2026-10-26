@@ -10,7 +10,11 @@ import {
 } from "./upgrade-dependencies.constants";
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 
-import type { StepReport, UpgradeStep } from "./upgrade-dependencies.types";
+import type {
+  StepReport,
+  UpgradeOutcome,
+  UpgradeStep,
+} from "./upgrade-dependencies.types";
 
 /**
  * CLI command that runs the weekly dependency upgrades, each one undone and
@@ -45,16 +49,16 @@ export class UpgradeDependenciesCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Runs one step inside a log group, and records it when it was skipped.
+   * Prints what a step came to, closes its log group, and records it.
    *
    * @returns Whether the run may carry on: only a step that could not be
    *   undone stops it.
    */
-  private runStep(step: UpgradeStep, reports: StepReport[]): boolean {
-    console.info(`::group::${step.label}`);
-
-    const outcome = this.upgradeDependenciesService.attempt(step);
-
+  private conclude(
+    step: UpgradeStep,
+    outcome: UpgradeOutcome,
+    reports: StepReport[],
+  ): boolean {
     console.info(outcome.output);
     console.info("::endgroup::");
 
@@ -79,13 +83,14 @@ export class UpgradeDependenciesCommand extends CommandRunner {
 
   /** Runs every upgrade in turn, then reports what came of them. */
   public async run(): Promise<void> {
-    // Nothing here is asynchronous; the base class signature is.
-    await Promise.resolve();
-
     const reports: StepReport[] = [];
 
     for (const step of UPGRADE_STEPS) {
-      if (!this.runStep(step, reports)) {
+      console.info(`::group::${step.label}`);
+
+      const outcome = await this.upgradeDependenciesService.attempt(step);
+
+      if (!this.conclude(step, outcome, reports)) {
         process.exitCode = 1;
 
         return;

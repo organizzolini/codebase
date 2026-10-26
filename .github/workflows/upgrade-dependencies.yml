@@ -58,9 +58,11 @@ jobs:
           author: >-
             ${{ steps.import-gpg.outputs.name }}
             <${{ steps.import-gpg.outputs.email }}>
-          # No sign-commits: that rebuilds the commit through the API, one
-          # request per file, and took 20+ minutes here. The key imported
-          # above signs the commit locally instead.
+          # The key imported above signs the commit locally. This step takes
+          # about 20 minutes, nearly all of it the pre-commit hook running
+          # every check on all 58 projects, since the upgrade touches the
+          # lockfile and the Python version. The cache cannot help much: the
+          # hook hit 16% of its tasks with a warm cache.
           commit-message: "chore(dependencies): ⬆️ upgrade"
           branch: chore/dependencies-upgrade
           delete-branch: true

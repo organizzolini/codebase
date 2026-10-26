@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import {
   renderPullRequestBody,
-  summaryOf,
   warningsOf,
 } from "./upgrade-dependencies.utilities";
 
@@ -30,18 +29,6 @@ const skipped = [
 ];
 
 describe("upgrade-dependencies utilities", () => {
-  describe(summaryOf, () => {
-    it("takes the last summary line", () => {
-      expect.hasAssertions();
-      expect(summaryOf("a\nsummary: one\nsummary: two \nb")).toBe("two");
-    });
-
-    it("finds nothing when there is none", () => {
-      expect.hasAssertions();
-      expect(summaryOf("no summary here")).toBeUndefined();
-    });
-  });
-
   describe(warningsOf, () => {
     it("keeps distinct warning lines", () => {
       expect.hasAssertions();
@@ -49,6 +36,13 @@ describe("upgrade-dependencies utilities", () => {
         "⚠ stale",
         "⚠ other",
       ]);
+    });
+
+    it("ignores a line that only mentions a warning", () => {
+      expect.hasAssertions();
+      expect(
+        warningsOf('. postinstall$ echo "⚠️  could not run"'),
+      ).toStrictEqual([]);
     });
 
     it("caps how many it keeps", () => {

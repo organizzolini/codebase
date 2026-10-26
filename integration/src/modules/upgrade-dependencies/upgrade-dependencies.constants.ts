@@ -1,15 +1,19 @@
+import type { Command } from "../process-runner/process-runner.types";
 import type { UpgradeStep } from "./upgrade-dependencies.types";
 
 // ♟️ Constants
-
-/** The shell options a step's script runs under: stop at the first failure. */
-export const SCRIPT_OPTIONS = ["-e", "-o", "pipefail", "-c"] as const;
 
 /** How many of a failed step's last lines the pull request quotes. */
 export const TAIL_LINES = 20;
 
 /** The most characters of them it quotes, so one runaway line cannot flood it. */
 export const TAIL_CHARACTERS = 2000;
+
+/**
+ * Git's empty tree. Naming it as the source of attributes makes a diff ignore
+ * `.gitattributes`, whose `-diff` on the lockfile would count its changes as 0.
+ */
+export const EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
 
 /** The file, in the OS temp directory, the pull request body is written to. */
 export const PULL_REQUEST_BODY_FILE = "pull-request-body.md";
@@ -28,6 +32,20 @@ export const WARNING_LIMIT = 10;
 /** The most characters it quotes of a warning or of a skipped step's reason. */
 export const LINE_CHARACTERS = 160;
 
+/**
+ * Formats the files an upgrade wrote. The repository keeps vendored skills
+ * formatted, so what upstream ships unformatted would otherwise be reformatted
+ * by the commit hook, and the pull request would report changes that the
+ * commit does not hold.
+ */
+const FORMAT_UPGRADED_FILES: Command = [
+  "pnpm",
+  "exec",
+  "nx",
+  "run",
+  "configuration:oxfmt:write",
+];
+
 /** Printed when skipped steps are all the run has to show for itself. */
 export const NOTHING_SHIPPED_MESSAGE =
   "Upgrade steps were skipped and nothing else changed, so there is no pull request to report them in.";
@@ -37,55 +55,19 @@ export const NOTHING_SHIPPED_MESSAGE =
  * reported, and the next one still runs: one broken upgrade must not stop the
  * others, as the Python bump once stopped the skills.
  *
- * Scripts avoid the `${` of a template literal, which JavaScript would read as
- * its own substitution.
+ * Those with logic of their own are tasks, each carried out by a service.
+ * The rest are commands, run in order until one fails.
  */
 export const UPGRADE_STEPS: readonly UpgradeStep[] = [
+  { label: "Upgrade pnpm", task: "pnpm" },
+  { label: "Upgrade node", task: "node" },
   {
-    // Worth keeping only if pnpm can switch to it, which its
-    // minimumReleaseAge refuses for a release under a day old.
-    label: "Upgrade pnpm",
-    script: String.raw`
-version=$(pnpm view pnpm version)
-test -n "$version"
-jq --arg v "pnpm@$version" '.packageManager = $v' package.json > package.json.temporary
-mv package.json.temporary package.json
-echo "summary: pnpm $version"
-pnpm --version
-`,
-  },
-  {
-    label: "Upgrade node",
-    script: String.raw`
-test -n "$LATEST_NODE" || { echo "LATEST_NODE is not set, and nothing in this repository sets it." >&2; exit 1; }
-jq --arg v ">=$LATEST_NODE" '.engines.node = $v' package.json > package.json.temporary
-mv package.json.temporary package.json
-`,
-  },
-  {
-    // The bump moves every Python version setting, upper bound included, to
-    // the newest stable release, then `uv sync` proves the lockfile installs
-    // on it, since a lock alone would not catch a dependency with no wheel
-    // (ormsgpack, #1491). The template must stay identical to the application.
     label: "Upgrade Python",
-    recover: "uv sync --frozen --quiet --project configuration",
-    script: String.raw`
-uv python install 3 --upgrade
-LATEST_PYTHON=$(uv run --no-project --python 3 python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-echo "summary: Python $LATEST_PYTHON"
-PYTHON_VER=$(echo "$LATEST_PYTHON" | tr -d '.')
-NEXT_PYTHON="3.$(( $(echo "$LATEST_PYTHON" | cut -d. -f2) + 1 ))"
-for file in \
-  projects/affirmancy/pyproject.toml \
-  "configuration/conformetry-templates/jupyter-notebook-application/{{nameKebabCase}}/pyproject.toml"
-do
-  sed -i "s/^requires-python = .*/requires-python = \">=$LATEST_PYTHON,<$NEXT_PYTHON\"/" "$file"
-done
-sed -i "s/target-version = \"py[0-9][0-9]*/target-version = \"py$PYTHON_VER/" configuration/pyproject.toml
-sed -i "s/pythonVersion = \"3\.[0-9][0-9]*/pythonVersion = \"$LATEST_PYTHON/" configuration/pyproject.toml
-uv lock --project configuration
-uv sync --frozen --quiet --project configuration
-`,
+    // The environment is rebuilt from the lock the step left unchanged.
+    recover: [
+      ["uv", "sync", "--frozen", "--quiet", "--project", "configuration"],
+    ],
+    task: "python",
   },
   {
     // Per-package npm and GitHub Actions bumps come from Dependabot as their
@@ -94,16 +76,16 @@ uv sync --frozen --quiet --project configuration
     // stays pinned even as they move. `nx show projects` proves the dedupe did
     // not break Nx, while the diff is still on disk and not inside the husky
     // pre-commit hook of the commit that opens the pull request.
+    commands: [
+      ["pnpm", "dedupe"],
+      ["pnpm", "exec", "nx", "show", "projects"],
+    ],
     label: "Deduplicate lockfile",
-    script: String.raw`
-pnpm dedupe
-pnpm exec nx show projects
-`,
   },
   {
     // One lockfile covers every uv workspace member.
+    commands: [["uv", "lock", "--upgrade", "--project", "configuration"]],
     label: "Upgrade Python dependencies",
-    script: "uv lock --upgrade --project configuration",
   },
   {
     // The skills CLI falls back to installing for every agent when none is
@@ -111,16 +93,23 @@ pnpm exec nx show projects
     // folder the project-structure lint rejects, so it is removed. ReUI serves
     // its skill as a JSON bundle, which `skills update` skips, so the
     // installation project's command re-fetches and re-pins it.
+    commands: [
+      ["pnpm", "exec", "skills", "update", "--yes"],
+      ["rm", "-rf", "agent/"],
+      [
+        "node",
+        "--import",
+        "@swc-node/register/esm-register",
+        "installation/src/installation.main.ts",
+        "update-reui-skill",
+      ],
+      FORMAT_UPGRADED_FILES,
+    ],
     label: "Upgrade skills",
-    script: String.raw`
-pnpm exec skills update --yes
-rm -rf agent/
-NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill
-`,
   },
   {
+    commands: [["npx", "impeccable", "update"], FORMAT_UPGRADED_FILES],
     label: "Upgrade Impeccable",
-    script: "npx impeccable update",
   },
 ];
 

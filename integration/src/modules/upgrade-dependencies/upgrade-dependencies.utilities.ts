@@ -82,17 +82,12 @@ export function renderPullRequestBody(
   ].join("\n\n")}\n`;
 }
 
-/** The version a step reports landing on: the last `summary:` line it printed. */
-export function summaryOf(output: string): string | undefined {
-  return [...output.matchAll(/^summary: (.+)$/gmu)].at(-1)?.[1]?.trim();
-}
-
-/** The distinct `⚠` lines a step printed. */
+/** The distinct lines a step printed that begin with `⚠`. */
 export function warningsOf(output: string): string[] {
   const lines = output
     .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line.includes("⚠"));
+    .filter((line) => line.startsWith("⚠"));
 
   return [...new Set(lines)].slice(0, WARNING_LIMIT);
 }

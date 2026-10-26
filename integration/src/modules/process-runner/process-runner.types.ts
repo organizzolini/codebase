@@ -7,3 +7,6 @@ export interface CapturedProcess {
   stderr: string;
   stdout: string;
 }
+
+/** A program and its arguments, run with no shell between. */
+export type Command = readonly [executable: string, ...args: string[]];
