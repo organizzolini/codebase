@@ -19,7 +19,7 @@ export const BLOCK_END_LABEL = "installed-skills-end";
  * `.agents/skills/<name>/`, by skill name.
  *
  * Some installers copy their agents and hooks into each harness folder they
- * find (`.claude`, `.github`, `.codex`), where the same tools reach them: the
+ * find (`.claude`, `.github`), where the same tools reach them: the
  * spell check flags their prose, and ESLint's markdown rules flag the HTML in
  * it. Nothing in `skills-lock.json` names these files, so they are declared
  * here, and written into every list only while the skill that owns them is
@@ -30,7 +30,6 @@ export const VENDORED_SKILL_PATHS: Readonly<Record<string, readonly string[]>> =
   {
     impeccable: [
       ".claude/agents/impeccable-*",
-      ".codex/hooks.json",
       ".github/agents/impeccable-*",
       ".github/hooks/impeccable.json",
     ],
