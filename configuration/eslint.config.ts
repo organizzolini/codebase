@@ -1680,7 +1680,6 @@ export default [
       // `nx run synchronization:skill-exclusions`
       // installed-skills-start
       ".claude/agents/impeccable-*",
-      ".codex/hooks.json",
       ".github/agents/impeccable-*",
       ".github/hooks/impeccable.json",
       // installed-skills-end
