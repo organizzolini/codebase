@@ -60,6 +60,7 @@ describe(EclipseEventService, () => {
       expect(event.tags).toContain("Annular");
       expect(event.tags).toContain("Solar");
       expect(event.tags).toContain("Geocentric");
+      expect(event.tags).toContain("Beginning");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
     });

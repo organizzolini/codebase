@@ -22,6 +22,8 @@ import {
 } from "../caelundas/symbol-caelundas.constants";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 
+import { DECAN_TAG_BY_DECAN } from "./ingresses.constants";
+
 import type { Body, Decan, Sign } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
@@ -128,6 +130,7 @@ export class IngressesComposerService {
       tags: [
         ...IngressesComposerService.ingressBaseTags,
         "Decan",
+        DECAN_TAG_BY_DECAN[decan],
         bodyCapitalized,
         signCapitalized,
       ],

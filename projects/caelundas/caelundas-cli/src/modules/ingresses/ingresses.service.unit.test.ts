@@ -180,6 +180,7 @@ describe(IngressesService, () => {
         start: moment.utc("2024-04-05T10:00:00.000Z"),
       });
       expect(event.tags).toContain("Decan");
+      expect(event.tags).toContain("Second Decan");
       expect(event.tags).toContain("Aries");
       expect(event.tags).toContain("Venus");
     });

@@ -20,19 +20,6 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { Repository, TreeRepository } from "typeorm";
 
-// A raw tag whose path runs three levels deep, as the tag map's will; every
-// other raw tag keeps falling back to a root of its own.
-vi.mock(import("../tags/tags.utilities"), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    resolveTagPaths: (rawTag: string) =>
-      rawTag === "nested major"
-        ? [["Nested type", "Nested aspect", "nested major"]]
-        : actual.resolveTagPaths(rawTag),
-  };
-});
-
 const philadelphia = {
   latitude: 39.949_309,
   longitude: -75.171_69,
@@ -259,10 +246,10 @@ describe("calendar events service integration", () => {
       const rows = await service.findInRange(range);
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Spans start", ["aspects", "moon"]],
-        ["Instant at start", ["aspects", "moon"]],
-        ["Inside", ["inside", "moon"]],
-        ["Spans end", ["aspects", "moon"]],
+        ["Spans start", ["Duration", "aspects", "moon"]],
+        ["Instant at start", ["Instant", "aspects", "moon"]],
+        ["Inside", ["Instant", "inside", "moon"]],
+        ["Spans end", ["Duration", "aspects", "moon"]],
       ]);
     });
 
@@ -282,6 +269,16 @@ describe("calendar events service integration", () => {
   describe("tags", () => {
     async function tag(name: string, parent: null | Tag = null): Promise<Tag> {
       return tags.save(tags.create({ name, parent }));
+    }
+
+    /** The name of the root above the one node named `name`. */
+    async function rootOf(name: string): Promise<string | undefined> {
+      const [node] = await tags.findBy({ name });
+      if (node === undefined) {
+        return undefined;
+      }
+      const ancestors = await tags.findAncestors(node);
+      return ancestors.find(({ parentId }) => parentId === null)?.name;
     }
 
     it("resolves ancestors and descendants through the closure table", async () => {
@@ -347,7 +344,7 @@ describe("calendar events service integration", () => {
       });
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Changed tags", ["added", "kept"]],
+        ["Changed tags", ["Instant", "added", "kept"]],
       ]);
     });
 
@@ -374,32 +371,107 @@ describe("calendar events service integration", () => {
       });
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Mixed new", ["mixed fresh"]],
-        ["Mixed stored", ["mixed updated"]],
+        ["Mixed new", ["Instant", "mixed fresh"]],
+        ["Mixed stored", ["Instant", "mixed updated"]],
       ]);
     });
 
     it("saves each node of a nested path once, under its ancestors", async () => {
       expect.hasAssertions();
 
+      const nestedTags = ["Simple Aspect", "Major Aspect", "Trine"];
+
       await service.upsert(
-        [tagged("Nested one", "2026-07-10T00:00:00Z", ["nested major"])],
+        [tagged("Nested one", "2026-07-10T00:00:00Z", nestedTags)],
         philadelphia,
       );
       await service.upsert(
-        [tagged("Nested two", "2026-07-11T00:00:00Z", ["nested major"])],
+        [tagged("Nested two", "2026-07-11T00:00:00Z", nestedTags)],
         philadelphia,
       );
-      const leaves = await tags.findBy({ name: "nested major" });
+      const leaves = await tags.findBy({ name: "Trine" });
       const [leaf] = leaves;
       const ancestors =
         leaf === undefined ? [] : await tags.findAncestors(leaf);
 
       expect(leaves).toHaveLength(1);
       expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
-        "Nested aspect",
-        "Nested type",
-        "nested major",
+        "Aspect",
+        "Major Aspect",
+        "Simple Aspect",
+        "Trine",
+        "Type",
+      ]);
+    });
+
+    it("tags an Aries event with its sign, element, modality and polarity side by side", async () => {
+      expect.hasAssertions();
+
+      const start = "2026-09-10T00:00:00Z";
+      await service.upsert(
+        [
+          tagged("Aries ingress", start, [
+            "Astronomy",
+            "Astrology",
+            "Ingress",
+            "Mars",
+            "Aries",
+          ]),
+        ],
+        philadelphia,
+      );
+      const [row] = await service.findInRange({
+        end: moment.utc("2026-09-11T00:00:00Z"),
+        latitude: philadelphia.latitude,
+        longitude: philadelphia.longitude,
+        start: moment.utc(start),
+      });
+      const roots = await Promise.all(
+        ["Aries", "Fire", "Cardinal", "Positive"].map(async (name) =>
+          rootOf(name),
+        ),
+      );
+
+      expect(row?.tags).toStrictEqual(
+        expect.arrayContaining(["Aries", "Cardinal", "Fire", "Positive"]),
+      );
+      expect(roots).toStrictEqual(["Sign", "Element", "Modality", "Polarity"]);
+    });
+
+    it("files a planetary phase under Type as Planetary Phase, with its planet", async () => {
+      expect.hasAssertions();
+
+      const start = "2026-09-12T00:00:00Z";
+      await service.upsert(
+        [
+          tagged("Mars opposition", start, [
+            "Astronomy",
+            "Astrology",
+            "Planetary Phase",
+            "Martian",
+            "Opposition",
+          ]),
+        ],
+        philadelphia,
+      );
+      const [row] = await service.findInRange({
+        end: moment.utc("2026-09-13T00:00:00Z"),
+        latitude: philadelphia.latitude,
+        longitude: philadelphia.longitude,
+        start: moment.utc(start),
+      });
+      const [opposition] = await tags.findBy({ name: "Martian Opposition" });
+      const ancestors =
+        opposition === undefined ? [] : await tags.findAncestors(opposition);
+
+      expect(row?.tags).toStrictEqual(
+        expect.arrayContaining(["Mars", "Martian Opposition", "Opposition"]),
+      );
+      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
+        "Martian",
+        "Martian Opposition",
+        "Planetary Phase",
+        "Type",
       ]);
     });
 

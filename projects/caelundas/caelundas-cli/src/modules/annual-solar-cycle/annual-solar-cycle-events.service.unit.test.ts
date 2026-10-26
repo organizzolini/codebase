@@ -36,6 +36,7 @@ describe(AnnualSolarCycleEventsService, () => {
       expect(event.tags).toContain("Astrology");
       expect(event.tags).toContain("Annual Solar Cycle");
       expect(event.tags).toContain("Solar");
+      expect(event.tags).toContain("Vernal Equinox");
     });
 
     it("creates summer solstice event with correct structure", () => {
