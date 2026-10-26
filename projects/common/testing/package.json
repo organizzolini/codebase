@@ -1,5 +1,10 @@
 {
   "dependencies": {
+    "@codebase/observability": "workspace:*",
+    "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/common": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@nx/devkit": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
     "vitest": "catalog:"
@@ -12,6 +17,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./nestjs": "./src/nestjs.ts",
     "./setup": "./src/setup.ts",
     "./package.json": "./package.json"
   },
@@ -28,6 +34,10 @@
       ".": {
         "default": "./dist/src/index.js",
         "types": "./dist/src/index.d.ts"
+      },
+      "./nestjs": {
+        "default": "./dist/src/nestjs.js",
+        "types": "./dist/src/nestjs.d.ts"
       },
       "./setup": {
         "default": "./dist/src/setup.js",

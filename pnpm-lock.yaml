@@ -1574,6 +1574,21 @@ importers:
 
   projects/common/testing:
     dependencies:
+      '@codebase/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@golevelup/ts-vitest':
+        specifier: 'catalog:'
+        version: 4.0.0
+      '@nestjs/common':
+        specifier: 'catalog:'
+        version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      '@nestjs/testing':
+        specifier: 'catalog:'
+        version: 12.1.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(@nestjs/platform-express@12.1.0)
+      '@nx/devkit':
+        specifier: 'catalog:'
+        version: 24.0.0(nx@24.0.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
