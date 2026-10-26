@@ -644,6 +644,24 @@ const codependixConfiguration: CodependixConfiguration = {
           ],
         },
       },
+      {
+        from: { tags: ["name:coinagerie-nx"] },
+        kind: "allow",
+        message:
+          "The coinagerie Nx plugin sits on top of the spine `core <- configuration <- languages <- vocabulary <- output <- cli`, so `@nx/devkit` never reaches a package that reads a codebase. Nothing in the chain may depend back on it, and it reaches no other toolchain.",
+        name: "coinagerie-nx-layer",
+        to: {
+          tags: [
+            "name:configuration",
+            "name:coinagerie-cli",
+            "name:coinagerie-configuration",
+            "name:coinagerie-core",
+            "name:coinagerie-output",
+            "name:coinagerie-vocabulary",
+            "name:observability",
+          ],
+        },
+      },
       // 👔 Conformetry
       {
         from: { tags: ["name:conformetry-core"] },
@@ -864,6 +882,10 @@ const codependixConfiguration: CodependixConfiguration = {
       "coinagerie-cli": {
         export: "MainModule",
         file: "src/coinagerie-cli.module.ts",
+      },
+      "coinagerie-nx": {
+        export: "MainModule",
+        file: "src/coinagerie-nx.module.ts",
       },
       "conformetry-cli": {
         export: "MainModule",
