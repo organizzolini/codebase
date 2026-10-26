@@ -9,6 +9,7 @@ import { Injectable } from "@nestjs/common";
 import {
   BULLET_PATTERN,
   CONTINUATION_PATTERN,
+  LINE_BREAK_PATTERN,
   LIST_ITEM_PATTERN,
 } from "./markdown.constants";
 
@@ -148,6 +149,26 @@ export class MarkdownService implements GlossaryFormatHandler {
     state.pendingBlankLines = 0;
   }
 
+  /**
+   * The prose between a block's heading and its first bullet, or `undefined`
+   * when there is none. Only ever read from content `parse` already accepted.
+   */
+  private readDescription(content: string | undefined): string | undefined {
+    const lines = content?.split(LINE_BREAK_PATTERN) ?? [];
+    const range = this.findAnchors(lines, "");
+    const block =
+      range === undefined ? [] : lines.slice(range.start + 1, range.end);
+    const firstBullet = block.findIndex((line) => LIST_ITEM_PATTERN.test(line));
+    const description = (
+      firstBullet === -1 ? block : block.slice(0, firstBullet)
+    )
+      .filter((line) => line.trim() !== COINAGERIE_HEADING)
+      .join("\n")
+      .trim();
+
+    return description === "" ? undefined : description;
+  }
+
   /** Reads one line of the block, or refuses it. */
   private readLine(state: BlockParserState, text: string, line: number): void {
     if (!state.readingBullets && !LIST_ITEM_PATTERN.test(text)) {
@@ -186,10 +207,10 @@ export class MarkdownService implements GlossaryFormatHandler {
    *
    * Throws `MalformedGlossaryError` on an unrecognized line, a duplicated
    * word, or misplaced anchors. Free text between the heading and the first
-   * bullet is the description, and is not read.
+   * bullet is the description: never a word, and kept by `write`.
    */
   parse(content: string, filePath: string): Glossary | undefined {
-    const lines = content.split("\n");
+    const lines = content.split(LINE_BREAK_PATTERN);
     const range = this.findAnchors(lines, filePath);
 
     if (range === undefined) {
@@ -250,26 +271,38 @@ export class MarkdownService implements GlossaryFormatHandler {
       return `${block}\n`;
     }
 
-    const lines = content.split("\n");
+    // A file keeps its own line endings: one written with CRLF stays CRLF.
+    const lineBreak = content.includes("\r\n") ? "\r\n" : "\n";
+    const blockLines = block.split("\n");
+    const lines = content.split(LINE_BREAK_PATTERN);
     const range = this.findAnchors(lines, "");
 
     if (range === undefined) {
-      return `${content.endsWith("\n") ? content : `${content}\n`}\n${block}\n`;
+      const body = content.endsWith("\n") ? content : `${content}${lineBreak}`;
+
+      return `${body}${lineBreak}${blockLines.join(lineBreak)}${lineBreak}`;
     }
 
     return [
       ...lines.slice(0, range.start),
-      block,
+      ...blockLines,
       ...lines.slice(range.end + 1),
-    ].join("\n");
+    ].join(lineBreak);
   }
 
-  /** Writes a glossary into a destination's content as a rendered block. */
+  /**
+   * Writes a glossary into a destination's content as a rendered block.
+   *
+   * The configured description wins; without one, whatever prose already
+   * sits between the heading and the first bullet is kept, so a write never
+   * deletes text a person wrote there.
+   */
   write(args: WriteGlossaryArguments): string {
     return this.splice(
       args.content,
       this.render({
-        description: args.destination.description,
+        description:
+          args.destination.description ?? this.readDescription(args.content),
         glossary: args.glossary,
       }),
     );

@@ -131,6 +131,15 @@ describe(MarkdownService, () => {
       );
     });
 
+    it("reads a file written with CRLF line endings", () => {
+      expect(
+        service.parse(
+          `${START}\r\n- **gate**: A check.\r\n  More.\r\n${END}\r\n`,
+          "/repo/README.md",
+        ),
+      ).toStrictEqual(new Map([["gate", "A check.\n  More."]]));
+    });
+
     it("finds no glossary in a file without anchors", () => {
       expect(
         service.parse(file("# Readme", "- **gate**: x"), "/repo/README.md"),
@@ -206,6 +215,64 @@ describe(MarkdownService, () => {
 
     it.each([undefined, ""])("writes the block alone into %j", (content) => {
       expect(service.splice(content, block)).toBe(file(START, "new", END));
+    });
+
+    it("keeps a CRLF file's line endings, whether replacing or appending", () => {
+      expect(
+        service.splice(`# Before\r\n${START}\r\nold\r\n${END}\r\n`, block),
+      ).toBe(`# Before\r\n${START}\r\nnew\r\n${END}\r\n`);
+      expect(service.splice("# Readme\r\n", block)).toBe(
+        `# Readme\r\n\r\n${START}\r\nnew\r\n${END}\r\n`,
+      );
+    });
+  });
+
+  describe("write", () => {
+    const destination = {
+      description: undefined,
+      path: "/repo/README.md",
+      type: "markdown" as const,
+    };
+    const handWritten = file(
+      START,
+      "",
+      "## 🪙 Coinagerie",
+      "",
+      "Prose a person wrote.",
+      "",
+      "- **gate**:",
+      "",
+      END,
+    );
+
+    it("keeps the prose above the first bullet when no description is configured", () => {
+      expect(
+        service.write({
+          content: handWritten,
+          destination,
+          glossary: new Map([["gate", ""]]),
+        }),
+      ).toBe(handWritten);
+    });
+
+    it("replaces that prose with a configured description", () => {
+      expect(
+        service.write({
+          content: handWritten,
+          destination: { ...destination, description: "Configured." },
+          glossary: new Map([["gate", ""]]),
+        }),
+      ).toContain("\nConfigured.\n\n- **gate**:");
+    });
+
+    it("writes a new file with no description at all", () => {
+      expect(
+        service.write({
+          content: undefined,
+          destination,
+          glossary: new Map([["gate", ""]]),
+        }),
+      ).toBe(file(START, "", "## 🪙 Coinagerie", "", "- **gate**:", "", END));
     });
   });
 });
