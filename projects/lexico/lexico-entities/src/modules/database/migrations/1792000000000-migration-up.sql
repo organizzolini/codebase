@@ -1,6 +1,6 @@
 set lock_timeout = '10s';
 
-set statement_timeout = '5m';
+set statement_timeout = '5min';
 
 create extension if not exists pg_trgm;
 

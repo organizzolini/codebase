@@ -9,7 +9,7 @@ export class Migration1792000000000 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`SET lock_timeout = '10s'`);
-    await queryRunner.query(`SET statement_timeout = '5m'`);
+    await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "pg_trgm"`);
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "fuzzystrmatch"`);
     await queryRunner.query(
@@ -22,7 +22,7 @@ export class Migration1792000000000 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`SET lock_timeout = '10s'`);
-    await queryRunner.query(`SET statement_timeout = '5m'`);
+    await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(`DROP INDEX "lexico"."words_data_trigram_index"`);
     await queryRunner.query(
       `DROP INDEX "lexico"."lexemes_lemma_trigram_index"`,
