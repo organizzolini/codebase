@@ -17,12 +17,22 @@ jobs:
   refresh-documentation:
     name: 🧑‍🏫 Refresh Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 196
     env:
-      OPENWIKI_PROVIDER: gemini
-      OPENWIKI_MODEL: gemini-3.6-flash
-      GEMINI_API_KEY: ${{ secrets.OPENWIKI_GEMINI_API_KEY }}
+      # OpenRouter's free Nemotron 3 Ultra, which is never billed. Free models
+      # are capped at 20 requests a minute and, once $10 of credit has been
+      # bought, 1,000 a day. A free endpoint can go down or be gated to
+      # approved apps, so a failed run is worth checking the model's health.
+      # The retry count is high so that backing off outlasts a spent minute.
+      OPENWIKI_PROVIDER: openrouter
+      OPENWIKI_MODEL_ID: nvidia/nemotron-3-ultra-550b-a55b:free
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
+      OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "12"
       OPENWIKI_TELEMETRY_DISABLED: "true"
+      # Groups every OpenRouter request of this run in its Sessions view. The
+      # OpenRouter client in OpenWiki reads this variable by itself.
+      OPENROUTER_SESSION_ID: ${{ github.repository }}/refresh-documentation/${{ github.run_id }}/${{ github.run_attempt }}
 
     steps:
       - name: 📥 Checkout Repository
@@ -34,16 +44,34 @@ jobs:
         uses: ./.github/actions/setup-codebase
         with:
           nx-shas: "false"
-          python-dependencies: "false"
-          uv: "false"
 
       - name: 🧑‍🏫 Refresh Documentation
         run: pnpm exec nx run documentation:refresh-documentation
+
+      # The repository requires signed commits, and its pre-commit hook rejects
+      # an unsigned one, which the action makes locally before it pushes. The
+      # key is imported here, after the model has finished, so it is not in the
+      # job while the model's tools run.
+      - name: 🔐 Import GPG Key
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@v7
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       - name: 🔀 Upsert Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          committer: >-
+            ${{ steps.import-gpg.outputs.name }}
+            <${{ steps.import-gpg.outputs.email }}>
+          author: >-
+            ${{ steps.import-gpg.outputs.name }}
+            <${{ steps.import-gpg.outputs.email }}>
+          sign-commits: true
           base: main
           branch: docs/codebase-refresh-documentation
           delete-branch: true
