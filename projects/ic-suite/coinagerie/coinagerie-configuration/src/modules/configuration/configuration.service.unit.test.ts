@@ -149,6 +149,10 @@ describe(ConfigurationService, () => {
       "a markdown output with no path",
       'export default { outputs: [{ type: "markdown" }] };\n',
     ],
+    [
+      "a description holding a list item",
+      'export default { outputs: [{ description: "Intro.\\n- item", path: "a.md", type: "markdown" }] };\n',
+    ],
     ["a default export that is not an object", "export default 42;\n"],
     ["a file that throws while loading", 'throw new Error("broken");\n'],
     ["a file that throws something other than an error", 'throw "broken";\n'],

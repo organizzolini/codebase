@@ -26,8 +26,23 @@ export const CONFIGURATION_FILE_NAMES = [
  */
 export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;
 
+/**
+ * A line a markdown description may not hold: a list item would read back as
+ * the start of the bullets, and an HTML comment could be taken for an anchor.
+ */
+const DESCRIPTION_FORBIDDEN_LINE_PATTERN = /^\s*(?:[-*+]\s|<!--)/mu;
+
 const markdownOutputSchema = z.strictObject({
-  description: z.string().optional(),
+  description: z
+    .string()
+    .refine(
+      (description) => !DESCRIPTION_FORBIDDEN_LINE_PATTERN.test(description),
+      {
+        message:
+          "A description may not hold a list item or an HTML comment, which would read back as part of the glossary",
+      },
+    )
+    .optional(),
   path: z.string().min(1),
   type: z.literal("markdown"),
 });
