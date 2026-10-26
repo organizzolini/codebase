@@ -203,4 +203,129 @@ describe(ConfigurationService, () => {
     await expect(loading).rejects.toThrow(InvalidConfigurationError);
     await expect(loading).rejects.toThrow(configurationPath);
   });
+
+  describe("flag overrides", () => {
+    const FILE = [
+      "export default {",
+      '  exclude: { paths: ["fileExclude"] },',
+      '  include: ["fileInclude"],',
+      "  outputs: [",
+      '    { path: "file.json", type: "json" },',
+      '    { description: "From the file.", path: "FILE.md", type: "markdown" },',
+      "  ],",
+      "};",
+      "",
+    ].join("\n");
+
+    it("takes every flag in place of what the file says", async () => {
+      writeConfiguration("project/coinagerie.config.ts", FILE);
+
+      const configuration = await service.loadConfiguration({
+        configurationPath: "project/coinagerie.config.ts",
+        overrides: {
+          description: "From a flag.",
+          excludePaths: ["flagExclude"],
+          include: ["flagInclude", "second"],
+          outputJson: "flag.json",
+          outputMarkdown: "flag/FLAG.md",
+        },
+        workingDirectory: directory,
+      });
+
+      expect(configuration.exclude).toStrictEqual({ paths: ["flagExclude"] });
+      expect(configuration.include).toStrictEqual(["flagInclude", "second"]);
+      expect(configuration.outputs).toStrictEqual([
+        { path: path.join(directory, "flag.json"), type: "json" },
+        {
+          description: "From a flag.",
+          path: path.join(directory, "flag/FLAG.md"),
+          type: "markdown",
+        },
+      ]);
+      expect(configuration.directory).toBe(path.join(directory, "project"));
+    });
+
+    it("leaves what no flag names as the file wrote it", async () => {
+      writeConfiguration("coinagerie.config.ts", FILE);
+
+      const configuration = await service.loadConfiguration({
+        overrides: {},
+        workingDirectory: directory,
+      });
+
+      expect(configuration.include).toStrictEqual(["fileInclude"]);
+      expect(configuration.outputs).toStrictEqual([
+        { path: path.join(directory, "file.json"), type: "json" },
+        {
+          description: "From the file.",
+          path: path.join(directory, "FILE.md"),
+          type: "markdown",
+        },
+      ]);
+    });
+
+    it("replaces the file's outputs with only the destinations a flag names", async () => {
+      writeConfiguration("coinagerie.config.ts", FILE);
+
+      const configuration = await service.loadConfiguration({
+        overrides: { outputJson: "only.json" },
+        workingDirectory: directory,
+      });
+
+      expect(configuration.outputs).toStrictEqual([
+        { path: path.join(directory, "only.json"), type: "json" },
+      ]);
+    });
+
+    it("sets the description of the file's markdown outputs when no destination flag is given", async () => {
+      writeConfiguration("coinagerie.config.ts", FILE);
+
+      const configuration = await service.loadConfiguration({
+        overrides: { description: "Flagged." },
+        workingDirectory: directory,
+      });
+
+      expect(configuration.outputs).toStrictEqual([
+        { path: path.join(directory, "file.json"), type: "json" },
+        {
+          description: "Flagged.",
+          path: path.join(directory, "FILE.md"),
+          type: "markdown",
+        },
+      ]);
+    });
+
+    it("layers flags over the defaults when there is no file", async () => {
+      const configuration = await service.loadConfiguration({
+        overrides: { excludePaths: ["dist"], outputMarkdown: "GLOSSARY.md" },
+        workingDirectory: directory,
+      });
+
+      expect(configuration.configurationPath).toBeUndefined();
+      expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE]);
+      expect(configuration.exclude).toStrictEqual({ paths: ["dist"] });
+      expect(configuration.outputs).toStrictEqual([
+        {
+          description: undefined,
+          path: path.join(directory, "GLOSSARY.md"),
+          type: "markdown",
+        },
+      ]);
+    });
+
+    it.each<[string, object]>([
+      ["an empty json path", { outputJson: "" }],
+      ["an empty markdown path", { outputMarkdown: "" }],
+      ["a description holding a list item", { description: "- item" }],
+      ["an unknown flag", { fold: "x" }],
+    ])("refuses %s, naming the command line", async (_case, overrides) => {
+      const loading = service.loadConfiguration({
+        overrides,
+        workingDirectory: directory,
+      });
+
+      await expect(loading).rejects.toThrow(InvalidConfigurationError);
+      await expect(loading).rejects.toThrow("the command line");
+    });
+  });
 });

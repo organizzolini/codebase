@@ -14,6 +14,7 @@ export type {
   CoinagerieJsonOutput,
   CoinagerieMarkdownOutput,
   CoinagerieOutput,
+  ConfigurationOverrides,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
   ResolvedCoinagerieJsonOutput,

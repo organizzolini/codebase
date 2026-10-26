@@ -37,19 +37,29 @@ const jsonOutputSchema = z.strictObject({
   type: z.literal("json"),
 });
 
+const descriptionSchema = z
+  .string()
+  .refine(
+    (description) => !DESCRIPTION_FORBIDDEN_LINE_PATTERN.test(description),
+    {
+      message:
+        "A description may not hold a list item or an HTML comment, which would read back as part of the glossary",
+    },
+  );
+
 const markdownOutputSchema = z.strictObject({
-  description: z
-    .string()
-    .refine(
-      (description) => !DESCRIPTION_FORBIDDEN_LINE_PATTERN.test(description),
-      {
-        message:
-          "A description may not hold a list item or an HTML comment, which would read back as part of the glossary",
-      },
-    )
-    .optional(),
+  description: descriptionSchema.optional(),
   path: z.string().min(1),
   type: z.literal("markdown"),
+});
+
+/** The shape the command line's overrides must have. */
+export const OVERRIDES_SCHEMA = z.strictObject({
+  description: descriptionSchema.optional(),
+  excludePaths: z.array(z.string()).optional(),
+  include: z.array(z.string()).optional(),
+  outputJson: z.string().min(1).optional(),
+  outputMarkdown: z.string().min(1).optional(),
 });
 
 /**

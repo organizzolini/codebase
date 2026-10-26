@@ -14,10 +14,13 @@ import {
   CONFIGURATION_FILE_NAMES,
   CONFIGURATION_SCHEMA,
   DEFAULT_INCLUDE,
+  OVERRIDES_SCHEMA,
 } from "./configuration.constants";
 
 import type {
   CoinagerieConfiguration,
+  CoinagerieOutput,
+  ConfigurationOverrides,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
   ResolvedCoinagerieOutput,
@@ -69,6 +72,47 @@ export class ConfigurationService {
   }
 
   /**
+   * The configuration with the command line's flags laid over it.
+   *
+   * A flag that is given replaces the field it names, so the file never has
+   * to be edited to try a variation.
+   */
+  private override(args: {
+    configuration: CoinagerieConfiguration;
+    flags: z.output<typeof OVERRIDES_SCHEMA>;
+    workingDirectory: string;
+  }): CoinagerieConfiguration {
+    const { configuration, flags, workingDirectory } = args;
+    const named: CoinagerieOutput[] = [
+      ...(flags.outputJson === undefined
+        ? []
+        : [
+            {
+              path: path.resolve(workingDirectory, flags.outputJson),
+              type: "json" as const,
+            },
+          ]),
+      ...(flags.outputMarkdown === undefined
+        ? []
+        : [
+            {
+              path: path.resolve(workingDirectory, flags.outputMarkdown),
+              type: "markdown" as const,
+            },
+          ]),
+    ];
+    const outputs = named.length > 0 ? named : (configuration.outputs ?? []);
+
+    return {
+      exclude: flags.excludePaths
+        ? { paths: flags.excludePaths }
+        : configuration.exclude,
+      include: flags.include ?? configuration.include,
+      outputs,
+    };
+  }
+
+  /**
    * Imports a configuration file and validates its default export.
    *
    * Any failure — the file throwing, a syntax error, an export of the wrong
@@ -107,8 +151,25 @@ export class ConfigurationService {
     configuration: CoinagerieConfiguration;
     configurationPath: string | undefined;
     directory: string;
+    overrides: ConfigurationOverrides | undefined;
+    workingDirectory: string;
   }): ResolvedCoinagerieConfiguration {
-    const { configuration, directory } = args;
+    const { directory } = args;
+    const flags = OVERRIDES_SCHEMA.safeParse(args.overrides ?? {});
+
+    // A flag the schema refuses is the command line's fault, not the file's.
+    if (!flags.success) {
+      throw new InvalidConfigurationError(
+        "the command line",
+        z.prettifyError(flags.error),
+      );
+    }
+
+    const configuration = this.override({
+      configuration: args.configuration,
+      flags: flags.data,
+      workingDirectory: args.workingDirectory,
+    });
 
     return {
       configurationPath: args.configurationPath,
@@ -122,7 +183,7 @@ export class ConfigurationService {
           return output.type === "json"
             ? { path: absolutePath, type: "json" }
             : {
-                description: output.description,
+                description: flags.data.description ?? output.description,
                 path: absolutePath,
                 type: "markdown",
               };
@@ -149,6 +210,8 @@ export class ConfigurationService {
         configuration: {},
         configurationPath: undefined,
         directory: args.workingDirectory,
+        overrides: args.overrides,
+        workingDirectory: args.workingDirectory,
       });
     }
 
@@ -156,6 +219,8 @@ export class ConfigurationService {
       configuration: await this.read(configurationPath),
       configurationPath,
       directory: path.dirname(configurationPath),
+      overrides: args.overrides,
+      workingDirectory: args.workingDirectory,
     });
   }
 }

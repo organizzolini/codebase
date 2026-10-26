@@ -3,6 +3,7 @@ import { MalformedGlossaryError } from "@coinagerie/core";
 import {
   ComparisonService,
   DeliveryService,
+  JsonService,
   MarkdownService,
 } from "@coinagerie/output";
 import { VocabularyService } from "@coinagerie/vocabulary";
@@ -11,8 +12,13 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
+import { COLLECT_FORMATS } from "./collect.constants";
+
 import type { CollectCommandOptions, CollectMode } from "./collect.types";
-import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
+import type {
+  ConfigurationOverrides,
+  ResolvedCoinagerieConfiguration,
+} from "@coinagerie/configuration";
 
 /**
  * The `coinagerie` command: collect the code's vocabulary, then print it,
@@ -40,6 +46,7 @@ export class CollectCommand extends CommandRunner {
     private readonly vocabularyService: VocabularyService,
     private readonly comparisonService: ComparisonService,
     private readonly deliveryService: DeliveryService,
+    private readonly jsonService: JsonService,
     private readonly markdownService: MarkdownService,
     private readonly logger: LoggerService,
   ) {
@@ -121,6 +128,7 @@ export class CollectCommand extends CommandRunner {
     try {
       return await this.configurationService.loadConfiguration({
         configurationPath: options.config,
+        overrides: this.overridesFrom(options),
         workingDirectory: process.cwd(),
       });
     } catch (error: unknown) {
@@ -129,19 +137,55 @@ export class CollectCommand extends CommandRunner {
     }
   }
 
-  /** Prints the glossary block for the vocabulary, every definition empty. */
-  private print(words: string[]): void {
-    const glossary = this.comparisonService.reconcile(words, new Map());
-
-    process.stdout.write(`${this.markdownService.render({ glossary })}\n`);
+  /** The flags that override the configuration file, as the configuration reads them. */
+  private overridesFrom(
+    options: CollectCommandOptions,
+  ): ConfigurationOverrides {
+    return {
+      description: options.description,
+      excludePaths: options.excludePaths,
+      include: options.include,
+      outputJson: options.outputJson,
+      outputMarkdown: options.outputMarkdown,
+    };
   }
 
-  /** The mode the flags ask for, or `undefined` when they contradict. */
-  private selectMode(options: CollectCommandOptions): CollectMode | undefined {
+  /**
+   * Prints the glossary for the vocabulary, every definition empty: the
+   * markdown block, or the flat JSON object when `--format json` asks.
+   */
+  private print(words: string[], format: string | undefined): void {
+    const glossary = this.comparisonService.reconcile(words, new Map());
+
+    process.stdout.write(
+      format === "json"
+        ? this.jsonService.render(glossary)
+        : `${this.markdownService.render({ glossary })}\n`,
+    );
+  }
+
+  /** Why the flags cannot be run, or `undefined` when they can. */
+  private rejectionOf(options: CollectCommandOptions): string | undefined {
     if (options.check === true && options.write === true) {
-      this.fail("🪙 Rejected the command line", {
-        reason: "--check and --write cannot be combined",
-      });
+      return "--check and --write cannot be combined";
+    }
+
+    if (
+      options.format !== undefined &&
+      !COLLECT_FORMATS.includes(options.format)
+    ) {
+      return `--format must be one of ${COLLECT_FORMATS.join(", ")}, not "${options.format}"`;
+    }
+
+    return undefined;
+  }
+
+  /** The mode the flags ask for, or `undefined` when they are rejected. */
+  private selectMode(options: CollectCommandOptions): CollectMode | undefined {
+    const rejection = this.rejectionOf(options);
+
+    if (rejection !== undefined) {
+      this.fail("🪙 Rejected the command line", { reason: rejection });
       return undefined;
     }
 
@@ -194,6 +238,65 @@ export class CollectCommand extends CommandRunner {
     return value;
   }
 
+  /** Reads `--description`, the text rendered under every markdown heading. */
+  @Option({
+    description:
+      "Text rendered under the heading of every markdown destination, replacing the configured description",
+    flags: "--description <description>",
+  })
+  public parseDescription(value: string): string {
+    return value;
+  }
+
+  /** Reads `--exclude-paths`, repeatable, each adding a glob to leave out. */
+  @Option({
+    description:
+      "Glob of files to leave out of the scan, replacing the configured exclude.paths; repeat for several",
+    flags: "--exclude-paths <glob>",
+  })
+  public parseExcludePaths(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
+  }
+
+  /** Reads `--format`, the format printed when nothing is checked or written. */
+  @Option({
+    description: `Format printed to standard output when neither --check nor --write is given: ${COLLECT_FORMATS.join(" or ")}`,
+    flags: "--format <format>",
+  })
+  public parseFormat(value: string): string {
+    return value;
+  }
+
+  /** Reads `--include`, repeatable, each adding a glob to scan. */
+  @Option({
+    description:
+      "Glob of files to scan, replacing the configured include; repeat for several",
+    flags: "--include <glob>",
+  })
+  public parseInclude(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
+  }
+
+  /** Reads `--output-json`, a JSON glossary path relative to the working directory. */
+  @Option({
+    description:
+      "JSON glossary to check or write, replacing the configured outputs",
+    flags: "--output-json <path>",
+  })
+  public parseOutputJson(value: string): string {
+    return value;
+  }
+
+  /** Reads `--output-markdown`, a markdown file relative to the working directory. */
+  @Option({
+    description:
+      "Markdown file holding a glossary block to check or write, replacing the configured outputs",
+    flags: "--output-markdown <path>",
+  })
+  public parseOutputMarkdown(value: string): string {
+    return value;
+  }
+
   /** Reads `--write`, which rewrites every glossary. */
   @Option({
     description:
@@ -224,7 +327,7 @@ export class CollectCommand extends CommandRunner {
     const words = await this.vocabularyService.collect(configuration);
 
     if (mode === "print") {
-      this.print(words);
+      this.print(words, options.format);
       return;
     }
 

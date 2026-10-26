@@ -47,6 +47,29 @@ export interface CoinagerieMarkdownOutput {
 /** One place a glossary is kept. */
 export type CoinagerieOutput = CoinagerieJsonOutput | CoinagerieMarkdownOutput;
 
+/**
+ * What the command line says, layered over the configuration file: a flag
+ * that is given replaces the field it names, and a field with no flag keeps
+ * what the file says.
+ *
+ * The two destination flags together replace the file's `outputs` with just
+ * the destinations they name. Their paths are relative to the working
+ * directory, as a path typed in a shell is; globs stay relative to the scan
+ * root.
+ */
+export interface ConfigurationOverrides {
+  /** Replaces the description of every markdown destination. */
+  description?: string | undefined;
+  /** Replaces `exclude.paths`. */
+  excludePaths?: string[] | undefined;
+  /** Replaces `include`. */
+  include?: string[] | undefined;
+  /** A JSON destination that replaces the file's `outputs`. */
+  outputJson?: string | undefined;
+  /** A markdown destination that replaces the file's `outputs`. */
+  outputMarkdown?: string | undefined;
+}
+
 /** What `loadConfiguration` is asked for. */
 export interface LoadConfigurationArguments {
   /**
@@ -55,6 +78,8 @@ export interface LoadConfigurationArguments {
    * named in `CONFIGURATION_FILE_NAMES`, and defaults apply when none exists.
    */
   configurationPath?: string | undefined;
+  /** What the command line overrides; nothing when absent. */
+  overrides?: ConfigurationOverrides | undefined;
   /** Absolute path the command was run from. */
   workingDirectory: string;
 }
