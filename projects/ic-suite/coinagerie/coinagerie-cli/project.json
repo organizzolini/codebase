@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "name": "coinagerie-cli",
+  "projectType": "library",
+  "sourceRoot": "projects/ic-suite/coinagerie/coinagerie-cli",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "layer:cli",
+    "name:coinagerie-cli",
+    "type:package"
+  ],
+  "targets": {
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "spell-check": {},
+    "start": {
+      "cache": false,
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --import @swc-node/register/esm-register projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts",
+        "cwd": "{workspaceRoot}",
+        "env": {
+          "SWC_NODE_PROJECT": "projects/ic-suite/coinagerie/coinagerie-cli/tsconfig.json"
+        }
+      }
+    },
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "vitest": {
+      "inputs": [
+        "...",
+        "{workspaceRoot}/configuration/vite.library.config.ts",
+        {
+          "externalDependencies": ["vite"]
+        }
+      ]
+    },
+    "yaml-lint": {}
+  }
+}

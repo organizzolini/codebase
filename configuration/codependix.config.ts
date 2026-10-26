@@ -861,6 +861,10 @@ const codependixConfiguration: CodependixConfiguration = {
         export: "MainModule",
         file: "src/codometer-cli.module.ts",
       },
+      "coinagerie-cli": {
+        export: "MainModule",
+        file: "src/coinagerie-cli.module.ts",
+      },
       "conformetry-cli": {
         export: "MainModule",
         file: "src/conformetry-cli.module.ts",
