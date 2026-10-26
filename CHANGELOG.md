@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.1](https://github.com/organizzolini/codebase/compare/v3.27.0...v3.27.1) (2026-10-26)
+
+### ♻️ Code Refactoring
+
+* **caelundas:** ♻️ rename categories to tags ([#1717](https://github.com/organizzolini/codebase/issues/1717)) ([686f56b](https://github.com/organizzolini/codebase/commit/686f56bb7ac567c5a764dd7201217c7bade76007)), closes [#1608](https://github.com/organizzolini/codebase/issues/1608) [#1609](https://github.com/organizzolini/codebase/issues/1609) [#1610](https://github.com/organizzolini/codebase/issues/1610) [#1611](https://github.com/organizzolini/codebase/issues/1611) [#1601](https://github.com/organizzolini/codebase/issues/1601)
+
 ## [3.27.0](https://github.com/organizzolini/codebase/compare/v3.26.9...v3.27.0) (2026-10-26)
 
 ### ✨ Features
