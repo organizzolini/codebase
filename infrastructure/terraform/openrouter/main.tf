@@ -9,7 +9,7 @@ terraform {
   # There is no state lock: CI serializes applies with a workflow concurrency
   # group instead.
   backend "s3" {
-    key    = "openrouter/terraform.tfstate"
+    key    = "codebase/terraform.tfstate"
     region = "us-east-1"
 
     skip_credentials_validation = true
