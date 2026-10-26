@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.9](https://github.com/organizzolini/codebase/compare/v3.26.8...v3.26.9) (2026-10-26)
+
+### 🐛 Bug Fixes
+
+* **documentation,configuration:** 🐛 refresh documentation on a free OpenRouter model ([#1806](https://github.com/organizzolini/codebase/issues/1806)) ([ee6a4f0](https://github.com/organizzolini/codebase/commit/ee6a4f0415481faf47ac1d454bdf424dd831cb5e))
+
 ## [3.26.8](https://github.com/organizzolini/codebase/compare/v3.26.7...v3.26.8) (2026-10-26)
 
 ### 🐛 Bug Fixes
