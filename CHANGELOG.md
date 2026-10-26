@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.29.0](https://github.com/organizzolini/codebase/compare/v3.28.0...v3.29.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ classify events across tag dimensions ([#1722](https://github.com/organizzolini/codebase/issues/1722)) ([67c63cc](https://github.com/organizzolini/codebase/commit/67c63cc529492c3f00767607e78d346b1b6025e7)), closes [#1618](https://github.com/organizzolini/codebase/issues/1618) [#1619](https://github.com/organizzolini/codebase/issues/1619) [#1620](https://github.com/organizzolini/codebase/issues/1620) [#1621](https://github.com/organizzolini/codebase/issues/1621) [#1622](https://github.com/organizzolini/codebase/issues/1622) [#1623](https://github.com/organizzolini/codebase/issues/1623) [#1624](https://github.com/organizzolini/codebase/issues/1624) [#1625](https://github.com/organizzolini/codebase/issues/1625) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1719](https://github.com/organizzolini/codebase/issues/1719) [#1659](https://github.com/organizzolini/codebase/issues/1659)
+
 ## [3.28.0](https://github.com/organizzolini/codebase/compare/v3.27.1...v3.28.0) (2026-10-26)
 
 ### ✨ Features
