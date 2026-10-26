@@ -4432,6 +4432,7 @@ graph LR
   file_lexico_entities_src_modules_database_database_service_unit_test_ts["lexico-entities/src/modules/database/database.service.unit.test.ts"]
   file_lexico_entities_src_modules_database_database_types_ts["lexico-entities/src/modules/database/database.types.ts"]
   file_lexico_entities_src_modules_database_migrations_1791164926316_migration_ts["lexico-entities/src/modules/database/migrations/1791164926316-migration.ts"]
+  file_lexico_entities_src_modules_database_migrations_1792000000000_migration_ts["lexico-entities/src/modules/database/migrations/1792000000000-migration.ts"]
   file_lexico_entities_src_modules_entities_dictionary_form_adjectival_form_entity_ts["lexico-entities/src/modules/entities/dictionary/form/adjectival-form.entity.ts"]
   file_lexico_entities_src_modules_entities_dictionary_form_adverb_form_entity_ts["lexico-entities/src/modules/entities/dictionary/form/adverb-form.entity.ts"]
   file_lexico_entities_src_modules_entities_dictionary_form_finite_verb_form_entity_ts["lexico-entities/src/modules/entities/dictionary/form/finite-verb-form.entity.ts"]
@@ -10382,6 +10383,7 @@ graph LR
   file_lexico_cli_src_modules_words_words_service_unit_test_ts --> file_lexico_cli_testing_mocks_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_database_constants_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_migrations_1791164926316_migration_ts
+  file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_database_migrations_1792000000000_migration_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_adjectival_form_entity_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_adverb_form_entity_ts
   file_lexico_entities_src_modules_database_data_source_constants_ts --> file_lexico_entities_src_modules_entities_dictionary_form_finite_verb_form_entity_ts
@@ -13863,23 +13865,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-143-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27804-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27811-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-838-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-751-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6350-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-963-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-4566-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6356-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-964-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-4572-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-2794-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-912-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-564-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15230-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15236-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13892,10 +13894,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6779 |
+| Callables | 6785 |
 | Files | 2046 |
-| Calls traced | 7513 |
-| Call stacks | 1855 |
+| Calls traced | 7518 |
+| Call stacks | 1856 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
 | Unfollowable calls | 369 |

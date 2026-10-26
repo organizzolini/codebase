@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.0](https://github.com/organizzolini/codebase/compare/v3.26.9...v3.27.0) (2026-10-26)
+
+### ✨ Features
+
+* **lexico:** ✨ rank fuzzy Latin matches by edit distance ([#1854](https://github.com/organizzolini/codebase/issues/1854)) ([12dc7cc](https://github.com/organizzolini/codebase/commit/12dc7cc37055bc701400beee664695e3c64eaceb))
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh OpenWiki ([#1858](https://github.com/organizzolini/codebase/issues/1858)) ([f2ea39a](https://github.com/organizzolini/codebase/commit/f2ea39af591d1192ef9edb5c3d7eb3c730f4e5a9))
+
 ## [3.26.9](https://github.com/organizzolini/codebase/compare/v3.26.8...v3.26.9) (2026-10-26)
 
 ### 🐛 Bug Fixes
