@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 
+import { PluginModule } from "./modules/plugin/plugin.module";
+
 /**
  * Root module of the plugin's application context.
  *
@@ -9,8 +11,8 @@ import { Module } from "@nestjs/common";
  */
 @Module({
   controllers: [],
-  exports: [],
-  imports: [],
+  exports: [PluginModule],
+  imports: [PluginModule],
   providers: [],
 })
 export class MainModule {}
