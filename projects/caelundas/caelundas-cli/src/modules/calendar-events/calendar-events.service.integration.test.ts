@@ -11,7 +11,6 @@ import { DatabaseModule } from "../database/database.module";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { Tag } from "../database/entities/tag.entity";
 import { Migration1792416080531 } from "../database/migrations/1792416080531-migration";
-import { Migration1792854507000 } from "../database/migrations/1792854507000-migration";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
@@ -74,7 +73,7 @@ describe("calendar events service integration", () => {
       database: DatabaseModule,
       entities: DATABASE_ENTITIES,
       imports: [LoggerModule, CalendarEventsModule],
-      migrations: [Migration1792416080531, Migration1792854507000],
+      migrations: [Migration1792416080531],
       project: "caelundas",
       validate: (config) => environmentSchema.parse(config),
     });

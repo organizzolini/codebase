@@ -16,7 +16,7 @@ create table calendar_events (
     "start" timestamp with time zone not null,
     "summary" text not null,
     timezone text not null,
-    constraint calendar_events_natural_key unique ("summary", "start", latitude, longitude),
+    constraint calendar_events_natural_key unique ("summary", "start", "end", latitude, longitude),
     constraint "PK_faf5391d232322a87cdd1c6f30c" primary key (id)
 );
 comment on column calendar_events.id is 'Primary key, a uuidv7 the database assigns on insert';
