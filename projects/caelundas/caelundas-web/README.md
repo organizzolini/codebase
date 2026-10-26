@@ -26,13 +26,13 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 5 |
-| Files | 9 |
-| Calls traced | 0 |
-| Call stacks | 0 |
-| Deepest stack | 0 |
+| Callables | 66 |
+| Files | 28 |
+| Calls traced | 57 |
+| Call stacks | 11 |
+| Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 0 |
+| Unfollowable calls | 10 |
 
 ### Limits
 
@@ -45,11 +45,167 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-None.
+**1. `EventsCalendar`** — depth 6 · orphan-root
+
+```text
+🚀 EventsCalendar(properties: Readonly<EventsCalendarProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:39]
+   ↳ Renders the month view under a single toolbar row, filling its container.
+  └─> useMemo(…)(): Map<string, string> [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:50]
+    └─> map(…)(event: CalendarEventRecord): [string, string] [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:50]
+      └─> describeEvent(event: CalendarEventRecord): string [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:104]
+         ↳ Spells out an event's tag paths and its duration.
+        └─> formatDuration(minutes: number): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:34]
+           ↳ Names a duration in days, hours, and minutes, leaving out any unit that is zero, or "Instant" for an event with no…
+          └─> map(…)([count, unit]: [number, DurationUnit]): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:47]
+```
+
+**2. `describeDataset`** — depth ≥ 5 · orphan-root
+
+```text
+🚀 describeDataset(): Promise<EventsDataset | null> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:29]
+  └─> map(…)(row: Readonly<Record<string, unknown>>): EventsDataset [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:32]
+    └─> toDataset(row: SqlRow): EventsDataset [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:72]
+       ↳ Maps the dataset summary row.
+      └─> readDate(row: SqlRow, column: string): Date [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:49]
+         ↳ Reads an ISO 8601 text column as an instant.
+        └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:56]
+           ↳ Reads a column the schema declares `not null` as text.
+```
+
+**3. `findEvents`** — depth ≥ 5 · orphan-root
+
+```text
+🚀 findEvents(query: EventsQuery): Promise<CalendarEventRecord[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:35]
+  └─> map(…)(row: Readonly<Record<string, unknown>>): CalendarEventRecord [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:41]
+    └─> toEventRecord(row: SqlRow): CalendarEventRecord [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:85]
+       ↳ Maps one event row, whose tags arrive as a JSON array, to the calendar's event shape.
+      └─> readDate(row: SqlRow, column: string): Date [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:49]
+         ↳ Reads an ISO 8601 text column as an instant.
+        └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:56]
+           ↳ Reads a column the schema declares `not null` as text.
+```
+
+<details>
+<summary>8 more call stacks</summary>
+
+**4. `loader`** — depth ≥ 4 · orphan-root
+
+```text
+🚀 loader(…): Promise<CalendarData> [projects/caelundas/caelundas-web/src/routes/index.tsx:38]
+  └─> loadCalendarMonth(database: EventsDatabase, date: string | undefined): Promise<CalendarData> [projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:46]
+     ↳ Reads the events around the day a search parameter names, together with the dataset's span and zone.
+    └─> parseCalendarDate(date: string | undefined, today: Date): Date [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:43]
+       ↳ Reads a `YYYY-MM-DD` search parameter as the day the calendar shows, defaulting to today's date where the page is open.
+      └─> anchorDay(year: number, monthIndex: number, day: number): Date [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:57]
+         ↳ Anchors a calendar day at noon UTC, which falls on that same day in every zone from UTC-11 to UTC+11.
+```
+
+**5. `select`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 select(…): Promise<Readonly<Record<string, unknown>>[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:49]
+  └─> startWorker(): Worker [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:111]
+     ↳ Starts the worker that owns the sqlite-wasm database.
+    └─> UnsupportedBrowserError.constructor(): UnsupportedBrowserError [projects/caelundas/caelundas-web/src/lib/events-database/events-database.errors.ts:7]
+```
+
+**6. `getRouter`** — depth 3 · orphan-root
+
+```text
+🚀 getRouter(): Router<typeof routeTree> [projects/caelundas/caelundas-web/src/router.tsx:10]
+   ↳ Creates the application router, which TanStack Start calls once per request on the server and once on the client.
+  └─> createBrowserEventsDatabase(): EventsDatabase [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:35]
+     ↳ The events database the browser reads, served by a sqlite-wasm worker.
+    └─> createEventsDatabase(executor: SqlExecutor): EventsDatabase [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:27]
+       ↳ Builds the events database over any executor.
+```
+
+**7. `addEventListener(…)`** — depth 3 · orphan-root
+
+```text
+🚀 addEventListener(…)(event: MessageEvent<WorkerRequest>): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:70]
+  └─> then(…)(rows: Readonly<Record<string, unknown>>[]): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:74]
+    └─> respond(response: WorkerResponse): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:42]
+       ↳ Answers the page.
+```
+
+**8. `OutsideDataset`** — depth 2 · orphan-root
+
+```text
+🚀 OutsideDataset(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:91]
+   ↳ Names the dates the data covers and offers to jump to the nearest of them.
+  └─> format(date: Date): string [projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:99]
+```
+
+**9. `CalendarSkeleton`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarSkeleton(properties: Readonly<CalendarSkeletonProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:27]
+   ↳ Renders the month view's shape, a toolbar row over a grid of days, while the events database loads.
+  └─> map(…)(key: string): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:56]
+```
+
+**10. `CalendarToolbar`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarToolbar(properties: Readonly<CalendarToolbarProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-toolbar.tsx:28]
+   ↳ Renders the calendar's one toolbar row: today, previous and next, the period's title, and the view selector.
+  └─> map(…)(availableView: CalendarView): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-toolbar.tsx:85]
+```
+
+**11. `handleDateChange`** — depth 2 · orphan-root
+
+```text
+🚀 handleDateChange(date: Date): void [projects/caelundas/caelundas-web/src/routes/index.tsx:79]
+  └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:16]
+     ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
+```
+
+</details>
 
 ### Breadth
 
-None.
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `select` | 4 | `startWorker`, `listen`, `addEventListener(…)`, `anonymous` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:49` |
+| `loadCalendarMonth` | 3 | `parseCalendarDate`, `getMonthWindow`, `describeEmptiness` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:46` |
+| `EventsCalendar` | 3 | `useMemo(…)`, `useMemo(…)`, `useCallback(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:39` |
+
+<details>
+<summary>28 more callables</summary>
+
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `toEventRecord` | 3 | `readText`, `readRequiredText`, `readDate` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:85` |
+| `addEventListener(…)` | 3 | `then(…)`, `then(…)`, `select` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:70` |
+| `formatDuration` | 2 | `map(…)`, `filter(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:34` |
+| `describeEvent` | 2 | `map(…)`, `formatDuration` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:104` |
+| `toDataset` | 2 | `readDate`, `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:72` |
+| `createBrowserEventsDatabase` | 2 | `createEventsDatabase`, `createWorkerSqlExecutor` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:35` |
+| `select` | 2 | `catch(…)`, `openDatabase` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:49` |
+| `parseCalendarDate` | 1 | `anchorDay` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:43` |
+| `OutsideDataset` | 1 | `format` | `projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:91` |
+| `CalendarSkeleton` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:27` |
+| `CalendarToolbar` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-toolbar.tsx:28` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:46` |
+| `map(…)` | 1 | `toCalendarEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:46` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:50` |
+| `map(…)` | 1 | `describeEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:50` |
+| `loader` | 1 | `loadCalendarMonth` | `projects/caelundas/caelundas-web/src/routes/index.tsx:38` |
+| `handleDateChange` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/routes/index.tsx:79` |
+| `describeDataset` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:29` |
+| `map(…)` | 1 | `toDataset` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:32` |
+| `findEvents` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:35` |
+| `map(…)` | 1 | `toEventRecord` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:41` |
+| `readDate` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:49` |
+| `addEventListener(…)` | 1 | `rejectAll` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:53` |
+| `listen` | 1 | `addEventListener(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:79` |
+| `startWorker` | 1 | `UnsupportedBrowserError.constructor` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:111` |
+| `getRouter` | 1 | `createBrowserEventsDatabase` | `projects/caelundas/caelundas-web/src/router.tsx:10` |
+| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:74` |
+| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:77` |
+
+</details>
 <!-- callidescope:end -->
 
 <!-- codometer:start -->
@@ -58,36 +214,36 @@ None.
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-365-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-16.48_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-4-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-13-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-2150-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-79.64_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-38-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-13-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-8-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-38-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-27-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-9-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-79-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-1-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-10-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-11-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-8-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-3-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-8-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-33-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-10-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-43-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-57-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-6-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-16-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-1-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-104-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-4-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-81-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-27-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-83-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-109-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-51-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-199-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-333-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-1-ca8a04?style=flat-square)
 
 ### Python
@@ -108,16 +264,16 @@ None.
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-123-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-32-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-8-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-83-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-70-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-5-0ea5e9?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-152-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-103-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-85-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-30-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-116-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-38-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-144-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
@@ -160,17 +316,17 @@ None.
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-0-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-0-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-0-7c3aed?style=flat-square)
-![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-0-22c55e?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-3-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-200-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-15-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-5-22c55e?style=flat-square)
 ![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
 ![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-0-0284c7?style=flat-square)
-![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-10-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-19-64748b?style=flat-square)
 
 ### HCL
 
@@ -187,11 +343,11 @@ None.
 ### CSS
 
 ![CSS Files](https://img.shields.io/badge/CSS_Files-1-264de4?style=flat-square)
-![CSS Lines](https://img.shields.io/badge/CSS_Lines-2-2965f1?style=flat-square)
+![CSS Lines](https://img.shields.io/badge/CSS_Lines-3-2965f1?style=flat-square)
 ![CSS Rules](https://img.shields.io/badge/CSS_Rules-0-7c3aed?style=flat-square)
 ![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-0-8b5cf6?style=flat-square)
 ![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-0-0284c7?style=flat-square)
-![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-1-f97316?style=flat-square)
+![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-2-f97316?style=flat-square)
 ![CSS Media Queries](https://img.shields.io/badge/CSS_Media_Queries-0-ea580c?style=flat-square)
 ![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-0-16a34a?style=flat-square)
 ![CSS Comments](https://img.shields.io/badge/CSS_Comments-0-64748b?style=flat-square)
@@ -201,8 +357,8 @@ None.
 ![Module Files](https://img.shields.io/badge/Module_Files-0-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-0-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-0-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-0-db2777?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-1-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-3-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
 ![Unit Tests](https://img.shields.io/badge/Unit_Tests-0-ca8a04?style=flat-square)
@@ -243,23 +399,23 @@ None.
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-122-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-194-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-4-8b5cf6?style=flat-square)
+![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-7-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-17-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-2-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-8-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-35-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-4-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-21-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-0-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-0-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-6-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-5-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-28-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-6-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-56-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

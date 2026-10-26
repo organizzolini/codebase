@@ -353,6 +353,7 @@ graph LR
   validation["validation"]
   caelundas_cli --> observability
   caelundas_cli --> persistence
+  caelundas_web --> presentation
   callidescope_cli --> callidescope_configuration
   callidescope_cli --> callidescope_core
   callidescope_cli --> callidescope_graph
@@ -2313,12 +2314,37 @@ graph LR
   file_caelundas_web_callidescope_config_ts["caelundas-web/callidescope.config.ts"]
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
   file_caelundas_web_eslint_config_ts["caelundas-web/eslint.config.ts"]
+  file_caelundas_web_scripts_build_events_database_ts["caelundas-web/scripts/build-events-database.ts"]
   file_caelundas_web_src_client_tsx["caelundas-web/src/client.tsx"]
+  file_caelundas_web_src_components_calendar_empty_tsx["caelundas-web/src/components/calendar-empty.tsx"]
+  file_caelundas_web_src_components_calendar_empty_unit_test_tsx["caelundas-web/src/components/calendar-empty.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_error_tsx["caelundas-web/src/components/calendar-error.tsx"]
+  file_caelundas_web_src_components_calendar_error_unit_test_tsx["caelundas-web/src/components/calendar-error.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_skeleton_tsx["caelundas-web/src/components/calendar-skeleton.tsx"]
+  file_caelundas_web_src_components_calendar_skeleton_unit_test_tsx["caelundas-web/src/components/calendar-skeleton.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_toolbar_tsx["caelundas-web/src/components/calendar-toolbar.tsx"]
+  file_caelundas_web_src_components_calendar_toolbar_unit_test_tsx["caelundas-web/src/components/calendar-toolbar.unit.test.tsx"]
+  file_caelundas_web_src_components_events_calendar_tsx["caelundas-web/src/components/events-calendar.tsx"]
+  file_caelundas_web_src_components_events_calendar_unit_test_tsx["caelundas-web/src/components/events-calendar.unit.test.tsx"]
+  file_caelundas_web_src_lib_calendar_calendar_events_ts["caelundas-web/src/lib/calendar/calendar-events.ts"]
+  file_caelundas_web_src_lib_calendar_calendar_format_ts["caelundas-web/src/lib/calendar/calendar-format.ts"]
+  file_caelundas_web_src_lib_calendar_calendar_loader_ts["caelundas-web/src/lib/calendar/calendar-loader.ts"]
+  file_caelundas_web_src_lib_calendar_calendar_search_ts["caelundas-web/src/lib/calendar/calendar-search.ts"]
+  file_caelundas_web_src_lib_calendar_calendar_window_ts["caelundas-web/src/lib/calendar/calendar-window.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_browser_ts["caelundas-web/src/lib/events-database/events-database.browser.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_browser_types_ts["caelundas-web/src/lib/events-database/events-database.browser.types.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_constants_ts["caelundas-web/src/lib/events-database/events-database.constants.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_errors_ts["caelundas-web/src/lib/events-database/events-database.errors.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_ts["caelundas-web/src/lib/events-database/events-database.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_types_ts["caelundas-web/src/lib/events-database/events-database.types.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_worker_ts["caelundas-web/src/lib/events-database/events-database.worker.ts"]
   file_caelundas_web_src_router_tsx["caelundas-web/src/router.tsx"]
+  file_caelundas_web_src_router_types_ts["caelundas-web/src/router.types.ts"]
   file_caelundas_web_src_routes___root_tsx["caelundas-web/src/routes/__root.tsx"]
   file_caelundas_web_src_routes_index_integration_test_tsx["caelundas-web/src/routes/index.integration.test.tsx"]
   file_caelundas_web_src_routes_index_tsx["caelundas-web/src/routes/index.tsx"]
   file_caelundas_web_src_routeTree_gen_ts["caelundas-web/src/routeTree.gen.ts"]
+  file_caelundas_web_testing_events_database_ts["caelundas-web/testing/events-database.ts"]
   file_caelundas_web_testing_render_route_tsx["caelundas-web/testing/render-route.tsx"]
   file_caelundas_web_testing_setup_ts["caelundas-web/testing/setup.ts"]
   file_caelundas_web_vite_config_mts["caelundas-web/vite.config.mts"]
@@ -6959,13 +6985,55 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
+  file_caelundas_web_src_components_calendar_empty_tsx --> file_caelundas_web_src_lib_calendar_calendar_loader_ts
+  file_caelundas_web_src_components_calendar_empty_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_components_calendar_empty_unit_test_tsx --> file_caelundas_web_src_components_calendar_empty_tsx
+  file_caelundas_web_src_components_calendar_error_tsx --> file_caelundas_web_src_lib_events_database_events_database_errors_ts
+  file_caelundas_web_src_components_calendar_error_unit_test_tsx --> file_caelundas_web_src_components_calendar_error_tsx
+  file_caelundas_web_src_components_calendar_skeleton_unit_test_tsx --> file_caelundas_web_src_components_calendar_skeleton_tsx
+  file_caelundas_web_src_components_calendar_toolbar_unit_test_tsx --> file_caelundas_web_src_components_calendar_toolbar_tsx
+  file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_components_calendar_toolbar_tsx
+  file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_lib_calendar_calendar_events_ts
+  file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_lib_calendar_calendar_format_ts
+  file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_components_events_calendar_unit_test_tsx --> file_caelundas_web_src_components_events_calendar_tsx
+  file_caelundas_web_src_lib_calendar_calendar_events_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_calendar_calendar_loader_ts --> file_caelundas_web_src_lib_calendar_calendar_window_ts
+  file_caelundas_web_src_lib_calendar_calendar_loader_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_calendar_calendar_window_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_browser_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_errors_ts
+  file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_ts
+  file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_browser_types_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_constants_ts
+  file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_worker_ts --> file_caelundas_web_src_lib_events_database_events_database_browser_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_worker_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_router_tsx --> file_caelundas_web_src_lib_events_database_events_database_browser_ts
   file_caelundas_web_src_router_tsx --> file_caelundas_web_src_routeTree_gen_ts
+  file_caelundas_web_src_router_types_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_routes___root_tsx --> file_caelundas_web_src_router_types_ts
+  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_lib_events_database_events_database_errors_ts
+  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_routes_index_tsx
+  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_events_database_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_empty_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_error_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_skeleton_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_events_calendar_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_calendar_calendar_loader_ts
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_calendar_calendar_search_ts
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_calendar_calendar_window_ts
   file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_router_tsx
   file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_routes___root_tsx
   file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_routes_index_tsx
+  file_caelundas_web_testing_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_ts
+  file_caelundas_web_testing_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_src_router_tsx
+  file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_testing_events_database_ts
   file_callidescope_cli_src_callidescope_cli_main_end_to_end_test_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
   file_callidescope_cli_src_callidescope_cli_main_ts --> file_callidescope_cli_src_callidescope_cli_module_ts
   file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
@@ -13801,7 +13869,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-47-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-7433-ca8a04?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-7436-ca8a04?style=flat-square)
 ![JSON Objects](https://img.shields.io/badge/JSON_Objects-1140-7c3aed?style=flat-square)
 ![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-419-8b5cf6?style=flat-square)
 ![JSON Properties](https://img.shields.io/badge/JSON_Properties-2743-0284c7?style=flat-square)
@@ -13816,12 +13884,12 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3221-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3222-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-438-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
-![YAML Keys](https://img.shields.io/badge/YAML_Keys-1524-0284c7?style=flat-square)
-![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3068-16a34a?style=flat-square)
+![YAML Keys](https://img.shields.io/badge/YAML_Keys-1525-0284c7?style=flat-square)
+![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3070-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
 ![YAML Comments](https://img.shields.io/badge/YAML_Comments-618-64748b?style=flat-square)
@@ -13965,19 +14033,20 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6869 |
-| Files | 2056 |
-| Calls traced | 7585 |
-| Call stacks | 1888 |
+| Callables | 6930 |
+| Files | 2075 |
+| Calls traced | 7642 |
+| Call stacks | 1906 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 370 |
+| Unfollowable calls | 380 |
 
 ### Projects
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `integration` | 6 | 6 | 0 | 8 |
+| `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 4 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/common/persistence` | 7 | 7 | 0 | 7 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
@@ -14010,7 +14079,6 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | `projects/ic-suite/codependix/codependix-configuration` | 2 | 7 | 5 | 4 |
 | `projects/ic-suite/codependix/codependix-nestjs-modules` | 0 | 5 | 5 | 7 |
 | `projects/lexico/lexico-web` | 4 | 9 | 5 | 8 |
-| `projects/caelundas/caelundas-web` | 0 | 6 | 6 | 0 |
 | `projects/ic-suite/callidescope/callidescope-graph` | 5 | 11 | 6 | 8 |
 | `projects/ic-suite/codometer/codometer-configuration` | 3 | 9 | 6 | 4 |
 | `projects/ic-suite/codometer/codometer-languages` | 5 | 11 | 6 | 12 |
@@ -14031,11 +14099,11 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 | Headroom | Projects |
 | --- | --- |
 | over limit | 0 |
-| 0 — at limit | 17 |
+| 0 — at limit | 18 |
 | 1 | 1 |
 | 2–3 | 3 |
 | 4+ | 13 |
-| no stacks | 14 |
+| no stacks | 13 |
 
 ### Call stacks over the depth limit (0)
 

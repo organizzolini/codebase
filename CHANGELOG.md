@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.30.0](https://github.com/organizzolini/codebase/compare/v3.29.0...v3.30.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ show events in a static month calendar ([#1721](https://github.com/organizzolini/codebase/issues/1721)) ([4a5fade](https://github.com/organizzolini/codebase/commit/4a5fade6fc08f00588f7bfbec2a3f36cbbc139e0)), closes [#1626](https://github.com/organizzolini/codebase/issues/1626) [#1627](https://github.com/organizzolini/codebase/issues/1627) [#1628](https://github.com/organizzolini/codebase/issues/1628) [#1629](https://github.com/organizzolini/codebase/issues/1629) [#1630](https://github.com/organizzolini/codebase/issues/1630) [#1631](https://github.com/organizzolini/codebase/issues/1631) [#1632](https://github.com/organizzolini/codebase/issues/1632) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1633](https://github.com/organizzolini/codebase/issues/1633)
+
 ## [3.29.0](https://github.com/organizzolini/codebase/compare/v3.28.0...v3.29.0) (2026-10-26)
 
 ### ✨ Features
