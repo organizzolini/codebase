@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.33.0](https://github.com/organizzolini/codebase/compare/v3.32.0...v3.33.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ group events and add the timeline ([#1725](https://github.com/organizzolini/codebase/issues/1725)) ([e80d1b0](https://github.com/organizzolini/codebase/commit/e80d1b08c81f245d18570a92e0c02f515c229fe7)), closes [#1647](https://github.com/organizzolini/codebase/issues/1647) [#1648](https://github.com/organizzolini/codebase/issues/1648) [#1649](https://github.com/organizzolini/codebase/issues/1649) [#1650](https://github.com/organizzolini/codebase/issues/1650) [#1651](https://github.com/organizzolini/codebase/issues/1651) [#1652](https://github.com/organizzolini/codebase/issues/1652) [#1653](https://github.com/organizzolini/codebase/issues/1653) [#1646](https://github.com/organizzolini/codebase/issues/1646) [#1647](https://github.com/organizzolini/codebase/issues/1647) [#1648](https://github.com/organizzolini/codebase/issues/1648) [#1649](https://github.com/organizzolini/codebase/issues/1649) [#1650](https://github.com/organizzolini/codebase/issues/1650) [#1651](https://github.com/organizzolini/codebase/issues/1651) [#1652](https://github.com/organizzolini/codebase/issues/1652) [#1653](https://github.com/organizzolini/codebase/issues/1653) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1724](https://github.com/organizzolini/codebase/issues/1724)
+
+## [3.32.0](https://github.com/organizzolini/codebase/compare/v3.31.0...v3.32.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ add week, day, three-day and agenda views ([#1724](https://github.com/organizzolini/codebase/issues/1724)) ([398cc3e](https://github.com/organizzolini/codebase/commit/398cc3e3848729e6783981923fb0ecaae5c51357)), closes [#1641](https://github.com/organizzolini/codebase/issues/1641) [#1642](https://github.com/organizzolini/codebase/issues/1642) [#1643](https://github.com/organizzolini/codebase/issues/1643) [#1644](https://github.com/organizzolini/codebase/issues/1644) [#1645](https://github.com/organizzolini/codebase/issues/1645) [#1633](https://github.com/organizzolini/codebase/issues/1633) [#1640](https://github.com/organizzolini/codebase/issues/1640) [#1641](https://github.com/organizzolini/codebase/issues/1641) [#1642](https://github.com/organizzolini/codebase/issues/1642) [#1643](https://github.com/organizzolini/codebase/issues/1643) [#1644](https://github.com/organizzolini/codebase/issues/1644) [#1645](https://github.com/organizzolini/codebase/issues/1645) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1723](https://github.com/organizzolini/codebase/issues/1723) [#1633](https://github.com/organizzolini/codebase/issues/1633)
+
+## [3.31.0](https://github.com/organizzolini/codebase/compare/v3.30.0...v3.31.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ filter events with nested and/or rules ([#1723](https://github.com/organizzolini/codebase/issues/1723)) ([5ca8c3d](https://github.com/organizzolini/codebase/commit/5ca8c3d889aa03b8355f593a2ee2b275a2455706)), closes [#1638](https://github.com/organizzolini/codebase/issues/1638) [#1633](https://github.com/organizzolini/codebase/issues/1633) [#1634](https://github.com/organizzolini/codebase/issues/1634) [#1635](https://github.com/organizzolini/codebase/issues/1635) [#1636](https://github.com/organizzolini/codebase/issues/1636) [#1637](https://github.com/organizzolini/codebase/issues/1637) [#1638](https://github.com/organizzolini/codebase/issues/1638) [#1639](https://github.com/organizzolini/codebase/issues/1639) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1721](https://github.com/organizzolini/codebase/issues/1721) [#1626](https://github.com/organizzolini/codebase/issues/1626) [#1640](https://github.com/organizzolini/codebase/issues/1640)
+
+## [3.30.0](https://github.com/organizzolini/codebase/compare/v3.29.0...v3.30.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ show events in a static month calendar ([#1721](https://github.com/organizzolini/codebase/issues/1721)) ([4a5fade](https://github.com/organizzolini/codebase/commit/4a5fade6fc08f00588f7bfbec2a3f36cbbc139e0)), closes [#1626](https://github.com/organizzolini/codebase/issues/1626) [#1627](https://github.com/organizzolini/codebase/issues/1627) [#1628](https://github.com/organizzolini/codebase/issues/1628) [#1629](https://github.com/organizzolini/codebase/issues/1629) [#1630](https://github.com/organizzolini/codebase/issues/1630) [#1631](https://github.com/organizzolini/codebase/issues/1631) [#1632](https://github.com/organizzolini/codebase/issues/1632) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1633](https://github.com/organizzolini/codebase/issues/1633)
+
+## [3.29.0](https://github.com/organizzolini/codebase/compare/v3.28.0...v3.29.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ classify events across tag dimensions ([#1722](https://github.com/organizzolini/codebase/issues/1722)) ([67c63cc](https://github.com/organizzolini/codebase/commit/67c63cc529492c3f00767607e78d346b1b6025e7)), closes [#1618](https://github.com/organizzolini/codebase/issues/1618) [#1619](https://github.com/organizzolini/codebase/issues/1619) [#1620](https://github.com/organizzolini/codebase/issues/1620) [#1621](https://github.com/organizzolini/codebase/issues/1621) [#1622](https://github.com/organizzolini/codebase/issues/1622) [#1623](https://github.com/organizzolini/codebase/issues/1623) [#1624](https://github.com/organizzolini/codebase/issues/1624) [#1625](https://github.com/organizzolini/codebase/issues/1625) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1719](https://github.com/organizzolini/codebase/issues/1719) [#1659](https://github.com/organizzolini/codebase/issues/1659)
+
+## [3.28.0](https://github.com/organizzolini/codebase/compare/v3.27.1...v3.28.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ store event tags as a tree and keep each event's timezone ([#1719](https://github.com/organizzolini/codebase/issues/1719)) ([03304e4](https://github.com/organizzolini/codebase/commit/03304e42584ce36214f63e647e592d84f03660a4)), closes [#1717](https://github.com/organizzolini/codebase/issues/1717) [#1612](https://github.com/organizzolini/codebase/issues/1612) [#1613](https://github.com/organizzolini/codebase/issues/1613) [#1614](https://github.com/organizzolini/codebase/issues/1614) [#1615](https://github.com/organizzolini/codebase/issues/1615) [#1616](https://github.com/organizzolini/codebase/issues/1616) [#1617](https://github.com/organizzolini/codebase/issues/1617) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1717](https://github.com/organizzolini/codebase/issues/1717) [#1618](https://github.com/organizzolini/codebase/issues/1618)
+
+## [3.27.1](https://github.com/organizzolini/codebase/compare/v3.27.0...v3.27.1) (2026-10-26)
+
+### ♻️ Code Refactoring
+
+* **caelundas:** ♻️ rename categories to tags ([#1717](https://github.com/organizzolini/codebase/issues/1717)) ([686f56b](https://github.com/organizzolini/codebase/commit/686f56bb7ac567c5a764dd7201217c7bade76007)), closes [#1608](https://github.com/organizzolini/codebase/issues/1608) [#1609](https://github.com/organizzolini/codebase/issues/1609) [#1610](https://github.com/organizzolini/codebase/issues/1610) [#1611](https://github.com/organizzolini/codebase/issues/1611) [#1601](https://github.com/organizzolini/codebase/issues/1601)
+
 ## [3.27.0](https://github.com/organizzolini/codebase/compare/v3.26.9...v3.27.0) (2026-10-26)
 
 ### ✨ Features

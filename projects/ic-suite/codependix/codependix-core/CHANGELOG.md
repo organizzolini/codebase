@@ -1,3 +1,7 @@
+## 0.0.48 (2026-10-26)
+
+This was a version bump only for codependix-core to align it with other projects, there were no code changes.
+
 ## 0.0.47 (2026-10-24)
 
 ### 📦 Build

@@ -59,13 +59,13 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 5 |
-| Files | 9 |
-| Calls traced | 0 |
-| Call stacks | 0 |
-| Deepest stack | 0 |
+| Callables | 310 |
+| Files | 59 |
+| Calls traced | 281 |
+| Call stacks | 40 |
+| Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 0 |
+| Unfollowable calls | 45 |
 
 ### Limits
 
@@ -78,11 +78,566 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-None.
+**1. `CalendarFilters`** — depth ≥ 6 · orphan-root
+
+```text
+🚀 CalendarFilters(properties: Readonly<CalendarFiltersProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:79]
+   ↳ Renders the active filters as chips, then the Filters button with a count of the finished rules, which opens the nested…
+  └─> countActiveEventFilterRules(node: EventFilterNode): number [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tree.ts:46]
+     ↳ Counts the rules in a tree that are finished, which are the ones the query applies, however deeply they are nested.
+    └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:22]
+       ↳ Compiles the ReUI filter tree to one parameterized boolean expression over the derived events view, aliased `e`.
+      └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:69]
+         ↳ Compiles one rule by its field, flipping it when the rule is negated.
+        └─> compileTagRule(operator: string, tagIds: readonly string[]): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:86]
+           ↳ Compiles a rule on a tag field.
+          └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:99]
+```
+
+**2. `CalendarAgenda`** — depth 6 · orphan-root
+
+```text
+🚀 CalendarAgenda(properties: Readonly<CalendarAgendaProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:73]
+   ↳ Renders the agenda: each day that has events as a heading over its events in order, in a list that draws only the rows…
+  └─> useMemo(…)(): AgendaListRow[] [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:89]
+    └─> toGroupedAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:107]
+       ↳ Lays events out as agenda rows in the groups of a grouping: each group's heading, counting the distinct events listed…
+      └─> toAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:76]
+         ↳ Lays events out as agenda rows, a heading for each day that has any and the day's events beneath it in order.
+        └─> getAgendaListing(…): { day: string; ongoing: boolean; } | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:160]
+           ↳ The day the agenda lists an event under, and whether it was already under way then, or `null` when none of its days…
+          └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:62]
+             ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
+```
+
+**3. `CalendarTimeline`** — depth ≥ 6 · orphan-root
+
+```text
+🚀 CalendarTimeline(properties: Readonly<CalendarTimelineProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:110]
+   ↳ Renders the events as a Gantt timeline under the toolbar: a row per group, nested and collapsible as the grouping…
+  └─> useMemo(…)(): TimelineRows [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:140]
+    └─> toTimelineRows(…): TimelineRows [projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:63]
+       ↳ Lays events out as Gantt rows by a grouping.
+      └─> buildEventGroups(…): EventGroupNode[] [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:58]
+         ↳ Groups events into a tree, a level per level of the grouping, from the group keys each event was read with.
+        └─> describeGroup(…): GroupDescription [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:154]
+           ↳ Describes a group for one key: a tag's name and path below its root, a derived value written out, or the level's "No …"…
+          └─> formatDerivedKey(field: string, key: string): string [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:50]
+             ↳ Writes a derived group key the way a heading reads it, such as "Q1 2026", "Week of March 1, 2026", "3 PM" or "Hours";…
+```
+
+<details>
+<summary>37 more call stacks</summary>
+
+**4. `CalendarGrid`** — depth 6 · orphan-root
+
+```text
+🚀 CalendarGrid(…): ReactNode [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:217]
+   ↳ Renders every view but the timeline in the vendored event calendar, under the toolbar it is handed.
+  └─> useMemo(…)(): Map<string, string> [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:244]
+    └─> map(…)(event: CalendarEventRecord): [string, string] [projects/caelundas/caelundas-web/src/components/events-calendar.tsx:244]
+      └─> describeEvent(event: CalendarEventRecord): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:36]
+         ↳ Spells out an event's tag paths and its duration, for the screen readers an event's short label leaves them out for.
+        └─> formatDuration(minutes: number): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:60]
+           ↳ Names a duration in days, hours, and minutes, leaving out any unit that is zero, or "Instant" for an event with no…
+          └─> map(…)([count, unit]: [number, DurationUnit]): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:73]
+```
+
+**5. `loader`** — depth ≥ 6 · orphan-root
+
+```text
+🚀 loader(…): Promise<CalendarData> [projects/caelundas/caelundas-web/src/routes/index.tsx:60]
+  └─> loadCalendar(database: EventsDatabase, search: CalendarSearch): Promise<CalendarData> [projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:85]
+     ↳ Reads the events in the window the search parameters' view and day show, plus a buffer, that pass their filter,…
+    └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:22]
+       ↳ Compiles the ReUI filter tree to one parameterized boolean expression over the derived events view, aliased `e`.
+      └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:69]
+         ↳ Compiles one rule by its field, flipping it when the rule is negated.
+        └─> compileTagRule(operator: string, tagIds: readonly string[]): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:86]
+           ↳ Compiles a rule on a tag field.
+          └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:99]
+```
+
+**6. `handleQueryChange`** — depth ≥ 5 · orphan-root
+
+```text
+🚀 handleQueryChange(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:103]
+  └─> compileEventFilter(node: EventFilterNode | undefined): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:22]
+     ↳ Compiles the ReUI filter tree to one parameterized boolean expression over the derived events view, aliased `e`.
+    └─> compileRule(rule: EventFilterRule): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:69]
+       ↳ Compiles one rule by its field, flipping it when the rule is negated.
+      └─> compileTagRule(operator: string, tagIds: readonly string[]): CompiledEventFilter | null [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:86]
+         ↳ Compiles a rule on a tag field.
+        └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:99]
+```
+
+**7. `CalendarGroupBy`** — depth 5 · orphan-root
+
+```text
+🚀 CalendarGroupBy(properties: Readonly<CalendarGroupByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:53]
+   ↳ Renders the Group by button, naming the grouping, which opens the list of its levels: each a field, a tag root or a…
+  └─> useMemo(…)(): EventGroupField[] [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:65]
+    └─> createEventGroupFields(facets: readonly EventFacet[]): EventGroupField[] [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:30]
+       ↳ The fields the events can be grouped by: one per tag root, in the facets' order, then the periods and the duration…
+      └─> map(…)(facet: EventFacet): { id: string; label: string; levels: string[][]; } [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:33]
+        └─> map(…)(names: string[]): string[] [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:46]
+```
+
+**8. `CalendarOverflowList`** — depth 5 · orphan-root
+
+```text
+🚀 CalendarOverflowList(properties: Readonly<CalendarOverflowListProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:37]
+   ↳ Renders the whole of a month cell's "+N more" day as a list that draws only the rows on screen, so a day with hundreds…
+  └─> useMemo(…)(…): { group?: string | undefined; kind: "event"; ongoing: boolean; record: CalendarEventRecord; }[] [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:46]
+    └─> toAgendaRows(…): AgendaRow[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:76]
+       ↳ Lays events out as agenda rows, a heading for each day that has any and the day's events beneath it in order.
+      └─> getAgendaListing(…): { day: string; ongoing: boolean; } | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:160]
+         ↳ The day the agenda lists an event under, and whether it was already under way then, or `null` when none of its days…
+        └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:62]
+           ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
+```
+
+**9. `IndexPage`** — depth 5 · orphan-root
+
+```text
+🚀 IndexPage(): ReactNode [projects/caelundas/caelundas-web/src/routes/index.tsx:96]
+   ↳ Renders the landing page's heading.
+  └─> useMemo(…)(): EventFilterField[] [projects/caelundas/caelundas-web/src/routes/index.tsx:102]
+    └─> createEventFilterFields(facets: readonly EventFacet[]): EventFilterField[] [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:154]
+       ↳ Builds the filter builder's fields: one per tag root in the database's facets, offering every tag beneath it, then the…
+      └─> toTagField(facet: EventFacet): EventFilterField [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:185]
+         ↳ Builds the field for one tag root.
+        └─> formatEventCount(count: number): string [projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:175]
+           ↳ Names how many events a tag matches.
+```
+
+**10. `describeDataset`** — depth ≥ 5 · orphan-root
+
+```text
+🚀 describeDataset(): Promise<EventsDataset | null> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:52]
+  └─> map(…)(row: Readonly<Record<string, unknown>>): EventsDataset [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:55]
+    └─> toDataset(row: SqlRow): EventsDataset [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:112]
+       ↳ Maps the dataset summary row.
+      └─> readDate(row: SqlRow, column: string): Date [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:89]
+         ↳ Reads an ISO 8601 text column as an instant.
+        └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:96]
+           ↳ Reads a column the schema declares `not null` as text.
+```
+
+**11. `findEvents`** — depth ≥ 5 · orphan-root
+
+```text
+🚀 findEvents(query: EventsQuery): Promise<CalendarEventRecord[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:58]
+  └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:64]
+    └─> toGroupColumns(groups: readonly SqlGroupSource[]): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:177]
+       ↳ The select list's extra columns, one JSON array of group keys per level, named `group_0` onward.
+      └─> map(…)(group: SqlGroupSource, level: number): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:179]
+        └─> replace(…)(): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:180]
+```
+
+**12. `CalendarEventRow`** — depth 4 · orphan-root
+
+```text
+🚀 CalendarEventRow(properties: Readonly<CalendarEventRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-row.tsx:31]
+   ↳ Renders one event as a list row: its time in the data's zone, its color, its name, and beneath that its tags and…
+  └─> describeEvent(event: CalendarEventRecord): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:36]
+     ↳ Spells out an event's tag paths and its duration, for the screen readers an event's short label leaves them out for.
+    └─> formatDuration(minutes: number): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:60]
+       ↳ Names a duration in days, hours, and minutes, leaving out any unit that is zero, or "Instant" for an event with no…
+      └─> map(…)([count, unit]: [number, DurationUnit]): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:73]
+```
+
+**13. `measure`** — depth ≥ 4 · orphan-root
+
+```text
+🚀 measure(): void [projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:335]
+  └─> getVisibleTimelineRows(…): ReadonlySet<string> | null [projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:33]
+     ↳ The ids of the rows on screen, and a few beyond each edge, or `null` while the body has not been laid out and so every…
+    └─> getVirtualWindow(input: VirtualWindowInput): VirtualWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:48]
+       ↳ Picks the rows a viewport scrolled to `scrollTop` shows, plus the overscan on each side, so a list of any length…
+      └─> findFirstRowEndingAfter(offsets: readonly number[], pixel: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:77]
+         ↳ The first row whose bottom edge lies below a pixel, or the row count when none does.
+```
+
+**14. `VirtualList`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 VirtualList<Row>(properties: Readonly<VirtualListProperties<Row>>): ReactNode [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:56]
+   ↳ Renders a vertically scrolling list that draws only the rows in view, plus a few on each side, however long the list…
+  └─> useMemo(…)(): number[] [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:75]
+    └─> getRowOffsets(heights: readonly number[]): number[] [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:31]
+       ↳ Lays rows of the given heights end to end, returning each row's top and, last, the height of them all.
+```
+
+**15. `handleScroll`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 handleScroll(event: UIEvent<HTMLDivElement>): void [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:93]
+  └─> getVirtualWindow(input: VirtualWindowInput): VirtualWindow [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:48]
+     ↳ Picks the rows a viewport scrolled to `scrollTop` shows, plus the overscan on each side, so a list of any length…
+    └─> findFirstRowEndingAfter(offsets: readonly number[], pixel: number): number [projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:77]
+       ↳ The first row whose bottom edge lies below a pixel, or the row count when none does.
+```
+
+**16. `anonymous`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 anonymous(next: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:129]
+  └─> replaceLevel(index: number, level: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:78]
+    └─> flatMap(…)(this: undefined, current: EventGroupLevel, position: number): EventGroupLevel[] [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:80]
+```
+
+**17. `GroupLevelRow`** — depth 3 · orphan-root
+
+```text
+🚀 GroupLevelRow(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:168]
+   ↳ Draws one level of the grouping: its field, its depth for a tag root, and a button that removes it, reporting the…
+  └─> map(…)(names: readonly string[], depth: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:214]
+    └─> describeDepth(names: readonly string[]): string [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:157]
+       ↳ Names a depth of a tag root by the first few tags found there, such as "Aspect, Ingress, Retrograde…".
+```
+
+**18. `anonymous`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 anonymous(next: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:88]
+  └─> handleValueChange(values: readonly unknown[]): void [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:55]
+    └─> parseCalendarView(value: unknown): CalendarViewName | undefined [projects/caelundas/caelundas-web/src/lib/calendar/calendar-views.ts:108]
+       ↳ Reads a value as a view, or nothing when it names none, such as a stale link's or an unpressed toggle's.
+```
+
+**19. `findFacets`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 findFacets(): Promise<EventFacet[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:80]
+  └─> toFacets(rows: readonly SqlRow[]): EventFacet[] [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:148]
+     ↳ Gathers the tag rows, roots first in path order, into one facet per root.
+    └─> readRequiredText(row: SqlRow, column: string): string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:96]
+       ↳ Reads a column the schema declares `not null` as text.
+```
+
+**20. `select`** — depth ≥ 3 · orphan-root
+
+```text
+🚀 select(…): Promise<Readonly<Record<string, unknown>>[]> [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:49]
+  └─> startWorker(): Worker [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:111]
+     ↳ Starts the worker that owns the sqlite-wasm database.
+    └─> UnsupportedBrowserError.constructor(): UnsupportedBrowserError [projects/caelundas/caelundas-web/src/lib/events-database/events-database.errors.ts:7]
+```
+
+**21. `getRouter`** — depth 3 · orphan-root
+
+```text
+🚀 getRouter(): Router<typeof routeTree> [projects/caelundas/caelundas-web/src/router.tsx:10]
+   ↳ Creates the application router, which TanStack Start calls once per request on the server and once on the client.
+  └─> createBrowserEventsDatabase(): EventsDatabase [projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:35]
+     ↳ The events database the browser reads, served by a sqlite-wasm worker.
+    └─> createEventsDatabase(executor: SqlExecutor): EventsDatabase [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:50]
+       ↳ Builds the events database over any executor.
+```
+
+**22. `addEventListener(…)`** — depth 3 · orphan-root
+
+```text
+🚀 addEventListener(…)(event: MessageEvent<WorkerRequest>): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:83]
+  └─> then(…)(rows: Readonly<Record<string, unknown>>[]): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:87]
+    └─> respond(response: WorkerResponse): void [projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:55]
+       ↳ Answers the page.
+```
+
+**23. `OutsideDataset`** — depth 2 · orphan-root
+
+```text
+🚀 OutsideDataset(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:112]
+   ↳ Names the dates the data covers and offers to jump to the nearest of them.
+  └─> format(date: Date): string [projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:120]
+```
+
+**24. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:80]
+  └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:46]
+```
+
+**25. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:92]
+  └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:46]
+```
+
+**26. `FilterChipRow`** — depth 2 · orphan-root
+
+```text
+🚀 FilterChipRow(): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:158]
+   ↳ Draws one chip per rule of the tree in the surrounding `Filters`, nested ones included, in a row that scrolls sideways…
+  └─> map(…)(rule: FilterRule<EventFilterValue>, index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:172]
+```
+
+**27. `CalendarSkeleton`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarSkeleton(properties: Readonly<CalendarSkeletonProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:27]
+   ↳ Renders the month view's shape, a toolbar row over a grid of days, while the events database loads.
+  └─> map(…)(key: string): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:56]
+```
+
+**28. `duration`** — depth 2 · orphan-root
+
+```text
+🚀 duration(key: string): string [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:18]
+  └─> find(…)(…): boolean [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:19]
+```
+
+**29. `week`** — depth 2 · orphan-root
+
+```text
+🚀 week(key: string): string [projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:37]
+  └─> formatCalendarDay(day: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:45]
+     ↳ Writes a `YYYY-MM-DD` day in full, such as "Wednesday, March 4, 2026".
+```
+
+**30. `AgendaRowContent`** — depth 2 · orphan-root
+
+```text
+🚀 AgendaRowContent(…): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:135]
+   ↳ Draws one agenda row: a day's heading, an event, or the button that lists later days.
+  └─> formatEventCount(count: number): string [projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:201]
+     ↳ Counts a group's events, such as "1 event" or "12 events".
+```
+
+**31. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:138]
+  └─> toLevel(field: EventGroupField): EventGroupLevel [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:241]
+     ↳ A field's first level: a tag root's children, or the derived value.
+```
+
+**32. `anonymous`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 anonymous(event: React.ChangeEvent<HTMLSelectElement, HTMLSelectElement>): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:185]
+  └─> find(…)(candidate: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:187]
+```
+
+**33. `CalendarScaleSelect`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarScaleSelect(properties: Readonly<CalendarScaleSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:40]
+   ↳ Renders a menu button naming the timeline's scale that lists every scale, from a day of minutes to a year of months.
+  └─> map(…)(option: "day" | "month" | "quarter" | "week" | "year"): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:87]
+```
+
+**34. `handleValueChange`** — depth ≥ 2 · orphan-root
+
+```text
+🚀 handleValueChange(value: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:50]
+  └─> parseTimelineScale(value: unknown): TimelineScale | undefined [projects/caelundas/caelundas-web/src/lib/calendar/calendar-views.ts:117]
+     ↳ Reads a value as a timeline scale, or nothing when it names none.
+```
+
+**35. `CalendarViewSelect`** — depth 2 · orphan-root
+
+```text
+🚀 CalendarViewSelect(properties: Readonly<CalendarViewSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:43]
+   ↳ Renders one pressed button per view, or on a narrow row a menu button naming the current view that lists every view.
+  └─> map(…)(…): Element [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:93]
+```
+
+**36. `search`** — depth 2 · orphan-root
+
+```text
+🚀 search(…): { date: string; days?: number | undefined; filter?: EventFilterQuery | undefined; group?: EventGrouping | undefined; scale?: "day" | "month" | "quarter" | "week" | "year" | undefined; view?: "day" | ... 5 more ... | undefined; } [projects/caelundas/caelundas-web/src/routes/index.tsx:158]
+  └─> formatCalendarDate(date: Date, timeZone: string): string [projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:62]
+     ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
+```
+
+**37. `transform(…)`** — depth 2 · orphan-root
+
+```text
+🚀 transform(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:40]
+  └─> flatMap(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:41]
+```
+
+**38. `localDate`** — depth 2 · orphan-root
+
+```text
+🚀 localDate(instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:63]
+   ↳ The calendar day an instant falls on in a zone, as `YYYY-MM-DD`.
+  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:34]
+     ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
+```
+
+**39. `localHour`** — depth 2 · orphan-root
+
+```text
+🚀 localHour(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:70]
+   ↳ The hour of the day an instant falls in in a zone, from 0 to 23.
+  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:34]
+     ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
+```
+
+**40. `localWeekday`** — depth 2 · orphan-root
+
+```text
+🚀 localWeekday(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:80]
+   ↳ The day of the week an instant falls on in a zone, 0 for Sunday, the way SQLite's `%w` numbers it: the weekday of its…
+  └─> formatLocalPart(part: LocalPart, instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:34]
+     ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
+```
+
+</details>
 
 ### Breadth
 
-None.
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `compileDerivedRule` | 8 | `compileRange`, `readDateRange`, `compileDurationRule`, `readTexts`, `readIntegerRange`, `compileSetRule`, `compileTextRule`, `readIntegers` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-derived.ts:33` |
+| `loadCalendar` | 8 | `parseCalendarDate`, `getViewWindows`, `compileEventFilter`, `findFacetsOnce`, `resolveGrouping`, `findEventsCached`, `compileEventGrouping`, `describeEmptiness` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:85` |
+| `toTimelineRows` | 7 | `map(…)`, `map(…)`, `buildEventGroups`, `placeGroupRows`, `map(…)`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:63` |
+
+<details>
+<summary>133 more callables</summary>
+
+| Callable | Breadth | Calls directly | Location |
+| --- | --- | --- | --- |
+| `CalendarTimeline` | 7 | `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useCallback(…)`, `useMemo(…)`, `useEffect(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:110` |
+| `CalendarGrid` | 7 | `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `toEventCalendarView`, `getViewLayout`, `useCallback(…)`, `useCallback(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:217` |
+| `buildEventGroups` | 5 | `find(…)`, `collectGroups`, `describeGroup`, `map(…)`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:58` |
+| `getViewWindows` | 4 | `joinWindows`, `getTimelineDays`, `getVisibleDays`, `shiftDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:84` |
+| `validateCalendarSearch` | 4 | `normalizeEventFilter`, `parseGrouping`, `parseTimelineScale`, `parseCalendarView` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-search.ts:101` |
+| `CalendarFilters` | 4 | `isSameEventFilter`, `toLinkedEventFilter`, `renderFiltersButton`, `countActiveEventFilterRules` | `projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:79` |
+| `VirtualList` | 4 | `useMemo(…)`, `getVirtualWindow`, `useEffect(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:56` |
+| `CalendarGroupBy` | 4 | `useMemo(…)`, `map(…)`, `filter(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:53` |
+| `getVisibleTimelineRows` | 4 | `getVirtualWindow`, `getRowOffsets`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:33` |
+| `findEvents` | 4 | `replace(…)`, `replace(…)`, `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:58` |
+| `toEventRecord` | 4 | `readText`, `readRequiredText`, `readDate`, `from(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:125` |
+| `select` | 4 | `startWorker`, `listen`, `addEventListener(…)`, `anonymous` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:49` |
+| `compileRule` | 3 | `compileTagRule`, `readTexts`, `compileDerivedRule` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:69` |
+| `resolveGrouping` | 3 | `createEventGroupFields`, `resolveEventGrouping`, `getDefaultGrouping` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:239` |
+| `toAgendaRows` | 3 | `getAgendaListing`, `flatMap(…)`, `toSorted(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:76` |
+| `toGroupedAgendaRows` | 3 | `toAgendaRows`, `filter(…)`, `buildEventGroups` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:107` |
+| `GroupLevelRow` | 3 | `find(…)`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:168` |
+| `useMemo(…)` | 3 | `filter(…)`, `toAgendaRows`, `getAgendaRange` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:46` |
+| `measure` | 3 | `getVisibleTimelineRows`, `readRowBoxes`, `readViewport` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:335` |
+| `IndexPage` | 3 | `useMemo(…)`, `useMemo(…)`, `getDefaultCalendarView` | `projects/caelundas/caelundas-web/src/routes/index.tsx:96` |
+| `addEventListener(…)` | 3 | `then(…)`, `then(…)`, `select` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:83` |
+| `compileEventFilter` | 2 | `compileRule`, `combine` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:22` |
+| `combine` | 2 | `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:52` |
+| `createEventGroupFields` | 2 | `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:30` |
+| `resolveEventGrouping` | 2 | `find(…)`, `some(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:93` |
+| `handleQueryChange` | 2 | `compileEventFilter`, `toLinkedEventFilter` | `projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:103` |
+| `describeEvent` | 2 | `map(…)`, `formatDuration` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:36` |
+| `formatDuration` | 2 | `map(…)`, `filter(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-format.ts:60` |
+| `describeGroup` | 2 | `formatDerivedKey`, `findIndex(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:154` |
+| `CalendarEventRow` | 2 | `formatEventTime`, `describeEvent` | `projects/caelundas/caelundas-web/src/components/calendar-event-row.tsx:31` |
+| `useMemo(…)` | 2 | `getRowOffsets`, `map(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:75` |
+| `handleScroll` | 2 | `getVirtualWindow`, `setAnswered(…)` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:93` |
+| `CalendarAgenda` | 2 | `useMemo(…)`, `useMemo(…)` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:73` |
+| `AgendaRowContent` | 2 | `formatEventCount`, `formatCalendarDay` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:135` |
+| `anonymous` | 2 | `find(…)`, `toLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:185` |
+| `CalendarOverflowList` | 2 | `useMemo(…)`, `formatCalendarDay` | `projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:37` |
+| `clusterRow` | 2 | `toSorted(…)`, `toCluster` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-clusters.ts:95` |
+| `CalendarViewSelect` | 2 | `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:43` |
+| `useMemo(…)` | 2 | `clusterTimelineBars`, `getClusterSpan` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:144` |
+| `useEffect(…)` | 2 | `watchVisibleRows(…)`, `watchVisibleRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:173` |
+| `useMemo(…)` | 2 | `getAgendaRange`, `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:248` |
+| `loader` | 2 | `loadCalendar`, `validateCalendarSearch` | `projects/caelundas/caelundas-web/src/routes/index.tsx:60` |
+| `toDataset` | 2 | `readDate`, `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:112` |
+| `createBrowserEventsDatabase` | 2 | `createEventsDatabase`, `createWorkerSqlExecutor` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:35` |
+| `select` | 2 | `catch(…)`, `openDatabase` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:62` |
+| `compileTagRule` | 1 | `replace(…)` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-compiler.ts:86` |
+| `map(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:33` |
+| `getDefaultGrouping` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:63` |
+| `flatMap(…)` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-fields.ts:70` |
+| `compileEventGrouping` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-compiler.ts:39` |
+| `map(…)` | 1 | `compileGroupLevel` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-compiler.ts:42` |
+| `compileGroupLevel` | 1 | `isDerivedGroupId` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-compiler.ts:48` |
+| `parseCalendarDate` | 1 | `anchorDay` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:117` |
+| `getTimelineDays` | 1 | `shiftDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:140` |
+| `getVisibleDays` | 1 | `shiftDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-window.ts:181` |
+| `countActiveEventFilterRules` | 1 | `compileEventFilter` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tree.ts:46` |
+| `isSameEventFilter` | 1 | `normalizeEventFilter` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-tree.ts:64` |
+| `parseGrouping` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-search.ts:122` |
+| `describeEmptiness` | 1 | `some(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:137` |
+| `findEventsCached` | 1 | `catch(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:173` |
+| `findFacetsOnce` | 1 | `catch(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-loader.ts:220` |
+| `OutsideDataset` | 1 | `format` | `projects/caelundas/caelundas-web/src/components/calendar-empty.tsx:112` |
+| `anonymous` | 1 | `handleChange` | `projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:80` |
+| `anonymous` | 1 | `handleChange` | `projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:92` |
+| `FilterChipRow` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-filters.tsx:158` |
+| `CalendarSkeleton` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:27` |
+| `duration` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:18` |
+| `week` | 1 | `formatCalendarDay` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-labels.ts:37` |
+| `toSorted(…)` | 1 | `compareText` | `projects/caelundas/caelundas-web/src/lib/event-groups/event-group-tree.ts:100` |
+| `getAgendaRange` | 1 | `addCalendarDays` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:62` |
+| `filter(…)` | 1 | `getAgendaListing` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:120` |
+| `getAgendaListing` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-agenda.ts:160` |
+| `getVirtualWindow` | 1 | `findFirstRowEndingAfter` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-virtual-window.ts:48` |
+| `useEffect(…)` | 1 | `anonymous` | `projects/caelundas/caelundas-web/src/components/virtual-list.tsx:113` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:87` |
+| `useMemo(…)` | 1 | `toGroupedAgendaRows` | `projects/caelundas/caelundas-web/src/components/calendar-agenda.tsx:89` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:65` |
+| `map(…)` | 1 | `find(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:69` |
+| `filter(…)` | 1 | `some(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:73` |
+| `replaceLevel` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:78` |
+| `map(…)` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:121` |
+| `anonymous` | 1 | `replaceLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:129` |
+| `anonymous` | 1 | `toLevel` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:138` |
+| `map(…)` | 1 | `describeDepth` | `projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:214` |
+| `CalendarScaleSelect` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:40` |
+| `handleValueChange` | 1 | `parseTimelineScale` | `projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:50` |
+| `map(…)` | 1 | `toGanttEvent` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:71` |
+| `map(…)` | 1 | `toGanttEvent` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline.ts:89` |
+| `clusterTimelineBars` | 1 | `clusterRow` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-clusters.ts:53` |
+| `toCluster` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-clusters.ts:135` |
+| `isSameRowSet` | 1 | `every(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:55` |
+| `windowTimelineBars` | 1 | `filter(…)` | `projects/caelundas/caelundas-web/src/lib/calendar/calendar-timeline-window.ts:70` |
+| `handleValueChange` | 1 | `parseCalendarView` | `projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:55` |
+| `anonymous` | 1 | `handleValueChange` | `projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:88` |
+| `useMemo(…)` | 1 | `createEventGroupFields` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:138` |
+| `useMemo(…)` | 1 | `toTimelineRows` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:140` |
+| `useMemo(…)` | 1 | `windowTimelineBars` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:151` |
+| `useMemo(…)` | 1 | `toCountColumns` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:160` |
+| `watchVisibleRows(…)` | 1 | `setMeasured(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:176` |
+| `setMeasured(…)` | 1 | `isSameRowSet` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:177` |
+| `readRowBoxes` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:237` |
+| `watchVisibleRows` | 1 | `attach` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:329` |
+| `attach` | 1 | `schedule` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:348` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:240` |
+| `map(…)` | 1 | `toCalendarEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:240` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:244` |
+| `map(…)` | 1 | `describeEvent` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:244` |
+| `useCallback(…)` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/components/events-calendar.tsx:277` |
+| `createEventFilterFields` | 1 | `toTagField` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:154` |
+| `toTagField` | 1 | `formatEventCount` | `projects/caelundas/caelundas-web/src/lib/event-filters/event-filter-fields.ts:185` |
+| `useMemo(…)` | 1 | `createEventFilterFields` | `projects/caelundas/caelundas-web/src/routes/index.tsx:102` |
+| `useMemo(…)` | 1 | `parseCalendarDate` | `projects/caelundas/caelundas-web/src/routes/index.tsx:112` |
+| `search` | 1 | `formatCalendarDate` | `projects/caelundas/caelundas-web/src/routes/index.tsx:158` |
+| `transform(…)` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:40` |
+| `describeDataset` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:52` |
+| `map(…)` | 1 | `toDataset` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:55` |
+| `replace(…)` | 1 | `toGroupColumns` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:64` |
+| `map(…)` | 1 | `toEventRecord` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:77` |
+| `findFacets` | 1 | `toFacets` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:80` |
+| `readDate` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:89` |
+| `from(…)` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:131` |
+| `toFacets` | 1 | `readRequiredText` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:148` |
+| `toGroupColumns` | 1 | `map(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:177` |
+| `map(…)` | 1 | `replace(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.ts:179` |
+| `addEventListener(…)` | 1 | `rejectAll` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:53` |
+| `listen` | 1 | `addEventListener(…)` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:79` |
+| `startWorker` | 1 | `UnsupportedBrowserError.constructor` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.browser.ts:111` |
+| `getRouter` | 1 | `createBrowserEventsDatabase` | `projects/caelundas/caelundas-web/src/router.tsx:10` |
+| `localDate` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:63` |
+| `localHour` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:70` |
+| `localWeekday` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.local-time.ts:80` |
+| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:87` |
+| `then(…)` | 1 | `respond` | `projects/caelundas/caelundas-web/src/lib/events-database/events-database.worker.ts:90` |
+
+</details>
 <!-- callidescope:end -->
 
 <!-- codometer:start -->
@@ -91,36 +646,36 @@ None.
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-365-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-16.48_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-4-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-13-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-10761-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-327.98_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-12-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-94-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-13-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-8-0ea5e9?style=flat-square)
-![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-0-0369a1?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-94-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-62-0ea5e9?style=flat-square)
+![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-9-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-311-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-1-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-10-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-0-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-11-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-0-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-8-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-3-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-8-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-33-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-10-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-43-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-57-475569?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-28-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-16-8b5cf6?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-2-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-641-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-7-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-502-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-146-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-539-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-336-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-192-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-644-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-1224-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-1-ca8a04?style=flat-square)
 
 ### Python
@@ -141,16 +696,16 @@ None.
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-123-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-32-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-8-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-83-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-70-16a34a?style=flat-square)
-![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-1-059669?style=flat-square)
-![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-5-0ea5e9?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-152-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-37-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-103-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-86-16a34a?style=flat-square)
+![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
+![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-30-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-116-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-39-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-145-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-5-ea580c?style=flat-square)
 
 ### YAML
@@ -193,17 +748,17 @@ None.
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-0-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-0-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-0-7c3aed?style=flat-square)
-![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-0-22c55e?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-3-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-207-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-18-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-5-22c55e?style=flat-square)
 ![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
 ![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-0-0284c7?style=flat-square)
-![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-13-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-23-64748b?style=flat-square)
 
 ### HCL
 
@@ -220,11 +775,11 @@ None.
 ### CSS
 
 ![CSS Files](https://img.shields.io/badge/CSS_Files-1-264de4?style=flat-square)
-![CSS Lines](https://img.shields.io/badge/CSS_Lines-2-2965f1?style=flat-square)
+![CSS Lines](https://img.shields.io/badge/CSS_Lines-3-2965f1?style=flat-square)
 ![CSS Rules](https://img.shields.io/badge/CSS_Rules-0-7c3aed?style=flat-square)
 ![CSS Selectors](https://img.shields.io/badge/CSS_Selectors-0-8b5cf6?style=flat-square)
 ![CSS Declarations](https://img.shields.io/badge/CSS_Declarations-0-0284c7?style=flat-square)
-![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-1-f97316?style=flat-square)
+![CSS At Rules](https://img.shields.io/badge/CSS_At_Rules-2-f97316?style=flat-square)
 ![CSS Media Queries](https://img.shields.io/badge/CSS_Media_Queries-0-ea580c?style=flat-square)
 ![CSS Custom Properties](https://img.shields.io/badge/CSS_Custom_Properties-0-16a34a?style=flat-square)
 ![CSS Comments](https://img.shields.io/badge/CSS_Comments-0-64748b?style=flat-square)
@@ -234,11 +789,11 @@ None.
 ![Module Files](https://img.shields.io/badge/Module_Files-0-7c3aed?style=flat-square)
 ![Service Files](https://img.shields.io/badge/Service_Files-0-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-0-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-0-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-0-db2777?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-3-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-5-db2777?style=flat-square)
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-0-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-9-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -276,23 +831,23 @@ None.
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-122-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-277-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-4-8b5cf6?style=flat-square)
+![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-7-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-17-64748b?style=flat-square)
-![Lists](https://img.shields.io/badge/Lists-2-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-8-22c55e?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-50-64748b?style=flat-square)
+![Lists](https://img.shields.io/badge/Lists-4-16a34a?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-35-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-0-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-0-0ea5e9?style=flat-square)
-![Links](https://img.shields.io/badge/Links-6-059669?style=flat-square)
+![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-5-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-28-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-6-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-84-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

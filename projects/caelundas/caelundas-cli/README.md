@@ -324,13 +324,13 @@ Call stacks traced through `projects/caelundas/caelundas-cli`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 956 |
-| Files | 182 |
-| Calls traced | 1252 |
-| Call stacks | 96 |
+| Callables | 1040 |
+| Files | 192 |
+| Calls traced | 1319 |
+| Call stacks | 105 |
 | Deepest stack | 15 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 36 |
+| Unfollowable calls | 37 |
 
 ### Limits
 
@@ -354,9 +354,9 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Sweeps one day minute-by-minute, aggregating perfective events and rolling aspect state forward.
       └─> PerfectiveService.detectMinuteEvents(…): { aspectBodies: AspectBodies[]; events: DetectedCalendarEvent[]; } [projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:109]
          ↳ Detects all minute-level event families and returns both events and updated aspect-body state.
-        └─> AspectsService.detect(…): { aspectBodies: AspectBodies[]; events: DetectedCalendarEvent[]; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:202]
+        └─> AspectsService.detect(…): { aspectBodies: AspectBodies[]; events: DetectedCalendarEvent[]; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:200]
            ↳ Detects all aspect events at a single minute, including 2-body and multi-body patterns.
-          └─> AspectsService.detectCompositeAspects(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:84]
+          └─> AspectsService.detectCompositeAspects(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:82]
              ↳ Runs composite-aspect detectors against current and previous aspect-body snapshots.
             └─> QuintupleAspectsService.detect(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects.service.ts:38]
                ↳ Detects all quintuple aspect patterns from stored 2-body aspect events.
@@ -370,11 +370,11 @@ What this project is judged against, as declared in its own `callidescope.config
                        ↳ Creates one quintuple-aspect boundary event for the provided five bodies.
                       └─> QuintupleAspectsComposerService.buildQuintupleEventFromParameters(eventArguments: BuildQuintupleEventParameters): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:158]
                          ↳ Materializes a finalized quintuple event from precomputed display fields.
-                        └─> QuintupleAspectsComposerService.buildQuintupleAspectSummary(…): string [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:142]
+                        └─> QuintupleAspectsComposerService.buildQuintupleAspectSummary(…): string [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:123]
                            ↳ Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
                           └─> QuintupleAspectsComposerService.getPhaseEmoji(phase: AspectPhase): string [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:283]
                              ↳ Maps phase to the event-summary marker prefix.
-                            └─> AspectEventFormattingService.getPhaseEmoji(phase: AspectPhase): string [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-event-formatting.service.ts:176]
+                            └─> AspectEventFormattingService.getPhaseEmoji(phase: AspectPhase): string [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-event-formatting.service.ts:168]
                                ↳ Returns the summary prefix emoji for an aspect phase.
 ```
 
@@ -385,7 +385,7 @@ What this project is judged against, as declared in its own `callidescope.config
    ↳ Detects all planetary phase events for a given minute. Combines detection from all three planets (Venus, Mercury, Mars).
   └─> PhasesService.getMartianPhaseEvents(args: MartianPhaseEventArguments): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:147]
      ↳ Produces Martian phase events for one minute using precomputed phase parameters.
-    └─> MartianPhaseService.getMartianPhaseEvents(args: MartianPhaseEventArguments): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:218]
+    └─> MartianPhaseService.getMartianPhaseEvents(args: MartianPhaseEventArguments): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:194]
        ↳ Produces Martian phase events for one minute using precomputed phase parameters.
       └─> MartianPhaseService.detectMartianPhases(parameters: PhaseParameters, minute: Moment): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:61]
          ↳ Detects martian phases.
@@ -422,23 +422,23 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>93 more call stacks</summary>
+<summary>102 more call stacks</summary>
 
 **4. `TripleAspectsService.detectProgressive`** — depth 8 · orphan-root
 
 ```text
 🚀 TripleAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:111]
    ↳ Builds duration events by pairing forming/dissolving events per triple-aspect group key.
-  └─> TripleAspectsComposerService.pairProgressiveGroup(groupEvents: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:391]
+  └─> TripleAspectsComposerService.pairProgressiveGroup(groupEvents: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:385]
      ↳ Pairs one triple-aspect group's boundaries into spans, one per occurrence.
-    └─> TripleAspectsComposerService.flatMap(…)(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:401]
-      └─> TripleAspectsComposerService.buildProgressiveEvent(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:238]
+    └─> TripleAspectsComposerService.flatMap(…)(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:395]
+      └─> TripleAspectsComposerService.buildProgressiveEvent(…): DetectedCalendarEvent | null [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:234]
          ↳ Builds one triple-aspect duration event from a forming/dissolving pair.
         └─> TripleAspectsComposerService.buildProgressiveBodiesMeta(…): ProgressiveBodiesMeta | null [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:55]
            ↳ Builds progressive bodies meta.
-          └─> TripleAspectsComposerService.resolveProgressiveMeta(…): ProgressiveBodiesMeta | null [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:188]
+          └─> TripleAspectsComposerService.resolveProgressiveMeta(…): ProgressiveBodiesMeta | null [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:184]
              ↳ Resolves progressive meta.
-            └─> TripleAspectsComposerService.resolveTripleBody(displayName: string): Body | undefined [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:227]
+            └─> TripleAspectsComposerService.resolveTripleBody(displayName: string): Body | undefined [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:223]
                ↳ Inverts a display name to a body tracked by triple aspects.
               └─> bodyFromDisplayName(displayName: string): Body | undefined [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:305]
                  ↳ Inverts {@link bodyDisplayName}: returns the body a display name belongs to, or `undefined` when the name is not a…
@@ -467,33 +467,33 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 IngressesService.buildDecanIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:91]
    ↳ Delegates decan-ingress event construction to the composer service.
-  └─> IngressesComposerService.buildDecanIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:95]
+  └─> IngressesComposerService.buildDecanIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:97]
      ↳ Creates a decan ingress calendar event.
-    └─> IngressesComposerService.buildDecanIngressEventObject(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:111]
+    └─> IngressesComposerService.buildDecanIngressEventObject(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:113]
        ↳ Builds the decan ingress payload without logging side effects.
       └─> IngressesComposerService.resolveDecan(longitude: number): Decan [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:423]
          ↳ Converts numeric decan to the validated `Decan` union and throws on invalid values.
-        └─> IngressesComposerService.getDecan(longitude: number): number [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:294]
+        └─> IngressesComposerService.getDecan(longitude: number): number [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:295]
            ↳ Maps longitude to decan number (1-3) relative to the current sign start degree.
-          └─> IngressesComposerService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:74]
+          └─> IngressesComposerService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:76]
              ↳ Maps an ecliptic longitude to its containing zodiac sign range.
-            └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:77]
+            └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:79]
 ```
 
 **7. `MinorAspectsComposerService.processAspectGroup`** — depth 7 · orphan-root
 
 ```text
-🚀 MinorAspectsComposerService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:234]
+🚀 MinorAspectsComposerService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:226]
    ↳ Processes aspect group.
-  └─> MinorAspectsComposerService.map(…)(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:252]
-    └─> MinorAspectsComposerService.getMinorAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:197]
+  └─> MinorAspectsComposerService.map(…)(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:244]
+    └─> MinorAspectsComposerService.getMinorAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:189]
        ↳ Creates one minor-aspect duration event from a matched forming/dissolving pair.
-      └─> MinorAspectsComposerService.extractAspectComponents(categories: string[]): ExtractAspectComponentsResult [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:150]
+      └─> MinorAspectsComposerService.extractAspectComponents(tags: string[]): ExtractAspectComponentsResult [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:144]
          ↳ Extracts aspect components.
-        └─> MinorAspectsComposerService.filter(…)(c: string): boolean [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:152]
-          └─> MinorAspectsComposerService.map(…)(b: string): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:153]
+        └─> MinorAspectsComposerService.filter(…)(c: string): boolean [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:146]
+          └─> MinorAspectsComposerService.map(…)(b: string): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:147]
             └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-               ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+               ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **8. `EphemerisService.getCoordinateEphemerisByBody`** — depth ≥ 6 · orphan-root
@@ -545,61 +545,61 @@ What this project is judged against, as declared in its own `callidescope.config
 **11. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:105]
+🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:104]
   └─> MajorAspectProgressiveService.getMajorAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:50]
      ↳ Builds one progressive duration event from a forming/dissolving pair.
-    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175]
+    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173]
        ↳ Create a single progressive event for a simple aspect (major, minor, or specialty).
-      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-         ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+         ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **12. `MajorAspectProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:131]
+🚀 MajorAspectProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:130]
   └─> MajorAspectProgressiveService.getMajorAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:50]
      ↳ Builds one progressive duration event from a forming/dissolving pair.
-    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175]
+    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173]
        ↳ Create a single progressive event for a simple aspect (major, minor, or specialty).
-      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-         ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+         ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **13. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:85]
+🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:84]
   └─> MinorAspectsProgressiveService.getMinorAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:100]
      ↳ Creates one minor-aspect duration event from a matched forming/dissolving pair.
-    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175]
+    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173]
        ↳ Create a single progressive event for a simple aspect (major, minor, or specialty).
-      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-         ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+         ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **14. `MinorAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:131]
+🚀 MinorAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:130]
   └─> MinorAspectsProgressiveService.getMinorAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:100]
      ↳ Creates one minor-aspect duration event from a matched forming/dissolving pair.
-    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175]
+    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173]
        ↳ Create a single progressive event for a simple aspect (major, minor, or specialty).
-      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-         ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+         ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **15. `MinorAspectsService.detect`** — depth ≥ 6 · orphan-root
@@ -641,10 +641,10 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> QuadrupleAspectsService.groupBy(…)(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:82]
     └─> QuadrupleAspectsBaseService.makeProgressiveGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:356]
        ↳ Makes progressive group key.
-      └─> QuadrupleAspectsBaseService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:358]
+      └─> QuadrupleAspectsBaseService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:358]
         └─> QuadrupleAspectsBaseService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:360]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **18. `QuintupleAspectsService.detectProgressive`** — depth 6 · orphan-root
@@ -655,10 +655,10 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> QuintupleAspectsComposerService.groupQuintupleEventsByKey(events: DetectedCalendarEvent[]): Record<string, DetectedCalendarEvent[]> [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:328]
      ↳ Groups quintuple events by key.
     └─> QuintupleAspectsComposerService.groupBy(…)(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:335]
-      └─> QuintupleAspectsComposerService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:336]
+      └─> QuintupleAspectsComposerService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:336]
         └─> QuintupleAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:337]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **19. `SextupleAspectsService.checkPatternExists`** — depth 6 · orphan-root
@@ -684,40 +684,40 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> SextupleAspectsComposerService.groupSextupleEventsByKey(events: DetectedCalendarEvent[]): Record<string, DetectedCalendarEvent[]> [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:387]
      ↳ Groups sextuple events by key.
     └─> SextupleAspectsComposerService.groupBy(…)(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:394]
-      └─> SextupleAspectsComposerService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:395]
+      └─> SextupleAspectsComposerService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:395]
         └─> SextupleAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:396]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **21. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:48]
+🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:47]
   └─> SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:89]
      ↳ Creates one specialty-aspect duration event from a forming/dissolving pair.
-    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175]
+    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173]
        ↳ Create a single progressive event for a simple aspect (major, minor, or specialty).
-      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-         ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+         ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **22. `SpecialtyAspectsProgressiveService.getProgressiveEvent`** — depth ≥ 6 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:120]
+🚀 SpecialtyAspectsProgressiveService.getProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:119]
   └─> SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:89]
      ↳ Creates one specialty-aspect duration event from a forming/dissolving pair.
-    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175]
+    └─> ProgressiveAspectService.createSimpleAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173]
        ↳ Create a single progressive event for a simple aspect (major, minor, or specialty).
-      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-         ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+      └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+         ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+        └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 **23. `SpecialtyAspectsService.detect`** — depth ≥ 6 · orphan-root
@@ -744,13 +744,26 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> StelliumService.groupBy(…)(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:318]
     └─> StelliumService.stelliumGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:262]
        ↳ Handles stellium group key.
-      └─> StelliumService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:264]
+      └─> StelliumService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:264]
         └─> StelliumService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:265]
           └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-             ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+             ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**25. `EphemerisService.getDistanceEphemerisByBody`** — depth ≥ 5 · orphan-root
+**25. `mapClasses`** — depth ≥ 5 · orphan-root
+
+```text
+🚀 mapClasses(…): Readonly<Record<string, readonly TagPath[]>> [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:19]
+   ↳ A map from each class under `parent`, and each name in it, to its node: the class beneath `parent` and each name…
+  └─> flatMap(…)(…): [[string, readonly TagPath[]], ...[string, readonly TagPath[]][]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:24]
+    └─> mapEach(names: readonly string[], toPath: (name: string) => TagPath): TagMap [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:40]
+       ↳ A map from each name to the one node `toPath` puts it at.
+      └─> map(…)(name: string): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:45]
+        └─> one(path: TagPath): readonly TagPath[] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:122]
+           ↳ A raw tag that stands for exactly one node.
+```
+
+**26. `EphemerisService.getDistanceEphemerisByBody`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 EphemerisService.getDistanceEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", DistanceEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:260]
@@ -764,34 +777,34 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**26. `MajorAspectProgressiveService.castAspectPartsToTypes`** — depth ≥ 5 · orphan-root
+**27. `MajorAspectProgressiveService.castAspectPartsToTypes`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MajorAspectProgressiveService.castAspectPartsToTypes(…): { aspect: "conjunct" | "opposite" | "sextile" | "square" | "trine"; body1: "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | ... 12 more ... | "venus"; body2: "lunar apogee" | ... 18 more ... | "venus"; } [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:72]
    ↳ Backward-compatible wrapper retained for existing unit tests.
-  └─> ProgressiveAspectService.extractTypedAspectPartsOrThrow(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:292]
+  └─> ProgressiveAspectService.extractTypedAspectPartsOrThrow(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:288]
      ↳ Typed extraction wrapper with a normalized error message for compatibility call sites.
-    └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-       ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-      └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+    └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+       ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+      └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
         └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**27. `MajorAspectProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
+**28. `MajorAspectProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
 
 ```text
-🚀 MajorAspectProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:104]
+🚀 MajorAspectProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:103]
   └─> MajorAspectProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:39]
      ↳ Builds a stable grouping key from sorted bodies plus major-aspect label.
-    └─> ProgressiveAspectService.buildAspectGroupKeyFromCategories(…): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33]
+    └─> ProgressiveAspectService.buildAspectGroupKeyFromTags(…): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33]
        ↳ Create a stable group key from sorted body labels and aspect label.
       └─> ProgressiveAspectService.map(…)(body: string): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:42]
         └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**28. `MajorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
+**29. `MajorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
 
 ```text
 🚀 MajorAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:164]
@@ -805,21 +818,21 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**29. `MajorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
+**30. `MajorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MajorAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:176]
    ↳ Builds duration events by pairing forming and dissolving events per body-pair/aspect key.
   └─> MajorAspectProgressiveService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:98]
      ↳ Builds progressive major-aspect events from detected minute-level events.
-    └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135]
+    └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133]
        ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
-      └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62]
-         ↳ Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
-        └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:84]
+      └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60]
+         ↳ Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
+        └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:82]
 ```
 
-**30. `MajorAspectsService.getMajorAspect`** — depth 5 · orphan-root
+**31. `MajorAspectsService.getMajorAspect`** — depth 5 · orphan-root
 
 ```text
 🚀 MajorAspectsService.getMajorAspect(…): "conjunct" | "opposite" | "sextile" | "square" | "trine" | null [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:183]
@@ -834,34 +847,34 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**31. `MinorAspectsProgressiveService.castAspectComponentsToTypes`** — depth ≥ 5 · orphan-root
+**32. `MinorAspectsProgressiveService.castAspectComponentsToTypes`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.castAspectComponentsToTypes(…): { aspect: "quincunx" | "semisextile" | "semisquare" | "sesquiquadrate"; body1: "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | ... 13 more ... | "venus"; body2: "lunar apogee" | ... 18 more ... | "venus"; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:52]
    ↳ Backward-compatible wrapper retained for existing unit tests.
-  └─> ProgressiveAspectService.extractTypedAspectPartsOrThrow(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:292]
+  └─> ProgressiveAspectService.extractTypedAspectPartsOrThrow(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:288]
      ↳ Typed extraction wrapper with a normalized error message for compatibility call sites.
-    └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-       ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-      └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+    └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+       ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+      └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
         └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**32. `MinorAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
+**33. `MinorAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
 
 ```text
-🚀 MinorAspectsProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:84]
+🚀 MinorAspectsProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:83]
   └─> MinorAspectsProgressiveService.buildGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:41]
      ↳ Builds a stable grouping key from sorted bodies plus aspect name for pairing.
-    └─> ProgressiveAspectService.buildAspectGroupKeyFromCategories(…): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33]
+    └─> ProgressiveAspectService.buildAspectGroupKeyFromTags(…): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33]
        ↳ Create a stable group key from sorted body labels and aspect label.
       └─> ProgressiveAspectService.map(…)(body: string): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:42]
         └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**33. `MinorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
+**34. `MinorAspectsService.getLongitudesWindow`** — depth 5 · orphan-root
 
 ```text
 🚀 MinorAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:197]
@@ -875,21 +888,21 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**34. `MinorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
+**35. `MinorAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 MinorAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:215]
    ↳ Converts instantaneous minor aspect events into progressive events.
   └─> MinorAspectsProgressiveService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:78]
      ↳ Builds progressive minor-aspect events from detected minute-level events.
-    └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135]
+    └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133]
        ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
-      └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62]
-         ↳ Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
-        └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:84]
+      └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60]
+         ↳ Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
+        └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:82]
 ```
 
-**35. `QuadrupleAspectsComposerService.checkPatternExists`** — depth 5 · orphan-root
+**36. `QuadrupleAspectsComposerService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsComposerService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:342]
@@ -902,67 +915,54 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**36. `SpecialtyAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
+**37. `SpecialtyAspectsProgressiveService.getAspectGroupKey`** — depth 5 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:47]
+🚀 SpecialtyAspectsProgressiveService.getAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:46]
   └─> SpecialtyAspectsProgressiveService.specialtyAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:135]
      ↳ Builds a stable grouping key from sorted bodies plus specialty-aspect label.
-    └─> ProgressiveAspectService.buildAspectGroupKeyFromCategories(…): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33]
+    └─> ProgressiveAspectService.buildAspectGroupKeyFromTags(…): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33]
        ↳ Create a stable group key from sorted body labels and aspect label.
       └─> ProgressiveAspectService.map(…)(body: string): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:42]
         └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**37. `SpecialtyAspectsProgressiveService.extractTypedAspectValues`** — depth ≥ 5 · orphan-root
+**38. `SpecialtyAspectsProgressiveService.extractTypedAspectValues`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.extractTypedAspectValues(…): { aspect: "biquintile" | "decile" | "novile" | "quintile" | "septile" | "tredecile" | "undecile"; body1: "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | ... 15 more ... | "venus"; body2: "lunar apogee" | ... 18 more ... | "venus"; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:63]
    ↳ Backward-compatible wrapper retained for existing unit tests.
-  └─> ProgressiveAspectService.extractTypedAspectPartsOrThrow(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:292]
+  └─> ProgressiveAspectService.extractTypedAspectPartsOrThrow(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:288]
      ↳ Typed extraction wrapper with a normalized error message for compatibility call sites.
-    └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238]
-       ↳ Extract typed body/aspect values from event categories using aspect/body registries.
-      └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251]
+    └─> ProgressiveAspectService.extractTypedAspectParts(…): TypedAspectParts<TAspect, TBody> [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236]
+       ↳ Extract typed body/aspect values from event tags using aspect/body registries.
+      └─> ProgressiveAspectService.map(…)(body: TBody): string [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249]
         └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**38. `SpecialtyAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
+**39. `SpecialtyAspectsService.detectProgressive`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:233]
    ↳ Converts instantaneous specialty aspect events into progressive events.
   └─> SpecialtyAspectsProgressiveService.detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:41]
      ↳ Builds progressive specialty-aspect events from detected minute-level events.
-    └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135]
+    └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133]
        ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
-      └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62]
-         ↳ Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
-        └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:84]
-```
-
-**39. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
-
-```text
-🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:69]
-  └─> TripleAspectsDetectorService.isGrandTrine(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:233]
-     ↳ Determines whether grand trine.
-    └─> TripleAspectsComposerService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:379]
-       ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
-      └─> AspectGraphService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:70]
-         ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
-        └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
+      └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60]
+         ↳ Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
+        └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:82]
 ```
 
 **40. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
-🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:119]
-  └─> TripleAspectsDetectorService.isTSquare(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:265]
-     ↳ Determines whether the current edge set forms a t square pattern.
-    └─> TripleAspectsComposerService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:379]
+🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:69]
+  └─> TripleAspectsDetectorService.isGrandTrine(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:233]
+     ↳ Determines whether grand trine.
+    └─> TripleAspectsComposerService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:373]
        ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
       └─> AspectGraphService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:70]
          ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
@@ -972,30 +972,54 @@ What this project is judged against, as declared in its own `callidescope.config
 **41. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
-🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:170]
-  └─> TripleAspectsDetectorService.isYod(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:297]
-     ↳ Determines whether yod.
-    └─> TripleAspectsComposerService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:379]
+🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:119]
+  └─> TripleAspectsDetectorService.isTSquare(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:265]
+     ↳ Determines whether the current edge set forms a t square pattern.
+    └─> TripleAspectsComposerService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:373]
        ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
       └─> AspectGraphService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:70]
          ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
         └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**42. `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent`** — depth 5 · orphan-root
+**42. `TripleAspectsDetectorService.checkPatternExists`** — depth 5 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:167]
-   ↳ Creates one specialty-aspect duration event from a forming/dissolving pair.
-  └─> SpecialtyAspectsComposerService.extractAspectBodiesFromCategories(…): { aspectCapitalized: string; body1Capitalized: string; body2Capitalized: string; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:91]
-     ↳ Extracts aspect bodies from categories.
-    └─> SpecialtyAspectsComposerService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:97]
-      └─> SpecialtyAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:98]
-        └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-           ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+🚀 TripleAspectsDetectorService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:170]
+  └─> TripleAspectsDetectorService.isYod(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:297]
+     ↳ Determines whether yod.
+    └─> TripleAspectsComposerService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:373]
+       ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
+      └─> AspectGraphService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:70]
+         ↳ Returns `true` when an undirected body pair has the requested aspect in the edge set.
+        └─> AspectGraphService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:78]
 ```
 
-**43. `EphemerisService.getIlluminationEphemerisByBody`** — depth ≥ 4 · orphan-root
+**43. `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent`** — depth 5 · orphan-root
+
+```text
+🚀 SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:163]
+   ↳ Creates one specialty-aspect duration event from a forming/dissolving pair.
+  └─> SpecialtyAspectsComposerService.extractAspectBodiesFromTags(…): { aspectCapitalized: string; body1Capitalized: string; body2Capitalized: string; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:91]
+     ↳ Extracts aspect bodies from tags.
+    └─> SpecialtyAspectsComposerService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:97]
+      └─> SpecialtyAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:98]
+        └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
+           ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
+```
+
+**44. `map(…)`** — depth ≥ 4 · orphan-root
+
+```text
+🚀 map(…)(name: string): [string, TagMap] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:257]
+  └─> mapEach(names: readonly string[], toPath: (name: string) => TagPath): TagMap [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:40]
+     ↳ A map from each name to the one node `toPath` puts it at.
+    └─> map(…)(name: string): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:45]
+      └─> one(path: TagPath): readonly TagPath[] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:122]
+         ↳ A raw tag that stands for exactly one node.
+```
+
+**45. `EphemerisService.getIlluminationEphemerisByBody`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 EphemerisService.getIlluminationEphemerisByBody(…): Record<"lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus", IlluminationEphemeris> [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:342]
@@ -1007,57 +1031,34 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> EphemerisUnavailableError.constructor(…): EphemerisUnavailableError [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:106]
 ```
 
-**44. `IngressesService.buildPeakIngressEvent`** — depth 4 · orphan-root
+**46. `IngressesService.buildPeakIngressEvent`** — depth 4 · orphan-root
 
 ```text
 🚀 IngressesService.buildPeakIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:106]
    ↳ Creates a sign peak ingress calendar event.
-  └─> IngressesComposerService.buildPeakIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:144]
+  └─> IngressesComposerService.buildPeakIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:147]
      ↳ Creates a sign peak ingress calendar event.
-    └─> IngressesComposerService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:74]
+    └─> IngressesComposerService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:76]
        ↳ Maps an ecliptic longitude to its containing zodiac sign range.
-      └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:77]
+      └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:79]
 ```
 
-**45. `IngressesService.buildSignIngressEvent`** — depth 4 · orphan-root
+**47. `IngressesService.buildSignIngressEvent`** — depth 4 · orphan-root
 
 ```text
 🚀 IngressesService.buildSignIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:119]
    ↳ Creates a zodiac sign ingress calendar event.
-  └─> IngressesComposerService.buildSignIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:207]
+  └─> IngressesComposerService.buildSignIngressEvent(args: { body: Body; date: Moment; longitude: number; }): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:210]
      ↳ Creates a zodiac sign ingress calendar event.
-    └─> IngressesComposerService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:74]
+    └─> IngressesComposerService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:76]
        ↳ Maps an ecliptic longitude to its containing zodiac sign range.
-      └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:77]
-```
-
-**46. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
-
-```text
-🚀 MajorAspectProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:107]
-  └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
-     ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
-    └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
-       ↳ Walks both lists in start order, pairing each beginning with the first ending at or after it unless the next beginning…
-      └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
-```
-
-**47. `MajorAspectProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
-
-```text
-🚀 MajorAspectProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:120]
-   ↳ Pairs forming and dissolving events for one grouped body-pair/aspect key.
-  └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135]
-     ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
-    └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62]
-       ↳ Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
-      └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:84]
+      └─> IngressesComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:79]
 ```
 
 **48. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
-🚀 MajorAspectProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:133]
+🚀 MajorAspectProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:106]
   └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
      ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
     └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
@@ -1065,7 +1066,30 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**49. `MinorAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
+**49. `MajorAspectProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
+
+```text
+🚀 MajorAspectProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:120]
+   ↳ Pairs forming and dissolving events for one grouped body-pair/aspect key.
+  └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133]
+     ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
+    └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60]
+       ↳ Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
+      └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:82]
+```
+
+**50. `MajorAspectProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+
+```text
+🚀 MajorAspectProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:132]
+  └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
+     ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
+    └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
+       ↳ Walks both lists in start order, pairing each beginning with the first ending at or after it unless the next beginning…
+      └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
+```
+
+**51. `MinorAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsEventService.isMatchingAspect(aspect: "quincunx" | "semisextile" | "semisquare" | "sesquiquadrate"): boolean [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-event.service.ts:93]
@@ -1077,10 +1101,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**50. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**52. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
-🚀 MinorAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:87]
+🚀 MinorAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:86]
   └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
      ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
     └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
@@ -1088,22 +1112,22 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**51. `MinorAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
+**53. `MinorAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 MinorAspectsProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:120]
    ↳ Pairs forming and dissolving events for one grouped body-pair/aspect key.
-  └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135]
+  └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133]
      ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
-    └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62]
-       ↳ Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
-      └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:84]
+    └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60]
+       ↳ Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
+      └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:82]
 ```
 
-**52. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**54. `MinorAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
-🚀 MinorAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:133]
+🚀 MinorAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:132]
   └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
      ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
     └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
@@ -1111,7 +1135,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**53. `QuintupleAspectsComposerService.checkPatternExists`** — depth 4 · orphan-root
+**55. `QuintupleAspectsComposerService.checkPatternExists`** — depth 4 · orphan-root
 
 ```text
 🚀 QuintupleAspectsComposerService.checkPatternExists(edges: AspectBodies[]): boolean [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:372]
@@ -1122,7 +1146,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> QuintupleAspectsComposerService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:404]
 ```
 
-**54. `SpecialtyAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
+**56. `SpecialtyAspectsEventService.isMatchingAspect`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsEventService.isMatchingAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-event.service.ts:98]
@@ -1134,10 +1158,10 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Normalizes an angle in degrees to the range [0, 360).
 ```
 
-**55. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**57. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:50]
+🚀 SpecialtyAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:49]
   └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
      ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
     └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
@@ -1145,22 +1169,22 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**56. `SpecialtyAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
+**58. `SpecialtyAspectsProgressiveService.processAspectGroup`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsProgressiveService.processAspectGroup(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:109]
    ↳ Pairs forming and dissolving events for one grouped body-pair/aspect key.
-  └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135]
+  └─> ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133]
      ↳ Builds progressive events for one simple-aspect family, optionally constrained to one precomputed group key.
-    └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62]
-       ↳ Build progressive duration events for an aspect category by pairing Forming/Dissolving boundaries.
-      └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:84]
+    └─> ProgressiveAspectService.buildProgressiveAspectEvents(…): DetectedCalendarEvent[] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60]
+       ↳ Build progressive duration events for an aspect tag by pairing Forming/Dissolving boundaries.
+      └─> ProgressiveAspectService.filter(…)(event: DetectedCalendarEvent): boolean [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:82]
 ```
 
-**57. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
+**59. `SpecialtyAspectsProgressiveService.pairProgressiveEvents`** — depth 4 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:122]
+🚀 SpecialtyAspectsProgressiveService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:121]
   └─> ProgressiveUtilitiesService.pairProgressiveEvents(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:107]
      ↳ Pairs each beginning with the earliest unused ending at or after it, as long as that ending comes no later than the…
     └─> ProgressiveUtilitiesService.pairInStartOrder(…): [DetectedCalendarEvent, DetectedCalendarEvent][] [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:33]
@@ -1168,7 +1192,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> ProgressiveUtilitiesService.byStart(first: DetectedCalendarEvent, second: DetectedCalendarEvent): number [projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:37]
 ```
 
-**58. `SpecialtyAspectsService.getLongitudesWindow`** — depth 4 · orphan-root
+**60. `SpecialtyAspectsService.getLongitudesWindow`** — depth 4 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:215]
@@ -1180,21 +1204,21 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**59. `MinorAspectsComposerService.buildGroupKey`** — depth 4 · orphan-root
+**61. `MinorAspectsComposerService.buildGroupKey`** — depth 4 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.buildGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:98]
    ↳ Builds a stable grouping key from sorted bodies plus aspect name for pairing.
-  └─> MinorAspectsComposerService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:100]
+  └─> MinorAspectsComposerService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:100]
     └─> MinorAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:102]
       └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-         ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+         ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**60. `MinorAspectsComposerService.getLongitudesWindowForBody`** — depth 4 · orphan-root
+**62. `MinorAspectsComposerService.getLongitudesWindowForBody`** — depth 4 · orphan-root
 
 ```text
-🚀 MinorAspectsComposerService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:184]
+🚀 MinorAspectsComposerService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:176]
    ↳ Returns previous/current/next longitudes for one body at minute resolution.
   └─> AspectCalculationSupportService.getLongitudesWindowForBody(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:86]
      ↳ Returns previous/current/next longitudes for one body from a body-keyed ephemeris map.
@@ -1204,18 +1228,18 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**61. `SpecialtyAspectsComposerService.specialtyAspectGroupKey`** — depth 4 · orphan-root
+**63. `SpecialtyAspectsComposerService.specialtyAspectGroupKey`** — depth 4 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsComposerService.specialtyAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:240]
+🚀 SpecialtyAspectsComposerService.specialtyAspectGroupKey(event: DetectedCalendarEvent): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:236]
    ↳ Builds a stable grouping key from sorted bodies plus specialty-aspect label.
-  └─> SpecialtyAspectsComposerService.filter(…)(category: string): boolean [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:242]
-    └─> SpecialtyAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:243]
+  └─> SpecialtyAspectsComposerService.filter(…)(tag: string): boolean [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:238]
+    └─> SpecialtyAspectsComposerService.map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:239]
       └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-         ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+         ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**62. `EphemerisDownloadCommand.run`** — depth 3 · decorated-method
+**64. `EphemerisDownloadCommand.run`** — depth 3 · decorated-method
 
 ```text
 🚀 EphemerisDownloadCommand.run(): Promise<void> [projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.command.ts:42]
@@ -1226,7 +1250,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The absolute directory the data files live in, from the working directory.
 ```
 
-**63. `EphemerisService.constructor`** — depth 3 · orphan-root
+**65. `EphemerisService.constructor`** — depth 3 · orphan-root
 
 ```text
 🚀 EphemerisService.constructor(…): EphemerisService [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:43]
@@ -1236,7 +1260,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The absolute directory the data files live in, from the working directory.
 ```
 
-**64. `DailyCyclesService.buildLunarNadirEvent`** — depth ≥ 3 · orphan-root
+**66. `DailyCyclesService.buildLunarNadirEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildLunarNadirEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:80]
@@ -1247,7 +1271,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**65. `DailyCyclesService.buildLunarZenithEvent`** — depth ≥ 3 · orphan-root
+**67. `DailyCyclesService.buildLunarZenithEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildLunarZenithEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:87]
@@ -1258,7 +1282,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**66. `DailyCyclesService.buildMoonriseEvent`** — depth ≥ 3 · orphan-root
+**68. `DailyCyclesService.buildMoonriseEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildMoonriseEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:94]
@@ -1269,7 +1293,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**67. `DailyCyclesService.buildMoonsetEvent`** — depth ≥ 3 · orphan-root
+**69. `DailyCyclesService.buildMoonsetEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildMoonsetEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:101]
@@ -1280,7 +1304,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**68. `DailyCyclesService.buildSolarNadirEvent`** — depth ≥ 3 · orphan-root
+**70. `DailyCyclesService.buildSolarNadirEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSolarNadirEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:108]
@@ -1291,7 +1315,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**69. `DailyCyclesService.buildSolarZenithEvent`** — depth ≥ 3 · orphan-root
+**71. `DailyCyclesService.buildSolarZenithEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSolarZenithEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:115]
@@ -1302,7 +1326,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**70. `DailyCyclesService.buildSunriseEvent`** — depth ≥ 3 · orphan-root
+**72. `DailyCyclesService.buildSunriseEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSunriseEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:122]
@@ -1313,7 +1337,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**71. `DailyCyclesService.buildSunsetEvent`** — depth ≥ 3 · orphan-root
+**73. `DailyCyclesService.buildSunsetEvent`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 DailyCyclesService.buildSunsetEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:129]
@@ -1324,98 +1348,98 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds a one-minute-point event where start and end are the same timestamp.
 ```
 
-**72. `EclipsesService.buildLunarEclipseEvent`** — depth 3 · orphan-root
+**74. `EclipsesService.buildLunarEclipseEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 EclipsesService.buildLunarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:48]
    ↳ Creates a lunar eclipse calendar event.
-  └─> EclipseEventService.buildLunarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:155]
+  └─> EclipseEventService.buildLunarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:149]
      ↳ Creates a lunar eclipse calendar event.
-    └─> EclipseEventService.buildEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:56]
+    └─> EclipseEventService.buildEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:57]
        ↳ Builds one eclipse contact event, titled with its type, body and phase, for example "🌐 🌙🐉▶️ Total Lunar Eclipse…
 ```
 
-**73. `EclipsesService.buildSolarEclipseEvent`** — depth 3 · orphan-root
+**75. `EclipsesService.buildSolarEclipseEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 EclipsesService.buildSolarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:60]
    ↳ Creates a solar eclipse calendar event.
-  └─> EclipseEventService.buildSolarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:167]
+  └─> EclipseEventService.buildSolarEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:161]
      ↳ Creates a solar eclipse calendar event.
-    └─> EclipseEventService.buildEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:56]
+    └─> EclipseEventService.buildEclipseEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:57]
        ↳ Builds one eclipse contact event, titled with its type, body and phase, for example "🌐 🌙🐉▶️ Total Lunar Eclipse…
 ```
 
-**74. `TwilightsService.buildAstronomicalDawnEvent`** — depth 3 · orphan-root
+**76. `TwilightsService.buildAstronomicalDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildAstronomicalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:61]
    ↳ Creates an astronomical dawn calendar event. Marks when the sky begins to lighten (Sun at -18° elevation).
-  └─> TwilightsBuilderService.buildAstronomicalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:61]
+  └─> TwilightsBuilderService.buildAstronomicalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:58]
      ↳ Builds the instant when Sun crosses -18 degrees upward.
     └─> TwilightsBuilderService.buildTransitionEvent(date: Moment, description: string, emoji: string): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:32]
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**75. `TwilightsService.buildAstronomicalDuskEvent`** — depth 3 · orphan-root
+**77. `TwilightsService.buildAstronomicalDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildAstronomicalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:71]
    ↳ Creates an astronomical dusk calendar event.
-  └─> TwilightsBuilderService.buildAstronomicalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:68]
+  └─> TwilightsBuilderService.buildAstronomicalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:65]
      ↳ Builds the instant when Sun crosses -18 degrees downward.
     └─> TwilightsBuilderService.buildTransitionEvent(date: Moment, description: string, emoji: string): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:32]
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**76. `TwilightsService.buildCivilDawnEvent`** — depth 3 · orphan-root
+**78. `TwilightsService.buildCivilDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildCivilDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:81]
    ↳ Creates a civil dawn calendar event.
-  └─> TwilightsBuilderService.buildCivilDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:75]
+  └─> TwilightsBuilderService.buildCivilDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:72]
      ↳ Builds the instant when Sun crosses -6 degrees upward.
     └─> TwilightsBuilderService.buildTransitionEvent(date: Moment, description: string, emoji: string): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:32]
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**77. `TwilightsService.buildCivilDuskEvent`** — depth 3 · orphan-root
+**79. `TwilightsService.buildCivilDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildCivilDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:91]
    ↳ Creates a civil dusk calendar event.
-  └─> TwilightsBuilderService.buildCivilDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:82]
+  └─> TwilightsBuilderService.buildCivilDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:79]
      ↳ Builds the instant when Sun crosses -6 degrees downward.
     └─> TwilightsBuilderService.buildTransitionEvent(date: Moment, description: string, emoji: string): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:32]
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**78. `TwilightsService.buildNauticalDawnEvent`** — depth 3 · orphan-root
+**80. `TwilightsService.buildNauticalDawnEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildNauticalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:101]
    ↳ Creates a nautical dawn calendar event. Marks when the horizon becomes visible at sea (Sun at −12° elevation).
-  └─> TwilightsBuilderService.buildNauticalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:89]
+  └─> TwilightsBuilderService.buildNauticalDawnEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:86]
      ↳ Builds the instant when Sun crosses -12 degrees upward.
     └─> TwilightsBuilderService.buildTransitionEvent(date: Moment, description: string, emoji: string): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:32]
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**79. `TwilightsService.buildNauticalDuskEvent`** — depth 3 · orphan-root
+**81. `TwilightsService.buildNauticalDuskEvent`** — depth 3 · orphan-root
 
 ```text
 🚀 TwilightsService.buildNauticalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:111]
    ↳ Creates a nautical dusk calendar event. Marks when the sea horizon becomes indistinguishable (Sun at −12° elevation).
-  └─> TwilightsBuilderService.buildNauticalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:96]
+  └─> TwilightsBuilderService.buildNauticalDuskEvent(date: Moment): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:93]
      ↳ Builds the instant when Sun crosses -12 degrees downward.
     └─> TwilightsBuilderService.buildTransitionEvent(date: Moment, description: string, emoji: string): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:32]
        ↳ Creates a timestamped twilight transition event and logs the detected boundary.
 ```
 
-**80. `SpecialtyAspectsComposerService.getBodyLongitudesWindow`** — depth 3 · orphan-root
+**82. `SpecialtyAspectsComposerService.getBodyLongitudesWindow`** — depth 3 · orphan-root
 
 ```text
-🚀 SpecialtyAspectsComposerService.getBodyLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:149]
+🚀 SpecialtyAspectsComposerService.getBodyLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:145]
    ↳ Returns previous/current/next longitudes for one body at minute resolution.
   └─> EphemerisService.getLongitudesWindow(…): { current: number; next: number; previous: number; } [projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:390]
      ↳ Extracts the ecliptic longitude for a body at the previous, current, and next minute.
@@ -1423,15 +1447,71 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Safely extracts coordinate data (longitude or latitude) from ephemeris at a timestamp.
 ```
 
-**81. `map(…)`** — depth 2 · orphan-root
+**83. `map(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 map(…)(…): [string, "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | ... 6 more ... | "venus"] [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:481]
   └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-     ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+     ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
-**82. `IngressesService.getSign`** — depth 2 · orphan-root
+**84. `mapNone`** — depth 2 · orphan-root
+
+```text
+🚀 mapNone(names: readonly string[]): TagMap [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:53]
+   ↳ A map from each name to no node at all, as it classifies nothing.
+  └─> map(…)(name: string): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:55]
+```
+
+**85. `mapPlanetaryPhases`** — depth 2 · orphan-root
+
+```text
+🚀 mapPlanetaryPhases(…): Readonly<Record<string, readonly TagPath[]>> [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:66]
+   ↳ The raw tags of one planet's phase events, keyed by the raw tag that marks them as that planet's, such as `Venusian`:…
+  └─> map(…)(phase: string): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:78]
+```
+
+**86. `map(…)`** — depth 2 · orphan-root
+
+```text
+🚀 map(…)(…): string [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:51]
+  └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
+     ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
+```
+
+**87. `map(…)`** — depth 2 · orphan-root
+
+```text
+🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:114]
+  └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
+     ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
+```
+
+**88. `map(…)`** — depth 2 · orphan-root
+
+```text
+🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:123]
+  └─> signPaths(sign: Sign): readonly TagPath[] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:130]
+     ↳ The nodes a sign stands for: the sign itself, and beside it, as roots of their own, the element, modality and polarity…
+```
+
+**89. `map(…)`** — depth 2 · orphan-root
+
+```text
+🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:160]
+  └─> natureAndHarmonicPaths([nature, harmonic]: readonly [string, number]): readonly TagPath[] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:111]
+     ↳ The nodes an aspect's nature and harmonic stand for, as roots of their own.
+```
+
+**90. `map(…)`** — depth 2 · orphan-root
+
+```text
+🚀 map(…)(…): [string, readonly TagPath[]] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:179]
+  └─> natureAndHarmonicPaths([nature, harmonic]: readonly [string, number]): readonly TagPath[] [projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:111]
+     ↳ The nodes an aspect's nature and harmonic stand for, as roots of their own.
+```
+
+**91. `IngressesService.getSign`** — depth 2 · orphan-root
 
 ```text
 🚀 IngressesService.getSign(longitude: number): Sign [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:72]
@@ -1439,55 +1519,55 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> IngressesService.find(…)(…): boolean [projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:75]
 ```
 
-**83. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**92. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:40]
-  └─> TwilightsBuilderService.getAstronomicalTwilightMorningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:123]
+  └─> TwilightsBuilderService.getAstronomicalTwilightMorningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:120]
      ↳ Builds morning astronomical-twilight interval from transition boundaries.
 ```
 
-**84. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**93. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:50]
-  └─> TwilightsBuilderService.getNauticalTwilightMorningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:182]
+  └─> TwilightsBuilderService.getNauticalTwilightMorningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:176]
      ↳ Builds morning nautical-twilight interval from transition boundaries.
 ```
 
-**85. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**94. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:80]
-  └─> TwilightsBuilderService.getDaylightDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:143]
+  └─> TwilightsBuilderService.getDaylightDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:140]
      ↳ Builds daylight interval between civil dawn and civil dusk boundaries.
 ```
 
-**86. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**95. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:90]
-  └─> TwilightsBuilderService.getNauticalTwilightEveningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:162]
+  └─> TwilightsBuilderService.getNauticalTwilightEveningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:156]
      ↳ Builds evening nautical-twilight interval from transition boundaries.
 ```
 
-**87. `TwilightsComposerService.builder`** — depth 2 · orphan-root
+**96. `TwilightsComposerService.builder`** — depth 2 · orphan-root
 
 ```text
 🚀 TwilightsComposerService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:100]
-  └─> TwilightsBuilderService.getAstronomicalTwilightEveningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:103]
+  └─> TwilightsBuilderService.getAstronomicalTwilightEveningDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:100]
      ↳ Builds evening astronomical-twilight interval from transition boundaries.
 ```
 
-**88. `TwilightsService.builder`** — depth 2 · orphan-root
+**97. `TwilightsService.builder`** — depth 2 · orphan-root
 
 ```text
-🚀 TwilightsService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:197]
-  └─> TwilightsBuilderService.getNightDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:202]
+🚀 TwilightsService.builder(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:193]
+  └─> TwilightsBuilderService.getNightDurationEvent(…): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:196]
      ↳ Builds night interval spanning from astronomical dusk to next astronomical dawn.
 ```
 
-**89. `MajorAspectsService.constructor`** — depth 2 · orphan-root
+**98. `MajorAspectsService.constructor`** — depth 2 · orphan-root
 
 ```text
 🚀 MajorAspectsService.constructor(…): MajorAspectsService [projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:37]
@@ -1495,7 +1575,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a phase-detection function bound to a specific set of aspects.
 ```
 
-**90. `MinorAspectsService.constructor`** — depth 2 · orphan-root
+**99. `MinorAspectsService.constructor`** — depth 2 · orphan-root
 
 ```text
 🚀 MinorAspectsService.constructor(…): MinorAspectsService [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:41]
@@ -1503,7 +1583,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a phase-detection function bound to a specific set of aspects.
 ```
 
-**91. `QuadrupleAspectsService.getOtherBody`** — depth 2 · orphan-root
+**100. `QuadrupleAspectsService.getOtherBody`** — depth 2 · orphan-root
 
 ```text
 🚀 QuadrupleAspectsService.getOtherBody(edge: AspectBodies, body: Body): Body | null [projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:100]
@@ -1512,7 +1592,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns the other body in an aspect edge relative to the given body.
 ```
 
-**92. `SpecialtyAspectsService.constructor`** — depth 2 · orphan-root
+**101. `SpecialtyAspectsService.constructor`** — depth 2 · orphan-root
 
 ```text
 🚀 SpecialtyAspectsService.constructor(…): SpecialtyAspectsService [projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:41]
@@ -1520,7 +1600,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Returns a phase-detection function bound to a specific set of aspects.
 ```
 
-**93. `TripleAspectsService.findBodiesWithAspectTo`** — depth 2 · orphan-root
+**102. `TripleAspectsService.findBodiesWithAspectTo`** — depth 2 · orphan-root
 
 ```text
 🚀 TripleAspectsService.findBodiesWithAspectTo(body: Body, aspectType: Aspect, edges: AspectBodies[]): Body[] [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:36]
@@ -1528,7 +1608,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> TripleAspectsService.map(…)(…): "lunar apogee" | "lunar perigee" | "north lunar node" | "south lunar node" | "ceres" | "chiron" | "juno" | "lilith" | "pallas" | "vesta" | "jupiter" | "mars" | "mercury" | "moon" | ... 5 more ... | "venus" [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:47]
 ```
 
-**94. `TripleAspectsService.groupAspectsByType`** — depth ≥ 2 · orphan-root
+**103. `TripleAspectsService.groupAspectsByType`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 TripleAspectsService.groupAspectsByType<T extends AspectBodies>(edges: T[]): Map<Aspect, T[]> [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:55]
@@ -1536,7 +1616,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> TripleAspectsService.groupByToMap(…)(…): "biquintile" | "decile" | "novile" | "quintile" | "septile" | "tredecile" | "undecile" | "quincunx" | "semisextile" | "semisquare" | "sesquiquadrate" | "conjunct" | "opposite" | "sextile" | "square" | "trine" [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:58]
 ```
 
-**95. `TripleAspectsService.haveAspect`** — depth 2 · orphan-root
+**104. `TripleAspectsService.haveAspect`** — depth 2 · orphan-root
 
 ```text
 🚀 TripleAspectsService.haveAspect(…): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:64]
@@ -1544,13 +1624,13 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> TripleAspectsService.some(…)(edge: AspectBodies): boolean [projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:72]
 ```
 
-**96. `MinorAspectsComposerService.assembleMinorAspectEvent`** — depth 2 · orphan-root
+**105. `MinorAspectsComposerService.assembleMinorAspectEvent`** — depth 2 · orphan-root
 
 ```text
 🚀 MinorAspectsComposerService.assembleMinorAspectEvent(args: AssembleMinorAspectEventArguments): DetectedCalendarEvent [projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:59]
    ↳ Assembles minor aspect event.
   └─> bodyDisplayName(body: string): string [projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:297]
-     ↳ Names a body the way every summary, description, category and progressive grouping key does: lodash start case ("north…
+     ↳ Names a body the way every summary, description, tag and progressive grouping key does: lodash start case ("north lunar…
 ```
 
 </details>
@@ -1564,7 +1644,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `DailyCyclesService.getDailySolarCycleEvents` | 10 | `DailyCyclesBuilderService.getElevationWindow`, `DailyCyclesBuilderService.getHorizonClearanceWindow`, `DailyCyclesBuilderService.isRise`, `DailyCyclesBuilderService.buildSunriseEvent`, `MathService.isMaximum`, `DailyCyclesBuilderService.buildSolarZenithEvent`, `DailyCyclesBuilderService.isSet`, `DailyCyclesBuilderService.buildSunsetEvent`, `MathService.isMinimum`, `DailyCyclesBuilderService.buildSolarNadirEvent` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:222` |
 
 <details>
-<summary>607 more callables</summary>
+<summary>641 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -1578,44 +1658,50 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PerfectiveService.detectOrbitalEvents` | 8 | `RetrogradesService.detect`, `IngressesService.detect`, `MonthlyLunarCycleService.detect`, `MonthlyLunarCycleService.detectApsides`, `AnnualSolarCycleService.detect`, `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:171` |
 | `ProgressiveService.detect` | 8 | `AspectsService.detectProgressive`, `RetrogradesService.detectProgressive`, `EclipsesService.detectProgressive`, `IngressesService.detectProgressive`, `MonthlyLunarCycleService.detectProgressive`, `TwilightsService.detectProgressive`, `PhasesService.detectProgressive`, `AnnualSolarCycleService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive.service.ts:47` |
 | `PhasesService.detectProgressive` | 7 | `PhasesService.filter(…)`, `PhasesService.filter(…)`, `VenusianPhaseService.getVenusianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MercurianPhaseService.getMercurianPhaseProgressiveEvents`, `PhasesService.filter(…)`, `MartianPhaseService.getMartianPhaseProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:97` |
-| `AspectsService.detectCompositeAspects` | 6 | `QuadrupleAspectsService.detect`, `QuintupleAspectsService.detect`, `SextupleAspectsService.detect`, `StelliumService.detect`, `TripleAspectsService.detect`, `AspectsService.compoundEventKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:84` |
+| `classifyEvent` | 6 | `flatMap(…)`, `pruneAncestorPaths`, `flatMap(…)`, `ingressPaths`, `eclipsePaths`, `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:20` |
+| `dignityPaths` | 6 | `find(…)`, `map(…)`, `find(…)`, `map(…)`, `isSign`, `find(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:57` |
+| `CalendarEventsService.transaction(…)` | 6 | `TagsService.resolve`, `CalendarEventsService.flatMap(…)`, `CalendarEventsService.writeRows`, `CalendarEventsService.map(…)`, `CalendarEventsService.replaceTagLinks`, `toTagLinks` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:233` |
+| `AspectsService.detectCompositeAspects` | 6 | `QuadrupleAspectsService.detect`, `QuintupleAspectsService.detect`, `SextupleAspectsService.detect`, `StelliumService.detect`, `TripleAspectsService.detect`, `AspectsService.compoundEventKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:82` |
 | `EclipseClassificationService.getSolarEclipseType` | 6 | `EclipseClassificationService.isInProgress(…)`, `EclipseClassificationService.isInProgress`, `EclipseClassificationService.getClosestApproach(…)`, `EclipseClassificationService.getClosestApproach`, `EclipseClassificationService.getGamma`, `EclipseClassificationService.getUmbralRadius` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:205` |
 | `EclipseCalculationService.getGeocentricEvents` | 6 | `EclipseCalculationService.getSolarEclipsePhases`, `EclipseCalculationService.getLunarEclipsePhases`, `EclipseCalculationService.continueOccurrence`, `EclipseClassificationService.getSolarEclipseType`, `EclipseClassificationService.getLunarEclipseType`, `EclipseCalculationService.buildGeocentricEclipseEvents` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:178` |
 | `RetrogradesService.detectBodyStations` | 6 | `EphemerisService.getCoordinateFromEphemeris`, `RetrogradesService.getPreviousLongitudes`, `RetrogradesService.getNextLongitudes`, `RetrogradesService.isRetrograde`, `RetrogradesService.buildRetrogradeEvent`, `RetrogradesService.isDirect` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:56` |
-| `RetrogradesService.detectProgressive` | 6 | `RetrogradesService.filter(…)`, `bodyDisplayName`, `RetrogradesService.filter(…)`, `RetrogradesService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `RetrogradesService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:358` |
+| `RetrogradesService.detectProgressive` | 6 | `RetrogradesService.filter(…)`, `bodyDisplayName`, `RetrogradesService.filter(…)`, `RetrogradesService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `RetrogradesService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:359` |
 | `EphemerisAggregationService.processNonNodeBodyMinute` | 5 | `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.getBodyCoordinatesWithDistance`, `EphemerisConstantsService.isHorizonBody`, `EphemerisHorizonService.computeAzimuthElevationForMinute`, `EphemerisPhenomenaService.computePhenoForMinute` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:103` |
 | `EphemerisService.computeAllEphemerides` | 5 | `EphemerisService.getAggregationService`, `EphemerisAggregationService.buildEphemerisFeatureSets`, `EphemerisAggregationService.buildEphemerisEntries`, `EphemerisAggregationService.accumulateBodyEphemeris`, `EphemerisAggregationService.entriesToEphemerides` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:107` |
-| `AnnualSolarCycleService.detectProgressive` | 5 | `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.getAdvancingProgressiveEvents`, `AnnualSolarCycleService.getRetreatingProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:205` |
+| `AnnualSolarCycleService.detectProgressive` | 5 | `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.filter(…)`, `AnnualSolarCycleService.getAdvancingProgressiveEvents`, `AnnualSolarCycleService.getRetreatingProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:199` |
 | `EclipseClassificationService.getLunarEclipseType` | 5 | `EclipseClassificationService.isInProgress(…)`, `EclipseClassificationService.isInProgress`, `EclipseClassificationService.getClosestApproach(…)`, `EclipseClassificationService.getClosestApproach`, `EclipseGeometryService.getDiscAngles` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:161` |
-| `EclipseEventService.getProgressiveEventsForFrame` | 5 | `EclipseEventService.filter(…)`, `EclipseEventService.filter(…)`, `EclipseEventService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `EclipseEventService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:122` |
+| `EclipseEventService.getProgressiveEventsForFrame` | 5 | `EclipseEventService.filter(…)`, `EclipseEventService.filter(…)`, `EclipseEventService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `EclipseEventService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:118` |
 | `MartianPhaseService.detectMartianPhases` | 5 | `PhaseCalculationService.isMorningRise`, `PhaseCalculationService.isMorningSet`, `PhaseCalculationService.isEveningRise`, `PhaseCalculationService.isEveningSet`, `MartianPhaseService.buildMartianPhaseEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:61` |
 | `MercurianPhaseService.detectMercurianEveningPhases` | 5 | `PhaseCalculationService.isEveningRise`, `PhaseCalculationService.isEasternElongation`, `PhaseCalculationService.isEasternBrightest`, `PhaseCalculationService.isEveningSet`, `MercurianPhaseService.buildMercurianPhaseEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:61` |
 | `MercurianPhaseService.detectMercurianMorningPhases` | 5 | `PhaseCalculationService.isMorningRise`, `PhaseCalculationService.isWesternBrightest`, `PhaseCalculationService.isWesternElongation`, `PhaseCalculationService.isMorningSet`, `MercurianPhaseService.buildMercurianPhaseEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:91` |
 | `VenusianPhaseService.detectVenusianEveningPhases` | 5 | `PhaseCalculationService.isEveningRise`, `PhaseCalculationService.isEasternElongation`, `PhaseCalculationService.isEasternBrightest`, `PhaseCalculationService.isEveningSet`, `VenusianPhaseService.buildVenusianPhaseEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:61` |
 | `VenusianPhaseService.detectVenusianMorningPhases` | 5 | `PhaseCalculationService.isMorningRise`, `PhaseCalculationService.isWesternBrightest`, `PhaseCalculationService.isWesternElongation`, `PhaseCalculationService.isMorningSet`, `VenusianPhaseService.buildVenusianPhaseEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:89` |
-| `TwilightsService.detectProgressive` | 5 | `TwilightsService.filter(…)`, `TwilightsService.getEventsByCategory`, `TwilightsComposerService.buildDawnProgressiveEvents`, `TwilightsComposerService.buildDuskProgressiveEvents`, `TwilightsComposerService.pairAndBuild` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:163` |
-| `ProgressiveAspectService.buildProgressiveAspectEvents` | 5 | `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.groupBy(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:62` |
+| `TwilightsService.detectProgressive` | 5 | `TwilightsService.filter(…)`, `TwilightsService.getEventsByTag`, `TwilightsComposerService.buildDawnProgressiveEvents`, `TwilightsComposerService.buildDuskProgressiveEvents`, `TwilightsComposerService.pairAndBuild` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:163` |
+| `ProgressiveAspectService.buildProgressiveAspectEvents` | 5 | `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.groupBy(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:60` |
 | `SextupleAspectsService.composeHexagrams` | 5 | `SextupleAspectsComposerService.groupAspectsByType`, `SextupleAspectsService.pruneHexagramCandidates`, `SextupleAspectsComposerService.collectTrineBodies`, `SextupleAspectsService.processHexagramCombinations`, `MathService.getCombinations` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:36` |
 | `StelliumService.composeStelliums` | 5 | `StelliumService.findStelliumsByKey`, `StelliumService.map(…)`, `StelliumService.missingFrom`, `StelliumService.map(…)`, `StelliumService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:93` |
 | `StelliumService.extendCliques` | 5 | `StelliumService.maxBy(…)`, `StelliumService.neighborsOf`, `StelliumService.filter(…)`, `StelliumService.filter(…)`, `StelliumService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:157` |
 | `TripleAspectsDetectorService.composeGrandTrines` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `AspectGraphService.canonicalBodyOrder`, `TripleAspectsDetectorService.getUniqueBodyTriplets`, `TripleAspectsDetectorService.checkGrandTrineTriplet` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:331` |
 | `TripleAspectsDetectorService.composeTSquares` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `TripleAspectsDetectorService.canonicalPair`, `TripleAspectsComposerService.findBodiesWithAspectTo`, `TripleAspectsDetectorService.checkTSquareFocalBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:377` |
 | `TripleAspectsDetectorService.composeYods` | 5 | `AspectGraphService.unionAspectBodies`, `TripleAspectsDetectorService.groupAspectsByType`, `TripleAspectsDetectorService.canonicalPair`, `TripleAspectsComposerService.findBodiesWithAspectTo`, `TripleAspectsDetectorService.checkYodApexBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:432` |
+| `flatMap(…)` | 4 | `one`, `mapEach(…)`, `mapEach`, `map(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:24` |
+| `pruneAncestorPaths` | 4 | `map(…)`, `map(…)`, `toSorted(…)`, `filter(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:161` |
+| `CalendarEventsService.findInRange` | 4 | `formatCoordinate`, `CalendarEventsService.findTagNames`, `CalendarEventsService.map(…)`, `CalendarEventsService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:177` |
 | `CalendarService.buildTimezoneContent` | 4 | `CalendarService.flatMap(…)`, `CalendarService.buildObservance`, `CalendarService.map(…)`, `CalendarService.findTransitions` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:80` |
 | `EphemerisPhenomenaService.computeIlluminationForBody` | 4 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-phenomena.service.ts:55` |
 | `EphemerisAggregationService.accumulateBodyEphemeris` | 4 | `EphemerisConstantsService.isNode`, `EphemerisCoordinateService.computeNodeBodyMinutes`, `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `EphemerisAggregationService.computeNonNodeBodyMinutes` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-aggregation.service.ts:158` |
-| `AnnualSolarCycleService.getSolarApsisEvents` | 4 | `AnnualSolarCycleService.getSolarDistanceSpeeds`, `AnnualSolarCycleService.getNearestApsisMinute`, `AnnualSolarCycleEventsService.buildAphelionEvent`, `AnnualSolarCycleEventsService.buildPerihelionEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:292` |
+| `AnnualSolarCycleService.getSolarApsisEvents` | 4 | `AnnualSolarCycleService.getSolarDistanceSpeeds`, `AnnualSolarCycleService.getNearestApsisMinute`, `AnnualSolarCycleEventsService.buildAphelionEvent`, `AnnualSolarCycleEventsService.buildPerihelionEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:286` |
 | `EclipseTopocentricService.getClosestVisibleApproach` | 4 | `EclipseGeometryService.getTopocentricSample`, `EclipseGeometryService.getTopocentricSolarContactGeometry`, `EclipseTopocentricService.getVisibilityMargin`, `EclipseTopocentricService.getClosestApproach` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:176` |
 | `EclipseTopocentricService.getSolarTopocentricPhases` | 4 | `EclipseGeometryService.getTopocentricSolarContactGeometry`, `EclipseTopocentricService.getVisiblePhases`, `EclipseTopocentricService.getVisibilityMargin`, `MathService.isMinimum` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:327` |
 | `EclipseCalculationService.getContactPhases` | 4 | `MathService.crossesUpwardNearCurrent`, `EclipseCalculationService.values(…)`, `EclipseCalculationService.values`, `EclipseCalculationService.values(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:122` |
 | `EclipseCalculationService.getSolarEclipsePhases` | 4 | `EclipseGeometryService.getSolarContactGeometry`, `MathService.isMinimum`, `EclipseClassificationService.getSolarGamma`, `EclipseCalculationService.getContactPhases` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:259` |
-| `IngressesComposerService.buildDecanIngressEventObject` | 4 | `IngressesComposerService.getSign`, `IngressesComposerService.resolveDecan`, `bodyDisplayName`, `capitalize` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:111` |
+| `IngressesComposerService.buildDecanIngressEventObject` | 4 | `IngressesComposerService.getSign`, `IngressesComposerService.resolveDecan`, `bodyDisplayName`, `capitalize` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:113` |
 | `IngressesService.getDecanIngressEvents` | 4 | `IngressesComposerService.getLongitudes`, `IngressesComposerService.isSignIngress`, `IngressesComposerService.isDecanIngress`, `IngressesComposerService.buildDecanIngressEvent` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:195` |
 | `PerfectiveService.detectDayEvents` | 4 | `EphemerisService.getEphemerides`, `AspectsService.seed`, `DatetimeService.generateMinutes`, `PerfectiveService.detectMinuteEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:62` |
-| `ProgressiveAspectService.buildAspectGroupKeyFromCategories` | 4 | `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33` |
-| `ProgressiveAspectService.extractTypedAspectParts` | 4 | `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:238` |
+| `ProgressiveAspectService.buildAspectGroupKeyFromTags` | 4 | `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:33` |
+| `ProgressiveAspectService.extractTypedAspectParts` | 4 | `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.map(…)`, `ProgressiveAspectService.filter(…)`, `ProgressiveAspectService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:236` |
 | `QuadrupleAspectsBaseService.checkGrandCrossPattern` | 4 | `QuadrupleAspectsBaseService.groupAspectsByType`, `QuadrupleAspectsBaseService.haveAspect`, `QuadrupleAspectsBaseService.buildGrandCrossOppositeMap`, `QuadrupleAspectsBaseService.verifyGrandCrossSquares` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:97` |
-| `QuadrupleAspectsBaseService.getQuadrupleAspectEvent` | 4 | `bodyDisplayName`, `QuadrupleAspectsBaseService.buildQuadrupleAspectDescription`, `QuadrupleAspectsBaseService.getPhaseEmoji`, `QuadrupleAspectsBaseService.makeQuadrupleAspectCategories` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:285` |
+| `QuadrupleAspectsBaseService.getQuadrupleAspectEvent` | 4 | `bodyDisplayName`, `QuadrupleAspectsBaseService.buildQuadrupleAspectDescription`, `QuadrupleAspectsBaseService.getPhaseEmoji`, `QuadrupleAspectsBaseService.makeQuadrupleAspectTags` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:285` |
 | `QuadrupleAspectsComposerService.composeKites` | 4 | `AspectGraphService.unionAspectBodies`, `QuadrupleAspectsBaseService.groupAspectsByType`, `QuadrupleAspectsBaseService.findGrandTrines`, `QuadrupleAspectsComposerService.collectKiteEventsForGrandTrine` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:227` |
 | `QuadrupleAspectsComposerService.tryBuildGrandCross` | 4 | `AspectGraphService.canonicalBodyOrder`, `QuadrupleAspectsBaseService.buildGrandCrossOppositeMap`, `QuadrupleAspectsBaseService.verifyGrandCrossSquares`, `QuadrupleAspectsComposerService.resolveGrandCrossEvent` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:375` |
 | `QuadrupleAspectsComposerService.tryBuildKite` | 4 | `QuadrupleAspectsComposerService.involvesBody`, `QuadrupleAspectsBaseService.getOtherBody`, `QuadrupleAspectsBaseService.haveAspect`, `QuadrupleAspectsComposerService.resolveKiteEvent` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:421` |
@@ -1625,8 +1711,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `StelliumService.findStelliumsByKey` | 4 | `StelliumService.groupAspectsByType`, `AspectGraphService.unionAspectBodies`, `StelliumService.map(…)`, `StelliumService.findStelliumCliques` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:215` |
 | `StelliumService.detectProgressive` | 4 | `StelliumService.filter(…)`, `StelliumService.groupBy(…)`, `ProgressiveUtilitiesService.pairCompoundBoundaries`, `StelliumService.buildProgressiveStelliumEvent` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:313` |
 | `TripleAspectsComposerService.buildProgressiveBodiesMeta` | 4 | `TripleAspectsComposerService.map(…)`, `TripleAspectsComposerService.filter(…)`, `TripleAspectsComposerService.resolveAspectType`, `TripleAspectsComposerService.resolveProgressiveMeta` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:55` |
-| `TripleAspectsComposerService.buildTripleAspectEvent` | 4 | `bodyDisplayName`, `TripleAspectsComposerService.buildTripleAspectDescription`, `TripleAspectsComposerService.getPhaseEmoji`, `TripleAspectsComposerService.buildTripleAspectCategories` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:284` |
-| `MinorAspectsComposerService.processAspectGroup` | 4 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:234` |
+| `TripleAspectsComposerService.buildTripleAspectEvent` | 4 | `bodyDisplayName`, `TripleAspectsComposerService.buildTripleAspectDescription`, `TripleAspectsComposerService.getPhaseEmoji`, `TripleAspectsComposerService.buildTripleAspectTags` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:280` |
+| `MinorAspectsComposerService.processAspectGroup` | 4 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:226` |
+| `TagsService.resolve` | 3 | `TagsService.map(…)`, `tagPathKey`, `TagsService.ensurePath` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:70` |
+| `CalendarEventsService.upsert` | 3 | `calendarEventKey`, `classifyEvent`, `CalendarEventsService.transaction(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:216` |
 | `CalendarService.buildEventContent` | 3 | `CalendarService.generateUid`, `CalendarService.formatEventTime`, `CalendarService.buildEventProperties` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:221` |
 | `CalendarService.buildFileContent` | 3 | `CalendarService.buildTimezoneContent`, `CalendarService.map(…)`, `CalendarService.toContentLines` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:264` |
 | `EphemerisCoordinateService.computeDistanceForBody` | 3 | `EphemerisTimeService.generateMinutes`, `EphemerisTimeService.dateToJulianDays`, `EphemerisCoordinateService.computeBodyCoordinates` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:151` |
@@ -1636,35 +1724,35 @@ What this project is judged against, as declared in its own `callidescope.config
 | `EphemerisService.getDistanceEphemerisByBody` | 3 | `EphemerisCoordinateService.computeDistanceForBody`, `EphemerisService.getCoordinateService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:260` |
 | `EphemerisService.getIlluminationEphemerisByBody` | 3 | `EphemerisPhenomenaService.computeIlluminationForBody`, `EphemerisService.getPhenomenaService`, `typedFromEntries` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.service.ts:342` |
 | `ProgressiveUtilitiesService.pairCompoundBoundaries` | 3 | `ProgressiveUtilitiesService.filter(…)`, `ProgressiveUtilitiesService.pairProgressiveEvents`, `ProgressiveUtilitiesService.boundariesFor` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-utilities.service.ts:77` |
-| `AnnualSolarCycleService.getAnnualSolarCycleEvents` | 3 | `EphemerisService.getCoordinateFromEphemeris`, `AnnualSolarCycleEventsService.getVernalToAutumnalEvents`, `AnnualSolarCycleEventsService.getAutumnalToVernalEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:229` |
-| `AspectsService.detectSimpleAspects` | 3 | `MajorAspectsService.detect`, `MinorAspectsService.detect`, `SpecialtyAspectsService.detect` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:107` |
-| `AspectsService.parseSimpleAspectEvent` | 3 | `AspectsService.map(…)`, `AspectsService.extractEventBodies`, `AspectsService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:145` |
-| `AspectsService.computeAspectBodies` | 3 | `AspectsService.map(…)`, `AspectsService.map(…)`, `AspectsService.applyEventToMap` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:177` |
-| `AspectsService.detect` | 3 | `AspectsService.detectSimpleAspects`, `AspectsService.computeAspectBodies`, `AspectsService.detectCompositeAspects` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:202` |
-| `AspectsService.flatMap(…)` | 3 | `MajorAspectsService.detectActive`, `MinorAspectsService.detectActive`, `SpecialtyAspectsService.detectActive` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:263` |
+| `AnnualSolarCycleService.getAnnualSolarCycleEvents` | 3 | `EphemerisService.getCoordinateFromEphemeris`, `AnnualSolarCycleEventsService.getVernalToAutumnalEvents`, `AnnualSolarCycleEventsService.getAutumnalToVernalEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:223` |
+| `AspectsService.detectSimpleAspects` | 3 | `MajorAspectsService.detect`, `MinorAspectsService.detect`, `SpecialtyAspectsService.detect` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:105` |
+| `AspectsService.parseSimpleAspectEvent` | 3 | `AspectsService.map(…)`, `AspectsService.extractEventBodies`, `AspectsService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:143` |
+| `AspectsService.computeAspectBodies` | 3 | `AspectsService.map(…)`, `AspectsService.map(…)`, `AspectsService.applyEventToMap` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:175` |
+| `AspectsService.detect` | 3 | `AspectsService.detectSimpleAspects`, `AspectsService.computeAspectBodies`, `AspectsService.detectCompositeAspects` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:200` |
+| `AspectsService.flatMap(…)` | 3 | `MajorAspectsService.detectActive`, `MinorAspectsService.detectActive`, `SpecialtyAspectsService.detectActive` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:261` |
 | `EclipseGeometryService.getLunarContactGeometry` | 3 | `EclipseGeometryService.getDiscAngles`, `EclipseGeometryService.getAngularSeparation`, `EclipseGeometryService.getAntisolarPoint` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-geometry.service.ts:272` |
 | `EclipseGeometryService.getSolarContactGeometry` | 3 | `EclipseGeometryService.getDiscAngles`, `EclipseGeometryService.getAngularSeparation`, `EclipseGeometryService.getSunPosition` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-geometry.service.ts:299` |
 | `EclipseCalculationService.getLunarEclipsePhases` | 3 | `EclipseGeometryService.getLunarContactGeometry`, `MathService.isMinimum`, `EclipseCalculationService.getContactPhases` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:235` |
 | `EclipsesService.detect` | 3 | `EclipseCalculationService.getAllEclipseCoordinates`, `EclipseCalculationService.getGeocentricEvents`, `EclipseCalculationService.getTopocentricEventsForDetect` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:72` |
-| `IngressesComposerService.buildPeakIngressEvent` | 3 | `IngressesComposerService.getSign`, `bodyDisplayName`, `capitalize` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:144` |
-| `IngressesComposerService.extractSignAndBodyFromCategories` | 3 | `IngressesComposerService.find(…)`, `bodyFromDisplayName`, `isSign` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:245` |
+| `IngressesComposerService.buildPeakIngressEvent` | 3 | `IngressesComposerService.getSign`, `bodyDisplayName`, `capitalize` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:147` |
+| `IngressesComposerService.extractSignAndBodyFromTags` | 3 | `IngressesComposerService.find(…)`, `bodyFromDisplayName`, `isSign` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:248` |
 | `IngressesService.detect` | 3 | `IngressesService.getSignIngressEvents`, `IngressesService.getDecanIngressEvents`, `IngressesService.getPeakIngressEvents` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:131` |
 | `IngressesService.detectProgressive` | 3 | `IngressesComposerService.filterSignIngressEvents`, `IngressesComposerService.groupSignIngressEventsByBody`, `IngressesComposerService.buildProgressiveSpansForBody` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:153` |
 | `IngressesService.getPeakIngressEvents` | 3 | `IngressesComposerService.getLongitudes`, `IngressesComposerService.isPeakIngress`, `IngressesComposerService.buildPeakIngressEvent` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:252` |
 | `IngressesService.getSignIngressEvents` | 3 | `IngressesComposerService.getLongitudes`, `IngressesComposerService.isSignIngress`, `IngressesComposerService.buildSignIngressEvent` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:309` |
 | `LunarApsidesService.detect` | 3 | `LunarApsidesService.getRadialSpeed`, `LunarApsidesService.isApsis`, `LunarApsidesService.buildApsisEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/lunar-apsides.service.ts:136` |
-| `MonthlyLunarCycleService.extractLunarPhaseFromCategories` | 3 | `MonthlyLunarCycleService.map(…)`, `MonthlyLunarCycleService.find(…)`, `isLunarPhase` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:77` |
-| `MonthlyLunarCycleService.detectProgressive` | 3 | `MonthlyLunarCycleService.filter(…)`, `MonthlyLunarCycleService.sortBy(…)`, `MonthlyLunarCycleService.getMonthlyLunarCycleProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:347` |
+| `MonthlyLunarCycleService.extractLunarPhaseFromTags` | 3 | `MonthlyLunarCycleService.map(…)`, `MonthlyLunarCycleService.find(…)`, `isLunarPhase` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:77` |
+| `MonthlyLunarCycleService.detectProgressive` | 3 | `MonthlyLunarCycleService.filter(…)`, `MonthlyLunarCycleService.sortBy(…)`, `MonthlyLunarCycleService.getMonthlyLunarCycleProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:344` |
 | `PhaseCalculationService.gatherCurrentEphemeris` | 3 | `PhaseCalculationService.gatherPositions`, `EphemerisService.getMagnitudeFromEphemeris`, `EphemerisService.getPhaseAngleFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:116` |
 | `PhaseCalculationService.gatherPhaseParameters` | 3 | `PhaseCalculationService.gatherCurrentEphemeris`, `PhaseCalculationService.gatherMarginEphemeris`, `PhaseCalculationService.gatherPositions` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:185` |
-| `MartianPhaseService.getMartianEveningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByCategory`, `MartianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:174` |
-| `MartianPhaseService.getMartianMorningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByCategory`, `MartianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:196` |
-| `MercurianPhaseService.getMercurianEveningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByCategory`, `MercurianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:173` |
-| `MercurianPhaseService.getMercurianMorningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByCategory`, `MercurianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:195` |
-| `MercurianPhaseService.getMercurianPhaseEvents` | 3 | `PhaseCalculationService.gatherPhaseParameters`, `MercurianPhaseService.detectMercurianMorningPhases`, `MercurianPhaseService.detectMercurianEveningPhases` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:217` |
-| `VenusianPhaseService.getVenusianEveningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByCategory`, `VenusianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:188` |
-| `VenusianPhaseService.getVenusianMorningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByCategory`, `VenusianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:210` |
-| `VenusianPhaseService.getVenusianPhaseEvents` | 3 | `PhaseCalculationService.gatherPhaseParameters`, `VenusianPhaseService.detectVenusianMorningPhases`, `VenusianPhaseService.detectVenusianEveningPhases` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:232` |
+| `MartianPhaseService.getMartianEveningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByTag`, `MartianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:162` |
+| `MartianPhaseService.getMartianMorningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByTag`, `MartianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:178` |
+| `MercurianPhaseService.getMercurianEveningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByTag`, `MercurianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:169` |
+| `MercurianPhaseService.getMercurianMorningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByTag`, `MercurianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:185` |
+| `MercurianPhaseService.getMercurianPhaseEvents` | 3 | `PhaseCalculationService.gatherPhaseParameters`, `MercurianPhaseService.detectMercurianMorningPhases`, `MercurianPhaseService.detectMercurianEveningPhases` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:201` |
+| `VenusianPhaseService.getVenusianEveningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByTag`, `VenusianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:180` |
+| `VenusianPhaseService.getVenusianMorningProgressiveEvents` | 3 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `PhaseCalculationService.filterByTag`, `VenusianPhaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:196` |
+| `VenusianPhaseService.getVenusianPhaseEvents` | 3 | `PhaseCalculationService.gatherPhaseParameters`, `VenusianPhaseService.detectVenusianMorningPhases`, `VenusianPhaseService.detectVenusianEveningPhases` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:212` |
 | `PhasesService.detect` | 3 | `PhasesService.getMartianPhaseEvents`, `PhasesService.getMercurianPhaseEvents`, `PhasesService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:52` |
 | `PerfectiveService.detectMinuteEvents` | 3 | `AspectsService.detect`, `PerfectiveService.detectObservationalEvents`, `PerfectiveService.detectOrbitalEvents` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:109` |
 | `PerfectiveService.detectObservationalEvents` | 3 | `EclipsesService.detect`, `DailyCyclesService.detect`, `TwilightsService.detect` | `projects/caelundas/caelundas-cli/src/modules/perfective/perfective.service.ts:132` |
@@ -1683,15 +1771,18 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SextupleAspectsService.processHexagramCombinations` | 3 | `SextupleAspectsComposerService.findHexagramPattern`, `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `SextupleAspectsComposerService.buildHexagramEvent` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:62` |
 | `SextupleAspectsService.detectProgressive` | 3 | `SextupleAspectsComposerService.groupSextupleEventsByKey`, `ProgressiveUtilitiesService.pairCompoundBoundaries`, `SextupleAspectsComposerService.buildProgressiveSextupleEvent` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects.service.ts:136` |
 | `StelliumService.createStelliumEvent` | 3 | `StelliumService.map(…)`, `StelliumService.map(…)`, `StelliumService.phaseEmojiFor` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:117` |
-| `TripleAspectsComposerService.getProgressiveGroupKey` | 3 | `TripleAspectsComposerService.map(…)`, `TripleAspectsComposerService.filter(…)`, `TripleAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:357` |
-| `TripleAspectsComposerService.pairProgressiveGroup` | 3 | `TripleAspectsComposerService.getProgressiveGroupKey`, `ProgressiveUtilitiesService.pairCompoundBoundaries`, `TripleAspectsComposerService.flatMap(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:391` |
+| `TripleAspectsComposerService.getProgressiveGroupKey` | 3 | `TripleAspectsComposerService.map(…)`, `TripleAspectsComposerService.filter(…)`, `TripleAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:353` |
+| `TripleAspectsComposerService.pairProgressiveGroup` | 3 | `TripleAspectsComposerService.getProgressiveGroupKey`, `ProgressiveUtilitiesService.pairCompoundBoundaries`, `TripleAspectsComposerService.flatMap(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:385` |
 | `TripleAspectsDetectorService.checkGrandTrineTriplet` | 3 | `TripleAspectsDetectorService.isGrandTrine`, `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `TripleAspectsComposerService.buildTripleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:44` |
 | `TripleAspectsDetectorService.checkTSquareFocalBody` | 3 | `TripleAspectsDetectorService.isTSquare`, `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `TripleAspectsComposerService.buildTripleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:94` |
 | `TripleAspectsDetectorService.checkYodApexBody` | 3 | `TripleAspectsDetectorService.isYod`, `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `TripleAspectsComposerService.buildTripleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:145` |
 | `TripleAspectsService.detect` | 3 | `TripleAspectsDetectorService.composeTSquares`, `TripleAspectsDetectorService.composeYods`, `TripleAspectsDetectorService.composeGrandTrines` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:82` |
 | `TripleAspectsService.detectProgressive` | 3 | `TripleAspectsService.filter(…)`, `TripleAspectsService.groupBy(…)`, `TripleAspectsComposerService.pairProgressiveGroup` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:111` |
 | `EphemerisDownloadService.download` | 3 | `resolveEphemerisDirectory`, `isEphemerisFilePresent`, `EphemerisDownloadService.fetchFile` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.service.ts:73` |
-| `MinorAspectsComposerService.extractAspectComponents` | 3 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)`, `MinorAspectsComposerService.castAspectComponentsToTypes` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:150` |
+| `MinorAspectsComposerService.extractAspectComponents` | 3 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)`, `MinorAspectsComposerService.castAspectComponentsToTypes` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:144` |
+| `map(…)` | 2 | `mapEach(…)`, `mapEach` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:257` |
+| `ingressPaths` | 2 | `ingressKind`, `dignityPaths` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:123` |
+| `mapRawTag` | 2 | `filter(…)`, `flatMap(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:147` |
 | `assertEphemerisFilesPresent` | 2 | `findMissingEphemerisFiles`, `EphemerisFilesMissingError.constructor` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:20` |
 | `EphemerisCoordinateService.computeBodyCoordinates` | 2 | `EphemerisConstantsService.getSwissEphemerisConstantForBody`, `assertSwissEphemerisResult` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:43` |
 | `EphemerisCoordinateService.computeNodeCoordinate` | 2 | `EphemerisCoordinateService.computeLunarPerigeeCoordinate`, `EphemerisCoordinateService.computeRegularNodeCoordinate` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris-coordinate.service.ts:91` |
@@ -1703,26 +1794,26 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AnnualSolarCycleEventsService.getVernalToAutumnalEvents` | 2 | `AnnualSolarCycleEventsService.getSpringEvents`, `AnnualSolarCycleEventsService.getSummerEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:346` |
 | `AnnualSolarCycleService.getAdvancingProgressiveEvents` | 2 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `AnnualSolarCycleService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:58` |
 | `AnnualSolarCycleService.getRetreatingProgressiveEvents` | 2 | `ProgressiveUtilitiesService.pairProgressiveEvents`, `AnnualSolarCycleService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:87` |
-| `AnnualSolarCycleService.detect` | 2 | `AnnualSolarCycleService.getAnnualSolarCycleEvents`, `AnnualSolarCycleService.getSolarApsisEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:185` |
+| `AnnualSolarCycleService.detect` | 2 | `AnnualSolarCycleService.getAnnualSolarCycleEvents`, `AnnualSolarCycleService.getSolarApsisEvents` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:179` |
 | `AspectsService.applyEventToMap` | 2 | `AspectsService.parseSimpleAspectEvent`, `AspectsService.makeKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:56` |
-| `AspectsService.seed` | 2 | `AspectsService.flatMap(…)`, `AspectsService.detectCompositeAspects` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:258` |
+| `AspectsService.seed` | 2 | `AspectsService.flatMap(…)`, `AspectsService.detectCompositeAspects` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:256` |
 | `DailyCyclesService.detect` | 2 | `DailyCyclesService.getDailySolarCycleEvents`, `DailyCyclesService.getDailyLunarCycleEvents` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles.service.ts:136` |
 | `EclipseGeometryService.getEclipseCoordinates` | 2 | `EphemerisService.getDistanceFromEphemeris`, `EclipseGeometryService.coordinate` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-geometry.service.ts:90` |
 | `EclipseClassificationService.getSolarGamma` | 2 | `EclipseClassificationService.getGamma`, `EclipseGeometryService.getSolarContactGeometry` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:254` |
-| `EclipseEventService.detectProgressive` | 2 | `EclipseEventService.filter(…)`, `EclipseEventService.getProgressiveEventsForFrame` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:179` |
+| `EclipseEventService.detectProgressive` | 2 | `EclipseEventService.filter(…)`, `EclipseEventService.getProgressiveEventsForFrame` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:173` |
 | `EclipseTopocentricService.continueSolarOccurrence` | 2 | `EclipseTopocentricService.some(…)`, `EclipseTopocentricService.getFirstLocalSolarEclipseType` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:146` |
 | `EclipseTopocentricService.getFirstLocalSolarEclipseType` | 2 | `EclipseTopocentricService.getClosestVisibleApproach`, `EclipseTopocentricService.getLocalSolarEclipseType` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:214` |
 | `EclipseTopocentricService.getSolarVisibilityMargin` | 2 | `EclipseTopocentricService.getVisibilityMargin`, `EclipseGeometryService.getTopocentricSolarContactGeometry` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:233` |
 | `EclipseTopocentricService.getLunarTopocentricPhases` | 2 | `EclipseTopocentricService.getVisiblePhases`, `EclipseTopocentricService.margin` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:294` |
 | `EclipseTopocentricService.margin` | 2 | `EclipseTopocentricService.getVisibilityMargin`, `EclipseGeometryService.getLunarContactGeometry` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:300` |
 | `EclipseCalculationService.buildGeocentricEclipseEvents` | 2 | `EclipseCalculationService.map(…)`, `EclipseCalculationService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-calculation.service.ts:92` |
-| `IngressesComposerService.getSign` | 2 | `IngressesComposerService.find(…)`, `objectEntries` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:74` |
-| `IngressesComposerService.buildProgressiveSpansForBody` | 2 | `IngressesComposerService.sortBy(…)`, `IngressesComposerService.getSignIngressDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:183` |
-| `IngressesComposerService.buildSignIngressEvent` | 2 | `IngressesComposerService.getSign`, `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:207` |
+| `IngressesComposerService.getSign` | 2 | `IngressesComposerService.find(…)`, `objectEntries` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:76` |
+| `IngressesComposerService.buildProgressiveSpansForBody` | 2 | `IngressesComposerService.sortBy(…)`, `IngressesComposerService.getSignIngressDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:186` |
+| `IngressesComposerService.buildSignIngressEvent` | 2 | `IngressesComposerService.getSign`, `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:210` |
 | `IngressesComposerService.resolveDecan` | 2 | `IngressesComposerService.getDecan`, `isDecan` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:423` |
 | `IngressesService.getSign` | 2 | `IngressesService.find(…)`, `objectEntries` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses.service.ts:72` |
 | `MonthlyLunarCycleService.getLunarPhases` | 2 | `MonthlyLunarCycleService.getElongationWindow`, `MonthlyLunarCycleService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:144` |
-| `MonthlyLunarCycleService.detect` | 2 | `MonthlyLunarCycleService.map(…)`, `MonthlyLunarCycleService.getLunarPhases` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:287` |
+| `MonthlyLunarCycleService.detect` | 2 | `MonthlyLunarCycleService.map(…)`, `MonthlyLunarCycleService.getLunarPhases` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:284` |
 | `PhaseCalculationService.isEasternBrightest` | 2 | `PhaseCalculationService.isEastern`, `PhaseCalculationService.isBrightest` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:285` |
 | `PhaseCalculationService.isEasternElongation` | 2 | `PhaseCalculationService.isElongation`, `PhaseCalculationService.isEastern` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:292` |
 | `PhaseCalculationService.isElongation` | 2 | `MathService.isMaximum`, `PhaseCalculationService.getElongationAngle` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:299` |
@@ -1732,10 +1823,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PhaseCalculationService.isMorningSet` | 2 | `PhaseCalculationService.isMorning`, `PhaseCalculationService.isSet` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:354` |
 | `PhaseCalculationService.isWesternBrightest` | 2 | `PhaseCalculationService.isWestern`, `PhaseCalculationService.isBrightest` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:420` |
 | `PhaseCalculationService.isWesternElongation` | 2 | `PhaseCalculationService.isElongation`, `PhaseCalculationService.isWestern` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:427` |
-| `MartianPhaseService.getMartianPhaseEvents` | 2 | `PhaseCalculationService.gatherPhaseParameters`, `MartianPhaseService.detectMartianPhases` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:218` |
-| `MartianPhaseService.getMartianPhaseProgressiveEvents` | 2 | `MartianPhaseService.getMartianMorningProgressiveEvents`, `MartianPhaseService.getMartianEveningProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:241` |
-| `MercurianPhaseService.getMercurianPhaseProgressiveEvents` | 2 | `MercurianPhaseService.getMercurianMorningProgressiveEvents`, `MercurianPhaseService.getMercurianEveningProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:243` |
-| `VenusianPhaseService.getVenusianPhaseProgressiveEvents` | 2 | `VenusianPhaseService.getVenusianMorningProgressiveEvents`, `VenusianPhaseService.getVenusianEveningProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:258` |
+| `MartianPhaseService.getMartianPhaseEvents` | 2 | `PhaseCalculationService.gatherPhaseParameters`, `MartianPhaseService.detectMartianPhases` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:194` |
+| `MartianPhaseService.getMartianPhaseProgressiveEvents` | 2 | `MartianPhaseService.getMartianMorningProgressiveEvents`, `MartianPhaseService.getMartianEveningProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:217` |
+| `MercurianPhaseService.getMercurianPhaseProgressiveEvents` | 2 | `MercurianPhaseService.getMercurianMorningProgressiveEvents`, `MercurianPhaseService.getMercurianEveningProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:227` |
+| `VenusianPhaseService.getVenusianPhaseProgressiveEvents` | 2 | `VenusianPhaseService.getVenusianMorningProgressiveEvents`, `VenusianPhaseService.getVenusianEveningProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:238` |
 | `RetrogradesService.isDirect` | 2 | `RetrogradesService.every(…)`, `RetrogradesService.every(…)` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:154` |
 | `RetrogradesService.isRetrograde` | 2 | `RetrogradesService.every(…)`, `RetrogradesService.every(…)` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:184` |
 | `RetrogradesService.buildRetrogradeEvent` | 2 | `bodyDisplayName`, `capitalize` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:243` |
@@ -1746,8 +1837,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AspectsUtilitiesService.getActiveAspectBodies` | 2 | `AspectsUtilitiesService.map(…)`, `AspectsUtilitiesService.scanUniqueBodyPairs` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects-utilities.service.ts:259` |
 | `AspectsUtilitiesService.anonymous` | 2 | `AspectsUtilitiesService.computeAngles`, `AspectsUtilitiesService.getAspectPhase` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects-utilities.service.ts:312` |
 | `MajorAspectEventService.buildMajorAspectEvent` | 2 | `MajorAspectEventService.getMajorAspect`, `MajorAspectEventService.assembleMajorAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-event.service.ts:121` |
-| `AspectEventFormattingService.assembleSimpleAspectEvent` | 2 | `bodyDisplayName`, `AspectEventFormattingService.resolveAspectPhaseDetails` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-event-formatting.service.ts:73` |
-| `AspectEventFormattingService.buildProgressiveCompoundEvent` | 2 | `AspectEventFormattingService.filter(…)`, `AspectEventFormattingService.spanTitle` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-event-formatting.service.ts:131` |
+| `AspectEventFormattingService.assembleSimpleAspectEvent` | 2 | `bodyDisplayName`, `AspectEventFormattingService.resolveAspectPhaseDetails` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-event-formatting.service.ts:68` |
+| `AspectEventFormattingService.buildProgressiveCompoundEvent` | 2 | `AspectEventFormattingService.spanTitle`, `AspectEventFormattingService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-event-formatting.service.ts:125` |
 | `AspectGraphService.findBodiesWithAspectTo` | 2 | `AspectGraphService.map(…)`, `AspectGraphService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:44` |
 | `AspectGraphService.groupAspectsByType` | 2 | `AspectGraphService.groupByToMap(…)`, `groupByToMap` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-graph.service.ts:63` |
 | `MinorAspectsService.buildMinorAspectEvent` | 2 | `MinorAspectsService.getMinorAspect`, `MinorAspectsEventService.assembleMinorAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:130` |
@@ -1759,12 +1850,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `QuadrupleAspectsComposerService.resolveGrandCrossEvent` | 2 | `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `QuadrupleAspectsBaseService.getQuadrupleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:278` |
 | `QuadrupleAspectsComposerService.resolveKiteEvent` | 2 | `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots`, `QuadrupleAspectsBaseService.getQuadrupleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:320` |
 | `QuadrupleAspectsService.detect` | 2 | `QuadrupleAspectsComposerService.composeGrandCrosses`, `QuadrupleAspectsComposerService.composeKites` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:46` |
-| `QuintupleAspectsComposerService.buildQuintupleEventFromParameters` | 2 | `QuintupleAspectsComposerService.buildQuintupleAspectSummary`, `QuintupleAspectsComposerService.buildQuintupleAspectCategories` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:158` |
+| `QuintupleAspectsComposerService.buildQuintupleEventFromParameters` | 2 | `QuintupleAspectsComposerService.buildQuintupleAspectSummary`, `QuintupleAspectsComposerService.buildQuintupleAspectTags` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:158` |
 | `QuintupleAspectsComposerService.countUniqueQuintilePairs` | 2 | `QuintupleAspectsComposerService.map(…)`, `QuintupleAspectsComposerService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:231` |
 | `QuintupleAspectsComposerService.groupAspectsByType` | 2 | `QuintupleAspectsComposerService.groupByToMap(…)`, `groupByToMap` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:321` |
 | `QuintupleAspectsComposerService.groupQuintupleEventsByKey` | 2 | `QuintupleAspectsComposerService.filter(…)`, `QuintupleAspectsComposerService.groupBy(…)` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:328` |
 | `QuintupleAspectsComposerService.groupBy(…)` | 2 | `QuintupleAspectsComposerService.filter(…)`, `QuintupleAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:335` |
-| `SextupleAspectsComposerService.buildSextupleEventFromParameters` | 2 | `SextupleAspectsComposerService.buildSextupleAspectSummary`, `SextupleAspectsComposerService.buildSextupleAspectCategories` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:173` |
+| `SextupleAspectsComposerService.buildSextupleEventFromParameters` | 2 | `SextupleAspectsComposerService.buildSextupleAspectSummary`, `SextupleAspectsComposerService.buildSextupleAspectTags` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:173` |
 | `SextupleAspectsComposerService.findGrandTrinePairs` | 2 | `SextupleAspectsComposerService.getGrandTrineNeighbors`, `SextupleAspectsComposerService.forEach(…)` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:242` |
 | `SextupleAspectsComposerService.groupAspectsByType` | 2 | `SextupleAspectsComposerService.groupByToMap(…)`, `groupByToMap` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:380` |
 | `SextupleAspectsComposerService.groupSextupleEventsByKey` | 2 | `SextupleAspectsComposerService.filter(…)`, `SextupleAspectsComposerService.groupBy(…)` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:387` |
@@ -1774,20 +1865,44 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SpecialtyAspectsService.buildSpecialtyAspectEvent` | 2 | `SpecialtyAspectsService.getSpecialtyAspect`, `SpecialtyAspectsEventService.assembleSpecialtyAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:152` |
 | `StelliumService.missingFrom` | 2 | `StelliumService.map(…)`, `StelliumService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:243` |
 | `StelliumService.stelliumGroupKey` | 2 | `StelliumService.filter(…)`, `StelliumService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:262` |
-| `TripleAspectsComposerService.buildProgressiveEvent` | 2 | `TripleAspectsComposerService.buildProgressiveBodiesMeta`, `TripleAspectsComposerService.getFocalExtraInfo` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:238` |
-| `TripleAspectsComposerService.flatMap(…)` | 2 | `TripleAspectsComposerService.find(…)`, `TripleAspectsComposerService.buildProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:401` |
+| `TripleAspectsComposerService.buildProgressiveEvent` | 2 | `TripleAspectsComposerService.buildProgressiveBodiesMeta`, `TripleAspectsComposerService.getFocalExtraInfo` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:234` |
+| `TripleAspectsComposerService.flatMap(…)` | 2 | `TripleAspectsComposerService.find(…)`, `TripleAspectsComposerService.buildProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:395` |
 | `TripleAspectsService.findBodiesWithAspectTo` | 2 | `TripleAspectsService.map(…)`, `TripleAspectsService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:36` |
 | `TripleAspectsService.groupAspectsByType` | 2 | `TripleAspectsService.groupByToMap(…)`, `groupByToMap` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects.service.ts:55` |
 | `MinorAspectsComposerService.assembleMinorAspectEvent` | 2 | `bodyDisplayName`, `MinorAspectsComposerService.resolvePhaseDetails` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:59` |
 | `MinorAspectsComposerService.buildGroupKey` | 2 | `MinorAspectsComposerService.filter(…)`, `MinorAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:98` |
-| `MinorAspectsComposerService.castAspectComponentsToTypes` | 2 | `isMinorAspect`, `isBody` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:120` |
-| `SpecialtyAspectsComposerService.extractAspectBodiesFromCategories` | 2 | `SpecialtyAspectsComposerService.filter(…)`, `SpecialtyAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:91` |
+| `MinorAspectsComposerService.castAspectComponentsToTypes` | 2 | `isMinorAspect`, `isBody` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:118` |
+| `SpecialtyAspectsComposerService.extractAspectBodiesFromTags` | 2 | `SpecialtyAspectsComposerService.filter(…)`, `SpecialtyAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:91` |
 | `SpecialtyAspectsComposerService.extractTypedAspectValues` | 2 | `isSpecialtyAspect`, `isBody` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:119` |
-| `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent` | 2 | `SpecialtyAspectsComposerService.extractAspectBodiesFromCategories`, `SpecialtyAspectsComposerService.extractTypedAspectValues` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:167` |
-| `SpecialtyAspectsComposerService.specialtyAspectGroupKey` | 2 | `SpecialtyAspectsComposerService.filter(…)`, `SpecialtyAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:240` |
-| `CalendarEventsService.toRow` | 1 | `formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:48` |
-| `CalendarEventsService.findInRange` | 1 | `formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:73` |
-| `CalendarEventsService.upsert` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:100` |
+| `SpecialtyAspectsComposerService.getSpecialtyAspectProgressiveEvent` | 2 | `SpecialtyAspectsComposerService.extractAspectBodiesFromTags`, `SpecialtyAspectsComposerService.extractTypedAspectValues` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:163` |
+| `SpecialtyAspectsComposerService.specialtyAspectGroupKey` | 2 | `SpecialtyAspectsComposerService.filter(…)`, `SpecialtyAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:236` |
+| `map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:481` |
+| `mapClasses` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:19` |
+| `mapEach` | 1 | `map(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:40` |
+| `map(…)` | 1 | `one` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:45` |
+| `mapNone` | 1 | `map(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:53` |
+| `mapPlanetaryPhases` | 1 | `map(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.functions.ts:66` |
+| `map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:51` |
+| `map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:114` |
+| `map(…)` | 1 | `signPaths` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:123` |
+| `map(…)` | 1 | `natureAndHarmonicPaths` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:160` |
+| `map(…)` | 1 | `natureAndHarmonicPaths` | `projects/caelundas/caelundas-cli/src/modules/tags/tag-map.constants.ts:179` |
+| `flatMap(…)` | 1 | `mapRawTag` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:31` |
+| `map(…)` | 1 | `bodyFromDisplayName` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:59` |
+| `find(…)` | 1 | `isSign` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:63` |
+| `eclipsePaths` | 1 | `findRawTag` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:79` |
+| `findRawTag` | 1 | `find(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:97` |
+| `ingressKind` | 1 | `isInstant` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:105` |
+| `map(…)` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:162` |
+| `filter(…)` | 1 | `some(…)` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.utilities.ts:166` |
+| `TagsService.ensurePath` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:32` |
+| `TagsService.map(…)` | 1 | `tagNodeKey` | `projects/caelundas/caelundas-cli/src/modules/tags/tags.service.ts:82` |
+| `mapWrittenIds` | 1 | `map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts:41` |
+| `map(…)` | 1 | `calendarEventKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts:45` |
+| `toTagLinks` | 1 | `tagPathKey` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts:58` |
+| `CalendarEventsService.toRow` | 1 | `formatCoordinate` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:127` |
+| `CalendarEventsService.writeRows` | 1 | `mapWrittenIds` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:149` |
+| `CalendarEventsService.map(…)` | 1 | `CalendarEventsService.toRow` | `projects/caelundas/caelundas-cli/src/modules/calendar-events/calendar-events.service.ts:247` |
 | `CalendarService.buildObservance` | 1 | `CalendarService.formatOffset` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:57` |
 | `CalendarService.map(…)` | 1 | `CalendarService.buildObservance` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:105` |
 | `CalendarService.findTransitions` | 1 | `CalendarService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:127` |
@@ -1797,7 +1912,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `CalendarService.map(…)` | 1 | `CalendarService.buildEventContent` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:282` |
 | `CalendarService.write` | 1 | `CalendarService.buildFileContent` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:317` |
 | `CalendarService.writeJson` | 1 | `CalendarService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/calendar/calendar.service.ts:353` |
-| `map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/caelundas/caelundas.types.ts:481` |
 | `findMissingEphemerisFiles` | 1 | `filter(…)` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:31` |
 | `filter(…)` | 1 | `isEphemerisFilePresent` | `projects/caelundas/caelundas-cli/src/modules/ephemeris-download/ephemeris-download.utilities.ts:35` |
 | `initializeSwissEphemeris` | 1 | `resolveEphemerisDirectory` | `projects/caelundas/caelundas-cli/src/modules/ephemeris/ephemeris.constants.ts:126` |
@@ -1852,9 +1966,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `AnnualSolarCycleEventsService.isWinterSolstice` | 1 | `AnnualSolarCycleEventsService.hasCrossedSolarLongitude` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle-events.service.ts:475` |
 | `AnnualSolarCycleService.map(…)` | 1 | `AnnualSolarCycleService.getSolarAdvancingDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:68` |
 | `AnnualSolarCycleService.map(…)` | 1 | `AnnualSolarCycleService.getSolarRetreatingDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:97` |
-| `AnnualSolarCycleService.getSolarDistanceSpeeds` | 1 | `EphemerisService.getDistanceSpeedFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:120` |
-| `AspectsService.find(…)` | 1 | `isAspect` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:161` |
-| `AspectsService.map(…)` | 1 | `AspectsService.makeKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:182` |
+| `AnnualSolarCycleService.getSolarDistanceSpeeds` | 1 | `EphemerisService.getDistanceSpeedFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/annual-solar-cycle/annual-solar-cycle.service.ts:117` |
+| `AspectsService.find(…)` | 1 | `isAspect` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:159` |
+| `AspectsService.map(…)` | 1 | `AspectsService.makeKey` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspects.service.ts:180` |
 | `DailyCyclesBuilderService.buildLunarNadirEvent` | 1 | `CalendarService.buildInstantEvent` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles-builder.service.ts:96` |
 | `DailyCyclesBuilderService.buildLunarZenithEvent` | 1 | `CalendarService.buildInstantEvent` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles-builder.service.ts:127` |
 | `DailyCyclesBuilderService.buildMoonriseEvent` | 1 | `CalendarService.buildInstantEvent` | `projects/caelundas/caelundas-cli/src/modules/daily-cycles/daily-cycles-builder.service.ts:158` |
@@ -1892,10 +2006,10 @@ What this project is judged against, as declared in its own `callidescope.config
 | `EclipseClassificationService.getClosestApproach(…)` | 1 | `EclipseGeometryService.getAntisolarPoint` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:176` |
 | `EclipseClassificationService.isInProgress(…)` | 1 | `EclipseGeometryService.getSolarContactGeometry` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:212` |
 | `EclipseClassificationService.getClosestApproach(…)` | 1 | `EclipseGeometryService.getSunPosition` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-classification.service.ts:220` |
-| `EclipseEventService.getEclipseDurationEvent` | 1 | `EclipseEventService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:91` |
-| `EclipseEventService.map(…)` | 1 | `EclipseEventService.getEclipseDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:145` |
-| `EclipseEventService.buildLunarEclipseEvent` | 1 | `EclipseEventService.buildEclipseEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:155` |
-| `EclipseEventService.buildSolarEclipseEvent` | 1 | `EclipseEventService.buildEclipseEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:167` |
+| `EclipseEventService.getEclipseDurationEvent` | 1 | `EclipseEventService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:92` |
+| `EclipseEventService.map(…)` | 1 | `EclipseEventService.getEclipseDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:139` |
+| `EclipseEventService.buildLunarEclipseEvent` | 1 | `EclipseEventService.buildEclipseEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:149` |
+| `EclipseEventService.buildSolarEclipseEvent` | 1 | `EclipseEventService.buildEclipseEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-event.service.ts:161` |
 | `EclipseTopocentricService.getClosestApproach` | 1 | `EclipseTopocentricService.reduce(…)` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:69` |
 | `EclipseTopocentricService.getVisibilityMargin` | 1 | `EclipseTopocentricService.getContactMargin` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:129` |
 | `EclipseTopocentricService.some(…)` | 1 | `EclipseTopocentricService.getSolarVisibilityMargin` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipse-topocentric.service.ts:154` |
@@ -1913,12 +2027,12 @@ What this project is judged against, as declared in its own `callidescope.config
 | `EclipsesService.buildLunarEclipseEvent` | 1 | `EclipseEventService.buildLunarEclipseEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:48` |
 | `EclipsesService.buildSolarEclipseEvent` | 1 | `EclipseEventService.buildSolarEclipseEvent` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:60` |
 | `EclipsesService.detectProgressive` | 1 | `EclipseEventService.detectProgressive` | `projects/caelundas/caelundas-cli/src/modules/eclipses/eclipses.service.ts:128` |
-| `IngressesComposerService.buildDecanIngressEvent` | 1 | `IngressesComposerService.buildDecanIngressEventObject` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:95` |
-| `IngressesComposerService.find(…)` | 1 | `IngressesComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:254` |
-| `IngressesComposerService.filterSignIngressEvents` | 1 | `IngressesComposerService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:280` |
-| `IngressesComposerService.getDecan` | 1 | `IngressesComposerService.getSign` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:294` |
-| `IngressesComposerService.getLongitudes` | 1 | `EphemerisService.getCoordinateFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:304` |
-| `IngressesComposerService.getSignIngressDurationEvent` | 1 | `IngressesComposerService.extractSignAndBodyFromCategories` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:326` |
+| `IngressesComposerService.buildDecanIngressEvent` | 1 | `IngressesComposerService.buildDecanIngressEventObject` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:97` |
+| `IngressesComposerService.find(…)` | 1 | `IngressesComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:257` |
+| `IngressesComposerService.filterSignIngressEvents` | 1 | `IngressesComposerService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:281` |
+| `IngressesComposerService.getDecan` | 1 | `IngressesComposerService.getSign` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:295` |
+| `IngressesComposerService.getLongitudes` | 1 | `EphemerisService.getCoordinateFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:305` |
+| `IngressesComposerService.getSignIngressDurationEvent` | 1 | `IngressesComposerService.extractSignAndBodyFromTags` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:327` |
 | `IngressesComposerService.groupSignIngressEventsByBody` | 1 | `IngressesComposerService.groupBy(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:356` |
 | `IngressesComposerService.groupBy(…)` | 1 | `IngressesComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:359` |
 | `IngressesComposerService.find(…)` | 1 | `IngressesComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/ingresses/ingresses-composer.service.ts:360` |
@@ -1934,15 +2048,15 @@ What this project is judged against, as declared in its own `callidescope.config
 | `MonthlyLunarCycleService.getElongation` | 1 | `EphemerisService.getCoordinateFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:109` |
 | `MonthlyLunarCycleService.getElongationWindow` | 1 | `MonthlyLunarCycleService.getElongation` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:126` |
 | `MonthlyLunarCycleService.filter(…)` | 1 | `MonthlyLunarCycleService.isElongationReached` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:146` |
-| `MonthlyLunarCycleService.getMonthlyLunarCycleProgressiveEvent` | 1 | `MonthlyLunarCycleService.extractLunarPhaseFromCategories` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:157` |
-| `MonthlyLunarCycleService.isElongationReached` | 1 | `MonthlyLunarCycleService.offset` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:195` |
-| `MonthlyLunarCycleService.buildMonthlyLunarCycleEvent` | 1 | `CalendarService.buildInstantEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:241` |
-| `MonthlyLunarCycleService.map(…)` | 1 | `MonthlyLunarCycleService.buildMonthlyLunarCycleEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:289` |
-| `MonthlyLunarCycleService.detectApsides` | 1 | `LunarApsidesService.detect` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:299` |
+| `MonthlyLunarCycleService.getMonthlyLunarCycleProgressiveEvent` | 1 | `MonthlyLunarCycleService.extractLunarPhaseFromTags` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:157` |
+| `MonthlyLunarCycleService.isElongationReached` | 1 | `MonthlyLunarCycleService.offset` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:192` |
+| `MonthlyLunarCycleService.buildMonthlyLunarCycleEvent` | 1 | `CalendarService.buildInstantEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:238` |
+| `MonthlyLunarCycleService.map(…)` | 1 | `MonthlyLunarCycleService.buildMonthlyLunarCycleEvent` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:286` |
+| `MonthlyLunarCycleService.detectApsides` | 1 | `LunarApsidesService.detect` | `projects/caelundas/caelundas-cli/src/modules/monthly-lunar-cycle/monthly-lunar-cycle.service.ts:296` |
 | `PhaseCalculationService.gatherPositions` | 1 | `PhaseCalculationService.read` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:59` |
 | `PhaseCalculationService.read` | 1 | `EphemerisService.getCoordinateFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:62` |
 | `PhaseCalculationService.getSignedElongation` | 1 | `MathService.normalizeDegrees` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:86` |
-| `PhaseCalculationService.filterByCategory` | 1 | `PhaseCalculationService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:99` |
+| `PhaseCalculationService.filterByTag` | 1 | `PhaseCalculationService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:99` |
 | `PhaseCalculationService.gatherMarginEphemeris` | 1 | `PhaseCalculationService.from(…)` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:160` |
 | `PhaseCalculationService.from(…)` | 1 | `EphemerisService.getMagnitudeFromEphemeris` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:167` |
 | `PhaseCalculationService.getElongationAngle` | 1 | `MathService.getAngularSeparation` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:243` |
@@ -1954,14 +2068,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PhaseCalculationService.isSet` | 1 | `MathService.getAngle` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:387` |
 | `PhaseCalculationService.isWestern` | 1 | `PhaseCalculationService.getSignedElongation` | `projects/caelundas/caelundas-cli/src/modules/phases/phase-calculation.service.ts:413` |
 | `MartianPhaseService.buildMartianPhaseEvent` | 1 | `PhaseCalculationService.formatTimeZoneIso` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:97` |
-| `MartianPhaseService.map(…)` | 1 | `MartianPhaseService.getMarsEveningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:188` |
-| `MartianPhaseService.map(…)` | 1 | `MartianPhaseService.getMarsMorningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:210` |
+| `MartianPhaseService.map(…)` | 1 | `MartianPhaseService.getMarsEveningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:170` |
+| `MartianPhaseService.map(…)` | 1 | `MartianPhaseService.getMarsMorningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/martian-phase.service.ts:186` |
 | `MercurianPhaseService.buildMercurianPhaseEvent` | 1 | `PhaseCalculationService.formatTimeZoneIso` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:136` |
-| `MercurianPhaseService.map(…)` | 1 | `MercurianPhaseService.getMercuryEveningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:187` |
-| `MercurianPhaseService.map(…)` | 1 | `MercurianPhaseService.getMercuryMorningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:209` |
+| `MercurianPhaseService.map(…)` | 1 | `MercurianPhaseService.getMercuryEveningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:177` |
+| `MercurianPhaseService.map(…)` | 1 | `MercurianPhaseService.getMercuryMorningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/mercurian-phase.service.ts:193` |
 | `VenusianPhaseService.buildVenusianPhaseEvent` | 1 | `PhaseCalculationService.formatTimeZoneIso` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:131` |
-| `VenusianPhaseService.map(…)` | 1 | `VenusianPhaseService.getVenusEveningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:202` |
-| `VenusianPhaseService.map(…)` | 1 | `VenusianPhaseService.getVenusMorningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:224` |
+| `VenusianPhaseService.map(…)` | 1 | `VenusianPhaseService.getVenusEveningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:188` |
+| `VenusianPhaseService.map(…)` | 1 | `VenusianPhaseService.getVenusMorningVisibilityDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/phases/venusian-phase.service.ts:204` |
 | `PhasesService.getMartianPhaseEvents` | 1 | `MartianPhaseService.getMartianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:147` |
 | `PhasesService.getMercurianPhaseEvents` | 1 | `MercurianPhaseService.getMercurianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:156` |
 | `PhasesService.getVenusianPhaseEvents` | 1 | `VenusianPhaseService.getVenusianPhaseEvents` | `projects/caelundas/caelundas-cli/src/modules/phases/phases.service.ts:165` |
@@ -1974,14 +2088,14 @@ What this project is judged against, as declared in its own `callidescope.config
 | `RetrogradesService.every(…)` | 1 | `MathService.normalizeForComparison` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:170` |
 | `RetrogradesService.every(…)` | 1 | `MathService.normalizeForComparison` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:191` |
 | `RetrogradesService.every(…)` | 1 | `MathService.normalizeForComparison` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:200` |
-| `RetrogradesService.detect` | 1 | `RetrogradesService.detectBodyStations` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:308` |
-| `RetrogradesService.map(…)` | 1 | `RetrogradesService.getRetrogradeProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:384` |
-| `TwilightsBuilderService.buildAstronomicalDawnEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:61` |
-| `TwilightsBuilderService.buildAstronomicalDuskEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:68` |
-| `TwilightsBuilderService.buildCivilDawnEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:75` |
-| `TwilightsBuilderService.buildCivilDuskEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:82` |
-| `TwilightsBuilderService.buildNauticalDawnEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:89` |
-| `TwilightsBuilderService.buildNauticalDuskEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:96` |
+| `RetrogradesService.detect` | 1 | `RetrogradesService.detectBodyStations` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:309` |
+| `RetrogradesService.map(…)` | 1 | `RetrogradesService.getRetrogradeProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/retrogrades/retrogrades.service.ts:385` |
+| `TwilightsBuilderService.buildAstronomicalDawnEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:58` |
+| `TwilightsBuilderService.buildAstronomicalDuskEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:65` |
+| `TwilightsBuilderService.buildCivilDawnEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:72` |
+| `TwilightsBuilderService.buildCivilDuskEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:79` |
+| `TwilightsBuilderService.buildNauticalDawnEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:86` |
+| `TwilightsBuilderService.buildNauticalDuskEvent` | 1 | `TwilightsBuilderService.buildTransitionEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-builder.service.ts:93` |
 | `TwilightsComposerService.buildDawnProgressiveEvents` | 1 | `TwilightsComposerService.pairAndBuild` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:32` |
 | `TwilightsComposerService.builder` | 1 | `TwilightsBuilderService.getAstronomicalTwilightMorningDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:40` |
 | `TwilightsComposerService.builder` | 1 | `TwilightsBuilderService.getNauticalTwilightMorningDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights-composer.service.ts:50` |
@@ -2002,8 +2116,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TwilightsService.buildCivilDuskEvent` | 1 | `TwilightsBuilderService.buildCivilDuskEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:91` |
 | `TwilightsService.buildNauticalDawnEvent` | 1 | `TwilightsBuilderService.buildNauticalDawnEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:101` |
 | `TwilightsService.buildNauticalDuskEvent` | 1 | `TwilightsBuilderService.buildNauticalDuskEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:111` |
-| `TwilightsService.getEventsByCategory` | 1 | `TwilightsService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:169` |
-| `TwilightsService.builder` | 1 | `TwilightsBuilderService.getNightDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:197` |
+| `TwilightsService.getEventsByTag` | 1 | `TwilightsService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:169` |
+| `TwilightsService.builder` | 1 | `TwilightsBuilderService.getNightDurationEvent` | `projects/caelundas/caelundas-cli/src/modules/twilights/twilights.service.ts:193` |
 | `AspectCalculationSupportService.determineCompoundPhaseFromSnapshots` | 1 | `AspectCalculationSupportService.filterByBodies` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:44` |
 | `AspectCalculationSupportService.filterByBodies` | 1 | `AspectCalculationSupportService.filter(…)` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:59` |
 | `AspectCalculationSupportService.getLongitudesWindowForBody` | 1 | `EphemerisService.getLongitudesWindow` | `projects/caelundas/caelundas-cli/src/modules/aspects/aspect-calculation-support.service.ts:86` |
@@ -2020,20 +2134,20 @@ What this project is judged against, as declared in its own `callidescope.config
 | `MajorAspectEventService.buildAspectEventParts` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-event.service.ts:84` |
 | `MajorAspectEventService.getMajorAspect` | 1 | `AspectsUtilitiesService.isAspect` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-event.service.ts:156` |
 | `ProgressiveAspectService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:42` |
-| `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | 1 | `ProgressiveAspectService.buildProgressiveAspectEvents` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:135` |
-| `ProgressiveAspectService.createSimpleAspectProgressiveEvent` | 1 | `ProgressiveAspectService.extractTypedAspectParts` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:175` |
-| `ProgressiveAspectService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:251` |
-| `ProgressiveAspectService.extractTypedAspectPartsOrThrow` | 1 | `ProgressiveAspectService.extractTypedAspectParts` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:292` |
-| `MajorAspectProgressiveService.getAspectGroupKey` | 1 | `ProgressiveAspectService.buildAspectGroupKeyFromCategories` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:39` |
+| `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | 1 | `ProgressiveAspectService.buildProgressiveAspectEvents` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:133` |
+| `ProgressiveAspectService.createSimpleAspectProgressiveEvent` | 1 | `ProgressiveAspectService.extractTypedAspectParts` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:173` |
+| `ProgressiveAspectService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:249` |
+| `ProgressiveAspectService.extractTypedAspectPartsOrThrow` | 1 | `ProgressiveAspectService.extractTypedAspectParts` | `projects/caelundas/caelundas-cli/src/modules/progressive/progressive-aspect.service.ts:288` |
+| `MajorAspectProgressiveService.getAspectGroupKey` | 1 | `ProgressiveAspectService.buildAspectGroupKeyFromTags` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:39` |
 | `MajorAspectProgressiveService.getMajorAspectProgressiveEvent` | 1 | `ProgressiveAspectService.createSimpleAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:50` |
 | `MajorAspectProgressiveService.castAspectPartsToTypes` | 1 | `ProgressiveAspectService.extractTypedAspectPartsOrThrow` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:72` |
 | `MajorAspectProgressiveService.detectProgressive` | 1 | `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:98` |
-| `MajorAspectProgressiveService.getAspectGroupKey` | 1 | `MajorAspectProgressiveService.getAspectGroupKey` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:104` |
-| `MajorAspectProgressiveService.getProgressiveEvent` | 1 | `MajorAspectProgressiveService.getMajorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:105` |
-| `MajorAspectProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:107` |
+| `MajorAspectProgressiveService.getAspectGroupKey` | 1 | `MajorAspectProgressiveService.getAspectGroupKey` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:103` |
+| `MajorAspectProgressiveService.getProgressiveEvent` | 1 | `MajorAspectProgressiveService.getMajorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:104` |
+| `MajorAspectProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:106` |
 | `MajorAspectProgressiveService.processAspectGroup` | 1 | `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:120` |
-| `MajorAspectProgressiveService.getProgressiveEvent` | 1 | `MajorAspectProgressiveService.getMajorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:131` |
-| `MajorAspectProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:133` |
+| `MajorAspectProgressiveService.getProgressiveEvent` | 1 | `MajorAspectProgressiveService.getMajorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:130` |
+| `MajorAspectProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspect-progressive.service.ts:132` |
 | `MajorAspectsService.constructor` | 1 | `AspectsUtilitiesService.getIsAspect` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:37` |
 | `MajorAspectsService.detectPhaseFromWindows` | 1 | `AspectsUtilitiesService.detectPhaseFromWindows` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:98` |
 | `MajorAspectsService.getLongitudesWindowForBody` | 1 | `AspectCalculationSupportService.getLongitudesWindowForBody` | `projects/caelundas/caelundas-cli/src/modules/major-aspects/major-aspects.service.ts:112` |
@@ -2051,16 +2165,16 @@ What this project is judged against, as declared in its own `callidescope.config
 | `MinorAspectsEventService.getLongitudesWindowForBody` | 1 | `AspectCalculationSupportService.getLongitudesWindowForBody` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-event.service.ts:72` |
 | `MinorAspectsEventService.getMinorAspect` | 1 | `AspectEventFormattingService.findFirstMatchingAspect` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-event.service.ts:85` |
 | `MinorAspectsEventService.isMatchingAspect` | 1 | `AspectsUtilitiesService.isAspect` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-event.service.ts:93` |
-| `MinorAspectsProgressiveService.buildGroupKey` | 1 | `ProgressiveAspectService.buildAspectGroupKeyFromCategories` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:41` |
+| `MinorAspectsProgressiveService.buildGroupKey` | 1 | `ProgressiveAspectService.buildAspectGroupKeyFromTags` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:41` |
 | `MinorAspectsProgressiveService.castAspectComponentsToTypes` | 1 | `ProgressiveAspectService.extractTypedAspectPartsOrThrow` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:52` |
 | `MinorAspectsProgressiveService.detectProgressive` | 1 | `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:78` |
-| `MinorAspectsProgressiveService.getAspectGroupKey` | 1 | `MinorAspectsProgressiveService.buildGroupKey` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:84` |
-| `MinorAspectsProgressiveService.getProgressiveEvent` | 1 | `MinorAspectsProgressiveService.getMinorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:85` |
-| `MinorAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:87` |
+| `MinorAspectsProgressiveService.getAspectGroupKey` | 1 | `MinorAspectsProgressiveService.buildGroupKey` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:83` |
+| `MinorAspectsProgressiveService.getProgressiveEvent` | 1 | `MinorAspectsProgressiveService.getMinorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:84` |
+| `MinorAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:86` |
 | `MinorAspectsProgressiveService.getMinorAspectProgressiveEvent` | 1 | `ProgressiveAspectService.createSimpleAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:100` |
 | `MinorAspectsProgressiveService.processAspectGroup` | 1 | `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:120` |
-| `MinorAspectsProgressiveService.getProgressiveEvent` | 1 | `MinorAspectsProgressiveService.getMinorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:131` |
-| `MinorAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:133` |
+| `MinorAspectsProgressiveService.getProgressiveEvent` | 1 | `MinorAspectsProgressiveService.getMinorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:130` |
+| `MinorAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-progressive.service.ts:132` |
 | `MinorAspectsService.constructor` | 1 | `AspectsUtilitiesService.getIsAspect` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:41` |
 | `MinorAspectsService.detectPhaseFromWindows` | 1 | `AspectsUtilitiesService.detectPhaseFromWindows` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:109` |
 | `MinorAspectsService.detect` | 1 | `AspectsUtilitiesService.scanUniqueBodyPairsAtMinute` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects.service.ts:176` |
@@ -2077,7 +2191,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `QuadrupleAspectsBaseService.haveAspect` | 1 | `AspectGraphService.haveAspect` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:344` |
 | `QuadrupleAspectsBaseService.filter(…)` | 1 | `QuadrupleAspectsBaseService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:358` |
 | `QuadrupleAspectsBaseService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:360` |
-| `QuadrupleAspectsBaseService.makeQuadrupleAspectCategories` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:373` |
+| `QuadrupleAspectsBaseService.makeQuadrupleAspectTags` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-base.service.ts:373` |
 | `QuadrupleAspectsComposerService.collectGrandCrossesForOpp1` | 1 | `QuadrupleAspectsComposerService.tryBuildGrandCross` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:39` |
 | `QuadrupleAspectsComposerService.checkPatternExists` | 1 | `QuadrupleAspectsBaseService.checkGrandCrossPattern` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:289` |
 | `QuadrupleAspectsComposerService.checkPatternExists` | 1 | `QuadrupleAspectsBaseService.checkKitePattern` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects-composer.service.ts:342` |
@@ -2085,7 +2199,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `QuadrupleAspectsService.getOtherBody` | 1 | `QuadrupleAspectsBaseService.getOtherBody` | `projects/caelundas/caelundas-cli/src/modules/quadruple-aspects/quadruple-aspects.service.ts:100` |
 | `QuintupleAspectsComposerService.buildPentagramEvent` | 1 | `QuintupleAspectsComposerService.getQuintupleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:53` |
 | `QuintupleAspectsComposerService.buildProgressiveQuintupleEvent` | 1 | `AspectEventFormattingService.buildProgressiveCompoundEvent` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:83` |
-| `QuintupleAspectsComposerService.buildQuintupleAspectSummary` | 1 | `QuintupleAspectsComposerService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:142` |
+| `QuintupleAspectsComposerService.buildQuintupleAspectSummary` | 1 | `QuintupleAspectsComposerService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:123` |
 | `QuintupleAspectsComposerService.getPhaseEmoji` | 1 | `AspectEventFormattingService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:283` |
 | `QuintupleAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:303` |
 | `QuintupleAspectsComposerService.filter(…)` | 1 | `QuintupleAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects-composer.service.ts:336` |
@@ -2095,7 +2209,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `QuintupleAspectsService.detect` | 1 | `QuintupleAspectsComposerService.composePentagrams` | `projects/caelundas/caelundas-cli/src/modules/quintuple-aspects/quintuple-aspects.service.ts:38` |
 | `SextupleAspectsComposerService.buildHexagramEvent` | 1 | `SextupleAspectsComposerService.getSextupleAspectEvent` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:93` |
 | `SextupleAspectsComposerService.buildProgressiveSextupleEvent` | 1 | `AspectEventFormattingService.buildProgressiveCompoundEvent` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:125` |
-| `SextupleAspectsComposerService.buildSextupleAspectSummary` | 1 | `SextupleAspectsComposerService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:157` |
+| `SextupleAspectsComposerService.buildSextupleAspectSummary` | 1 | `SextupleAspectsComposerService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:138` |
 | `SextupleAspectsComposerService.findValidHexagonArrangement` | 1 | `SextupleAspectsComposerService.tryHexagonArrangement` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:295` |
 | `SextupleAspectsComposerService.getGrandTrineNeighbors` | 1 | `SextupleAspectsComposerService.isValidGrandTrine` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:322` |
 | `SextupleAspectsComposerService.getPhaseEmoji` | 1 | `AspectEventFormattingService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/sextuple-aspects/sextuple-aspects-composer.service.ts:339` |
@@ -2110,15 +2224,15 @@ What this project is judged against, as declared in its own `callidescope.config
 | `SpecialtyAspectsEventService.getSpecialtyAspect` | 1 | `AspectEventFormattingService.findFirstMatchingAspect` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-event.service.ts:90` |
 | `SpecialtyAspectsEventService.isMatchingAspect` | 1 | `AspectsUtilitiesService.isAspect` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-event.service.ts:98` |
 | `SpecialtyAspectsProgressiveService.detectProgressive` | 1 | `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:41` |
-| `SpecialtyAspectsProgressiveService.getAspectGroupKey` | 1 | `SpecialtyAspectsProgressiveService.specialtyAspectGroupKey` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:47` |
-| `SpecialtyAspectsProgressiveService.getProgressiveEvent` | 1 | `SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:48` |
-| `SpecialtyAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:50` |
+| `SpecialtyAspectsProgressiveService.getAspectGroupKey` | 1 | `SpecialtyAspectsProgressiveService.specialtyAspectGroupKey` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:46` |
+| `SpecialtyAspectsProgressiveService.getProgressiveEvent` | 1 | `SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:47` |
+| `SpecialtyAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:49` |
 | `SpecialtyAspectsProgressiveService.extractTypedAspectValues` | 1 | `ProgressiveAspectService.extractTypedAspectPartsOrThrow` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:63` |
 | `SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent` | 1 | `ProgressiveAspectService.createSimpleAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:89` |
 | `SpecialtyAspectsProgressiveService.processAspectGroup` | 1 | `ProgressiveAspectService.buildSimpleAspectFamilyProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:109` |
-| `SpecialtyAspectsProgressiveService.getProgressiveEvent` | 1 | `SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:120` |
-| `SpecialtyAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:122` |
-| `SpecialtyAspectsProgressiveService.specialtyAspectGroupKey` | 1 | `ProgressiveAspectService.buildAspectGroupKeyFromCategories` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:135` |
+| `SpecialtyAspectsProgressiveService.getProgressiveEvent` | 1 | `SpecialtyAspectsProgressiveService.getSpecialtyAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:119` |
+| `SpecialtyAspectsProgressiveService.pairProgressiveEvents` | 1 | `ProgressiveUtilitiesService.pairProgressiveEvents` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:121` |
+| `SpecialtyAspectsProgressiveService.specialtyAspectGroupKey` | 1 | `ProgressiveAspectService.buildAspectGroupKeyFromTags` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-progressive.service.ts:135` |
 | `SpecialtyAspectsService.constructor` | 1 | `AspectsUtilitiesService.getIsAspect` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:41` |
 | `SpecialtyAspectsService.detectBodyPairLongitudes` | 1 | `SpecialtyAspectsEventService.getBodyLongitudesWindow` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:101` |
 | `SpecialtyAspectsService.detect` | 1 | `AspectsUtilitiesService.scanUniqueBodyPairsAtMinute` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects.service.ts:194` |
@@ -2139,15 +2253,15 @@ What this project is judged against, as declared in its own `callidescope.config
 | `StelliumService.detect` | 1 | `StelliumService.composeStelliums` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:289` |
 | `StelliumService.groupBy(…)` | 1 | `StelliumService.stelliumGroupKey` | `projects/caelundas/caelundas-cli/src/modules/stellium/stellium.service.ts:318` |
 | `TripleAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:60` |
-| `TripleAspectsComposerService.buildTripleAspectCategories` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:86` |
-| `TripleAspectsComposerService.buildTripleAspectDescription` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:125` |
-| `TripleAspectsComposerService.getFocalExtraInfo` | 1 | `TripleAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:141` |
-| `TripleAspectsComposerService.getPhaseEmoji` | 1 | `AspectEventFormattingService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:165` |
-| `TripleAspectsComposerService.resolveProgressiveMeta` | 1 | `TripleAspectsComposerService.resolveTripleBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:188` |
-| `TripleAspectsComposerService.resolveTripleBody` | 1 | `bodyFromDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:227` |
-| `TripleAspectsComposerService.findBodiesWithAspectTo` | 1 | `AspectGraphService.findBodiesWithAspectTo` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:342` |
-| `TripleAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:359` |
-| `TripleAspectsComposerService.haveAspect` | 1 | `AspectGraphService.haveAspect` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:379` |
+| `TripleAspectsComposerService.buildTripleAspectDescription` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:84` |
+| `TripleAspectsComposerService.buildTripleAspectTags` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:100` |
+| `TripleAspectsComposerService.getFocalExtraInfo` | 1 | `TripleAspectsComposerService.find(…)` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:139` |
+| `TripleAspectsComposerService.getPhaseEmoji` | 1 | `AspectEventFormattingService.getPhaseEmoji` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:161` |
+| `TripleAspectsComposerService.resolveProgressiveMeta` | 1 | `TripleAspectsComposerService.resolveTripleBody` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:184` |
+| `TripleAspectsComposerService.resolveTripleBody` | 1 | `bodyFromDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:223` |
+| `TripleAspectsComposerService.findBodiesWithAspectTo` | 1 | `AspectGraphService.findBodiesWithAspectTo` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:338` |
+| `TripleAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:355` |
+| `TripleAspectsComposerService.haveAspect` | 1 | `AspectGraphService.haveAspect` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-composer.service.ts:373` |
 | `TripleAspectsDetectorService.canonicalPair` | 1 | `AspectGraphService.canonicalBodyOrder` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:34` |
 | `TripleAspectsDetectorService.checkPatternExists` | 1 | `TripleAspectsDetectorService.isGrandTrine` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:69` |
 | `TripleAspectsDetectorService.checkPatternExists` | 1 | `TripleAspectsDetectorService.isTSquare` | `projects/caelundas/caelundas-cli/src/modules/triple-aspects/triple-aspects-detector.service.ts:119` |
@@ -2162,19 +2276,19 @@ What this project is judged against, as declared in its own `callidescope.config
 | `MinorAspectsComposerService.filter(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:100` |
 | `MinorAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:102` |
 | `MinorAspectsComposerService.find(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:106` |
-| `MinorAspectsComposerService.filter(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:152` |
-| `MinorAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:153` |
-| `MinorAspectsComposerService.find(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:156` |
-| `MinorAspectsComposerService.getLongitudesWindowForBody` | 1 | `AspectCalculationSupportService.getLongitudesWindowForBody` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:184` |
-| `MinorAspectsComposerService.getMinorAspectProgressiveEvent` | 1 | `MinorAspectsComposerService.extractAspectComponents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:197` |
-| `MinorAspectsComposerService.map(…)` | 1 | `MinorAspectsComposerService.getMinorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:252` |
+| `MinorAspectsComposerService.filter(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:146` |
+| `MinorAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:147` |
+| `MinorAspectsComposerService.find(…)` | 1 | `MinorAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:150` |
+| `MinorAspectsComposerService.getLongitudesWindowForBody` | 1 | `AspectCalculationSupportService.getLongitudesWindowForBody` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:176` |
+| `MinorAspectsComposerService.getMinorAspectProgressiveEvent` | 1 | `MinorAspectsComposerService.extractAspectComponents` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:189` |
+| `MinorAspectsComposerService.map(…)` | 1 | `MinorAspectsComposerService.getMinorAspectProgressiveEvent` | `projects/caelundas/caelundas-cli/src/modules/minor-aspects/minor-aspects-composer.service.ts:244` |
 | `SpecialtyAspectsComposerService.filter(…)` | 1 | `SpecialtyAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:97` |
 | `SpecialtyAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:98` |
 | `SpecialtyAspectsComposerService.find(…)` | 1 | `SpecialtyAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:101` |
-| `SpecialtyAspectsComposerService.getBodyLongitudesWindow` | 1 | `EphemerisService.getLongitudesWindow` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:149` |
-| `SpecialtyAspectsComposerService.filter(…)` | 1 | `SpecialtyAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:242` |
-| `SpecialtyAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:243` |
-| `SpecialtyAspectsComposerService.find(…)` | 1 | `SpecialtyAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:246` |
+| `SpecialtyAspectsComposerService.getBodyLongitudesWindow` | 1 | `EphemerisService.getLongitudesWindow` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:145` |
+| `SpecialtyAspectsComposerService.filter(…)` | 1 | `SpecialtyAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:238` |
+| `SpecialtyAspectsComposerService.map(…)` | 1 | `bodyDisplayName` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:239` |
+| `SpecialtyAspectsComposerService.find(…)` | 1 | `SpecialtyAspectsComposerService.map(…)` | `projects/caelundas/caelundas-cli/src/modules/specialty-aspects/specialty-aspects-composer.service.ts:242` |
 
 </details>
 <!-- callidescope:end -->
@@ -2235,6 +2349,7 @@ flowchart LR
   SextupleAspectsModule
   SpecialtyAspectsModule
   StelliumModule
+  TagsModule
   TripleAspectsModule
   TwilightsModule
   TypeOrmModule
@@ -2276,6 +2391,7 @@ flowchart LR
   CaelundasModule --> TripleAspectsModule
   CaelundasModule --> TwilightsModule
   CalendarEventsModule --> DatabaseModule
+  CalendarEventsModule --> TagsModule
   DailyCyclesModule --> CalendarModule
   DailyCyclesModule --> EphemerisModule
   DailyCyclesModule --> MathModule
@@ -2428,8 +2544,10 @@ graph LR
   file_src_modules_database_database_types_ts["src/modules/database/database.types.ts"]
   file_src_modules_database_database_utilities_ts["src/modules/database/database.utilities.ts"]
   file_src_modules_database_database_utilities_unit_test_ts["src/modules/database/database.utilities.unit.test.ts"]
+  file_src_modules_database_entities_calendar_event_tag_entity_ts["src/modules/database/entities/calendar-event-tag.entity.ts"]
   file_src_modules_database_entities_calendar_event_entity_ts["src/modules/database/entities/calendar-event.entity.ts"]
-  file_src_modules_database_migrations_1791255787877_migration_ts["src/modules/database/migrations/1791255787877-migration.ts"]
+  file_src_modules_database_entities_tag_entity_ts["src/modules/database/entities/tag.entity.ts"]
+  file_src_modules_database_migrations_1792416080531_migration_ts["src/modules/database/migrations/1792416080531-migration.ts"]
   file_src_modules_datetime_datetime_constants_ts["src/modules/datetime/datetime.constants.ts"]
   file_src_modules_datetime_datetime_module_ts["src/modules/datetime/datetime.module.ts"]
   file_src_modules_datetime_datetime_service_ts["src/modules/datetime/datetime.service.ts"]
@@ -2609,6 +2727,17 @@ graph LR
   file_src_modules_stellium_stellium_service_ts["src/modules/stellium/stellium.service.ts"]
   file_src_modules_stellium_stellium_service_unit_test_ts["src/modules/stellium/stellium.service.unit.test.ts"]
   file_src_modules_stellium_stellium_types_ts["src/modules/stellium/stellium.types.ts"]
+  file_src_modules_tags_tag_dimensions_constants_ts["src/modules/tags/tag-dimensions.constants.ts"]
+  file_src_modules_tags_tag_map_constants_ts["src/modules/tags/tag-map.constants.ts"]
+  file_src_modules_tags_tag_map_constants_unit_test_ts["src/modules/tags/tag-map.constants.unit.test.ts"]
+  file_src_modules_tags_tag_map_functions_ts["src/modules/tags/tag-map.functions.ts"]
+  file_src_modules_tags_tags_constants_ts["src/modules/tags/tags.constants.ts"]
+  file_src_modules_tags_tags_module_ts["src/modules/tags/tags.module.ts"]
+  file_src_modules_tags_tags_service_ts["src/modules/tags/tags.service.ts"]
+  file_src_modules_tags_tags_service_unit_test_ts["src/modules/tags/tags.service.unit.test.ts"]
+  file_src_modules_tags_tags_types_ts["src/modules/tags/tags.types.ts"]
+  file_src_modules_tags_tags_utilities_ts["src/modules/tags/tags.utilities.ts"]
+  file_src_modules_tags_tags_utilities_unit_test_ts["src/modules/tags/tags.utilities.unit.test.ts"]
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts["src/modules/triple-aspects/triple-aspects-composer.service.ts"]
   file_src_modules_triple_aspects_triple_aspects_composer_service_unit_test_ts["src/modules/triple-aspects/triple-aspects-composer.service.unit.test.ts"]
   file_src_modules_triple_aspects_triple_aspects_detector_service_ts["src/modules/triple-aspects/triple-aspects-detector.service.ts"]
@@ -2667,7 +2796,7 @@ graph LR
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_calendar_calendar_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_database_module_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_migrations_1791255787877_migration_ts
+  file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_database_migrations_1792416080531_migration_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_ingresses_ingresses_service_ts
   file_src_caelundas_cli_main_end_to_end_test_ts --> file_src_modules_input_input_constants_ts
@@ -2830,7 +2959,6 @@ graph LR
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_calendar_calendar_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_database_database_types_ts
-  file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_input_input_service_ts
   file_src_modules_caelundas_caelundas_command_unit_test_ts --> file_src_modules_input_input_types_ts
@@ -2870,23 +2998,38 @@ graph LR
   file_src_modules_caelundas_caelundas_types_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_calendar_events_calendar_events_module_ts --> file_src_modules_calendar_events_calendar_events_service_ts
   file_src_modules_calendar_events_calendar_events_module_ts --> file_src_modules_database_database_module_ts
+  file_src_modules_calendar_events_calendar_events_module_ts --> file_src_modules_tags_tags_module_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_caelundas_cli_constants_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_module_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
+  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_module_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
-  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_migrations_1791255787877_migration_ts
+  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_entities_tag_entity_ts
+  file_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_src_modules_database_migrations_1792416080531_migration_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_types_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_calendar_events_calendar_events_utilities_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
   file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_service_ts
+  file_src_modules_calendar_events_calendar_events_service_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_calendar_events_calendar_events_service_ts
   file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_src_modules_tags_tags_service_ts
+  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
+  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_calendar_events_calendar_events_types_ts --> file_src_modules_tags_tags_types_ts
   file_src_modules_calendar_events_calendar_events_utilities_ts --> file_src_modules_calendar_events_calendar_events_constants_ts
+  file_src_modules_calendar_events_calendar_events_utilities_ts --> file_src_modules_calendar_events_calendar_events_types_ts
+  file_src_modules_calendar_events_calendar_events_utilities_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_src_modules_calendar_events_calendar_events_utilities_ts
+  file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_calendar_calendar_module_ts --> file_src_modules_calendar_calendar_service_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_calendar_constants_ts
   file_src_modules_calendar_calendar_service_ts --> file_src_modules_calendar_calendar_types_ts
@@ -2921,13 +3064,16 @@ graph LR
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_types_ts
   file_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_src_modules_math_math_service_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_tag_entity_ts
   file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_database_database_constants_ts --> file_src_modules_database_entities_tag_entity_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_database_module_ts --> file_src_modules_database_database_service_ts
-  file_src_modules_database_database_module_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_database_database_service_unit_test_ts --> file_src_modules_database_database_service_ts
   file_src_modules_database_database_types_ts --> file_src_modules_database_entities_calendar_event_entity_ts
   file_src_modules_database_database_utilities_unit_test_ts --> file_src_modules_database_database_utilities_ts
+  file_src_modules_database_entities_calendar_event_tag_entity_ts --> file_src_modules_database_entities_calendar_event_entity_ts
+  file_src_modules_database_entities_calendar_event_tag_entity_ts --> file_src_modules_database_entities_tag_entity_ts
   file_src_modules_database_entities_calendar_event_entity_ts --> file_src_modules_database_database_utilities_ts
   file_src_modules_datetime_datetime_module_ts --> file_src_modules_datetime_datetime_service_ts
   file_src_modules_datetime_datetime_service_unit_test_ts --> file_src_modules_datetime_datetime_service_ts
@@ -3130,8 +3276,10 @@ graph LR
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_database_database_types_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_ephemeris_ephemeris_types_ts
+  file_src_modules_ingresses_ingresses_composer_service_ts --> file_src_modules_ingresses_ingresses_constants_ts
   file_src_modules_ingresses_ingresses_composer_service_unit_test_ts --> file_src_modules_ephemeris_ephemeris_service_ts
   file_src_modules_ingresses_ingresses_composer_service_unit_test_ts --> file_src_modules_ingresses_ingresses_composer_service_ts
+  file_src_modules_ingresses_ingresses_constants_ts --> file_src_modules_caelundas_caelundas_types_ts
   file_src_modules_ingresses_ingresses_module_ts --> file_src_modules_ephemeris_ephemeris_module_ts
   file_src_modules_ingresses_ingresses_module_ts --> file_src_modules_ingresses_ingresses_composer_service_ts
   file_src_modules_ingresses_ingresses_module_ts --> file_src_modules_ingresses_ingresses_service_ts
@@ -3791,6 +3939,43 @@ graph LR
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_database_database_types_ts
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_progressive_progressive_utilities_service_ts
   file_src_modules_stellium_stellium_service_unit_test_ts --> file_src_modules_stellium_stellium_service_ts
+  file_src_modules_tags_tag_dimensions_constants_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_caelundas_caelundas_constants_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_eclipses_eclipses_constants_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_ingresses_ingresses_constants_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_tags_tag_dimensions_constants_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_tags_tag_map_functions_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_tags_tags_constants_ts
+  file_src_modules_tags_tag_map_constants_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_caelundas_symbol_caelundas_constants_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_eclipses_eclipses_constants_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_ingresses_ingresses_constants_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_tags_tags_constants_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_tags_tag_map_constants_unit_test_ts --> file_src_modules_tags_tags_utilities_ts
+  file_src_modules_tags_tag_map_functions_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_tags_tag_map_functions_ts --> file_src_modules_tags_tag_dimensions_constants_ts
+  file_src_modules_tags_tag_map_functions_ts --> file_src_modules_tags_tags_constants_ts
+  file_src_modules_tags_tag_map_functions_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_tags_tags_module_ts --> file_src_modules_tags_tags_service_ts
+  file_src_modules_tags_tags_service_ts --> file_src_modules_database_entities_tag_entity_ts
+  file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_constants_ts
+  file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_tags_tags_service_ts --> file_src_modules_tags_tags_utilities_ts
+  file_src_modules_tags_tags_service_unit_test_ts --> file_src_modules_tags_tags_service_ts
+  file_src_modules_tags_tags_types_ts --> file_src_modules_database_database_types_ts
+  file_src_modules_tags_tags_utilities_ts --> file_src_modules_caelundas_caelundas_types_ts
+  file_src_modules_tags_tags_utilities_ts --> file_src_modules_tags_tag_dimensions_constants_ts
+  file_src_modules_tags_tags_utilities_ts --> file_src_modules_tags_tag_map_constants_ts
+  file_src_modules_tags_tags_utilities_ts --> file_src_modules_tags_tags_constants_ts
+  file_src_modules_tags_tags_utilities_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_tags_tags_utilities_unit_test_ts --> file_src_modules_caelundas_caelundas_constants_ts
+  file_src_modules_tags_tags_utilities_unit_test_ts --> file_src_modules_tags_tags_types_ts
+  file_src_modules_tags_tags_utilities_unit_test_ts --> file_src_modules_tags_tags_utilities_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_aspects_aspect_graph_service_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_aspects_aspect_phase_emoji_service_ts
   file_src_modules_triple_aspects_triple_aspects_composer_service_ts --> file_src_modules_aspects_aspects_types_ts
@@ -3998,40 +4183,40 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-54545-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-1.87_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-35-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-313-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-56837-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-1.95_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-36-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-326-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-176.23_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-190.90_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-313-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-85-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-326-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-87-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-15-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-137-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-895-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-155-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-943-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-20-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-111-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-114-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-21-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-113-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2437-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-845-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-3102-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-180-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3777-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2118-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-434-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-1933-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-4009-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-117-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2638-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-860-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-3296-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-202-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3928-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2197-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-480-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-1994-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-4180-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -4105,15 +4290,15 @@ graph LR
 ### SQL
 
 ![SQL Files](https://img.shields.io/badge/SQL_Files-2-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-45-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-22-7c3aed?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-129-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-55-7c3aed?style=flat-square)
 ![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-1-22c55e?style=flat-square)
-![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
-![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-2-0284c7?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-2-22c55e?style=flat-square)
+![SQL Updates](https://img.shields.io/badge/SQL_Updates-5-0ea5e9?style=flat-square)
+![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-5-dc2626?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-9-0284c7?style=flat-square)
 ![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
-![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-5-059669?style=flat-square)
+![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-7-059669?style=flat-square)
 ![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
 
 ### HCL
@@ -4142,14 +4327,14 @@ graph LR
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-33-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-73-0284c7?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-34-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-74-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-2-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-37-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-32-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-11-0ea5e9?style=flat-square)
-![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-1-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-88-ca8a04?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-40-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-33-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-12-0ea5e9?style=flat-square)
+![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-3-059669?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-91-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-14-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-9-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -4187,16 +4372,16 @@ graph LR
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-439-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-445-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-11-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-23-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-0-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-124-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-128-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-19-16a34a?style=flat-square)
-![List Items](https://img.shields.io/badge/List_Items-77-22c55e?style=flat-square)
+![List Items](https://img.shields.io/badge/List_Items-80-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-0-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-2-0284c7?style=flat-square)
 ![Table Rows](https://img.shields.io/badge/Table_Rows-10-0ea5e9?style=flat-square)
