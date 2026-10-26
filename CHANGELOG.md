@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.33.0](https://github.com/organizzolini/codebase/compare/v3.32.0...v3.33.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ group events and add the timeline ([#1725](https://github.com/organizzolini/codebase/issues/1725)) ([e80d1b0](https://github.com/organizzolini/codebase/commit/e80d1b08c81f245d18570a92e0c02f515c229fe7)), closes [#1647](https://github.com/organizzolini/codebase/issues/1647) [#1648](https://github.com/organizzolini/codebase/issues/1648) [#1649](https://github.com/organizzolini/codebase/issues/1649) [#1650](https://github.com/organizzolini/codebase/issues/1650) [#1651](https://github.com/organizzolini/codebase/issues/1651) [#1652](https://github.com/organizzolini/codebase/issues/1652) [#1653](https://github.com/organizzolini/codebase/issues/1653) [#1646](https://github.com/organizzolini/codebase/issues/1646) [#1647](https://github.com/organizzolini/codebase/issues/1647) [#1648](https://github.com/organizzolini/codebase/issues/1648) [#1649](https://github.com/organizzolini/codebase/issues/1649) [#1650](https://github.com/organizzolini/codebase/issues/1650) [#1651](https://github.com/organizzolini/codebase/issues/1651) [#1652](https://github.com/organizzolini/codebase/issues/1652) [#1653](https://github.com/organizzolini/codebase/issues/1653) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1724](https://github.com/organizzolini/codebase/issues/1724)
+
 ## [3.32.0](https://github.com/organizzolini/codebase/compare/v3.31.0...v3.32.0) (2026-10-26)
 
 ### ✨ Features
