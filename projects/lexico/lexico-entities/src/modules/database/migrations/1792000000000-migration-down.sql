@@ -1,6 +1,6 @@
 set lock_timeout = '10s';
 
-set statement_timeout = '5m';
+set statement_timeout = '5min';
 
 drop index lexico.words_data_trigram_index;
 
