@@ -16,7 +16,9 @@ import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration"
  *
  * Discovers the files, splits every path into words, tokenizes every file a
  * language claims and splits its identifiers into words, folds each word into
- * its headword, then de-duplicates and sorts. A file no language claims still contributes its path.
+ * its headword, leaves out the headwords the configuration excludes, then
+ * de-duplicates and sorts. A fault in the configuration's `fold` aborts the
+ * run, naming the configuration file. A file no language claims still contributes its path.
  */
 @Injectable()
 export class VocabularyService {
@@ -57,6 +59,23 @@ export class VocabularyService {
     ];
   }
 
+  /**
+   * The headwords the configuration leaves out.
+   *
+   * Its words are folded the way the code's are, so exclusion compares
+   * headwords: excluding `service` covers `services`, and excluding
+   * `implements` covers the `implement` it folds into.
+   */
+  private excludedHeadwords(
+    configuration: ResolvedCoinagerieConfiguration,
+  ): Set<string> {
+    return new Set(
+      configuration.exclude.words.map((word) =>
+        this.foldingService.headword(word.toLowerCase(), configuration),
+      ),
+    );
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -74,6 +93,7 @@ export class VocabularyService {
       include: configuration.include,
       skip: configuration.outputs.map((output) => output.path),
     });
+    const excluded = this.excludedHeadwords(configuration);
     const words = new Set<string>();
 
     // One file at a time: reading every file at once opens them all at once,
@@ -83,7 +103,11 @@ export class VocabularyService {
         configuration.directory,
         relativePath,
       )) {
-        words.add(this.foldingService.fold(word));
+        const headword = this.foldingService.headword(word, configuration);
+
+        if (!excluded.has(headword)) {
+          words.add(headword);
+        }
       }
     }
 

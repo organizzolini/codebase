@@ -252,6 +252,67 @@ describe("main end-to-end suite", () => {
     SPAWN_TIMEOUT,
   );
 
+  it(
+    "folds word forms, merges a configured family, and leaves out excluded words",
+    () => {
+      root = createFixtureTree({
+        "coinagerie.config.ts": [
+          "export default {",
+          '  exclude: { paths: ["coinagerie.config.ts", "tsconfig.json"], words: async () => ["services"] },',
+          '  fold: (word: string) => (word === "configuration" ? "configure" : word),',
+          '  outputs: [{ path: "README.md", type: "markdown" }],',
+          "};",
+          "",
+        ].join("\n"),
+        "src/phase.ts": [
+          "export const aspects = configured(configuring);",
+          "export const configuration = services;",
+          "",
+        ].join("\n"),
+      });
+
+      const written = run(root, ["--write"]);
+
+      expect(written.exitCode).toBe(0);
+      expect(readFileSync(path.join(root, "README.md"), "utf8")).toContain(
+        "- **aspect**:\n- **configure**:\n- **phase**:\n- **src**:\n",
+      );
+      expect(run(root, ["--check"]).exitCode).toBe(0);
+    },
+    SPAWN_TIMEOUT,
+  );
+
+  it.each([
+    [
+      "an exclude.words that throws",
+      "exclude: { words: () => { throw new Error('unreadable'); } }",
+    ],
+    ["a fold that returns an empty string", "fold: () => ''"],
+  ])(
+    "aborts on %s, naming the configuration file and writing nothing",
+    (_case, field) => {
+      root = createFixtureTree({
+        ...SOURCE,
+        "coinagerie.config.ts": [
+          "export default {",
+          `  ${field},`,
+          '  outputs: [{ path: "README.md", type: "markdown" }],',
+          "};",
+          "",
+        ].join("\n"),
+      });
+
+      const result = run(root, ["--write"]);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.standardError).toContain(
+        path.join(root, "coinagerie.config.ts"),
+      );
+      expect(existsSync(path.join(root, "README.md"))).toBe(false);
+    },
+    SPAWN_TIMEOUT,
+  );
+
   it.each([
     ["both --check and --write", ["--check", "--write"]],
     ["--check with no destination configured", ["--check"]],

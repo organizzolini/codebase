@@ -9,7 +9,7 @@ import { VocabularyService } from "./vocabulary.service";
 
 /**
  * Provides the vocabulary pipeline, wired to discovery, the language
- * tokenizers, word splitting, and folding.
+ * tokenizers, word splitting, folding, and exclusion.
  */
 @Module({
   controllers: [],

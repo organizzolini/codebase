@@ -53,7 +53,8 @@ describe(VocabularyService, () => {
     return {
       configurationPath: undefined,
       directory: root,
-      exclude: { paths: [] },
+      exclude: { paths: [], words: [] },
+      fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
       ...overrides,
@@ -119,7 +120,7 @@ describe(VocabularyService, () => {
     await expect(
       service.collect(
         configure({
-          exclude: { paths: ["**/*.test.ts"] },
+          exclude: { paths: ["**/*.test.ts"], words: [] },
           include: ["src/**"],
         }),
       ),
@@ -139,6 +140,59 @@ describe(VocabularyService, () => {
               type: "markdown",
             },
           ],
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+  });
+
+  it("runs the configured fold after plurals and inflections are folded", async () => {
+    writeTree({
+      "src/main.ts": "const setups = configuration + configured;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({
+          fold: (word) => (word === "configuration" ? "configure" : word),
+        }),
+      ),
+    ).resolves.toStrictEqual(["configure", "main", "setup", "src"]);
+  });
+
+  it("excludes the words the configuration lists, and the forms folded into them", async () => {
+    writeTree({
+      "src/main.ts": "const gate = services + service + Service;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({ exclude: { paths: [], words: ["service"] } }),
+      ),
+    ).resolves.toStrictEqual(["gate", "main", "src"]);
+  });
+
+  it("excludes a word named by one of its forms, in any case", async () => {
+    writeTree({ "src/main.ts": "const gate = service + implement;\n" });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], words: ["Services", "implements"] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["gate", "main", "src"]);
+  });
+
+  it("excludes after the configured fold, so a merged family goes together", async () => {
+    writeTree({ "src/main.ts": "const configuration = configure;\n" });
+    const fold = (word: string): string =>
+      word === "configuration" ? "configure" : word;
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], words: ["configuration"] },
+          fold,
         }),
       ),
     ).resolves.toStrictEqual(["main", "src"]);
