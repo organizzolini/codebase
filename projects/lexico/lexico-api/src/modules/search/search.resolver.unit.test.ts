@@ -52,6 +52,7 @@ describe(SearchResolver, () => {
     mockLexeme.lemma = "amō";
 
     const mockResult: LexemeSearchMatch = {
+      distance: null,
       enclitic: null,
       identifiers: [],
       lexeme: mockLexeme,
@@ -112,6 +113,7 @@ describe(SearchResolver, () => {
     mockLexeme.lemma = "amō";
 
     const mockResult: LexemeSearchMatch = {
+      distance: null,
       enclitic: null,
       identifiers: [],
       lexeme: mockLexeme,
