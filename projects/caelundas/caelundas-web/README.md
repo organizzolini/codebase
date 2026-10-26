@@ -45,7 +45,7 @@ nx run caelundas-web:vitest
 
 The night sky backdrop draws from `src/hooks/use-night-sky/use-night-sky.catalog.json`,
 the [HYG star database](https://github.com/astronexus/HYG-Database) v4.1
-trimmed to stars brighter than magnitude 6.5 at declination -30 degrees or
+trimmed to stars at or brighter than magnitude 6.5 at declination -30 degrees or
 north, brightest first. HYG is licensed
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and the
 trimmed catalog is a derived work, so it carries the same license and credit

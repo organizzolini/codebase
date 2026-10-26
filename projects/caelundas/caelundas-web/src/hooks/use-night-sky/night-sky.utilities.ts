@@ -51,7 +51,7 @@ import type {
   Viewport,
 } from "./night-sky.types";
 
-// 🔏 Private Functions
+// 🌎 Public Functions
 
 /**
  * Builds the night sky for a place and moment: the real fixed stars, drawn
@@ -135,6 +135,8 @@ export function computeStartingSiderealDegrees(
     SiderealTime(date),
   );
 }
+
+// 🔏 Private Functions
 
 /**
  * Joins the definitions, ground, spinning star group and overlay into one SVG.
@@ -239,8 +241,9 @@ function colorFromIndex(colorIndex: number): string {
 }
 
 /**
- * Projects the sky about the north celestial pole with a
- * stereographic projection, scaled so the window is exactly as tall as the SVG, and finds where the pole falls.
+ * Projects the sky about the north celestial pole with a stereographic
+ * projection, scaled so the window is exactly as tall as the SVG, and finds
+ * where the pole falls.
  */
 function computeGeometry(options: ResolvedNightSkyOptions): SkyGeometry {
   const fieldOfView = limitFieldOfView(options);
@@ -448,8 +451,6 @@ function resolveOptions(options: NightSkyOptions): ResolvedNightSkyOptions {
     width: options.width,
   };
 }
-
-// 🌎 Public Functions
 
 /**
  * Draws the stars bright enough and on rings that cross the window.
