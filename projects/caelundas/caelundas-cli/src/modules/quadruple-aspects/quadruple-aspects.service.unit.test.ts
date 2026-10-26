@@ -384,9 +384,7 @@ describe(QuadrupleAspectsService, () => {
         .detectProgressive(boundaries)
         .map((span) => span.summary);
 
-      expect(spanTitles).toStrictEqual([
-        formingTitle.replace("", "").replace(" forming", ""),
-      ]);
+      expect(spanTitles).toStrictEqual([formingTitle]);
       expect(spanTitles[0]).not.toMatch(/forming|dissolving/u);
     });
 
