@@ -36,9 +36,7 @@ src/
       graphql-client.types.ts       # GraphqlCodegenOptions
       graphql-client.utilities.ts   # createGraphqlCodegenConfig, the @codebase/interface/client entry
 testing/
-  index.ts                          # The @codebase/interface/testing entry
-  graphql-mock-server.ts            # The client's MSW server and its start, reset, and stop
-  pagination.ts                     # paginateArray and the page matrix, the oracle SQL paging agrees with
+  index.ts                          # The @codebase/interface/testing entry, re-exporting @codebase/testing/graphql
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
@@ -49,6 +47,15 @@ testing/
 Add a symbol here only when two APIs, or one API and a test harness, need it.
 Put it in the module for the side it serves. Anything naming a specific API's entities, such as `DeletableType`, stays in
 that API.
+
+### Test Helpers
+
+The MSW mock server and the pagination oracle moved to
+`@codebase/testing/graphql`, along with the tests that pin them, and
+`testing/index.ts` re-exports them until every consumer imports the new
+entry. The testing package depends on this one, so importing it from here
+closes a cycle; the module-boundary and codependix rules allow that cycle
+among the common packages only.
 
 ### Code Generation
 

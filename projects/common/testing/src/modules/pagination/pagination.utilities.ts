@@ -1,65 +1,14 @@
-import {
-  createEdge,
-  toCursor,
-} from "../src/modules/graphql-server/graphql-server.utilities";
+import { createEdge, toCursor } from "@codebase/interface";
+
+import { FULL_LIMITS, QUICK_LIMITS } from "./pagination.constants";
 
 import type {
-  Connection,
-  Edge,
-} from "../src/modules/graphql-server/graphql-server.types";
-
-/** Plain Relay arguments, so matrix entries can be spread and combined. */
-export interface PageRequest {
-  readonly after?: string;
-  readonly before?: string;
-  readonly first?: number;
-  readonly last?: number;
-}
-
-/** The observable shape of one Relay page, independent of entity hydration. */
-export interface PageSummary {
-  readonly endCursor: string | undefined;
-  readonly hasNextPage: boolean;
-  readonly hasPreviousPage: boolean;
-  readonly ids: readonly string[];
-  readonly startCursor: string | undefined;
-  readonly totalCount: number;
-}
-
-/**
- * Page counts covering `first`, `last`, both together, zero, and the negative
- * counts the original slicing read as no limit.
- */
-const FULL_LIMITS: readonly PageRequest[] = [
-  {},
-  { first: 0 },
-  { first: 2 },
-  { first: -1 },
-  { last: 0 },
-  { last: 2 },
-  { last: -1 },
-  { first: 2, last: 1 },
-];
-
-/** The counts a quick matrix keeps: none, `first`, and `last`. */
-const QUICK_LIMITS: readonly PageRequest[] = [{}, { first: 2 }, { last: 2 }];
-
-/** How a matrix is built: its cursor encoding, and whether to keep it quick. */
-export interface MatrixOptions {
-  /** Encodes the cursor a connection hands out for an id; `{ id }` by default. */
-  readonly cursorOf?: (id: string) => string;
-  /** Keeps only the middle member, the outsider, and one pair. */
-  readonly quick?: boolean;
-}
-
-/**
- * Parameters for finding index bounds for array pagination.
- */
-interface PaginationBoundsParameters<T> {
-  after?: null | string | undefined;
-  before?: null | string | undefined;
-  getCursor: (item: T) => string;
-}
+  MatrixOptions,
+  PageRequest,
+  PageSummary,
+  PaginationBoundsParameters,
+} from "./pagination.types";
+import type { Connection, Edge } from "@codebase/interface";
 
 /**
  * The page the original in-memory slicing produced for these arguments, used

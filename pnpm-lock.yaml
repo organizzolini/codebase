@@ -1297,15 +1297,15 @@ importers:
 
   projects/common/interface:
     dependencies:
+      '@codebase/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@graphql-codegen/cli':
         specifier: 'catalog:'
         version: 7.4.6(@types/node@26.6.2)(graphql@16.14.2)(supports-color@10.2.2)(typescript@6.0.3)
       '@nestjs/graphql':
         specifier: 'catalog:'
         version: 14.0.2(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(graphql@16.14.2)(reflect-metadata@0.2.2)(typescript@6.0.3)
-      msw:
-        specifier: 'catalog:'
-        version: 2.15.0(@types/node@26.6.2)(typescript@6.0.3)
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -1574,6 +1574,9 @@ importers:
 
   projects/common/testing:
     dependencies:
+      '@codebase/interface':
+        specifier: workspace:*
+        version: link:../interface
       '@codebase/observability':
         specifier: workspace:*
         version: link:../observability
@@ -1589,6 +1592,9 @@ importers:
       '@nx/devkit':
         specifier: 'catalog:'
         version: 24.0.0(nx@24.0.0(@swc-node/register@1.12.1(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@10.2.2)(typescript@6.0.3))(@swc/core@1.16.2(@swc/helpers@0.5.23)))
+      msw:
+        specifier: 'catalog:'
+        version: 2.15.0(@types/node@26.6.2)(typescript@6.0.3)
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
