@@ -1,5 +1,6 @@
 // 🏷️ Types
 
+import type { PluginInput } from "../options/options.types";
 import type { PLUGIN_CONTEXT_GLOBAL_KEY } from "./plugin.constants";
 import type { INestApplicationContext } from "@nestjs/common";
 
@@ -8,7 +9,7 @@ export interface InferredTarget {
   readonly cache: boolean;
   readonly executor: string;
   /** Files whose change must invalidate the cached result. */
-  readonly inputs: string[];
+  readonly inputs: PluginInput[];
   readonly options: Record<string, unknown>;
 }
 

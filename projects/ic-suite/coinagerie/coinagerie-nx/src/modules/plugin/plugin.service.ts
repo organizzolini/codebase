@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { CONFIGURATION_FILE_NAMES } from "@coinagerie/configuration";
@@ -7,8 +7,9 @@ import { Injectable } from "@nestjs/common";
 import { OptionsService } from "../options/options.service";
 
 import {
+  PACKAGE_JSON_FILENAME,
   PROJECT_FILES_INPUT,
-  PROJECT_MANIFEST_FILENAMES,
+  PROJECT_JSON_FILENAME,
 } from "./plugin.constants";
 
 import type { CoinageriePluginOptions } from "../options/options.types";
@@ -66,13 +67,39 @@ export class PluginService {
     };
   }
 
-  /** Whether a folder is an Nx project, which is what a target can run on. */
+  /** Whether a `package.json` names a package, which is what makes it a project. */
+  private isNamedPackage(manifestPath: string): boolean {
+    try {
+      const manifest: unknown = JSON.parse(readFileSync(manifestPath, "utf8"));
+
+      return (
+        typeof manifest === "object" &&
+        manifest !== null &&
+        "name" in manifest &&
+        typeof manifest.name === "string" &&
+        manifest.name !== ""
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Whether a folder is an Nx project, which is what a target can run on.
+   *
+   * A `package.json` counts only when it names a package, because that is
+   * the only kind Nx makes a project of; a node returned for a folder it does
+   * not would carry no name and stop the whole project graph.
+   */
   private isProject(args: {
     projectRoot: string;
     workspaceRoot: string;
   }): boolean {
-    return PROJECT_MANIFEST_FILENAMES.some((filename) =>
-      existsSync(path.join(args.workspaceRoot, args.projectRoot, filename)),
+    const folder = path.join(args.workspaceRoot, args.projectRoot);
+
+    return (
+      existsSync(path.join(folder, PROJECT_JSON_FILENAME)) ||
+      this.isNamedPackage(path.join(folder, PACKAGE_JSON_FILENAME))
     );
   }
 

@@ -112,6 +112,24 @@ describe("coinageriePlugin", () => {
     ]);
   });
 
+  it("answers a project holding two configuration files once", async () => {
+    expect.hasAssertions();
+
+    const nodes = await createNodes({
+      files: {
+        "packages/alpha/coinagerie.config.mjs": "",
+        "packages/alpha/coinagerie.config.ts": "",
+        "packages/alpha/project.json": "{}",
+      },
+      matched: [
+        "packages/alpha/coinagerie.config.mjs",
+        "packages/alpha/coinagerie.config.ts",
+      ],
+    });
+
+    expect(nodes).toHaveLength(1);
+  });
+
   it("drops a matched file whose folder is no project", async () => {
     expect.hasAssertions();
 

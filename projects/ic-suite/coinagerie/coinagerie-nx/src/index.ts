@@ -49,14 +49,22 @@ const createNodes: CreateNodes = [
       workspaceRoot: context.workspaceRoot,
     });
 
+    const seenRoots = new Set<string>();
+
     return configurationFiles.flatMap(
       (configurationFile): CreateNodesResultArray => {
         const projectRoot = path.posix.dirname(configurationFile);
         const targets = targetsByProjectRoot.get(projectRoot);
 
-        return targets === undefined
-          ? []
-          : [[configurationFile, { projects: { [projectRoot]: { targets } } }]];
+        if (targets === undefined || seenRoots.has(projectRoot)) {
+          return [];
+        }
+
+        seenRoots.add(projectRoot);
+
+        return [
+          [configurationFile, { projects: { [projectRoot]: { targets } } }],
+        ];
       },
     );
   },

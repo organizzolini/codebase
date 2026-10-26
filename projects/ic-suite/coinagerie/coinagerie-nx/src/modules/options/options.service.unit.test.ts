@@ -70,6 +70,11 @@ describe(OptionsService, () => {
       ["a list", ["a", "b"], ["a", "b"]],
       ["untrimmed and blank entries", [" a ", "", "  "], ["a"]],
       ["non-string entries", ["a", 7, null], ["a"]],
+      [
+        "input objects, which pass through",
+        ["a", { externalDependencies: ["@coinagerie/cli"] }, [1]],
+        ["a", { externalDependencies: ["@coinagerie/cli"] }],
+      ],
       ["a bare string", "a", []],
       ["nothing", undefined, []],
     ])(

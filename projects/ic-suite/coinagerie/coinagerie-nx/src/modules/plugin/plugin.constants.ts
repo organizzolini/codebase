@@ -12,14 +12,17 @@ import { CONFIGURATION_FILE_NAMES } from "@coinagerie/configuration";
  */
 export const CONFIGURATION_GLOB = `**/{${CONFIGURATION_FILE_NAMES.join(",")}}`;
 
+/** The file that makes a folder an Nx project on its own. */
+export const PROJECT_JSON_FILENAME = "project.json";
+
 /**
- * Files whose presence marks a folder as an Nx project.
+ * The manifest that makes a folder a project when it names a package.
  *
  * A configuration file in a folder that is no project — a fixture, a template
  * — describes nothing Nx can run a target on, and returning a project for it
  * would invent one.
  */
-export const PROJECT_MANIFEST_FILENAMES = ["project.json", "package.json"];
+export const PACKAGE_JSON_FILENAME = "package.json";
 
 /**
  * Cache input covering everything the project holds.

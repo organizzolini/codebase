@@ -36,6 +36,12 @@ and a path under `{workspaceRoot}` also makes `nx affected` select every project
 that declares it. One project can add its own in `project.json` with the
 spread entry, `"inputs": ["...", "{workspaceRoot}/other.json"]`.
 
+The target runs the installed `coinagerie` binary, so `@coinagerie/cli` must be
+installed, or `command` must name another way to run it. Its verdict also
+depends on the tool itself: to re-run every check when the tool changes,
+declare it as an input, for example `{ "externalDependencies": ["@coinagerie/cli"] }`.
+An input may be a string or any other Nx input object.
+
 ## Test
 
 ```bash

@@ -45,7 +45,7 @@ describe(PluginService, () => {
         "packages/alpha/coinagerie.config.ts": "",
         "packages/alpha/project.json": "{}",
         "packages/beta/coinagerie.config.ts": "",
-        "packages/beta/package.json": "{}",
+        "packages/beta/package.json": '{"name":"beta"}',
         "packages/gamma/project.json": "{}",
       });
 
@@ -70,7 +70,7 @@ describe(PluginService, () => {
 
       const { root } = build({
         "coinagerie.config.ts": "",
-        "package.json": "{}",
+        "package.json": '{"name":"root"}',
       });
 
       expect([
@@ -99,6 +99,31 @@ describe(PluginService, () => {
         }).size,
       ).toBe(0);
     });
+
+    it.each([
+      ["a package.json without a name", "{}"],
+      ["a package.json that is not JSON", "not json"],
+      ["a package.json holding a non-object", "7"],
+      ["a package.json with a blank name", '{"name":""}'],
+    ])(
+      "gives no target to a folder holding only %s",
+      (_description, manifest) => {
+        expect.hasAssertions();
+
+        const { root } = build({
+          "packages/alpha/coinagerie.config.ts": "",
+          "packages/alpha/package.json": manifest,
+        });
+
+        expect(
+          service.inferTargets({
+            configurationFiles: ["packages/alpha/coinagerie.config.ts"],
+            options: {},
+            workspaceRoot: root,
+          }).size,
+        ).toBe(0);
+      },
+    );
 
     it("gives a project holding two configuration files one set of targets", () => {
       expect.hasAssertions();
