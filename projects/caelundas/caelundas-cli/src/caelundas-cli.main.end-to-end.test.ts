@@ -1,34 +1,34 @@
 import fs from "node:fs";
 import path from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 
 import { createMock } from "@golevelup/ts-vitest";
 import _ from "lodash";
 import moment from "moment-timezone";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import {
   detectable,
   runCalendarCommand,
 } from "../testing/calendar-command.utilities";
 import { createMajorAspectsService } from "../testing/major-aspects.utilities";
+import { createTemporaryDatabase } from "../testing/temporary-database.utilities";
 
 import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
-import { DatabaseModule } from "./modules/database/database.module";
+import { DATABASE_DEFAULT_FILE } from "./modules/database/database.constants";
 import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
-import { Migration1792416080531 } from "./modules/database/migrations/1792416080531-migration";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";
 import { ProgressiveUtilitiesService } from "./modules/progressive/progressive-utilities.service";
 
 import type { CalendarCommandOutput } from "../testing/calendar-command.types";
+import type { TemporaryDatabase } from "../testing/temporary-database.types";
 import type { EphemerisService } from "./modules/ephemeris/ephemeris.service";
 import type { Environment } from "./modules/input/input.types";
-import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { ConfigService } from "@nestjs/config";
 import type { Repository } from "typeorm";
 
@@ -39,17 +39,15 @@ const calendarService = new CalendarService(new LoggerService(), {
 } as unknown as ConfigService<Environment>);
 
 describe("main end-to-end suite", () => {
-  it("defaults the postgres connection and output directory", () => {
+  it("defaults the database file to the project's own and the output directory", () => {
     expect.hasAssertions();
     expect(environmentSchema.parse({})).toStrictEqual({
-      CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
-      CAELUNDAS_POSTGRES_HOST: "localhost",
-      CAELUNDAS_POSTGRES_PASSWORD: "caelundas_password",
-      CAELUNDAS_POSTGRES_PORT: 5432,
-      CAELUNDAS_POSTGRES_SCHEMA: "caelundas",
-      CAELUNDAS_POSTGRES_USERNAME: "caelundas_username",
+      CAELUNDAS_SQLITE_DATABASE: DATABASE_DEFAULT_FILE,
       OUTPUT_DIRECTORY: "./output",
     });
+    expect(DATABASE_DEFAULT_FILE).toBe(
+      path.resolve(import.meta.dirname, "../database.sqlite"),
+    );
   });
 
   describe("calendar generation e2e", { timeout: 10_000 }, () => {
@@ -330,7 +328,7 @@ describe("main end-to-end suite", () => {
   });
 
   describe("stored calendar events", { timeout: 120_000 }, () => {
-    const output = "./output/e2e-postgres";
+    const output = "./output/e2e-sqlite";
     const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
     const sydney = { latitude: -33.8688, longitude: 151.2093 };
     const marchFirstHalf = { endDate: "2026-03-16", startDate: "2026-03-01" };
@@ -340,7 +338,7 @@ describe("main end-to-end suite", () => {
       detectable("Overlap", "2026-03-12T12:00:00Z"),
       detectable("Late", "2026-03-20T12:00:00Z"),
     ];
-    let database: DatabaseTestingModule;
+    let database: TemporaryDatabase;
     let calendarEvents: Repository<CalendarEvent>;
     let runs = 0;
 
@@ -361,19 +359,12 @@ describe("main end-to-end suite", () => {
       rows.map((row) => row.summary).toSorted();
 
     beforeAll(async () => {
-      database = await startDatabaseTestingModule({
-        database: DatabaseModule,
-        entities: [CalendarEvent],
-        migrations: [Migration1792416080531],
-        project: "caelundas",
-        validate: (config) => environmentSchema.parse(config),
-      });
-      calendarEvents = database.repository(CalendarEvent);
-    }, 120_000);
+      database = await createTemporaryDatabase();
+      calendarEvents = database.dataSource.getRepository(CalendarEvent);
+    });
 
     afterAll(async () => {
       await database.close();
-      vi.unstubAllEnvs();
       fs.rmSync(output, { force: true, recursive: true });
     });
 
@@ -422,6 +413,8 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
 
       const [before] = await calendarEvents.findBy({ summary: "Overlap" });
+      // SQLite stamps `updated_at` to the second, so let one pass.
+      await sleep(1100);
       const { json } = await run(philadelphia, marchSecondHalf);
       const overlap = await calendarEvents.findBy({ summary: "Overlap" });
 

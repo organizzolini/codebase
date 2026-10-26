@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -22,13 +22,16 @@ const BUILD_SCRIPT = path.join(
 );
 
 /** Runs the script `build-database` runs, with the arguments given. */
-function runBuildScript(commandLine: string[]): { status: null | number } {
+function runBuildScript(commandLine: string[]): {
+  status: null | number;
+  stderr: string;
+} {
   const result = spawnSync(process.execPath, [BUILD_SCRIPT, ...commandLine], {
     cwd: PROJECT_ROOT,
     encoding: "utf8",
   });
 
-  return { status: result.status };
+  return { status: result.status, stderr: result.stderr };
 }
 
 /**
@@ -81,6 +84,26 @@ describe("the bundled events database", () => {
       await expect(
         screen.findByText("Mars Conjunct Venus"),
       ).resolves.toBeDefined();
+    },
+  );
+
+  it(
+    "stops, naming a source file that does not exist, and writes nothing",
+    SCRIPT_TEST,
+    () => {
+      const missing = path.join(directory, "missing.sqlite");
+      const bundled = path.join(directory, "events.sqlite");
+
+      const { status, stderr } = runBuildScript([
+        "--from",
+        missing,
+        "--output",
+        bundled,
+      ]);
+
+      expect(status).not.toBe(0);
+      expect(stderr).toContain(missing);
+      expect(existsSync(bundled)).toBe(false);
     },
   );
 });

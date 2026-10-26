@@ -58,29 +58,41 @@ describe("calendar events utilities", () => {
   });
 
   describe(mapWrittenIds, () => {
-    const start = new Date("2026-01-10T00:00:00.000Z");
-    const end = new Date("2026-01-12T00:00:00.000Z");
+    const start = moment.utc("2026-01-10T00:00:00Z");
+    const end = moment.utc("2026-01-12T00:00:00Z");
+    const sunrise = calendarEventKey("Sunrise", start, start);
+    const sunset = calendarEventKey("Sunset", start, start);
+    const mars = calendarEventKey("Mars trine Venus", start, end);
 
-    it("keys each id by the summary and start read back with it", () => {
+    it("keys each id by the summary, start and end read back with it", () => {
       expect(
-        mapWrittenIds([
-          { createdAt: start, end: start, id: "b", start, summary: "Sunset" },
-          { end: start, id: "a", start, summary: "Sunrise" },
-          { end, id: "c", start, summary: "Sunrise" },
-        ]),
+        mapWrittenIds(
+          [
+            { end: start, id: "b", start, summary: "Sunset" },
+            { end: start, id: "a", start, summary: "Sunrise" },
+            { end, id: "c", start, summary: "Mars trine Venus" },
+          ],
+          new Set([mars, sunrise, sunset]),
+        ),
       ).toStrictEqual(
         new Map([
-          [calendarEventKey("Sunrise", start, end), "c"],
-          [calendarEventKey("Sunrise", start, start), "a"],
-          [calendarEventKey("Sunset", start, start), "b"],
+          [mars, "c"],
+          [sunrise, "a"],
+          [sunset, "b"],
         ]),
       );
     });
 
-    it("rejects a row read back without its id", () => {
-      expect(() =>
-        mapWrittenIds([{ end: start, start, summary: "Sunrise" }]),
-      ).toThrow(/id/u);
+    it("leaves out a stored neighbor the batch did not write", () => {
+      expect(
+        mapWrittenIds(
+          [
+            { end: start, id: "a", start, summary: "Sunrise" },
+            { end: start, id: "b", start, summary: "Sunset" },
+          ],
+          new Set([sunrise]),
+        ),
+      ).toStrictEqual(new Map([[sunrise, "a"]]));
     });
   });
 

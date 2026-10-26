@@ -1,10 +1,8 @@
 import { tagPathKey } from "../tags/tags.utilities";
 
-import {
-  COORDINATE_DECIMAL_PLACES,
-  WRITTEN_ROWS_SCHEMA,
-} from "./calendar-events.constants";
+import { COORDINATE_DECIMAL_PLACES } from "./calendar-events.constants";
 
+import type { CalendarEvent } from "../database/entities/calendar-event.entity";
 import type {
   CalendarEventTagLink,
   ClassifiedCalendarEvent,
@@ -26,31 +24,34 @@ export function calendarEventKey(
 }
 
 /**
- * A coordinate rounded to the decimals the column stores, as the string
- * `pg` exchanges a `numeric` as, so what is written and what is looked up
- * compare exactly.
+ * A coordinate rounded to the decimals the column stores, as the text the
+ * column holds, so what is written and what is looked up compare exactly.
  */
 export function formatCoordinate(coordinate: number): string {
   return coordinate.toFixed(COORDINATE_DECIMAL_PLACES);
 }
 
 /**
- * The id each written row was stored under, by {@link calendarEventKey},
- * from the summary, start and end each row read back alongside its id, so the
- * order Postgres returns them in does not matter. They are checked rather
- * than trusted, because TypeORM types them loosely.
+ * The id each stored row is stored under, by {@link calendarEventKey}, from
+ * the summary, start and end each row reads back with its id, so the order
+ * SQLite answers in does not matter. Only the rows whose key is in `wanted`
+ * are included, as the select that reads them back also finds neighbors.
  */
 export function mapWrittenIds(
-  generatedMaps: readonly unknown[],
+  stored: readonly Pick<CalendarEvent, "end" | "id" | "start" | "summary">[],
+  wanted: ReadonlySet<string>,
 ): Map<string, string> {
-  return new Map(
-    WRITTEN_ROWS_SCHEMA.parse(generatedMaps).map(
-      ({ end, id, start, summary }) => [
-        calendarEventKey(summary, start, end),
-        id,
-      ],
-    ),
-  );
+  const ids = new Map<string, string>();
+
+  for (const { end, id, start, summary } of stored) {
+    const key = calendarEventKey(summary, start, end);
+
+    if (wanted.has(key)) {
+      ids.set(key, id);
+    }
+  }
+
+  return ids;
 }
 
 /**

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import moment from "moment-timezone";
+import { Between, Repository } from "typeorm";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -12,9 +13,9 @@ import { classifyEvent } from "../tags/tags.utilities";
 import {
   CALENDAR_EVENT_BATCH_SIZE,
   CALENDAR_EVENT_CONFLICT_COLUMNS,
-  CALENDAR_EVENT_RETURNING_COLUMNS,
   CALENDAR_EVENT_TAG_BATCH_SIZE,
   CALENDAR_EVENT_UPDATE_COLUMNS,
+  SQLITE_MAXIMUM_PARAMETERS,
 } from "./calendar-events.constants";
 import {
   calendarEventKey,
@@ -66,23 +67,36 @@ export class CalendarEventsService {
 
   /**
    * The names of the tags each event is linked to directly, ordered by code
-   * point, as Postgres's "C" collation would, so the order never depends on
-   * the database's locale.
+   * point, which is also SQLite's default binary collation, so the order never
+   * depends on a locale. The ids go in batches that stay under SQLite's
+   * bind-parameter limit.
    */
   private async findTagNames(
     eventIds: readonly string[],
   ): Promise<Map<string, string[]>> {
-    const links = await this.calendarEventRepository.manager
-      .createQueryBuilder(CalendarEventTag, "eventTag")
-      .innerJoin("eventTag.tag", "tag")
-      .select("eventTag.calendarEventId", "calendarEventId")
-      .addSelect("tag.name", "name")
-      .where("eventTag.calendarEventId = ANY(:eventIds)", { eventIds })
-      .getRawMany<{ calendarEventId: string; name: string }>();
     const names = new Map<string, string[]>();
 
-    for (const { calendarEventId, name } of links) {
-      names.set(calendarEventId, [...(names.get(calendarEventId) ?? []), name]);
+    for (
+      let offset = 0;
+      offset < eventIds.length;
+      offset += SQLITE_MAXIMUM_PARAMETERS
+    ) {
+      const links = await this.calendarEventRepository.manager
+        .createQueryBuilder(CalendarEventTag, "eventTag")
+        .innerJoin("eventTag.tag", "tag")
+        .select("eventTag.calendarEventId", "calendarEventId")
+        .addSelect("tag.name", "name")
+        .where("eventTag.calendarEventId IN (:...eventIds)", {
+          eventIds: eventIds.slice(offset, offset + SQLITE_MAXIMUM_PARAMETERS),
+        })
+        .getRawMany<{ calendarEventId: string; name: string }>();
+
+      for (const { calendarEventId, name } of links) {
+        names.set(calendarEventId, [
+          ...(names.get(calendarEventId) ?? []),
+          name,
+        ]);
+      }
     }
 
     for (const [calendarEventId, eventNames] of names) {
@@ -106,7 +120,7 @@ export class CalendarEventsService {
       .createQueryBuilder()
       .delete()
       .from(CalendarEventTag)
-      .where("calendarEventId = ANY(:eventIds)", { eventIds })
+      .where("calendarEventId IN (:...eventIds)", { eventIds })
       .execute();
 
     for (
@@ -144,26 +158,59 @@ export class CalendarEventsService {
 
   /**
    * Writes one batch of rows, updating any already stored, and returns the
-   * id each was written under, by {@link calendarEventKey}, from the summary,
-   * start and end each row reads back with its id.
+   * id each was written under, by {@link calendarEventKey}. TypeORM does not
+   * advance `updated_at` on a conflicting insert for SQLite, so both audit
+   * stamps are written, to the millisecond, and the update takes the new
+   * `updated_at`. TypeORM also reloads each inserted row's generated id with
+   * one `OR` per row, which SQLite refuses past 1,000 rows, and has no
+   * `RETURNING` to read them with, so the reload is turned off and the ids are
+   * read back instead: every row of the
+   * batch shares `observer`, so one select over that observer's events
+   * between the batch's first and last start finds them all.
    */
   private async writeRows(
     manager: EntityManager,
     rows: readonly CalendarEventRow[],
+    observer: Observer,
   ): Promise<Map<string, string>> {
-    const { generatedMaps } = await manager
+    const writtenAt = new Date();
+    await manager
       .createQueryBuilder()
       .insert()
       .into(CalendarEvent)
-      .values([...rows])
+      .values(
+        rows.map((row) => ({
+          ...row,
+          createdAt: writtenAt,
+          updatedAt: writtenAt,
+        })),
+      )
+      .updateEntity(false)
       .orUpdate(
         [...CALENDAR_EVENT_UPDATE_COLUMNS],
         [...CALENDAR_EVENT_CONFLICT_COLUMNS],
       )
-      .returning([...CALENDAR_EVENT_RETURNING_COLUMNS])
       .execute();
+    const stored = await manager.getRepository(CalendarEvent).find({
+      select: { end: true, id: true, start: true, summary: true },
+      where: {
+        latitude: formatCoordinate(observer.latitude),
+        longitude: formatCoordinate(observer.longitude),
+        start: Between(
+          moment.min(rows.map(({ start }) => start)),
+          moment.max(rows.map(({ start }) => start)),
+        ),
+      },
+    });
 
-    return mapWrittenIds(generatedMaps);
+    return mapWrittenIds(
+      stored,
+      new Set(
+        rows.map(({ end, start, summary }) =>
+          calendarEventKey(summary, start, end),
+        ),
+      ),
+    );
   }
 
   // 🌎 Public Methods
@@ -186,10 +233,12 @@ export class CalendarEventsService {
       .andWhere("calendarEvent.longitude = :longitude", {
         longitude: formatCoordinate(parameters.longitude),
       })
-      .andWhere("calendarEvent.start < :end", { end: parameters.end.toDate() })
+      .andWhere("calendarEvent.start < :end", {
+        end: parameters.end.toISOString(),
+      })
       .andWhere(
         "(calendarEvent.end > :start OR (calendarEvent.end = calendarEvent.start AND calendarEvent.start >= :start))",
-        { start: parameters.start.toDate() },
+        { start: parameters.start.toISOString() },
       )
       .orderBy("calendarEvent.start", "ASC")
       .addOrderBy("calendarEvent.summary", "ASC")
@@ -210,7 +259,7 @@ export class CalendarEventsService {
    * Writes events for one observer, with its timezone, updating the row of
    * any event already stored, and replaces each one's tag links with links
    * to the nodes of the tag tree {@link classifyEvent} classifies it under,
-   * inserting any node that is missing. It all runs in one transaction. Rows go in batches that stay under Postgres's
+   * inserting any node that is missing. It all runs in one transaction. Rows go in batches that stay under SQLite's
    * bind-parameter limit, and a repeated key within the input keeps its last
    * occurrence, as one statement may not update the same row twice.
    */
@@ -251,6 +300,7 @@ export class CalendarEventsService {
         const ids = await this.writeRows(
           manager,
           batch.map(([, { event }]) => this.toRow(event, observer)),
+          observer,
         );
         await this.replaceTagLinks(
           manager,

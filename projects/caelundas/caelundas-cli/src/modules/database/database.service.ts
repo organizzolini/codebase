@@ -3,7 +3,7 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 /**
- * Reports on the Postgres connection every caelundas repository shares.
+ * Reports on the SQLite connection every caelundas repository shares.
  * The calendar events themselves are read and written by
  * `CalendarEventsService`.
  */

@@ -1,5 +1,6 @@
 import {
   copyFileSync,
+  existsSync,
   mkdirSync,
   readFileSync,
   renameSync,
@@ -12,14 +13,22 @@ import { DatabaseSync } from "node:sqlite";
 // no binary is ever committed: the file is rebuilt before every build.
 //
 // By default it creates the tables from the committed SQL text, the schema
-// and the seed the tests load. With `--from <file>` it starts instead from a
-// SQLite file already holding the tables. Either way the views come last,
+// and the seed the tests load. With `--ingested` it starts instead from the
+// SQLite file `caelundas-cli` ingests into, and with `--from <file>` from any
+// other file already holding the tables. Either way the views come last,
 // applied over whatever wrote the tables. `--output <file>` writes somewhere
 // other than the file the build bundles.
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const outputDirectory = path.join(projectRoot, "output");
 const commandLine = process.argv.slice(2);
+// The file `caelundas-cli` writes by default, beside this project.
+const INGESTED_DATABASE = path.join(
+  projectRoot,
+  "..",
+  "caelundas-cli",
+  "database.sqlite",
+);
 
 /**
  * The value given after `--name` on the command line, if the option was.
@@ -44,7 +53,18 @@ const outputPath = path.resolve(
   projectRoot,
   readOption("output") ?? path.join(outputDirectory, "events.sqlite"),
 );
-const sourcePath = readOption("from");
+const sourcePath = commandLine.includes("--ingested")
+  ? INGESTED_DATABASE
+  : readOption("from");
+
+if (
+  sourcePath !== undefined &&
+  !existsSync(path.resolve(projectRoot, sourcePath))
+) {
+  throw new Error(
+    `${sourcePath} does not exist: run \`nx run caelundas-cli:start\` to ingest events into it, or build from the seed`,
+  );
+}
 
 // The file is built beside the output and replaces it only once complete, so
 // a failed build leaves the last good file in place rather than half of one.

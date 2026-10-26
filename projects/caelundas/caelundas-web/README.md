@@ -13,14 +13,27 @@ This serves the committed seed: a handful of events from `data/events-seed.sql`.
 ## Build with real events
 
 The app bundles one SQLite file, `output/events.sqlite`, which is gitignored
-and rebuilt before every build. To start from a SQLite file already holding
-the `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags`
-tables instead of the seed, name it with `--from`; the script copies it and
-applies `data/events-views.sql` over the copy:
+and rebuilt before every build. To fill it with the events `caelundas-cli`
+calculates instead of the seed:
 
 ```bash
-node scripts/build-events-database.ts --from path/to/events.sqlite
+# 1. Ingest events; the first run creates caelundas-cli/database.sqlite
+nx run caelundas-cli:download-ephemeris
+cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
+nx run caelundas-cli:start
+
+# 2. Copy that file, apply the app's views over the copy, and build
+nx run caelundas-web:build:ingested
+nx run caelundas-web:preview:ingested   # or start:ingested for the dev server
 ```
+
+The `ingested` configuration of `build-database`, which `build`, `start` and
+`preview` pass down, runs `node scripts/build-events-database.ts --ingested`.
+It copies `projects/caelundas/caelundas-cli/database.sqlite` and applies
+`data/events-views.sql` over the copy; it stops, naming the file, when that
+file does not exist yet. Without the configuration the build uses the
+committed seed, which tests and CI rely on. To start from another file that
+holds the same tables, name it with `--from path/to/events.sqlite`.
 
 ## Test
 

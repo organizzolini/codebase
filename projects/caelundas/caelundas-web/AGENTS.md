@@ -24,10 +24,16 @@ but that file:
 
 1. The tables come from one of two places. By default `build-database` creates
    them from `data/events-schema.sql` and fills them from the text seed
-   `data/events-seed.sql`, which is what tests, CI and `start` use. With
-   `--from <file>` it copies a SQLite file that already holds the
-   `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` tables.
-   `events-schema.sql` mirrors those table and column names exactly.
+   `data/events-seed.sql`, which is what tests, CI and `start` use. With its
+   `ingested` configuration (`build:ingested`, `start:ingested` and
+   `preview:ingested` pass it down) the script copies
+   `../caelundas-cli/database.sqlite`, the file `caelundas-cli` ingests into;
+   it fails naming that file when it is missing. With `--from <file>` it
+   copies any SQLite file that holds the `calendar_events`, `tags`,
+   `tags_closure` and `calendar_event_tags` tables. `events-schema.sql`
+   mirrors the tables of `caelundas-cli`'s migration statement for statement,
+   and `caelundas-cli`'s `database.schema.integration.test.ts` fails when the
+   two differ, so change them together.
 2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
    everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
    and path), `calendar_event_tag_nodes` (one row per event and tag, ancestors
@@ -40,8 +46,8 @@ but that file:
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
-   fingerprinted assets. `build-database` is never cached, since `--from`
-   reads a file Nx cannot hash; `build` hashes the file it wrote through a
+   fingerprinted assets. `build-database` is never cached, since `--ingested`
+   and `--from` read a file Nx cannot hash; `build` hashes the file it wrote through a
    `dependentTasksOutputFiles` input, so a build from new data never restores
    the build of the old.
 4. In the browser, `events-database.worker.ts` downloads the file, opens it
@@ -104,7 +110,7 @@ data/
   events-seed.sql                # Text seed standing in for real rows
   events-views.sql               # Views applied over the source tables
 scripts/
-  build-events-database.ts       # Writes output/events.sqlite, from the seed or --from
+  build-events-database.ts       # Writes output/events.sqlite, from the seed, --ingested or --from
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over data/*.sql
