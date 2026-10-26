@@ -1,5 +1,7 @@
 import sqlite3InitModule from "@sqlite.org/sqlite-wasm";
 
+import { LOCAL_TIME_FUNCTIONS } from "./events-database.local-time";
+
 import type {
   WorkerRequest,
   WorkerResponse,
@@ -33,7 +35,18 @@ async function openDatabase(url: string): Promise<Database> {
   // cspell:ignore capi
   sqlite3.capi.sqlite3_js_posix_create_file(FILE_NAME, bytes);
 
-  return new sqlite3.oo1.DB(FILE_NAME, "r");
+  const database = new sqlite3.oo1.DB(FILE_NAME, "r");
+
+  // The filters read each event's local time through these.
+  for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
+    database.createFunction(name, {
+      arity: 2,
+      deterministic: true,
+      xFunc: (_context, instant, timeZone) => localTime(instant, timeZone),
+    });
+  }
+
+  return database;
 }
 
 /**
