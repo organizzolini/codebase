@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.36.0](https://github.com/organizzolini/codebase/compare/v3.35.0...v3.36.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas,persistence:** ✨ bundle the real event database into the build ([#1727](https://github.com/organizzolini/codebase/issues/1727)) ([447a734](https://github.com/organizzolini/codebase/commit/447a734797998da91bfce4c2809f67cba3212cf0)), closes [#1659](https://github.com/organizzolini/codebase/issues/1659) [#1660](https://github.com/organizzolini/codebase/issues/1660) [#1661](https://github.com/organizzolini/codebase/issues/1661) [#1741](https://github.com/organizzolini/codebase/issues/1741) [#1717](https://github.com/organizzolini/codebase/issues/1717) [#1726](https://github.com/organizzolini/codebase/issues/1726)
+
 ## [3.35.0](https://github.com/organizzolini/codebase/compare/v3.34.0...v3.35.0) (2026-10-26)
 
 ### ✨ Features
