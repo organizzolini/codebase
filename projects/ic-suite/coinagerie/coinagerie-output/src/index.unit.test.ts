@@ -1,15 +1,18 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
-
 import { describe, expect, it } from "vitest";
 
-describe("coinagerie-output index", () => {
-  it("declares no exports until a ticket adds behavior", () => {
-    const source = readFileSync(
-      path.join(import.meta.dirname, "index.ts"),
-      "utf8",
-    );
+import * as output from "./index";
 
-    expect(source).not.toMatch(/^export\s/mu);
+describe("coinagerie-output index", () => {
+  it("exports the output modules and their services", () => {
+    expect(Object.keys(output).toSorted()).toStrictEqual(
+      [
+        "ComparisonModule",
+        "ComparisonService",
+        "DeliveryModule",
+        "DeliveryService",
+        "MarkdownModule",
+        "MarkdownService",
+      ].toSorted(),
+    );
   });
 });
