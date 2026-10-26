@@ -1,0 +1,39 @@
+name: 🔬 Probe Inkling
+
+on:
+  push:
+    branches:
+      - chore/documentation-probe-inkling
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: 🔬 Probe Inkling
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 🔬 Call Inkling
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          body='{"model":"thinkingmachines/inkling:free","max_tokens":64,"messages":[{"role":"user","content":"Call the ping tool."}],"tools":[{"type":"function","function":{"name":"ping","description":"Reply with pong","parameters":{"type":"object","properties":{}}}}]}'
+          call() {
+            echo "=== $1"
+            shift
+            curl -sS -m 90 -o /tmp/out.json -w "status=%{http_code}\n" \
+              https://openrouter.ai/api/v1/chat/completions \
+              -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+              -H "Content-Type: application/json" "$@" -d "$body"
+            head -c 700 /tmp/out.json
+            echo
+          }
+          call "A: no attribution headers"
+          call "B: attribution headers" \
+            -H "HTTP-Referer: https://github.com/organizzolini/codebase" \
+            -H "X-Title: OpenWiki documentation refresh (organizzolini/codebase)"
+          call "C: attribution plus cli-agent category" \
+            -H "HTTP-Referer: https://github.com/organizzolini/codebase" \
+            -H "X-Title: OpenWiki documentation refresh (organizzolini/codebase)" \
+            -H "X-OpenRouter-Categories: cli-agent"
