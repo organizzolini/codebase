@@ -2,10 +2,12 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
-import { TYPESCRIPT_SCRIPT_KINDS } from "../typescript/typescript.constants";
+import { PythonService } from "../python/python.service";
+import { ShellService } from "../shell/shell.service";
+import { SqlService } from "../sql/sql.service";
 import { TypescriptService } from "../typescript/typescript.service";
 
-import type { Tokenizer } from "./languages.types";
+import type { Language, Tokenizer } from "./languages.types";
 
 /* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
@@ -20,12 +22,25 @@ import type { Tokenizer } from "./languages.types";
 export class LanguagesService {
   // 🏗 Dependency Injection
 
-  constructor(private readonly typescriptService: TypescriptService) {
-    const typescriptTokenizer: Tokenizer = (content, filePath) =>
-      this.typescriptService.tokenize(content, filePath);
+  constructor(
+    typescriptService: TypescriptService,
+    pythonService: PythonService,
+    sqlService: SqlService,
+    shellService: ShellService,
+  ) {
+    const languages: Language[] = [
+      typescriptService,
+      pythonService,
+      sqlService,
+      shellService,
+    ];
 
-    for (const extension of TYPESCRIPT_SCRIPT_KINDS.keys()) {
-      this.tokenizers.set(extension, typescriptTokenizer);
+    for (const language of languages) {
+      for (const extension of language.extensions) {
+        this.tokenizers.set(extension, (content, filePath) =>
+          language.tokenize(content, filePath),
+        );
+      }
     }
   }
 

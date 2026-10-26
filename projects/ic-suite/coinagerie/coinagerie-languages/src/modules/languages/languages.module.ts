@@ -1,5 +1,8 @@
 import { Module } from "@nestjs/common";
 
+import { PythonModule } from "../python/python.module";
+import { ShellModule } from "../shell/shell.module";
+import { SqlModule } from "../sql/sql.module";
 import { TypescriptModule } from "../typescript/typescript.module";
 
 import { LanguagesService } from "./languages.service";
@@ -11,7 +14,7 @@ import { LanguagesService } from "./languages.service";
 @Module({
   controllers: [],
   exports: [LanguagesService],
-  imports: [TypescriptModule],
+  imports: [PythonModule, ShellModule, SqlModule, TypescriptModule],
   providers: [LanguagesService],
 })
 export class LanguagesModule {}

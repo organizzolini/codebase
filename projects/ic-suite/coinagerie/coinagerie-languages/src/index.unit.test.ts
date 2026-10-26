@@ -8,6 +8,12 @@ describe("coinagerie-languages index", () => {
       [
         "LanguagesModule",
         "LanguagesService",
+        "PythonModule",
+        "PythonService",
+        "ShellModule",
+        "ShellService",
+        "SqlModule",
+        "SqlService",
         "TypescriptModule",
         "TypescriptService",
       ].toSorted(),

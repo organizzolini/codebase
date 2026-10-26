@@ -27,6 +27,9 @@ export class TypescriptService {
 
   // 🔑 Public Fields
 
+  /** The extensions of the files this tokenizer reads. */
+  readonly extensions: readonly string[] = [...TYPESCRIPT_SCRIPT_KINDS.keys()];
+
   // 🔏 Private Methods
 
   /** Whether a node is a string literal naming a key, such as `"quoted-key"`. */

@@ -1,6 +1,9 @@
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { PythonModule } from "../python/python.module";
+import { ShellModule } from "../shell/shell.module";
+import { SqlModule } from "../sql/sql.module";
 import { TypescriptModule } from "../typescript/typescript.module";
 
 import { LanguagesService } from "./languages.service";
@@ -10,7 +13,7 @@ describe(LanguagesService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [TypescriptModule],
+      imports: [PythonModule, ShellModule, SqlModule, TypescriptModule],
       providers: [LanguagesService],
     }).compile();
 
@@ -39,6 +42,21 @@ describe(LanguagesService, () => {
     expect(tokenizer?.("const foundName = 1;", filePath)).toStrictEqual([
       "foundName",
     ]);
+  });
+
+  it.each([
+    ["script.py", "value = 1  # hidden", "value"],
+    ["stubs.pyi", "value = 1  # hidden", "value"],
+    ["query.sql", "SELECT 1 -- hidden\nFROM tableName", "FROM"],
+    ["run.sh", "# hidden\nrunName", "runName"],
+    ["run.bash", "# hidden\nrunName", "runName"],
+    ["run.zsh", "# hidden\nrunName", "runName"],
+    ["run.ksh", "# hidden\nrunName", "runName"],
+    ["QUERY.SQL", "-- hidden\ntableName", "tableName"],
+  ])("finds a lexical tokenizer for %s", (filePath, source, expected) => {
+    expect(service.tokenizerFor(filePath)?.(source, filePath)).toContain(
+      expected,
+    );
   });
 
   it.each([
