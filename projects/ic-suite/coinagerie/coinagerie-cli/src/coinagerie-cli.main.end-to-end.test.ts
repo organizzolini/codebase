@@ -1,20 +1,15 @@
-import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createFixtureTree, removeFixtureTree } from "../testing/fixture-tree";
+import { run, SPAWN_TIMEOUT } from "../testing/run-command";
 
 import { environmentSchema } from "./coinagerie-cli.constants";
 
-const COMMAND_PATH = path.resolve(
-  import.meta.dirname,
-  "coinagerie-cli.main.ts",
-);
 const START = "<!-- coinagerie:start -->";
 const END = "<!-- coinagerie:end -->";
-const SPAWN_TIMEOUT = 120_000;
 
 /** A source file whose words are `aspect`, `angle`, `lunar`, `phase`, `service`, and `src`. */
 const SOURCE = {
@@ -38,12 +33,6 @@ const CONFIGURATION = {
   ].join("\n"),
 };
 
-interface RunResult {
-  exitCode: null | number;
-  standardError: string;
-  standardOutput: string;
-}
-
 /** A README whose glossary block holds exactly the given bullets. */
 function readme(...bullets: string[]): string {
   return [
@@ -58,29 +47,6 @@ function readme(...bullets: string[]): string {
     END,
     "",
   ].join("\n");
-}
-
-/**
- * Runs the real command in a fixture tree, as a separate process, because
- * what is under test is its exit code, its streams, and the files it leaves.
- */
-function run(root: string, args: string[]): RunResult {
-  const result = spawnSync(
-    process.execPath,
-    ["--import", "@swc-node/register/esm-register", COMMAND_PATH, ...args],
-    {
-      cwd: root,
-      encoding: "utf8",
-      env: { ...process.env, FORCE_COLOR: "0" },
-      timeout: SPAWN_TIMEOUT,
-    },
-  );
-
-  return {
-    exitCode: result.status,
-    standardError: result.stderr,
-    standardOutput: result.stdout,
-  };
 }
 
 describe("main end-to-end suite", () => {
