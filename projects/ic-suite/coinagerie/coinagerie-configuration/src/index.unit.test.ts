@@ -1,15 +1,16 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
-
 import { describe, expect, it } from "vitest";
 
-describe("coinagerie-configuration index", () => {
-  it("declares no exports until a ticket adds behavior", () => {
-    const source = readFileSync(
-      path.join(import.meta.dirname, "index.ts"),
-      "utf8",
-    );
+import * as configuration from "./index";
 
-    expect(source).not.toMatch(/^export\s/mu);
+describe("coinagerie-configuration index", () => {
+  it("exports the configuration module, its service, and its defaults", () => {
+    expect(Object.keys(configuration).toSorted()).toStrictEqual(
+      [
+        "CONFIGURATION_FILE_NAMES",
+        "ConfigurationModule",
+        "ConfigurationService",
+        "DEFAULT_INCLUDE",
+      ].toSorted(),
+    );
   });
 });
