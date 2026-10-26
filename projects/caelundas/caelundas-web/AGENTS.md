@@ -4,13 +4,45 @@
 
 **Type**: Server-rendered web application (TanStack Start)
 
-**Purpose**: <!-- Briefly describe what this application is for -->
+**Build**: Fully static, in TanStack Start's single-page mode: the build
+renders one shell page ahead of time, every route renders in the browser, and
+there are no server functions and no API
+
+**Purpose**: Browse the astronomical events `caelundas-cli` calculates, as a
+calendar over a SQLite database that ships inside the static build
 
 ### Run Locally
 
 ```bash
 nx run caelundas-web:start
 ```
+
+## Data Pipeline
+
+The app reads one SQLite file in the browser. Nothing is fetched from a server
+but that file:
+
+1. `database export --sqlite` will write the `caelundas` schema's tables to a
+   SQLite file. Until that lands, `build-database` stands in for it by loading
+   `data/events-schema.sql` and the text seed `data/events-seed.sql`.
+2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
+   every view the app reads: `tag_nodes` (each tag's depth, root, and path),
+   `calendar_event_tags` (one row per event and tag, ancestors included,
+   `is_direct` marking the tags given), and `calendar_events_derived` (each
+   event with its duration, temporality, and UTC time parts).
+3. `nx run caelundas-web:build-database` writes the result to
+   `output/events.sqlite`, which is gitignored. `build` and `start` depend on
+   it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
+   fingerprinted assets.
+4. In the browser, `events-database.worker.ts` downloads the file, opens it
+   read-only in memory with sqlite-wasm, and answers selects. No persistent
+   storage is used, so no cross-origin isolation headers are needed.
+
+Every query lives in `src/lib/events-database/events-database.ts`, behind the
+`EventsDatabase` interface, over a `SqlExecutor`. The browser's executor posts
+each select to the worker; the tests' executor runs it on `node:sqlite` over
+the same three SQL files. The route reads the database from the router
+context, which is how a test hands it another one.
 
 ## Architecture Overview
 
@@ -19,6 +51,9 @@ nx run caelundas-web:start
 - **Framework**: TanStack Start (server rendering, server functions) on Vite
 - **Routing**: TanStack Router, file-based, from `src/routes/`
 - **UI**: React 19 with Tailwind CSS 4
+- **Calendar**: the vendored ReUI event calendar from `@codebase/presentation`,
+  composed here and never edited
+- **Data**: sqlite-wasm in a Web Worker, over a SQLite file bundled at build
 - **Testing**: Vitest and React Testing Library under jsdom
 
 ### Directory Layout
@@ -45,6 +80,24 @@ src/
 testing/
   render-route.tsx               # Renders a route through a real router
   setup.ts                       # Shared test setup
+```
+
+The calendar adds its data layer and the files that build its database:
+
+```text
+src/
+  lib/
+    calendar/                    # Search parameters, windows, loader, formatting
+    events-database/             # EventsDatabase, its SQL, worker, and client
+data/
+  events-schema.sql              # The exported tables, for tests and the build
+  events-seed.sql                # Text seed standing in for exported rows
+  events-views.sql               # Views applied over the export
+scripts/
+  build-events-database.ts       # Writes output/events.sqlite
+output/                          # Gitignored build artifact
+testing/
+  events-database.ts             # node:sqlite EventsDatabase over data/*.sql
 ```
 
 ## Development
@@ -113,9 +166,28 @@ component conventions and the
 [testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
 test tiers.
 
+## Layout
+
+The page is the month view across the whole viewport under a single toolbar
+row: today, previous and next, the month's title, and the view selector, which
+holds only Month so far. Times render in the zone the dataset's events carry.
+
+- While the database loads, `CalendarSkeleton` stands in for the page.
+- A failed load shows `CalendarError` with Retry; a browser without
+  WebAssembly or Web Workers gets an explanation and no retry.
+- A month with no events keeps the calendar and lays `CalendarEmpty` over it:
+  "No events yet" for an empty database, "Outside the data" with a jump to the
+  first covered day, or "No events this month" inside the covered dates.
+- The `date` search parameter (`YYYY-MM-DD`) holds the month; one that does
+  not parse falls back to today.
+
 ## Key Files
 
 - [src/router.tsx](src/router.tsx): Router factory
 - [src/routes/\_\_root.tsx](src/routes/__root.tsx): Document shell
 - [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
 - [vitest.config.ts](vitest.config.ts): Test configuration
+- [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
+  The `EventsDatabase` interface
+- [src/routes/index.tsx](src/routes/index.tsx): The calendar page
+- [data/events-views.sql](data/events-views.sql): The post-export views
