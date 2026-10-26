@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.31.0](https://github.com/organizzolini/codebase/compare/v3.30.0...v3.31.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ filter events with nested and/or rules ([#1723](https://github.com/organizzolini/codebase/issues/1723)) ([5ca8c3d](https://github.com/organizzolini/codebase/commit/5ca8c3d889aa03b8355f593a2ee2b275a2455706)), closes [#1638](https://github.com/organizzolini/codebase/issues/1638) [#1633](https://github.com/organizzolini/codebase/issues/1633) [#1634](https://github.com/organizzolini/codebase/issues/1634) [#1635](https://github.com/organizzolini/codebase/issues/1635) [#1636](https://github.com/organizzolini/codebase/issues/1636) [#1637](https://github.com/organizzolini/codebase/issues/1637) [#1638](https://github.com/organizzolini/codebase/issues/1638) [#1639](https://github.com/organizzolini/codebase/issues/1639) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1721](https://github.com/organizzolini/codebase/issues/1721) [#1626](https://github.com/organizzolini/codebase/issues/1626) [#1640](https://github.com/organizzolini/codebase/issues/1640)
+
 ## [3.30.0](https://github.com/organizzolini/codebase/compare/v3.29.0...v3.30.0) (2026-10-26)
 
 ### ✨ Features

@@ -2320,21 +2320,36 @@ graph LR
   file_caelundas_web_src_components_calendar_empty_unit_test_tsx["caelundas-web/src/components/calendar-empty.unit.test.tsx"]
   file_caelundas_web_src_components_calendar_error_tsx["caelundas-web/src/components/calendar-error.tsx"]
   file_caelundas_web_src_components_calendar_error_unit_test_tsx["caelundas-web/src/components/calendar-error.unit.test.tsx"]
+  file_caelundas_web_src_components_calendar_filters_tsx["caelundas-web/src/components/calendar-filters.tsx"]
+  file_caelundas_web_src_components_calendar_filters_unit_test_tsx["caelundas-web/src/components/calendar-filters.unit.test.tsx"]
   file_caelundas_web_src_components_calendar_skeleton_tsx["caelundas-web/src/components/calendar-skeleton.tsx"]
   file_caelundas_web_src_components_calendar_skeleton_unit_test_tsx["caelundas-web/src/components/calendar-skeleton.unit.test.tsx"]
   file_caelundas_web_src_components_calendar_toolbar_tsx["caelundas-web/src/components/calendar-toolbar.tsx"]
   file_caelundas_web_src_components_calendar_toolbar_unit_test_tsx["caelundas-web/src/components/calendar-toolbar.unit.test.tsx"]
   file_caelundas_web_src_components_events_calendar_tsx["caelundas-web/src/components/events-calendar.tsx"]
   file_caelundas_web_src_components_events_calendar_unit_test_tsx["caelundas-web/src/components/events-calendar.unit.test.tsx"]
+  file_caelundas_web_src_components_filter_date_range_editor_tsx["caelundas-web/src/components/filter-date-range-editor.tsx"]
+  file_caelundas_web_src_components_filter_date_range_editor_unit_test_tsx["caelundas-web/src/components/filter-date-range-editor.unit.test.tsx"]
   file_caelundas_web_src_lib_calendar_calendar_events_ts["caelundas-web/src/lib/calendar/calendar-events.ts"]
   file_caelundas_web_src_lib_calendar_calendar_format_ts["caelundas-web/src/lib/calendar/calendar-format.ts"]
   file_caelundas_web_src_lib_calendar_calendar_loader_ts["caelundas-web/src/lib/calendar/calendar-loader.ts"]
   file_caelundas_web_src_lib_calendar_calendar_search_ts["caelundas-web/src/lib/calendar/calendar-search.ts"]
   file_caelundas_web_src_lib_calendar_calendar_window_ts["caelundas-web/src/lib/calendar/calendar-window.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts["caelundas-web/src/lib/event-filters/event-filter-compiler.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_unit_test_ts["caelundas-web/src/lib/event-filters/event-filter-compiler.unit.test.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_ts["caelundas-web/src/lib/event-filters/event-filter-derived.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_unit_test_ts["caelundas-web/src/lib/event-filters/event-filter-derived.unit.test.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_ts["caelundas-web/src/lib/event-filters/event-filter-fields.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_unit_test_ts["caelundas-web/src/lib/event-filters/event-filter-fields.unit.test.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_tree_ts["caelundas-web/src/lib/event-filters/event-filter-tree.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filter_values_ts["caelundas-web/src/lib/event-filters/event-filter-values.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filters_constants_ts["caelundas-web/src/lib/event-filters/event-filters.constants.ts"]
+  file_caelundas_web_src_lib_event_filters_event_filters_types_ts["caelundas-web/src/lib/event-filters/event-filters.types.ts"]
   file_caelundas_web_src_lib_events_database_events_database_browser_ts["caelundas-web/src/lib/events-database/events-database.browser.ts"]
   file_caelundas_web_src_lib_events_database_events_database_browser_types_ts["caelundas-web/src/lib/events-database/events-database.browser.types.ts"]
   file_caelundas_web_src_lib_events_database_events_database_constants_ts["caelundas-web/src/lib/events-database/events-database.constants.ts"]
   file_caelundas_web_src_lib_events_database_events_database_errors_ts["caelundas-web/src/lib/events-database/events-database.errors.ts"]
+  file_caelundas_web_src_lib_events_database_events_database_local_time_ts["caelundas-web/src/lib/events-database/events-database.local-time.ts"]
   file_caelundas_web_src_lib_events_database_events_database_ts["caelundas-web/src/lib/events-database/events-database.ts"]
   file_caelundas_web_src_lib_events_database_events_database_types_ts["caelundas-web/src/lib/events-database/events-database.types.ts"]
   file_caelundas_web_src_lib_events_database_events_database_worker_ts["caelundas-web/src/lib/events-database/events-database.worker.ts"]
@@ -2344,9 +2359,11 @@ graph LR
   file_caelundas_web_src_routes_index_integration_test_tsx["caelundas-web/src/routes/index.integration.test.tsx"]
   file_caelundas_web_src_routes_index_tsx["caelundas-web/src/routes/index.tsx"]
   file_caelundas_web_src_routeTree_gen_ts["caelundas-web/src/routeTree.gen.ts"]
+  file_caelundas_web_testing_event_filters_ts["caelundas-web/testing/event-filters.ts"]
   file_caelundas_web_testing_events_database_ts["caelundas-web/testing/events-database.ts"]
   file_caelundas_web_testing_render_route_tsx["caelundas-web/testing/render-route.tsx"]
   file_caelundas_web_testing_setup_ts["caelundas-web/testing/setup.ts"]
+  file_caelundas_web_testing_viewport_ts["caelundas-web/testing/viewport.ts"]
   file_caelundas_web_vite_config_mts["caelundas-web/vite.config.mts"]
   file_caelundas_web_vitest_config_ts["caelundas-web/vitest.config.ts"]
   file_callidescope_agents_codependix_config_ts["callidescope-agents/codependix.config.ts"]
@@ -6990,6 +7007,12 @@ graph LR
   file_caelundas_web_src_components_calendar_empty_unit_test_tsx --> file_caelundas_web_src_components_calendar_empty_tsx
   file_caelundas_web_src_components_calendar_error_tsx --> file_caelundas_web_src_lib_events_database_events_database_errors_ts
   file_caelundas_web_src_components_calendar_error_unit_test_tsx --> file_caelundas_web_src_components_calendar_error_tsx
+  file_caelundas_web_src_components_calendar_filters_tsx --> file_caelundas_web_src_components_filter_date_range_editor_tsx
+  file_caelundas_web_src_components_calendar_filters_tsx --> file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts
+  file_caelundas_web_src_components_calendar_filters_tsx --> file_caelundas_web_src_lib_event_filters_event_filter_tree_ts
+  file_caelundas_web_src_components_calendar_filters_tsx --> file_caelundas_web_src_lib_event_filters_event_filters_constants_ts
+  file_caelundas_web_src_components_calendar_filters_tsx --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_src_components_calendar_filters_unit_test_tsx --> file_caelundas_web_src_components_calendar_filters_tsx
   file_caelundas_web_src_components_calendar_skeleton_unit_test_tsx --> file_caelundas_web_src_components_calendar_skeleton_tsx
   file_caelundas_web_src_components_calendar_toolbar_unit_test_tsx --> file_caelundas_web_src_components_calendar_toolbar_tsx
   file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_components_calendar_toolbar_tsx
@@ -6997,10 +7020,36 @@ graph LR
   file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_lib_calendar_calendar_format_ts
   file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_components_events_calendar_unit_test_tsx --> file_caelundas_web_src_components_events_calendar_tsx
+  file_caelundas_web_src_components_filter_date_range_editor_unit_test_tsx --> file_caelundas_web_src_components_filter_date_range_editor_tsx
   file_caelundas_web_src_lib_calendar_calendar_events_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_calendar_calendar_loader_ts --> file_caelundas_web_src_lib_calendar_calendar_search_ts
   file_caelundas_web_src_lib_calendar_calendar_loader_ts --> file_caelundas_web_src_lib_calendar_calendar_window_ts
+  file_caelundas_web_src_lib_calendar_calendar_loader_ts --> file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts
   file_caelundas_web_src_lib_calendar_calendar_loader_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_calendar_calendar_search_ts --> file_caelundas_web_src_lib_event_filters_event_filter_tree_ts
+  file_caelundas_web_src_lib_calendar_calendar_search_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
   file_caelundas_web_src_lib_calendar_calendar_window_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts --> file_caelundas_web_src_lib_event_filters_event_filter_derived_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts --> file_caelundas_web_src_lib_event_filters_event_filter_values_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts --> file_caelundas_web_src_lib_event_filters_event_filters_constants_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_unit_test_ts --> file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_compiler_unit_test_ts --> file_caelundas_web_testing_event_filters_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_ts --> file_caelundas_web_src_lib_event_filters_event_filter_values_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_ts --> file_caelundas_web_src_lib_event_filters_event_filters_constants_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_unit_test_ts --> file_caelundas_web_src_lib_event_filters_event_filter_derived_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_derived_unit_test_ts --> file_caelundas_web_testing_event_filters_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_ts --> file_caelundas_web_src_lib_event_filters_event_filters_constants_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_unit_test_ts --> file_caelundas_web_src_lib_event_filters_event_filter_fields_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_fields_unit_test_ts --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_tree_ts --> file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_tree_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filter_values_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_src_lib_event_filters_event_filters_types_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_browser_types_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_errors_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_ts
@@ -7009,31 +7058,41 @@ graph LR
   file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_constants_ts
   file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_lib_events_database_events_database_worker_ts --> file_caelundas_web_src_lib_events_database_events_database_browser_types_ts
+  file_caelundas_web_src_lib_events_database_events_database_worker_ts --> file_caelundas_web_src_lib_events_database_events_database_local_time_ts
   file_caelundas_web_src_lib_events_database_events_database_worker_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_router_tsx --> file_caelundas_web_src_lib_events_database_events_database_browser_ts
   file_caelundas_web_src_router_tsx --> file_caelundas_web_src_routeTree_gen_ts
   file_caelundas_web_src_router_types_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_routes___root_tsx --> file_caelundas_web_src_router_types_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_lib_events_database_events_database_errors_ts
-  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_src_routes_index_tsx
+  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_event_filters_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_events_database_ts
   file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
+  file_caelundas_web_src_routes_index_integration_test_tsx --> file_caelundas_web_testing_viewport_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_empty_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_error_tsx
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_filters_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_calendar_skeleton_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_components_events_calendar_tsx
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_calendar_calendar_loader_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_calendar_calendar_search_ts
   file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_calendar_calendar_window_ts
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_event_filters_event_filter_fields_ts
+  file_caelundas_web_src_routes_index_tsx --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
   file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_router_tsx
   file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_routes___root_tsx
   file_caelundas_web_src_routeTree_gen_ts --> file_caelundas_web_src_routes_index_tsx
+  file_caelundas_web_testing_event_filters_ts --> file_caelundas_web_src_lib_event_filters_event_filter_compiler_ts
+  file_caelundas_web_testing_event_filters_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
+  file_caelundas_web_testing_event_filters_ts --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_testing_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_local_time_ts
   file_caelundas_web_testing_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_ts
   file_caelundas_web_testing_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_src_router_tsx
   file_caelundas_web_testing_render_route_tsx --> file_caelundas_web_testing_events_database_ts
+  file_caelundas_web_testing_setup_ts --> file_caelundas_web_testing_viewport_ts
   file_callidescope_cli_src_callidescope_cli_main_end_to_end_test_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
   file_callidescope_cli_src_callidescope_cli_main_ts --> file_callidescope_cli_src_callidescope_cli_module_ts
   file_callidescope_cli_src_callidescope_cli_module_ts --> file_callidescope_cli_src_callidescope_cli_constants_ts
@@ -14033,20 +14092,20 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6930 |
-| Files | 2075 |
-| Calls traced | 7642 |
-| Call stacks | 1906 |
+| Callables | 6984 |
+| Files | 2085 |
+| Calls traced | 7695 |
+| Call stacks | 1928 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 380 |
+| Unfollowable calls | 394 |
 
 ### Projects
 
 | Project | Deepest | Limit | Headroom | Widest |
 | --- | --- | --- | --- | --- |
 | `integration` | 6 | 6 | 0 | 8 |
-| `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 4 |
+| `projects/caelundas/caelundas-web` | 6 | 6 | 0 | 8 |
 | `projects/common/observability` | 4 | 4 | 0 | 2 |
 | `projects/common/persistence` | 7 | 7 | 0 | 7 |
 | `projects/ic-suite/callidescope/callidescope-cli` | 15 | 15 | 0 | 10 |
