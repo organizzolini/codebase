@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.28.0](https://github.com/organizzolini/codebase/compare/v3.27.1...v3.28.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ store event tags as a tree and keep each event's timezone ([#1719](https://github.com/organizzolini/codebase/issues/1719)) ([03304e4](https://github.com/organizzolini/codebase/commit/03304e42584ce36214f63e647e592d84f03660a4)), closes [#1717](https://github.com/organizzolini/codebase/issues/1717) [#1612](https://github.com/organizzolini/codebase/issues/1612) [#1613](https://github.com/organizzolini/codebase/issues/1613) [#1614](https://github.com/organizzolini/codebase/issues/1614) [#1615](https://github.com/organizzolini/codebase/issues/1615) [#1616](https://github.com/organizzolini/codebase/issues/1616) [#1617](https://github.com/organizzolini/codebase/issues/1617) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1717](https://github.com/organizzolini/codebase/issues/1717) [#1618](https://github.com/organizzolini/codebase/issues/1618)
+
 ## [3.27.1](https://github.com/organizzolini/codebase/compare/v3.27.0...v3.27.1) (2026-10-26)
 
 ### ♻️ Code Refactoring
