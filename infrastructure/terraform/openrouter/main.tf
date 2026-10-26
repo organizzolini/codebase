@@ -15,15 +15,20 @@ provider "openrouter" {
   api_key = var.openrouter_management_key
 }
 
-# The existing workspace, imported on the first apply rather than created.
+# The existing workspace, read for its current name and slug so that importing
+# it plans no change, then imported on the first apply rather than created.
+data "openrouter_workspace" "codebase" {
+  id = var.workspace_id
+}
+
 import {
   to = openrouter_workspace.codebase
-  id = var.workspace_slug
+  id = var.workspace_id
 }
 
 resource "openrouter_workspace" "codebase" {
-  name = var.workspace_name
-  slug = var.workspace_slug
+  name = data.openrouter_workspace.codebase.name
+  slug = data.openrouter_workspace.codebase.slug
 }
 
 # Backstop for the preset: whatever the ranked list says, the key can only call

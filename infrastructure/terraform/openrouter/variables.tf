@@ -4,19 +4,16 @@ variable "openrouter_management_key" {
   sensitive   = true
 }
 
-variable "workspace_slug" {
-  description = "Slug of the existing OpenRouter workspace to import."
+variable "workspace_id" {
+  description = "ID of the existing OpenRouter workspace to import."
   type        = string
-}
-
-variable "workspace_name" {
-  description = "Name of the existing OpenRouter workspace, so the import plans no rename."
-  type        = string
+  default     = "a55a93d8-c818-5cf7-9119-f46e67835043"
 }
 
 variable "models" {
   description = "Models OpenRouter may route to, ranked: the first is tried first and each later one is a fallback. List only :free models to keep requests free."
   type        = list(string)
+  default     = ["nvidia/nemotron-3-ultra-550b-a55b:free"]
 
   validation {
     condition     = length(var.models) > 0
