@@ -76,6 +76,7 @@ interface NodeEdges<Node> {
  * One result as the GraphQL API returns it.
  */
 interface ResultNode {
+  distance: null | number;
   enclitic: null | string;
   identifiers: string[];
   lexeme: {
@@ -104,20 +105,18 @@ type SearchParameters = z.infer<typeof searchSchema>;
 // 🛰️ Server Functions
 
 /**
- * Says how a search matched a lexeme from the tier the API ranked it in. The
- * API scores every Latin tier differently and calls a match on part of a
- * headword "fuzzy", though it is a substring match, so how far off one is means
- * how many letters the headword has beyond the query. English matches all come
- * back as full-text matches, and only their score says whether a translation
- * was exactly the query, started with it, or merely mentioned it.
+ * Says how a search matched a lexeme from the tier the API ranked it in. A
+ * partial headword match on the query's letters is a prefix match, whose
+ * distance is how many letters the headword has beyond the query, and a fuzzy
+ * match carries the edit distance the API measured.
  */
 function describeMatch(match: {
+  distance: null | number;
   lemma: string;
   query: string;
-  score: number;
   source: string;
 }): LexemeMatchInfo {
-  const { lemma, query, score, source } = match;
+  const { distance, lemma, query, source } = match;
   const letters = lemma.normalize("NFD").replaceAll(/\p{Diacritic}/gu, "");
   const extraLetters = Math.max(0, letters.length - query.length);
 
@@ -125,24 +124,26 @@ function describeMatch(match: {
     case "ENCLITIC": {
       return { kind: "enclitic" };
     }
+    case "FUZZY": {
+      return { distance: distance ?? undefined, kind: "fuzzy" };
+    }
     case "LEMMA_EXACT": {
       return { kind: "exact-headword" };
     }
     case "PREFIX": {
       return { extraLetters, kind: "prefix" };
     }
-    case "TRANSLATION_FULLTEXT": {
-      if (score >= 1) {
-        return { kind: "translation-exact" };
-      }
-
-      return { kind: score >= 0.8 ? "translation-prefix" : "translation-text" };
+    case "TRANSLATION_EXACT": {
+      return { kind: "translation-exact" };
+    }
+    case "TRANSLATION_PREFIX": {
+      return { kind: "translation-prefix" };
     }
     case "WORD_EXACT": {
       return { kind: "exact-form" };
     }
     default: {
-      return { extraLetters, kind: "contains" };
+      return { kind: "contains" };
     }
   }
 }
@@ -259,7 +260,7 @@ const getSearch = createServerFunction({ method: "GET" })
       "lexeme.id",
     );
 
-    return best.map(({ enclitic, identifiers, lexeme, score, source }) => ({
+    return best.map(({ distance, enclitic, identifiers, lexeme, source }) => ({
       enclitic: enclitic ?? null,
       etymology: lexeme.etymology,
       forms: (lexeme.wordForms?.edges ?? []).map(
@@ -281,9 +282,9 @@ const getSearch = createServerFunction({ method: "GET" })
       inflection: toLexemeInflection(lexeme.inflection),
       lemma: lexeme.lemma,
       match: describeMatch({
+        distance: distance ?? null,
         lemma: lexeme.lemma,
         query: query.toLowerCase(),
-        score,
         source,
       }),
       partOfSpeech: lexeme.partOfSpeech,

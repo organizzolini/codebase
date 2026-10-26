@@ -85,7 +85,7 @@ describe(LexemeCard, () => {
         loadForms={loadForms}
         result={{
           ...result,
-          match: { extraLetters: 2, kind: "contains" },
+          match: { distance: 1, kind: "fuzzy" },
         }}
       />,
     );
