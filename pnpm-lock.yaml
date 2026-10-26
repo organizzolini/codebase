@@ -2849,6 +2849,18 @@ importers:
 
   projects/ic-suite/coinagerie/coinagerie-cli:
     dependencies:
+      '@coinagerie/configuration':
+        specifier: workspace:*
+        version: link:../coinagerie-configuration
+      '@coinagerie/core':
+        specifier: workspace:*
+        version: link:../coinagerie-core
+      '@coinagerie/output':
+        specifier: workspace:*
+        version: link:../coinagerie-output
+      '@coinagerie/vocabulary':
+        specifier: workspace:*
+        version: link:../coinagerie-vocabulary
       '@nestjs/common':
         specifier: catalog:ic-suite
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
