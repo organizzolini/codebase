@@ -6,12 +6,14 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { UpgradeNodeService } from "../upgrade-node/upgrade-node.service";
+import { UpgradePnpmService } from "../upgrade-pnpm/upgrade-pnpm.service";
+import { UpgradePythonService } from "../upgrade-python/upgrade-python.service";
 
 import {
   EMPTY_TREE,
   PULL_REQUEST_BODY_FILE,
   RUNS_URL,
-  SCRIPT_OPTIONS,
   TAIL_CHARACTERS,
   TAIL_LINES,
   unrestoredMessage,
@@ -19,16 +21,21 @@ import {
 } from "./upgrade-dependencies.constants";
 import {
   renderPullRequestBody,
-  summaryOf,
   warningsOf,
 } from "./upgrade-dependencies.utilities";
 
 import type { Environment } from "../../integration.types";
-import type { CapturedProcess } from "../process-runner/process-runner.types";
+import type {
+  CapturedProcess,
+  Command,
+} from "../process-runner/process-runner.types";
 import type {
   StepReport,
   UpgradeOutcome,
   UpgradeStep,
+  UpgradeTask,
+  UpgradeTaskRunner,
+  UpgradeWork,
 } from "./upgrade-dependencies.types";
 
 /**
@@ -48,9 +55,21 @@ export class UpgradeDependenciesService {
   constructor(
     private readonly configService: ConfigService<Environment>,
     private readonly processRunner: ProcessRunnerService,
-  ) {}
+    upgradeNode: UpgradeNodeService,
+    upgradePnpm: UpgradePnpmService,
+    upgradePython: UpgradePythonService,
+  ) {
+    this.tasks = {
+      node: upgradeNode,
+      pnpm: upgradePnpm,
+      python: upgradePython,
+    };
+  }
 
   // 🔐 Private Fields
+
+  /** What carries out each task a step can name. */
+  private readonly tasks: Record<UpgradeTask, UpgradeTaskRunner>;
 
   // 🔑 Public Fields
 
@@ -89,10 +108,13 @@ export class UpgradeDependenciesService {
 
   /**
    * Undoes a failed step: the working tree goes back to the snapshot, then its
-   * recovery script puts the environment right. Returns why that was
+   * recovery commands put the environment right. Returns why that was
    * impossible, or nothing when it was done.
    */
-  private undo(tree: string, recover: string | undefined): string | undefined {
+  private undo(
+    tree: string,
+    recover: readonly Command[] | undefined,
+  ): string | undefined {
     for (const args of [
       ["read-tree", "--reset", "-u", tree],
       ["clean", "-fdq"],
@@ -108,25 +130,41 @@ export class UpgradeDependenciesService {
       return undefined;
     }
 
-    const recovery = this.processRunner.capture("bash", [
-      ...SCRIPT_OPTIONS,
-      recover,
-    ]);
+    const recovery = this.processRunner.captureSequence(recover);
 
     return recovery.status === 0
       ? undefined
       : `recovery exited ${String(recovery.status)}: ${this.tail(recovery)}`;
   }
 
+  /**
+   * Carries a step out: its commands run in order until one fails, and its
+   * task runs in its service, which throws to say the upgrade failed.
+   */
+  private async work(step: UpgradeStep): Promise<UpgradeWork> {
+    if (!("task" in step)) {
+      return this.processRunner.captureSequence(step.commands);
+    }
+
+    try {
+      const summary = await this.tasks[step.task].upgrade();
+
+      return { status: 0, stderr: "", stdout: `${summary}\n`, summary };
+    } catch (error: unknown) {
+      return {
+        status: 1,
+        stderr: error instanceof Error ? error.message : String(error),
+        stdout: "",
+      };
+    }
+  }
+
   // 🌎 Public Methods
 
   /** Runs one upgrade, undoing it if it fails. */
-  public attempt(step: UpgradeStep): UpgradeOutcome {
+  public async attempt(step: UpgradeStep): Promise<UpgradeOutcome> {
     const tree = this.snapshot();
-    const result = this.processRunner.capture("bash", [
-      ...SCRIPT_OPTIONS,
-      step.script,
-    ]);
+    const result = await this.work(step);
     const output = `${result.stdout}${result.stderr}`;
 
     if (result.status === 0) {
@@ -143,7 +181,7 @@ export class UpgradeDependenciesService {
             this.snapshot(),
           ]).stdout.trim(),
           label: step.label,
-          summary: summaryOf(output),
+          summary: result.summary,
           warnings: warningsOf(output),
         },
       };

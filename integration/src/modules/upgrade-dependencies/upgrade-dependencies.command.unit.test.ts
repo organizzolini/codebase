@@ -90,7 +90,7 @@ describe(UpgradeDependenciesCommand, () => {
   it("runs every step, in a log group each, and exits 0 when all succeed", async () => {
     expect.hasAssertions();
 
-    vi.mocked(service.attempt).mockReturnValue({
+    vi.mocked(service.attempt).mockResolvedValue({
       kind: "succeeded",
       output: "ok",
       report: done,
@@ -117,8 +117,8 @@ describe(UpgradeDependenciesCommand, () => {
     };
 
     vi.mocked(service.attempt)
-      .mockReturnValueOnce({ kind: "skipped", output: "", report })
-      .mockReturnValue({ kind: "succeeded", output: "ok", report: done });
+      .mockResolvedValueOnce({ kind: "skipped", output: "", report })
+      .mockResolvedValue({ kind: "succeeded", output: "ok", report: done });
     vi.mocked(service.finish).mockReturnValue(true);
 
     await command.run();
@@ -139,7 +139,7 @@ describe(UpgradeDependenciesCommand, () => {
   it("stops at a step that could not be undone", async () => {
     expect.hasAssertions();
 
-    vi.mocked(service.attempt).mockReturnValue({
+    vi.mocked(service.attempt).mockResolvedValue({
       kind: "unrestored",
       message: "stuck",
       output: "",
@@ -156,7 +156,7 @@ describe(UpgradeDependenciesCommand, () => {
   it("fails when skipped steps are all there is to report", async () => {
     expect.hasAssertions();
 
-    vi.mocked(service.attempt).mockReturnValue({
+    vi.mocked(service.attempt).mockResolvedValue({
       kind: "skipped",
       output: "",
       report: { ...done, skipped: { exitCode: 1, tail: "x" } },
@@ -172,7 +172,7 @@ describe(UpgradeDependenciesCommand, () => {
   it("exits 0 when nothing changed and nothing was skipped", async () => {
     expect.hasAssertions();
 
-    vi.mocked(service.attempt).mockReturnValue({
+    vi.mocked(service.attempt).mockResolvedValue({
       kind: "succeeded",
       output: "",
       report: done,

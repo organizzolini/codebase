@@ -17,11 +17,38 @@ import {
 } from "vitest";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { UpgradeNodeService } from "../upgrade-node/upgrade-node.service";
+import { UpgradePnpmService } from "../upgrade-pnpm/upgrade-pnpm.service";
+import { UpgradePythonService } from "../upgrade-python/upgrade-python.service";
 
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 
+import type { Command } from "../process-runner/process-runner.types";
+import type { UpgradeStep } from "./upgrade-dependencies.types";
+
+/** A command that runs some JavaScript, which is how a test writes a file. */
+const node = (code: string): Command => ["node", "-e", code];
+
+/** A command that writes a file. */
+const write = (file: string, text: string): Command =>
+  node(
+    `require("fs").writeFileSync(${JSON.stringify(file)}, ${JSON.stringify(text)})`,
+  );
+
+/** Throws whatever it is given, which is how a test throws what is not an error. */
+const fail = (value: unknown): never => {
+  throw value;
+};
+
+/** A step made of the given commands. */
+const stepOf = (...commands: Command[]): UpgradeStep => ({
+  commands,
+  label: "Step",
+});
+
 describe(UpgradeDependenciesService, () => {
   let service: UpgradeDependenciesService;
+  let pnpm: UpgradePnpmService;
   let repository: string;
   let temporary: string;
   let originalDirectory: string;
@@ -42,6 +69,18 @@ describe(UpgradeDependenciesService, () => {
         {
           provide: ProcessRunnerService,
           useValue: createMock<ProcessRunnerService>(),
+        },
+        {
+          provide: UpgradeNodeService,
+          useValue: createMock<UpgradeNodeService>(),
+        },
+        {
+          provide: UpgradePnpmService,
+          useValue: createMock<UpgradePnpmService>(),
+        },
+        {
+          provide: UpgradePythonService,
+          useValue: createMock<UpgradePythonService>(),
         },
       ],
     }).compile();
@@ -72,10 +111,23 @@ describe(UpgradeDependenciesService, () => {
         UpgradeDependenciesService,
         ProcessRunnerService,
         { provide: ConfigService, useValue: new ConfigService() },
+        {
+          provide: UpgradeNodeService,
+          useValue: createMock<UpgradeNodeService>(),
+        },
+        {
+          provide: UpgradePnpmService,
+          useValue: createMock<UpgradePnpmService>(),
+        },
+        {
+          provide: UpgradePythonService,
+          useValue: createMock<UpgradePythonService>(),
+        },
       ],
     }).compile();
 
     service = await module.resolve(UpgradeDependenciesService);
+    pnpm = await module.resolve(UpgradePnpmService);
   });
 
   afterEach(() => {
@@ -89,20 +141,19 @@ describe(UpgradeDependenciesService, () => {
     expect(service).toBeDefined();
   });
 
-  it("keeps what a successful step changed", () => {
+  it("keeps what a successful step changed", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Good",
-      script: "echo changed > package.json; echo hello",
-    });
+    const outcome = await service.attempt(
+      stepOf(write("package.json", "changed\n"), node("console.log('hello')")),
+    );
 
     expect(outcome).toStrictEqual({
       kind: "succeeded",
       output: "hello\n",
       report: {
         changes: "1 file changed, 1 insertion(+), 1 deletion(-)",
-        label: "Good",
+        label: "Step",
         summary: undefined,
         warnings: [],
       },
@@ -110,7 +161,7 @@ describe(UpgradeDependenciesService, () => {
     expect(read("package.json")).toBe("changed\n");
   });
 
-  it("counts the lines of a file git treats as binary", () => {
+  it("counts the lines of a file git treats as binary", async () => {
     expect.hasAssertions();
 
     fs.writeFileSync(
@@ -121,103 +172,102 @@ describe(UpgradeDependenciesService, () => {
     git("add", "-A");
     git("commit", "-qm", "lockfile");
 
-    const outcome = service.attempt({
-      label: "Good",
-      script: String.raw`printf 'one\ntwo\n' > pnpm.lock`,
-    });
+    const outcome = await service.attempt(
+      stepOf(write("pnpm.lock", "one\ntwo\n")),
+    );
 
     expect(outcome).toMatchObject({
       report: { changes: "1 file changed, 1 insertion(+)" },
     });
   });
 
-  it("reports what a step printed as its summary and warnings", () => {
+  it("reports the warnings a step printed", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Good",
-      script: "echo 'summary: tool 2'; echo '⚠ one skill is stale'",
-    });
+    const outcome = await service.attempt(
+      stepOf(node("console.log('⚠ one skill is stale')")),
+    );
 
     expect(outcome).toMatchObject({
-      report: {
-        changes: "",
-        summary: "tool 2",
-        warnings: ["⚠ one skill is stale"],
-      },
+      report: { changes: "", warnings: ["⚠ one skill is stale"] },
     });
   });
 
-  it("undoes a failed step and reports why", () => {
+  it("undoes a failed step and reports why", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Bad",
-      script: "echo broken > package.json; echo 'no such version' >&2; exit 3",
-    });
+    const outcome = await service.attempt(
+      stepOf(
+        write("package.json", "broken"),
+        node("console.error('no such version'); process.exitCode = 3"),
+      ),
+    );
 
     expect(outcome).toMatchObject({
       kind: "skipped",
       report: {
-        label: "Bad",
+        label: "Step",
         skipped: { exitCode: 3, tail: "no such version" },
       },
     });
     expect(read("package.json")).toBe("original");
   });
 
-  it("undoes a failed step's deletions and additions, even untracked", () => {
+  it("undoes a failed step's deletions and additions, even untracked", async () => {
     expect.hasAssertions();
 
-    service.attempt({
-      label: "Bad",
-      script:
-        "rm package.json; mkdir -p added/deep; echo x > added/deep/file; echo y > untracked; exit 1",
-    });
+    await service.attempt(
+      stepOf(
+        node(
+          'const fs = require("fs"); fs.rmSync("package.json"); fs.mkdirSync("added/deep", { recursive: true }); fs.writeFileSync("added/deep/file", "x"); fs.writeFileSync("untracked", "y"); process.exit(1)',
+        ),
+      ),
+    );
 
     expect(read("package.json")).toBe("original");
     expect(fs.existsSync(path.join(repository, "added"))).toBe(false);
     expect(fs.existsSync(path.join(repository, "untracked"))).toBe(false);
   });
 
-  it("restores to what the previous step left, not to the commit", () => {
+  it("restores to what the previous step left, not to the commit", async () => {
     expect.hasAssertions();
 
-    service.attempt({ label: "First", script: "echo first > package.json" });
-    service.attempt({
-      label: "Second",
-      script: "echo second > package.json; exit 1",
-    });
+    await service.attempt(stepOf(write("package.json", "first\n")));
+    await service.attempt(
+      stepOf(write("package.json", "second\n"), node("process.exit(1)")),
+    );
 
     expect(read("package.json")).toBe("first\n");
   });
 
-  it("leaves ignored files alone", () => {
+  it("leaves ignored files alone", async () => {
     expect.hasAssertions();
 
-    service.attempt({
-      label: "Bad",
-      script: "echo changed > node_modules/kept; exit 1",
-    });
+    await service.attempt(
+      stepOf(write("node_modules/kept", "changed\n"), node("process.exit(1)")),
+    );
 
     expect(read("node_modules/kept")).toBe("changed\n");
   });
 
-  it("stops at the first failing command of a script", () => {
+  it("stops at the first failing command of a step", async () => {
     expect.hasAssertions();
 
-    service.attempt({ label: "Bad", script: "false; echo reached > after" });
+    await service.attempt(stepOf(node("process.exit(1)"), write("after", "x")));
 
     expect(fs.existsSync(path.join(repository, "after"))).toBe(false);
   });
 
-  it("quotes only the last lines of a long failure", () => {
+  it("quotes only the last lines of a long failure", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Bad",
-      script: "seq 1 100 >&2; exit 1",
-    });
+    const outcome = await service.attempt(
+      stepOf(
+        node(
+          "for (let n = 1; n <= 100; n++) console.error(String(n)); process.exitCode = 1",
+        ),
+      ),
+    );
     const tail =
       outcome.kind === "skipped" ? (outcome.report.skipped?.tail ?? "") : "";
 
@@ -225,51 +275,50 @@ describe(UpgradeDependenciesService, () => {
     expect(tail.endsWith("100")).toBe(true);
   });
 
-  it("quotes standard output when the failure printed nothing else", () => {
+  it("quotes standard output when the failure printed nothing else", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Bad",
-      script: "echo only on stdout; exit 1",
-    });
+    const outcome = await service.attempt(
+      stepOf(node("console.log('only on stdout'); process.exitCode = 1")),
+    );
 
     expect(outcome).toMatchObject({
       report: { skipped: { tail: "only on stdout" } },
     });
   });
 
-  it("runs the recovery script after undoing a failed step", () => {
+  it("runs the recovery commands after undoing a failed step", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Bad",
-      recover: "echo recovered > recovered.txt",
-      script: "exit 1",
+    const outcome = await service.attempt({
+      commands: [node("process.exit(1)")],
+      label: "Step",
+      recover: [write("recovered.txt", "recovered\n")],
     });
 
     expect(outcome.kind).toBe("skipped");
     expect(read("recovered.txt")).toBe("recovered\n");
   });
 
-  it("does not run the recovery script after a step that succeeds", () => {
+  it("does not run the recovery commands after a step that succeeds", async () => {
     expect.hasAssertions();
 
-    service.attempt({
-      label: "Good",
-      recover: "touch recovered.txt",
-      script: "true",
+    await service.attempt({
+      commands: [node("0")],
+      label: "Step",
+      recover: [write("recovered.txt", "x")],
     });
 
     expect(fs.existsSync(path.join(repository, "recovered.txt"))).toBe(false);
   });
 
-  it("stops the run when the recovery script fails", () => {
+  it("stops the run when the recovery commands fail", async () => {
     expect.hasAssertions();
 
-    const outcome = service.attempt({
-      label: "Bad",
-      recover: "echo cannot rebuild >&2; exit 4",
-      script: "exit 1",
+    const outcome = await service.attempt({
+      commands: [node("process.exit(1)")],
+      label: "Step",
+      recover: [node("console.error('cannot rebuild'); process.exitCode = 4")],
     });
 
     expect(outcome.kind).toBe("unrestored");
@@ -278,14 +327,13 @@ describe(UpgradeDependenciesService, () => {
     });
   });
 
-  it("stops the run when the working tree cannot be restored", () => {
+  it("stops the run when the working tree cannot be restored", async () => {
     expect.hasAssertions();
 
     // A lock left behind by the step stops git from restoring the index.
-    const outcome = service.attempt({
-      label: "Bad",
-      script: "touch .git/index.lock; exit 1",
-    });
+    const outcome = await service.attempt(
+      stepOf(write(".git/index.lock", ""), node("process.exit(1)")),
+    );
 
     expect(outcome.kind).toBe("unrestored");
     expect(outcome).toMatchObject({
@@ -293,20 +341,84 @@ describe(UpgradeDependenciesService, () => {
     });
   });
 
-  it("throws when the working tree cannot be recorded", () => {
+  it("throws when the working tree cannot be recorded", async () => {
     expect.hasAssertions();
 
     process.chdir(temporary);
 
-    expect(() => service.attempt({ label: "Any", script: "true" })).toThrow(
+    await expect(service.attempt(stepOf(node("0")))).rejects.toThrow(
       "Could not record the working tree",
     );
   });
 
-  it("writes the pull request when something changed, and says so", () => {
+  describe("a task", () => {
+    it("keeps what it changed and reports its summary", async () => {
+      expect.hasAssertions();
+
+      vi.mocked(pnpm.upgrade).mockImplementation(() => {
+        fs.writeFileSync("package.json", "pinned\n");
+
+        return "pnpm 12.15.0";
+      });
+
+      const outcome = await service.attempt({
+        label: "Upgrade pnpm",
+        task: "pnpm",
+      });
+
+      expect(outcome).toMatchObject({
+        kind: "succeeded",
+        report: {
+          changes: "1 file changed, 1 insertion(+), 1 deletion(-)",
+          summary: "pnpm 12.15.0",
+        },
+      });
+      expect(read("package.json")).toBe("pinned\n");
+    });
+
+    it("is undone and reported when it throws", async () => {
+      expect.hasAssertions();
+
+      vi.mocked(pnpm.upgrade).mockImplementation(() => {
+        fs.writeFileSync("package.json", "half\n");
+
+        throw new Error("pnpm will not switch");
+      });
+
+      const outcome = await service.attempt({
+        label: "Upgrade pnpm",
+        task: "pnpm",
+      });
+
+      expect(outcome).toMatchObject({
+        kind: "skipped",
+        report: { skipped: { exitCode: 1, tail: "pnpm will not switch" } },
+      });
+      expect(read("package.json")).toBe("original");
+    });
+
+    it("is reported when it throws something that is not an error", async () => {
+      expect.hasAssertions();
+
+      const throwText = (): string => fail("plain text");
+
+      vi.mocked(pnpm.upgrade).mockImplementation(throwText);
+
+      const outcome = await service.attempt({
+        label: "Upgrade pnpm",
+        task: "pnpm",
+      });
+
+      expect(outcome).toMatchObject({
+        report: { skipped: { tail: "plain text" } },
+      });
+    });
+  });
+
+  it("writes the pull request when something changed, and says so", async () => {
     expect.hasAssertions();
 
-    service.attempt({ label: "Good", script: "echo changed > package.json" });
+    await service.attempt(stepOf(write("package.json", "changed\n")));
 
     const changed = service.finish([
       {
@@ -326,11 +438,11 @@ describe(UpgradeDependenciesService, () => {
     ).toContain("**Bad** skipped");
   });
 
-  it("links the run in the body when GitHub names one", () => {
+  it("links the run in the body when GitHub names one", async () => {
     expect.hasAssertions();
 
     vi.stubEnv("GITHUB_RUN_ID", "42");
-    service.attempt({ label: "Good", script: "echo changed > package.json" });
+    await service.attempt(stepOf(write("package.json", "changed\n")));
     service.finish([]);
 
     expect(
@@ -338,10 +450,10 @@ describe(UpgradeDependenciesService, () => {
     ).toContain("/actions/runs/42)");
   });
 
-  it("counts a new untracked file as a change", () => {
+  it("counts a new untracked file as a change", async () => {
     expect.hasAssertions();
 
-    service.attempt({ label: "Good", script: "echo new > added-skill.md" });
+    await service.attempt(stepOf(write("added-skill.md", "new\n")));
 
     expect(service.finish([])).toBe(true);
   });

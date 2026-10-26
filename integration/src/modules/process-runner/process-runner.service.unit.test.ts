@@ -68,6 +68,41 @@ describe(ProcessRunnerService, () => {
     expect(service).toBeDefined();
   });
 
+  describe("captureSequence", () => {
+    it("runs every command and joins what they printed", () => {
+      expect.hasAssertions();
+
+      completeWith({ stderr: "e", stdout: "o" });
+
+      expect(
+        service.captureSequence([["first", "--flag"], ["second"]]),
+      ).toStrictEqual({ status: 0, stderr: "ee", stdout: "oo" });
+      expect(spawnSync).toHaveBeenCalledTimes(2);
+    });
+
+    it("stops at the first command that fails", () => {
+      expect.hasAssertions();
+
+      completeWith({ status: 4, stderr: "broke" });
+
+      expect(service.captureSequence([["first"], ["second"]])).toStrictEqual({
+        status: 4,
+        stderr: "broke",
+        stdout: "",
+      });
+      expect(spawnSync).toHaveBeenCalledTimes(1);
+    });
+
+    it("succeeds when there is nothing to run", () => {
+      expect.hasAssertions();
+      expect(service.captureSequence([])).toStrictEqual({
+        status: 0,
+        stderr: "",
+        stdout: "",
+      });
+    });
+  });
+
   describe("capture", () => {
     it("returns both streams and the exit code", () => {
       expect.hasAssertions();

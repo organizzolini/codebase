@@ -10,7 +10,7 @@ import {
   MAXIMUM_CAPTURED_BYTES,
 } from "./process-runner.constants";
 
-import type { CapturedProcess } from "./process-runner.types";
+import type { CapturedProcess, Command } from "./process-runner.types";
 
 /**
  * Runs child processes for the integration commands.
@@ -93,6 +93,31 @@ export class ProcessRunnerService {
       stderr: stderr.status === "fulfilled" ? stderr.value : "",
       stdout: stdout.status === "fulfilled" ? stdout.value : "",
     };
+  }
+
+  /**
+   * Runs commands one after another, stopping at the first that fails.
+   *
+   * @param commands - The commands to run, in order.
+   * @returns What they all printed, and the exit code of the one that failed,
+   *   or 0 when none did.
+   */
+  public captureSequence(commands: readonly Command[]): CapturedProcess {
+    const finished: CapturedProcess = { status: 0, stderr: "", stdout: "" };
+
+    for (const [executable, ...args] of commands) {
+      const result = this.capture(executable, args);
+
+      finished.stderr += result.stderr;
+      finished.stdout += result.stdout;
+      finished.status = result.status;
+
+      if (result.status !== 0) {
+        break;
+      }
+    }
+
+    return finished;
   }
 
   /**

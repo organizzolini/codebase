@@ -86,23 +86,33 @@ the conformetry config when a template changed, because `.nxignore` hides
 templates from Nx.
 
 `src/modules/process-runner` holds the wrapper over `node:child_process`
-(`capture` returns the output, `captureAsync` does so without blocking, and
-`stream` inherits it). The `publication` project keeps its own copy for the
+(`capture` returns the output, `captureSequence` runs several commands until one
+fails, `captureAsync` does so without blocking, and `stream` inherits it). The `publication` project keeps its own copy for the
 release commands and the publishable-packages gate; the two are not shared
 through a library yet. `src/modules/task-database` holds the service the three
 task-database commands share; it reads `NX_WORKSPACE_DATA_DIRECTORY` and
 `MACHINE_ID_FILES`, and opens the databases with the built-in `node:sqlite`, so
 no `sqlite3` binary is needed.
 
-`upgrade-dependencies` runs the steps listed in its constants one at a time, each
-as a `bash -e -o pipefail` script. Before each it records the whole working tree
-as a git tree, untracked files included, and a step that fails is undone by
-restoring that tree, which is what the previous step left, so a later failure
-never undoes an earlier success. A skipped step is listed in the pull request
-body the command writes to the OS temp directory and names in the `body_path`
-output. Only a step that cannot be undone
-stops the run. To add an upgrade, add a step to `UPGRADE_STEPS`; a step that
-needs the environment rebuilt after it is undone gives a `recover` script.
+`upgrade-dependencies` runs the steps listed in its constants one at a time. A
+step is either a list of commands, run in order until one fails, or a task that
+a service carries out: `upgrade-pnpm`, `upgrade-node` and `upgrade-python`, with
+`package-manifest` editing the `package.json` fields the first two rewrite. A
+task throws to say it failed, and returns the version it landed on, which the
+pull request shows. No step uses a shell. Before each step the command records
+the whole working tree as a git tree, untracked files included, and a step that
+fails is undone by restoring that tree, which is what the previous step left, so
+a later failure never undoes an earlier success. A skipped step is listed in the
+pull request body the command writes to the OS temp directory and names in the
+`body_path` output. Only a step that cannot be undone stops the run. To add an
+upgrade, add a step to `UPGRADE_STEPS`: commands when nothing needs deciding, a
+new task service when something does. A step that needs the environment rebuilt
+after it is undone gives `recover` commands.
+
+`upgrade-node` moves `.nvmrc` and `engines.node` to the newest release of the
+major in use, read from nodejs.org, and never crosses a major or goes back.
+`upgrade-python` never lowers the version: uv installs the newest stable Python
+it knows, which can be older than one the repository already uses.
 
 Run one locally with `nx run integration:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).
