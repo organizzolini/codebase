@@ -117,6 +117,8 @@ src/
     calendar-filters/            # The filter builder and the SQL it compiles to
     calendar-group-by/           # The grouping picker and the event groups it builds
     calendar-timeline/           # The timeline and its clusters, lanes, and window
+  hooks/
+    use-night-sky/               # The night sky's star catalog, schemas, and generator
 scripts/
   build-events-database.ts       # Writes output/events.sqlite, from the seed or --ingested
   build-star-catalog.ts          # Trims the HYG star CSV to the night sky's catalog JSON
