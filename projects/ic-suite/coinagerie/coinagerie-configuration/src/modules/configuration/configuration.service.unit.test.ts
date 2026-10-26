@@ -128,6 +128,34 @@ describe(ConfigurationService, () => {
     ]);
   });
 
+  it("resolves json and markdown outputs side by side, in the order written", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      [
+        "export default {",
+        "  outputs: [",
+        '    { path: "glossary.json", type: "json" },',
+        '    { description: "Words.", path: "README.md", type: "markdown" },',
+        "  ],",
+        "};",
+        "",
+      ].join("\n"),
+    );
+
+    const configuration = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(configuration.outputs).toStrictEqual([
+      { path: path.join(directory, "glossary.json"), type: "json" },
+      {
+        description: "Words.",
+        path: path.join(directory, "README.md"),
+        type: "markdown",
+      },
+    ]);
+  });
+
   it("refuses a named file that does not exist", async () => {
     await expect(
       service.loadConfiguration({
@@ -144,6 +172,14 @@ describe(ConfigurationService, () => {
     [
       "an output of an unknown type",
       'export default { outputs: [{ path: "a.txt", type: "text" }] };\n',
+    ],
+    [
+      "a json output with a description",
+      'export default { outputs: [{ description: "Words.", path: "a.json", type: "json" }] };\n',
+    ],
+    [
+      "a json output with no path",
+      'export default { outputs: [{ type: "json" }] };\n',
     ],
     [
       "a markdown output with no path",

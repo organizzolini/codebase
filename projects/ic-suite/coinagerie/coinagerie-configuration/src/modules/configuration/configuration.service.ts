@@ -20,6 +20,7 @@ import type {
   CoinagerieConfiguration,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
+  ResolvedCoinagerieOutput,
 } from "./configuration.types";
 
 /**
@@ -114,11 +115,19 @@ export class ConfigurationService {
       directory,
       exclude: { paths: configuration.exclude?.paths ?? [] },
       include: configuration.include ?? [...DEFAULT_INCLUDE],
-      outputs: (configuration.outputs ?? []).map((output) => ({
-        description: output.description,
-        path: path.resolve(directory, output.path),
-        type: output.type,
-      })),
+      outputs: (configuration.outputs ?? []).map(
+        (output): ResolvedCoinagerieOutput => {
+          const absolutePath = path.resolve(directory, output.path);
+
+          return output.type === "json"
+            ? { path: absolutePath, type: "json" }
+            : {
+                description: output.description,
+                path: absolutePath,
+                type: "markdown",
+              };
+        },
+      ),
     };
   }
 

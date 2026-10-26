@@ -11,10 +11,12 @@ export { ConfigurationService } from "./modules/configuration/configuration.serv
 export type {
   CoinagerieConfiguration,
   CoinagerieExclusions,
+  CoinagerieJsonOutput,
   CoinagerieMarkdownOutput,
   CoinagerieOutput,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
+  ResolvedCoinagerieJsonOutput,
   ResolvedCoinagerieMarkdownOutput,
   ResolvedCoinagerieOutput,
 } from "./modules/configuration/configuration.types";

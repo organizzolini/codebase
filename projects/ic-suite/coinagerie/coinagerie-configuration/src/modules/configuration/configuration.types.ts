@@ -24,6 +24,15 @@ export interface CoinagerieExclusions {
 }
 
 /**
+ * A JSON destination: the whole file is the glossary, a flat object sorted by
+ * word with `""` for a word nobody has defined yet.
+ */
+export interface CoinagerieJsonOutput {
+  path: string;
+  type: "json";
+}
+
+/**
  * A markdown destination: the glossary block is kept between the
  * `coinagerie:start` and `coinagerie:end` anchors of this file, and appended
  * to its end when the file has no anchors yet.
@@ -36,7 +45,7 @@ export interface CoinagerieMarkdownOutput {
 }
 
 /** One place a glossary is kept. */
-export type CoinagerieOutput = CoinagerieMarkdownOutput;
+export type CoinagerieOutput = CoinagerieJsonOutput | CoinagerieMarkdownOutput;
 
 /** What `loadConfiguration` is asked for. */
 export interface LoadConfigurationArguments {
@@ -67,6 +76,12 @@ export interface ResolvedCoinagerieConfiguration {
   outputs: ResolvedCoinagerieOutput[];
 }
 
+/** A JSON destination whose path has been made absolute. */
+export interface ResolvedCoinagerieJsonOutput {
+  path: string;
+  type: "json";
+}
+
 /** A markdown destination whose path has been made absolute. */
 export interface ResolvedCoinagerieMarkdownOutput {
   description: string | undefined;
@@ -75,4 +90,6 @@ export interface ResolvedCoinagerieMarkdownOutput {
 }
 
 /** One destination, resolved. */
-export type ResolvedCoinagerieOutput = ResolvedCoinagerieMarkdownOutput;
+export type ResolvedCoinagerieOutput =
+  | ResolvedCoinagerieJsonOutput
+  | ResolvedCoinagerieMarkdownOutput;

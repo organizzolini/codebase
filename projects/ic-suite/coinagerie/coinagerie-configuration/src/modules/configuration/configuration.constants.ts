@@ -32,6 +32,11 @@ export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;
  */
 const DESCRIPTION_FORBIDDEN_LINE_PATTERN = /^\s*(?:[-*+]\s|<!--)/mu;
 
+const jsonOutputSchema = z.strictObject({
+  path: z.string().min(1),
+  type: z.literal("json"),
+});
+
 const markdownOutputSchema = z.strictObject({
   description: z
     .string()
@@ -59,5 +64,9 @@ export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
       .strictObject({ paths: z.array(z.string()).optional() })
       .optional(),
     include: z.array(z.string()).optional(),
-    outputs: z.array(markdownOutputSchema).optional(),
+    outputs: z
+      .array(
+        z.discriminatedUnion("type", [jsonOutputSchema, markdownOutputSchema]),
+      )
+      .optional(),
   });
