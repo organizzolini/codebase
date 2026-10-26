@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.34.0](https://github.com/organizzolini/codebase/compare/v3.33.0...v3.34.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ polish responsive layouts across phone, tablet and desktop ([#1726](https://github.com/organizzolini/codebase/issues/1726)) ([f49497d](https://github.com/organizzolini/codebase/commit/f49497dc4fed23a39d78ee1d39f30ae7bd1ceab9)), closes [#1655](https://github.com/organizzolini/codebase/issues/1655) [#1655](https://github.com/organizzolini/codebase/issues/1655) [#1656](https://github.com/organizzolini/codebase/issues/1656) [#1657](https://github.com/organizzolini/codebase/issues/1657) [#1658](https://github.com/organizzolini/codebase/issues/1658) [#1654](https://github.com/organizzolini/codebase/issues/1654) [#1655](https://github.com/organizzolini/codebase/issues/1655) [#1656](https://github.com/organizzolini/codebase/issues/1656) [#1657](https://github.com/organizzolini/codebase/issues/1657) [#1658](https://github.com/organizzolini/codebase/issues/1658) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1725](https://github.com/organizzolini/codebase/issues/1725)
+
 ## [3.33.0](https://github.com/organizzolini/codebase/compare/v3.32.0...v3.33.0) (2026-10-26)
 
 ### ✨ Features

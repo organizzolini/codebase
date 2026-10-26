@@ -2351,6 +2351,7 @@ graph LR
   file_caelundas_web_src_lib_calendar_calendar_format_ts["caelundas-web/src/lib/calendar/calendar-format.ts"]
   file_caelundas_web_src_lib_calendar_calendar_loader_ts["caelundas-web/src/lib/calendar/calendar-loader.ts"]
   file_caelundas_web_src_lib_calendar_calendar_search_ts["caelundas-web/src/lib/calendar/calendar-search.ts"]
+  file_caelundas_web_src_lib_calendar_calendar_states_integration_test_tsx["caelundas-web/src/lib/calendar/calendar-states.integration.test.tsx"]
   file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_ts["caelundas-web/src/lib/calendar/calendar-timeline-clusters.ts"]
   file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_unit_test_ts["caelundas-web/src/lib/calendar/calendar-timeline-clusters.unit.test.ts"]
   file_caelundas_web_src_lib_calendar_calendar_timeline_window_ts["caelundas-web/src/lib/calendar/calendar-timeline-window.ts"]
@@ -7077,7 +7078,9 @@ graph LR
   file_caelundas_web_src_components_calendar_overflow_list_unit_test_tsx --> file_caelundas_web_src_components_calendar_overflow_list_tsx
   file_caelundas_web_src_components_calendar_scale_select_tsx --> file_caelundas_web_src_lib_calendar_calendar_views_ts
   file_caelundas_web_src_components_calendar_scale_select_unit_test_tsx --> file_caelundas_web_src_components_calendar_scale_select_tsx
+  file_caelundas_web_src_components_calendar_skeleton_tsx --> file_caelundas_web_src_lib_calendar_calendar_viewport_ts
   file_caelundas_web_src_components_calendar_skeleton_unit_test_tsx --> file_caelundas_web_src_components_calendar_skeleton_tsx
+  file_caelundas_web_src_components_calendar_skeleton_unit_test_tsx --> file_caelundas_web_testing_viewport_ts
   file_caelundas_web_src_components_calendar_timeline_tsx --> file_caelundas_web_src_components_calendar_toolbar_tsx
   file_caelundas_web_src_components_calendar_timeline_tsx --> file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_ts
   file_caelundas_web_src_components_calendar_timeline_tsx --> file_caelundas_web_src_lib_calendar_calendar_timeline_window_ts
@@ -7089,8 +7092,10 @@ graph LR
   file_caelundas_web_src_components_calendar_toolbar_tsx --> file_caelundas_web_src_components_calendar_view_select_tsx
   file_caelundas_web_src_components_calendar_toolbar_tsx --> file_caelundas_web_src_lib_calendar_calendar_views_ts
   file_caelundas_web_src_components_calendar_toolbar_unit_test_tsx --> file_caelundas_web_src_components_calendar_toolbar_tsx
+  file_caelundas_web_src_components_calendar_view_select_tsx --> file_caelundas_web_src_lib_calendar_calendar_viewport_ts
   file_caelundas_web_src_components_calendar_view_select_tsx --> file_caelundas_web_src_lib_calendar_calendar_views_ts
   file_caelundas_web_src_components_calendar_view_select_unit_test_tsx --> file_caelundas_web_src_components_calendar_view_select_tsx
+  file_caelundas_web_src_components_calendar_view_select_unit_test_tsx --> file_caelundas_web_testing_viewport_ts
   file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_components_calendar_agenda_tsx
   file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_components_calendar_group_by_tsx
   file_caelundas_web_src_components_events_calendar_tsx --> file_caelundas_web_src_components_calendar_overflow_list_tsx
@@ -7127,6 +7132,8 @@ graph LR
   file_caelundas_web_src_lib_calendar_calendar_search_ts --> file_caelundas_web_src_lib_event_filters_event_filters_types_ts
   file_caelundas_web_src_lib_calendar_calendar_search_ts --> file_caelundas_web_src_lib_event_groups_event_groups_constants_ts
   file_caelundas_web_src_lib_calendar_calendar_search_ts --> file_caelundas_web_src_lib_event_groups_event_groups_types_ts
+  file_caelundas_web_src_lib_calendar_calendar_states_integration_test_tsx --> file_caelundas_web_testing_event_filters_ts
+  file_caelundas_web_src_lib_calendar_calendar_states_integration_test_tsx --> file_caelundas_web_testing_render_route_tsx
   file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_ts --> file_caelundas_web_src_lib_calendar_calendar_timeline_ts
   file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_unit_test_ts --> file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_ts
   file_caelundas_web_src_lib_calendar_calendar_timeline_clusters_unit_test_ts --> file_caelundas_web_src_lib_calendar_calendar_timeline_ts
@@ -14246,13 +14253,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7174 |
+| Callables | 7189 |
 | Files | 2106 |
-| Calls traced | 7866 |
-| Call stacks | 1989 |
+| Calls traced | 7875 |
+| Call stacks | 1996 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 415 |
+| Unfollowable calls | 420 |
 
 ### Projects
 
