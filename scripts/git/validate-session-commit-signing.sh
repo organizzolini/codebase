@@ -22,7 +22,8 @@ fi
 
 # Cloud agents cannot configure gpg themselves — their key arrives from repository
 # secrets, or as an SSH signer from the harness — so they get bootstrap
-# instructions while local agents get local ones.
+# instructions while local agents get local ones. An SSH signer, wherever it
+# runs, has no GPG key to list, so it gets the installation script instead.
 if [[ -n "${GITHUB_ACTIONS:-}" || -n "${CI:-}" ]]; then
 	REMEDIATION="1. Stop and do not create commits until signing is configured.
 2. Confirm repository environment \"copilot\" has secrets \"GPG_PRIVATE_KEY\" and \"GPG_PASSPHRASE\".
@@ -30,6 +31,10 @@ if [[ -n "${GITHUB_ACTIONS:-}" || -n "${CI:-}" ]]; then
 4. Start a fresh cloud agent session after the workflow completes.
 5. Re-run \"bash scripts/git/check-commit-signing-configuration.sh\".
 6. If signatures still are not verified, add the matching public key to GitHub: Settings -> SSH and GPG keys."
+elif [[ "$(git config --get gpg.format 2>/dev/null || true)" == "ssh" ]]; then
+	REMEDIATION="1. Stop and do not create commits until signing is configured.
+2. The signer holds its key outside this machine, so there is no key to create: run \"bash scripts/installation.sh\" (idempotent, safe to repeat). It installs ssh-keygen and writes gpg.ssh.allowedSignersFile from the signer's own public key.
+3. Re-run the commit; Husky checks signing again on its own."
 else
 	REMEDIATION="1. Stop and do not create commits until signing is configured.
 2. List available keys with \"gpg --list-secret-keys --keyid-format=long\".

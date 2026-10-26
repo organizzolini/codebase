@@ -151,6 +151,7 @@ graph LR
   configuration["configuration"]
   conformetry_cli["conformetry-cli"]
   conformetry_nx["conformetry-nx"]
+  documentation["documentation"]
   installation["installation"]
   integration["integration"]
   lexico_api["lexico-api"]
@@ -176,6 +177,7 @@ graph LR
   codometer_output --> observability
   conformetry_cli --> observability
   conformetry_nx --> observability
+  documentation --> observability
   installation --> observability
   integration --> observability
   lexico_api --> observability

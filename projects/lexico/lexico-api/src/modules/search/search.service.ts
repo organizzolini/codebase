@@ -4,6 +4,7 @@ import { performance } from "node:perf_hooks";
 
 import { Injectable } from "@nestjs/common";
 
+import { mapConnection, toCursor } from "@codebase/interface";
 import {
   InjectRepository,
   Lexeme,
@@ -13,7 +14,6 @@ import {
 } from "@codebase/lexico-entities";
 import { LoggerService } from "@codebase/observability";
 
-import { mapConnection, toCursor } from "../../lexico-api.utilities";
 import {
   createEmptyConnection,
   paginateQuery,
@@ -26,6 +26,7 @@ import {
   LATIN_TIER_RESULT_LIMIT,
   SCORE_ENCLITIC,
   SCORE_FUZZY,
+  SCORE_FUZZY_STEP,
   SCORE_LEMMA_EXACT,
   SCORE_PREFIX,
   SCORE_WORD_EXACT,
@@ -34,12 +35,14 @@ import { SearchMatchSource } from "./search.entities";
 import {
   decomposeEnclitic,
   formatFormIdentifier,
+  fuzzyScoreToDistance,
+  maximumFuzzyDistance,
   readSearchCursor,
+  toEnglishMatchSource,
   toLatinMatchSource,
   toRankedScore,
 } from "./search.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type {
   EncliticDecompositionResult,
   LexemeSearchMatch,
@@ -50,6 +53,7 @@ import type {
   SearchLogEntry,
   SearchPaginationOptions,
 } from "./search.types";
+import type { Connection } from "@codebase/interface";
 
 /**
  * Service providing dictionary search across Latin forms and English translations.
@@ -150,13 +154,20 @@ export class SearchService {
         .flatMap((word) => word.wordLexemes.map(({ lexeme }) => lexeme.id)),
     ]);
 
-    return scored.map(({ lexeme, score }) => ({
-      enclitic: stemMatched.has(lexeme.id) ? enclitic : null,
-      identifiers: [...(identifiers.get(lexeme.id) ?? [])],
-      lexeme,
-      score,
-      source: toLatinMatchSource(score),
-    }));
+    return scored.map(({ lexeme, score }) => {
+      const source = toLatinMatchSource(score);
+      return {
+        distance:
+          source === SearchMatchSource.FUZZY
+            ? fuzzyScoreToDistance(score)
+            : null,
+        enclitic: stemMatched.has(lexeme.id) ? enclitic : null,
+        identifiers: [...(identifiers.get(lexeme.id) ?? [])],
+        lexeme,
+        score,
+        source,
+      };
+    });
   }
 
   /**
@@ -256,7 +267,8 @@ export class SearchService {
 
     return mapConnection(
       connection,
-      ({ enclitic, identifiers, lexeme, score, source }) => ({
+      ({ distance, enclitic, identifiers, lexeme, score, source }) => ({
+        distance,
         enclitic,
         identifiers,
         lexeme,
@@ -299,10 +311,37 @@ export class SearchService {
   }
 
   /**
+   * Ranks the first `LATIN_TIER_RESULT_LIMIT` lexemes, closest first and then
+   * by id, whose headword or inflected word is within the term parameter's
+   * maximum edit distance. Trigram similarity narrows the candidates through
+   * their index, and the edit distance then scores each one.
+   */
+  private rankFuzzyMatches(termParameter: string): string {
+    const maximum = `:${termParameter}Maximum`;
+    const distance = (column: string): string =>
+      `levenshtein_less_equal(LOWER(${column}), :${termParameter}, ${maximum})`;
+    const headwords = this.lexemeRepository
+      .createQueryBuilder("fuzzyHeadword")
+      .select("fuzzyHeadword.id", "lexemeId")
+      .addSelect(distance("fuzzyHeadword.lemma"), "distance")
+      .where(`LOWER(fuzzyHeadword.lemma) % :${termParameter}`)
+      .getQuery();
+    const words = this.wordRepository
+      .createQueryBuilder("fuzzyWord")
+      .innerJoin("fuzzyWord.wordLexemes", "fuzzyLink")
+      .innerJoin("fuzzyLink.lexeme", "fuzzyLexeme")
+      .select("fuzzyLexeme.id", "lexemeId")
+      .addSelect(distance("fuzzyWord.data"), "distance")
+      .where(`LOWER(fuzzyWord.data) % :${termParameter}`)
+      .getQuery();
+    return `SELECT "fuzzy"."lexemeId", ${String(SCORE_FUZZY)} - ${String(SCORE_FUZZY_STEP)} * MIN("fuzzy"."distance") AS "score" FROM (${headwords} UNION ALL ${words}) "fuzzy" WHERE "fuzzy"."distance" <= ${maximum} GROUP BY "fuzzy"."lexemeId" ORDER BY "score" DESC, "fuzzy"."lexemeId" ASC LIMIT ${String(LATIN_TIER_RESULT_LIMIT)}`;
+  }
+
+  /**
    * Ranks every Latin tier at once: exact headwords, inflected words, the
    * enclitic's own entry once its stem matched a translated lexeme, and the
-   * first `LATIN_TIER_RESULT_LIMIT` lexemes by id each prefix and substring
-   * matches. A lexeme keeps its best tier's score, and one with no
+   * first `LATIN_TIER_RESULT_LIMIT` lexemes each prefix and fuzzy
+   * matches rank. A lexeme keeps its best tier's score, and one with no
    * translation is dropped.
    */
   private rankLatinMatches(
@@ -342,11 +381,11 @@ export class SearchService {
       tiers.push(
         this.rankLemmaPattern(`latinPrefix${String(index)}`, SCORE_PREFIX),
       );
-      if (term.length >= 3) {
-        parameters[`latinFuzzy${String(index)}`] = `%${term}%`;
-        tiers.push(
-          this.rankLemmaPattern(`latinFuzzy${String(index)}`, SCORE_FUZZY),
-        );
+      const maximumDistance = maximumFuzzyDistance(term);
+      if (maximumDistance > 0) {
+        parameters[`latinFuzzy${String(index)}`] = term;
+        parameters[`latinFuzzy${String(index)}Maximum`] = maximumDistance;
+        tiers.push(this.rankFuzzyMatches(`latinFuzzy${String(index)}`));
       }
     }
 
@@ -401,11 +440,12 @@ export class SearchService {
       options,
       (scored) =>
         scored.map(({ lexeme, score }) => ({
+          distance: null,
           enclitic: null,
           identifiers: [],
           lexeme,
           score,
-          source: SearchMatchSource.TRANSLATION_FULLTEXT,
+          source: toEnglishMatchSource(score),
         })),
     );
     this.logSearch({ connection, language: "english", query, startTime });

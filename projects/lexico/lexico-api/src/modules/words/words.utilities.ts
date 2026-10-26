@@ -1,8 +1,6 @@
-import {
-  mapRelation,
-  mapRelationConnection,
-  toDeletableFields,
-} from "../../lexico-api.utilities";
+import { mapRelation, mapRelationConnection } from "@codebase/interface";
+
+import { toDeletableFields } from "../../lexico-api.utilities";
 import { toFormType } from "../lexemes/forms/forms.utilities";
 import { toLexemeType } from "../lexemes/lexemes.utilities";
 
@@ -11,12 +9,12 @@ import { WordFormType } from "./word-form.entities";
 import { WordLexemeType } from "./word-lexeme.entities";
 import { WordType } from "./word.entities";
 
-import type { MappedFields } from "../../lexico-api.types";
 import type {
   WordFormRelationField,
   WordLexemeRelationField,
   WordRelationField,
 } from "./words.types";
+import type { MappedFields } from "@codebase/interface";
 import type { Word, WordForm, WordLexeme } from "@codebase/lexico-entities";
 
 /**

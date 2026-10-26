@@ -1,7 +1,7 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { mapConnection } from "../../lexico-api.utilities";
+import { mapConnection } from "@codebase/interface";
 
 import { LiteratureSearchResult } from "./literature-search-result.entities";
 import { LiteratureService } from "./literature.service";

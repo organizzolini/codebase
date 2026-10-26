@@ -1,4 +1,4 @@
-import { Paginated } from "../../lexico-api.utilities";
+import { Paginated } from "@codebase/interface";
 
 import { LexemeWordFormType } from "./lexeme-word-form.entities";
 import { WordFormType } from "./word-form.entities";

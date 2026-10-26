@@ -7,7 +7,8 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 
-import { mapConnection, mapNullableRelation } from "../../lexico-api.utilities";
+import { mapConnection, mapNullableRelation } from "@codebase/interface";
+
 import { PaginationArguments } from "../search/pagination-arguments.entities";
 
 import {
@@ -22,8 +23,8 @@ import { TextArguments } from "./text-argument.entities";
 import { TextType } from "./text.entities";
 import { TextsArguments } from "./texts-arguments.entities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { LineType } from "./line.entities";
+import type { Connection } from "@codebase/interface";
 
 /**
  * GraphQL resolver for Texts.

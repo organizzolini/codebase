@@ -79,7 +79,14 @@ export class SoftwarePythonService {
   /** Installs uv, then Python through it when the system one is too old. */
   public installPython(): void {
     this.installUv();
+    this.installPythonThroughUv();
+  }
 
+  /**
+   * Installs Python through uv when the system one is too old, for a machine
+   * where uv is already installed some other way.
+   */
+  public installPythonThroughUv(): void {
     this.reporter.print("🔍 Checking for Python 3.14+ installation...");
 
     if (this.hasSupportedPython()) {

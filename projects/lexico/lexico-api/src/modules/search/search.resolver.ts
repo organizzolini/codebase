@@ -1,7 +1,7 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { mapConnection } from "../../lexico-api.utilities";
+import { mapConnection } from "@codebase/interface";
 
 import { SearchEnglishArguments } from "./search-english-arguments.entities";
 import { SearchLatinArguments } from "./search-latin-arguments.entities";
@@ -10,7 +10,7 @@ import { LexemeSearchConnection, LexemeSearchResult } from "./search.entities";
 import { SearchService } from "./search.service";
 import { toLexemeSearchResult } from "./search.utilities";
 
-import type { Connection } from "../../lexico-api.types";
+import type { Connection } from "@codebase/interface";
 
 /**
  * GraphQL resolver exposing Latin and English dictionary search queries.

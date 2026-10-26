@@ -169,23 +169,6 @@ echo "Timestamp: $timestamp"
 - Sources `.env` environment variables
 - Makes all `.sh` files executable
 
-## Shell Utilities
-
-### shell/text-to-port.sh
-
-**Purpose:** Derive a project's default port (1000-9999) from its name
-
-**Usage:**
-
-```bash
-./scripts/shell/text-to-port.sh lexico-web   # 7797
-```
-
-The convention is a rolling hash, `h = (h * 31 + code) mod 9000` over each
-character, plus 1000. Order matters, every port is equally weighted, and the
-same name always gives the same port. The script header is the specification;
-check the other projects' ports for a collision before adopting a new one.
-
 ## Nx Scripts
 
 `scripts/nx/` holds only the two helpers the Nx targets call,
@@ -484,7 +467,6 @@ pnpm exec nx run validation:lockfile
 
 1. Create script in appropriate directory:
    - Core scripts: `scripts/`
-   - Shell utilities: `scripts/shell/`
    - Notepads: `notepads/`
 
 2. Add shebang and description:

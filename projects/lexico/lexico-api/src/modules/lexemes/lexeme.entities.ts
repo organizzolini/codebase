@@ -14,11 +14,11 @@ import { PrincipalPartType } from "./principal-part.entities";
 import { PronunciationType } from "./pronunciation.entities";
 import { TranslationType } from "./translation.entities";
 
-import type { Connection, GraphQLObjectOf } from "../../lexico-api.types";
 import type {
   LexemeDatabaseOnlyField,
   LexemeRelationField,
 } from "./lexemes.types";
+import type { Connection, GraphQLObjectOf } from "@codebase/interface";
 import type { Lexeme, PartOfSpeech } from "@codebase/lexico-entities";
 
 /** A Latin dictionary entry with its forms, inflection, and translations. */

@@ -18,9 +18,9 @@ import {
 import { LinesResolver } from "./lines.resolver";
 import { toLineType } from "./literature.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { LinesArguments } from "./line-arguments.entities";
 import type { LineType } from "./line.entities";
+import type { Connection } from "@codebase/interface";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
 /** A page of lines, reduced to what a reader can observe of it. */

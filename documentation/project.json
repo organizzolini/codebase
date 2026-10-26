@@ -1,0 +1,41 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "documentation",
+  "projectType": "application",
+  "sourceRoot": "documentation",
+  "tags": [
+    "framework:nest-commander",
+    "framework:nestjs",
+    "generator:nestjs-command-project",
+    "language:typescript",
+    "type:package"
+  ],
+  "targets": {
+    "codometer": {},
+    "dependency-cruiser": {},
+    "deprecate-code": {},
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "oxlint": {},
+    "prettier": {},
+    "refresh-documentation": {
+      "cache": false,
+      "description": "Refreshes the OpenWiki documentation from code, writing through the root `openwiki` symlink, which is why it runs from the workspace root. Needs the `OPENWIKI_*` and provider key environment variables OpenWiki reads; the 🧑‍🏫 Refresh Documentation workflow supplies them.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register documentation/src/documentation.main.ts refresh-documentation",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}

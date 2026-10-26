@@ -15,6 +15,7 @@ import {
   BLOCK_END_LABEL,
   BLOCK_START_LABEL,
   SKILL_EXCLUSION_FILES,
+  VENDORED_SKILL_PATHS,
 } from "./skill-exclusions.constants";
 
 import type { SkillExclusionFile } from "./skill-exclusions.types";
@@ -68,6 +69,24 @@ describe(SkillExclusionsCommand, () => {
     return file;
   };
 
+  /** The files that keep a line per skill: every one but ESLint's. */
+  const skillFiles = SKILL_EXCLUSION_FILES.filter(
+    (file) => file.renderEntry !== undefined,
+  );
+
+  /** The line a file keeps for one skill; throws for a file that keeps none. */
+  const entryFor = (file: SkillExclusionFile, skillName: string): string => {
+    if (file.renderEntry === undefined) {
+      throw new Error(`${file.filePath} lists no skills`);
+    }
+
+    return file.renderEntry(skillName);
+  };
+
+  /** The vendored files these skills install, as the command lists them. */
+  const vendoredFor = (skillNames: string[]): string[] =>
+    skillNames.flatMap((name) => VENDORED_SKILL_PATHS[name] ?? []);
+
   /** Writes a lockfile declaring exactly these skills. */
   const setLockedSkills = (skillNames: string[]): void => {
     fileContents.set(
@@ -90,7 +109,10 @@ describe(SkillExclusionsCommand, () => {
         [
           "# hand-written content above",
           startMarker,
-          ...skillNames.map((name) => file.renderEntry(name)),
+          ...(file.renderEntry === undefined
+            ? []
+            : skillNames.map((name) => entryFor(file, name))),
+          ...vendoredFor(skillNames).map((glob) => file.renderPath(glob)),
           endMarker,
           "",
         ].join("\n"),
@@ -144,6 +166,7 @@ describe(SkillExclusionsCommand, () => {
         "configuration/markdownlint-cli2.config.jsonc",
         "configuration/.prettierignore",
         "configuration/cspell.config.yaml",
+        "configuration/eslint.config.ts",
       ]);
       expect(SKILL_EXCLUSION_FILES.map((file) => file.tool)).toStrictEqual([
         "Linguist",
@@ -151,18 +174,24 @@ describe(SkillExclusionsCommand, () => {
         "markdownlint",
         "prettier",
         "cspell",
+        "ESLint",
       ]);
     });
 
     // A `#` marker in JSONC is a syntax error, so the markers cannot be shared.
-    it("delimits the JSONC file with // and every other file with #", () => {
-      expect(
-        fileNamed("configuration/markdownlint-cli2.config.jsonc").commentPrefix,
-      ).toBe("//");
+    it("delimits the JSONC and TypeScript files with // and every other file with #", () => {
+      const slashed = [
+        "configuration/markdownlint-cli2.config.jsonc",
+        "configuration/eslint.config.ts",
+      ];
+
+      for (const filePath of slashed) {
+        expect(fileNamed(filePath).commentPrefix).toBe("//");
+      }
+
       expect(
         SKILL_EXCLUSION_FILES.filter(
-          (file) =>
-            file.filePath !== "configuration/markdownlint-cli2.config.jsonc",
+          (file) => !slashed.includes(file.filePath),
         ).map((file) => file.commentPrefix),
       ).toStrictEqual(["#", "#", "#", "#"]);
     });
@@ -171,7 +200,8 @@ describe(SkillExclusionsCommand, () => {
     // array's indentation with the trailing comma the next element needs.
     it("renders a markdownlint entry as an indented JSONC array element", () => {
       expect(
-        fileNamed("configuration/markdownlint-cli2.config.jsonc").renderEntry(
+        entryFor(
+          fileNamed("configuration/markdownlint-cli2.config.jsonc"),
           "tdd",
         ),
       ).toBe('    ".agents/skills/tdd/**",');
@@ -181,7 +211,7 @@ describe(SkillExclusionsCommand, () => {
     // sequence's indentation, quoted because the glob starts with `*`.
     it("renders a cspell entry as an indented YAML list item", () => {
       expect(
-        fileNamed("configuration/cspell.config.yaml").renderEntry("tdd"),
+        entryFor(fileNamed("configuration/cspell.config.yaml"), "tdd"),
       ).toBe('  - "**/.agents/skills/tdd/**"');
     });
   });
@@ -269,7 +299,7 @@ describe(SkillExclusionsCommand, () => {
         resolve(jsonc.filePath),
         [
           "# installed-skills-start",
-          jsonc.renderEntry("tdd"),
+          entryFor(jsonc, "tdd"),
           "# installed-skills-end",
           "",
         ].join("\n"),
@@ -286,7 +316,7 @@ describe(SkillExclusionsCommand, () => {
 
       fileContents.set(
         resolve(jsonc.filePath),
-        [startMarker, jsonc.renderEntry("ask-matt"), endMarker, ""].join("\n"),
+        [startMarker, entryFor(jsonc, "ask-matt"), endMarker, ""].join("\n"),
       );
 
       await command.synchronize("check");
@@ -320,9 +350,9 @@ describe(SkillExclusionsCommand, () => {
 
       await command.synchronize("write");
 
-      for (const file of SKILL_EXCLUSION_FILES) {
+      for (const file of skillFiles) {
         expect(fileContents.get(resolve(file.filePath))).toContain(
-          file.renderEntry("tdd"),
+          entryFor(file, "tdd"),
         );
       }
     });
@@ -340,11 +370,11 @@ describe(SkillExclusionsCommand, () => {
 
       const written = fileContents.get(resolve(file.filePath)) ?? "";
 
-      expect(written.indexOf(file.renderEntry("ask-matt"))).toBeLessThan(
-        written.indexOf(file.renderEntry("grilling")),
+      expect(written.indexOf(entryFor(file, "ask-matt"))).toBeLessThan(
+        written.indexOf(entryFor(file, "grilling")),
       );
-      expect(written.indexOf(file.renderEntry("grilling"))).toBeLessThan(
-        written.indexOf(file.renderEntry("tdd")),
+      expect(written.indexOf(entryFor(file, "grilling"))).toBeLessThan(
+        written.indexOf(entryFor(file, "tdd")),
       );
     });
 
@@ -377,7 +407,7 @@ describe(SkillExclusionsCommand, () => {
       await command.synchronize("write");
 
       expect(fileContents.get(resolve(file.filePath))).not.toContain(
-        file.renderEntry("tdd"),
+        entryFor(file, "tdd"),
       );
     });
 
@@ -406,7 +436,7 @@ describe(SkillExclusionsCommand, () => {
         [
           '  "ignores": [',
           `    ${startMarker}`,
-          jsonc.renderEntry("tdd"),
+          entryFor(jsonc, "tdd"),
           `    ${endMarker}`,
           "  ]",
           "",
@@ -423,6 +453,89 @@ describe(SkillExclusionsCommand, () => {
       expect(vi.mocked(writeFileSync)).toHaveBeenCalledTimes(
         SKILL_EXCLUSION_FILES.length,
       );
+    });
+  });
+
+  describe("vendored files", () => {
+    const impeccablePaths = VENDORED_SKILL_PATHS["impeccable"] ?? [];
+
+    it("names the files an installed skill writes outside .agents/skills", () => {
+      expect(impeccablePaths).toContain(".github/agents/impeccable-*");
+      expect(impeccablePaths).toContain(".claude/agents/impeccable-*");
+    });
+
+    it("lists each of them in every file, in that file's own syntax", async () => {
+      setLockedSkills(["impeccable", "tdd"]);
+      setSynchronizedFiles([]);
+
+      await command.synchronize("write");
+
+      for (const file of SKILL_EXCLUSION_FILES) {
+        const written = fileContents.get(resolve(file.filePath)) ?? "";
+
+        for (const glob of impeccablePaths) {
+          expect(written).toContain(file.renderPath(glob));
+        }
+      }
+    });
+
+    it("lists none of them while the skill is not installed", async () => {
+      setLockedSkills(["tdd"]);
+      setSynchronizedFiles(["impeccable"]);
+
+      await command.synchronize("write");
+
+      for (const file of SKILL_EXCLUSION_FILES) {
+        expect(fileContents.get(resolve(file.filePath))).not.toContain(
+          "impeccable",
+        );
+      }
+    });
+
+    it("leaves a skill line out of a file that already skips .agents/", async () => {
+      setLockedSkills(["tdd"]);
+      setSynchronizedFiles([]);
+
+      await command.synchronize("write");
+
+      const eslint = fileNamed("configuration/eslint.config.ts");
+
+      expect(fileContents.get(resolve(eslint.filePath))).not.toContain("tdd");
+    });
+
+    it("renders each path in the syntax of the file it goes in", () => {
+      expect(
+        fileNamed("configuration/cspell.config.yaml").renderPath("a/b-*"),
+      ).toBe('  - "**/a/b-*"');
+      expect(
+        fileNamed("configuration/eslint.config.ts").renderPath("a/b-*"),
+      ).toBe('      "a/b-*",');
+      expect(fileNamed(".gitattributes").renderPath("a/b-*")).toBe(
+        "a/b-* linguist-vendored",
+      );
+    });
+
+    it("fails the check when a file misses one of them", async () => {
+      setLockedSkills(["impeccable"]);
+      setSynchronizedFiles(["impeccable"]);
+
+      const cspell = fileNamed("configuration/cspell.config.yaml");
+      const content = fileContents.get(resolve(cspell.filePath)) ?? "";
+      const [glob] = impeccablePaths;
+
+      fileContents.set(
+        resolve(cspell.filePath),
+        content.replace(`${cspell.renderPath(glob ?? "")}\n`, ""),
+      );
+
+      await expect(command.synchronize("check")).resolves.toBe(false);
+    });
+
+    it("passes the check when every file lists all of them", async () => {
+      setLockedSkills(["impeccable"]);
+      setSynchronizedFiles(["impeccable"]);
+
+      await expect(command.synchronize("check")).resolves.toBe(true);
     });
   });
 

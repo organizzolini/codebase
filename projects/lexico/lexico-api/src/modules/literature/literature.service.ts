@@ -12,8 +12,8 @@ import {
 
 import { createEmptyConnection, paginateQuery } from "./literature.utilities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { PaginationArguments } from "../search/pagination-arguments.entities";
+import type { Connection } from "@codebase/interface";
 
 /**
  * Service for author, text, line, and token literature resolution.

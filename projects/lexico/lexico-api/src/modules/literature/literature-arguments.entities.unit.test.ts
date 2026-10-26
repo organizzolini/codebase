@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createConnection, createEdge } from "../../lexico-api.utilities";
+import { createConnection, createEdge } from "@codebase/interface";
 
 import { AuthorArguments } from "./author-argument.entities";
 import { AuthorLookupInput } from "./author-lookup-input.entities";

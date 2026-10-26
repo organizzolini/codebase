@@ -6,9 +6,8 @@ import {
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { createConnection, createEdge } from "@codebase/interface";
 import { Author, Line, Text } from "@codebase/lexico-entities";
-
-import { createConnection, createEdge } from "../../lexico-api.utilities";
 
 import { AuthorsResolver } from "./authors.resolver";
 import { LinesResolver } from "./lines.resolver";

@@ -14,6 +14,9 @@ yarn.lock
 # 💾 Nx cache
 **/.conformetry
 **/.nx
+
+# 📚 OpenWiki output, regenerated on every refresh
+**/openwiki/**
 # Nested agent worktrees are skipped through `.gitignore`, which the root
 # target reads too, rather than here: this file resolves from `configuration/`,
 # so only an absolute-path pattern would match, and that ignores every file of
@@ -119,6 +122,10 @@ projectStructure.cache.json
 **/.agents/skills/nx-plugins/**
 **/.agents/skills/nx-run-tasks/**
 **/.agents/skills/nx-workspace/**
+**/.agents/skills/ponytail/**
+**/.agents/skills/ponytail-audit/**
+**/.agents/skills/ponytail-debt/**
+**/.agents/skills/ponytail-review/**
 **/.agents/skills/prototype/**
 **/.agents/skills/receiving-code-review/**
 **/.agents/skills/requesting-code-review/**
@@ -141,6 +148,9 @@ projectStructure.cache.json
 **/.agents/skills/wizard/**
 **/.agents/skills/writing-for-agents/**
 **/.agents/skills/writing-skills/**
+**/.claude/agents/impeccable-*
+**/.github/agents/impeccable-*
+**/.github/hooks/impeccable.json
 # installed-skills-end
 
 # Callidescope writes this report and then checks the file back against what a

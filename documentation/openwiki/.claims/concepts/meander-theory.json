@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:865f2fa1f45e3a773f3b1e352d31ed318c0f9a778a80d2c6d594f9fad6344b07",
+  "claims": [
+    {
+      "id": "claim_8498879335d6468c8361fef526e66841",
+      "statement": "A Meander is a single generated Greek key/fret ornament — a band of ink drawn from a Code, rendered as one SVG document.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L87-L90",
+          "version": "repo-lines-v1:sha256:70d8bd70f372c7831fc53e48dfa7093f24818ce668a5f37d6867513856eb9d2c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzlkMTlkNDFiZjllYWQxMTUxODU2OTA1NDY4NTkzYzI4ZmExNDVkNTI4ZDMwMTE5ODM0YzE5MmI1OWVmOWJhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDE2YzIxYjdjN2Q5ZWZmNWQ5MzhmNDg1MmFmNmVjZjM2NjM1YmJlMzY1MWVkZmJkYzEzNjkwNjdiNDk2N2FhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjViMWFkZDk5NzEyY2JmOWUyYWNmNTRmZDM0Y2E0YjZkYjJmNzU3ZTdmMGQzZGQ1MDc3YmE5Y2I5MDQwY2VhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODc2NWJmY2RjY2NmMTVlMGRkMjkzNjFmMDRiNDQxNmI0ZGQ4ZWY4ZjIxZTZmMTBiMTkwOTg1MTU2ODNkNGVmZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a5504941fb7a436cb0d83f450f3d812a",
+      "statement": "A Code is the direction bits that are a meander: one hexadecimal digit per interior lattice point of one true repeat, read row-major, worth 8 north, 4 south, 2 east, 1 west. A meander is its Code — nothing else identifies it.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L92-L97",
+          "version": "repo-lines-v1:sha256:d45d7c246316cffc75cc3b05ea031980a69606dad7a143a0956e660f0ab14832:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDE2NzQyMTFjM2NmZDI4MWYyMmUxNWMzZGMzYzBiMDM0YmNhYTY2YjBkMTQ1YWQzN2FlOTZlY2RlMTMzNzc2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTU3MDMyNzkwMjA4NTAwOWU1OWM1ZGQ0ODU0NzYyMDczZGYxZGVhNzMxZWJkNDA4Y2U2MjUwNWU2NWE3ODcyZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGYwNDQzNTk0NTJjYjRmMjFjODRhZDAwNzU0MmQ0YTExY2I5Y2RkYjBjOGEyMjMxN2JlMmY4NDRiOWE2Y2NkNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWY3NjJhNzAwMDdhMmVhOTYxOTRiNTFhOTBiYTJmZWQ3YjEzMzhlYjQ2MDlmNzFiMWQxODY5OWMwMGQ3MjZmZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ce97775a46a41ed9b3353c9b3979501",
+      "statement": "The Code format uses 4-bit direction encoding per lattice point: bit 8=North, 4=South, 2=East, 1=West, read row-major at index row * columns + column.",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts#L181-L191",
+          "version": "repo-lines-v1:sha256:2319eb98237a5ebb279f419f03e5401ae7dc5e8259fdbcd0c3bf612f3fdf87ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3MDFhYjc3NmYzMDE1NmU4YjFjZTk4YzVhNjM3OGJmNTg5YmM2ZGYzNDM5YmRjOGFmZDU3YWQ5OTZlM2M4YzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlM2JhODU5MzJmOWI4Y2M4OTFkM2JlMWYxMGRkZWU0MjA2M2YxZjk2Y2QwYmYxODgyYmI5ODEyMzFhMWE1YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3NWExY2Q4ZDU3MTE2NjE2YmYwZWM0YTBlYTE0NmU3YzI4YmQ4NGJkMzBhOWYyZTU0NmZmNjBkMDhhZmRlYzYifQ"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts#L313-L326",
+          "version": "repo-lines-v1:sha256:bee950fa92cb5165c38a4a083000211b7cb6cca8605c7ca371e42295105222e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhMTdhOTM2NjgxYmNhMzRjY2I4ZDE5MGM5OWRlOTU3NGI5NmRlMjExNGY4ZTQ5NmExYTQ3ODhhMDkwNGY4OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhYTM2YzE2YjU1NTkxNGFjZmE2ODlhZWJlYzA0NjA4OTc0ZjhhODMyYjA3NTc5ZGFiMzQwNGRmNTMyNjNkNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlMjhmZmQ0OGQwY2QwMzY0NTljOGI0NmMzODYxYmYyOWQyMTliZTc3ZWJmNTQxZDI2MmMxMTNlNjMwYTk3MDUifQ"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts#L64-L72",
+          "version": "repo-lines-v1:sha256:0d9e5b20d0608009777b7948eedd65d49dd473f9a0bdb01c12da4a71cb1b35d8:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQ4YjIwYTM4ODQ4OWQ5ZWFkODYxMjM2OTZlZGI0NDU0YTUyMGEwMjVkN2E5MTdmZDA1OTM1ZDEyNmNhNmVlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTUzY2RmOWQ2MTllNzYzZmVkMzY4YmY4MzU3NzU2MmUzZjkyNjc0MmMyYTA5N2FkY2E4NWJjZjcxZWYyZDYxYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWFlZGVmOWE0MjhjOWU0ZmM5NmJmNGEzMGY2MWJhOTQ2YzdhOWI2OWY1ZWM2MzQ4MWQ0YmZiZWM0MmYzODg0NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a1b28956604d45a8b3830f86d7941cc1",
+      "statement": "A Phase is a cyclic rotation of a Code's columns; the same band cut at a different column is the same meander in a different phase.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L99-L103",
+          "version": "repo-lines-v1:sha256:75d7046dc863f7c6d6643032b1609e9efa13ff88891da2663d4345b23e0781fc:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjVmN2ZlM2Y4MmMyNGNmNDRhMTc3OTQwYWUyMjI3NmE0ZWM2NTUxMTJmYWZkMzNhYzZmOTg4OTU4ZWJlN2NlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjlhMWIyYWUyZTE0ODU0ODViYTUxMDAxMDk2MWRmYWQwMWE0OTkyNDdiMWM1ZjE0NWRmZGQ5NjFhMTkxN2FmOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDRkYzc5NTVkMjJlZTVkZDJkYzE5YjUxOWI2NmViYjBlYzFhMWQwMzBjNjE5ODg0ZDI3YzYzNDVlMWViYzdhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGJmNjkwN2NiMzk2NDExNmY4ZGQyMTkyNzliM2E2YjQ5YmZhNzE0Mzk4ZDdhNDJhNjcyMjFjMjhhZDc1YzQxMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_105d2ee323dd414ab4e3370cc8fad039",
+      "statement": "The canonical phase is the rotation that minimizes tileCrossingComponentDeltaCount (formerly seamComponents), breaking ties by lexicographically smallest Code.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0014-give-every-meander-a-canonical-phase.md#L12-L18",
+          "version": "repo-lines-v1:sha256:d12ae9128c8fa690b6fa5985999b68cd0055956f40fec87e9ddee128c07d9131:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2QzZGJjNGU3ZTdjYmU1ZGRjODkxYjA4MDcxMmY2MzUxYzk0YjcyOGVjOGJkODU1NmY0NjEyYjA3MGQyN2I0MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmM3MjAzMmNlN2I2YTJlZWFmOTJlYjA1MWZjMTVhYTkzODhmN2JkYTZmY2M5N2QzZjJkZWQyY2E1MzBkMGJmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGJhYmQzMGFhMDQ2ZWFmZDQzYjJhNTA1ODg5ZGY0NGYzODJhYTc1ZGJkMGRjZjRiOThkZDZiMTk4NWUyNjM1MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzVlMDVlNTQxMWRhMjQwYjY0NzdkMjkxYzU2YWE3MWFhOTkyZTU4Yzk3OWMyYzU3ZGE3N2ViNjc1Zjg1YTFjMyJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts#L139-L169",
+          "version": "repo-lines-v1:sha256:867c27010e17527eefd504cb86350129a2acc961d3a24c172f84bdb60531184d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxMGNlNzMyOGI1MTE3OWRlMzI2OWI3MjMwMGNhYzAxYmVjNTkxYWZjMzFhZjhmYWY5NjljY2Q0NDBmZTUyYzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_34c31effe9724390ba876135e9015165",
+      "statement": "A Tile is one repeat unit's worth of the lattice — the grid of points and edges a Code is spelled into.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L156-L159",
+          "version": "repo-lines-v1:sha256:06fd2554cf13d95a72f17e00194e741ab6c3432a455d5d04ac9182333eeab54f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGIwNWFiYTM4NGVkYzEzNjBlM2UwMDdkMjQ3ZWRkNjU4NmZjNDIyNTE1YjRmMTRiMWJhMDM3MWE2MzFiOGE4OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VjODU4NjU0N2Q3OWEzZjdlN2MyNjdkNjg2NjlmNTk5ZGU1ZTQ0OTFjZmM4ZGUzOGYxNDBiOWJhNjVkYTBiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGVmZTg4ODkwY2I5MDE4MzA4OWIyNjE3ZmI4YWYyZDc0ZDEwYTdmZWQ2YTRmZjMzNGM0OTVkY2Y1Mzk3YTQ5OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmRmYjZjMGQ2MGUwMjU5MjkwZDdmYTlmYzI1YTdjZmMyMGZjODcwMjUwNzNhMGVlY2MwYjI2MWY5OTlkNWE1ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_30f9bdf0a5b94f529f67da2bc5fb84aa",
+      "statement": "A Tile crossing is the join where a tile's last column meets its first when a Code is read as a repeating band; what crosses it (stranded end, junction, closed loop) is measured rather than assumed.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L105-L110",
+          "version": "repo-lines-v1:sha256:85ac70ea9c8cc226a2ea5eca76ca0b3b08a503e441d94ab0ebd442eb844dc393:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWNlNWE5ZjUxODMyYmU0ZjFiMmY3YjNhNTc1M2E4ZGRkYWY3Y2RhMDI4YmFmOGExYWVlM2VjZDI5MTNhMTU5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjNmMWYwODM0YzM0MDUzMTQ4NGZmMGIzYWVlMjVlNTlkNWFmZTc2ZGNmYzJmYWM2NDJkMTAxZTVkM2YxNzg3ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjY1NTczZDBhYzRjOGNhM2JhMDEyNWUyMjkxZWNmMjJlYzBiZGJmNDJkMGNmYjk1MDZmNTU5NTg0MmZkYjVmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmRhNjBjMDA2ZmIyNzE0YzdjZGQ2MzViZWFlNjk4NWY2OTYzNWE1NDAwZWY5NmZmMTUxZGViN2EzMzRiNzI4YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_13e093d1b6c3486baad6d7f733e6252a",
+      "statement": "Tile crossing is measured by three path-tier characteristics: tileCrossingCount (edges added by wrap), tileCrossingCycleCount (loops added by wrap), tileCrossingComponentDeltaCount (components merged by wrap), each computed as the difference between cyclic band and lone tile graphs.",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/path/tile-crossing/tile-crossing-component-delta-count-characteristic.service.ts#L11-L52",
+          "version": "repo-lines-v1:sha256:7e9a1368fdeb9af6dd8f7e236f6abaf4c2c3241eb723577e0b6a5b4414e3ed43:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYTFlNjk4ZjcwNGY3YjI5YWIxNTY1YzM0NTVhNDBkNjY4NjVkZGYwMzk5NjU2Njg2Yjg0MmVhMzQ1MDIyNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/path/tile-crossing/tile-crossing-count-characteristic.service.ts#L11-L54",
+          "version": "repo-lines-v1:sha256:5d5b2d9a103243d7b11149efe13bc7512ea58fce7fa6029a4905932a022229b4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYTFlNjk4ZjcwNGY3YjI5YWIxNTY1YzM0NTVhNDBkNjY4NjVkZGYwMzk5NjU2Njg2Yjg0MmVhMzQ1MDIyNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/path/tile-crossing/tile-crossing-cycle-count-characteristic.service.ts#L11-L52",
+          "version": "repo-lines-v1:sha256:4f244acf455c29ac00684e721add7ebb4f08d8e09dcd734a905885ba645271cc:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYTFlNjk4ZjcwNGY3YjI5YWIxNTY1YzM0NTVhNDBkNjY4NjVkZGYwMzk5NjU2Njg2Yjg0MmVhMzQ1MDIyNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_946f28888d03456a811590713a0336f2",
+      "statement": "A Characteristic is a measured structural property of a meander, read from the Code's digits or by walking the tile; characteristics are an open, growing set — adding one changes no other module.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L112-L116",
+          "version": "repo-lines-v1:sha256:4ab45c8cadcabadeed9909b829b1a1f1a47ade670eeeabd2827b775396ffac51:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE1MjRmODBmMjkwYmVkZmM5MzUzMzI2ZWY3NzBhMTI1YWI1NDM2MGZkODE1OWU2ZjE1ODM1YjNhYTRhZjY5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWE4NmI1MmRiNzYzMTFkYmVlNmY1NjE4NDM5MDczMWU3YjcwNmFkMzM4MDQ2YmExNTMzN2ZlODJiYzM3Y2M0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZiYmFkOTE2NTE4YWY1YWUxYjAxODdkMTdmMmI3NGVkNmEyY2UxYTA0ZDg4YzIzNjUxYzFjODFkNGMwZGQwMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGM0ZTUzZjhhMTRjYjAzYzUxZjZlNDk0M2Y5MDM0YjJiZWQ0NzgzYTU0OWIwNGE2MmY2MDBmMzZlOWZkN2U1NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_729cc4fe928f4708b8957dba8475fa28",
+      "statement": "Characteristics are organized in three tiers: submatrix (local grid windows), path (walk ink as graph over cyclic band), and compound (combine other characteristics' values).",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/characteristics.types.ts#L31-L37",
+          "version": "repo-lines-v1:sha256:91521f63979ebe196861399534ebded6c4de7babc88a74d81701a7fedc23cc10:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzQ2MzYzNDI4ZDJiMDYyYmMyYTA4NWVmNGM1MTlkMGEwMjk5ZmI1ODk4MGU3Njk2MDQ0YjQ4NjcxM2Q1MjQzNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTIwNDBlMDk1YTk0ZTJhZGE3NGU0MjFmMzcxODc1MWE5MWE4MTBiZmQ2NmY0OGY0ZTkzOWM3Yjc0ODBlYjY3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjhmNmMxOTlkNjkyYzk2ZWE5OWY5NDBlNzgwNzU0ZTcyMTllMTg2MmRjNWRhZDY2NDNmMzk1ZWY3MmQ5MmUyOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_094927facff54356988782fe2b63a1fa",
+      "statement": "A Pattern characteristic is a compound boolean characteristic built only from other characteristics — a named shape such as a whirl or arcade; a meander can hold several at once or none; filtering is by characteristics, never by a stored label.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L118-L122",
+          "version": "repo-lines-v1:sha256:bb4f520ed9b450e82fccb3bdd6012b3cfc1875ade949fd085fff9a626e85fca4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjIwY2JlYjFlODQ2YmQ1NjI5M2MwYWY0N2U1N2U4ZjhkOTIyZjQ4MzQ4OTBhOTA5N2U3NTA3Y2UwM2ZlYzM2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTNmMWE3NGViNzBlM2ZiZTg3MWZlZTc0ZGI1YjdmMmM1OTFiNTNjNGQ4OGIyZGU0NjNjMzA1NTUzY2FlMjZiOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDZhNmUxNzE5NmQxNWIxYWM0YjMyZmU4NzM1Nzk0N2U3N2YyZTRlOTk2YjgxZGJiMGJmMjc5MjFhMTkyYzYzMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzA0Y2IxZTNiOGIzODEyZWNjY2ZiNGZlNTczMGE5NTg4YTYwNWNlOGY2YWI5MWM5NGE2YjJiOTdlYmUwMTcyMyJ9"
+        },
+        {
+          "resource": "repo://documentation/adr/0023-filter-meanders-by-characteristics-alone.md#L17-L22",
+          "version": "repo-lines-v1:sha256:328f3d007b596055ba929ae096e1387ef01fa4574975b909dacbfba9dfd42341:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTA3OTY2MTdjMTZmOTBmMzc2MDg2MmZmZjlmNmRkOTc4MDM3OTIzMTNiZTVlZDI4ZDQ0OWE2MWRhNTdjN2EzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRiNTYzNTMwODMwNzFlZmRhYjQ2OGEzMDBjMTI5N2Q4MzJiZmIxZDBjNzY5ZTgwNmI5MzkwYTY4MTQ1OWI5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IxNTdhNmQyNzY3ZmY3ZjQxMzNlZTI3NjUxMzY3YzZmZGZmN2FiNGZkOWJhM2NiNDI2MmUyYWE0NDkwY2NhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY3MzI4OWRlMWJiNWUzYTg0MzRjZmYzNjE2NzM4Zjg1ZTdkNDMyYzkxMzZjYTgwOTQwYjQ1OTgwYThhZWI4ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7ad514b041ce44439dce8df09f6ab36f",
+      "statement": "The 17 current pattern characteristics are: isArcade, isBars, isBoxes, isChain, isClasps, isComb, isCross, isDots, isDoubleChain, isFork, isLines, isMesh, isParallel, isPureTree, isSnake, isSwirl, isWaterfalls, isWhirl.",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/characteristics.constants.ts#L320-L339",
+          "version": "repo-lines-v1:sha256:44091754b492f65840888ac264ec6357e4a4ba4789869770d40592d940d452f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYmZjZDAwMGNjMTBkMTAwMWFiYzRkYzg1ZWFkYjAzOTM3YzJhZWUwY2IzZTRiN2Q0YjE2ZWU4OTNmMDhhZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NTE5ZjdkYzU0N2Y0Mjc0ZTdmNTRlMzk5ZmY5ZTljMTA4NzlkYTdjZmVhNTRiYmZmZTM3N2JjMzI3MmMyY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YmUzNjg4Njk2NjQ5NGE5YjllNmUxYWUxNjUwMzAxZTI5MTcwODVhYmVjYzFjZTk0YmEwNWZkMDA4ZmQyNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0OTViNjRkNzkzNDAyYTFiM2JkMDFlMThhNTU4ZmVjMGNjZjFkMDEwYTVmYjQxOTZkZmFjNTkwMDcxNTllOGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ffd7e34d30c44b539aa4c7bf56a9bc50",
+      "statement": "The isChain pattern characteristic is defined as: maxMonotonicTurnLength - tightestTurnCount >= 4 AND tileCrossingComponentDeltaCount == 1.",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/compound/pattern/is-chain-characteristic.service.ts#L35-L56",
+          "version": "repo-lines-v1:sha256:d29a47e27b5f9ed45b4c7685af71d045159f375e54aafcd752bf2fe457d95400:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyOGE5NmZhMjVkZmNhNGU1OGJjMjllNjU2Y2IzMzY3MTgzY2QwZDI5ZWNhNmM0YWMwMmJjN2RkMWVhYmUxOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZTQyMDhjZDZmZmI4YzRhMzU0N2IyZjU0YWRhMTk5NzhjM2YzNjVlNzhmOTUwMmVmNTE0NWNkZDJhYTg1NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzZDZkZjI5MTUzZmFiMjRmZmYxZGY3ZWYzZDI2ODZhNjhiMjU4OTc3YzkyYTViNDUzOGRkNTI2ODA0YTIzYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0a493045ba524ca78e88fb098c132b2f",
+      "statement": "Rows sets grid density by dividing fixed canvas height into finer subdivisions; grid unit = canvas height / rows; stroke width and offsets derive from grid unit; channel is exactly one stroke width wide everywhere.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L161-L177",
+          "version": "repo-lines-v1:sha256:9629020a77dafd61f92d1cfbf9a5512fd3f3654caa9b4f626511c84cba059775:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1Y2M5NDdmMDNiY2NhY2FhZWRmODNhZWQwZjk1ZDk3ODIwYWJmYTk3OWFiY2VmY2MyNmI1MjY3YWVjYTdjM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZDljNTFhNjE5YjExMTMxNDJhNTcwOThkNWZlNmZkN2JlMDNjNTNhNzMwYmI4MzU2MzM1MDRjNzA3MDczMjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiNGU0ODM3YjI1YThmZDlkNDBiNjdiZTYxNGQ3OGExMmRkMGVmZWRiYWU2MzM5ZjUyOTA5ODgxOWFiNmY5YzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4YzI1OGRmYWRhMDAzNDJmMWI0NGU1NWZkMjllYjc0YTAwM2JlNjFlODIyYTI2NGQzMjA5MDE4NGMzOTc2NzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d990cb0c409e467d97040cf3adeed043",
+      "statement": "The cross family draws interlaced crossings by breaking the under-strand exactly one grid pitch either side of the junction, leaving a gap of exactly one stroke width to satisfy invariant 2 (channel width) while relaxing invariant 4 (no X-junctions).",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md#L27-L32",
+          "version": "repo-lines-v1:sha256:45267191b6f874a551b54c69f647316ffd48460b37fc93974c03da9cb9a38ae6:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E5NDY0ZjMxODkxN2JkMDVmN2Q4ODEwMmU3Nzk3OTFkMjQ0MjUzNTFkZmM5NWIyZmI2NmI2MGI3ZDkwNDFjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTAzYTAzMzQwZjA4N2Q1N2I2MGE4NGJlNTk1OGQ0ZGMwZTllY2EwZTgzM2MwMDhkNGVjMzFkMzIxZWI3ZTQ1NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGNmNTMzYTUzNzlkZWE1NzE2ODNhZDQ2MjhiOTAyMTUzNDFjMmFlMzgyZmY1Mjg4YTI0NTAyZDA4ZmVlNWFkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjZkYTQxMWE4NjdjYzA0MmJlZTlkMTcyM2JmMjliY2FlMDkwYzZhODQyYTZhMmFmNWU1YmVhNjZmYmNhZDA0ZiJ9"
+        },
+        {
+          "resource": "repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md#L56-L70",
+          "version": "repo-lines-v1:sha256:adfab3d73d52cc6a8950cdb0376857c3b1fbb4559a2d7091145218f9b2b3c301:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNDEwYmFkNWJlOWI0MDczYzMwNWZhMDc0NDlkMjFmYmU3ZWYwM2Q0YTg1NWJkNjBhNjFkZDA5YTBmNDc5MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyYmIwYjdjNDZlYjZhNGJjMjcwNTFlNjFjNjQyNmM4M2JlZmNhZTZhZWM3NzJkOWUzZWY0Y2QyNDNiNjQ4NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1NTA4YjU0YzEzYWFmM2NjNTY0MzU2M2ExNGE5NmQwZTNmMDdjZTRmNDYyZjRiYTJiNWY2Y2FiYjhjZjM0NjQifQ"
+        },
+        {
+          "resource": "repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md#L8-L12",
+          "version": "repo-lines-v1:sha256:28e43dce6b0f316f445f009e8968e46033133f0188a52f7dc21cb6a43eefb66e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjY0MWIwNWRjYWZhNzQ5NmYwZGIxMTdjYzg5ZDY2ZGRhM2EyMjVhZmI4MmI1ZWM4N2U0MTMxNjUyN2Q0ZDMwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODFiYzgwODgzMWY0MTE1MjY2YjcwNzY2MTU5NmUyYWZkYjU1YThlMGM0YTQ1OGZmOTVlNzBlNzQ2ODBhZjYwYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjJiZjg0ZmVlMjM1MTY5MzEwNWMwM2ZiM2UwYzU5NzY0M2EyZjM3YTU5OTgyY2ZkYjk4Zjg5NTFkZWFlNTQ2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWFlNzU1Y2FlYmI2ODNlZGExY2EzNWY5MDFjOWVmNmY1YzI2ZjRiNjAzYzBkY2U0Mjk1M2Y4NzU5YjJlMTQzNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a02007632fca42a4bc6273f8ac89d262",
+      "statement": "Interrupted mode removes the crossing from the ink graph: solid mode reports inkXJunctions: 12 at 6 repeats; interrupted reports 0 because breaking the under-strand adjacent to the junction drops the lattice point from degree 4 to degree 2.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md#L56-L64",
+          "version": "repo-lines-v1:sha256:00cac30b56569ca0df8a7b8cba34831f9c79a838c1f0ec6419b7c41cc2a8ab1b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA0MTBiYWQ1YmU5YjQwNzNjMzA1ZmEwNzQ0OWQyMWZiZTdlZjAzZDRhODU1YmQ2MGE2MWRkMDlhMGY0NzkyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODUyMmRiNzczMDMwZGQ2ZmU4ZjYwZWY2OTY3NjZhODZhODAzMTY5OTAxMmQ1Mzc0NWJkOWE2NGZjMzBiZThiOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWY3MzI4OWRlMWJiNWUzYTg0MzRjZmYzNjE2NzM4Zjg1ZTdkNDMyYzkxMzZjYTgwOTQwYjQ1OTgwYThhZWI4ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmVhNGQ4ZjJkOTljMzVhMjkxZjVmMGZiNWM4YTI1ODZjMTkzMTNiZTdiMDc5ZmExMmM0ZmZkZTU4M2Y4M2FmMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_15f5ee11cc0c4b588d368bcd4f9cec34",
+      "statement": "The cross family cannot be drawn below 6 rows because the crossing sits at floor(rows/2) and the one-pitch break gives up the level either side; below 6 rows the upper remnant collapses to a zero-length run.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md#L76-L90",
+          "version": "repo-lines-v1:sha256:98dae241d8b283f27131419fb23ec567a39beb3be72b92ddca9c5ee5e74f34ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZGNhZDVhODc2ODEyNDdlZDM2N2ZkMzk3ODg5MWRkMjA1YmU1NDczZTQyODIzZDNkNWJiZDE3N2ZjY2U2MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzQwZWM2MmFhYTAzM2UzNzM1ZmExYTFmZDZjMmQ4YzRlZTgwNDBmNDkwYTI4YzEyZDkxOGU5NTI5Y2VkYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmYmNjYjAyMjk0NTBlMWU1M2RkYzRhOTMzZTdlYzY1ZWZkM2RkM2QyMmIzMGI0OTE0YzY2NWQxMTI3OWRlNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NmI3Y2E1MThiODgzZGVmMjk4NjkxYjllODBmNzAwNTQ4ZjEzOTgyZDJmYTAwNThhMjU3NDlmMDA5NWE5ZjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9412e9d8cc34af0b8c682af05eda28a",
+      "statement": "ADR 0006 closes both band borders in branch and parallel families using the MotifService.border hook 'boxes', with the branch figure inset by one lattice row from each rule so rules close the band without landing on ink.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md#L3-L10",
+          "version": "repo-lines-v1:sha256:478a41e76ec9fcb4bb2fc83abf166dc9671842b7476478e6a4bb5d1392f73256:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc1OGZkNzQ0NjNmMDg2ZWI1NjFhNzVjMjA2MmM1Yjc0NmY5NTgzZTFmY2UwMGM4M2M1MDFkN2ZlZGI5N2UxZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmVlYTc1OGFkYzhhNDQzMGUzZTMxOTE0NTAxZDgwMjEwMmQ1MTFkMWZkNGE4ODY1M2YxZTQ1YjE4OTZiNmNlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWYzMTkzMjk4ZTZmZWZhMTM0ZTgxZWRkMWFhZjU3NjcwN2RjNjcyNDAwYWI2OWJiMzY0NzRhNDdhYTliZjJjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmMzMzk1ODFlMjNlZGI2YTFhODc5ODVjNmE5MDk2NGI5YjM2ZTg4ZWFiNjk4NDczZDliNTY0MzRlM2YyYzBlNiJ9"
+        },
+        {
+          "resource": "repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md#L41-L48",
+          "version": "repo-lines-v1:sha256:d7691d956c4a2a0dc1499997cb6e6a85c6dbe1590f8af569f28a1774e5188bd7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDMxOWIwNWU3NWMxZjNkNGI1YmUwMWI0MTA4MDg2Yzk0MGYwNjY1ZWFjMmIzNmY2MzIwZDg4ZmZiN2M4ZjYzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU5OTVmMTk3MWYxZDliNjA4NzUyMzFiMmM2ZTcyNjY4MDNhOGZmOWNjNDc1MWQzOTcxMzQyYTBhZjIwMjdiOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmZkNzFiZDRhYjgyNDc1ZTA0NzY5YjI1MDhhMDcxNTcwYThmYjM2NTkzMjMwM2U4ZWM3Y2RjYjI5NzJhM2E4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2IyMmQwNTg0Yzk5MTdmZGQ5OTI5OTlmZDE2ZmE0N2Q4MWE2YjBiOWQ3ZjBhZWI3ZDA4NGY5ODQzZWFjNjVhMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ea1cc3056c2b43fdb805967935e184b8",
+      "statement": "The initial ADR 0006 implementation ruled borders onto the figure, collapsing all branch modes to one picture and incorrectly recording branch as having given up being acyclic; the correction insets the figure one lattice row from rules, fixing both.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md#L107-L117",
+          "version": "repo-lines-v1:sha256:d58e36113da156a1d56c61738957b35d60156932d25ddb5d6aa0828c652f6eef:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzYWY2ODZjN2NlYTFiNzA2YjE4NzUyYTg3NTNkNjdmN2JkNjYxNDEwODI0MThkMDBiZDM0MWQ1OTRiYTljZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MmQ3N2U4ODc0NzcyNjQ3ZDFiMGY5MzdjNWI0Y2E2NzhjNDllOWRjNDk4MWUwMmYzZDA2Nzk2N2IxMWJlZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5YTRiZTNlNDA0MDc3YTU0MGE3YzlkMTdlYmIxZjk0NTVmYmJlY2NmMWJiOTU2OWRkNDFmMmU1MzcyYmE3NTYifQ"
+        },
+        {
+          "resource": "repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md#L18-L42",
+          "version": "repo-lines-v1:sha256:06a388851664900b25e65a137778e85191b922bf2ed0836095ba6da70c171ebd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhYjE1MzI5MDA3NGMwZDM1NzUwNWFkMDdmODNkZDBjZDM3ZjBmMWVhODBhYTdmNDAzMDQ2NWUzMjczNTRlNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmMmJlMDg5ZTQzM2RmOGZkYTgwOGMxYmI0Njg1NzFmNmRhYzFlMjBhZTc1M2I2YzE4ZmEwY2Q2ZDc4ZjcyY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiMTE1YTczYzc4YTU2NzdkZGYyYzhjMWU0ZDllZDQ4Zjk3MDQwNGRlMmQ5Y2JjMWRhMGQ5ZThjMTUxNDBhM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4OTdhNzA2YzJhNjMxOTRjYjQ2Mjg1NDFmOGJlNDE1ZmVhZTI3OTdkMWM1MjMzZTkzYjYxMDU0Nzg3NjM5NmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a8f15acd44f349cebf258939227d8148",
+      "statement": "Parallel relaxes no-branching under a structural condition: a rule meets a strand's rising end with west, east, and south ink at one lattice point, causing 642 of 786 drawings to fork; the other 144 are serpentine drawings whose flat ribbon is the rule itself.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md#L126-L137",
+          "version": "repo-lines-v1:sha256:b764a6afe7f97772b024e83c08ae009e12987831e8640b4ef756b54297b2bff0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhMzIzNmM4YTgwODAyMTM0YWMzYWJhZjFiNGRmNDExYjcxYzhjY2VjMmNjZjAxMGE1YzQ5MmU5NzEyODhkNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlNzU1MDc3YzU4OWYxYjFlZGMwNDk1MWMzOWEzOWFmOWMzZmQ1ZGVmNGI3YjRhMmY4YTUyYzBjZWIxNzYwNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMTFiODNiOTVjNDRiNjQ5NjUxN2ViZTMyNjdlNzFlMjk4OWE3NTVlYTAzN2JmMGRiMDg3Mzk1YTEwNTViOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5OGU0OTMxZDVlY2M4YzRmZWU5ODlkY2VjNTgyNjAwYzVhODhiOWU4MzU0NTk3NzJhNTM3MDc2NWE2NTU0YWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b3332323b4704e849a2ef300d6b37a1a",
+      "statement": "ADR 0007 addresses every meander by its lattice address: <rows>r<columns>c- followed by hexadecimal digits worth 8 north, 4 south, 2 east, 1 west per interior lattice point spanning one true repeat, read off the rendered document with canonical symmetry class reported.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L34-L41",
+          "version": "repo-lines-v1:sha256:6a23e2000871c403edb4d9a2108bfd5b4329a5ff001a62df4a8ffff6c77da808:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGMxODg1YWM2OGJiZTdiYzEwZDM1NjUwNGViMjliYzUzNjI1YjNmMWE0MzRkMzdhODNiMTAxZjE0ZDBkZDQ1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmUwMDAyMjNjOTNkNWNmMzM4ZmQxNDJjZjI1YmIzMzUxOTNhYjQzNGQzZDE1MmE3MTMwYTkxM2UxNmU0ODhkYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2ZiOGZhYjZiZDg5NDM0NjdjNGQ4ZjQxMjhkNzg4YTczMzMzMjdjYjFmYjE4YjhlZGM4MTNjNmUwNWUwNzY3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTIwNmJiYjNlMjg4MThkY2I4YzQwN2M4ZGEzOGM0NmNhNzYyYjY3ODc2YjkzOGNkZDEyZGEzN2I5ZjExM2M0ZSJ9"
+        },
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L5-L10",
+          "version": "repo-lines-v1:sha256:68cc06e4b84a25365906c2000e70393758162bc811ead80c948559ca2668e229:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNmOWJkYWQwMWU2NWYzNjNiYjc2YWUyNTE2YjA2ODNmYzljMjAyMTc1OGUyZTY1NjFmNDMxYWJjNTY1NjljZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmM1YzFlMTI4ZGNhNmU4MzVmYmQ0YmQ2Y2VlZjg5MWU3MmI1YjdmODg4MWRkODM5MDMyNzU4NGE5NGFhMjNjZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDdiZWE3MmE2MTFmYTA3ZTdjZTBlMjQ2Zjg2YzhmNzgxNWUzYzFiMDk0NDVlNTMyZGU5MWIzMDRmYzcyOTZkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzllZjk2NThlZmFmOGZjMWVjZGMxMzdjZWEwZDVmYjYyZTRhODYzMzk4NzZmZGFmNDhkMzg0ZDc2N2FhNmVmZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3da71c4c32694dc390043003d452b251",
+      "statement": "Lattice addresses enable cross-family comparison: 9,877 committed drawings address, and 149 combinations of row count, span, and canonical class are drawn by more than one family (e.g., mosaic and negative share 92).",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L34-L41",
+          "version": "repo-lines-v1:sha256:6a23e2000871c403edb4d9a2108bfd5b4329a5ff001a62df4a8ffff6c77da808:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGMxODg1YWM2OGJiZTdiYzEwZDM1NjUwNGViMjliYzUzNjI1YjNmMWE0MzRkMzdhODNiMTAxZjE0ZDBkZDQ1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmUwMDAyMjNjOTNkNWNmMzM4ZmQxNDJjZjI1YmIzMzUxOTNhYjQzNGQzZDE1MmE3MTMwYTkxM2UxNmU0ODhkYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2ZiOGZhYjZiZDg5NDM0NjdjNGQ4ZjQxMjhkNzg4YTczMzMzMjdjYjFmYjE4YjhlZGM4MTNjNmUwNWUwNzY3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTIwNmJiYjNlMjg4MThkY2I4YzQwN2M4ZGEzOGM0NmNhNzYyYjY3ODc2YjkzOGNkZDEyZGEzN2I5ZjExM2M0ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac9546e1101a49679999547313c75b74",
+      "statement": "Address at the true repeat, not the family's pitch; the span is a whole number of pitches declared per modifier in MODIFIER_REPEAT_PITCHES. Five modifiers (spin, spin-flip, edge-flip, plied, stagger) have true repeat exceeding pitch.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L107-L117",
+          "version": "repo-lines-v1:sha256:6fd94b87c36067fd1912031a14c8e730f71472904b260a8c639726cf6b690fe4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZjA1M2Q5MWNjNDUzNGJmMTI0ODVkNGExMDdmYmNkYzY5NDkzNjQ4YzlkNWVmN2Q3YmI4NzU3OGJiNTVlMjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMDIyZGQzOTQ1MWI4N2VkNTNkNTc1YWRlMGMwM2MwODdhNzE2ZGRlNTEyMzJjZjM2MzFiYzViOWJmZGE0ZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhNWM4NjU1YjQ0NThhMDVmZmU4MzJlYzQ1NzljNjgxNTU5MDAzYmNjN2EzMGYzZTE2ODNiMzk5MzQyOGE2ZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZjVjNGNlNjI2MDk4NDBkYjUxYjA5MThmMjRjMTEyMjEzODZmNzUwNDI4MGZkMDUwNjcwNzYyNTNjNzUxOTgifQ"
+        },
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L82-L87",
+          "version": "repo-lines-v1:sha256:93d9fb2e2fdf2f4c6035b9ffe5987ee085dfa280fe13d075e92f026d73b6b130:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmEwYjk5NzRkYmE0YjEzNWY4Mjg1ZDU2Zjk2ODgzYjc1OGI1YTdjMDEwODg3ZTQzZGI3YzdhNmNhNzI5ZDU1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNhOTJmOWU5YTJiMGE4NTgzMjMzOWYyMGU3OGQ3ZTE1Y2ZlNDE0NWRiNWU4YTU2ZDZmNTBjOWQ5OTE5MWZlMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzBhYWZhMWIzN2IwNWIyMWJiMDE0OTUyZmQ2YjA0NTgzZWIyYzY1MDRhZmEzYjhjMjMyM2NhODQwZmY3N2U4YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY3MzI4OWRlMWJiNWUzYTg0MzRjZmYzNjE2NzM4Zjg1ZTdkNDMyYzkxMzZjYTgwOTQwYjQ1OTgwYThhZWI4ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c76b9f49e4dc4040aa47cf3675919e50",
+      "statement": "67 expected address collisions are documented where the address cannot distinguish drawings (e.g., two-row bands have no addressable vertical edges; dotting differences are not encoded), and both membership and count are asserted in both directions.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L91-L106",
+          "version": "repo-lines-v1:sha256:75dd09e3c10b94e863a7c5e078c5fa3cc958ae590fcf4be84b63798ddda0abd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNDI0MzFlZmI5ZGEzM2I0NDBjZThjZTk0YWQ0OWUzMDA0Nzc1ODBkZjYwNGM5YzM4Yjc5ZTJjZWExYzZlZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0OTc0NzZhN2JhMDMyMzk1N2E4NDI2NDdlZDVjNmZmZjAwMWE1ZDlhNzcxYTMyOTliYjlmZGYxNzA2ZDkxMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1MjkwMThiN2VjODA3MmNiZmFiNjYyNDM1MTc3YTliNTc5NTlhN2NmODNmOTkwNzg0Nzc5NGVhZjc4N2JmMWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_33626659237d47409c414adb9afe74da",
+      "statement": "MosaicNamingService.rules (pure structure over a tile) now answers for readings from any family: 85 of 1,118 swept combinations earn a sub-family name (10 in branch, 25 in negative, 50 in parallel).",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0007-address-every-meander-by-its-lattice.md#L118-L124",
+          "version": "repo-lines-v1:sha256:3d340e72093caaeba189e2398361a57d1d7f6d411e28ac3567d6f1accf0171e6:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGI3MjU3N2M3YjdjOTJlMmY0NjQ0ZmI0NmU4ZDYyYjAwMDhhOTE2ZTU4MWQ2ODAzMmE2NmYwNzMyNTg2MzVkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU0ODA3MDg1Mzk2ZTlkMWMxOGUwNGYyMWQwMzEwMDE4MGJkMTdlM2M0NTc0NmM3MDI0Mjg1OThmNDk3NTk4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM3ODQ3YTRlNDU4OWJmMjFmZmU4NWU2YWU5NmNlZmY3ZTIwZTZmZjRlNjIwZWU3YTBiZjMyMDNiZWU3MTU2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2NmODhjZTJlYmE0M2Q3OWE0OTY3YTdkOTQ0Y2UxMjc1Y2YxZjQzYzBkMTc4MDljNTUwMzVkZDYxMGQ2Nzc3ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f1b19d9705df440e90e3fed4915cb11e",
+      "statement": "ADR 0015 dropped the single-family enum constraint, storing families and boolean characteristics as open string arrays; a meander earns a set of families rather than exactly one. The drawingHash (SHA-256) replaced the SVG column as a drift guard.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0015-store-families-as-an-open-multi-label-set.md#L15-L22",
+          "version": "repo-lines-v1:sha256:fa7d88adaed223f3fc5fd2a6aea4414bd74f511cbecea8b8b9c083445341dccc:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBjOWZlOTA5YzgyN2ZmNzg4ZDA2OTk5NTYyOTM5MjZhYjVlYzg0NDZiNjQ2MmVkNTkxNTI2ZjU3NGUyMDVkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IxNTdhNmQyNzY3ZmY3ZjQxMzNlZTI3NjUxMzY3YzZmZGZmN2FiNGZkOWJhM2NiNDI2MmUyYWE0NDkwY2NhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmY4N2YzMDk0ZjJiNzNmOTI0MWM1YzM2YmFkZDYzOWZkMzliN2QxODEzNjg1NWM1YjlhNTE4NmIwMjY2ZWM3YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_286f3d2d10e6451f8172a06fa812cbc8",
+      "statement": "ADR 0023 supersedes ADR 0015 by eliminating families entirely: former families become pattern characteristics (compound booleans under compound/pattern/), filtering is by characteristics alone, and the draw run writes one page per pattern characteristic.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0023-filter-meanders-by-characteristics-alone.md#L17-L23",
+          "version": "repo-lines-v1:sha256:7f37cb9b6ce8c15e14d352f41b2293f6ec0b57e25267bdae4e121393691663ea:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTA3OTY2MTdjMTZmOTBmMzc2MDg2MmZmZjlmNmRkOTc4MDM3OTIzMTNiZTVlZDI4ZDQ0OWE2MWRhNTdjN2EzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IxNTdhNmQyNzY3ZmY3ZjQxMzNlZTI3NjUxMzY3YzZmZGZmN2FiNGZkOWJhM2NiNDI2MmUyYWE0NDkwY2NhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2QzYWUzNGE0MWZhODQ1ZTlmMDNjOTE2MGU4NjcyOTY4ZjUxYjM1ZWI5OTJlN2EwYjhhMzE5NjdhMzBmZTkwMCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

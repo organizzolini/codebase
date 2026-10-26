@@ -1,4 +1,4 @@
-import { Paginated } from "../../lexico-api.utilities";
+import { Paginated } from "@codebase/interface";
 
 import { FormType } from "./forms/form.entities";
 import { PrincipalPartType } from "./principal-part.entities";

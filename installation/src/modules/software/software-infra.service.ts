@@ -42,7 +42,6 @@ export class SoftwareInfraService {
       `   Gitleaks:    ${this.readMerged("gitleaks", ["version"], "not installed")}`,
       `   Terraform:   ${this.readTerraformVersion()}`,
       `   Trivy:       ${this.readTrivyVersion()}`,
-      `   Supabase:    ${this.read("supabase", ["--version"])}`,
       `   Helm:        ${this.read("helm", ["version", "--short"])}`,
       `   kubectl:     ${this.readKubectlVersion()}`,
       `   Docker:      ${this.readMerged("docker", ["--version"], "not installed")}`,

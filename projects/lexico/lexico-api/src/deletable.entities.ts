@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-import type { GraphQLObjectOf } from "./lexico-api.types";
+import type { GraphQLObjectOf } from "@codebase/interface";
 import type { DeletableEntity } from "@codebase/persistence";
 
 /**

@@ -212,9 +212,6 @@
     "ghcr.io/devcontainers-extra/features/pnpm:2": {
       "version": "11.2.2"
     },
-    "ghcr.io/devcontainers-extra/features/supabase-cli:1": {
-      "version": "2.76.8"
-    },
     "ghcr.io/devcontainers-extra/features/uv:1": {
       "version": "latest"
     },
@@ -239,7 +236,7 @@
     "../../infrastructure/docker/docker-compose.yml",
     "docker-compose.yml"
   ],
-  "forwardPorts": [3000, 3001, 8889, 11434, 54321, 54322, 54323, 54324, 54325],
+  "forwardPorts": [3000, 3001, 8889, 11434],
   "name": "Codebase Devcontainer (Local)",
   "portsAttributes": {
     "3000": {
@@ -256,26 +253,6 @@
     },
     "11434": {
       "label": "Ollama API",
-      "onAutoForward": "silent"
-    },
-    "54321": {
-      "label": "Supabase API (PostgREST)",
-      "onAutoForward": "silent"
-    },
-    "54322": {
-      "label": "Supabase PostgreSQL",
-      "onAutoForward": "silent"
-    },
-    "54323": {
-      "label": "Supabase Studio",
-      "onAutoForward": "notify"
-    },
-    "54324": {
-      "label": "Supabase Inbucket (Email)",
-      "onAutoForward": "silent"
-    },
-    "54325": {
-      "label": "Supabase Analytics",
       "onAutoForward": "silent"
     }
   },

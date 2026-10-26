@@ -11,7 +11,6 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { ReporterService } from "../reporter/reporter.service";
 import { ShellConfigurationService } from "../shell-configuration/shell-configuration.service";
 import { SoftwareService } from "../software/software.service";
-import { SshSigningService } from "../ssh-signing/ssh-signing.service";
 
 import { STARTUP_FILES } from "./setup.constants";
 
@@ -25,8 +24,8 @@ import { STARTUP_FILES } from "./setup.constants";
  *
  * Linux is what a Claude Code cloud session and the devcontainer run. It has
  * no Homebrew and no shell of its own to configure, and `scripts/installation.sh`
- * has already installed its packages, so only the environment files, the SSH
- * signing, and the local services apply.
+ * has already installed its packages, so only the environment files, the
+ * software step (which does less there), and the local services apply.
  */
 @Injectable()
 export class SetupService {
@@ -37,7 +36,6 @@ export class SetupService {
     private readonly softwareService: SoftwareService,
     private readonly environmentFilesService: EnvironmentFilesService,
     private readonly dependenciesService: DependenciesService,
-    private readonly sshSigningService: SshSigningService,
     private readonly localServicesService: LocalServicesService,
     private readonly processRunner: ProcessRunnerService,
     private readonly reporter: ReporterService,
@@ -76,10 +74,10 @@ export class SetupService {
     }
   }
 
-  /** Sets up a Linux machine: the files, the signing, and the services. */
+  /** Sets up a Linux machine: the files, the software it can have, and the services. */
   private async setUpLinux(): Promise<void> {
     this.environmentFilesService.createEnvironmentFiles();
-    this.sshSigningService.configureSshSigning();
+    await this.softwareService.installSoftware();
     await this.localServicesService.startLocalServices();
     this.reporter.print("");
     this.reporter.print("✅ Linux setup complete.");

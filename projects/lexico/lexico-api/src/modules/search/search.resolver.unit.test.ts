@@ -8,9 +8,9 @@ import {
 import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { createConnection, createEdge } from "@codebase/interface";
 import { Lexeme } from "@codebase/lexico-entities";
 
-import { createConnection, createEdge } from "../../lexico-api.utilities";
 import { LexemeType } from "../lexemes/lexeme.entities";
 import { ORPHANED_GRAPHQL_TYPES } from "../lexemes/lexemes.constants";
 
@@ -52,6 +52,7 @@ describe(SearchResolver, () => {
     mockLexeme.lemma = "amō";
 
     const mockResult: LexemeSearchMatch = {
+      distance: null,
       enclitic: null,
       identifiers: [],
       lexeme: mockLexeme,
@@ -112,6 +113,7 @@ describe(SearchResolver, () => {
     mockLexeme.lemma = "amō";
 
     const mockResult: LexemeSearchMatch = {
+      distance: null,
       enclitic: null,
       identifiers: [],
       lexeme: mockLexeme,

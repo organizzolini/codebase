@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4ee057cc0426eab316b7f5cb7701ca2c17e2acbf61d6a44160860f3cf29a5b1e",
+  "claims": [
+    {
+      "id": "claim_e121b6d5ed5f4ad09d0d24bad4bb38e0",
+      "statement": "The pipeline uses 9 grammatical axes (Mood, Voice, Tense, Aspect, Person, Number, Polarity, Deixis, Form) modeled as DescribedEnum with per-member descriptions and examples, composed into a Grammar model.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/grammars.py#L1003-L1132",
+          "version": "repo-lines-v1:sha256:5c957a5839c5dce4b88559b03b45a9b8827771114252cad813b99cb751e78e9c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5NzkyMmY1YWY3ZDhmOWIxOTI1YTgxMWMzZmQ2NWE4Y2Q0NzI4OTk1ZTY0OGQwNDEyOTMzZjYxM2ZjMDllYjNmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4Y2M0YTdkMWNjNzk2YWJhM2U0NjcyMzMyN2Y1MTdlOWY4MTE5ODJkMjUwZjA3MDI5ODZlNGI1NzY0YWQ5NTg5IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkODY4Mjk1M2ZiYzQ2ODI5Zjk3NGNhZWUxNWE1NGFkYTBmZDZmNjJiMTdlMmZiN2M2YjZkYjU3NmUzNzk2YmE4In0"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/grammars.py#L1134-L1227",
+          "version": "repo-lines-v1:sha256:4709df436f6f9c8a2821628ef4aaeeaa1b83e8a0ce25f932000644e3c5978a0e:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlMTYxN2I3NDRjOGMxNGIwMzRlY2IzODdlODMxMDhmN2M2ZWI5YjBmY2E3NDNiYjg1Yjg2Mzg0ZDgyYzM0OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2MzM3NDY4ODZhYzIxODc1NjRjM2E5YmE4NWE2MmUwMWQyNzMwNjhlNDc3NmM2NDU0YjE4YzBhNWMxMDRmMGUifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/grammars.py#L1229-L1320",
+          "version": "repo-lines-v1:sha256:a4aecbb572948b781e8b9ac6ce00844b349ef9942bb7d6cb5faf0c3b67afb50f:eyJzZWxlY3RlZExpbmVDb3VudCI6OTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzMDNmZmQ5ODczMGFhYTJjNTYwNGQ5ODU4MzcwZjdmY2ExNmVkOTc0YzU0NDQyMGZjNjdiMmUwYTdkM2RmMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxOGNlNjE2Y2Y0NDQ2MDY1MGNkMWVhMWFkY2YyNjExN2Y5YzUwNWE4OTU2YmQ5YmE0M2Y0M2U3MmQ5MTg3MjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5NDBiYzZmYjdmMGZiOGYzZDRhOGMyYTEyMDZmZTQyNTNmZjQyYzQ1NjUxZDY2NWViYjc3YTQxZmRiMDFkNmIifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/grammars.py#L44-L100",
+          "version": "repo-lines-v1:sha256:603ffdd0fd11ae0172803bb43aa5561010270ae05291ab36675221b445427954:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MjE3NTgwYjE2NjRjMTFhYWYzMGM1NDg4Zjk1NWYwNDU1YjE0MjUwNmM5MGYzZWNjMDRlNTQ2ODVlNjFmYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZDQxNWQzZDViNGJhOTVlOWIyOGI4YzZhMmQ5NTU5MWFhODJiNjUxNTZiOTBmNzliMDYxMTBjNTlmNDQzNmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNGY0MzMxYTJkZWIyODNlMTkzMzkwOTY3YmFlODE1YzZmNDE0YWRhNWEwOTZlZDI4MjBlNTI5YTk0MjllOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4MjI2MDg3MDZkZTg2NjNjNGQyMjYxNGZhYjhhZWYzYjliODEwYzU0NjgzYmIwNzVmNmM3OTIyMjY1MWU4OWIifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/grammars.py#L6-L42",
+          "version": "repo-lines-v1:sha256:dc873a15eeb0aa221641dadcc06ec6ca716d4536c6c63d900c1e8da36a25f1f3:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllNjg1YWNkYTM0NDQ3YzllODIyODk5YjEwM2Q1NWY1MTc0NDRjZTNhNjQ4NTIzYjg2YzdkNWZiNDQ1NzhhNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhNzJkMTRlYmE3NWRmYjgyOWYyNzUyZjgwNWVkNzY0MmU0ZWYwMjJhNjJhZTUzNTg2ZjhhNjE3YzEzZTM3NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0NTQ1YWVhNjM2M2NmN2NiM2UxNmU0NmIzZWMzZWQ0MmRkMDE0ZDlmNTcxZGQwNjgxOGQ5YzgxOTkxZjE1NjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fb1503c8a83d4e5bb997e77f6b9ea918",
+      "statement": "The pipeline entry point is src/affirmancy.ipynb which orchestrates a multi-stage LangGraph workflow: SearxNG research → Trafilatura extraction → document generation → affirmation generation across grammars → Pydantic validation → JSON/Markdown output.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L172-L221",
+          "version": "repo-lines-v1:sha256:30382536c6d3c7cdacec3fa9d07a810db37158df600e4d87c2a0a569fadbcb05:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2YjRiYzVlOWU0ZmMwODVjNWFkMjE1MTgzYTVlYTM0ZjA2NjU4ZDE3NGMwYzFkMTcwNDY5Y2RkZTM0N2ExYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MGQwNThjYTdhOTdiZGI4ZTkwNzE0NWI5M2RhZTEwYjZjOTBjNzNmYzIzMjZkY2NmMzQyNjY3ODRkMTIyNjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwM2NkOGNmYTRkMTAxMTRiNDI3MWU0NjJiMmQ1NDQ0NDNkMjkwODI1YjFkNzcwODNlYWY4OTkyNzRjY2ZhYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2MDk1NDJhNDU4ZTRiZmU2YzViNWNhNWFlNmU2YWMwNTU5ZTFkOTA5MTJjZmU4YTg4NzU1Nzg3NGM1OGE1MjQifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L230-L318",
+          "version": "repo-lines-v1:sha256:45a59c357d13a5f298b5626b57c63c4e6a2f928622469d40114f6fbd8b04a3bd:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNDEyOGIyYTMyMDFmZjQ0ODQwMWM3NzNmOGY4YWI4MDQxODE3NzczM2JiNGM2YmE5OGYwYzU1NWE2ZThiOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MGQwNThjYTdhOTdiZGI4ZTkwNzE0NWI5M2RhZTEwYjZjOTBjNzNmYzIzMjZkY2NmMzQyNjY3ODRkMTIyNjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwM2NkOGNmYTRkMTAxMTRiNDI3MWU0NjJiMmQ1NDQ0NDNkMjkwODI1YjFkNzcwODNlYWY4OTkyNzRjY2ZhYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2MDk1NDJhNDU4ZTRiZmU2YzViNWNhNWFlNmU2YWMwNTU5ZTFkOTA5MTJjZmU4YTg4NzU1Nzg3NGM1OGE1MjQifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L327-L595",
+          "version": "repo-lines-v1:sha256:b312e1dcf468380c3641d6375f52314fb9fdeca4a0aba3ffd02383b7621c09df:eyJzZWxlY3RlZExpbmVDb3VudCI6MjY5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3YzMyMmVmYzU3NjdkMDg1NDM1YzZkYzdhZWQzMjZkZDBmN2RlOWRiNzJiYzMzNDc4YmZmMzNiYzFkNDFiMmQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwZTIyMWE1NTczNGRhZWRiNjNhM2MwOWZhYTQ2Mjc1ODU2YjE0MDgwMTQ3MjMwNGVlOTI3NTYyYzRiNWJkOThhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MDNjZDhjZmE0ZDEwMTE0YjQyNzFlNDYyYjJkNTQ0NDQzZDI5MDgyNWIxZDc3MDgzZWFmODk5Mjc0Y2NmYWExIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiNjJlNzk5YTc5MzI2NTZhY2RhMDJhODJlNDgzMzhhODkyMWUyMjU5ODhlNTFkZDkxMjRhMDI5M2RjYjYxM2M1In0"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L83-L162",
+          "version": "repo-lines-v1:sha256:bb7bd6fbf98b988088d99f001ea593ce1258c986414356d8001ccb49d5fa0ed2:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxODA0ZmQ5MTVlODlmZWZiYjFlMmRiYzI1YTEyYzBlYmMyZTk5NzQ3NzY3ZTc2Y2U3ZWVhYjc4MmYwOGNlY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NzQ4MTM1YzNhYTcyZjhiMWI4ZTM0MDdiZDJkOTVlMTFkOGY1MDkwOTdmMzM3MzIzMGYyMDBkYzU0Y2RhYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4NWU3YmZkM2RmYzFjOTMzZWJhM2MwMDUzMWNmMmNlMjY2ZjgyNzdkNzU0OTNkNmQ0ZDRiODc0ZTA5MWQxNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1MjExMTI0NjFiMDUxM2NiMGUyYWY3YmYxMDAwNjVmYTYwZTczN2M4Mzk2MDcwM2VmOWU4ZWZiOTRhN2IzNmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ac85e7435ec41dea49913f4962f4cf3",
+      "statement": "Subjects are defined in src/subjects.py with SubjectCategory and Subject models, spanning 22 categories including tarot, lenormand, astrology, chakras, runes, kabbalah, solfeggio, and more.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/subjects.py#L45-L100",
+          "version": "repo-lines-v1:sha256:5d1b0fd4d86174b3c7bf1e2827e4ee754b301fd5be4a836b50413f73c6094aa9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MDlkMjcyZmY3MTllNTU0YWUxZmU5N2RjMDZiMGQwNTExMjI4ZGJhZjk2ODM0YmU3MjA0NDBiOTVkZmYzNzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NjBmYjQ4M2Y5NzVmYjUyZTQzNTYxZWFmMGUwMDJhYjUwYzgxNzllZmFmNjY1OWYxZDhmMWY0OWE2MzI5NWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiZjA3YzczNjMyYzVmOTgzZDM1MDkzYjVlOGQ2NzIzMTdhZmY2YTEwZmMwMzQ2NWM0ZGZlMzVmYjM2YjZkMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxN2YzMDJhMzE0ZDI2OThhMmZjNzE4MmQ5MGUzMjBiYjU1ZGY2OGY1N2U1ZGMzMTMxNDUxMzQzYWFkMjU1ZDMifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/subjects.py#L8-L42",
+          "version": "repo-lines-v1:sha256:9457ca2bcfd5c736d0e6e82f3bb423990d52d3e0612687da6b3ac797cf3c8af6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlNTBhNjczYThlMWI3MjFjYWVhY2RjZTNjYzJjYzM2MzE0NGUwM2EwMDIyNTJmNTI4Mjg1MjU2MmI2MjUyNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMzI2MmJhMmMwOTMxNWZhNTMzYmY2NGVjZjJjZWI0N2VhMDBjYjY4YTVhMmE4ZTM0NGIyM2Q4NTM5NDhhMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiMjU2ODEzY2Y1OTgxM2E3MGFmZjliY2MyMTBjNzQ2NGU4ZmEyZTVmYjE1ZGJkZTZjNDdlNGQ1ZTU4OTdmNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwNDk0ZWE3NzIxY2Y2NjA0M2I3NjdiYWIwOTI3MjBjOWMwMGUzM2ViYmQxZTcyODVkMDQ3NDQyNWI0MzUxOWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0128cc44dc34a5582944352db57fb88",
+      "statement": "Three services are required: Ollama on port 11434, Open WebUI on port 3001, and SearxNG on port 8889, with environment variables OLLAMA_HOST and SEARXNG_HOST for configuration.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/AGENTS.md#L90-L96",
+          "version": "repo-lines-v1:sha256:9c38978b752ca8cd7bf4d52e9ffce5f256e7e4cea68cdb17952f075cacac716e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFiNDJkNTcxYWU4MTRkYTNhNDg3MzYyNDRmYTA0YThiNDQzNjU2OGRjMDc3ZmRkNWM4NjdiYzcyOWJkZjVmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDBhMWRiODM2M2Q5MDVkYzNkYWRlYmRlZjg1MDI2OTJjMDcwNGZkZjY4MmQxMDNmYmE3ZTc2MjhhOGE5MmI0MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWIzNTdjNmUzMWY4OWE2OTkxNzdmYTEyOWExYmRkY2MxZTU3YjNiZjJhZmQ0YmMwMzA2N2JlNjM1OGMyZDEzOCJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L135-L147",
+          "version": "repo-lines-v1:sha256:aaf1319a37f1e6c8181766185f80c93f9dbf89423ed771f72d4fb7322313e17a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2ODAzZDE4YjQ4ZDdmZjAzOWMxYWZjNTllODM4MzRjMjA5YTJkMjg1ZTk5ZWY5MzdjY2U4NzJhZDQ3M2UyMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkN2FmNzgyNWY3YzM0YTM2MjU3ZTRiNWYwZDAyZjFlYTI2YzY4M2E0ZjczZWNhZmNjODdkYTg3OWUxZTZkODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3YTQyNDczZTBmZGRhYjc3OTlkN2UxZGY3YzBmMmIzMDhlNWNkYzY4ZmJhNzk0ZGI3ZjY5ZGYxNDIxNDdlMjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_11e3ab6560ca42ac84ff976a52fcbba5",
+      "statement": "Nx targets include ruff-lint, ruff-format, pyright, ty, pytest (unit/integration), test-coverage, vulture, bandit, nbstripout, and ollama (start/stop/pull-small/pull-medium/pull-large).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L101-L115",
+          "version": "repo-lines-v1:sha256:7cbe08c73719c1cef00ccc0d688d11005fd324a7a11d2535e1157391ec8f5a93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTEzZjdhOGIyZTIxMzdlODgyNDZhZjc2MWFiNjEzMWY5YzBhM2Y0MzQzNjVhNWJiZTc4MjYwMjE4NWEyNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhMmQyOTFiNWQ5MDJiNGZkZDEwYzJhNzIxZDQxNjMyNzNlYjQ2YTEyZWI3ZTE5ZjA1NjYzZjhmYWY1ZDYwMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1NzZjNGE5M2ZlN2FjZmRmNzJlYzM5ZWFjOWU0MzYzOTE4ZDgyZWJhNDNhNDc0Mjc0ZWNkZmZiMzBmNTVkMzEifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/project.json#L12-L52",
+          "version": "repo-lines-v1:sha256:94281b5d51203b810b5480e0651cc060fd24ffc246f328d73bc1f65d2ba7ecdd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NmMwYzgzYzMxYzgyZTM4YTQyZDEzYjQ4YmU0ZmEzYTI4YmI1ODkxNTlkYjBiNTc2ZTZmYmQ2NmRkNDgwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0ZWQ0MzUwMDQ5MzZiM2RlZjQwZDRmYWRiMTkyNzQ4OTQxYTc5YTg1MjM1YmI2NTdlZjU4OTJhYWZiMjYwZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1ZTQwNDI1ZjBkYTI0N2NkYTRhMzAxMGRmNjQyNGNkZDAzZjU3NDc0MGU0NDdkYzBiMmU5NTlkNDRkNWUxMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MTFkMWFhMTRlNmY4ZmQwMTg4YzliNjE0Y2JmZjEwODY2ZTQ4ZGNmNDEzZGQzMjFjYTg2MmVlYjBlM2MxOWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_789604e6923b44e2b4e8e36a77140067",
+      "statement": "Validation is non-blocking: grammar and subject validation failures are collected and logged but do not halt the pipeline; invalid affirmations remain in output with failures reported separately.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L448-L493",
+          "version": "repo-lines-v1:sha256:d4e834eac2c6d884eb2efce11ec503738d0cd86fb8775bfa667d14cd4150a596:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1N2E5ZThlMzg4YmEwYmYxYzExYWMyY2QzMDI2Y2Q0ZjUwYTY0ZGRiMjJhNWMzOWJiM2VmMDc3MGNhZTczODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5OWU4NGJkZGYwZmMxNmRmYTg5Y2IzMmZhYzFlYjViZmZlNGYzODBhMWQyOWNiYmM2ZGNjZThjM2EwMGM5ZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1ZTIxYjEzYjMzNGQ2YzY5MDc0MTUzOTk5ODViMGZhNmI4ODM5ZDI2MzQ3ZWY5OTNlZTMyNTE0MWMyMmM0Y2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyZjc3ZTYzNTJhOGY2NjAxYjljZGU3ZDBlY2M1MTNjZTllZTM1MzFmMDUzNTQzYWIzMzRlZGU3ZTRjNmY4MzgifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L496-L538",
+          "version": "repo-lines-v1:sha256:0ad3a0643afa569ff4240068ce73640802e3d348500b96547938ad6cd19d49d1:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMTlmNTBmNmEyMjM4Yjk3ZGM0N2ZkNjdmOGIxYjQ1MzZlYzRmZDdiZWIyYmU3MzMzZmE3OGI4MTQwMzc2ZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5OWU4NGJkZGYwZmMxNmRmYTg5Y2IzMmZhYzFlYjViZmZlNGYzODBhMWQyOWNiYmM2ZGNjZThjM2EwMGM5ZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyZDVkOWQ1MDI1NWNhZTJmYWNlZjVhYjBiYmIwNmNjZTU1MWEyY2Q4YWQ2MWFlMWY2NDVlYmVlOTFhYTBiNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5ZjMyNGQwMGQ0OWMzZGI2NTk4NmVmMjRkNzBhZDc0ZjM5Yjc0YjhkODQ0MTcwMzdhMzUwNjhjZGJkOGY0NTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c23807bb74154151b01df9bce3e859be",
+      "statement": "SearxNG is required and the application fails loudly with a RuntimeError naming the exact nx command to start it if unreachable.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/services.py#L10-L27",
+          "version": "repo-lines-v1:sha256:26cd5dc81be6d8befb537fb3c7971750e4270048e1cecb7ba78426d1cff11548:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZjY5MzdlZjdlZDBkZjg3NWNiNjViZWFlZmMyZTFkYzJlMjRiMDQwZTFhYmZlMzU5ZWNlNzYxNWRmN2VlZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MGRhMDMyZmJmZGJkMWI0MjRlODE0YzIxMmFlNTg0ODRlNzZmNTdkYzU2ZGJmZDEzYmY4MDM3MzZkMzI0YjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjNTJkNDlhYjEwYTg1NzNlNDZhMDNkMDUxNmE4NTY0OTU1MmE2Njg5NzE1ZGRmNzUwZjk4MDBiMWUwZWIyZmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjZmI3OGY3MDAzNWNjZDkwNTk2MjMxMjYzMTM5NzcxODc1YzkzOGI2NmE1MjNhYTA5NzliZDAyNzRiNTM3ZmQifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/testing/test_services.py#L55-L70",
+          "version": "repo-lines-v1:sha256:59a99f324708351012018593b6c0ab4ec19ef8f093423d9400633f7fb302a43f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiYTkxZWExNDFiNmNlZTU4MjlkM2YwNmM0M2ZlMDc1ZGMzZGI2MWQyMDBiMjg3ZTA3NDA3Nzk3OTk5ZjM2MzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxODUyN2Y3ZTQyNWMyYjZlNmZkZDcxOGZmZWEyMTc0NzJmNGJlZDhhOTMzZWQ2OGFjZWM1NWU4NTNkZDIzNTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4YjM2OTk3N2JhNDhhMTAwZmM4OTE0NmU2NWUxM2NiZWMzZTE4NjJkYjY0OWIzNzM0MzI5YWYxZjEyZWM4MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8e457fc91804dac9e467c3694a8cc7f",
+      "statement": "Output is written as Pydantic-validated JSON and Markdown files organized by practice category under output/affirmations/{category}/.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L541-L548",
+          "version": "repo-lines-v1:sha256:44ca7398a9e793ae986c556bff5fd07f1865aa31903309f50b0cc35c8ef57edc:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGUyMTI4Mzc5OWZkMTg4MjkwMGQ4Y2I2NDgwMTE3YjkxZGQxZDVkOWY5MTM5MzgyZTU5MzY3YWVhYzgzNTA5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGFhYjNhYTMzMzVlNDNhMzI0YWYzNTgwOTRiODQxZDUyYzMwNTUzYjg1NjdjOTFkZDQ5YTQ1NGE1NjBkMGM0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDJkNWQ5ZDUwMjU1Y2FlMmZhY2VmNWFiMGJiYjA2Y2NlNTUxYTJjZDhhZDYxYWUxZjY0NWViZWU5MWFhMGI0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjdhYmQ1YzEyMmNjNjg0MWE1ODZkY2QzNmVjMzBlNmM1ZDc4ZWQyZTFiYTNkMTE0OTIyYzU5MzNjODhkMmQ3MiJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/output.py#L41-L66",
+          "version": "repo-lines-v1:sha256:c96a1ee37b5ff1b17c2109dbc175923a286630cfe230618d7eed18dca16f0c0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmOTI2NzRkYTM0Y2Q1MTg0OWQxMmY3NTc3MGM5NmFiYWZlMzczOTBjYTAxM2ZhMmQ3ODMwODJmNWY3NTQwZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0YWUwYWU0ODVjZjlkODRhNjAwMTIyYTMwNGM2Njc5NGMwN2QwNDdmMjRlYmE0MzE0YzFjMjUyNGFhN2MwMDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwMjA5OTE4YWI3YmQ4OGE0NzkyODdlNTFjZjNjOWFhMGYyZWEzNzcwOTczZWEzZDY1YjMwOGM1MzY3NjEzMDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjNGQwZDE0OGJjZjEwMDZlMWM5MzVlMWU2MGE1NjI2MzE3NjQ5NmU2MjgwMzc3YWRhYTUxZDAyZTBjZjg4OWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b3ec1ad3fc94a65888416d40c810223",
+      "statement": "The SearxNG configuration (searxng.settings.yml) disables safe_search, uses hostname plugin with high_priority patterns for spiritual/occult sources (sacred-texts.com, hermetic.com, biddytarot.com, etc.), and reduces engine ban times for development.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L10-L60",
+          "version": "repo-lines-v1:sha256:d1b92a44f3394a65a4f28be054022c25c691832511a96314723e4e08b685da45:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMjc4NWJjMGJiMjgzOTgxOGQ1MGJhOTliYWY5YzNmNjYzMGE3ZWQzZjA0YzM0ZWVmYTAyZGMwNTZjMjBiNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMzE5MTM3OTQ2OGRlMjZiN2Y3YjMyZGYzMmU5YTcyMzA2Y2ZjNTkxOTM3NTE4OTExMzcwMzdiYTFiOWE1NDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNmFiMGQ0Y2NkMDFhZjdhYzQ0ODFkZTQzZWMwOTIxMzAxYjQ1YTVmZmIyODIwMDNiMDk0YTU4ZDdmNmQ2OGIifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L68-L100",
+          "version": "repo-lines-v1:sha256:c9502382fdb2415cf2130471405cadd9afa18a600dbb92ba541470c596a3145f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwN2UwZDUxNTYzOWIxYTlhY2Y5NDllM2JkYjNmOWMwNWE1NWQyMjYzYzIyNjgzNjVjZTQxZWE5Yzg0Y2U4MjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZTEyOWEwYzhmNTM5MjkyNmZiOWM3MmFmYzJjMjQwZTQ4Zjc5ODVmOGYzODkyOGNjNjU4Yzg5MzFkZTkyOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyMGM3NDUwNDA4Y2RkZGEwOTQ4ODA4OWU0OGUxYzM5OWQxZmM5NDJhMTM5ODg4MTE0YmUyMjgzNjJhOGNlMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhMzM5MTU2MDJkMjYzZDI1MzZjZjBiMWFmNTA2NDEwMGVlMTIzMGMyODkxMTVlYzAzYzFjMTYyMGNhNmUyNDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_461e402ba66241a1977a403010f8af8d",
+      "statement": "Affirmancy is a Python LangGraph application that generates structured affirmations for spiritual practices using a local Ollama LLM (gemma4:e2b) and SearxNG metasearch, orchestrated via LangGraph StateGraph (not a ReAct agent).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L1-L9",
+          "version": "repo-lines-v1:sha256:32b92433aa6ac547c71a368fcde760e65e639dc9687c87c8baa9d7d33cf191f0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGY0MDVlZTYyNGY4NWE2NDUyYjIxMjdhYTFiY2NiMzNiMWM4Y2JiNGExMWIxZjE0Mzg1MDM0YzhjNGU0NjA0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODNhZTAyMzhmZjRkNDQwNDY2MTBhOTRjMjFhYWY1OTQxOTc2OWFmMDgxN2Q5ZGNhOTMxMzIxYjcyNWY1NzZlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMThlNTQ5YzQ3MjUzNzIzZWFiN2UzNjI1MjZlYjcwNTIzZjM3ZTBiODk4ZDRiNzE5NDQ2NTU2ZTBhNWU5ZDA1MiJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L154-L158",
+          "version": "repo-lines-v1:sha256:72a6dc55fb474b260c8070d36bdcb8f496bbba7deb339947e7325a7ef12ed538:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIzZTY2NThkZWUxMjZmYjM2ZTVlZmZlZDM1NGQwNjMxNzFmMzZlZDVkNjk3M2M4M2MwYzI1NWJlZDY4YTAwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTYwNDY5MDgwZWVlZDM3MTQ0OTBmZGE0OWQ4NDc0MmUxNjBmZjcxZDhlN2NiODBmNWRlYWEyOTM0ZWM0OTgwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODBkNDgzOTdkN2JlYWYyYTk0YjAxOWE2MDlkOTMzNzI0M2QxZDliNWMwNjQwOThmYTJmZmNmMTM0ZDIzYThmNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjMzYWZkNTBlNDgwNDZhYmU1YWQxZDFjYzk3YTU3NWFjMWVkOGUyOGVjYTRjZjhhODJiMTU1ZjZkZDE0NjNmMSJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L210-L216",
+          "version": "repo-lines-v1:sha256:0a19a3621e2a581cd29d4b65d0224b9c367710cc284686a4d44229f9c0ec70b8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWJiNjk1NGQ3MjJiMmE5ZGMxOGNjNGNhMGQ5ZTg5Yzc0YzE2MDZiYzQyYzE1MjEwMjgwOWEyNDhkOTI5NTFlOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTYwNDY5MDgwZWVlZDM3MTQ0OTBmZGE0OWQ4NDc0MmUxNjBmZjcxZDhlN2NiODBmNWRlYWEyOTM0ZWM0OTgwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzFjYjk0MDY0NDUyNzU3MWEyZWY1MzlkN2VlOWRjY2Y4YjI2YzBkZTdiMjU3ZjNlYTQ2OGJiN2FiNGJkYTg5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjMzYWZkNTBlNDgwNDZhYmU1YWQxZDFjYzk3YTU3NWFjMWVkOGUyOGVjYTRjZjhhODJiMTU1ZjZkZDE0NjNmMSJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L305-L313",
+          "version": "repo-lines-v1:sha256:b79614a18b841e720a4b2a28aa47b2098ec79c41b95f68d0749b652979b89f60:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTc2YjJlNDA5OWNjYTk4YWY5OTQyM2Y2MzgxNDhmOTdlNzQxNjAxYWUzZTg1MWQ4OWI4MDFlNGEwN2IwZGFlZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTYwNDY5MDgwZWVlZDM3MTQ0OTBmZGE0OWQ4NDc0MmUxNjBmZjcxZDhlN2NiODBmNWRlYWEyOTM0ZWM0OTgwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzFjYjk0MDY0NDUyNzU3MWEyZWY1MzlkN2VlOWRjY2Y4YjI2YzBkZTdiMjU3ZjNlYTQ2OGJiN2FiNGJkYTg5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjMzYWZkNTBlNDgwNDZhYmU1YWQxZDFjYzk3YTU3NWFjMWVkOGUyOGVjYTRjZjhhODJiMTU1ZjZkZDE0NjNmMSJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/src/affirmancy.ipynb#L551-L569",
+          "version": "repo-lines-v1:sha256:3f2d0593b6eb1b80648ddb9c50f971a3828407a0841ba04ef6f4dd217247bba4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNDFmZmIyNTkxMzBmZTJhNzk2MzMyMzk0NDBjZDIwMTI4NDFmZGQ1OWRhMzE4NTQwNWM5NTI0MGRiN2NmYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MDQ2OTA4MGVlZWQzNzE0NDkwZmRhNDlkODQ3NDJlMTYwZmY3MWQ4ZTdjYjgwZjVkZWFhMjkzNGVjNDk4MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1NjQ1OTM0MjhjZDQ3ZDc2ODMwNjQwN2UwMDJhNGUzNjUzZWJhYjRjM2U2YmE5ZmE3M2Q2YTdkNzczYTQxZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ODY0MjMxMzJlZTU4N2YyODRjYjM1NWY4OTk0ZTJiNDI5YjE4ZTVmMWZjOWI1YjI4YTMxNWMyNWUxYjhjZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f59a6ae287d42e8bd5b2d7b2584cc0d",
+      "statement": "The Mood grammatical axis defines 21 values covering realis (indicative), epistemic irrealis (subjunctive, conditional, interrogative, potential, dubitative, presumptive, energetic, inferential, speculative), and deontic irrealis including directive (imperative, prohibitive, jussive, hortative) and volative (optative, commissive, benedictive, aorist, debitive, precative, permissive, necessititative) categories.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/src/grammars.py#L44-L374",
+          "version": "repo-lines-v1:sha256:6609de83a583eefcbf32a2bb8de2e3fe4017629d89394bb0431b687e93a570b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkOTIxNzU4MGIxNjY0YzExYWFmMzBjNTQ4OGY5NTVmMDQ1NWIxNDI1MDZjOTBmM2VjYzA0ZTU0Njg1ZTYxZmJmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzMGMxZjE4OGYxNDJlZDdhODI0NjgwYjIwNzE3MmM1NTE5YmM2MTRhNDhmZGE3Y2YxNjdlZGI4ZGRmNzk5NTZjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjMTRmNDMzMWEyZGViMjgzZTE5MzM5MDk2N2JhZTgxNWM2ZjQxNGFkYTVhMDk2ZWQyODIwZTUyOWE5NDI5ZTk3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwNjc3YTE5Njg0ZWFhZmMzZDJhODk5NGQzMTI1YzJmOTlkZTZkYTE2MDhkY2M1NGFkNGE0Nzg0NTE4YmE1NzkzIn0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

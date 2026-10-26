@@ -22,7 +22,7 @@ This skill teaches how to write commit messages for this codebase. All commits *
    - Must start with gitmoji emoji (`gitmoji-required`, error level 2)
    - Max 128 characters (`header-max-length: 128`)
    - Subject must not be empty (`subject-empty: never`)
-2. **Body**: Forbidden unless every line is a `Co-authored-by:` trailer, in any casing (`body-co-authored-only`, error level 2)
+2. **Body**: Forbidden unless every line is a `Co-authored-by:` or `Claude-Session:` trailer, in any casing (`body-co-authored-only`, error level 2)
 3. **Footer**: Forbidden (`footer-empty: always`, error level 2)
 
 ## Type
@@ -80,6 +80,7 @@ Keeping a branch scoped to one project or module (see the root [AGENTS.md](../..
 | `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
 | `conformetry` | Code generator templates and validation tests for generated instances |
 | `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
+| `interface` | Shared GraphQL package: Relay connection helpers, entity-to-object types, client code generation, and test helpers |
 | `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
 | `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
 | `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
@@ -87,7 +88,7 @@ Keeping a branch scoped to one project or module (see the root [AGENTS.md](../..
 | `installation` | Developer-machine setup commands that run once Node is installed (environment files, dependencies, shell configuration, software) |
 | `integration` | Continuous Integration plumbing: the steps that run around a CI job, such as the affected run and the Nx task-cache database |
 | `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app with Supabase backend |
+| `lexico` | TanStack Start SSR Latin dictionary web app |
 | `presentation` | Shared React/shadcn component library |
 | `lexico-entities` | Shared TypeORM entities and GraphQL types |
 | `lexico-cli` | Data ingestion scripts for Lexico |
@@ -204,7 +205,7 @@ See [gitmoji.dev](https://gitmoji.dev) for the complete emoji list.
 
 **Footer**: Forbidden. Footer sections are not allowed in commit messages in this repository.
 
-**Body**: Forbidden unless every line is a `Co-authored-by:` trailer, in any casing, which coding agents add automatically. Human contributors must not add a body.
+**Body**: Forbidden unless every line is a `Co-authored-by:` or `Claude-Session:` trailer, in any casing, which coding agents add automatically. Human contributors must not add a body.
 
 If you need to provide:
 
@@ -286,7 +287,7 @@ All rules defined in [../commitlint.config.ts](../../../configuration/commitlint
 - `subject-full-stop`: No period at end
 - `subject-empty`: Subject cannot be empty
 - `header-max-length`: Max 128 characters
-- `body-co-authored-only`: Body must be empty or contain only `Co-authored-by:` trailers
+- `body-co-authored-only`: Body must be empty or contain only `Co-authored-by:` or `Claude-Session:` trailers
 - `footer-empty`: Footer is forbidden
 
 ## Validation

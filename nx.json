@@ -644,6 +644,7 @@
         "codependix-gate",
         "conformetry-validate",
         "lockfile",
+        "project-ports",
         "readme-projects",
         "vscode-extensions"
       ],

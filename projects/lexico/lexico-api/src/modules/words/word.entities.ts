@@ -9,8 +9,8 @@ import {
 import { WordFormType } from "./word-form.entities";
 import { WordLexemeType } from "./word-lexeme.entities";
 
-import type { Connection, GraphQLObjectOf } from "../../lexico-api.types";
 import type { WordRelationField } from "./words.types";
+import type { Connection, GraphQLObjectOf } from "@codebase/interface";
 import type { Word } from "@codebase/lexico-entities";
 
 /** A written Latin word, linked to every form and lexeme it can be. */

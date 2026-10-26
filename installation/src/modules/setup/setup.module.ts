@@ -9,7 +9,6 @@ import { ProcessRunnerModule } from "../process-runner/process-runner.module";
 import { ReporterModule } from "../reporter/reporter.module";
 import { ShellConfigurationModule } from "../shell-configuration/shell-configuration.module";
 import { SoftwareModule } from "../software/software.module";
-import { SshSigningModule } from "../ssh-signing/ssh-signing.module";
 
 import { SetupCommand } from "./setup.command";
 import { SetupService } from "./setup.service";
@@ -27,7 +26,6 @@ import { SetupService } from "./setup.service";
     ReporterModule,
     ShellConfigurationModule,
     SoftwareModule,
-    SshSigningModule,
   ],
   providers: [SetupCommand, SetupService],
 })

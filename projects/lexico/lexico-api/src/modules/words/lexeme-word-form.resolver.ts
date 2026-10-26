@@ -1,7 +1,8 @@
 import { Inject } from "@nestjs/common";
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 
-import { mapRelationConnection } from "../../lexico-api.utilities";
+import { mapRelationConnection } from "@codebase/interface";
+
 import { LexemeType } from "../lexemes/lexeme.entities";
 
 import { LexemeWordFormType } from "./lexeme-word-form.entities";
@@ -9,7 +10,7 @@ import { LexemeWordFormLoader } from "./lexeme-word-form.loader";
 import { LexemeWordFormConnectionType } from "./word-connection.entities";
 import { toLexemeWordFormType } from "./words.utilities";
 
-import type { Connection } from "../../lexico-api.types";
+import type { Connection } from "@codebase/interface";
 
 /**
  * Resolves the written words behind a lexeme's forms, which the lexeme type

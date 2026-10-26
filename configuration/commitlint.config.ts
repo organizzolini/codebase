@@ -4,9 +4,11 @@
  * Commit format: `<type>(<scope>): <gitmoji> <subject>`
  *
  * - Header max: 128 characters (aim for &lt;72 for readability)
- * - Body: forbidden unless every line is a `Co-authored-by:` trailer, in any
- *   casing, or (in a `chore(release)` commit) an Nx release project line
- * - Footer: forbidden unless every line is a `Co-authored-by:` trailer, in any casing
+ * - Body: forbidden unless every line is a `Co-authored-by:` or `Claude-Session:`
+ *   trailer, in any casing, or (in a `chore(release)` commit) an Nx release
+ *   project line
+ * - Footer: forbidden unless every line is a `Co-authored-by:` or
+ *   `Claude-Session:` trailer, in any casing
  * - Subject: lowercase, imperative mood, no trailing period
  * - Gitmoji required at start of subject
  *
@@ -25,7 +27,13 @@ const NX_RELEASE_PROJECT_LINE =
   /^- project: [\w.@/-]+ \d+\.\d+\.\d+(?:-[\da-z.-]+)?$/i;
 
 /**
- * Every non-empty body line must be a `Co-authored-by:` trailer.
+ * An attribution trailer: `Co-authored-by: <author>`, or the
+ * `Claude-Session: <url>` link Claude Code appends beside it.
+ */
+const ATTRIBUTION_TRAILER = /^(?:Co-authored-by|Claude-Session): \S+/i;
+
+/**
+ * Every non-empty body line must be an attribution trailer.
  *
  * Matched case-insensitively. Git trailer keys are case-insensitive, and the
  * tools that write this one disagree on casing — GitHub Copilot emits
@@ -45,17 +53,17 @@ const bodyCoAuthoredOnly: Rule = (parsed): RuleOutcome => {
   const lines = body.split("\n").filter((line: string) => line.trim() !== "");
   const allAllowed = lines.every(
     (line: string) =>
-      /^Co-authored-by: \S+/i.test(line) ||
+      ATTRIBUTION_TRAILER.test(line) ||
       (isReleaseCommit && NX_RELEASE_PROJECT_LINE.test(line)),
   );
   return [
     allAllowed,
-    "Body must be empty or contain only Co-authored-by trailers (or, in a chore(release) commit, Nx release project lines)",
+    "Body must be empty or contain only Co-authored-by or Claude-Session trailers (or, in a chore(release) commit, Nx release project lines)",
   ];
 };
 
 /**
- * Every non-empty footer line must be a `Co-authored-by:` trailer.
+ * Every non-empty footer line must be an attribution trailer.
  *
  * Matched case-insensitively, for the reason given on the body rule above.
  */
@@ -64,11 +72,11 @@ const footerCoAuthoredOnly: Rule = (parsed): RuleOutcome => {
   if (!footer) return [true];
   const lines = footer.split("\n").filter((line: string) => line.trim() !== "");
   const allCoAuthored = lines.every((line: string) =>
-    /^Co-authored-by: \S+/i.test(line),
+    ATTRIBUTION_TRAILER.test(line),
   );
   return [
     allCoAuthored,
-    "Footer must be empty or contain only Co-authored-by trailers",
+    "Footer must be empty or contain only Co-authored-by or Claude-Session trailers",
   ];
 };
 
@@ -110,7 +118,7 @@ const configuration: UserConfig = {
     // 📏 Limit lengths
     "header-max-length": [2, "always", 128],
 
-    // 🚫 Forbid arbitrary body/footer content; allow only Co-authored-by trailers
+    // 🚫 Forbid arbitrary body/footer content; allow only Co-authored-by and Claude-Session trailers
     // (and Nx's per-project lines in a release commit)
     "body-co-authored-only": [2, "always"],
     "footer-co-authored-only": [2, "always"],

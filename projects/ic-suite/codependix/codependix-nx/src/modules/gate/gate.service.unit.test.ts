@@ -5,7 +5,6 @@ import { PassThrough } from "node:stream";
 import { pathToFileURL } from "node:url";
 
 import { ConfigurationModule } from "@codependix/configuration";
-import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -13,8 +12,6 @@ import { PluginService } from "../plugin/plugin.service";
 
 import { GateService } from "./gate.service";
 
-import type { GateHasherContext } from "./gate.types";
-import type { Hash, Task, TaskGraph, TaskHasher } from "@nx/devkit";
 import type * as ChildProcessModule from "node:child_process";
 
 vi.mock("node:child_process", async (importOriginal) => ({
@@ -293,6 +290,7 @@ describe(GateService, () => {
       expect.hasAssertions();
 
       await service.run({
+        cached: false,
         options: { configuration: "codependix.config.ts" },
         projectName: "alpha",
         workspaceRoot: "/workspace",
@@ -309,6 +307,7 @@ describe(GateService, () => {
       expect.hasAssertions();
 
       await service.run({
+        cached: false,
         options: {},
         projectName: "alpha",
         workspaceRoot: "/workspace",
@@ -323,6 +322,7 @@ describe(GateService, () => {
       expect.hasAssertions();
 
       await service.run({
+        cached: false,
         options: {},
         projectName: "alpha",
         workspaceRoot: "/workspace",
@@ -346,6 +346,7 @@ describe(GateService, () => {
 
       await expect(
         service.run({
+          cached: false,
           options: {},
           projectName: "alpha",
           workspaceRoot: "/workspace",
@@ -363,6 +364,7 @@ describe(GateService, () => {
 
       await expect(
         service.run({
+          cached: false,
           options: {},
           projectName: "alpha",
           workspaceRoot: "/workspace",
@@ -382,6 +384,7 @@ describe(GateService, () => {
       );
 
       await service.run({
+        cached: false,
         options: {},
         projectName: "alpha",
         workspaceRoot: "/workspace",
@@ -404,6 +407,7 @@ describe(GateService, () => {
 
       await expect(
         service.run({
+          cached: false,
           options: {},
           projectName: "alpha",
           workspaceRoot: "/workspace",
@@ -412,145 +416,57 @@ describe(GateService, () => {
     });
   });
 
-  describe("hashTask", () => {
-    const hash: Hash = { details: { command: "c", nodes: {} }, value: "own" };
-
-    /** Nx's own hasher, answering every task with `hash`. */
-    const hashTask =
-      vi.fn<
-        (
-          task: Task,
-          taskGraph?: TaskGraph,
-          env?: NodeJS.ProcessEnv,
-        ) => Promise<Hash>
-      >();
-
-    beforeEach(() => {
-      hashTask.mockResolvedValue(hash);
-    });
-
-    /**
-     * A hashing context whose `alpha` gate is configured with the given
-     * options, and whose hasher is `hashTask`.
-     */
-    function buildHasherContext(
-      configured: Record<string, unknown> = {},
-    ): GateHasherContext {
-      return {
-        env: { CI: "true" },
-        hasher: createMock<TaskHasher>({ hashTask }),
-        nxJsonConfiguration: {},
-        projectGraph: { dependencies: {}, nodes: {} },
-        projectsConfigurations: {
-          projects: {
-            alpha: {
-              root: "packages/alpha",
-              targets: {
-                "codependix-gate": {
-                  configurations: { judged: { tags: ["type:package"] } },
-                  options: configured,
-                },
-              },
-            },
-          },
-          version: 2,
-        },
-        taskGraph: {
-          continuousDependencies: {},
-          dependencies: {},
-          roots: [],
-          tasks: {},
-        },
-      };
-    }
-
-    /** The `alpha` gate task, run with the given overrides. */
-    function buildTask(args: {
-      configuration?: string;
-      overrides?: Record<string, unknown>;
-    }): Task {
-      return {
-        cache: true,
-        id: "alpha:codependix-gate",
-        outputs: [],
-        overrides: args.overrides ?? {},
-        target: {
-          project: "alpha",
-          target: "codependix-gate",
-          ...(args.configuration === undefined
-            ? {}
-            : { configuration: args.configuration }),
-        },
-      };
-    }
-
-    it.each([
-      ["no selection", {}],
-      ["its own project, named", { projects: "alpha" }],
-      ["a selection of blanks", { projects: " ,", tags: [""] }],
-    ])(
-      "hashes a run judging only its own project from its inputs, given %s",
-      async (_description, overrides) => {
-        expect.hasAssertions();
-
-        const context = buildHasherContext();
-        const task = buildTask({ overrides });
-
-        await expect(service.hashTask({ context, task })).resolves.toBe(hash);
-        expect(hashTask).toHaveBeenCalledWith(task, context.taskGraph, {
-          CI: "true",
-        });
-      },
-    );
-
-    it.each([
-      ["projects on the command line", { overrides: { projects: "beta" } }],
-      ["several projects", { overrides: { projects: ["alpha", "beta"] } }],
-      ["tags on the command line", { overrides: { tags: "type:package" } }],
-      ["a numeric project name", { overrides: { projects: 7 } }],
-      ["a configuration selecting tags", { configuration: "judged" }],
-    ])(
-      "never replays a run judging other projects, given %s",
-      async (_description, run) => {
-        expect.hasAssertions();
-
-        const context = buildHasherContext();
-        const first = await service.hashTask({ context, task: buildTask(run) });
-        const second = await service.hashTask({
-          context,
-          task: buildTask(run),
-        });
-
-        // The inputs only cover the target's own project, so no hash built
-        // from them could notice an edit to another one.
-        expect(first.value).not.toBe(second.value);
-        expect(hashTask).not.toHaveBeenCalled();
-      },
-    );
-
-    it("never replays a run whose target options select other projects", async () => {
+  describe("run with a cached target", () => {
+    it("refuses a cached target that judges another project", async () => {
       expect.hasAssertions();
-
-      const context = buildHasherContext({ projects: ["beta"] });
 
       await expect(
-        service.hashTask({ context, task: buildTask({}) }),
-      ).resolves.not.toBe(hash);
-      expect(hashTask).not.toHaveBeenCalled();
+        service.run({
+          cached: true,
+          options: { projects: ["beta"] },
+          projectName: "alpha",
+          workspaceRoot: "/workspace",
+        }),
+      ).rejects.toThrow("must set `cache: false`");
     });
 
-    it("hashes with the process environment when Nx hands none", async () => {
+    it("refuses a cached target that selects projects by tag", async () => {
       expect.hasAssertions();
 
-      const { env: _env, ...context } = buildHasherContext();
+      await expect(
+        service.run({
+          cached: true,
+          options: { tags: ["type:package"] },
+          projectName: "alpha",
+          workspaceRoot: "/workspace",
+        }),
+      ).rejects.toThrow("must set `cache: false`");
+    });
 
-      await service.hashTask({ context, task: buildTask({}) });
+    it("runs a cached target that names only its own project", async () => {
+      expect.hasAssertions();
 
-      expect(hashTask).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
-        process.env,
-      );
+      await expect(
+        service.run({
+          cached: true,
+          options: { projects: ["alpha"] },
+          projectName: "alpha",
+          workspaceRoot: "/workspace",
+        }),
+      ).resolves.toBe(true);
+    });
+
+    it("runs an uncached target that judges another project", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.run({
+          cached: false,
+          options: { projects: ["beta"] },
+          projectName: "alpha",
+          workspaceRoot: "/workspace",
+        }),
+      ).resolves.toBe(true);
     });
   });
 });

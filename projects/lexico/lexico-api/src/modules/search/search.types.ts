@@ -1,7 +1,7 @@
 // 🏷️ Types
 
-import type { Connection } from "../../lexico-api.types";
 import type { SearchMatchSource } from "./search.entities";
+import type { Connection } from "@codebase/interface";
 import type { Lexeme } from "@codebase/lexico-entities";
 
 /**
@@ -17,6 +17,7 @@ export interface EncliticDecompositionResult {
  * the `LexemeSearchResult` the API returns.
  */
 export interface LexemeSearchMatch {
+  distance: null | number;
   enclitic: null | string;
   identifiers: string[];
   lexeme: Lexeme;

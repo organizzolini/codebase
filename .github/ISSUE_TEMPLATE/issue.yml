@@ -47,6 +47,7 @@ body:
         - configuration
         - conformetry
         - persistence
+        - interface
         - dependencies
         - deployments
         - documentation

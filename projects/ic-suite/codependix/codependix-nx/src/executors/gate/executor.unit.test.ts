@@ -19,15 +19,32 @@ vi.mock("../../modules/plugin/plugin-context.utilities", () => ({
  * Built literally rather than mocked: `createMock` fabricates every property
  * it is not handed, so Nx omitting `projectName` cannot be expressed with it.
  */
-function buildContext(projectName?: string): ExecutorContext {
+function buildContext(projectName?: string, cache = false): ExecutorContext {
   return {
     cwd: "/workspace",
     isVerbose: false,
     nxJsonConfiguration: {},
-    projectGraph: { dependencies: {}, nodes: {} },
+    projectGraph: {
+      dependencies: {},
+      nodes:
+        projectName === undefined
+          ? {}
+          : {
+              [projectName]: {
+                data: {
+                  root: projectName,
+                  targets: { "codependix-gate": { cache } },
+                },
+                name: projectName,
+                type: "lib",
+              },
+            },
+    },
     projectsConfigurations: { projects: {}, version: 2 },
     root: "/workspace",
-    ...(projectName === undefined ? {} : { projectName }),
+    ...(projectName === undefined
+      ? {}
+      : { projectName, targetName: "codependix-gate" }),
   };
 }
 
@@ -42,10 +59,21 @@ describe(gateExecutor, () => {
     await gateExecutor({ dependencies: false }, buildContext("alpha"));
 
     expect(gateService.run).toHaveBeenCalledWith({
+      cached: false,
       options: { dependencies: false },
       projectName: "alpha",
       workspaceRoot: "/workspace",
     });
+  });
+
+  it("tells the gate its target is cached when Nx caches it", async () => {
+    expect.hasAssertions();
+
+    await gateExecutor({}, buildContext("alpha", true));
+
+    expect(gateService.run).toHaveBeenCalledWith(
+      expect.objectContaining({ cached: true }),
+    );
   });
 
   it("passes the task when the gate passed", async () => {

@@ -17,7 +17,7 @@ description: |
 
   The action's own `cache` input does not help, and neither does `version` or
   `standalone`. `cache` caches the pnpm *store* — dependency tarballs, keyed
-  on `pnpm-lock.yaml` — which `actions/setup-node` already caches here, and it
+  on `pnpm-lock.yaml` — which `setup-codebase` caches separately, and it
   works by running `pnpm store path`, so it can only run after the install it
   would need to skip. `version` changes which version `self-update` moves to
   but not the `npm ci`, which installs from that bundled lockfile either way.
@@ -30,10 +30,9 @@ description: |
   handed to it is erased before it is read.
 
   The key names the pinned version and nothing else. A version bump is the
-  only thing that should invalidate this, and unlike `setup-codebase`'s
-  Homebrew key there is deliberately no weekly rotation — `packageManager` is
-  the whole point, and a pin that drifted to whatever the registry served last
-  week would be no pin at all.
+  only thing that should invalidate this, so there is deliberately no weekly
+  rotation — `packageManager` is the whole point, and a pin that drifted to
+  whatever the registry served last week would be no pin at all.
 outputs:
   version:
     description: The pnpm version resolved from `packageManager`

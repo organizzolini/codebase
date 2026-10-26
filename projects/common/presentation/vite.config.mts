@@ -19,7 +19,7 @@ export default defineConfig(() => ({
       formats: ["es" as const],
       name: "presentation",
     },
-    outDir: "../../dist/packages/components",
+    outDir: "dist",
     reportCompressedSize: true,
     rolldownOptions: {
       external: ["react", "react-dom", "react/jsx-runtime", /^@radix-ui\/.*/],

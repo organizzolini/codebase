@@ -1,3 +1,21 @@
+## 0.0.49 (2026-10-24)
+
+### 📦 Build
+
+- **ic-suite,presentation:** 👷 infer the vite build target instead of @nx/vite:build ([#1823](https://github.com/organizzolini/codebase/pull/1823))
+
+## 0.0.48 (2026-10-23)
+
+This was a version bump only for conformetry-core to align it with other projects, there were no code changes.
+
+## 0.0.47 (2026-10-22)
+
+This was a version bump only for conformetry-core to align it with other projects, there were no code changes.
+
+## 0.0.46 (2026-10-22)
+
+This was a version bump only for conformetry-core to align it with other projects, there were no code changes.
+
 ## 0.0.45 (2026-10-21)
 
 This was a version bump only for conformetry-core to align it with other projects, there were no code changes.

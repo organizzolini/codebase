@@ -2,8 +2,8 @@ import { ObjectType } from "@nestjs/graphql";
 
 import { InflectionType } from "./inflection.entities";
 
-import type { GraphQLObjectOf } from "../../../lexico-api.types";
 import type { InflectionDatabaseOnlyField } from "./inflections.types";
+import type { GraphQLObjectOf } from "@codebase/interface";
 import type { UninflectedInflection } from "@codebase/lexico-entities";
 
 /** The marker for a lexeme that does not inflect. */

@@ -5,14 +5,13 @@ import { LoggerModule } from "@codebase/observability";
 import { ProcessRunnerModule } from "../process-runner/process-runner.module";
 import { ReporterModule } from "../reporter/reporter.module";
 
-import { SshSigningCommand } from "./ssh-signing.command";
 import { SshSigningService } from "./ssh-signing.service";
 
 /** Makes SSH commit signatures verifiable on this machine. */
 @Module({
   controllers: [],
-  exports: [SshSigningCommand, SshSigningService],
+  exports: [SshSigningService],
   imports: [LoggerModule, ProcessRunnerModule, ReporterModule],
-  providers: [SshSigningCommand, SshSigningService],
+  providers: [SshSigningService],
 })
 export class SshSigningModule {}

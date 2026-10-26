@@ -5,8 +5,8 @@ import { DeletableType } from "../../deletable.entities";
 import { AuthorType } from "./author.entities";
 import { TextType } from "./text.entities";
 
-import type { GraphQLObjectOf, Related } from "../../lexico-api.types";
 import type { LineRelationField, LineResolvedField } from "./literature.types";
+import type { GraphQLObjectOf, Related } from "@codebase/interface";
 import type { Line } from "@codebase/lexico-entities";
 
 /** One line of a classical Latin text. */

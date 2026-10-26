@@ -2,6 +2,143 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.27.0](https://github.com/organizzolini/codebase/compare/v3.26.9...v3.27.0) (2026-10-26)
+
+### ✨ Features
+
+* **lexico:** ✨ rank fuzzy Latin matches by edit distance ([#1854](https://github.com/organizzolini/codebase/issues/1854)) ([12dc7cc](https://github.com/organizzolini/codebase/commit/12dc7cc37055bc701400beee664695e3c64eaceb))
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh OpenWiki ([#1858](https://github.com/organizzolini/codebase/issues/1858)) ([f2ea39a](https://github.com/organizzolini/codebase/commit/f2ea39af591d1192ef9edb5c3d7eb3c730f4e5a9))
+
+## [3.26.9](https://github.com/organizzolini/codebase/compare/v3.26.8...v3.26.9) (2026-10-26)
+
+### 🐛 Bug Fixes
+
+* **documentation,configuration:** 🐛 refresh documentation on a free OpenRouter model ([#1806](https://github.com/organizzolini/codebase/issues/1806)) ([ee6a4f0](https://github.com/organizzolini/codebase/commit/ee6a4f0415481faf47ac1d454bdf424dd831cb5e))
+
+## [3.26.8](https://github.com/organizzolini/codebase/compare/v3.26.7...v3.26.8) (2026-10-26)
+
+### 🐛 Bug Fixes
+
+* **dependencies:** 🔥 Remove generated .codex hooks folder ([#1829](https://github.com/organizzolini/codebase/issues/1829)) ([3271b6e](https://github.com/organizzolini/codebase/commit/3271b6e8458468a081b738f69195415fad633e9c)), closes [#1802](https://github.com/organizzolini/codebase/issues/1802)
+
+### 📝 Documentation
+
+* **documentation:** 📝 add missing technology badges ([#1828](https://github.com/organizzolini/codebase/issues/1828)) ([696db38](https://github.com/organizzolini/codebase/commit/696db3870b48c09348ea52c0a7ee4192301d39d5))
+
+## [3.26.7](https://github.com/organizzolini/codebase/compare/v3.26.6...v3.26.7) (2026-10-26)
+
+### 🐛 Bug Fixes
+
+* **integration,deployments:** 🐛 upgrade node and run the weekly upgrades without shell scripts ([#1827](https://github.com/organizzolini/codebase/issues/1827)) ([dfc6069](https://github.com/organizzolini/codebase/commit/dfc606931576117520f8a3527048399c6581140e))
+
+## [3.26.6](https://github.com/organizzolini/codebase/compare/v3.26.5...v3.26.6) (2026-10-25)
+
+## [3.26.5](https://github.com/organizzolini/codebase/compare/v3.26.4...v3.26.5) (2026-10-24)
+
+## [3.26.4](https://github.com/organizzolini/codebase/compare/v3.26.3...v3.26.4) (2026-10-24)
+
+## [3.26.3](https://github.com/organizzolini/codebase/compare/v3.26.2...v3.26.3) (2026-10-24)
+
+### 📦 Build System
+
+* **ic-suite,presentation:** 👷 infer the vite build target instead of @nx/vite:build ([#1823](https://github.com/organizzolini/codebase/issues/1823)) ([20be9c5](https://github.com/organizzolini/codebase/commit/20be9c5d9a12fcaee3a4a523023cc8ee1c63f650)), closes [organizzolini/codebase#1821](https://github.com/organizzolini/codebase/issues/1821) [organizzolini/codebase#1819](https://github.com/organizzolini/codebase/issues/1819)
+
+## [3.26.2](https://github.com/organizzolini/codebase/compare/v3.26.1...v3.26.2) (2026-10-24)
+
+### 🐛 Bug Fixes
+
+* **codependix:** 🐛 replace the gate's custom hasher with a cache check ([#1819](https://github.com/organizzolini/codebase/issues/1819)) ([7fea157](https://github.com/organizzolini/codebase/commit/7fea157d662e25652bf807dff49bfab994c047ee))
+
+## [3.26.1](https://github.com/organizzolini/codebase/compare/v3.26.0...v3.26.1) (2026-10-24)
+
+### ♻️ Code Refactoring
+
+* **installation,integration:** ♻️ let the software command install named tools ([#1809](https://github.com/organizzolini/codebase/issues/1809)) ([bc43c4c](https://github.com/organizzolini/codebase/commit/bc43c4c40e61d8a81036e4d233031173d41ff9b1))
+
+## [3.26.0](https://github.com/organizzolini/codebase/compare/v3.25.2...v3.26.0) (2026-10-23)
+
+### ✨ Features
+
+* **integration:** ✨ report each upgrade step in the pull request body ([#1804](https://github.com/organizzolini/codebase/issues/1804)) ([c3e7a70](https://github.com/organizzolini/codebase/commit/c3e7a70adbbc3d9bd9971a5f5ca72696cf27c943))
+
+## [3.25.2](https://github.com/organizzolini/codebase/compare/v3.25.1...v3.25.2) (2026-10-23)
+
+## [3.25.1](https://github.com/organizzolini/codebase/compare/v3.25.0...v3.25.1) (2026-10-23)
+
+### ♻️ Code Refactoring
+
+* **integration,documentation:** ♻️ move the CI steps into integration commands ([#1801](https://github.com/organizzolini/codebase/issues/1801)) ([dc1c4df](https://github.com/organizzolini/codebase/commit/dc1c4df98cee03a2ceedf60f9ed39ae6e5c71d98))
+
+## [3.25.0](https://github.com/organizzolini/codebase/compare/v3.24.1...v3.25.0) (2026-10-23)
+
+### ✨ Features
+
+* **documentation:** ✨ add refresh-documentation command project ([#1800](https://github.com/organizzolini/codebase/issues/1800)) ([64e4646](https://github.com/organizzolini/codebase/commit/64e464656b7f94d6463cd20e40589f5754ebfac7))
+
+## [3.24.1](https://github.com/organizzolini/codebase/compare/v3.24.0...v3.24.1) (2026-10-23)
+
+### 🐛 Bug Fixes
+
+* **synchronization,configuration:** 🐛 ignore every file a vendored skill installs ([#1798](https://github.com/organizzolini/codebase/issues/1798)) ([896b81f](https://github.com/organizzolini/codebase/commit/896b81f2aba13e27e0c996a0a94cda717230206a))
+
+### 📝 Documentation
+
+* **documentation:** 📝 add a code of conduct ([#1799](https://github.com/organizzolini/codebase/issues/1799)) ([4cd49e6](https://github.com/organizzolini/codebase/commit/4cd49e643e628f6334ad886da1a6141e07d0aa2b))
+
+## [3.24.0](https://github.com/organizzolini/codebase/compare/v3.23.1...v3.24.0) (2026-10-23)
+
+### ✨ Features
+
+* **integration,deployments:** ✨ run the dependency upgrades as one command that reports skips ([#1796](https://github.com/organizzolini/codebase/issues/1796)) ([705e640](https://github.com/organizzolini/codebase/commit/705e640463a2077dde2ebd31d4058dded6ace2ec))
+
+### ♻️ Code Refactoring
+
+* **integration:** ♻️ hardcode the spelling and template paths of run-affected ([#1797](https://github.com/organizzolini/codebase/issues/1797)) ([a635398](https://github.com/organizzolini/codebase/commit/a635398ea11127ea455063e51fb0a63f7ef72e04))
+
+## [3.23.1](https://github.com/organizzolini/codebase/compare/v3.23.0...v3.23.1) (2026-10-22)
+
+## [3.23.0](https://github.com/organizzolini/codebase/compare/v3.22.1...v3.23.0) (2026-10-22)
+
+### ✨ Features
+
+* **documentation:** ✨ add ponytail skills for smaller implementations ([#1745](https://github.com/organizzolini/codebase/issues/1745)) ([40bd0c3](https://github.com/organizzolini/codebase/commit/40bd0c392e0d051cbb2b293efb430a79ac4fcb48))
+
+### 📝 Documentation
+
+* **documentation,scripts:** 📝 guide cloud sessions through ssh signing and github mcp ([#1746](https://github.com/organizzolini/codebase/issues/1746)) ([37960bc](https://github.com/organizzolini/codebase/commit/37960bc8ccb7aa7210605cdb0d0698d55bfec23b)), closes [.github/CONTRIBUTING.md#commit-signing-required](https://github.com/.github/CONTRIBUTING.md/issues/commit-signing-required)
+* **documentation:** 📝 move handoff and openwiki procedures out of agents ([#1748](https://github.com/organizzolini/codebase/issues/1748)) ([0e79185](https://github.com/organizzolini/codebase/commit/0e7918505d3e8da67b23699e72606da59f84123d))
+
+## [3.22.1](https://github.com/organizzolini/codebase/compare/v3.22.0...v3.22.1) (2026-10-22)
+
+### 📦 Build System
+
+* **dependencies,configuration:** 🔥 remove supabase and allow claude-session trailer ([#1744](https://github.com/organizzolini/codebase/issues/1744)) ([667b8c4](https://github.com/organizzolini/codebase/commit/667b8c49c0f2dd0a19cda79882320a9f4a9aa2fe))
+
+## [3.22.0](https://github.com/organizzolini/codebase/compare/v3.21.0...v3.22.0) (2026-10-22)
+
+### ✨ Features
+
+* **installation:** ✨ fold ssh-signing into software and install the commit tools on linux ([#1743](https://github.com/organizzolini/codebase/issues/1743)) ([a5eeba3](https://github.com/organizzolini/codebase/commit/a5eeba37cddd974c6f800abc3d2f40c6265ce469)), closes [#1738](https://github.com/organizzolini/codebase/issues/1738)
+
+## [3.21.0](https://github.com/organizzolini/codebase/compare/v3.20.0...v3.21.0) (2026-10-22)
+
+### ✨ Features
+
+* **lexico,interface:** ✨ add interface package with graphql server and client modules ([#1742](https://github.com/organizzolini/codebase/issues/1742)) ([4cbb539](https://github.com/organizzolini/codebase/commit/4cbb53930e18647c7555fa0abc5f540efe9b73cd))
+
+## [3.20.0](https://github.com/organizzolini/codebase/compare/v3.19.0...v3.20.0) (2026-10-22)
+
+### ✨ Features
+
+* **synchronization,installation:** ✨ add project-ports command and install helm on linux ([#1738](https://github.com/organizzolini/codebase/issues/1738)) ([2eb4ae4](https://github.com/organizzolini/codebase/commit/2eb4ae4e5695503708cfdd2e1c1581cc2bd37df6)), closes [#1739](https://github.com/organizzolini/codebase/issues/1739)
+
+### 📝 Documentation
+
+* **documentation:** 📝 group common projects and move license badge in readme ([#1740](https://github.com/organizzolini/codebase/issues/1740)) ([3fa847b](https://github.com/organizzolini/codebase/commit/3fa847b0f7b33ecdff7f7107f60f54e9b28b98e9))
+
 ## [3.19.0](https://github.com/organizzolini/codebase/compare/v3.18.0...v3.19.0) (2026-10-21)
 
 ### ✨ Features

@@ -1,3 +1,12 @@
 # Files
 
-- [Codebase Projects and Workflows](projects.md) - Detailed overview of applications, shared packages, tooling, and operational workflows.
+- [Affirmancy — Affirmation Generation Pipeline](affirmancy.md) - Python LangGraph ReAct agent that researches spiritual subjects via SearxNG, generates affirmations across 9 grammatical axes using gemma4:e2b via Ollama, validates with Pydantic, and writes JSON/markdown output.
+- [Caelundas — Astronomical Calendar Generator](caelundas.md) - Documents the Caelundas application: computes planetary positions minute-by-minute using Swiss Ephemeris (JPL DE431), detects astronomical events in two passes (perfective moments to progressive spans), stores in Postgres, and renders iCalendar (.ics) and JSON output. Covers the ephemeris data dependency, the timezone-from-coordinates convention, and the database schema convention.
+- [Callidescope](callidescope.md)
+- [Codependix — Dependency Graph Boundary Enforcement](codependix.md)
+- [Codometer — Repository Measurement & Limits](codometer.md)
+- [Conformetry](conformetry.md) - Template-driven code generation and conformance validation toolchain for the monorepo. Generators render templates to instances, languages compare instances against templates structurally, and validation reports differences with conformance scores that gate CI.
+- [Lexico — Latin-English Dictionary Suite](lexico.md) - Four-project suite (lexico-cli, lexico-entities, lexico-api, lexico-web) that scrapes Latin dictionary and literature sources into Postgres, exposes them via a Relay-paginated GraphQL API, and renders search via TanStack Start SSR.
+- [Meanderaw — Greek Meander Enumeration & Classification](meanderaw.md) - CLI application that enumerates Greek key/fret patterns into Postgres by lattice address (Code), measures structural characteristics and classifies compound pattern booleans, then streams HTML index pages to disk for exploration via a web app.
+- [Domain Systems Overview](overview.md) - Index page for the four application domains (affirmancy, caelundas, lexico, meanderaw), summarizing each domain's purpose, technology stack, primary outputs, and key dependencies.
+- [Project Structure & Conventions](projects.md)

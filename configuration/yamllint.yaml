@@ -15,6 +15,7 @@ ignore: |
   **/coverage/
   **/dist/
   **/node_modules/
+  **/openwiki/
   **/pnpm-lock.yaml
   **/templates/
   CHANGELOG.md

@@ -69,6 +69,7 @@ firewalled
 fontsource
 frontmatter
 futp
+gebert
 ghaction
 gantt
 gitmodules
@@ -202,6 +203,7 @@ setsid
 sherif
 shiftsmart
 shiki
+shortstat
 signingkey
 smallint
 smol
@@ -281,3 +283,4 @@ worktrees
 zodv4
 nohup
 setsid
+zodv4

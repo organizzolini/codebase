@@ -4,12 +4,12 @@ import { DeletableType } from "../../deletable.entities";
 
 import { AuthorType } from "./author.entities";
 
-import type { GraphQLObjectOf, Related } from "../../lexico-api.types";
 import type {
   TextDatabaseOnlyField,
   TextRelationField,
   TextResolvedField,
 } from "./literature.types";
+import type { GraphQLObjectOf, Related } from "@codebase/interface";
 import type { Text } from "@codebase/lexico-entities";
 
 /** A literary work, or one part of one, such as a book of a poem. */

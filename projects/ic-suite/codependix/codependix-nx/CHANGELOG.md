@@ -1,3 +1,41 @@
+## 0.0.36 (2026-10-24)
+
+### 📦 Build
+
+- **ic-suite,presentation:** 👷 infer the vite build target instead of @nx/vite:build ([#1823](https://github.com/organizzolini/codebase/pull/1823))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.49
+- Updated codependix-cli to 0.0.50
+
+## 0.0.35 (2026-10-24)
+
+### 🩹 Fixes
+
+- **codependix:** 🐛 replace the gate's custom hasher with a cache check ([#1819](https://github.com/organizzolini/codebase/pull/1819))
+
+## 0.0.34 (2026-10-23)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.48
+- Updated codependix-cli to 0.0.49
+
+## 0.0.33 (2026-10-22)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.47
+- Updated codependix-cli to 0.0.48
+
+## 0.0.32 (2026-10-22)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.46
+- Updated codependix-cli to 0.0.47
+
 ## 0.0.31 (2026-10-21)
 
 ### 🧱 Updated Dependencies

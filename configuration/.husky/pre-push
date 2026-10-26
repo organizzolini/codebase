@@ -7,12 +7,23 @@ set -e
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S %z')
 printf '[%s] pre-push\n' "${TIMESTAMP}"
 
-# 🪾 Validate branch name
+# 🪾 Validate the name of every branch being pushed
+# Git feeds one `<local ref> <local sha> <remote ref> <remote sha>` line per ref
+# on standard input. The remote ref is what lands on the remote, so it is what is
+# validated: checking only the checked-out branch lets `HEAD:<other-name>` slip
+# through. Deletions and non-branch refs (tags) are skipped.
 # Invoked directly rather than through `nx run configuration:validate-branch-name`.
 # That target is `cache: false`, so Nx only added a project graph build —
 # measured at 1.37s against 0.08s for the binary. Husky puts node_modules/.bin
 # on PATH, which is how `nx` resolved here before.
-validate-branch-name
+ZERO_SHA='0000000000000000000000000000000000000000'
+while read -r _local_ref local_sha remote_ref _remote_sha; do
+  [ "${local_sha}" = "${ZERO_SHA}" ] && continue
+  case "${remote_ref}" in
+    refs/heads/*) validate-branch-name --test "${remote_ref#refs/heads/}" ;;
+    *) ;;
+  esac
+done
 
 # 🔐 Check git signing configuration
 REPOSITORY_ROOT="$(git rev-parse --show-toplevel)"

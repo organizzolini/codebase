@@ -80,7 +80,8 @@ export class SynchronizationCommand extends CommandRunner {
    * still catch drift on its own. `vscode-settings` is left out on purpose: it
    * writes the Machine settings under `/root/.vscode-server`, which only a
    * devcontainer has, so a run of everything on any other machine would fail
-   * on it.
+   * on it. `project-ports` is left out too: it rewrites authored ports rather
+   * than deriving a committed file, so it runs only by name.
    */
   private getCommands(): SynchronizableCommand[] {
     return [

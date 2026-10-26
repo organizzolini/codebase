@@ -1,3 +1,6 @@
+/* cspell:words FULLTEXT */
+
+import { fromCursorSafe, toCursor } from "@codebase/interface";
 import {
   AdjectivalForm,
   AdverbForm,
@@ -10,24 +13,28 @@ import {
   SupineForm,
 } from "@codebase/lexico-entities";
 
-import { fromCursorSafe, toCursor } from "../../lexico-api.utilities";
 import { toLexemeType } from "../lexemes/lexemes.utilities";
 import { ENTITY_ID_PATTERN } from "../literature/literature.constants";
 
 import {
   ENCLITIC_FALSE_POSITIVES,
   ENCLITIC_SUFFIXES,
+  ENGLISH_TIER_SOURCES,
+  FUZZY_MINIMUM_LENGTH,
+  FUZZY_TWO_EDIT_LENGTH,
   LATIN_TIER_SOURCES,
+  SCORE_FUZZY,
+  SCORE_FUZZY_STEP,
 } from "./search.constants";
 import { LexemeSearchResult, SearchMatchSource } from "./search.entities";
 
-import type { GraphQLFields } from "../../lexico-api.types";
 import type { CursorClaim } from "../literature/literature.types";
 import type {
   EncliticDecompositionResult,
   LexemeSearchMatch,
   SearchCursorPayload,
 } from "./search.types";
+import type { GraphQLFields } from "@codebase/interface";
 
 /**
  * Decomposes possible Latin enclitic suffixes (-que, -ve, -ne) from a query string.
@@ -72,6 +79,25 @@ export function formatFormIdentifier(form: Form): null | string {
 }
 
 /**
+ * Reads the edit distance a fuzzy score was given for, the inverse of how the
+ * ranking scores a match by its distance.
+ */
+export function fuzzyScoreToDistance(score: number): number {
+  return Math.round((SCORE_FUZZY - score) / SCORE_FUZZY_STEP);
+}
+
+/**
+ * Most edits a fuzzy match of a term may be from it: none for a term too short
+ * to be told from its neighbors, one for a short term, two for a long one.
+ */
+export function maximumFuzzyDistance(term: string): number {
+  if (term.length < FUZZY_MINIMUM_LENGTH) {
+    return 0;
+  }
+  return term.length >= FUZZY_TWO_EDIT_LENGTH ? 2 : 1;
+}
+
+/**
  * Reads the lexeme and score a search cursor names, as the row it claims:
  * its id, and its negated score as the sort key the ranking pages by. Null
  * for anything that is not the canonical cursor of a scored lexeme.
@@ -91,6 +117,15 @@ export function readSearchCursor(cursor: string): CursorClaim | null {
 }
 
 /**
+ * Names the English tier a lexeme's best translation score came from.
+ */
+export function toEnglishMatchSource(score: number): SearchMatchSource {
+  return (
+    ENGLISH_TIER_SOURCES.get(score) ?? SearchMatchSource.TRANSLATION_FULLTEXT
+  );
+}
+
+/**
  * Names the Latin tier a lexeme's best score came from, reading a score no
  * tier gives as the lowest tier, fuzzy matching.
  */
@@ -105,6 +140,7 @@ export function toLexemeSearchResult(
   match: LexemeSearchMatch,
 ): LexemeSearchResult {
   return Object.assign(new LexemeSearchResult(), {
+    distance: match.distance,
     enclitic: match.enclitic,
     identifiers: match.identifiers,
     lexeme: toLexemeType(match.lexeme),

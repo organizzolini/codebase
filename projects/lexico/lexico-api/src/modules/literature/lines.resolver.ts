@@ -7,7 +7,8 @@ import {
   Resolver,
 } from "@nestjs/graphql";
 
-import { mapConnection } from "../../lexico-api.utilities";
+import { mapConnection } from "@codebase/interface";
+
 import { PaginationArguments } from "../search/pagination-arguments.entities";
 
 import { LinesArguments } from "./line-arguments.entities";
@@ -21,8 +22,8 @@ import { LiteratureService } from "./literature.service";
 import { toLineType, toTokenType } from "./literature.utilities";
 import { SearchLinesArguments } from "./search-lines-arguments.entities";
 
-import type { Connection } from "../../lexico-api.types";
 import type { TokenType } from "./token.entities";
+import type { Connection } from "@codebase/interface";
 
 /**
  * GraphQL resolver for Lines.

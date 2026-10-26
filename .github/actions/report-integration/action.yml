@@ -29,53 +29,18 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: 📥 Download Codometer Baseline
-      id: baseline
-      if: >-
-        inputs.target == 'build-projects' &&
-        ((inputs.is-main-branch == 'true' && inputs.run-outcome == 'success') ||
-        inputs.is-pull-request == 'true')
-      continue-on-error: true
-      env:
-        GH_TOKEN: ${{ inputs.github-token }}
-      shell: bash
-      run: |
-        run_id="$(gh run list --workflow=continuous-integration.yml \
-          --branch=main --status=success --limit=1 \
-          --json databaseId --jq '.[0].databaseId')"
-        if [[ -z "${run_id}" ]]; then
-          echo "No successful main run to compare against yet."
-          exit 0
-        fi
-        gh run download "${run_id}" --name codometer-reports-main \
-          --dir codometer-baseline
-        echo "run-url=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions" \
-          >>"${GITHUB_OUTPUT}"
-        echo "run-url=$(cat ${GITHUB_OUTPUT})/runs/${run_id}" \
-          >>"${GITHUB_OUTPUT}"
-
-    - name: 🧺 Update Codometer Baseline
+    # A green `main` build is the baseline the next pull request is measured
+    # against, so its reports are gathered here and uploaded below. See the
+    # `collect-codometer-baseline` command of the `integration` project.
+    - name: 🧺 Collect Codometer Baseline
       if: >-
         inputs.target == 'build-projects' &&
         inputs.is-main-branch == 'true' &&
         inputs.run-outcome == 'success'
       shell: bash
       run: |
-        mkdir -p codometer-baseline
-        copied=0
-        while IFS= read -r report; do
-          report="${report#./}"
-          mkdir -p "codometer-baseline/$(dirname "${report}")"
-          cp "${report}" "codometer-baseline/${report}"
-          copied=1
-        done < <(
-          find . -type f -name 'codometer-report.json' \
-            ! -path './projects/ic-suite/codometer/codometer-examples/*' \
-            ! -path './codometer-baseline/*'
-        )
-        if [[ "${copied}" -eq 0 ]]; then
-          echo "ℹ️ No codometer reports were found for this run."
-        fi
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          integration/src/integration.main.ts collect-codometer-baseline
 
     - name: 📤 Upload Codometer Baseline
       if: >-
@@ -89,21 +54,17 @@ runs:
         retention-days: 90
         if-no-files-found: ignore
 
+    # Fetches that baseline, if there is one, and writes the changes against it
+    # into the pull request body. See the `report-codometer-changes` command.
     - name: ⏲️ Report Codometer Changes
       if: inputs.target == 'build-projects' && inputs.is-pull-request == 'true'
       env:
-        BASELINE_URL: ${{ steps.baseline.outputs.run-url }}
         GH_TOKEN: ${{ inputs.github-token }}
         PULL_REQUEST: ${{ inputs.pull-request-number }}
       shell: bash
       run: |
-        gh pr view "${PULL_REQUEST}" --json body --jq '.body' \
-          >.pull-request-body.md
-        pnpm exec nx run codometer-cli:start -- changes \
-          --baseline codometer-baseline \
-          --baseline-url "${BASELINE_URL}" \
-          --markdown .pull-request-body.md
-        gh pr edit "${PULL_REQUEST}" --body-file .pull-request-body.md
+        NODE_OPTIONS='' node --import @swc-node/register/esm-register \
+          integration/src/integration.main.ts report-codometer-changes
 
     - name: 📊 Upload Type Coverage
       if: inputs.run-outcome == 'failure' && inputs.target == 'typecheck-code'

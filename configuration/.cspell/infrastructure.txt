@@ -84,7 +84,6 @@ sendgrid
 signups
 STDSTRINGS
 storageclasses
-supabase
 superkey
 textlocal
 tflint

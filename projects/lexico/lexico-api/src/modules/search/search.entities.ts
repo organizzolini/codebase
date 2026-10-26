@@ -1,8 +1,15 @@
 /* cspell:words FULLTEXT */
 
-import { Field, Float, ObjectType, registerEnumType } from "@nestjs/graphql";
+import {
+  Field,
+  Float,
+  Int,
+  ObjectType,
+  registerEnumType,
+} from "@nestjs/graphql";
 
-import { Paginated } from "../../lexico-api.utilities";
+import { Paginated } from "@codebase/interface";
+
 import { LexemeType } from "../lexemes/lexeme.entities";
 
 /**
@@ -13,7 +20,9 @@ export enum SearchMatchSource {
   FUZZY = "FUZZY",
   LEMMA_EXACT = "LEMMA_EXACT",
   PREFIX = "PREFIX",
+  TRANSLATION_EXACT = "TRANSLATION_EXACT",
   TRANSLATION_FULLTEXT = "TRANSLATION_FULLTEXT",
+  TRANSLATION_PREFIX = "TRANSLATION_PREFIX",
   WORD_EXACT = "WORD_EXACT",
 }
 
@@ -27,6 +36,12 @@ registerEnumType(SearchMatchSource, {
  */
 @ObjectType()
 export class LexemeSearchResult {
+  @Field(() => Int, {
+    description: "Edit distance of a fuzzy match from the search term",
+    nullable: true,
+  })
+  public distance?: null | number;
+
   @Field(() => String, {
     description:
       "Enclitic suffix separated from search token (e.g. que, ve, ne)",

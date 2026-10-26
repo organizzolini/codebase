@@ -32,6 +32,7 @@ import { Token } from "../entities/literature/token.entity";
 
 import { LexicoNamingStrategy } from "./database.constants";
 import { Migration1791164926316 } from "./migrations/1791164926316-migration";
+import { Migration1792000000000 } from "./migrations/1792000000000-migration";
 
 export const LEXICO_DATABASE_ENTITIES = [
   Lexeme,
@@ -64,7 +65,10 @@ export const LEXICO_DATABASE_ENTITIES = [
 ] as const;
 
 /** Every migration, in order, for the test harness; the runtime module runs none. */
-export const LEXICO_DATABASE_MIGRATIONS = [Migration1791164926316] as const;
+export const LEXICO_DATABASE_MIGRATIONS = [
+  Migration1791164926316,
+  Migration1792000000000,
+] as const;
 
 /**
  * The data source the TypeORM command line reads for

@@ -79,6 +79,7 @@ const config: KnipConfig = {
     "commitlint-plugin-gitmoji", // commitlint plugin, referenced as string in plugins array
     "commitlint-plugin-tense", // commitlint plugin, referenced as string in plugins array
     "markdownlint-cli2", // Markdown linter CLI, invoked via nx:run-commands in project.json
+    "openwiki", // Documentation generator CLI, run as `pnpm exec openwiki` by the documentation project's refresh-documentation command
     "jscpd", // Duplicate-code detection CLI, invoked via nx:run-commands in project.json
     "stylelint-config-standard", // stylelint preset, referenced as string in extends array
     "stylelint-config-tailwindcss", // stylelint preset, referenced as string in extends array
@@ -168,7 +169,7 @@ const config: KnipConfig = {
       project: "src/**/*.ts",
     },
 
-    // lexico: TanStack Start SSR web application with Supabase backend.
+    // lexico: TanStack Start SSR web application.
     // The client entry and the generated route tree are named by the TanStack
     // Start plugin rather than imported, so knip is told where they are.
     "projects/lexico/lexico-web": {
@@ -299,6 +300,15 @@ const config: KnipConfig = {
     // publication: NestJS CLI tool for the CI release steps and the publishable-packages gate
     publication: {
       entry: ["src/publication.main.ts", "src/publication.repl.ts"], // Main CLI entry + the REPL its own target runs
+      ignore: [
+        "testing/**", // Test fixtures and setup
+      ],
+      project: "src/**/*.ts",
+    },
+
+    // documentation: NestJS CLI tool that refreshes the repository's generated documentation
+    documentation: {
+      entry: ["src/documentation.main.ts", "src/documentation.repl.ts"], // Main CLI entry + the REPL its own target runs
       ignore: [
         "testing/**", // Test fixtures and setup
       ],

@@ -1,4 +1,4 @@
-import { Paginated } from "../../lexico-api.utilities";
+import { Paginated } from "@codebase/interface";
 
 import { AuthorType } from "./author.entities";
 import { LineType } from "./line.entities";

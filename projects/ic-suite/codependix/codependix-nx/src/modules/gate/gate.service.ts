@@ -1,5 +1,4 @@
 import { spawn } from "node:child_process";
-import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -21,10 +20,8 @@ import type {
   BuildCommandArguments,
   GateOptions,
   GateSelection,
-  HashGateTaskArguments,
   RunGateArguments,
 } from "./gate.types";
-import type { Hash } from "@nx/devkit";
 
 /**
  * Runs `codependix map --check boundaries` for the projects one gate judges.
@@ -50,28 +47,15 @@ export class GateService {
 
   // 🔏 Private Methods
 
-  /**
-   * Whether a gate task judges exactly the project it belongs to.
-   *
-   * Read from the options the executor will actually run with — the target's
-   * own, then the configuration's, then the command line's — through the
-   * same selection the run makes, so the two can never disagree.
-   */
-  private judgesOwnProject(args: HashGateTaskArguments): boolean {
-    const { project } = args.task.target;
-    const options = this.readTaskOptions(args);
-    const selection = this.resolveSelection({
-      options: {
-        projects: this.toNameList(options["projects"]),
-        tags: this.toNameList(options["tags"]),
-      },
-      projectName: project,
-    });
-
+  /** Whether a selection names exactly the project the target belongs to. */
+  private judgesOwnProject(args: {
+    projectName: string | undefined;
+    selection: GateSelection;
+  }): boolean {
     return (
-      selection.tags.length === 0 &&
-      selection.projects.length === 1 &&
-      selection.projects[0] === project
+      args.selection.tags.length === 0 &&
+      args.selection.projects.length === 1 &&
+      args.selection.projects[0] === args.projectName
     );
   }
 
@@ -110,30 +94,6 @@ export class GateService {
   }
 
   /**
-   * The options one gate task runs with, merged as Nx merges them: the
-   * target's, then the named configuration's, then the command line's.
-   */
-  private readTaskOptions(
-    args: HashGateTaskArguments,
-  ): Record<string, unknown> {
-    const { configuration, project, target } = args.task.target;
-    // Nx types a target's options as `any`, so the target is read as an
-    // untrusted record and every field below stays `unknown`.
-    const targetConfiguration = this.toRecord(
-      args.context.projectsConfigurations.projects[project]?.targets?.[target],
-    );
-    const configurations = this.toRecord(targetConfiguration["configurations"]);
-
-    return {
-      ...this.toRecord(targetConfiguration["options"]),
-      ...this.toRecord(
-        configuration === undefined ? undefined : configurations[configuration],
-      ),
-      ...args.task.overrides,
-    };
-  }
-
-  /**
    * Starts the command line and settles on whether it exited zero.
    *
    * Its output is forwarded as it arrives rather than collected, so a long
@@ -158,23 +118,6 @@ export class GateService {
         resolve(exitCode === 0);
       });
     });
-  }
-
-  /**
-   * Reads a name list from an untrusted option: a list from configuration,
-   * or the single string, or number, a command line parses it into.
-   */
-  private toNameList(value: unknown): string[] {
-    const values: unknown[] = Array.isArray(value) ? value : [value];
-
-    return values
-      .filter((entry) => typeof entry === "string" || typeof entry === "number")
-      .map(String);
-  }
-
-  /** Copies an untrusted value into a record, or an empty one. */
-  private toRecord(value: unknown): Record<string, unknown> {
-    return typeof value === "object" && value !== null ? { ...value } : {};
   }
 
   // 🌎 Public Methods
@@ -205,34 +148,6 @@ export class GateService {
       ...(args.tags.length > 0 ? ["--tags", args.tags.join(",")] : []),
       ...(args.dependencies ? [] : ["--no-dependencies"]),
     ];
-  }
-
-  /**
-   * Hashes one gate task for Nx's cache — or, when it judges any project but
-   * its own, gives it a hash no run shares, so its verdict is never replayed.
-   *
-   * A gate's inputs cover its own project and that project's dependencies.
-   * One handed `projects` or `tags` judges projects those inputs need not
-   * reach, so a hash built from them could replay a pass after an edit to
-   * the very project that now fails. A gate judging its own project is
-   * hashed exactly as Nx would hash it without this hasher.
-   */
-  public async hashTask(args: HashGateTaskArguments): Promise<Hash> {
-    if (this.judgesOwnProject(args)) {
-      return await args.context.hasher.hashTask(
-        args.task,
-        args.context.taskGraph,
-        args.context.env ?? process.env,
-      );
-    }
-
-    return {
-      details: {
-        command: `${args.task.id} judges projects its inputs do not cover`,
-        nodes: {},
-      },
-      value: randomUUID(),
-    };
   }
 
   /**
@@ -289,10 +204,25 @@ export class GateService {
     return { projects: [args.projectName], tags };
   }
 
-  /** Runs one gate, and settles on whether it passed. */
+  /**
+   * Runs one gate, and settles on whether it passed.
+   *
+   * Refuses a cached target that judges any project but its own. The target's
+   * inputs cover only its own project and that project's dependencies, so Nx
+   * could replay a pass after an edit to a project the run judges and they do
+   * not reach. `cache` is fixed per target, so the target must opt out of it.
+   */
   public async run(args: RunGateArguments): Promise<boolean> {
+    const selection = this.resolveSelection(args);
+
+    if (args.cached && !this.judgesOwnProject({ ...args, selection })) {
+      throw new Error(
+        `The codependix gate target judges projects its cache inputs do not cover, so it must set \`cache: false\`.`,
+      );
+    }
+
     const argv = this.buildCommandArguments({
-      ...this.resolveSelection(args),
+      ...selection,
       cliEntryPath: createRequire(import.meta.url).resolve(CLI_ENTRY_SPECIFIER),
       configurationPath: this.resolveConfigurationPath({
         configuration: args.options.configuration,

@@ -8,11 +8,10 @@ The dev container eliminates "works on my machine" issues by standardizing:
 
 - **Node.js 22.20.0** - Matching `engines.node` in root `package.json`
 - **pnpm 10.20.0** - Matching `packageManager` in root `package.json`
-- **Supabase CLI** - For database migrations and type generation (lexico)
 - **kubectl & Helm** - For Kubernetes deployments
 - **Terraform** - For Linode LKE cluster provisioning
 - **GitHub CLI** - For repository operations
-- **Docker** - Docker-in-Docker (Codespaces) or Docker-outside-of-Docker (local machine) for running Supabase local stack
+- **Docker** - Docker-in-Docker (Codespaces) or Docker-outside-of-Docker (local machine)
 - **SQLite** - CLI tool for querying and managing SQLite databases (caelundas ephemeris caching)
 
 ## Quick Start
@@ -39,7 +38,7 @@ Two named configurations are provided. Select the appropriate one when opening i
 
 **DooD advantages on a local machine:**
 
-- Shared image/layer cache with the host — no re-pulling Supabase or Ollama images
+- Shared image/layer cache with the host — no re-pulling Ollama images
 - No second Docker daemon — saves ~200–500 MB RAM and eliminates DinD startup delay
 - Host OS manages container memory directly — no `--memory` cap needed in `runArgs`
 
@@ -98,7 +97,6 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 
 ### Custom Installations
 
-- **Supabase CLI**: Installed from GitHub releases in `postCreateCommand` (npm wrapper is broken for global installs)
 - **SQLite**: Installed via `apt-get` in `postCreateCommand` for database querying and management
 - **pnpm**: Activated via Corepack with exact version 10.20.0
 
@@ -130,18 +128,13 @@ Ports are automatically forwarded to your host machine:
 | Port  | Service             | Auto-Forward | Notes                     |
 | ----- | ------------------- | ------------ | ------------------------- |
 | 3000  | Lexico Dev Server   | Notify       | TanStack Start dev server |
-| 54321 | Supabase API        | Silent       | PostgREST API endpoint    |
-| 54322 | Supabase PostgreSQL | Silent       | Direct database access    |
-| 54323 | Supabase Studio     | Notify       | Database admin UI         |
-| 54324 | Supabase Inbucket   | Silent       | Local email testing       |
-| 54325 | Supabase Analytics  | Silent       | Analytics dashboard       |
 
 ## Lifecycle Scripts
 
 | Hook                | Tasks                                                                         |
 | ------------------- | ----------------------------------------------------------------------------- |
 | `postCreateCommand` | Enable pnpm via Corepack, install dependencies, sync VS Code Machine settings |
-| `postAttachCommand` | Verify tool versions (node, pnpm, supabase, gh, helm)                         |
+| `postAttachCommand` | Verify tool versions (node, pnpm, gh, helm)                         |
 
 ## Scripts
 
@@ -150,7 +143,7 @@ The `.devcontainer/scripts` directory contains helper scripts for container setu
 | Script                    | Purpose                                                                                               | Called From         |
 | ------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------- |
 | `post-create-command.sh`  | Enables pnpm, installs dependencies                                                                   | `postCreateCommand` |
-| `post-attach-command.sh`  | Verifies installed tool versions (Node.js, pnpm, Supabase CLI, etc.)                                  | `postAttachCommand` |
+| `post-attach-command.sh`  | Verifies installed tool versions (Node.js, pnpm, gh, helm, etc.)                                  | `postAttachCommand` |
 | `test-devcontainer.sh`    | Validates tool versions and configuration; runnable locally and in CI                                 | Manual / CI         |
 
 ## Testing
@@ -161,7 +154,7 @@ The `test-devcontainer.sh` script in `.devcontainer/scripts/` validates tool ins
 | ----------------------------- | --------------------------------------------------------------------------------------------- |
 | Node.js version               | `node --version` starts with `v22.` (matches `package.json` `engines`)                        |
 | pnpm version                  | `pnpm --version` is exactly `10.20.0` (matches `package.json` `packageManager`)               |
-| Tool availability             | `nx`, `supabase`, `jq`, `yamllint`, `sqlite3` all respond                                     |
+| Tool availability             | `nx`, `jq`, `yamllint`, `sqlite3` all respond                                     |
 | Container user                | Running as `root`, confirming `containerUser`/`remoteUser`                                    |
 | Environment variables         | `KUBECONFIG`, `NODE_OPTIONS`, `UV_THREADPOOL_SIZE` are set from `remoteEnv`                   |
 | Pinned feature versions       | `gh`, `terraform`, `tflint`, `helm`, `kubectl`, `python3` match `devcontainer.json` pins      |
@@ -279,15 +272,6 @@ If you still encounter `Could not resolve host` errors:
 3. Test basic connectivity: `ping -c 3 8.8.8.8`
 4. Rebuild container completely: `Dev Containers: Rebuild Container Without Cache`
 
-### Supabase CLI not found
-
-Install manually from GitHub releases:
-
-```bash
-VERSION=$(curl -s https://api.github.com/repos/supabase/cli/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
-curl -fsSL "https://github.com/supabase/cli/releases/download/${VERSION}/supabase_linux_amd64.tar.gz" | sudo tar -xz -C /usr/local/bin
-```
-
 ### pnpm version mismatch
 
 Corepack should handle this automatically. If issues persist:
@@ -319,7 +303,6 @@ After building the container, verify the following:
 # 1. Check tool versions
 node --version          # Should output v22.20.0
 pnpm --version          # Should output 10.20.0
-supabase --version      # Should output version number
 gh --version            # Should output gh version X.Y.Z
 helm version --short    # Should output vX.Y.Z
 kubectl version --client # Should output client version
@@ -330,13 +313,10 @@ docker run hello-world  # Should complete successfully
 # 3. Install dependencies
 pnpm install            # Should complete with no errors
 
-# 4. Start Supabase (lexico)
-nx run lexico-web:supabase:start  # All services should start
-
-# 5. Start dev server
+# 4. Start dev server
 nx run lexico-web:start   # Should be accessible at localhost:3000
 
-# 6. Run tests
+# 5. Run tests
 nx run-many --target=test --all  # Tests should pass
 ```
 
@@ -359,7 +339,7 @@ Tradeoffs:
 
 The local configuration (`local/devcontainer.json`) **mounts the host Docker socket** (DooD):
 
-- **Faster builds**: Shares host image/layer cache — no re-pulling Supabase, Ollama images
+- **Faster builds**: Shares host image/layer cache — no re-pulling Ollama images
 - **No memory overhead**: No second daemon; host OS manages all container memory directly
 - **Prerequisite**: Docker Desktop must be running on the host machine
 
@@ -368,7 +348,7 @@ The local configuration (`local/devcontainer.json`) **mounts the host Docker soc
 Instead of per-project devcontainers (lexico, caelundas, etc.):
 
 - Nx development typically spans multiple projects
-- Shared tooling is more efficient (one kubectl, one Supabase CLI)
+- Shared tooling is more efficient (one kubectl, one Helm)
 - Simpler maintenance with single configuration
 - Nx task orchestration benefits from unified access
 
