@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { DEFAULT_INCLUDE } from "@coinagerie/configuration";
-import { LanguagesModule } from "@coinagerie/languages";
+import { LanguagesModule, typescriptKeywords } from "@coinagerie/languages";
 import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -196,5 +196,27 @@ describe(VocabularyService, () => {
         }),
       ),
     ).resolves.toStrictEqual(["main", "src"]);
+  });
+
+  it("excludes nothing of the language's keywords until they are spread into exclude.words", async () => {
+    writeTree({
+      "src/main.ts": "const options = { default: 1, type: 2, aspect: 3 };\n",
+    });
+
+    await expect(service.collect(configure())).resolves.toStrictEqual([
+      "aspect",
+      "default",
+      "main",
+      "option",
+      "src",
+      "type",
+    ]);
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], words: [...typescriptKeywords, "options"] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["aspect", "main", "src"]);
   });
 });
