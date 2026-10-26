@@ -1,5 +1,3 @@
-// 🔖 Catalog
-
 /**
  * One stretch of the color ramp, in B−V color index and RGB.
  */
@@ -9,8 +7,6 @@ export interface ColorSegment {
   to: number;
   toColor: readonly [number, number, number];
 }
-
-// 🔖 Options
 
 /**
  * A field of view after clamping it so the pole stays above the top edge.
@@ -28,8 +24,6 @@ export interface Motion {
   periodSeconds: number;
   realTimeMultiple: number;
 }
-
-// 🔖 Result
 
 /**
  * A finished backdrop: a standalone animated SVG and what it measured.
@@ -58,8 +52,6 @@ export interface NightSkyMeasurements {
   topAltitudeDegrees: number;
   verticalFieldOfViewDegrees: number;
 }
-
-// 🔖 Internals
 
 /**
  * What the builder needs to draw one night sky.
