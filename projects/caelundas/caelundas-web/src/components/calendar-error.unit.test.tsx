@@ -17,4 +17,16 @@ describe(CalendarError, () => {
       "calendar-error",
     );
   });
+
+  it("announces the failure, and offers to retry it", () => {
+    render(
+      <CalendarError
+        error={new Error("The events database answered 404")}
+        onRetry={() => {}}
+      />,
+    );
+
+    expect(screen.getByRole("alert").textContent).toContain("404");
+    expect(screen.getByRole("button", { name: "Retry" })).toBeDefined();
+  });
 });

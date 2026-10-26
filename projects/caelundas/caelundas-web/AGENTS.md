@@ -186,9 +186,17 @@ selector. Times render in the zone the dataset's events carry.
   added or cut there. The `view` search parameter holds the one picked.
   Without it, the view follows the width: the agenda below 768 pixels, the
   month above, read synchronously so the first render is already right.
-- Below 768 pixels the selector is a menu, and the week scrolls sideways with
-  a sticky hour column (the time grid in page scroll mode inside a scrolling
-  content area).
+- Three widths are told apart, in `src/lib/calendar/calendar-viewport.ts`: a
+  phone below 768 pixels, a tablet from 768, and a desktop from 1024. Below a
+  desktop the view selector is a menu, as six buttons do not fit beside the
+  other controls. On a phone the week also scrolls sideways with a sticky
+  hour column (the time grid in page scroll mode inside a scrolling content
+  area), the controls take a row of their own under the title, and the title
+  wraps rather than being cut.
+- One toolbar sits above every view and is never remounted by a change of
+  view, so the focus on its view selector survives it: each view reports how
+  it moves (`onNavigationChange`), because only a child of the vendored
+  calendar or Gantt can read that, and the toolbar calls the latest report.
 - The agenda and a month cell's "+N more" list are the app's own, windowed by
   `VirtualList` over the pure functions in
   `src/lib/calendar/calendar-virtual-window.ts`. An event is listed once, on
@@ -249,13 +257,18 @@ selector. Times render in the zone the dataset's events carry.
   `src/lib/events-database/events-database.local-time.ts`, which the worker
   and the tests' executor both register: SQLite itself knows no zones.
 
-- While the database loads, `CalendarSkeleton` stands in for the page.
-- A failed load shows `CalendarError` with Retry; a browser without
-  WebAssembly or Web Workers gets an explanation and no retry.
+- While the database loads, `CalendarSkeleton` stands in for the page: a
+  grid of days from a tablet's width, a list of rows on a phone, which opens
+  on the agenda.
+- A failed load shows `CalendarError`, announced as an alert, with Retry; a
+  browser without WebAssembly or Web Workers gets an explanation and no
+  retry.
 - Days with no events keep the calendar and lay `CalendarEmpty` over it:
   "No events yet" for an empty database, "Outside the data" with a jump to the
   first covered day, or "No events this month" (or week, or day) inside the
-  covered dates.
+  covered dates. It is announced as a status. When the filters are what
+  emptied the period, "No events match the filters" offers Clear filters.
+  While a reload runs the page is marked busy and the notice waits.
 - The `date` search parameter (`YYYY-MM-DD`) holds the day the view opens on;
   one that does not parse falls back to today.
 - The `filter` search parameter holds the ReUI filter tree as JSON, validated
@@ -263,6 +276,31 @@ selector. Times render in the zone the dataset's events carry.
   dropped. `compileEventFilter` in `src/lib/event-filters/` turns it into the
   SQL condition `findEvents` applies, leaving out unfinished rules, and a
   month the filters empty says so apart from one with no events at all.
+
+### Verified at each width
+
+Checked by hand in the browser against the seeded data, at 320 and 375 pixels
+(a phone), 768 and 800 (a tablet), and 1024 and 1280 (a desktop). At each,
+the toolbar's buttons sit inside the width, the page never scrolls sideways,
+and the title shows whole. The Filters button opens its popover on a desktop,
+a drawer on a tablet, and a bottom sheet on a phone.
+
+| View      | Phone (375)                                    | Tablet (800) | Desktop (1280) |
+| --------- | ---------------------------------------------- | ------------ | -------------- |
+| Month     | Works                                          | Works        | Works          |
+| Week      | Works; the grid scrolls sideways, hours fixed  | Works        | Works          |
+| Three-day | Works                                          | Works        | Works          |
+| Day       | Works                                          | Works        | Works          |
+| Agenda    | Works; it is the default                       | Works        | Works          |
+| Timeline  | Works, tight: about three days beside the rows | Works        | Works          |
+
+No view is withheld at any width. One that stops working at some width is
+cut by deleting it from `CALENDAR_VIEWS` and the records keyed by it in
+`src/lib/calendar/calendar-views.ts`, which the compiler then follows to
+every other place that names it. Not checked: the "+N more" list of a busy
+month, as the seed holds no busy day, and keyboard-only scrolling of the
+agenda and the timeline in browsers that do not make a scrollable region
+focusable by themselves.
 
 ## Key Files
 
