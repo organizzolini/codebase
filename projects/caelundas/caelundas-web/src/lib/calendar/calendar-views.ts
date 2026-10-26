@@ -11,6 +11,7 @@ export const CALENDAR_VIEWS = [
   "three-day",
   "day",
   "agenda",
+  "timeline",
 ] as const;
 
 /**
@@ -28,6 +29,7 @@ export const CALENDAR_VIEW_LABELS: Readonly<Record<CalendarViewName, string>> =
     day: "Day",
     month: "Month",
     "three-day": "3 Days",
+    timeline: "Timeline",
     week: "Week",
   };
 
@@ -40,6 +42,7 @@ export const CALENDAR_VIEW_PERIODS: Readonly<Record<CalendarViewName, string>> =
     day: "this day",
     month: "this month",
     "three-day": "in these three days",
+    timeline: "in this period",
     week: "this week",
   };
 
@@ -53,9 +56,42 @@ export const AGENDA_DAY_COUNT = 30;
  */
 export const MAXIMUM_AGENDA_DAYS = 366;
 
+/**
+ * The spans the timeline shows at once, from the finest to the coarsest.
+ */
+export const TIMELINE_SCALES = [
+  "day",
+  "week",
+  "month",
+  "quarter",
+  "year",
+] as const;
+
+/**
+ * A span the timeline shows at once, as the link names it.
+ */
+export type TimelineScale = (typeof TIMELINE_SCALES)[number];
+
+/**
+ * What the toolbar calls each of the timeline's scales.
+ */
+export const TIMELINE_SCALE_LABELS: Readonly<Record<TimelineScale, string>> = {
+  day: "Day",
+  month: "Month",
+  quarter: "Quarter",
+  week: "Week",
+  year: "Year",
+};
+
+/**
+ * The timeline's scale when the link names none.
+ */
+export const DEFAULT_TIMELINE_SCALE: TimelineScale = "month";
+
 const THREE_DAYS = 3;
 
 const calendarViewSchema = z.enum(CALENDAR_VIEWS);
+const timelineScaleSchema = z.enum(TIMELINE_SCALES);
 
 /**
  * The view to show when the link names none: the agenda, which reads at a
@@ -76,14 +112,26 @@ export function parseCalendarView(
 }
 
 /**
- * The vendored calendar's view for one of the app's, and how many days it
- * shows when that is the N-day view.
+ * Reads a value as a timeline scale, or nothing when it names none.
  */
-export function toEventCalendarView(view: CalendarViewName): {
+export function parseTimelineScale(value: unknown): TimelineScale | undefined {
+  return timelineScaleSchema.safeParse(value).data;
+}
+
+/**
+ * The vendored calendar's view for one of the app's, and how many days it
+ * shows when that is the N-day view. The timeline is the Gantt's rather than
+ * the calendar's, so it has none.
+ */
+export function toEventCalendarView(
+  view: Exclude<CalendarViewName, "timeline">,
+): {
   dayCount: number;
   view: CalendarView;
 } {
-  return view === "three-day"
-    ? { dayCount: THREE_DAYS, view: "days" }
-    : { dayCount: THREE_DAYS, view };
+  if (view === "three-day") {
+    return { dayCount: THREE_DAYS, view: "days" };
+  }
+
+  return { dayCount: THREE_DAYS, view };
 }

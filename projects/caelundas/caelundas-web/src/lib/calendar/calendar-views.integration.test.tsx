@@ -16,6 +16,10 @@ import {
 import { renderRoute } from "../../../testing/render-route";
 import { setViewportWidth } from "../../../testing/viewport";
 
+// The agenda's own behavior is tested ungrouped; grouping it has its own
+// tests.
+const UNGROUPED = "&group=%5B%5D";
+
 // The views are tested through the `/` route, the way the page uses them;
 // they live apart from the route's own tests only to keep each file short.
 describe("calendar views", () => {
@@ -57,7 +61,7 @@ describe("calendar views", () => {
   });
 
   it("lists the next days' events by day in the agenda", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-04");
+    await renderRoute(`/?view=agenda&date=2026-03-04${UNGROUPED}`);
 
     const agenda = await screen.findByRole("region", { name: "Agenda" });
     const days = within(agenda).getAllByRole("heading", { level: 3 });
@@ -80,7 +84,7 @@ describe("calendar views", () => {
   });
 
   it("renders only the agenda rows on screen", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-10", {
+    await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
       eventsDatabase: createTestEventsDatabase({
         extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 500),
       }),
@@ -255,7 +259,7 @@ describe("calendar views", () => {
   });
 
   it("loads later events into the agenda when scrolled to its end", async () => {
-    await renderRoute("/?view=agenda&date=2026-03-10", {
+    await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
       eventsDatabase: createTestEventsDatabase({
         extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 60),
       }),
@@ -346,7 +350,7 @@ describe("calendar views", () => {
       extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 60),
     });
 
-    await renderRoute("/?view=agenda&date=2026-03-10", {
+    await renderRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
       eventsDatabase: {
         ...database,
         findEvents: async (query) => {

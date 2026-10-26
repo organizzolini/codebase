@@ -1,4 +1,19 @@
 /**
+ * One group an event falls in at one level of a grouping: a tag, with its
+ * name and full path, or a value derived from the event's times, whose label
+ * the app writes.
+ */
+export interface CalendarEventGroupKey {
+  key: string;
+  label: null | string;
+  /**
+   * A tag's names from its root down, joined by " / "; null for a derived
+   * value.
+   */
+  path: null | string;
+}
+
+/**
  * One astronomical event as the calendar shows it. `start` and `end` are
  * equal for an instant, and `timezone` is the observer's IANA zone.
  */
@@ -10,6 +25,12 @@ export interface CalendarEventRecord {
    */
   durationMinutes: number;
   end: Date;
+  /**
+   * The groups the event falls in, one list per level of the query's
+   * grouping: several for an event with several tags in a dimension, none
+   * for one with no tag there. Empty when the query asked for no grouping.
+   */
+  groups: CalendarEventGroupKey[][];
   id: string;
   location: null | string;
   start: Date;
@@ -96,6 +117,10 @@ export interface EventsDataset {
  */
 export interface EventsQuery {
   filter?: null | SqlCondition | undefined;
+  /**
+   * One source of group keys per level of a grouping, in order.
+   */
+  groups?: readonly SqlGroupSource[] | undefined;
   window: EventsWindow;
 }
 
@@ -123,6 +148,16 @@ export interface SqlCondition {
  */
 export interface SqlExecutor {
   select(sql: string, parameters: readonly SqlValue[]): Promise<SqlRow[]>;
+}
+
+/**
+ * A select over the derived events view's row `e` answering the groups that
+ * event falls in at one level, as `key`, `label` and `path` columns, with its
+ * values bound to `?` placeholders in order.
+ */
+export interface SqlGroupSource {
+  parameters: SqlValue[];
+  sql: string;
 }
 
 /**
