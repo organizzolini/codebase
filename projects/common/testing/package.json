@@ -2,9 +2,12 @@
   "dependencies": {
     "@codebase/interface": "workspace:*",
     "@codebase/observability": "workspace:*",
+    "@codebase/persistence": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/common": "catalog:",
+    "@nestjs/config": "catalog:",
     "@nestjs/testing": "catalog:",
+    "@nestjs/typeorm": "catalog:",
     "@nx/devkit": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@testing-library/react": "catalog:",
@@ -12,6 +15,7 @@
     "react": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
+    "typeorm": "catalog:",
     "vitest": "catalog:"
   },
   "devDependencies": {
@@ -20,12 +24,15 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "jsdom": "catalog:"
+    "jsdom": "catalog:",
+    "typeorm-naming-strategies": "catalog:",
+    "zod": "catalog:"
   },
   "exports": {
     ".": "./src/index.ts",
     "./graphql": "./src/graphql.ts",
     "./nestjs": "./src/nestjs.ts",
+    "./postgres": "./src/postgres.ts",
     "./react": "./src/react.ts",
     "./react/setup": "./src/react-setup.ts",
     "./setup": "./src/setup.ts",
@@ -52,6 +59,10 @@
       "./nestjs": {
         "default": "./dist/src/nestjs.js",
         "types": "./dist/src/nestjs.d.ts"
+      },
+      "./postgres": {
+        "default": "./dist/src/postgres.js",
+        "types": "./dist/src/postgres.d.ts"
       },
       "./react": {
         "default": "./dist/src/react.js",

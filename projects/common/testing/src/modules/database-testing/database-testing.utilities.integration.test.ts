@@ -3,6 +3,8 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { postgresEnvironmentSchema } from "@codebase/persistence";
+
 import { FixtureDatabaseModule } from "../../../testing/fixtures/fixture-persistence.module";
 import { CreateWidgets1767225600000 } from "../../../testing/fixtures/migrations/1767225600000-create-widgets";
 import { SAMPLE_GREETING } from "../../../testing/fixtures/sample-greeting.constants";
@@ -10,11 +12,10 @@ import { SampleGreetingModule } from "../../../testing/fixtures/sample-greeting.
 import { SampleWidgetsModule } from "../../../testing/fixtures/sample-widgets.module";
 import { SampleWidgetsService } from "../../../testing/fixtures/sample-widgets.service";
 import { Widget } from "../../../testing/fixtures/widget.entity";
-import { startDatabaseTestingModule } from "../../../testing/persistence-testing.utilities";
 
-import { postgresEnvironmentSchema } from "./postgresql.utilities";
+import { startDatabaseTestingModule } from "./database-testing.utilities";
 
-import type { DatabaseTestingModule } from "../../../testing/persistence-testing.types";
+import type { DatabaseTestingModule } from "./database-testing.types";
 
 // 🧪 Tests
 

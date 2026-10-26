@@ -11,10 +11,5 @@
     "testing/**"
   ],
   "extends": "./tsconfig.json",
-  "files": [
-    "testing/index.ts",
-    "testing/persistence-testing.types.ts",
-    "testing/persistence-testing.utilities.ts"
-  ],
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

@@ -43,13 +43,12 @@ src/
       postgresql.types.ts
       postgresql.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
       entities/                     # identifiable → creatable → updatable → deletable
-      postgresql-container.*.ts       # startPostgresContainer, the testing entry's harness
+      postgresql-container.*.ts       # startPostgresContainer, exported for integration suites
     export/                         # The export command: options, plan, dry run, atomic write
     import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
 testing/
-  index.ts                          # The @codebase/persistence/testing entry
-  persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
+  index.ts                          # The @codebase/persistence/testing entry, re-exporting @codebase/testing/postgres
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
   fixture-persistence.ts            # A migrated container for the command line's integration tests
   fixtures/                         # Entities, modules, and the widgets and parts migrations
@@ -67,10 +66,11 @@ testing/
 - **Never name a schema in code.** It comes from `<PROJECT>_POSTGRES_SCHEMA`.
 - **Never run migrations from `PostgresqlModule.forRoot`.** It takes none;
   `createDataSource` and `startPostgresContainer` do.
-- **Keep the testing entry under `testing/`.** It imports `@nestjs/testing`,
-  and dependency-cruiser's `no-test-imports-in-app` allows test tooling only
-  from a `testing/` path, in this package and in every consumer that cruises
-  into it.
+- **Keep `@codebase/persistence/testing` a re-export.** The Postgres test
+  helpers live in `@codebase/testing/postgres`, which depends on this
+  package; the cycle that closes is allowed among the common packages only.
+  Keep it out of `src/`, and remove it once every consumer imports the new
+  entry.
 - **Never name a real project in this package's tests.** Use `fixture`, and
   `sample` where a second is needed.
 - **Keep the command line connectionless.** `MainModule` holds no

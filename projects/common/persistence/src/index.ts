@@ -2,6 +2,12 @@ export { CreatableEntity } from "./modules/postgresql/entities/creatable.entity"
 export { DeletableEntity } from "./modules/postgresql/entities/deletable.entity";
 export { IdentifiableEntity } from "./modules/postgresql/entities/identifiable.entity";
 export { UpdatableEntity } from "./modules/postgresql/entities/updatable.entity";
+export { POSTGRES_CONTAINER_IMAGES } from "./modules/postgresql/postgresql-container.constants";
+export type {
+  PostgresContainerOptions,
+  StartedPostgresContainer,
+} from "./modules/postgresql/postgresql-container.types";
+export { startPostgresContainer } from "./modules/postgresql/postgresql-container.utilities";
 // 📤 Exports
 export {
   DEFAULT_POSTGRES_HOST,
