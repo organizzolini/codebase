@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1f8fda26d1d7fe09a0f87ae9b46ecbd5fdbcd549c4b0c526a76857c004909659",
+  "claims": [
+    {
+      "id": "claim_1f71c14e89574734acd22c1f76c31751",
+      "statement": "Conformetry is a template-driven code generation and conformance validation toolchain where generators render templates to instances, languages compare instances against templates structurally, and validation reports differences with conformance scores that gate CI.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L6-L45",
+          "version": "repo-lines-v1:sha256:3d8e037dbb6c167595d1da70774e9805834652ecb704e4b40c9b969036886ace:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZDcyYzUwMWE1OWUyZGY2MTliYzM1OWRkNzk5ZTQ1OGQ2YWEzZTE5ZGY5ZTdlOWYzZWIyNGE5N2NmYzk0ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMzU4OGQxNjFiNjg3NGE5ODQ3ZWNiYjc2NzNhMTA3YTMzZDZjOWVkM2ExMGNkYjZmOWZmMTYzMTQ2NTkxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
+        },
+        {
+          "resource": "repo://README.md#L155-L168",
+          "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZWJlODdlYWM3OTIzMjZmYjkzMjBiZDM1N2Q0MGI2MjE1Zjg5MWY1YjdlNDc3NWQ3Yzk2NzlmMWUxMGVlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d9c82eecae5d4452b544bbed944c8362",
+      "statement": "The toolchain defines eight core concepts with prescribed terminology: Generator (template+inputs), Template (folder of files with placeholders), Instance (generated code on disk), Language (comparison engine by extension), Fallback (line-by-line text for unclaimed extensions), Difference (template declares, instance lacks), Error (severe difference), Conformance (0-1 score).",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L6-L45",
+          "version": "repo-lines-v1:sha256:3d8e037dbb6c167595d1da70774e9805834652ecb704e4b40c9b969036886ace:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZDcyYzUwMWE1OWUyZGY2MTliYzM1OWRkNzk5ZTQ1OGQ2YWEzZTE5ZGY5ZTdlOWYzZWIyNGE5N2NmYzk0ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMzU4OGQxNjFiNjg3NGE5ODQ3ZWNiYjc2NzNhMTA3YTMzZDZjOWVkM2ExMGNkYjZmOWZmMTYzMTQ2NTkxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_808d7152642841cdbe5c443beae3024b",
+      "statement": "There are 14 templates defined in configuration/conformetry.config.ts: 5 project-level generators (jupyter-notebook-application, nestjs-command-project, nestjs-graphql-application, nestjs-service-project, tanstack-application) and 9 module/file generators (nestjs-command-module, nestjs-dataloader-module, nestjs-graphql-module, nestjs-service-file, nestjs-resolver-file, nestjs-service-module, react-component, react-hook, tanstack-route, tanstack-server-function).",
+      "evidence": [
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L50-L355",
+          "version": "repo-lines-v1:sha256:00a90c3fd6f578c58a600e79d2c96fb93b0ec611a5983edc764f65f407059f86:eyJzZWxlY3RlZExpbmVDb3VudCI6MzA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzY2UyMTdlYzcxNzBhNjA5MzJlMjdhMDFjMDI3MzE0MjJkZDY4M2ExOTUyY2MzYTE4OGFkMjgwOGYxNjExYmMyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMDJkMmMwZDZkYzVlNzRkOTJmYTE0YjkxZGJlYTI2NDA5MGJlYjM1ZmRiOTE4OGQ5YjM0MTE4MWRjZTlmNGNlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzMzQwZjBlOTY1M2E0MjhmZjA4YjZkNWJhOTcxMGM3ZjdhM2JiYTJmMTM4ZGM5ODFhZTI1ZjlmOTk5MGJmNWU3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MiwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZDE4N2U0MjJjZDc0ZWM4NTZlYTk2M2E4OGRmNGUyM2MyZWZlMWM1NWU0YWNiOTUyOTI5MjQwZjI2NDI4YTZmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ca463e9557c43548a62057d4982f0a1",
+      "statement": "The conformetry toolchain consists of 9 packages under projects/ic-suite/conformetry/: agents (skills), cli (command-line host), configuration (loading/discovery/rendering), core (contracts/types), examples (11 runnable CI examples), generation (rendering runtime), languages (6 language validators + fallback + scoring), nx (Nx plugin with generators/executors), output (reporting/inventory), validation (orchestration/deduplication/scoring).",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L155-L168",
+          "version": "repo-lines-v1:sha256:ae5a8381ae33b4077da1187d6d0ee889c06b66922c486eb1feaf180ebed6430b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZjgwZWZmZDdlNGRjOWY5MWY0ZTIyOTc4MDA4NzEwZTc1MzVkNjkyMTI3MTk1ZTQwODkxMzhmZDIwNDEzZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YjBhYmNlYzM0OGY0YTEwYTNhM2Q2ZjNlZmVlMDI5MDdmMjM1N2E2ZTE0OTQxYmQ1OGQ3Mjc3NzczNGJkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZWJlODdlYWM3OTIzMjZmYjkzMjBiZDM1N2Q0MGI2MjE1Zjg5MWY1YjdlNDc3NWQ3Yzk2NzlmMWUxMGVlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmOTQ0YzdhYWQwOThjM2M3OTcwYmY1ZjFjMjc5ZDBjNzI1ZDM4ZDQyMjMwYmY2ODNhOWE0Yjk1OGQxOTNlZjEifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-agents/package.json",
+          "version": "repo-file-v1:sha256:382cf6e204c3a8b604ce87358604ebe83627c8fb4a152e8e7d4449511bf7d3cd"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/package.json",
+          "version": "repo-file-v1:sha256:4ba6bf30bc5aa5cec5c1f4031b2b4fbea3b10998aaa2771e1fa04341c6fc84af"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-configuration/package.json",
+          "version": "repo-file-v1:sha256:d8637a1003d4127814995b33c6622d0ec9872787f15b46c57e92b817f99467dd"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/package.json",
+          "version": "repo-file-v1:sha256:b4cabd9bda8feba459ca619c178755a84cca7c6671eb07b9f476f1d76eb4c042"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-examples/package.json",
+          "version": "repo-file-v1:sha256:42f00e910d4c671eb8a33d0c509408644357ea24cf17dc115d93ebd07d897664"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-generation/package.json",
+          "version": "repo-file-v1:sha256:2b0c87b923d3bb19ae3ac8e31e8b35e6232df2f252908a4d37f9370b46bf6980"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/package.json",
+          "version": "repo-file-v1:sha256:70a9b9b6f5e90b1caa2383768abca2a09474e4dc83ae4e4e4ea0fd46a92b498c"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/package.json",
+          "version": "repo-file-v1:sha256:2db47d155aff38c1495f0961762ec0835ac33f0eac6956dffa521da569ee17db"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-output/package.json",
+          "version": "repo-file-v1:sha256:8679ca13752daf7df7a14bbd1ef035dc743e955000c6d2e097ab88d5cc532ea5"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/package.json",
+          "version": "repo-file-v1:sha256:80accabd01d30e4724a79064b8335382619b9042ec9f84562337c870ce6632a6"
+        }
+      ]
+    },
+    {
+      "id": "claim_047f1b5e9b3b4d9597de057d4f53d2b6",
+      "statement": "The Nx plugin (@conformetry/nx) provides createNodes that infers a conformetry-validate target onto every project holding instances by reading the configuration once per workspace, and emits dynamic generators (generators.json + per-generator factories + schemas) from the configuration via GeneratorService, kept honest by nx sync:check.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/src/index.ts#L40-L92",
+          "version": "repo-lines-v1:sha256:ba1012da81198de9e423a8ee13e3f01e583e830bf8c9df382cb181d71871774d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNjlmOTg0MDVkZmY4OWNhYjliZDFlMGY5YjMwYWVmZTU4ODUwNWM2N2U3ZGZiZTk0NTY0MjI1NGY3NjI0NTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyODQxNTg5MzhjYjFjNzEzMDQ3ZmYxZDM4Mjg0MjU0NDgzODI0MDIxYjhjYTFmZmE1NDQwYzk3YmQ1NGEwN2IifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/src/modules/generator/generator.service.ts#L19-L100",
+          "version": "repo-lines-v1:sha256:37ca5d1feda90260539aefd1f593fdbfc4d034c9eadf0bfe4261d6f6f29abaa4:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3ZGViNjVjNWI1YmZiY2RlZDQ3YWI4ZTg2ZTI4ZWQyZDBlZDg0YTk2NzVkZjMyODY3Njg1M2QxY2IxNmY3MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyNjg2YTAzN2ZkZTFjMDU0Y2YxMGFjM2Y0ZmJkYmVkYjBhZDY4MzRmZGE4MGE2Njc5NmNhOTNhYjZjNjM2OTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ede289c94dd542a39f74b96f2970f7f8",
+      "statement": "All six language validators (TypeScript, JSON, Markdown, Python, Jupyter, Text fallback) are held in one package conformetry-languages per ADR 0006, with LanguagesService resolving validators by claimed extensions and widening the TextService fallback to claim any unclaimed extensions so no template file goes unchecked.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0006-hold-every-conformetry-language-in-one-package.md#L1-L10",
+          "version": "repo-lines-v1:sha256:59aaedca3a8d293b82387270648e460704c8c4fcdeb6d6b756df36f3e893748b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlZjFlYmYyZWU4ODk3M2IxMWJmZmU3MmYyMWUxOTFlNWQ2MzU0NWRkNzBkZTM0MmQwMzEzZjExMTJkNGY1NzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYjQ4NmMyZDU4OGY5ZDU2MGMyMWM2MTdhNzk0YzEyN2VjMTgxMjJiZGNkZWEwYmUyYzI1ZjZhMmMyNmFmZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NDUxMTViMWRhM2NmODA3NjMwMjdjNTQ3YjJkMmNhODkxOTQ0NzY3ZDBmYjg3OTc4ZGFlMDk2ODYyN2I5OWEifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts#L20-L82",
+          "version": "repo-lines-v1:sha256:85bebab5528eaf1ba68e52a074be386220700b0fdca6f928104459f10510273b:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkYzNiY2Q2ZTQxMzZkNDg1NTQ3YzUzYmRmYjkxYzY1NmQ4YTBkODk3YjUxY2YyZTNlYTMzZDgwM2Y2M2E1YjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92d813dfaedf4a61a0b0a329f5154a41",
+      "statement": "Conformance scoring computes a 0-1 score per instance: totalWeight sums all template requirements (existence + content), missingWeight sums weights of deduplicated differences, score = 1 - missingWeight/totalWeight, gated by generator threshold or CLI --threshold.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.constants.ts",
+          "version": "repo-file-v1:sha256:aaecd6bb50df0a3626c66008beb7780f437f86329da8f4317a156e801cb09e8e"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/validation/validation.service.ts#L50-L90",
+          "version": "repo-lines-v1:sha256:3d081de45acb0d976e0da46072a6d97893834ae3170db34d5d339c58eb1a5e0f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1M2NkZjlkNjE5ZTc2M2ZlZDM2OGJmODM1Nzc1NjJlM2Y5MjY3NDJjMmEwOTdhZGNhODViY2Y3MWVmMmQ2MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1NDE3ZjUwMmMzOTg0NTU1ZDlkYmVlMGU3ZTk1MjYwMGIyNWIyNDRiZGM2NjdlN2JhZjcxM2MzNTZkZDU2MTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_48c20a386f034524ab3fcd98c4b93a2e",
+      "statement": "ADR 0011 establishes a single-path-law principle: configuration/codebase-structure.json holds universal path/naming rules, while conformetry owns per-type shape via tags and validation (instance groups selected by tags in conformetry.config.ts).",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0011-hold-one-path-law-for-every-project-type.md#L1-L15",
+          "version": "repo-lines-v1:sha256:b5cfc7882c39ba094f03cc3653a641075393b733e86572365ef41634791c3130:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMjgxNzVmMWI2M2Q2ZmFmNDhmMmQ1YWU5NzNiZmUzMjk2MmFlNjc1NDVhOWUyNGUwMWIyYWYzODZmMWY0NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNGMyYWFkYTM1OGExMTRkNmVhZDg4ZTRjMmJhYmIzZmRlYjcxN2Y3N2E0ZGU2ZjQxYTE2M2Q5NmZiNjNlMWIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-24T21:02:40.299Z"
+  }
+}
