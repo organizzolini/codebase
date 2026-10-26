@@ -13,6 +13,8 @@ export const IMPORT_OPTION_MESSAGES = {
   content:
     "--data and/or --ddl is required: pass --data for rows, --ddl for table definitions, or both",
   file: "--file is required: name the dump file to import, e.g. --file sample.dump",
+  sqlite:
+    "--sqlite is not supported by import: a SQLite file is written by export --sqlite and is not imported into Postgres",
   table:
     "--table is required: name each table to import, e.g. --table <schema>.<table>, or --schema <schema> --table <table>",
   targetUri:
