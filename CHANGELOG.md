@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.26.8](https://github.com/organizzolini/codebase/compare/v3.26.7...v3.26.8) (2026-10-26)
+
+### 🐛 Bug Fixes
+
+* **dependencies:** 🔥 Remove generated .codex hooks folder ([#1829](https://github.com/organizzolini/codebase/issues/1829)) ([3271b6e](https://github.com/organizzolini/codebase/commit/3271b6e8458468a081b738f69195415fad633e9c)), closes [#1802](https://github.com/organizzolini/codebase/issues/1802)
+
+### 📝 Documentation
+
+* **documentation:** 📝 add missing technology badges ([#1828](https://github.com/organizzolini/codebase/issues/1828)) ([696db38](https://github.com/organizzolini/codebase/commit/696db3870b48c09348ea52c0a7ee4192301d39d5))
+
 ## [3.26.7](https://github.com/organizzolini/codebase/compare/v3.26.6...v3.26.7) (2026-10-26)
 
 ### 🐛 Bug Fixes
