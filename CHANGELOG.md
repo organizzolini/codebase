@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.32.0](https://github.com/organizzolini/codebase/compare/v3.31.0...v3.32.0) (2026-10-26)
+
+### ✨ Features
+
+* **caelundas:** ✨ add week, day, three-day and agenda views ([#1724](https://github.com/organizzolini/codebase/issues/1724)) ([398cc3e](https://github.com/organizzolini/codebase/commit/398cc3e3848729e6783981923fb0ecaae5c51357)), closes [#1641](https://github.com/organizzolini/codebase/issues/1641) [#1642](https://github.com/organizzolini/codebase/issues/1642) [#1643](https://github.com/organizzolini/codebase/issues/1643) [#1644](https://github.com/organizzolini/codebase/issues/1644) [#1645](https://github.com/organizzolini/codebase/issues/1645) [#1633](https://github.com/organizzolini/codebase/issues/1633) [#1640](https://github.com/organizzolini/codebase/issues/1640) [#1641](https://github.com/organizzolini/codebase/issues/1641) [#1642](https://github.com/organizzolini/codebase/issues/1642) [#1643](https://github.com/organizzolini/codebase/issues/1643) [#1644](https://github.com/organizzolini/codebase/issues/1644) [#1645](https://github.com/organizzolini/codebase/issues/1645) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1723](https://github.com/organizzolini/codebase/issues/1723) [#1633](https://github.com/organizzolini/codebase/issues/1633)
+
 ## [3.31.0](https://github.com/organizzolini/codebase/compare/v3.30.0...v3.31.0) (2026-10-26)
 
 ### ✨ Features
