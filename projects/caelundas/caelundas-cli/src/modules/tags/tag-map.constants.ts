@@ -222,7 +222,7 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   "Compound Aspect": COMPOUND_ASPECT_TAG_MAP,
   Direction: {
     Direct: one([TAG_ROOT.motion, "Station Direct"]),
-    Direction: one([type, "Station"]),
+    Direction: one([type, "Direction"]),
     Retrograde: one([TAG_ROOT.motion, "Station Retrograde"]),
   },
   Eclipse: {

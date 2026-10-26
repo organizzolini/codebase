@@ -14,17 +14,17 @@ select
     (
         select count(*) - 1
         from tags_closure c
-        where c.id_descendant = t.id
+        where c.descendant_id = t.id
     ) as depth,
     (
-        select c.id_ancestor
+        select c.ancestor_id
         from tags_closure c
         where
-            c.id_descendant = t.id
+            c.descendant_id = t.id
             and not exists (
                 select 1
                 from tags_closure p
-                where p.id_descendant = c.id_ancestor and p.id_ancestor != c.id_ancestor
+                where p.descendant_id = c.ancestor_id and p.ancestor_id != c.ancestor_id
             )
     ) as root_id,
     (
@@ -35,11 +35,11 @@ select
                 (
                     select count(*)
                     from tags_closure d
-                    where d.id_descendant = ancestor.id
+                    where d.descendant_id = ancestor.id
                 ) as ancestor_depth
             from tags_closure c
-            join tags ancestor on ancestor.id = c.id_ancestor
-            where c.id_descendant = t.id
+            join tags ancestor on ancestor.id = c.ancestor_id
+            where c.descendant_id = t.id
         ) a
     ) as "path"
 from tags t;
@@ -47,7 +47,7 @@ from tags t;
 -- One row per event and tag it carries, including every ancestor of the tags
 -- attached to it, so grouping or filtering on a node also finds everything
 -- beneath it. `is_direct` marks the tags the event was given itself.
-create table calendar_event_tags as
+create table calendar_event_tag_nodes as
 select
     et.calendar_event_id,
     n.id as tag_id,
@@ -55,10 +55,10 @@ select
     n.depth as tag_depth,
     n.root_id as tag_root_id,
     n."path" as tag_path,
-    max(c.id_ancestor = c.id_descendant) as is_direct
-from calendar_events_tags et
-join tags_closure c on c.id_descendant = et.tag_id
-join tag_nodes n on n.id = c.id_ancestor
+    max(c.ancestor_id = c.descendant_id) as is_direct
+from calendar_event_tags et
+join tags_closure c on c.descendant_id = et.tag_id
+join tag_nodes n on n.id = c.ancestor_id
 group by et.calendar_event_id, n.id;
 
 -- Each event with the time and duration columns grouping and filtering read,
@@ -78,8 +78,8 @@ select
 from calendar_events e;
 
 create index tag_nodes_id on tag_nodes (id);
-create index calendar_event_tags_event on calendar_event_tags (calendar_event_id, tag_root_id, tag_depth);
-create index calendar_event_tags_tag on calendar_event_tags (tag_id, calendar_event_id);
+create index calendar_event_tag_nodes_event on calendar_event_tag_nodes (calendar_event_id, tag_root_id, tag_depth);
+create index calendar_event_tag_nodes_tag on calendar_event_tag_nodes (tag_id, calendar_event_id);
 create index calendar_events_start_end on calendar_events ("start", "end");
-create index calendar_events_tags_tag on calendar_events_tags (tag_id, calendar_event_id);
-create index tags_closure_descendant on tags_closure (id_descendant, id_ancestor);
+create index calendar_event_tags_tag on calendar_event_tags (tag_id, calendar_event_id);
+create index tags_closure_descendant on tags_closure (descendant_id, ancestor_id);

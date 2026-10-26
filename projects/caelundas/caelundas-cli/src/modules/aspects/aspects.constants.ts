@@ -12,3 +12,10 @@ export const LONGITUDES_WINDOW_INSTANTS = [
   "current",
   "next",
 ] as const;
+
+/**
+ * Matches the phase word (forming, perfective, or dissolving) wherever it sits
+ * in an aspect description, so a boundary title can be the description minus
+ * it. The title of a boundary event and of its span then read the same.
+ */
+export const PHASE_WORD_PATTERN = / (?:forming|perfective|dissolving)(?= |$)/u;

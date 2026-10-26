@@ -22,12 +22,22 @@ nx run caelundas-web:start
 The app reads one SQLite file in the browser. Nothing is fetched from a server
 but that file:
 
-1. `database export --sqlite` will write the `caelundas` schema's tables to a
-   SQLite file. Until that lands, `build-database` stands in for it by loading
-   `data/events-schema.sql` and the text seed `data/events-seed.sql`.
+1. The tables come from one of two places. By default `build-database` creates
+   them from `data/events-schema.sql` and fills them from the text seed
+   `data/events-seed.sql`, which is what tests, CI and `start` use. With its
+   `export` configuration (`build:export`, `start:export` and
+   `preview:export` pass it down) `scripts/export-events-database.ts` runs
+   `persistence export --sqlite` over the `caelundas` schema's
+   `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` into
+   `output/events-export.sqlite`, connecting through the same
+   `CAELUNDAS_POSTGRES_*` variables and `caelundas-cli/.env` ingestion reads.
+   It checks the address answers first and fails naming it, since the export
+   reports a refused connection with an empty message. `events-schema.sql`
+   mirrors the export's table and column names exactly; keep it in step with
+   `caelundas-cli`'s migration.
 2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
    everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
-   and path), `calendar_event_tags` (one row per event and tag, ancestors
+   and path), `calendar_event_tag_nodes` (one row per event and tag, ancestors
    included, `is_direct` marking the tags given), and the view
    `calendar_events_derived` (each event with its duration, temporality, and
    UTC time parts). The first two are written out as indexed tables rather
@@ -37,7 +47,10 @@ but that file:
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
-   fingerprinted assets.
+   fingerprinted assets. `build-database` is never cached, since the export
+   reads a database Nx cannot hash; `build` hashes the file it wrote through a
+   `dependentTasksOutputFiles` input, so a build from new data never restores
+   the build of the old.
 4. In the browser, `events-database.worker.ts` downloads the file, opens it
    read-only in memory with sqlite-wasm, and answers selects. No persistent
    storage is used, so no cross-origin isolation headers are needed.
@@ -98,7 +111,8 @@ data/
   events-seed.sql                # Text seed standing in for exported rows
   events-views.sql               # Views applied over the export
 scripts/
-  build-events-database.ts       # Writes output/events.sqlite
+  build-events-database.ts       # Writes output/events.sqlite, from the seed or --export
+  export-events-database.ts      # Runs persistence export --sqlite against Postgres
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over data/*.sql
@@ -211,29 +225,51 @@ selector. Times render in the zone the dataset's events carry.
   load runs in the background and the page it replaces stays on screen.
 
 - The agenda and the timeline group their events, through the Group by
-  popover in the toolbar: an ordered list of up to three levels, each a tag
-  root, taken to a chosen depth of its tree, or a year, quarter, month, week,
-  day, weekday, hour, or duration bucket read in each event's own zone.
+  submenu of the View menu: an ordered list of up to three levels, each laid
+  out like a filter rule, a field and what to group it by. A tag root opens
+  the filter's own tag tree (`GroupTagPicker` over `FilterTagEditor`), and
+  each tag ticked becomes a group of the events under it, so several tags are
+  one pick; with none ticked it groups by the root's first level, and a link
+  from before tags could be picked still names a `depth`. A level may instead
+  be a year, quarter, month, week, day, weekday, hour, or duration bucket
+  read in each event's own zone.
   `compileEventGrouping` in `src/lib/event-groups/` turns a grouping into one
   SQL source of group keys per level, which `findEvents` reads into each
   event's `groups`; `buildEventGroups` builds the tree from them. An event
   falls in every group of a level it has a key for, so an event of two
   planets is listed under both, and a group counts its distinct events. A
   tag above the chosen depth stands for itself, and events with no key at a
-  level gather in a last "No …" group.
+  level, or under none of the tags ticked, gather in a last "No …" group.
 - Without a `group` search parameter, the agenda groups by Type and the
   timeline by Type, then Planet; an empty list groups by nothing. Levels that
   do not parse or name a field the data lacks are dropped one by one.
+- Events are colored by a level picked the way a grouping's level is: the
+  `color` search parameter holds one, a field and, for a tag root, the tags or
+  the depth of its tree, from the same fields the filters and the grouping
+  offer, and the View menu's Color by submenu picks it with the same field
+  picker and tag tree. The loader reads it as one more level after the
+  grouping's, so each event arrives with its keys for it in `groups`;
+  `createColorScheme` (`src/lib/calendar/calendar-color-schemes.ts`) turns
+  them into colors, handing out the palette in the tree's order, from the
+  weekdays, hours and durations known ahead, or from a key's own text for a
+  period. An event with several values, such as an aspect between two planets,
+  takes the first in the legend's order; one with none keeps the color the
+  data gave it. With no `color`, events are colored by type, kind by kind
+  (`EVENT_COLOR_RULES`); `colors=false` draws none.
 - The timeline is the vendored ReUI Gantt, composed in `CalendarTimeline`:
   a row per group, nested and collapsible, a tag group grouped below its
   root's children nested under each tag between, and a column counting each
   row's events. The `scale` search parameter holds the span it shows, from a
   day in fifteen-minute columns (zoomed up to fifteen times, so minutes read
   apart) to a year in months, and a load reads only the span the scale shows.
-  Instants are drawn as diamonds at their moment, spans as bars of their
+  Instants are drawn as circles, and a cluster of them as a circle holding its count, at their moment, spans as bars of their
   true length, and markers closer than one marker's width at the scale and
   zoom shown are clustered into a count
-  (`src/lib/calendar/calendar-timeline-clusters.ts`).
+  (`src/lib/calendar/calendar-timeline-clusters.ts`). Bars that still overlap
+  are packed into lanes (`calendar-timeline-lanes.ts`): a row that needs more
+  than one gets a row without a title beneath it for each further lane, so
+  nothing is drawn over anything else. Lanes are packed over every bar of the
+  row, not only those on screen, so scrolling never moves a row.
 - The Gantt draws every row and bar it is handed, windowing neither, so the
   timeline hands bars only to the rows scrolled into view and a few beyond
   (`src/lib/calendar/calendar-timeline-window.ts`). Rows keep one track
@@ -243,14 +279,34 @@ selector. Times render in the zone the dataset's events carry.
 - The Filters button opens the vendored ReUI builder, nested AND/OR groups
   included: as a popover from 1024 pixels wide, a drawer from the side from
   768, and a bottom sheet below that. It never stays open over the calendar.
-- The chips scroll sideways in the row rather than wrap it, and are left out
-  below 768 pixels, where the count stands for them. `CalendarFilters` holds
+- The chips wrap onto more rows, and are left out below 768 pixels, where
+  the count stands for them. `CalendarFilters` holds
   the tree being edited, so an edit shows before the link catches up, and
   writes it to the link only when the compiled query changes: an unfinished
   rule does not reload the calendar. The facets are read once per database.
+- Collections are named sets of filters, applied in one step from the menu
+  beside the Filters button (`event-filter-collections.ts`). They are written
+  by tag names, such as `Type` and `Aspect / Simple Aspect / Major Aspect`,
+  and resolved against the data's facets, so a collection that names a tag
+  the data lacks applies to the ones it has, and an `and` that loses a
+  condition is dropped whole. A link with no `filter` opens on the default
+  collection, Highlights: major aspects and sign ingresses without the Moon,
+  plus stations, eclipses, and the long cycles. "No filter" is therefore
+  written to the link as an empty group, never left out.
+- A tag field's value editor (`filter-tag-editor.tsx`) is a searchable list of
+  checkboxes, one for each tag by its own name, indented by its depth, not a
+  list of paths. A tag with tags beneath it has a handle (or the right and
+  left arrows) that opens and closes them; the list opens folded to the first
+  level, showing the tags the rule holds, and a closed tag counts the picks
+  inside it. A search lists every match flat. Each tag's count is of the events in the days the view
+  shows (the facets are read for that window and cached per window), not of
+  the whole dataset.
 - The fields come from the data: one per tag root, offering every tag beneath
-  it, so a new root needs no code change. Date range, weekday, hour,
-  duration bucket, temporality, and text search follow them; a tag root
+  it, so a new root needs no code change. A root whose tags all end in a
+  number, such as Aspect Harmonic, offers comparisons (equals, greater and
+  less than, between) on that number instead of a pick list. Date range,
+  weekday, hour, duration bucket, duration in minutes, temporality, and text
+  search follow them; a tag root
   named like one of those is left to the derived field.
 - Date, weekday, and hour are read in each event's own zone through the
   `event_local_*` SQL functions in

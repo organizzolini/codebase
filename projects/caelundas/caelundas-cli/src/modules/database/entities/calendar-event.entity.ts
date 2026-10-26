@@ -32,6 +32,7 @@ import type { Moment } from "moment-timezone";
 @Unique("calendar_events_natural_key", [
   "summary",
   "start",
+  "end",
   "latitude",
   "longitude",
 ])

@@ -6,6 +6,7 @@ import {
   AGENDA_ROW_HEIGHTS,
   type AgendaRange,
   type AgendaRow,
+  getEventRowHeight,
   toGroupedAgendaRows,
 } from "../lib/calendar/calendar-agenda";
 import { formatCalendarDay } from "../lib/calendar/calendar-format";
@@ -203,10 +204,15 @@ function formatEventCount(count: number): string {
 }
 
 /**
- * How tall an agenda row is drawn: a heading is shorter than an event, and
- * the button that lists more is as tall as an event.
+ * How tall an agenda row is drawn: a heading is shorter than an event, an
+ * event is as tall as its tags need, and the button that lists more is as tall
+ * as an event with none.
  */
-function getAgendaRowHeight(row: AgendaListRow): number {
+function getAgendaRowHeight(row: AgendaListRow, width: number): number {
+  if (row.kind === "event") {
+    return getEventRowHeight(row.record.tags, width);
+  }
+
   return row.kind === "later"
     ? AGENDA_ROW_HEIGHTS.event
     : AGENDA_ROW_HEIGHTS[row.kind];

@@ -317,7 +317,7 @@ describe(EclipseTopocentricService, () => {
       description: "Solar Eclipse begins",
       end: moment.utc("2026-08-12T17:11:00.000Z"),
       start: moment.utc("2026-08-12T17:11:00.000Z"),
-      summary: "📍 ☀️🐉▶️ Partial Solar Eclipse begins",
+      summary: "📍☀️🐉▶️ Partial Solar Eclipse begins",
       tags: ["Eclipse", "Solar"],
     };
 

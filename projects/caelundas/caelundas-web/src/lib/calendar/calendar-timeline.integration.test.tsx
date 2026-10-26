@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { findToolbar } from "../../../testing/calendar-page";
@@ -108,9 +108,17 @@ describe("calendar timeline", () => {
     await renderRoute("/?view=timeline&scale=day&date=2026-03-04");
 
     fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Scale: Day" }),
+      within(await findToolbar()).getByRole("button", {
+        name: /^View options/u,
+      }),
     );
-    fireEvent.click(await screen.findByRole("menuitemradio", { name: scale }));
+    fireEvent.click(await screen.findByText("Scale"));
+    fireEvent.click(
+      within(await screen.findByRole("group", { name: "Scale" })).getByRole(
+        "button",
+        { name: scale },
+      ),
+    );
 
     // The toolbar is drawn again for the new scale, so the page is searched.
     await expect(
@@ -134,7 +142,7 @@ describe("calendar timeline", () => {
     ]);
   });
 
-  it("draws an instant as a diamond and a span as a bar", async () => {
+  it("draws an instant as a circle and a span as a bar", async () => {
     await renderRoute("/?view=timeline&date=2026-03-04");
 
     // Under Mars and under Venus.
@@ -160,18 +168,67 @@ describe("calendar timeline", () => {
 
     const timeline = await screen.findByTestId("calendar-timeline");
 
-    await expect(
-      within(timeline).findByRole("button", { name: /^500 events/u }),
-    ).resolves.toBeDefined();
+    await waitFor(() => {
+      expect(
+        timeline.querySelector('[data-slot="timeline-cluster"]')?.textContent,
+      ).toBe("500");
+    });
+
     expect(
       timeline.querySelectorAll('[data-slot="gantt-bar"]').length,
     ).toBeLessThan(10);
   });
 
+  it("lists the events behind a count when it is clicked", async () => {
+    await renderRoute("/?view=timeline&date=2026-03-10", {
+      eventsDatabase: createTestEventsDatabase({
+        extraSql: createBusyEventsSql("2026-03-10T14:00:00.000Z", 500),
+      }),
+    });
+
+    const timeline = await screen.findByTestId("calendar-timeline");
+
+    await waitFor(() => {
+      expect(
+        timeline.querySelector('[data-slot="timeline-cluster"]'),
+      ).not.toBeNull();
+    });
+    fireEvent.click(
+      timeline.querySelector('[data-slot="timeline-cluster"]') ?? timeline,
+    );
+
+    const dialog = await screen.findByRole("dialog");
+
+    expect(within(dialog).getByText("500 events")).toBeDefined();
+
+    fireEvent.keyDown(dialog, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+  });
+
+  it("opens one event by its name when its marker is clicked", async () => {
+    await renderRoute("/?view=timeline&date=2026-03-04");
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: /^Mercury Retrograde/u }),
+    );
+
+    const dialog = await screen.findByRole("dialog");
+
+    expect(within(dialog).getAllByText(/Mercury Retrograde/u)).toHaveLength(2);
+  });
+
   it("draws every event in one row when not grouped", async () => {
     await renderRoute("/?view=timeline&date=2026-03-04&group=%5B%5D");
 
-    await expect(findTimelineRows()).resolves.toStrictEqual(["All events4"]);
+    // The events that overlap in time are drawn in a second lane beneath,
+    // a row with no title.
+    await expect(findTimelineRows()).resolves.toStrictEqual([
+      "All events4",
+      "",
+    ]);
   });
 
   it("nests a tag grouped below its root's children under each tag between", async () => {

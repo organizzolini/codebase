@@ -1,5 +1,7 @@
 import { buildEventGroups } from "../event-groups/event-group-tree";
 
+import { getEventLabel } from "./calendar-glyphs";
+
 import type {
   EventGroupField,
   EventGrouping,
@@ -17,6 +19,10 @@ export const ALL_EVENTS_ROW = { id: "all", title: "All events" } as const;
  * What a timeline bar draws: one event, or a cluster of crowded ones.
  */
 export interface TimelineBar {
+  /**
+   * The English name of each record, in order, which a cluster previews.
+   */
+  names: string[];
   records: CalendarEventRecord[];
 }
 
@@ -58,7 +64,7 @@ interface RowLayout {
  * draws Aspect, then Major Aspect, then Conjunct, each collapsible. An event
  * is drawn once in every innermost row it falls in, and each row counts its
  * distinct events. Instants keep no length, which the Gantt draws as a
- * diamond at its moment; spans keep their true length.
+ * circle at its moment; spans keep their true length.
  */
 export function toTimelineRows(
   events: readonly CalendarEventRecord[],
@@ -150,13 +156,13 @@ function toGanttEvent(
   rowId: string,
 ): GanttEvent<TimelineBar> {
   return {
-    data: { records: [record] },
+    data: { names: [getEventLabel(record).name], records: [record] },
     end: record.end,
     id: `${rowId}|${record.id}`,
     readOnly: true,
     resourceId: rowId,
     start: record.start,
-    title: record.summary,
+    title: getEventLabel(record).glyphs,
     ...(record.color === null ? {} : { color: record.color }),
   };
 }

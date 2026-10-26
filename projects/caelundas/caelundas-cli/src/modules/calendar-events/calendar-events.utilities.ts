@@ -13,14 +13,16 @@ import type { Moment } from "moment-timezone";
 
 /**
  * The key an event is told apart by within one observer's upsert: its
- * summary and the instant it starts, the natural key less the coordinates
- * every event in the upsert shares.
+ * summary and the instants it starts and ends, the natural key less the
+ * coordinates every event in the upsert shares. A boundary and a span may
+ * share a title and a start, so the end tells them apart.
  */
 export function calendarEventKey(
   summary: string,
   start: Date | Moment,
+  end: Date | Moment,
 ): string {
-  return `${summary}\u0000${start.toISOString()}`;
+  return `${summary}\u0000${start.toISOString()}\u0000${end.toISOString()}`;
 }
 
 /**
@@ -34,7 +36,7 @@ export function formatCoordinate(coordinate: number): string {
 
 /**
  * The id each written row was stored under, by {@link calendarEventKey},
- * from the summary and start each row read back alongside its id, so the
+ * from the summary, start and end each row read back alongside its id, so the
  * order Postgres returns them in does not matter. They are checked rather
  * than trusted, because TypeORM types them loosely.
  */
@@ -42,11 +44,22 @@ export function mapWrittenIds(
   generatedMaps: readonly unknown[],
 ): Map<string, string> {
   return new Map(
-    WRITTEN_ROWS_SCHEMA.parse(generatedMaps).map(({ id, start, summary }) => [
-      calendarEventKey(summary, start),
-      id,
-    ]),
+    WRITTEN_ROWS_SCHEMA.parse(generatedMaps).map(
+      ({ end, id, start, summary }) => [
+        calendarEventKey(summary, start, end),
+        id,
+      ],
+    ),
   );
+}
+
+/**
+ * Text with no leading or trailing whitespace and each run of whitespace
+ * inside it collapsed to one space, so a title never begins with a space or
+ * carries a double one, whatever a detector built it from.
+ */
+export function tidyText(text: string): string {
+  return text.replaceAll(/\s+/gu, " ").trim();
 }
 
 /**

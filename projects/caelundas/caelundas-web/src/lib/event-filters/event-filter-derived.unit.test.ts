@@ -105,6 +105,47 @@ describe(compileDerivedRule, () => {
     ).resolves.toHaveLength(5);
   });
 
+  it("compares the hour an event starts", async () => {
+    const late = await matching("hour", "between", [22, 23]);
+
+    await expect(matching("hour", "gte", 22)).resolves.toStrictEqual(late);
+    await expect(matching("hour", "gt", 21)).resolves.toStrictEqual(late);
+    await expect(matching("hour", "lt", 22)).resolves.toHaveLength(
+      6 - late.length,
+    );
+    await expect(matching("hour", "lte", 23)).resolves.toHaveLength(6);
+    await expect(matching("hour", "eq", 10)).resolves.toStrictEqual(
+      await matching("hour", "between", [10, 10]),
+    );
+
+    const ten = await matching("hour", "eq", 10);
+
+    await expect(matching("hour", "neq", 10)).resolves.toHaveLength(
+      6 - ten.length,
+    );
+  });
+
+  it("compares the duration in minutes", async () => {
+    await expect(matching("duration-minutes", "gt", 0)).resolves.toStrictEqual([
+      "event-mercury-retrograde",
+    ]);
+    await expect(matching("duration-minutes", "eq", 0)).resolves.toHaveLength(
+      5,
+    );
+    await expect(matching("duration-minutes", "lte", 0)).resolves.toHaveLength(
+      5,
+    );
+    await expect(
+      matching("duration-minutes", "between", [1, 100_000]),
+    ).resolves.toStrictEqual(["event-mercury-retrograde"]);
+    await expect(
+      matching("duration-minutes", "not_between", [1, 100_000]),
+    ).resolves.toHaveLength(5);
+    await expect(
+      matching("duration-minutes", "gte", "1"),
+    ).resolves.toHaveLength(1);
+  });
+
   it("searches the summary and description text", async () => {
     await expect(matching("text", "contains", "INGRESS")).resolves.toHaveLength(
       3,
@@ -146,6 +187,12 @@ describe(compileDerivedRule, () => {
     ["hour", "between", [0, 24]],
     ["hour", "between", 5],
     ["hour", "is_any_of", [1, 2]],
+    ["hour", "gt", "late"],
+    ["hour", "gt", null],
+    ["hour", "gt", [1, 2]],
+    ["duration-minutes", "gt", ""],
+    ["duration-minutes", "between", [5, 1]],
+    ["duration-minutes", "is_any_of", [1]],
     ["weekday", "is_any_of", "3"],
     ["weekday", "is_any_of", [null, ""]],
     ["weekday", "between", ["1", "2"]],

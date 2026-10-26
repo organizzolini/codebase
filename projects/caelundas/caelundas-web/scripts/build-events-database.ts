@@ -1,31 +1,97 @@
-import { mkdirSync, readFileSync, rmSync } from "node:fs";
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+} from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-// Writes the SQLite file the static build bundles. Until the real export is
-// wired in, the file is built from the committed SQL text, so no binary is
-// ever committed: `output/` is ignored and rebuilt before every build. The
-// files are applied in the order the tests apply them.
+import { exportEventsDatabase } from "./export-events-database.ts";
+
+// Writes the SQLite file the static build bundles. `output/` is ignored, so
+// no binary is ever committed: the file is rebuilt before every build.
+//
+// By default it creates the tables from the committed SQL text, the schema
+// and the seed the tests load. With `--export` it starts instead from the
+// tables `persistence export --sqlite` writes from the Postgres database
+// `caelundas-cli` ingested into, and with `--from <file>` from a file that
+// export already wrote. Either way the views come last, applied over
+// whatever wrote the tables. `--output <file>` writes somewhere other than
+// the file the build bundles.
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
-const outputPath = path.join(projectRoot, "output", "events.sqlite");
-// The views come last: the export writes tables only, and the views are
-// applied over whatever it wrote.
-const sqlFileNames = [
-  "events-schema.sql",
-  "events-seed.sql",
-  "events-views.sql",
-];
+const outputDirectory = path.join(projectRoot, "output");
+const commandLine = process.argv.slice(2);
 
-mkdirSync(path.dirname(outputPath), { recursive: true });
-rmSync(outputPath, { force: true });
+/**
+ * The value given after `--name` on the command line, if the option was.
+ *
+ * @throws Error when the option is given with no value after it.
+ */
+function readOption(name: string): string | undefined {
+  const index = commandLine.indexOf(`--${name}`);
 
-const database = new DatabaseSync(outputPath);
+  if (index === -1) return undefined;
 
-for (const sqlFileName of sqlFileNames) {
-  database.exec(
-    readFileSync(path.join(projectRoot, "data", sqlFileName), "utf8"),
-  );
+  const value = commandLine[index + 1];
+
+  if (value === undefined || value.startsWith("--")) {
+    throw new Error(`--${name} needs a file path after it`);
+  }
+
+  return value;
 }
 
-database.close();
+const outputPath = path.resolve(
+  projectRoot,
+  readOption("output") ?? path.join(outputDirectory, "events.sqlite"),
+);
+let sourcePath = readOption("from");
+
+if (commandLine.includes("--export")) {
+  sourcePath = path.join(path.dirname(outputPath), "events-export.sqlite");
+  try {
+    await exportEventsDatabase(sourcePath);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+// The file is built beside the output and replaces it only once complete, so
+// a failed build leaves the last good file in place rather than half of one.
+const partialPath = `${outputPath}.partial`;
+const sqlFileNames =
+  sourcePath === undefined
+    ? ["events-schema.sql", "events-seed.sql", "events-views.sql"]
+    : ["events-views.sql"];
+
+mkdirSync(path.dirname(outputPath), { recursive: true });
+rmSync(partialPath, { force: true });
+
+try {
+  if (sourcePath !== undefined) {
+    copyFileSync(path.resolve(projectRoot, sourcePath), partialPath);
+  }
+
+  const database = new DatabaseSync(partialPath);
+
+  try {
+    for (const sqlFileName of sqlFileNames) {
+      database.exec(
+        readFileSync(path.join(projectRoot, "data", sqlFileName), "utf8"),
+      );
+    }
+    // The browser downloads the file whole, so the space the copied export
+    // and the derived tables left behind is reclaimed.
+    database.exec("vacuum");
+  } finally {
+    database.close();
+  }
+  renameSync(partialPath, outputPath);
+} catch (error) {
+  rmSync(partialPath, { force: true });
+  throw error;
+}

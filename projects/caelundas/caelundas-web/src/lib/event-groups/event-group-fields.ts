@@ -1,6 +1,11 @@
+import {
+  createTagOptions,
+  describeRoot,
+} from "../event-filters/event-filter-fields";
 import { TAG_FIELD_PREFIX } from "../event-filters/event-filters.constants";
 
 import {
+  DERIVED_GROUP_DESCRIPTIONS,
   DERIVED_GROUP_LABELS,
   DERIVED_GROUP_ORDER,
   MAXIMUM_GROUP_LEVELS,
@@ -30,7 +35,10 @@ const DEFAULT_GROUP_ROOTS = {
 export function createEventGroupFields(
   facets: readonly EventFacet[],
 ): EventGroupField[] {
-  const tagFields = facets.map((facet) => {
+  const tagFields: EventGroupField[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const facet of facets) {
     const levels: string[][] = [];
 
     for (const value of facet.values) {
@@ -40,16 +48,21 @@ export function createEventGroupFields(
       levels[value.depth - 1] = names;
     }
 
-    return {
+    tagFields.push({
+      description: describeRoot(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       levels: levels.map((names) => [...new Set(names)]),
-    };
-  });
+      options: createTagOptions(facet),
+    });
+  }
+
   const derivedFields = DERIVED_GROUP_ORDER.map((id) => ({
+    description: DERIVED_GROUP_DESCRIPTIONS[id],
     id,
     label: DERIVED_GROUP_LABELS[id],
     levels: [],
+    options: [],
   }));
 
   return [...tagFields, ...derivedFields];
@@ -67,14 +80,19 @@ export function getDefaultGrouping(
   const roots: readonly string[] =
     view === "agenda" || view === "timeline" ? DEFAULT_GROUP_ROOTS[view] : [];
 
-  return roots.flatMap((root) => {
-    const field = fields.find(
-      (candidate) =>
-        candidate.label === root && candidate.id.startsWith(TAG_FIELD_PREFIX),
-    );
+  const grouping: EventGroupLevel[] = [];
 
-    return field === undefined ? [] : [{ depth: 1, field: field.id }];
-  });
+  // Loops rather than mapping callbacks keep the call stacks shallow.
+  for (const root of roots) {
+    for (const field of fields) {
+      if (field.label === root && field.id.startsWith(TAG_FIELD_PREFIX)) {
+        grouping.push({ depth: 1, field: field.id });
+        break;
+      }
+    }
+  }
+
+  return grouping;
 }
 
 /**
@@ -86,9 +104,10 @@ export function isDerivedGroupId(id: string): id is DerivedGroupId {
 
 /**
  * Keeps the levels of a grouping that name a field the data has, at most
- * {@link MAXIMUM_GROUP_LEVELS} of them, each field once, with a tag level's
- * depth brought within its root's tree and a derived level's dropped, so a
- * stale link groups by what still exists rather than failing.
+ * {@link MAXIMUM_GROUP_LEVELS} of them, each field once. A tag level keeps the
+ * tags it picks that the root still has, or with none its depth brought within
+ * the root's tree; a derived level keeps neither, so a stale link groups by
+ * what still exists rather than failing.
  */
 export function resolveEventGrouping(
   grouping: EventGrouping,
@@ -104,19 +123,53 @@ export function resolveEventGrouping(
       resolved.length < MAXIMUM_GROUP_LEVELS &&
       !resolved.some((kept) => kept.field === field.id)
     ) {
-      resolved.push(
-        field.levels.length === 0
-          ? { field: field.id }
-          : {
-              depth: Math.min(
-                Math.max(level.depth ?? 1, 1),
-                field.levels.length,
-              ),
-              field: field.id,
-            },
-      );
+      resolved.push(resolveLevel(level, field));
     }
   }
 
   return resolved;
+}
+
+/**
+ * A field's first level: a tag root's children, or the derived value.
+ */
+export function toGroupLevel(field: EventGroupField): EventGroupLevel {
+  return field.levels.length === 0
+    ? { field: field.id }
+    : { depth: 1, field: field.id };
+}
+
+/**
+ * Brings one level within its field: a derived field takes no options, and a
+ * tag field takes the picked tags it has or else a depth within its tree.
+ */
+function resolveLevel(
+  level: EventGroupLevel,
+  field: EventGroupField,
+): EventGroupLevel {
+  if (field.levels.length === 0) {
+    return { field: field.id };
+  }
+
+  const known = new Set<string>();
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const option of field.options) {
+    known.add(option.value);
+  }
+
+  const tags: string[] = [];
+
+  for (const tag of new Set(level.tags)) {
+    if (known.has(tag)) {
+      tags.push(tag);
+    }
+  }
+
+  return tags.length > 0
+    ? { field: field.id, tags }
+    : {
+        depth: Math.min(Math.max(level.depth ?? 1, 1), field.levels.length),
+        field: field.id,
+      };
 }

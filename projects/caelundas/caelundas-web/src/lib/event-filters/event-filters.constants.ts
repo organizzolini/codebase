@@ -20,7 +20,7 @@ export const TAG_OPERATORS = {
  */
 export const EVENT_TAGS_MATCHING_SQL = `
   select t.tag_id
-  from calendar_event_tags t
+  from calendar_event_tag_nodes t
   where t.calendar_event_id = e.id and t.tag_id in ({placeholders})
 `;
 
@@ -31,11 +31,18 @@ export const EVENT_TAGS_MATCHING_SQL = `
 export const DERIVED_FIELD_IDS = {
   date: "date",
   duration: "duration",
+  durationMinutes: "duration-minutes",
   hour: "hour",
   temporality: "temporality",
   text: "text",
   weekday: "weekday",
 } as const;
+
+/**
+ * The name the tag fields' editor is registered under with the builder: a
+ * searchable list of checkboxes, one for each tag, indented by its depth.
+ */
+export const TAG_OPTIONS_EDITOR = "tag-options";
 
 /**
  * The name the date field's editor is registered under with the builder.
@@ -101,8 +108,81 @@ export const TEMPORALITIES: readonly string[] = ["Instant", "Duration"];
 export const DERIVED_FIELD_SQL = {
   dateRange: `(event_local_date(e."end", e.timezone) >= ? and event_local_date(e."start", e.timezone) <= ?)`,
   duration: "(e.duration_minutes between ? and ?)",
+  durationMinutes: "e.duration_minutes",
+  hour: `event_local_hour(e."start", e.timezone)`,
   hourRange: `(event_local_hour(e."start", e.timezone) between ? and ?)`,
   temporality: "e.temporality",
   text: String.raw`(e."summary" like ? escape '\' or e.description like ? escape '\')`,
   weekday: `event_local_weekday(e."start", e.timezone)`,
 } as const;
+
+/**
+ * The operators a numeric field offers, mirroring the filter builder's own
+ * number operators: equality, the four orderings, and a range.
+ */
+export const NUMBER_OPERATORS = {
+  between: "between",
+  eq: "eq",
+  gt: "gt",
+  gte: "gte",
+  lt: "lt",
+  lte: "lte",
+  neq: "neq",
+  notBetween: "not_between",
+} as const;
+
+/**
+ * The number a tag's name ends in, such as the 6 of "Harmonic 6": the name
+ * with its non-digit prefix taken away. Only a name that ends in a digit is
+ * numeric, so a root such as "Aspect Harmonic" itself never reads as 0.
+ */
+export const TAG_NUMBER_SQL =
+  "cast(replace(t.tag_name, rtrim(t.tag_name, '0123456789'), '') as integer)";
+
+/**
+ * The tag nodes of the event under test, beneath one root, whose name ends
+ * in a number and meets a condition on that number.
+ */
+export const EVENT_TAG_NUMBERS_SQL = `
+  select 1
+  from calendar_event_tag_nodes t
+  where t.calendar_event_id = e.id
+    and t.tag_root_id = ?
+    and t.tag_name glob '*[0-9]'
+    and {condition}
+`;
+
+/**
+ * What each tag root the data has means, shown under its name in the list of
+ * attributes. A root not named here is described by its name alone.
+ */
+export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
+  "Aspect Harmonic":
+    "The harmonic of an aspect: 1 for a conjunction, 2 an opposition, 3 a trine, 4 a square, and so on",
+  "Aspect Nature": "Whether an aspect is hard, soft or neutral",
+  "Body Class":
+    "The class of body involved: a luminary, a personal, social or outer planet, an asteroid, a node or a point",
+  Decan: "The ten-degree third of a sign a body is in",
+  Dignity:
+    "How strongly a planet sits in its sign: domicile, exaltation, detriment, fall or peregrine",
+  Domain: "Whether the event belongs to the solar, lunar or planetary sphere",
+  "Eclipse Frame":
+    "What an eclipse is measured from: the Earth's center or the observer's visibility",
+  Element: "The element of a sign: fire, earth, air or water",
+  "Focal Body":
+    "The body a pattern points at: the apex of a T-square, a yod or a kite",
+  "Lunar Phase":
+    "The Moon's phase: new, a crescent, a quarter, gibbous or full",
+  Modality: "The modality of a sign: cardinal, fixed or mutable",
+  Motion: "Whether a planet turns retrograde or direct at a station",
+  Phase:
+    "Where an event sits in its span: forming, perfective, dissolving, and so on",
+  Planet: "The planets, luminaries and other bodies the event involves",
+  Polarity: "The polarity of a sign: positive or negative",
+  Season: "The season of the year",
+  Sign: "The zodiac sign a body is in",
+  "Synodic Stage":
+    "A planet's stage in its cycle with the Sun: brightest, elongation, rise and set",
+  "Time of Day": "Whether it falls in the morning or the evening",
+  Type: "What kind of event it is: an aspect, an ingress, a station, an eclipse, a cycle, a twilight…",
+};

@@ -54,6 +54,22 @@ export const DERIVED_GROUP_LABELS: Readonly<Record<DerivedGroupId, string>> = {
 };
 
 /**
+ * What each derived field groups by, as the field picker describes it.
+ */
+export const DERIVED_GROUP_DESCRIPTIONS: Readonly<
+  Record<DerivedGroupId, string>
+> = {
+  day: "The day an event starts on",
+  duration: "How long an event lasts, from an instant to months",
+  hour: "The hour of the day an event starts in",
+  month: "The month an event starts in",
+  quarter: "The quarter of the year an event starts in",
+  week: "The week, Sunday to Saturday, an event starts in",
+  weekday: "The day of the week an event starts on",
+  year: "The year an event starts in",
+};
+
+/**
  * The local day an event starts on, `YYYY-MM-DD`, which every time-based
  * group key is cut from.
  */
@@ -87,7 +103,7 @@ export const DERIVED_GROUP_SQL = `select {key} as "key", null as label, null as 
  */
 export const TAG_GROUP_SQL = `
   select t.tag_id as "key", t.tag_name as label, t.tag_path as "path"
-  from calendar_event_tags t
+  from calendar_event_tag_nodes t
   where
     t.calendar_event_id = e.id
     and t.tag_root_id = ?
@@ -98,13 +114,24 @@ export const TAG_GROUP_SQL = `
         t.tag_depth < ?
         and not exists (
           select 1
-          from calendar_event_tags x
-          join tags_closure c on c.id_descendant = x.tag_id
+          from calendar_event_tag_nodes x
+          join tags_closure c on c.descendant_id = x.tag_id
           where
             x.calendar_event_id = e.id
-            and c.id_ancestor = t.tag_id
+            and c.ancestor_id = t.tag_id
             and x.tag_id != t.tag_id
         )
       )
     )
+`;
+
+/**
+ * The picked tags an event falls under, with `{tags}` in place of one
+ * placeholder for each. An event is attached to every tag above its own, so a
+ * picked tag finds everything beneath it.
+ */
+export const PICKED_TAG_GROUP_SQL = `
+  select t.tag_id as "key", t.tag_name as label, t.tag_path as "path"
+  from calendar_event_tag_nodes t
+  where t.calendar_event_id = e.id and t.tag_id in ({tags})
 `;

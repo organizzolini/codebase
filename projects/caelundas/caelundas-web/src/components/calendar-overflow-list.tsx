@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
 import {
-  AGENDA_ROW_HEIGHTS,
   getAgendaRange,
+  getEventRowHeight,
   toAgendaRows,
 } from "../lib/calendar/calendar-agenda";
 import { formatCalendarDay } from "../lib/calendar/calendar-format";
@@ -78,7 +78,7 @@ export function CalendarOverflowList(
       </p>
       <VirtualList
         className="h-64"
-        getRowHeight={getEventRowHeight}
+        getRowHeight={getRowHeight}
         getRowKey={getEventRowKey}
         label={`Events on ${title}`}
         renderRow={renderRow}
@@ -89,15 +89,18 @@ export function CalendarOverflowList(
 }
 
 /**
- * Every row of the list is one event's.
- */
-function getEventRowHeight(): number {
-  return AGENDA_ROW_HEIGHTS.event;
-}
-
-/**
  * Names a row by its event.
  */
 function getEventRowKey(row: { record: CalendarEventRecord }): string {
   return row.record.id;
+}
+
+/**
+ * Every row of the list is one event's, as tall as its tags need.
+ */
+function getRowHeight(
+  row: Readonly<{ record: CalendarEventRecord }>,
+  width: number,
+): number {
+  return getEventRowHeight(row.record.tags, width);
 }

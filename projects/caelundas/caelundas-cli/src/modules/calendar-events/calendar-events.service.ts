@@ -20,6 +20,7 @@ import {
   calendarEventKey,
   formatCoordinate,
   mapWrittenIds,
+  tidyText,
   toTagLinks,
 } from "./calendar-events.utilities";
 
@@ -143,8 +144,8 @@ export class CalendarEventsService {
 
   /**
    * Writes one batch of rows, updating any already stored, and returns the
-   * id each was written under, by {@link calendarEventKey}, from the summary
-   * and start each row reads back with its id.
+   * id each was written under, by {@link calendarEventKey}, from the summary,
+   * start and end each row reads back with its id.
    */
   private async writeRows(
     manager: EntityManager,
@@ -218,8 +219,13 @@ export class CalendarEventsService {
     observer: Observer,
   ): Promise<void> {
     const eventsByKey = new Map<string, ClassifiedCalendarEvent>();
-    for (const event of events) {
-      eventsByKey.set(calendarEventKey(event.summary, event.start), {
+    for (const detected of events) {
+      const event = {
+        ...detected,
+        description: tidyText(detected.description),
+        summary: tidyText(detected.summary),
+      };
+      eventsByKey.set(calendarEventKey(event.summary, event.start, event.end), {
         event,
         paths: classifyEvent(event),
       });

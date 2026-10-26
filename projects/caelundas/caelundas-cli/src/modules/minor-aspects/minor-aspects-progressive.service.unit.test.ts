@@ -67,10 +67,10 @@ describe(MinorAspectsProgressiveService, () => {
 
   it("builds progressive events from forming and dissolving minor aspects", () => {
     const formingEvent: DetectedCalendarEvent = {
-      description: "Sun semisquare Moon",
+      description: "Sun forming semisquare Moon",
       end: moment.utc("2024-03-21T10:00:00.000Z"),
       start: moment.utc("2024-03-21T10:00:00.000Z"),
-      summary: "Sun semisquare Moon",
+      summary: "☀️∠🌙 Sun semisquare Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -83,10 +83,10 @@ describe(MinorAspectsProgressiveService, () => {
       ],
     };
     const dissolvingEvent: DetectedCalendarEvent = {
-      description: "Sun semisquare Moon",
+      description: "Sun dissolving semisquare Moon",
       end: moment.utc("2024-03-21T14:00:00.000Z"),
       start: moment.utc("2024-03-21T14:00:00.000Z"),
-      summary: "Sun semisquare Moon",
+      summary: "☀️∠🌙 Sun semisquare Moon",
       tags: [
         "Astronomy",
         "Astrology",
@@ -109,7 +109,8 @@ describe(MinorAspectsProgressiveService, () => {
     ]);
 
     expect(progressiveEvents).toHaveLength(1);
-    expect(progressiveEvents[0]?.description).toBe("Moon semisquare Sun");
+    expect(progressiveEvents[0]?.description).toBe("Sun semisquare Moon");
+    expect(progressiveEvents[0]?.summary).toBe(formingEvent.summary);
   });
 
   it("returns empty when aspect group key is empty", () => {

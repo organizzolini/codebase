@@ -75,6 +75,29 @@ export function formatDuration(minutes: number): string {
 }
 
 /**
+ * Writes the day and time an event begins and ends in a zone, such as
+ * "Mar 4, 2:03 AM – Mar 5, 7:40 AM".
+ */
+export function formatEventSpan(
+  start: Date,
+  end: Date,
+  timeZone: string,
+): string {
+  const write = (date: Date): string =>
+    date
+      .toLocaleString("en-US", {
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        month: "short",
+        timeZone,
+      })
+      .replaceAll(" ", " ");
+
+  return `${write(start)} – ${write(end)}`;
+}
+
+/**
  * Writes the time of day an instant falls on in a zone, such as "10:20 AM",
  * with a plain space where the locale data may put a narrow one.
  */

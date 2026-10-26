@@ -1,3 +1,5 @@
+import { getEventLabel } from "./calendar-glyphs";
+
 import type { CalendarEventRecord } from "../events-database/events-database.types";
 import type { CalendarEvent } from "@codebase/presentation";
 
@@ -24,6 +26,6 @@ export function toCalendarEvent(
     id: record.id,
     readOnly: true,
     start: record.start,
-    title: record.summary,
+    title: getEventLabel(record).glyphs,
   };
 }

@@ -5,10 +5,6 @@ import {
   specialtyAspects,
 } from "../caelundas/caelundas.constants";
 import { isBody, isSpecialtyAspect } from "../caelundas/caelundas.types";
-import {
-  symbolByBody,
-  symbolBySpecialtyAspect,
-} from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -98,8 +94,6 @@ export class SpecialtyAspectsProgressiveService {
       ending,
       isAspect: isSpecialtyAspect,
       isBody,
-      symbolByAspect: symbolBySpecialtyAspect,
-      symbolByBody,
     });
   }
 

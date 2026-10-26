@@ -5,10 +5,6 @@ import {
   majorAspects,
 } from "../caelundas/caelundas.constants";
 import { isBody, isMajorAspect } from "../caelundas/caelundas.types";
-import {
-  symbolByBody,
-  symbolByMajorAspect,
-} from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -59,8 +55,6 @@ export class MajorAspectProgressiveService {
       ending,
       isAspect: isMajorAspect,
       isBody,
-      symbolByAspect: symbolByMajorAspect,
-      symbolByBody,
     });
   }
 

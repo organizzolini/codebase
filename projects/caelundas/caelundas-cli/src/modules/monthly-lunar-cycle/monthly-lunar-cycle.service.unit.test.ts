@@ -136,15 +136,15 @@ describe(MonthlyLunarCycleService, () => {
     });
 
     it.each([
-      { elongations: [359.6, 359.9, 0.2, 0.5], summary: "🌙 🌑 New Moon" },
+      { elongations: [359.6, 359.9, 0.2, 0.5], summary: "🌙🌑 New Moon" },
       {
         elongations: [89.6, 89.9, 90.2, 90.5],
-        summary: "🌙 🌓 First Quarter Moon",
+        summary: "🌙🌓 First Quarter Moon",
       },
-      { elongations: [179.6, 179.9, 180.2, 180.5], summary: "🌙 🌕 Full Moon" },
+      { elongations: [179.6, 179.9, 180.2, 180.5], summary: "🌙🌕 Full Moon" },
       {
         elongations: [269.6, 269.9, 270.2, 270.5],
-        summary: "🌙 🌗 Last Quarter Moon",
+        summary: "🌙🌗 Last Quarter Moon",
       },
     ])(
       "reports $summary once when Moon minus Sun longitude reaches it",
@@ -184,7 +184,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(events.map((event) => event.summary)).toStrictEqual([
-        "🌙 🌕 Full Moon",
+        "🌙🌕 Full Moon",
       ]);
     });
 
@@ -198,26 +198,26 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(events.map((event) => event.summary)).toStrictEqual([
-        "🌙 🌕 Full Moon",
+        "🌙🌕 Full Moon",
       ]);
     });
 
     it.each([
       {
         elongations: [44.6, 44.9, 45.2, 45.5],
-        summary: "🌙 🌒 Waxing Crescent Moon",
+        summary: "🌙🌒 Waxing Crescent Moon",
       },
       {
         elongations: [134.6, 134.9, 135.2, 135.5],
-        summary: "🌙 🌔 Waxing Gibbous Moon",
+        summary: "🌙🌔 Waxing Gibbous Moon",
       },
       {
         elongations: [224.6, 224.9, 225.2, 225.5],
-        summary: "🌙 🌖 Waning Gibbous Moon",
+        summary: "🌙🌖 Waning Gibbous Moon",
       },
       {
         elongations: [314.6, 314.9, 315.2, 315.5],
-        summary: "🌙 🌘 Waning Crescent Moon",
+        summary: "🌙🌘 Waning Crescent Moon",
       },
     ])(
       "reports $summary once when Moon minus Sun longitude reaches its octant",
@@ -249,7 +249,7 @@ describe(MonthlyLunarCycleService, () => {
         lunarPhase: "new",
       });
 
-      expect(event.summary).toBe(`🌙 ${symbolByLunarPhase.new} New Moon`);
+      expect(event.summary).toBe(`🌙${symbolByLunarPhase.new} New Moon`);
       expect(event.description).toBe("New Moon");
       expect(event.start).toStrictEqual(date);
       expect(event.end).toStrictEqual(date);
@@ -268,7 +268,7 @@ describe(MonthlyLunarCycleService, () => {
         lunarPhase: "full",
       });
 
-      expect(event.summary).toBe(`🌙 ${symbolByLunarPhase.full} Full Moon`);
+      expect(event.summary).toBe(`🌙${symbolByLunarPhase.full} Full Moon`);
       expect(event.description).toBe("Full Moon");
       expect(event.tags).toContain("Full");
     });
@@ -282,7 +282,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(event.summary).toBe(
-        `🌙 ${symbolByLunarPhase["first quarter"]} First Quarter Moon`,
+        `🌙${symbolByLunarPhase["first quarter"]} First Quarter Moon`,
       );
       expect(event.description).toBe("First Quarter Moon");
       expect(event.tags).toContain("First Quarter");
@@ -297,7 +297,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(event.summary).toBe(
-        `🌙 ${symbolByLunarPhase["last quarter"]} Last Quarter Moon`,
+        `🌙${symbolByLunarPhase["last quarter"]} Last Quarter Moon`,
       );
       expect(event.description).toBe("Last Quarter Moon");
       expect(event.tags).toContain("Last Quarter");
@@ -312,7 +312,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(event.summary).toBe(
-        `🌙 ${symbolByLunarPhase["waxing crescent"]} Waxing Crescent Moon`,
+        `🌙${symbolByLunarPhase["waxing crescent"]} Waxing Crescent Moon`,
       );
       expect(event.description).toBe("Waxing Crescent Moon");
       expect(event.tags).toContain("Waxing Crescent");
@@ -327,7 +327,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(event.summary).toBe(
-        `🌙 ${symbolByLunarPhase["waxing gibbous"]} Waxing Gibbous Moon`,
+        `🌙${symbolByLunarPhase["waxing gibbous"]} Waxing Gibbous Moon`,
       );
       expect(event.description).toBe("Waxing Gibbous Moon");
       expect(event.tags).toContain("Waxing Gibbous");
@@ -342,7 +342,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(event.summary).toBe(
-        `🌙 ${symbolByLunarPhase["waning gibbous"]} Waning Gibbous Moon`,
+        `🌙${symbolByLunarPhase["waning gibbous"]} Waning Gibbous Moon`,
       );
       expect(event.description).toBe("Waning Gibbous Moon");
       expect(event.tags).toContain("Waning Gibbous");
@@ -357,7 +357,7 @@ describe(MonthlyLunarCycleService, () => {
       });
 
       expect(event.summary).toBe(
-        `🌙 ${symbolByLunarPhase["waning crescent"]} Waning Crescent Moon`,
+        `🌙${symbolByLunarPhase["waning crescent"]} Waning Crescent Moon`,
       );
       expect(event.description).toBe("Waning Crescent Moon");
       expect(event.tags).toContain("Waning Crescent");
@@ -370,14 +370,14 @@ describe(MonthlyLunarCycleService, () => {
         description: "New Moon",
         end: moment.utc("2024-03-10T09:00:00.000Z"),
         start: moment.utc("2024-03-10T09:00:00.000Z"),
-        summary: "🌙 🌑 New Moon",
+        summary: "🌙🌑 New Moon",
         tags: ["Astronomy", "Astrology", "Monthly Lunar Cycle", "Lunar", "New"],
       };
       const waxingCrescent: DetectedCalendarEvent = {
         description: "Waxing Crescent Moon",
         end: moment.utc("2024-03-13T12:00:00.000Z"),
         start: moment.utc("2024-03-13T12:00:00.000Z"),
-        summary: "🌙 🌒 Waxing Crescent Moon",
+        summary: "🌙🌒 Waxing Crescent Moon",
         tags: [
           "Astronomy",
           "Astrology",
@@ -390,7 +390,7 @@ describe(MonthlyLunarCycleService, () => {
         description: "First Quarter Moon",
         end: moment.utc("2024-03-17T04:11:00.000Z"),
         start: moment.utc("2024-03-17T04:11:00.000Z"),
-        summary: "🌙 🌓 First Quarter Moon",
+        summary: "🌙🌓 First Quarter Moon",
         tags: [
           "Astronomy",
           "Astrology",
@@ -480,7 +480,7 @@ describe(MonthlyLunarCycleService, () => {
         description: "Waxing Crescent Moon",
         end: moment.utc("2024-03-13T12:00:00.000Z"),
         start: moment.utc("2024-03-13T12:00:00.000Z"),
-        summary: "🌙 🌒 Waxing Crescent Moon",
+        summary: "🌙🌒 Waxing Crescent Moon",
         tags: [
           "Astronomy",
           "Astrology",
@@ -539,7 +539,7 @@ describe(MonthlyLunarCycleService, () => {
           description: "New Moon",
           end: moment.utc("2024-03-13T12:00:00.000Z"),
           start: moment.utc("2024-03-13T12:00:00.000Z"),
-          summary: "🌙 🌑 New Moon",
+          summary: "🌙🌑 New Moon",
           tags: [
             "Astronomy",
             "Astrology",
@@ -568,7 +568,7 @@ describe(MonthlyLunarCycleService, () => {
           description: "New Moon",
           end: moment.utc("2024-03-10T09:00:00.000Z"),
           start: moment.utc("2024-03-10T09:00:00.000Z"),
-          summary: "🌙 🌑 New Moon",
+          summary: "🌙🌑 New Moon",
           tags: [
             "Astronomy",
             "Astrology",
@@ -585,7 +585,7 @@ describe(MonthlyLunarCycleService, () => {
           description: "New Moon",
           end: moment.utc("2024-03-10T09:00:00.000Z"),
           start: moment.utc("2024-03-10T09:00:00.000Z"),
-          summary: "🌙 🌑 New Moon",
+          summary: "🌙🌑 New Moon",
           tags: [
             "Astronomy",
             "Astrology",

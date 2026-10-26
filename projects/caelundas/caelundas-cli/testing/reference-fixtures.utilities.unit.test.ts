@@ -18,9 +18,10 @@ function detected(
   summary: string,
   start: string,
   end = start,
+  description = "",
 ): DetectedCalendarEvent {
   return {
-    description: "",
+    description,
     end: moment.utc(end),
     start: moment.utc(start),
     summary,
@@ -279,6 +280,59 @@ describe("reference fixtures", () => {
           ],
         });
       }).toThrow(/Civil Dawn[\s\S]*Civil Dusk/);
+    });
+
+    it("tells a span from its boundary of the same title by the end", () => {
+      expect.hasAssertions();
+      expect(() => {
+        assertReferenceEvents(
+          [
+            detected(
+              "🌄 Civil Dawn",
+              "2026-03-20T10:37:00Z",
+              "2026-03-20T14:00:00Z",
+            ),
+            detected("🌄 Civil Dawn", "2026-03-20T10:37:00Z"),
+          ],
+          {
+            ...fixture,
+            events: [
+              {
+                end: "2026-03-20T14:00:00Z",
+                start: "2026-03-20T10:37:00Z",
+                summary: "🌄 Civil Dawn",
+              },
+              { start: "2026-03-20T10:37:00Z", summary: "🌄 Civil Dawn" },
+            ],
+          },
+        );
+      }).not.toThrow();
+    });
+
+    it("names an event by its description as well as its title", () => {
+      expect.hasAssertions();
+
+      const events = [
+        detected(
+          "🌄 Civil Dawn",
+          "2026-03-20T10:37:00Z",
+          undefined,
+          "Civil perfective Dawn",
+        ),
+      ];
+
+      expect(() => {
+        assertReferenceEvents(events, {
+          ...fixture,
+          counts: { "Civil perfective Dawn": 1 },
+        });
+      }).not.toThrow();
+      expect(() => {
+        assertReferenceEvents(events, {
+          ...fixture,
+          absent: ["Civil perfective Dawn"],
+        });
+      }).toThrow(/Civil perfective Dawn: must not be detected/);
     });
 
     it("fails when an event that must be absent is detected", () => {

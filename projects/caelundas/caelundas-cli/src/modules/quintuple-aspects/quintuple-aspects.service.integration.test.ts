@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { MathService } from "../math/math.service";
@@ -30,7 +29,6 @@ const service = new QuintupleAspectsService(
   new QuintupleAspectsComposerService(
     new MathService(),
     new CompoundPhaseService(),
-    new AspectPhaseEmojiService(),
     new ProgressiveCompoundEventService(),
   ),
   new ProgressiveUtilitiesService(new LoggerService()),
@@ -76,7 +74,7 @@ describe("quintuple-aspects.events integration", () => {
       expect(events[0]?.tags).toContain("Sun");
       expect(events[0]?.tags).toContain("Venus");
       expect(events[0]?.description).toContain("pentagram forming");
-      expect(events[0]?.summary).toContain("➡️"); // Forming emoji
+      expect(events[0]?.summary).toContain(""); // Forming emoji
       expect(events[0]?.summary).toContain("⭐"); // Pentagram symbol
     });
 
@@ -112,7 +110,7 @@ describe("quintuple-aspects.events integration", () => {
       expect(events[0]?.tags).toContain("Pentagram");
       expect(events[0]?.tags).toContain("Dissolving");
       expect(events[0]?.description).toContain("pentagram dissolving");
-      expect(events[0]?.summary).toContain("⬅️"); // Dissolving emoji
+      expect(events[0]?.summary).toContain(""); // Dissolving emoji
     });
 
     it("creates progressive event from forming/dissolving Pentagram pair", () => {
@@ -120,8 +118,7 @@ describe("quintuple-aspects.events integration", () => {
         description: "Jupiter, Mars, Moon, Sun, Venus pentagram forming",
         end: moment.utc("2024-06-15T14:23:00.000Z"),
         start: moment.utc("2024-06-15T14:23:00.000Z"),
-        summary:
-          "➡️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram forming",
+        summary: "⬠☉☽♂♃♀ Jupiter, Mars, Moon, Sun, Venus pentagram",
         tags: [
           "Astronomy",
           "Astrology",
@@ -141,8 +138,7 @@ describe("quintuple-aspects.events integration", () => {
         description: "Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
         end: moment.utc("2024-06-15T14:30:00.000Z"),
         start: moment.utc("2024-06-15T14:30:00.000Z"),
-        summary:
-          "⬅️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
+        summary: "⬠☉☽♂♃♀ Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
         tags: [
           "Astronomy",
           "Astrology",

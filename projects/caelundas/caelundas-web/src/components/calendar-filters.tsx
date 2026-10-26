@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { ListFilter } from "lucide-react";
 
 import {
   Badge,
   Button,
+  ButtonGroup,
   Drawer,
   DrawerContent,
   DrawerHeader,
@@ -23,22 +24,30 @@ import {
   useMediaQuery,
 } from "@codebase/presentation";
 
-import { compileEventFilter } from "../lib/event-filters/event-filter-compiler";
 import {
   countActiveEventFilterRules,
   EMPTY_EVENT_FILTER,
-  isSameEventFilter,
-  toLinkedEventFilter,
 } from "../lib/event-filters/event-filter-tree";
-import { DATE_RANGE_EDITOR } from "../lib/event-filters/event-filters.constants";
+import {
+  DATE_RANGE_EDITOR,
+  TAG_OPTIONS_EDITOR,
+} from "../lib/event-filters/event-filters.constants";
 
+import { CalendarCollectionPicker } from "./calendar-collection-picker";
+import { CalendarColorOptions } from "./calendar-color-options";
+import { CalendarViewMenu } from "./calendar-view-menu";
 import { FilterDateRangeEditor } from "./filter-date-range-editor";
+import { FilterTagEditor } from "./filter-tag-editor";
+import { useFilterQuery } from "./use-filter-query";
 
+import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
 import type {
   EventFilterField,
   EventFilterQuery,
   EventFilterValue,
 } from "../lib/event-filters/event-filters.types";
+import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
+import type { EventFacet } from "../lib/events-database/events-database.types";
 import type { FilterEditorRegistry } from "@codebase/presentation";
 import type { ReactElement, ReactNode } from "react";
 
@@ -50,18 +59,66 @@ import type { ReactElement, ReactNode } from "react";
  */
 export interface CalendarFiltersProperties {
   className?: string;
+  /**
+   * Whether the views of hours merge events that run together, which the View
+   * menu turns on or off; on when absent.
+   */
+  clusters?: boolean;
+  /**
+   * What the events are colored by, which the View menu's Color by submenu
+   * changes; the type, kind by kind, when absent.
+   */
+  colorBy?: EventGroupLevel | undefined;
+  /**
+   * Whether events are colored by type, which the View menu turns on or off;
+   * on when absent.
+   */
+  colors?: boolean;
+  /**
+   * The tags of the data, from which the collections the menu applies in one
+   * step are resolved, and the default one the calendar opens on.
+   */
+  facets?: readonly EventFacet[];
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
-   * Called with every edit to write back to the link, with `undefined` once
-   * nothing is left.
+   * Called with the merging setting picked in the View menu.
    */
-  onFilterChange: (filter: EventFilterQuery | undefined) => void;
+  onClustersChange?: (enabled: boolean) => void;
+  /**
+   * Called with what the events are colored by as picked in the View menu, or
+   * `undefined` for the default.
+   */
+  onColorByChange?: (level: EventGroupLevel | undefined) => void;
+  /**
+   * Called with the colors setting picked in the View menu; the menu offers
+   * no choice without it.
+   */
+  onColorsChange?: (enabled: boolean) => void;
+  /**
+   * Called with every edit to write back to the link: the whole tree, empty
+   * once nothing is left.
+   */
+  onFilterChange: (filter: EventFilterQuery) => void;
+  /**
+   * Called with the symbols setting picked in the View menu.
+   */
+  onSymbolsChange?: ((symbols: CalendarSymbols) => void) | undefined;
+  /**
+   * How symbols are drawn, which the View menu changes; icons when absent.
+   */
+  symbols?: CalendarSymbols | undefined;
+  /**
+   * What the view shown can be arranged by, which the View menu draws ahead of
+   * its own sections.
+   */
+  viewOptions?: ReactNode;
 }
 
-const TITLE = "Filters";
+const TITLE = "Filter";
 const EDITORS: FilterEditorRegistry = {
   [DATE_RANGE_EDITOR]: FilterDateRangeEditor,
+  [TAG_OPTIONS_EDITOR]: FilterTagEditor,
 };
 const TABLET_QUERY = "(min-width: 768px)";
 
@@ -79,37 +136,32 @@ const TABLET_QUERY = "(min-width: 768px)";
 export function CalendarFilters(
   properties: Readonly<CalendarFiltersProperties>,
 ): ReactNode {
-  const { className, fields, filter, onFilterChange } = properties;
+  const {
+    className,
+    clusters = true,
+    colorBy,
+    colors = true,
+    facets = [],
+    fields,
+    filter,
+    onClustersChange = () => {},
+    onColorByChange = () => {},
+    onColorsChange = () => {},
+    onFilterChange,
+    onSymbolsChange,
+    symbols,
+    viewOptions,
+  } = properties;
 
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
-  const [query, setQuery] = useState(filter ?? EMPTY_EVENT_FILTER);
-  const [seenFilter, setSeenFilter] = useState(filter);
+  const { collections, handleCollectionSelect, handleQueryChange, query } =
+    useFilterQuery(filter, facets, onFilterChange);
+  const activeCount = countActiveEventFilterRules(query);
 
   // 🏗 Setup
-  // Only a change to the link itself can replace the tree: the link lags an
-  // edit until the calendar has reloaded, and must not undo it meanwhile.
-  if (!isSameEventFilter(filter, seenFilter)) {
-    setSeenFilter(filter);
-
-    if (!isSameEventFilter(filter, toLinkedEventFilter(query))) {
-      setQuery(filter ?? EMPTY_EVENT_FILTER);
-    }
-  }
 
   // 💪 Handlers
-  // An edit that leaves the query as it was, such as a rule that is not
-  // finished yet, stays here rather than reloading the calendar.
-  const handleQueryChange = (next: EventFilterQuery): void => {
-    setQuery(next);
-
-    if (
-      JSON.stringify(compileEventFilter(next)) !==
-      JSON.stringify(compileEventFilter(query))
-    ) {
-      onFilterChange(toLinkedEventFilter(next));
-    }
-  };
 
   // ♻️ Lifecycle
 
@@ -121,6 +173,55 @@ export function CalendarFilters(
       className={className}
       data-testid="calendar-filters"
     >
+      <CalendarViewMenu
+        clusters={clusters}
+        colorOptions={
+          <CalendarColorOptions
+            colorBy={colorBy}
+            facets={facets}
+            onColorByChange={onColorByChange}
+          />
+        }
+        colors={colors}
+        onClustersChange={onClustersChange}
+        onColorsChange={onColorsChange}
+        onSymbolsChange={onSymbolsChange}
+        symbols={symbols}
+      >
+        {viewOptions}
+      </CalendarViewMenu>
+      <ButtonGroup aria-label="Filter">
+        <FilterSurface
+          isTablet={isTablet}
+          trigger={renderFiltersButton(activeCount)}
+        >
+          <div className="flex flex-col gap-3">
+            <CalendarCollectionPicker
+              collections={collections}
+              onSelect={handleCollectionSelect}
+              query={query}
+            />
+            <Filters<EventFilterValue>
+              advancedMode="inline"
+              editors={EDITORS}
+              fields={[...fields]}
+              onQueryChange={handleQueryChange}
+              query={query}
+              variant="advanced"
+            />
+          </div>
+        </FilterSurface>
+        <Button
+          disabled={activeCount === 0}
+          onClick={() => {
+            handleCollectionSelect(EMPTY_EVENT_FILTER);
+          }}
+          size="sm"
+          variant="outline"
+        >
+          Clear
+        </Button>
+      </ButtonGroup>
       {isTablet ? (
         <Filters<EventFilterValue>
           editors={EDITORS}
@@ -132,26 +233,13 @@ export function CalendarFilters(
           <FilterChipRow />
         </Filters>
       ) : null}
-      <FilterSurface
-        isTablet={isTablet}
-        trigger={renderFiltersButton(countActiveEventFilterRules(query))}
-      >
-        <Filters<EventFilterValue>
-          advancedMode="inline"
-          editors={EDITORS}
-          fields={[...fields]}
-          onQueryChange={handleQueryChange}
-          query={query}
-          variant="advanced"
-        />
-      </FilterSurface>
     </div>
   );
 }
 
 /**
  * Draws one chip per rule of the tree in the surrounding `Filters`, nested
- * ones included, in a row that scrolls sideways instead of wrapping. Unlike
+ * ones included, in a row that wraps onto more rows. Unlike
  * the vendored chip row, it leaves out the Add filter button: rules are added
  * in the builder.
  */
@@ -166,7 +254,7 @@ function FilterChipRow(): ReactNode {
   return (
     <div
       aria-label={TITLE}
-      className="flex min-w-0 flex-nowrap items-center gap-1 overflow-x-auto whitespace-nowrap *:shrink-0"
+      className="contents"
       role="toolbar"
     >
       {rules.map((rule, index) => (
@@ -200,9 +288,10 @@ function FilterSurface(
       <Popover>
         <PopoverTrigger render={trigger} />
         <PopoverContent
-          align="end"
+          align="start"
           aria-label={TITLE}
-          className="w-[42rem] max-w-[95vw] p-0"
+          className="max-h-[80dvh] w-[42rem] max-w-[95vw] gap-3 overflow-y-auto p-3"
+          sideOffset={8}
         >
           {children}
         </PopoverContent>
@@ -218,7 +307,7 @@ function FilterSurface(
           <DrawerHeader>
             <DrawerTitle>{TITLE}</DrawerTitle>
           </DrawerHeader>
-          <div className="min-h-0 overflow-y-auto px-2 pb-4">{children}</div>
+          <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
         </DrawerContent>
       </Drawer>
     );
@@ -234,7 +323,7 @@ function FilterSurface(
         <SheetHeader>
           <SheetTitle>{TITLE}</SheetTitle>
         </SheetHeader>
-        <div className="min-h-0 overflow-y-auto px-2 pb-4">{children}</div>
+        <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
       </SheetContent>
     </Sheet>
   );
@@ -253,6 +342,7 @@ function renderFiltersButton(activeCount: number): ReactElement {
       size="sm"
       variant="outline"
     >
+      <ListFilter aria-hidden="true" />
       {TITLE}
       {activeCount === 0 ? null : (
         <Badge

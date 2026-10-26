@@ -90,7 +90,7 @@ describe(LunarApsidesService, () => {
     });
 
     expect(events).toHaveLength(1);
-    expect(events[0]?.summary).toBe("🌙 🔥 Lunar Perigee");
+    expect(events[0]?.summary).toBe("🌙🔥 Lunar Perigee");
     expect(events[0]?.tags).toContain("Perigee");
   });
 
@@ -103,7 +103,7 @@ describe(LunarApsidesService, () => {
     });
 
     expect(events).toHaveLength(1);
-    expect(events[0]?.summary).toBe("🌙 ❄️ Lunar Apogee");
+    expect(events[0]?.summary).toBe("🌙❄️ Lunar Apogee");
     expect(events[0]?.tags).toContain("Apogee");
   });
 
@@ -111,10 +111,10 @@ describe(LunarApsidesService, () => {
     expect.hasAssertions();
 
     expect(detectOffsets([-4, -3, -1, 3, 4, 5])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [2],
+      "🌙🔥 Lunar Perigee": [2],
     });
     expect(detectOffsets([-4, -3, -3, 1, 4, 5])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [3],
+      "🌙🔥 Lunar Perigee": [3],
     });
   });
 
@@ -122,7 +122,7 @@ describe(LunarApsidesService, () => {
     expect.hasAssertions();
 
     expect(detectOffsets([-4, -3, -2, 2, 3, 4])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [2],
+      "🌙🔥 Lunar Perigee": [2],
     });
   });
 
@@ -130,7 +130,7 @@ describe(LunarApsidesService, () => {
     expect.hasAssertions();
 
     expect(detectOffsets([-4, -3, -1, 0, 1, 2])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [3],
+      "🌙🔥 Lunar Perigee": [3],
     });
   });
 

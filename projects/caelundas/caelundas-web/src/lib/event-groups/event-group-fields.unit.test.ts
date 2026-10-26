@@ -90,5 +90,33 @@ describe("event group fields", () => {
         ),
       ).toStrictEqual([{ depth: 3, field: "tag:tag-type" }, { field: "day" }]);
     });
+
+    it("keeps the tags a level picks that its root has, in place of a depth", () => {
+      expect(
+        resolveEventGrouping(
+          [
+            {
+              depth: 2,
+              field: "tag:tag-type",
+              tags: ["tag-aspect", "tag-aspect", "tag-gone"],
+            },
+            { field: "month", tags: ["tag-aspect"] },
+          ],
+          fields,
+        ),
+      ).toStrictEqual([
+        { field: "tag:tag-type", tags: ["tag-aspect"] },
+        { field: "month" },
+      ]);
+    });
+
+    it("falls back to the depth when none of the picked tags exist", () => {
+      expect(
+        resolveEventGrouping(
+          [{ field: "tag:tag-type", tags: ["tag-gone"] }],
+          fields,
+        ),
+      ).toStrictEqual([{ depth: 1, field: "tag:tag-type" }]);
+    });
   });
 });

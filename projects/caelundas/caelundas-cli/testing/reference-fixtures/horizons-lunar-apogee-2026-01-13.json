@@ -1,12 +1,12 @@
 {
   "counts": {
-    "🌙 ❄️ Lunar Apogee": 1
+    "🌙❄️ Lunar Apogee": 1
   },
   "events": [
     {
       "note": "Horizons range-rate changes sign between 20:52 and 20:53 UTC (about 20:52:50). A published monthly perigee and apogee table lists 20:48 UTC, because the distance extremum is nearly flat.",
       "start": "2026-01-13T20:52:50Z",
-      "summary": "🌙 ❄️ Lunar Apogee"
+      "summary": "🌙❄️ Lunar Apogee"
     }
   ],
   "name": "The 2026-01-13 lunar apogee",

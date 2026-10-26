@@ -6,6 +6,7 @@ import {
   MAXIMUM_GROUP_LEVELS,
 } from "../event-groups/event-groups.constants";
 
+import { parseCalendarSymbols } from "./calendar-symbols";
 import {
   type CalendarViewName,
   MAXIMUM_AGENDA_DAYS,
@@ -15,7 +16,10 @@ import {
 } from "./calendar-views";
 
 import type { EventFilterQuery } from "../event-filters/event-filters.types";
-import type { EventGrouping } from "../event-groups/event-groups.types";
+import type {
+  EventGrouping,
+  EventGroupLevel,
+} from "../event-groups/event-groups.types";
 
 const calendarDateSchema = z.iso.date();
 
@@ -35,6 +39,11 @@ const groupLevelSchema = z.object({
     .transform((depth) => groupDepthSchema.safeParse(depth).data)
     .optional(),
   field: z.string().min(1),
+  // Anything but a list of ids is forgotten, like a depth out of range.
+  tags: z
+    .unknown()
+    .transform((tags) => z.array(z.string()).safeParse(tags).data)
+    .optional(),
 });
 
 const filterValueSchema = z.union([
@@ -67,6 +76,21 @@ const filterGroupSchema = z.object({
  */
 export interface CalendarSearch {
   /**
+   * `false` when the views of hours leave events unmerged; merged when
+   * absent.
+   */
+  clusters?: false | undefined;
+  /**
+   * What the events are colored by, a level like a grouping's: a field and,
+   * for a tag root, the tags or the depth of its tree whose tags each get a
+   * color. Colored by type, kind by kind, when absent.
+   */
+  color?: EventGroupLevel | undefined;
+  /**
+   * `false` when events are drawn without their colors; colored when absent.
+   */
+  colors?: false | undefined;
+  /**
    * The day the calendar shows, as `YYYY-MM-DD`; today when absent.
    */
   date?: string | undefined;
@@ -89,6 +113,10 @@ export interface CalendarSearch {
    */
   scale?: TimelineScale | undefined;
   /**
+   * `emojis` when events are drawn with their emoji; their icons when absent.
+   */
+  symbols?: "emojis" | undefined;
+  /**
    * The view the calendar shows; the month when absent.
    */
   view?: CalendarViewName | undefined;
@@ -104,11 +132,21 @@ export function validateCalendarSearch(
   const filter = filterGroupSchema.safeParse(search["filter"]).data;
 
   return {
+    clusters:
+      search["clusters"] === false || search["clusters"] === "false"
+        ? false
+        : undefined,
+    color: groupLevelSchema.safeParse(search["color"]).data,
+    colors:
+      search["colors"] === false || search["colors"] === "false"
+        ? false
+        : undefined,
     date: calendarDateSchema.safeParse(search["date"]).data,
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
     scale: parseTimelineScale(search["scale"]),
+    symbols: parseCalendarSymbols(search["symbols"]),
     view: parseCalendarView(search["view"]),
   };
 }

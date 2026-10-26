@@ -6,7 +6,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -50,7 +49,6 @@ describe(TripleAspectsDetectorService, () => {
         TripleAspectsDetectorService,
         TripleAspectsComposerService,
         AspectGraphService,
-        AspectPhaseEmojiService,
         CompoundPhaseService,
         ProgressiveUtilitiesService,
         { provide: LoggerService, useValue: createMock<LoggerService>() },

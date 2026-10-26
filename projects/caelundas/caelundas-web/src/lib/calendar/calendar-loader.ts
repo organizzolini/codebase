@@ -1,3 +1,8 @@
+import {
+  DEFAULT_EVENT_FILTER_COLLECTION_ID,
+  EVENT_FILTER_COLLECTIONS,
+  resolveEventFilterCollection,
+} from "../event-filters/event-filter-collections";
 import { compileEventFilter } from "../event-filters/event-filter-compiler";
 import { compileEventGrouping } from "../event-groups/event-group-compiler";
 import {
@@ -8,6 +13,7 @@ import {
 
 import { getViewWindows, parseCalendarDate } from "./calendar-window";
 
+import type { EventFilterQuery } from "../event-filters/event-filters.types";
 import type { EventGroupLevel } from "../event-groups/event-groups.types";
 import type {
   CalendarEventRecord,
@@ -16,10 +22,14 @@ import type {
   EventsDataset,
   EventsQuery,
   EventsWindow,
+  SqlGroupSource,
 } from "../events-database/events-database.types";
 import type { CalendarSearch } from "./calendar-search";
 
-const FACETS_BY_DATABASE = new WeakMap<EventsDatabase, Promise<EventFacet[]>>();
+const FACETS_BY_DATABASE = new WeakMap<
+  EventsDatabase,
+  Map<string, Promise<EventFacet[]>>
+>();
 
 const EVENTS_BY_DATABASE = new WeakMap<
   EventsDatabase,
@@ -35,6 +45,12 @@ const CACHED_READS = 24;
  */
 export interface CalendarData {
   anchor: Date;
+  /**
+   * The level the events are colored by, read for each event after the
+   * grouping's levels, or nothing when they are colored by type, kind by
+   * kind: the link's, holding only a field the data has.
+   */
+  colorBy: EventGroupLevel | undefined;
   dataset: EventsDataset | null;
   /**
    * Set only when no events were found.
@@ -45,6 +61,11 @@ export interface CalendarData {
    * Every tag root and the tags beneath it, which the filters offer.
    */
   facets: EventFacet[];
+  /**
+   * The filter the events were read through: the link's, or the default
+   * collection's when the link names none.
+   */
+  filter: EventFilterQuery | undefined;
   /**
    * Whether a filter with at least one finished rule narrowed the events.
    */
@@ -86,23 +107,16 @@ export async function loadCalendar(
   database: EventsDatabase,
   search: CalendarSearch,
 ): Promise<CalendarData> {
-  const anchor = parseCalendarDate(search.date, new Date());
-  const { visible, window } = getViewWindows(search.view, anchor, {
-    agendaDays: search.days,
-    scale: search.scale,
-  });
-  const filter = compileEventFilter(search.filter);
-  // The facets are read once per database, and the grouping is resolved
-  // against them, so a later load waits on nothing here.
-  const facets = await findFacetsOnce(database);
-  const grouping = resolveGrouping(search, facets);
+  const { anchor, visible, window } = resolveWindows(search);
+  // The facets are read once per database, and the default filter and the
+  // grouping are resolved against them, so a later load waits on nothing here.
+  const facets = await findFacetsCached(database, visible);
+  const effectiveFilter = search.filter ?? resolveDefaultFilter(facets);
+  const filter = compileEventFilter(effectiveFilter);
+  const { colorBy, grouping, groups } = resolveGroups(search, facets);
   const [dataset, events] = await Promise.all([
     database.describeDataset(),
-    findEventsCached(database, {
-      filter,
-      groups: compileEventGrouping(grouping),
-      window,
-    }),
+    findEventsCached(database, { filter, groups, window }),
   ]);
   const filtered = filter !== null;
   let emptiness = describeEmptiness({ dataset, events, visible });
@@ -120,10 +134,12 @@ export async function loadCalendar(
 
   return {
     anchor,
+    colorBy,
     dataset,
     emptiness,
     events,
     facets,
+    filter: effectiveFilter,
     filtered,
     grouping,
     window,
@@ -213,22 +229,75 @@ async function findEventsCached(
 }
 
 /**
- * Reads a database's facets once and keeps them for every later load: they
- * change only with the data, not with the filter or the month. A failed read
- * is forgotten, so Retry reads them again.
+ * Reads a database's facets for the days a view shows through a small cache,
+ * keeping the most recent windows: the tags are the same whatever the window,
+ * but each counts only the events in it. A failed read is forgotten, so Retry
+ * reads it again.
  */
-async function findFacetsOnce(database: EventsDatabase): Promise<EventFacet[]> {
-  let facets = FACETS_BY_DATABASE.get(database);
+async function findFacetsCached(
+  database: EventsDatabase,
+  window: EventsWindow,
+): Promise<EventFacet[]> {
+  let cache = FACETS_BY_DATABASE.get(database);
+
+  if (cache === undefined) {
+    cache = new Map();
+    FACETS_BY_DATABASE.set(database, cache);
+  }
+
+  const key = `${window.start.toISOString()}|${window.end.toISOString()}`;
+  let facets = cache.get(key);
 
   if (facets === undefined) {
-    facets = database.findFacets();
-    FACETS_BY_DATABASE.set(database, facets);
+    facets = database.findFacets(window);
     facets.catch(() => {
-      FACETS_BY_DATABASE.delete(database);
+      cache.delete(key);
     });
+  } else {
+    // Moved to the back, so the least recently read goes first.
+    cache.delete(key);
+  }
+
+  cache.set(key, facets);
+
+  for (const oldest of cache.keys()) {
+    if (cache.size <= CACHED_READS) {
+      break;
+    }
+
+    cache.delete(oldest);
   }
 
   return facets;
+}
+
+/**
+ * The level the search colors events by, kept to a field the data has, or
+ * nothing for the default of type, kind by kind.
+ */
+function resolveColorBy(
+  search: CalendarSearch,
+  facets: readonly EventFacet[],
+): EventGroupLevel | undefined {
+  return search.color === undefined
+    ? undefined
+    : resolveEventGrouping([search.color], createEventGroupFields(facets))[0];
+}
+
+/**
+ * The filter a link with none opens on: the default collection's, resolved
+ * against the data, or nothing when the data has none of the tags it names.
+ */
+function resolveDefaultFilter(
+  facets: readonly EventFacet[],
+): EventFilterQuery | undefined {
+  const collection = EVENT_FILTER_COLLECTIONS.find(
+    (candidate) => candidate.id === DEFAULT_EVENT_FILTER_COLLECTION_ID,
+  );
+
+  return collection === undefined
+    ? undefined
+    : resolveEventFilterCollection(collection, facets)?.filter;
 }
 
 /**
@@ -252,4 +321,48 @@ function resolveGrouping(
     search.group ?? getDefaultGrouping(view, fields),
     fields,
   );
+}
+
+/**
+ * The levels each event is read with keys for: the grouping's, then the one
+ * the events are colored by, each compiled to its source of keys.
+ */
+function resolveGroups(
+  search: CalendarSearch,
+  facets: readonly EventFacet[],
+): {
+  colorBy: EventGroupLevel | undefined;
+  grouping: EventGroupLevel[];
+  groups: SqlGroupSource[];
+} {
+  const grouping = resolveGrouping(search, facets);
+  const colorBy = resolveColorBy(search, facets);
+
+  return {
+    colorBy,
+    grouping,
+    groups: compileEventGrouping(
+      colorBy === undefined ? grouping : [...grouping, colorBy],
+    ),
+  };
+}
+
+/**
+ * The day the search anchors on, today without one, and the window the view
+ * shows around it, with the buffer read beyond it.
+ */
+function resolveWindows(search: CalendarSearch): {
+  anchor: Date;
+  visible: EventsWindow;
+  window: EventsWindow;
+} {
+  const anchor = parseCalendarDate(search.date, new Date());
+
+  return {
+    anchor,
+    ...getViewWindows(search.view, anchor, {
+      agendaDays: search.days,
+      scale: search.scale,
+    }),
+  };
 }

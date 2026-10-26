@@ -37,11 +37,13 @@ export async function startFilterRule(
 ): Promise<HTMLElement> {
   const toolbar = await findToolbar();
 
-  fireEvent.click(within(toolbar).getByRole("button", { name: /^Filters/u }));
+  fireEvent.click(
+    within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
+  );
 
   const builder = await screen.findByRole(
     "dialog",
-    { name: "Filters" },
+    { name: "Filter" },
     BUILDER_WAIT,
   );
 

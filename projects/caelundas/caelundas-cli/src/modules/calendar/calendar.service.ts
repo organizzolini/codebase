@@ -251,7 +251,7 @@ END:VEVENT`;
    *   events: [{
    *     start: moment.utc('2026-01-21T14:23:00'),
    *     end: moment.utc('2026-01-21T14:23:00'),
-   *     summary: '☽ ☌ ♃ Moon Conjunction Jupiter',
+   *     summary: '☽☌♃ Moon Conjunction Jupiter',
    *     description: 'Exact: 2026-01-21 14:23 EST',
    *     tags: ['aspects', 'major', 'moon'],
    *   }],

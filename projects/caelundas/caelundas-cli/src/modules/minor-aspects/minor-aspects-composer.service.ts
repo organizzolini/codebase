@@ -4,6 +4,7 @@ import _ from "lodash";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectEphemerisService } from "../aspects/aspect-ephemeris.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import {
   aspectBodies as minorAspectBodies,
   minorAspects,
@@ -71,14 +72,14 @@ export class MinorAspectsComposerService {
       body2Capitalized,
       _.startCase(minorAspect),
     ];
-    const { description, phaseEmoji, tags } = this.resolvePhaseDetails({
+    const { description, tags } = this.resolvePhaseDetails({
       baseTags,
       body1Capitalized,
       body2Capitalized,
       minorAspect,
       phase,
     });
-    const summary = `${phaseEmoji} ${symbolByBody[body1]} ${symbolByMinorAspect[minorAspect]} ${symbolByBody[body2]} ${description}`;
+    const summary = `${symbolByBody[body1]}${symbolByMinorAspect[minorAspect]}${symbolByBody[body2]} ${description.replace(PHASE_WORD_PATTERN, "")}`;
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),
       summary,
@@ -190,24 +191,14 @@ export class MinorAspectsComposerService {
     beginning: DetectedCalendarEvent,
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
-    const {
-      aspect,
-      aspectCapitalized,
-      body1,
-      body1Capitalized,
-      body2,
-      body2Capitalized,
-    } = this.extractAspectComponents(beginning.tags);
-
-    const body1Symbol = symbolByBody[body1];
-    const body2Symbol = symbolByBody[body2];
-    const aspectSymbol = symbolByMinorAspect[aspect];
+    const { aspectCapitalized, body1Capitalized, body2Capitalized } =
+      this.extractAspectComponents(beginning.tags);
 
     return {
-      description: `${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      description: beginning.description.replace(PHASE_WORD_PATTERN, ""),
       end: ending.start,
       start: beginning.start,
-      summary: `${body1Symbol}${aspectSymbol}${body2Symbol} ${body1Capitalized} ${aspect} ${body2Capitalized}`,
+      summary: beginning.summary.replace(PHASE_WORD_PATTERN, ""),
       tags: [
         "Astronomy",
         "Astrology",
@@ -255,26 +246,23 @@ export class MinorAspectsComposerService {
     body2Capitalized: string;
     minorAspect: MinorAspect;
     phase: AspectPhase;
-  }): { description: string; phaseEmoji: string; tags: string[] } {
+  }): { description: string; tags: string[] } {
     const { baseTags, body1Capitalized, body2Capitalized, minorAspect, phase } =
       args;
     if (phase === "perfective") {
       return {
         description: `${body1Capitalized} perfective ${minorAspect} ${body2Capitalized}`,
-        phaseEmoji: "🎯",
         tags: [...baseTags, "Perfective"],
       };
     }
     if (phase === "forming") {
       return {
         description: `${body1Capitalized} forming ${minorAspect} ${body2Capitalized}`,
-        phaseEmoji: "➡️",
         tags: [...baseTags, "Forming"],
       };
     }
     return {
       description: `${body1Capitalized} dissolving ${minorAspect} ${body2Capitalized}`,
-      phaseEmoji: "⬅️",
       tags: [...baseTags, "Dissolving"],
     };
   }

@@ -1,4 +1,5 @@
 import {
+  createElement,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -9,23 +10,26 @@ import {
 import {
   Gantt,
   type GanttColumn,
+  type GanttOccurrence,
   type GanttRenderEventProps,
   type GanttScale,
   GanttView,
   useGanttNavigation,
 } from "@codebase/presentation";
 
+import { getEventLabel } from "../lib/calendar/calendar-glyphs";
 import {
   type TimelineBar,
-  type TimelineRows,
   toTimelineRows,
 } from "../lib/calendar/calendar-timeline";
 import {
-  clusterTimelineBars,
-  getClusterSpan,
   TIMELINE_DAY_INTERVAL,
   TIMELINE_UNIT_WIDTHS,
 } from "../lib/calendar/calendar-timeline-clusters";
+import {
+  createTimelineLayout,
+  type TimelineLayout,
+} from "../lib/calendar/calendar-timeline-lanes";
 import {
   getVisibleTimelineRows,
   isSameRowSet,
@@ -34,12 +38,16 @@ import {
 } from "../lib/calendar/calendar-timeline-window";
 import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
 
+import { CalendarClusterDialog } from "./calendar-cluster-dialog";
+import { CalendarEventChip } from "./calendar-event-chip";
+import { CalendarEventTooltip } from "./calendar-event-tooltip";
+
 import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,
 } from "../lib/events-database/events-database.types";
-import type { CalendarNavigation } from "./calendar-toolbar";
+import type { CalendarNavigation } from "./calendar-navigation-group";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -92,11 +100,17 @@ const ZOOM = { max: 3, min: 0.5, step: 0.25 };
 // Beside a marker, a title runs into its neighbors' at any scale coarser than
 // a day, so there titles are left to each bar's own label and only a day's
 // are drawn.
+// The lanes of one row read as one: the line between a row and the lane
+// beneath it is not drawn.
+const LANE_ROWS =
+  "[&_[data-slot=gantt-row-group]:has(+[data-gantt-row-id*='#'])]:border-b-transparent";
+
 const QUIET_LABELS = "[&_[data-slot=gantt-bar-label]]:hidden";
 
 // The column widths the clusters are sized by, handed to the Gantt rather
 // than left to its defaults, so the two always agree.
-const TIMELINE_METRICS = { unitWidths: TIMELINE_UNIT_WIDTHS };
+// The lanes are taller than the Gantt's own, to give the symbols room.
+const TIMELINE_METRICS = { laneHeight: 1.75, unitWidths: TIMELINE_UNIT_WIDTHS };
 
 // A phone gives the row names a narrow column and the time the rest.
 const COMPACT_TREE = { minWidth: 120, nameColumnWidth: 104, width: 168 };
@@ -110,7 +124,7 @@ const TIMELINE_VIEWPORT =
 /**
  * Renders the events as a Gantt timeline: a row per group,
  * nested and collapsible as the grouping nests, each counting its distinct
- * events, with instants drawn as diamonds at their moment and spans as bars
+ * events, with instants drawn as circles at their moment and spans as bars
  * of their true length. Markers that would overlap at the scale and zoom
  * shown are clustered into counts. Nothing on it can be moved or created.
  */
@@ -137,26 +151,28 @@ export function CalendarTimeline(
   // The rows on screen, which alone are handed their bars, as last measured
   // for the rows then laid out; `null` until the body is laid out.
   const [measured, setMeasured] = useState<{
-    rows: null | TimelineRows;
+    layout: null | TimelineLayout;
     visible: null | ReadonlySet<string>;
-  }>({ rows: null, visible: null });
+  }>({ layout: null, visible: null });
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const { dialog, handleEventClick } = useBarDialog(timeZone);
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const rows = useMemo(
     () => toTimelineRows(events, grouping, fields),
     [events, fields, grouping],
   );
-  const bars = useMemo(
-    () => clusterTimelineBars(rows.events, getClusterSpan(scale, zoom)),
+  // Overlapping bars are moved into lanes, so nothing is drawn over anything.
+  const layout = useMemo(
+    () => createTimelineLayout(rows, { scale, zoom }),
     [rows, scale, zoom],
   );
   // A measure of other rows, such as before a regrouping, would leave the
   // new rows bare, so every row counts as visible until they are measured.
-  const visibleRows = measured.rows === rows ? measured.visible : null;
+  const visibleRows = measured.layout === layout ? measured.visible : null;
   const shownBars = useMemo(
-    () => windowTimelineBars(bars, visibleRows),
-    [bars, visibleRows],
+    () => windowTimelineBars(layout.bars, visibleRows),
+    [layout, visibleRows],
   );
   const renderEvent = useCallback(
     (eventProperties: GanttRenderEventProps<TimelineBar>) => (
@@ -182,12 +198,13 @@ export function CalendarTimeline(
         ? undefined
         : watchVisibleRows(container, (visible) => {
             setMeasured((previous) =>
-              previous.rows === rows && isSameRowSet(previous.visible, visible)
+              previous.layout === layout &&
+              isSameRowSet(previous.visible, visible)
                 ? previous
-                : { rows, visible },
+                : { layout, visible },
             );
           }),
-    [container, rows],
+    [container, layout],
   );
 
   // 🏁 Early Returns
@@ -201,7 +218,7 @@ export function CalendarTimeline(
     >
       <Gantt<TimelineBar>
         barLabel="auto"
-        className="h-full"
+        className={`h-full ${LANE_ROWS}`}
         columns={columns}
         date={anchor}
         events={shownBars}
@@ -211,11 +228,12 @@ export function CalendarTimeline(
         interval={TIMELINE_DAY_INTERVAL}
         metrics={TIMELINE_METRICS}
         onDateChange={onDateChange}
+        onEventClick={handleEventClick}
         onZoomChange={(next: number) => {
           setZoomed({ scale, zoom: next });
         }}
         renderEvent={renderEvent}
-        resources={rows.resources}
+        resources={layout.resources}
         rowCheckboxes={false}
         scale={scale}
         scheduleMode="single"
@@ -234,8 +252,32 @@ export function CalendarTimeline(
           }
         />
       </Gantt>
+      {dialog}
     </div>
   );
+}
+
+/**
+ * What opens when a marker is clicked: the events it holds, titled by their
+ * count, or by the name of the one event.
+ */
+function describeBar(
+  bar: TimelineBar | undefined,
+): undefined | { records: readonly CalendarEventRecord[]; title: string } {
+  const records = bar?.records ?? [];
+  const [first] = records;
+
+  if (first === undefined) {
+    return undefined;
+  }
+
+  return {
+    records,
+    title:
+      records.length > 1
+        ? `${String(records.length)} events`
+        : getEventLabel(first).name,
+  };
 }
 
 /**
@@ -268,35 +310,66 @@ function readViewport(viewport: HTMLElement): {
 }
 
 /**
- * Draws what a bar holds: a diamond for an instant, at its moment and never
- * narrower than a lane is tall; the count of a cluster of crowded markers;
+ * Draws what a bar holds: a circle for an instant, at its moment and never
+ * narrower than a lane is tall; the count of a cluster of crowded markers, in a circle;
  * or a span's title.
  */
 function TimelineBarContent(
   properties: Readonly<Pick<GanttRenderEventProps<TimelineBar>, "occurrence">>,
 ): ReactNode {
   const { occurrence } = properties;
-  const count = occurrence.event.data?.records.length ?? 1;
+  const records = occurrence.event.data?.records ?? [];
+  const [record] = records;
 
-  if (count > 1) {
+  if (record === undefined) {
     return (
-      <span className="w-full text-center font-semibold tabular-nums">
-        {count}
-      </span>
+      <span className="truncate font-medium">{occurrence.event.title}</span>
+    );
+  }
+
+  if (records.length > 1) {
+    // A count says nothing of what is behind it, so it has a tooltip too.
+    return (
+      <CalendarEventTooltip
+        className="flex w-full justify-center"
+        event={record}
+        label={{
+          details: "Click to list them.",
+          name: `${String(records.length)} events`,
+        }}
+      >
+        <span
+          className="flex h-4 min-w-4 items-center justify-center rounded-full bg-(--gantt-event-color) px-1 text-[10px] leading-none font-semibold text-white tabular-nums"
+          data-slot="timeline-cluster"
+        >
+          {records.length}
+        </span>
+      </CalendarEventTooltip>
     );
   }
 
   if (occurrence.start.getTime() === occurrence.end.getTime()) {
+    // The circle says nothing of what the event is, so it has the tooltip.
     return (
-      <span
-        className="size-2.5 shrink-0 rotate-45 rounded-[2px] border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
-        data-slot="timeline-instant"
-        aria-hidden
-      />
+      <CalendarEventTooltip
+        className="flex"
+        event={record}
+      >
+        <span
+          className="block size-3.5 shrink-0 rounded-full border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
+          data-slot="timeline-instant"
+          aria-hidden
+        />
+      </CalendarEventTooltip>
     );
   }
 
-  return <span className="truncate font-medium">{occurrence.event.title}</span>;
+  return (
+    <CalendarEventChip
+      className="min-w-0 font-medium"
+      event={record}
+    />
+  );
 }
 
 /**
@@ -335,6 +408,34 @@ function toCountColumns(counts: ReadonlyMap<string, number>): GanttColumn[] {
       width: 64,
     },
   ];
+}
+
+/**
+ * Holds the marker clicked and the dialog that lists its events: the handler
+ * to give the Gantt, and the dialog to draw.
+ */
+function useBarDialog(timeZone: string): {
+  dialog: ReactNode;
+  handleEventClick: (occurrence: GanttOccurrence<TimelineBar>) => void;
+} {
+  const [opened, setOpened] = useState<{
+    records: readonly CalendarEventRecord[];
+    title: string;
+  }>();
+
+  return {
+    dialog: createElement(CalendarClusterDialog, {
+      members: opened?.records,
+      onClose: () => {
+        setOpened(undefined);
+      },
+      timeZone,
+      title: opened?.title ?? "",
+    }),
+    handleEventClick: (occurrence) => {
+      setOpened(describeBar(occurrence.event.data));
+    },
+  };
 }
 
 /**

@@ -164,6 +164,49 @@ describe("calendar events service integration", () => {
     await expect(repository.countBy({ summary: "Twice" })).resolves.toBe(1);
   });
 
+  it("stores a boundary and a span of the same title and start as two rows", async () => {
+    expect.hasAssertions();
+
+    const start = "2026-05-10T00:00:00Z";
+    await service.upsert(
+      [
+        tagged("Shared title", start, ["boundary only"]),
+        {
+          ...tagged("Shared title", start, ["span only"]),
+          end: moment.utc("2026-05-12T00:00:00Z"),
+        },
+      ],
+      philadelphia,
+    );
+    const rows = await service.findInRange({
+      end: moment.utc("2026-05-11T00:00:00Z"),
+      latitude: philadelphia.latitude,
+      longitude: philadelphia.longitude,
+      start: moment.utc("2026-05-09T00:00:00Z"),
+    });
+    const own = rows
+      .filter(({ summary }) => summary === "Shared title")
+      .map(({ tags }) =>
+        tags.filter((tag) => tag === "boundary only" || tag === "span only"),
+      );
+
+    expect(own).toHaveLength(2);
+    expect(own.toSorted()).toStrictEqual([["boundary only"], ["span only"]]);
+  });
+
+  it("stores a title with its stray whitespace tidied", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [event("  Spaced   out ", "2026-05-20T00:00:00Z")],
+      philadelphia,
+    );
+
+    await expect(repository.countBy({ summary: "Spaced out" })).resolves.toBe(
+      1,
+    );
+  });
+
   /**
    * Thirty seconds rather than the shared five: two full batches of inserts
    * took just over five seconds on a CI runner, which is several times

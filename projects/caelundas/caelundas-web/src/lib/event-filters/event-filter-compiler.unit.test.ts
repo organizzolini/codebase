@@ -8,7 +8,92 @@ import {
 
 import { compileEventFilter } from "./event-filter-compiler";
 
+// Harmonics 1, 4 and 6, given to three of the seeded events.
+const HARMONICS_SQL = `
+  insert into tags (id, created_at, updated_at, "name", parent_id) values
+    ('tag-harmonic', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Aspect Harmonic', null),
+    ('tag-harmonic-1', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Harmonic 1', 'tag-harmonic'),
+    ('tag-harmonic-4', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Harmonic 4', 'tag-harmonic'),
+    ('tag-harmonic-10', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'Harmonic 10', 'tag-harmonic');
+  insert into tags_closure (ancestor_id, descendant_id) values
+    ('tag-harmonic', 'tag-harmonic'),
+    ('tag-harmonic-1', 'tag-harmonic-1'),
+    ('tag-harmonic-4', 'tag-harmonic-4'),
+    ('tag-harmonic-10', 'tag-harmonic-10'),
+    ('tag-harmonic', 'tag-harmonic-1'),
+    ('tag-harmonic', 'tag-harmonic-4'),
+    ('tag-harmonic', 'tag-harmonic-10');
+  insert into calendar_event_tags (calendar_event_id, tag_id) values
+    ('event-mars-conjunct-venus', 'tag-harmonic-1'),
+    ('event-mars-square-saturn', 'tag-harmonic-4'),
+    ('event-mercury-retrograde', 'tag-harmonic-10');
+`;
+
+async function matchingHarmonics(
+  operator: string,
+  value: unknown,
+): Promise<string[]> {
+  return findMatchingEventIds(
+    filterGroup(
+      "and",
+      fieldRule("tag:tag-harmonic", operator, value as number),
+    ),
+    { extraSql: HARMONICS_SQL },
+  );
+}
+
 describe(compileEventFilter, () => {
+  it("compares the number a tag is named for", async () => {
+    await expect(matchingHarmonics("eq", 4)).resolves.toStrictEqual([
+      "event-mars-square-saturn",
+    ]);
+    await expect(matchingHarmonics("gt", 1)).resolves.toStrictEqual([
+      "event-mars-square-saturn",
+      "event-mercury-retrograde",
+    ]);
+    await expect(matchingHarmonics("gte", 4)).resolves.toStrictEqual([
+      "event-mars-square-saturn",
+      "event-mercury-retrograde",
+    ]);
+    await expect(matchingHarmonics("lt", 4)).resolves.toStrictEqual([
+      "event-mars-conjunct-venus",
+    ]);
+    await expect(matchingHarmonics("lte", 4)).resolves.toStrictEqual([
+      "event-mars-conjunct-venus",
+      "event-mars-square-saturn",
+    ]);
+    await expect(matchingHarmonics("between", [2, 10])).resolves.toStrictEqual([
+      "event-mars-square-saturn",
+      "event-mercury-retrograde",
+    ]);
+  });
+
+  it("reads the number, not the text, so 10 is greater than 4", async () => {
+    await expect(matchingHarmonics("gt", 4)).resolves.toStrictEqual([
+      "event-mercury-retrograde",
+    ]);
+  });
+
+  it("keeps the events without the number for does not equal", async () => {
+    await expect(matchingHarmonics("neq", 4)).resolves.toHaveLength(5);
+    await expect(matchingHarmonics("neq", 4)).resolves.not.toContain(
+      "event-mars-square-saturn",
+    );
+    await expect(
+      matchingHarmonics("not_between", [2, 10]),
+    ).resolves.toHaveLength(4);
+  });
+
+  it.each([
+    ["eq", "four"],
+    ["eq", null],
+    ["gt", [1, 2]],
+    ["between", [9, 2]],
+    ["between", 5],
+  ])("ignores harmonic %s %j as unfinished", async (operator, value) => {
+    await expect(matchingHarmonics(operator, value)).resolves.toHaveLength(6);
+  });
+
   it("matches everything beneath a chosen tag", async () => {
     await expect(
       findMatchingEventIds(

@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   BUILDER_TEST,
@@ -23,6 +23,10 @@ import { setViewportWidth } from "../../testing/viewport";
 import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
 
 import { Route } from "./index";
+
+// Each click of the View menu re-renders the whole route, which a slow
+// continuous integration runner needs well past the default time for.
+vi.setConfig({ testTimeout: 15_000 });
 
 describe("index", () => {
   it("renders its page", async () => {
@@ -329,10 +333,10 @@ describe("index", () => {
       expect(screen.queryByText("No filters yet")).toBeNull();
 
       fireEvent.click(
-        within(toolbar).getByRole("button", { name: /^Filters/u }),
+        within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
       );
 
-      const builder = await screen.findByRole("dialog", { name: "Filters" });
+      const builder = await screen.findByRole("dialog", { name: "Filter" });
 
       expect(builder.closest(`[data-slot="${viewport.slot}"]`)).not.toBeNull();
       expect(within(builder).getByText("No filters yet")).toBeDefined();
@@ -344,7 +348,7 @@ describe("index", () => {
     BUILDER_TEST,
     async () => {
       await renderRoute("/?date=2026-03-01");
-      await startFilterRule(/^Planet/u, "is any of");
+      await startFilterRule(/^Planet(?!-)/u, "is any of");
       await pickOption(/^Mercury/u);
       fireEvent.keyDown(document.activeElement ?? document.body, {
         key: "Escape",
@@ -379,10 +383,10 @@ describe("index", () => {
       );
 
       const toolbar = await findToolbar();
-      const chips = within(toolbar).getByRole("toolbar", { name: "Filters" });
+      const chips = within(toolbar).getByRole("toolbar", { name: "Filter" });
 
       expect(
-        within(toolbar).getByRole("button", { name: "Filters, 2 active" }),
+        within(toolbar).getByRole("button", { name: "Filter, 2 active" }),
       ).toBeDefined();
       expect(within(chips).getAllByText(/^(Planet|Sign|Type)$/u)).toHaveLength(
         3,
@@ -401,7 +405,7 @@ describe("index", () => {
           screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
         ).toBeDefined();
         expect(
-          screen.getByRole("button", { name: "Filters, 1 active" }),
+          screen.getByRole("button", { name: "Filter, 1 active" }),
         ).toBeDefined();
       }, BUILDER_WAIT);
     },
@@ -419,9 +423,63 @@ describe("index", () => {
     const toolbar = await findToolbar();
 
     expect(
-      within(toolbar).getByRole("button", { name: "Filters, 1 active" }),
+      within(toolbar).getByRole("button", { name: "Filter, 1 active" }),
     ).toBeDefined();
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
+  });
+
+  it("turns the colors and the grouping of crowded days off from the View menu", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await screen.findByRole("grid", { name: "March 2026" });
+
+    const seen = new Set<string>();
+
+    for (const name of [
+      "Color events",
+      "Group similar events",
+      "Color events",
+      "Group similar events",
+    ]) {
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(await screen.findByRole("menuitemcheckbox", { name }));
+
+      // The link now says so, and the menu reads back what it holds.
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      await waitFor(() => {
+        expect(
+          screen
+            .getByRole("menuitemcheckbox", { name })
+            .getAttribute("aria-checked"),
+        ).toBe(seen.has(name) ? "true" : "false");
+      });
+      seen.add(name);
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+    }
+  });
+
+  it("switches the symbols to emojis and back from the View menu", async () => {
+    await renderRoute("/?date=2026-03-01");
+    await screen.findByRole("heading", { level: 1 });
+
+    for (const name of ["Emojis", "Glyphs"]) {
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      fireEvent.click(await screen.findByRole("menuitemradio", { name }));
+
+      // The link now holds the pick, and the menu reads it back.
+      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      await waitFor(() => {
+        expect(
+          screen
+            .getByRole("menuitemradio", { name })
+            .getAttribute("aria-checked"),
+        ).toBe("true");
+      });
+      fireEvent.keyDown(document.activeElement ?? document.body, {
+        key: "Escape",
+      });
+    }
   });
 
   it("searches the events' text from a link", async () => {

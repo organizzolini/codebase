@@ -47,8 +47,10 @@ imbolc
 imum
 keplerian
 liberfa
+litha
 Lons
 lughnasadh
+mabon
 meeus
 mercurian
 midheaven
@@ -58,12 +60,15 @@ multibody
 multidetermines
 NODBIT
 novile
+octile
 OSCU
+ostara
 periapsis
 perifocus
 pheno
 prograde
 quincunx
+sagitarius
 samhain
 SEFLG
 semidiameter
@@ -85,7 +90,9 @@ topocentric
 TOPOCTR
 tredecile
 tredicile
+tridecile
 trine
+trioctile
 undecile
 undecuple
 unrefracted

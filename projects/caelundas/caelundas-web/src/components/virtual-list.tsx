@@ -15,9 +15,10 @@ import type { ReactNode, UIEvent } from "react";
 export interface VirtualListProperties<Row> {
   className?: string;
   /**
-   * A row's height in pixels, which its drawing must keep to.
+   * A row's height in pixels, which its drawing must keep to, in a list
+   * `width` pixels wide.
    */
-  getRowHeight: (row: Row) => number;
+  getRowHeight: (row: Row, width: number) => number;
   /**
    * A key unique to a row, so a row keeps its state as the window slides.
    */
@@ -44,6 +45,7 @@ const OVERSCAN = 6;
 // The height assumed until the viewport is measured, and wherever it never
 // is, as under jsdom: about a phone screen of rows.
 const UNMEASURED_HEIGHT = 720;
+const UNMEASURED_WIDTH = 640;
 
 // 🧩 Component
 
@@ -70,10 +72,11 @@ export function VirtualList<Row>(
   const [viewport, setViewport] = useState<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(UNMEASURED_HEIGHT);
+  const [viewportWidth, setViewportWidth] = useState(UNMEASURED_WIDTH);
   const [answered, setAnswered] = useState<(() => void) | undefined>();
   const offsets = useMemo(
-    () => getRowOffsets(rows.map((row) => getRowHeight(row))),
-    [getRowHeight, rows],
+    () => getRowOffsets(rows.map((row) => getRowHeight(row, viewportWidth))),
+    [getRowHeight, rows, viewportWidth],
   );
 
   // 🏗 Setup
@@ -114,6 +117,7 @@ export function VirtualList<Row>(
     const observer = new ResizeObserver((entries) => {
       for (const { target } of entries) {
         setViewportHeight(target.clientHeight || UNMEASURED_HEIGHT);
+        setViewportWidth(target.clientWidth || UNMEASURED_WIDTH);
       }
     });
 
@@ -149,7 +153,10 @@ export function VirtualList<Row>(
             <div
               key={getRowKey(row)}
               className="absolute inset-x-0"
-              style={{ height: getRowHeight(row), top: offsets[start + at] }}
+              style={{
+                height: getRowHeight(row, viewportWidth),
+                top: offsets[start + at],
+              }}
             >
               {renderRow(row)}
             </div>

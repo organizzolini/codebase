@@ -18,7 +18,7 @@ describe(CalendarScaleSelect, () => {
     );
   });
 
-  it("picks another scale from its menu", async () => {
+  it("picks another scale with its buttons", () => {
     const onScaleChange = vi.fn<(scale: string) => void>();
 
     render(
@@ -27,32 +27,30 @@ describe(CalendarScaleSelect, () => {
         scale="month"
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Scale: Month" }));
-    fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Quarter" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Quarter" }));
 
     expect(onScaleChange).toHaveBeenCalledWith("quarter");
   });
 
-  it("keeps the scale shown when it is picked again", async () => {
+  it("presses the scale shown, and keeps it when it is picked again", () => {
     const onScaleChange = vi.fn<(scale: string) => void>();
 
     render(
       <CalendarScaleSelect
         onScaleChange={onScaleChange}
         scale="month"
-        compact
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Scale: Month" }));
-    fireEvent.click(
-      await screen.findByRole("menuitemradio", { name: "Month" }),
-    );
+
+    const month = screen.getByRole("button", { name: "Month" });
+
+    expect(month.getAttribute("aria-pressed")).toBe("true");
+    expect(
+      screen.getByRole("button", { name: "Week" }).getAttribute("aria-pressed"),
+    ).toBe("false");
+
+    fireEvent.click(month);
 
     expect(onScaleChange).not.toHaveBeenCalled();
-    expect(
-      screen.getByRole("button", { name: "Scale: Month" }).textContent,
-    ).toBe("Month");
   });
 });

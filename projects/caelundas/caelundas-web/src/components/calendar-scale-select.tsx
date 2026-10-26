@@ -1,14 +1,6 @@
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@codebase/presentation";
+import { Button, ButtonGroup } from "@codebase/presentation";
 
 import {
-  parseTimelineScale,
   TIMELINE_SCALE_LABELS,
   TIMELINE_SCALES,
   type TimelineScale,
@@ -23,10 +15,6 @@ import type { ReactNode } from "react";
  */
 export interface CalendarScaleSelectProperties {
   className?: string;
-  /**
-   * Shortens the button for a phone's toolbar row.
-   */
-  compact?: boolean | undefined;
   onScaleChange: (scale: TimelineScale) => void;
   scale: TimelineScale;
 }
@@ -34,26 +22,20 @@ export interface CalendarScaleSelectProperties {
 // 🧩 Component
 
 /**
- * Renders a menu button naming the timeline's scale that lists every scale,
- * from a day of minutes to a year of months.
+ * Renders one button for each of the timeline's scales, from a day of
+ * minutes to a year of months, the one shown pressed. The View menu holds it
+ * in its Scale submenu.
  */
 export function CalendarScaleSelect(
   properties: Readonly<CalendarScaleSelectProperties>,
 ): ReactNode {
-  const { className, compact = false, onScaleChange, scale } = properties;
+  const { className, onScaleChange, scale } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
 
   // 💪 Handlers
-  const handleValueChange = (value: unknown): void => {
-    const next = parseTimelineScale(value);
-
-    if (next !== undefined && next !== scale) {
-      onScaleChange(next);
-    }
-  };
 
   // ♻️ Lifecycle
 
@@ -65,36 +47,27 @@ export function CalendarScaleSelect(
       className={className}
       data-testid="calendar-scale-select"
     >
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              aria-label={`Scale: ${TIMELINE_SCALE_LABELS[scale]}`}
-              size="sm"
-              variant="outline"
-            />
-          }
-        >
-          {compact
-            ? TIMELINE_SCALE_LABELS[scale]
-            : `Scale: ${TIMELINE_SCALE_LABELS[scale]}`}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuRadioGroup
-            onValueChange={handleValueChange}
-            value={scale}
+      <ButtonGroup aria-label="Scale">
+        {TIMELINE_SCALES.map((option) => (
+          <Button
+            key={option}
+            aria-pressed={option === scale}
+            className={
+              option === scale ? "bg-accent text-accent-foreground" : undefined
+            }
+            onClick={() => {
+              // The scale already shown is not a change.
+              if (option !== scale) {
+                onScaleChange(option);
+              }
+            }}
+            size="sm"
+            variant="outline"
           >
-            {TIMELINE_SCALES.map((option) => (
-              <DropdownMenuRadioItem
-                key={option}
-                value={option}
-              >
-                {TIMELINE_SCALE_LABELS[option]}
-              </DropdownMenuRadioItem>
-            ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            {TIMELINE_SCALE_LABELS[option]}
+          </Button>
+        ))}
+      </ButtonGroup>
     </div>
   );
 }

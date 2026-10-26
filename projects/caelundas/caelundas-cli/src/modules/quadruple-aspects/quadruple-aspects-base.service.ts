@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { aspectBodies as quadrupleAspectBodies } from "../caelundas/caelundas.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 import {
@@ -273,13 +274,6 @@ export class QuadrupleAspectsBaseService {
   }
 
   /**
-   * Maps aspect phase to the summary prefix marker.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
-  }
-
-  /**
    * Creates one quadruple-aspect event with normalized tags and symbol-rich summary.
    */
   getQuadrupleAspectEvent(
@@ -310,9 +304,8 @@ export class QuadrupleAspectsBaseService {
       phase,
       quadrupleAspect,
     });
-    const phaseEmoji = this.getPhaseEmoji(phase);
-    const symbolsPart = `${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]}-${symbolByBody[body4]}`;
-    const summary = `${phaseEmoji}${symbolByQuadrupleAspect[quadrupleAspect]} ${symbolsPart} ${description}`;
+    const symbolsPart = `${symbolByBody[body1]}${symbolByBody[body2]}${symbolByBody[body3]}${symbolByBody[body4]}`;
+    const summary = `${symbolByQuadrupleAspect[quadrupleAspect]}${symbolsPart} ${description.replace(PHASE_WORD_PATTERN, "")}`;
     const tags = this.makeQuadrupleAspectTags({
       body1Capitalized: body1DisplayName,
       body2Capitalized: body2DisplayName,

@@ -81,4 +81,18 @@ describe(FilterDateRangeEditor, () => {
     expect(properties.commit).toHaveBeenCalledTimes(2);
     expect(properties.cancel).toHaveBeenCalledTimes(1);
   });
+
+  it("clears the day that is emptied and keeps the other", () => {
+    const properties = createProperties(["2026-03-01", "2026-03-31"]);
+
+    render(<FilterDateRangeEditor {...properties} />);
+    fireEvent.change(screen.getByLabelText("Date from"), {
+      target: { value: "" },
+    });
+
+    expect(properties.onValueChange).toHaveBeenLastCalledWith([
+      null,
+      "2026-03-31",
+    ]);
+  });
 });

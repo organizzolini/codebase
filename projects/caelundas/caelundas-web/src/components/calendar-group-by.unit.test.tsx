@@ -18,6 +18,7 @@ const FACETS = [
         name: "Major Aspect",
         path: "Aspect / Major Aspect",
       },
+      { count: 1, depth: 1, id: "ingress", name: "Ingress", path: "Ingress" },
     ],
   },
 ];
@@ -38,21 +39,7 @@ describe(CalendarGroupBy, () => {
     );
   });
 
-  it("names the grouping on its button", () => {
-    render(
-      <CalendarGroupBy
-        facets={FACETS}
-        grouping={[{ depth: 1, field: "tag:type" }, { field: "month" }]}
-        onGroupingChange={() => {}}
-      />,
-    );
-
-    expect(
-      screen.getByRole("button", { name: "Group by: Type, Month" }),
-    ).toBeDefined();
-  });
-
-  it("adds a first group by the first field", async () => {
+  it("adds a first group by the first field", () => {
     const onGroupingChange = vi.fn<(grouping: EventGroupLevel[]) => void>();
 
     render(
@@ -62,15 +49,14 @@ describe(CalendarGroupBy, () => {
         onGroupingChange={onGroupingChange}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Group by: none" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Add group" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add group" }));
 
     expect(onGroupingChange).toHaveBeenCalledWith([
       { depth: 1, field: "tag:type" },
     ]);
   });
 
-  it("changes one level of the grouping and keeps the others", async () => {
+  it("changes the field of one level and keeps the others", async () => {
     const onGroupingChange = vi.fn<(grouping: EventGroupLevel[]) => void>();
 
     render(
@@ -78,31 +64,96 @@ describe(CalendarGroupBy, () => {
         facets={FACETS}
         grouping={[{ field: "tag:type" }, { field: "month" }]}
         onGroupingChange={onGroupingChange}
-        compact
       />,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Group by: Type, Month" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Group 2 by" }));
+    fireEvent.click(await screen.findByRole("option", { name: /^Year/u }));
 
-    const depth = await screen.findByRole<HTMLSelectElement>("combobox", {
-      name: "Group 1 depth",
-    });
-
-    expect(depth.value).toBe("1");
-
-    fireEvent.change(depth, { target: { value: "2" } });
-    fireEvent.change(screen.getByRole("combobox", { name: "Group 2 by" }), {
-      target: { value: "year" },
-    });
-
-    expect(onGroupingChange).toHaveBeenNthCalledWith(1, [
-      { depth: 2, field: "tag:type" },
-      { field: "month" },
-    ]);
-    expect(onGroupingChange).toHaveBeenNthCalledWith(2, [
+    expect(onGroupingChange).toHaveBeenCalledWith([
       { field: "tag:type" },
       { field: "year" },
     ]);
+  });
+
+  it("names what a level groups by", () => {
+    render(
+      <CalendarGroupBy
+        facets={FACETS}
+        grouping={[{ field: "tag:type", tags: ["aspect", "major"] }]}
+        onGroupingChange={() => {}}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Group 1 tags" }).textContent,
+    ).toBe("Aspect, Major Aspect");
+  });
+
+  it("picks the tags to group by from the tree, beside the field", async () => {
+    const onGroupingChange = vi.fn<(grouping: EventGroupLevel[]) => void>();
+
+    render(
+      <CalendarGroupBy
+        facets={FACETS}
+        grouping={[{ depth: 1, field: "tag:type" }]}
+        onGroupingChange={onGroupingChange}
+      />,
+    );
+
+    const tags = screen.getByRole("button", { name: "Group 1 tags" });
+
+    expect(tags.textContent).toBe("First level");
+
+    fireEvent.click(tags);
+    fireEvent.click(await screen.findByRole("option", { name: /Aspect/u }));
+
+    expect(onGroupingChange).toHaveBeenCalledWith([
+      { field: "tag:type", tags: ["aspect"] },
+    ]);
+  });
+
+  it("says which level of the tree an older link groups by", () => {
+    render(
+      <CalendarGroupBy
+        facets={FACETS}
+        grouping={[{ depth: 2, field: "tag:type" }]}
+        onGroupingChange={() => {}}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Group 1 tags" }).textContent,
+    ).toBe("Level 2");
+  });
+
+  it("offers no tags for a derived field", () => {
+    render(
+      <CalendarGroupBy
+        facets={FACETS}
+        grouping={[{ field: "month" }]}
+        onGroupingChange={() => {}}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: "Group 1 tags" })).toBeNull();
+  });
+
+  it("counts the tags beyond the first two and skips any the data lacks", () => {
+    render(
+      <CalendarGroupBy
+        facets={FACETS}
+        grouping={[
+          {
+            field: "tag:type",
+            tags: ["gone", "aspect", "major", "ingress"],
+          },
+        ]}
+        onGroupingChange={() => {}}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Group 1 tags" }).textContent,
+    ).toBe("Aspect, Major Aspect +1");
   });
 });
