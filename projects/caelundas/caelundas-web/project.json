@@ -59,6 +59,15 @@
       },
       "outputs": ["{projectRoot}/output/events.sqlite"]
     },
+    "build-star-catalog": {
+      "cache": false,
+      "description": "Trim a downloaded HYG star CSV to the night sky's catalog JSON: pass the CSV and the JSON path after --",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/build-star-catalog.ts",
+        "cwd": "{projectRoot}"
+      }
+    },
     "codometer": {},
     "dependency-cruiser": {},
     "deprecate-code": {},

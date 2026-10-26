@@ -332,6 +332,9 @@ export default [
       "**/projects/lexico/lexico-cli/src/modules/literature/literature.constants.ts",
       "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts",
       "**/library.json",
+      // The star catalog is rows of [ra, dec, magnitude, color index], whose
+      // order is the data, so sorting each row would corrupt it
+      "**/use-night-sky.catalog.json",
     ],
   },
 
