@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.35.0](https://github.com/organizzolini/codebase/compare/v3.34.0...v3.35.0) (2026-10-26)
+
+### ✨ Features
+
+* **persistence:** ✨ export postgres tables to sqlite with --sqlite ([#1741](https://github.com/organizzolini/codebase/issues/1741)) ([e1bd453](https://github.com/organizzolini/codebase/commit/e1bd453d55261e7cc1136e5113366db5f5c07664)), closes [#1602](https://github.com/organizzolini/codebase/issues/1602) [#1603](https://github.com/organizzolini/codebase/issues/1603) [#1604](https://github.com/organizzolini/codebase/issues/1604) [#1605](https://github.com/organizzolini/codebase/issues/1605) [#1606](https://github.com/organizzolini/codebase/issues/1606) [#1607](https://github.com/organizzolini/codebase/issues/1607) [#1601](https://github.com/organizzolini/codebase/issues/1601) [#1735](https://github.com/organizzolini/codebase/issues/1735)
+
 ## [3.34.0](https://github.com/organizzolini/codebase/compare/v3.33.0...v3.34.0) (2026-10-26)
 
 ### ✨ Features

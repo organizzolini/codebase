@@ -1012,6 +1012,7 @@ graph LR
   module_persistence_MainModule["persistence/MainModule"]
   module_persistence_PostgresqlModule["persistence/PostgresqlModule"]
   module_persistence_PostgresqlUtilitiesModule["persistence/PostgresqlUtilitiesModule"]
+  module_persistence_SqliteExportModule["persistence/SqliteExportModule"]
   module_publication_DiscoveryModule["publication/DiscoveryModule"]
   module_publication_LinkPackagesModule["publication/LinkPackagesModule"]
   module_publication_LoggerModule["publication/LoggerModule"]
@@ -1899,6 +1900,7 @@ graph LR
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PathUtilitiesModule
   module_meanderaw_cli_TurnCharacteristicsModule --> module_meanderaw_cli_PointCharacteristicsModule
   module_persistence_ExportModule --> module_persistence_PostgresqlUtilitiesModule
+  module_persistence_ExportModule --> module_persistence_SqliteExportModule
   module_persistence_ImportModule --> module_persistence_PostgresqlUtilitiesModule
   module_persistence_MainModule --> module_persistence_DiscoveryModule
   module_persistence_MainModule --> module_persistence_ExportModule
@@ -5103,6 +5105,9 @@ graph LR
   file_persistence_src_modules_export_export_missing_table_command_unit_test_ts["persistence/src/modules/export/export-missing-table.command.unit.test.ts"]
   file_persistence_src_modules_export_export_preflight_command_integration_test_ts["persistence/src/modules/export/export-preflight.command.integration.test.ts"]
   file_persistence_src_modules_export_export_schema_command_unit_test_ts["persistence/src/modules/export/export-schema.command.unit.test.ts"]
+  file_persistence_src_modules_export_export_sqlite_types_command_integration_test_ts["persistence/src/modules/export/export-sqlite-types.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_sqlite_command_integration_test_ts["persistence/src/modules/export/export-sqlite.command.integration.test.ts"]
+  file_persistence_src_modules_export_export_sqlite_command_unit_test_ts["persistence/src/modules/export/export-sqlite.command.unit.test.ts"]
   file_persistence_src_modules_export_export_command_integration_test_ts["persistence/src/modules/export/export.command.integration.test.ts"]
   file_persistence_src_modules_export_export_command_ts["persistence/src/modules/export/export.command.ts"]
   file_persistence_src_modules_export_export_command_unit_test_ts["persistence/src/modules/export/export.command.unit.test.ts"]
@@ -5118,6 +5123,7 @@ graph LR
   file_persistence_src_modules_import_import_preflight_command_integration_test_ts["persistence/src/modules/import/import-preflight.command.integration.test.ts"]
   file_persistence_src_modules_import_import_schema_command_integration_test_ts["persistence/src/modules/import/import-schema.command.integration.test.ts"]
   file_persistence_src_modules_import_import_schema_command_unit_test_ts["persistence/src/modules/import/import-schema.command.unit.test.ts"]
+  file_persistence_src_modules_import_import_sqlite_command_unit_test_ts["persistence/src/modules/import/import-sqlite.command.unit.test.ts"]
   file_persistence_src_modules_import_import_command_integration_test_ts["persistence/src/modules/import/import.command.integration.test.ts"]
   file_persistence_src_modules_import_import_command_ts["persistence/src/modules/import/import.command.ts"]
   file_persistence_src_modules_import_import_command_unit_test_ts["persistence/src/modules/import/import.command.unit.test.ts"]
@@ -5152,6 +5158,12 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_types_ts["persistence/src/modules/postgresql/postgresql.types.ts"]
   file_persistence_src_modules_postgresql_postgresql_utilities_ts["persistence/src/modules/postgresql/postgresql.utilities.ts"]
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts["persistence/src/modules/postgresql/postgresql.utilities.unit.test.ts"]
+  file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts["persistence/src/modules/sqlite-export/sqlite-export.constants.ts"]
+  file_persistence_src_modules_sqlite_export_sqlite_export_module_ts["persistence/src/modules/sqlite-export/sqlite-export.module.ts"]
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts["persistence/src/modules/sqlite-export/sqlite-export.service.ts"]
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_unit_test_ts["persistence/src/modules/sqlite-export/sqlite-export.service.unit.test.ts"]
+  file_persistence_src_modules_sqlite_export_sqlite_export_types_ts["persistence/src/modules/sqlite-export/sqlite-export.types.ts"]
+  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts["persistence/src/modules/sqlite-export/sqlite-export.utilities.ts"]
   file_persistence_src_persistence_main_end_to_end_test_ts["persistence/src/persistence.main.end-to-end.test.ts"]
   file_persistence_src_persistence_main_ts["persistence/src/persistence.main.ts"]
   file_persistence_src_persistence_main_unit_test_ts["persistence/src/persistence.main.unit.test.ts"]
@@ -12829,6 +12841,12 @@ graph LR
   file_persistence_src_modules_export_export_preflight_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
   file_persistence_src_modules_export_export_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_export_export_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_export_export_sqlite_types_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_sqlite_types_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_sqlite_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_sqlite_command_integration_test_ts --> file_persistence_testing_fixture_persistence_ts
+  file_persistence_src_modules_export_export_sqlite_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_export_export_sqlite_command_unit_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
   file_persistence_src_modules_export_export_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
@@ -12843,14 +12861,18 @@ graph LR
   file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
   file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts
+  file_persistence_src_modules_export_export_command_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
   file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_export_export_command_ts
   file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
+  file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
   file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_export_export_command_unit_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_export_export_constants_ts --> file_persistence_src_modules_export_export_types_ts
   file_persistence_src_modules_export_export_constants_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
   file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_export_export_command_ts
   file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_module_ts
+  file_persistence_src_modules_export_export_module_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_module_ts
   file_persistence_src_modules_export_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
   file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
   file_persistence_src_modules_import_import_clean_data_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
@@ -12880,6 +12902,8 @@ graph LR
   file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_service_ts
   file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
   file_persistence_src_modules_import_import_schema_command_unit_test_ts --> file_persistence_testing_mocks_ts
+  file_persistence_src_modules_import_import_sqlite_command_unit_test_ts --> file_persistence_testing_command_line_runner_ts
+  file_persistence_src_modules_import_import_sqlite_command_unit_test_ts --> file_persistence_testing_mocks_ts
   file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_types_ts
   file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_src_modules_postgresql_postgresql_container_utilities_ts
   file_persistence_src_modules_import_import_command_integration_test_ts --> file_persistence_testing_command_line_runner_ts
@@ -12967,6 +12991,19 @@ graph LR
   file_persistence_src_modules_postgresql_postgresql_utilities_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_types_ts
   file_persistence_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_persistence_src_modules_postgresql_postgresql_utilities_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_types_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_module_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_utilities_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_types_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_service_unit_test_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_service_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_types_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_truncate_utilities_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_postgresql_utilities_postgresql_utilities_types_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_constants_ts
+  file_persistence_src_modules_sqlite_export_sqlite_export_utilities_ts --> file_persistence_src_modules_sqlite_export_sqlite_export_types_ts
   file_persistence_src_persistence_main_ts --> file_persistence_src_persistence_module_ts
   file_persistence_src_persistence_module_ts --> file_persistence_src_modules_export_export_module_ts
   file_persistence_src_persistence_module_ts --> file_persistence_src_modules_import_import_module_ts
@@ -14253,13 +14290,13 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7189 |
-| Files | 2106 |
-| Calls traced | 7875 |
-| Call stacks | 1996 |
+| Callables | 7226 |
+| Files | 2111 |
+| Calls traced | 7914 |
+| Call stacks | 2004 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
-| Unfollowable calls | 420 |
+| Unfollowable calls | 432 |
 
 ### Projects
 
