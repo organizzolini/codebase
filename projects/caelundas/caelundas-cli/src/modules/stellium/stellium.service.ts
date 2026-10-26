@@ -134,7 +134,11 @@ export class StelliumService {
     const summary = `${phaseEmoji}${stelliumSymbol} ${bodySymbols.join("-")} ${description}`;
 
     return {
-      categories: [
+      description,
+      end: timestamp,
+      start: timestamp,
+      summary,
+      tags: [
         "Astronomy",
         "Astrology",
         "Compound Aspect",
@@ -143,10 +147,6 @@ export class StelliumService {
         _.startCase(phase),
         ...bodiesCapitalized,
       ],
-      description,
-      end: timestamp,
-      start: timestamp,
-      summary,
     };
   }
 
@@ -261,12 +261,12 @@ export class StelliumService {
    */
   private stelliumGroupKey(event: DetectedCalendarEvent): string {
     const planets = _.sortBy(
-      event.categories.filter((category) =>
-        stelliumBodies.map((b) => bodyDisplayName(b)).includes(category),
+      event.tags.filter((tag) =>
+        stelliumBodies.map((b) => bodyDisplayName(b)).includes(tag),
       ),
     );
-    const stelliumType = event.categories.find(
-      (category) => category.includes("Body") && category !== "Stellium",
+    const stelliumType = event.tags.find(
+      (tag) => tag.includes("Body") && tag !== "Stellium",
     );
     return `${planets.join("-")}_${stelliumType}`;
   }
@@ -312,7 +312,7 @@ export class StelliumService {
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const stelliumEvents = events.filter((event) =>
-      event.categories.includes("Stellium"),
+      event.tags.includes("Stellium"),
     );
 
     const groupedEvents = _.groupBy(stelliumEvents, (event) =>

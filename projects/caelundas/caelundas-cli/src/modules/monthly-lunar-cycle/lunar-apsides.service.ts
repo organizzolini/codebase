@@ -5,9 +5,9 @@ import { LoggerService } from "@codebase/observability";
 import { CalendarService } from "../calendar/calendar.service";
 
 import {
-  LUNAR_APOGEE_CATEGORY,
-  LUNAR_APSIDES_BASE_CATEGORIES,
-  LUNAR_PERIGEE_CATEGORY,
+  LUNAR_APOGEE_TAG,
+  LUNAR_APSIDES_BASE_TAGS,
+  LUNAR_PERIGEE_TAG,
 } from "./monthly-lunar-cycle.constants";
 
 import type { DetectedCalendarEvent } from "../database/database.types";
@@ -39,18 +39,18 @@ export class LunarApsidesService {
 
   /** Builds an instant apsis event. */
   private buildApsisEvent(args: {
-    category: string;
     date: Moment;
     description: string;
     summary: string;
+    tag: string;
   }): DetectedCalendarEvent {
-    const { category, date, description, summary } = args;
+    const { date, description, summary, tag } = args;
     return this.calendarService.buildInstantEvent({
-      categories: [...LUNAR_APSIDES_BASE_CATEGORIES, category],
       date,
       description,
       logger: this.logger,
       summary,
+      tags: [...LUNAR_APSIDES_BASE_TAGS, tag],
       timezone: "America/New_York",
     });
   }
@@ -147,20 +147,20 @@ export class LunarApsidesService {
     if (this.isApsis("apogee", speeds)) {
       events.push(
         this.buildApsisEvent({
-          category: LUNAR_APOGEE_CATEGORY,
           date: minute,
           description: "Lunar Apogee (Moon farthest from Earth)",
           summary: "🌙 ❄️ Lunar Apogee",
+          tag: LUNAR_APOGEE_TAG,
         }),
       );
     }
     if (this.isApsis("perigee", speeds)) {
       events.push(
         this.buildApsisEvent({
-          category: LUNAR_PERIGEE_CATEGORY,
           date: minute,
           description: "Lunar Perigee (Moon nearest to Earth)",
           summary: "🌙 🔥 Lunar Perigee",
+          tag: LUNAR_PERIGEE_TAG,
         }),
       );
     }

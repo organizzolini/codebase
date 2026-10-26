@@ -55,10 +55,10 @@ describe(SpecialtyAspectsComposerService, () => {
       service.buildSpecialtyAspectEventFromParts({
         body1Symbol: "☀️",
         body2Symbol: "🌙",
-        categories: ["Astronomy", "Astrology", "Specialty Aspect"],
         description: "Sun quintile Moon",
         phaseEmoji: "🎯",
         specialtyAspectSymbol: "⬠",
+        tags: ["Astronomy", "Astrology", "Specialty Aspect"],
         timestamp,
       }),
     ).toStrictEqual(
@@ -80,7 +80,7 @@ describe(SpecialtyAspectsComposerService, () => {
 
   it("extracts and casts aspect components", () => {
     expect(
-      service.extractAspectBodiesFromCategories([
+      service.extractAspectBodiesFromTags([
         "Astronomy",
         "Astrology",
         "Specialty Aspect",
@@ -99,7 +99,7 @@ describe(SpecialtyAspectsComposerService, () => {
         aspectCapitalized: "Quintile",
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
-        categories: ["Quintile", "Moon", "Sun"],
+        tags: ["Quintile", "Moon", "Sun"],
       }),
     ).toStrictEqual({
       aspect: "quintile",
@@ -111,7 +111,11 @@ describe(SpecialtyAspectsComposerService, () => {
   it("builds progressive events and group keys", () => {
     const minute = moment.utc("2024-03-21T12:00:00.000Z");
     const beginning = {
-      categories: [
+      description: "Sun forming quintile Moon",
+      end: minute,
+      start: minute,
+      summary: "➡️ ☀️⬠🌙 Sun forming quintile Moon",
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -121,25 +125,21 @@ describe(SpecialtyAspectsComposerService, () => {
         "Quintile",
         "Forming",
       ],
-      description: "Sun forming quintile Moon",
-      end: minute,
-      start: minute,
-      summary: "➡️ ☀️⬠🌙 Sun forming quintile Moon",
     };
     const ending = {
       ...beginning,
-      categories: beginning.categories.map((category) =>
-        category === "Forming" ? "Dissolving" : category,
-      ),
       description: "Sun dissolving quintile Moon",
       end: minute.clone().add(1, "hour"),
       start: minute.clone().add(1, "hour"),
       summary: "⬅️ ☀️⬠🌙 Sun dissolving quintile Moon",
+      tags: beginning.tags.map((tag) =>
+        tag === "Forming" ? "Dissolving" : tag,
+      ),
     };
 
     expect(
       service.phaseFields({
-        baseCategories: ["Astronomy", "Astrology"],
+        baseTags: ["Astronomy", "Astrology"],
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
         phase: "forming",
@@ -153,7 +153,7 @@ describe(SpecialtyAspectsComposerService, () => {
     );
     expect(
       service.phaseFields({
-        baseCategories: ["Astronomy", "Astrology"],
+        baseTags: ["Astronomy", "Astrology"],
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
         phase: "perfective",
@@ -167,7 +167,7 @@ describe(SpecialtyAspectsComposerService, () => {
     );
     expect(
       service.phaseFields({
-        baseCategories: ["Astronomy", "Astrology"],
+        baseTags: ["Astronomy", "Astrology"],
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
         phase: "dissolving",
@@ -186,7 +186,7 @@ describe(SpecialtyAspectsComposerService, () => {
     expect(
       service.specialtyAspectGroupKey({
         ...beginning,
-        categories: ["Moon"],
+        tags: ["Moon"],
       }),
     ).toBe("");
 
@@ -215,40 +215,40 @@ describe(SpecialtyAspectsComposerService, () => {
         aspectCapitalized: "Not An Aspect",
         body1Capitalized: "Moon",
         body2Capitalized: "Sun",
-        categories: ["Moon", "Sun"],
+        tags: ["Moon", "Sun"],
       }),
     ).toThrow("Could not extract typed values");
 
-    expect(() => service.extractAspectBodiesFromCategories(["Moon"])).toThrow(
+    expect(() => service.extractAspectBodiesFromTags(["Moon"])).toThrow(
       "Could not extract aspect info",
     );
     expect(() =>
       service.getSpecialtyAspectProgressiveEvent(
         {
-          categories: ["Astronomy", "Astrology", "Specialty Aspect", "Moon"],
           description: "Invalid",
           end: moment.utc("2024-03-21T12:00:00.000Z"),
           start: moment.utc("2024-03-21T12:00:00.000Z"),
           summary: "Invalid",
+          tags: ["Astronomy", "Astrology", "Specialty Aspect", "Moon"],
         },
         {
-          categories: ["Astronomy", "Astrology", "Specialty Aspect", "Moon"],
           description: "Invalid",
           end: moment.utc("2024-03-21T12:01:00.000Z"),
           start: moment.utc("2024-03-21T12:01:00.000Z"),
           summary: "Invalid",
+          tags: ["Astronomy", "Astrology", "Specialty Aspect", "Moon"],
         },
       ),
     ).toThrow("Could not extract aspect info");
   });
 
-  it("falls back to empty string when sorted body categories contain sparse values", () => {
+  it("falls back to empty string when sorted body tags contain sparse values", () => {
     const sortBySpy = vi
       .spyOn(_, "sortBy")
       .mockReturnValue([undefined, "Sun"] as unknown);
 
     expect(
-      service.extractAspectBodiesFromCategories([
+      service.extractAspectBodiesFromTags([
         "Astronomy",
         "Astrology",
         "Specialty Aspect",
@@ -271,7 +271,7 @@ describe(SpecialtyAspectsComposerService, () => {
       .mockReturnValue(["Moon", undefined] as unknown);
 
     expect(
-      service.extractAspectBodiesFromCategories([
+      service.extractAspectBodiesFromTags([
         "Astronomy",
         "Astrology",
         "Specialty Aspect",

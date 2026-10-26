@@ -20,7 +20,7 @@ import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
  * These drive the real service, with the real calendar and ephemeris lookup
  * services and no spies, through each primary phase: the Moon's ecliptic
  * longitude minus the Sun's passing 0°, 90°, 180° and 270°. They assert the
- * full event shape — categories, summary, and timestamp.
+ * full event shape — tags, summary, and timestamp.
  */
 
 vi.mock("fs", () => ({
@@ -89,28 +89,28 @@ describe("monthly-lunar-cycle.events integration", () => {
 
   it.each([
     {
-      category: "New",
       elongations: { current: 0.1, next: 0.6, previous: 359.6 },
       summary: "🌙 🌑 New Moon",
+      tag: "New",
     },
     {
-      category: "First Quarter",
       elongations: { current: 90.1, next: 90.6, previous: 89.6 },
       summary: "🌙 🌓 First Quarter Moon",
+      tag: "First Quarter",
     },
     {
-      category: "Full",
       elongations: { current: 180.1, next: 180.6, previous: 179.6 },
       summary: "🌙 🌕 Full Moon",
+      tag: "Full",
     },
     {
-      category: "Last Quarter",
       elongations: { current: 270.1, next: 270.6, previous: 269.6 },
       summary: "🌙 🌗 Last Quarter Moon",
+      tag: "Last Quarter",
     },
   ])(
     "detects $summary when the elongation passes its longitude",
-    ({ category, elongations, summary }) => {
+    ({ elongations, summary, tag }) => {
       expect.hasAssertions();
 
       const events = service.detect({
@@ -119,12 +119,12 @@ describe("monthly-lunar-cycle.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toStrictEqual([
+      expect(events[0]?.tags).toStrictEqual([
         "Astronomy",
         "Astrology",
         "Monthly Lunar Cycle",
         "Lunar",
-        category,
+        tag,
       ]);
       expect(events[0]?.summary).toBe(summary);
       expect(events[0]?.start.toISOString()).toBe(minute.toISOString());

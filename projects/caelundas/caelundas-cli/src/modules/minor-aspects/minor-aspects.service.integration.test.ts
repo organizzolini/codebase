@@ -169,7 +169,7 @@ describe("minor-aspects.events integration", () => {
       );
 
       expect(detectedEvent).toBeDefined();
-      expect(detectedEvent?.categories).toContain(expectedPhase);
+      expect(detectedEvent?.tags).toContain(expectedPhase);
       expect(detectedEvent?.start).toStrictEqual(minute);
     },
   );

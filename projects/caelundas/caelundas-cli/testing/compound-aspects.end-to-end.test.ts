@@ -24,7 +24,7 @@ const tSquareTitle = "Ceres, Lunar Apogee, Moon t-square";
 
 /** Identifies a compound boundary by its minute, bodies, pattern, phase and focal body. */
 function boundaryKey(event: DetectedCalendarEvent): string {
-  return [event.start.toISOString(), ...event.categories.toSorted()].join("|");
+  return [event.start.toISOString(), ...event.tags.toSorted()].join("|");
 }
 
 /** Compound events that mark one minute rather than a span. */
@@ -33,17 +33,16 @@ function compoundBoundaries(
 ): DetectedCalendarEvent[] {
   return events.filter(
     (event) =>
-      event.categories.includes("Compound Aspect") &&
-      event.end.isSame(event.start),
+      event.tags.includes("Compound Aspect") && event.end.isSame(event.start),
   );
 }
 
-/** Every body name, lower-cased, to pick a simple aspect's two bodies out of its categories. */
+/** Every body name, lower-cased, to pick a simple aspect's two bodies out of its tags. */
 const bodyNames = new Set(bodies.map((body) => body.toLowerCase()));
 
-/** Lower-cased category labels, since simple and compound events case body names differently. */
-function lowerCategories(event: DetectedCalendarEvent): string[] {
-  return event.categories.map((category) => category.toLowerCase());
+/** Lower-cased tag labels, since simple and compound events case body names differently. */
+function lowerTags(event: DetectedCalendarEvent): string[] {
+  return event.tags.map((tag) => tag.toLowerCase());
 }
 
 describe(
@@ -73,7 +72,7 @@ describe(
       );
 
       expect(
-        tSquareEvents.map((event) => event.categories.includes("Forming")),
+        tSquareEvents.map((event) => event.tags.includes("Forming")),
       ).toStrictEqual([true, false, false]);
     });
 
@@ -83,22 +82,20 @@ describe(
       const { events } = await runPipelineWindow(octoberWindow);
       const legEndings = events.filter(
         (event) =>
-          event.categories.includes("Simple Aspect") &&
-          event.categories.includes("Dissolving"),
+          event.tags.includes("Simple Aspect") &&
+          event.tags.includes("Dissolving"),
       );
       const compoundEndings = compoundBoundaries(events).filter((event) =>
-        event.categories.includes("Dissolving"),
+        event.tags.includes("Dissolving"),
       );
       const unmatched = compoundEndings.filter((compound) => {
-        const compoundCategories = lowerCategories(compound);
+        const compoundTags = lowerTags(compound);
         return !legEndings.some((leg) => {
-          const legBodies = lowerCategories(leg).filter((category) =>
-            bodyNames.has(category),
-          );
+          const legBodies = lowerTags(leg).filter((tag) => bodyNames.has(tag));
           return (
             leg.start.isSame(compound.start) &&
             legBodies.length === 2 &&
-            legBodies.every((body) => compoundCategories.includes(body))
+            legBodies.every((body) => compoundTags.includes(body))
           );
         });
       });
@@ -116,7 +113,7 @@ describe(
 
       const { events } = await runPipelineWindow(octoberWindow);
       const compoundTitles = events
-        .filter((event) => event.categories.includes("Compound Aspect"))
+        .filter((event) => event.tags.includes("Compound Aspect"))
         .map((event) => ({
           isSpan: !event.end.isSame(event.start),
           summary: event.summary,

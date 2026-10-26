@@ -182,7 +182,7 @@ the database never disagree.
 | ------ | ----- |
 | `summary`, `description` | The event's title and detail |
 | `start`, `end` | `timestamptz`; equal for an instant |
-| `categories` | `text[]`, GIN-indexed, so SQL can filter on one |
+| `categories` | `text[]`, GIN-indexed, so SQL can filter on one; the `tags` property persists here until the schema change renames it |
 | `color`, `location` | Nullable display hints |
 | `latitude`, `longitude` | The `numeric` observer location the event was computed for |
 | `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns |
@@ -4157,7 +4157,7 @@ graph LR
 ![Links](https://img.shields.io/badge/Links-22-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-18-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-160-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-161-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->

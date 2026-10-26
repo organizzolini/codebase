@@ -45,8 +45,8 @@ describe(MajorAspectEventService, () => {
       });
 
       expect(event.description).toBe("Moon forming conjunct North Lunar Node");
-      expect(event.categories).toContain("North Lunar Node");
-      expect(event.categories).not.toContain("North lunar node");
+      expect(event.tags).toContain("North Lunar Node");
+      expect(event.tags).not.toContain("North lunar node");
     });
 
     it("creates perfective conjunction event", () => {
@@ -65,13 +65,13 @@ describe(MajorAspectEventService, () => {
       expect(event.summary).toContain("🌙");
       expect(event.summary).toContain("☌");
       expect(event.description).toBe("Sun perfective conjunct Moon");
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Major Aspect");
-      expect(event.categories).toContain("Sun");
-      expect(event.categories).toContain("Moon");
-      expect(event.categories).toContain("Conjunct");
-      expect(event.categories).toContain("Perfective");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Major Aspect");
+      expect(event.tags).toContain("Sun");
+      expect(event.tags).toContain("Moon");
+      expect(event.tags).toContain("Conjunct");
+      expect(event.tags).toContain("Perfective");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
     });
@@ -92,8 +92,8 @@ describe(MajorAspectEventService, () => {
       expect(event.summary).toContain("♂️");
       expect(event.summary).toContain("☍");
       expect(event.description).toBe("Sun forming opposite Mars");
-      expect(event.categories).toContain("Forming");
-      expect(event.categories).toContain("Opposite");
+      expect(event.tags).toContain("Forming");
+      expect(event.tags).toContain("Opposite");
     });
 
     it("creates dissolving trine event", () => {
@@ -112,10 +112,10 @@ describe(MajorAspectEventService, () => {
       expect(event.summary).toContain("♃");
       expect(event.summary).toContain("△");
       expect(event.description).toBe("Venus dissolving trine Jupiter");
-      expect(event.categories).toContain("Dissolving");
-      expect(event.categories).toContain("Trine");
-      expect(event.categories).toContain("Venus");
-      expect(event.categories).toContain("Jupiter");
+      expect(event.tags).toContain("Dissolving");
+      expect(event.tags).toContain("Trine");
+      expect(event.tags).toContain("Venus");
+      expect(event.tags).toContain("Jupiter");
     });
 
     it("creates square event", () => {
@@ -133,7 +133,7 @@ describe(MajorAspectEventService, () => {
       expect(event.summary).toContain("♄");
       expect(event.summary).toContain("□");
       expect(event.description).toBe("Mercury perfective square Saturn");
-      expect(event.categories).toContain("Square");
+      expect(event.tags).toContain("Square");
     });
 
     it("creates sextile event", () => {
@@ -151,7 +151,7 @@ describe(MajorAspectEventService, () => {
       expect(event.summary).toContain("♅");
       expect(event.summary).toContain("⚹");
       expect(event.description).toBe("Moon perfective sextile Uranus");
-      expect(event.categories).toContain("Sextile");
+      expect(event.tags).toContain("Sextile");
     });
 
     it("throws error when no major aspect is found", () => {

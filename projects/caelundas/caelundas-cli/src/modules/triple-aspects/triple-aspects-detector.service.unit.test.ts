@@ -113,8 +113,8 @@ describe(TripleAspectsDetectorService, () => {
       });
 
       expect(events.length).toBeGreaterThanOrEqual(1);
-      expect(events[0]?.categories).toContain("T Square");
-      expect(events[0]?.categories).toContain("Forming");
+      expect(events[0]?.tags).toContain("T Square");
+      expect(events[0]?.tags).toContain("Forming");
     });
 
     it("returns no T-Square events when phase transition cannot be determined", () => {
@@ -173,8 +173,8 @@ describe(TripleAspectsDetectorService, () => {
       });
 
       expect(events.length).toBeGreaterThanOrEqual(1);
-      expect(events[0]?.categories).toContain("Yod");
-      expect(events[0]?.categories).toContain("Forming");
+      expect(events[0]?.tags).toContain("Yod");
+      expect(events[0]?.tags).toContain("Forming");
     });
 
     it("returns no Yod events when apex candidates do not complete a yod", () => {
@@ -249,8 +249,8 @@ describe(TripleAspectsDetectorService, () => {
       });
 
       expect(events.length).toBeGreaterThanOrEqual(1);
-      expect(events[0]?.categories).toContain("Grand Trine");
-      expect(events[0]?.categories).toContain("Forming");
+      expect(events[0]?.tags).toContain("Grand Trine");
+      expect(events[0]?.tags).toContain("Forming");
     });
 
     it("returns no Grand Trine events when phase transition cannot be determined", () => {

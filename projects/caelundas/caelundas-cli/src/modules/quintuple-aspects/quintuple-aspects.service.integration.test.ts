@@ -68,13 +68,13 @@ describe("quintuple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Pentagram");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Jupiter");
-      expect(events[0]?.categories).toContain("Mars");
-      expect(events[0]?.categories).toContain("Moon");
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Venus");
+      expect(events[0]?.tags).toContain("Pentagram");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Jupiter");
+      expect(events[0]?.tags).toContain("Mars");
+      expect(events[0]?.tags).toContain("Moon");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Venus");
       expect(events[0]?.description).toContain("pentagram forming");
       expect(events[0]?.summary).toContain("➡️"); // Forming emoji
       expect(events[0]?.summary).toContain("⭐"); // Pentagram symbol
@@ -109,15 +109,20 @@ describe("quintuple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Pentagram");
-      expect(events[0]?.categories).toContain("Dissolving");
+      expect(events[0]?.tags).toContain("Pentagram");
+      expect(events[0]?.tags).toContain("Dissolving");
       expect(events[0]?.description).toContain("pentagram dissolving");
       expect(events[0]?.summary).toContain("⬅️"); // Dissolving emoji
     });
 
     it("creates progressive event from forming/dissolving Pentagram pair", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Jupiter, Mars, Moon, Sun, Venus pentagram forming",
+        end: moment.utc("2024-06-15T14:23:00.000Z"),
+        start: moment.utc("2024-06-15T14:23:00.000Z"),
+        summary:
+          "➡️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -130,15 +135,15 @@ describe("quintuple-aspects.events integration", () => {
           "Sun",
           "Venus",
         ],
-        description: "Jupiter, Mars, Moon, Sun, Venus pentagram forming",
-        end: moment.utc("2024-06-15T14:23:00.000Z"),
-        start: moment.utc("2024-06-15T14:23:00.000Z"),
-        summary:
-          "➡️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram forming",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
+        end: moment.utc("2024-06-15T14:30:00.000Z"),
+        start: moment.utc("2024-06-15T14:30:00.000Z"),
+        summary:
+          "⬅️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -151,11 +156,6 @@ describe("quintuple-aspects.events integration", () => {
           "Sun",
           "Venus",
         ],
-        description: "Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
-        end: moment.utc("2024-06-15T14:30:00.000Z"),
-        start: moment.utc("2024-06-15T14:30:00.000Z"),
-        summary:
-          "⬅️ ⬠ ☉-☽-♂-♃-♀ Jupiter, Mars, Moon, Sun, Venus pentagram dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -170,10 +170,10 @@ describe("quintuple-aspects.events integration", () => {
       expect(progressiveEvents[0]?.end).toStrictEqual(
         moment.utc("2024-06-15T14:30:00.000Z"),
       );
-      expect(progressiveEvents[0]?.categories).toContain("Quintuple Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("Pentagram");
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).toContain("Quintuple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Pentagram");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
       expect(progressiveEvents[0]?.description).toContain("pentagram");
       expect(progressiveEvents[0]?.description).not.toMatch(
         /(forming|dissolving)$/i,
@@ -207,13 +207,13 @@ describe("quintuple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Pentagram");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Saturn");
-      expect(events[0]?.categories).toContain("Uranus");
-      expect(events[0]?.categories).toContain("Neptune");
-      expect(events[0]?.categories).toContain("Pluto");
-      expect(events[0]?.categories).toContain("Jupiter");
+      expect(events[0]?.tags).toContain("Pentagram");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Saturn");
+      expect(events[0]?.tags).toContain("Uranus");
+      expect(events[0]?.tags).toContain("Neptune");
+      expect(events[0]?.tags).toContain("Pluto");
+      expect(events[0]?.tags).toContain("Jupiter");
     });
   });
 

@@ -260,11 +260,11 @@ describe(PerfectiveService, () => {
         { aspect: "square", bodies: ["mars", "pluto"] },
       ];
       const seededEvent = {
-        categories: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
         description: "Mars, Mercury, Pluto t-square forming",
         end: firstMinute,
         start: firstMinute,
         summary: "seeded compound forming",
+        tags: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
       } satisfies DetectedCalendarEvent;
 
       datetimeMock.generateDates.mockReturnValue([firstDate, secondDate]);
@@ -309,11 +309,11 @@ describe(PerfectiveService, () => {
       const date = moment.tz("2025-06-15", "America/New_York");
       const minute = date.clone().startOf("day");
       const ingressEvent = {
-        categories: ["Astronomy", "Astrology", "Ingress"],
         description: "Sun enters Gemini",
         end: minute,
         start: minute,
         summary: "ingress",
+        tags: ["Astronomy", "Astrology", "Ingress"],
       } satisfies DetectedCalendarEvent;
 
       datetimeMock.generateDates.mockReturnValue([date]);

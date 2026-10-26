@@ -292,33 +292,25 @@ export function createMinuteWindow(
  */
 export function createProgressiveAspectEvent({
   aspect,
-  aspectCategory,
+  aspectTag,
   body1,
   body2,
   phase,
   timestamp,
 }: {
   aspect: string;
-  aspectCategory: "Minor Aspect" | "Specialty Aspect";
+  aspectTag: "Minor Aspect" | "Specialty Aspect";
   body1: string;
   body2: string;
   phase: "Dissolving" | "Forming" | "Perfective";
   timestamp: Moment;
 }): DetectedCalendarEvent {
   return {
-    categories: [
-      "Astronomy",
-      "Astrology",
-      aspectCategory,
-      body1,
-      body2,
-      aspect,
-      phase,
-    ],
     description: `${body1} ${phase.toLowerCase()} ${aspect.toLowerCase()} ${body2}`,
     end: timestamp,
     start: timestamp,
     summary: `${phase} ${body1} ${aspect} ${body2}`,
+    tags: ["Astronomy", "Astrology", aspectTag, body1, body2, aspect, phase],
   };
 }
 

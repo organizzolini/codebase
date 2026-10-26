@@ -186,9 +186,7 @@ describe("major-aspects.events integration", () => {
         );
 
         expect(detectedEvent).toBeDefined();
-        expect(detectedEvent?.categories).toContain(
-          expectedMatch.expectedPhase,
-        );
+        expect(detectedEvent?.tags).toContain(expectedMatch.expectedPhase);
         expect(detectedEvent?.start).toStrictEqual(minute);
       }
 

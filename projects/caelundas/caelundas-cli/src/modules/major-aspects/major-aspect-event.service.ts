@@ -58,7 +58,7 @@ export class MajorAspectEventService {
     phase: AspectPhase;
     timestamp: Moment;
   }): DetectedCalendarEvent {
-    const { categories, description, summary } = this.buildAspectEventParts({
+    const { description, summary, tags } = this.buildAspectEventParts({
       body1: args.body1,
       body2: args.body2,
       majorAspect: args.majorAspect,
@@ -70,23 +70,23 @@ export class MajorAspectEventService {
     });
 
     return {
-      categories,
       description,
       end: args.timestamp,
       start: args.timestamp,
       summary,
+      tags,
     };
   }
 
   /**
-   * Builds event categories, description, and summary for one aspect event.
+   * Builds event tags, description, and summary for one aspect event.
    */
   private buildAspectEventParts(args: {
     body1: Body;
     body2: Body;
     majorAspect: MajorAspect;
     phase: AspectPhase;
-  }): { categories: string[]; description: string; summary: string } {
+  }): { description: string; summary: string; tags: string[] } {
     const { body1, body2, majorAspect, phase } = args;
 
     const body1Capitalized = bodyDisplayName(body1);
@@ -98,7 +98,9 @@ export class MajorAspectEventService {
     const description = `${body1Capitalized} ${verb} ${majorAspect} ${body2Capitalized}`;
 
     return {
-      categories: [
+      description,
+      summary: `${phaseEmoji} ${body1Symbol} ${majorAspectSymbol} ${body2Symbol} ${description}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -108,8 +110,6 @@ export class MajorAspectEventService {
         _.startCase(majorAspect),
         label,
       ],
-      description,
-      summary: `${phaseEmoji} ${body1Symbol} ${majorAspectSymbol} ${body2Symbol} ${description}`,
     };
   }
 

@@ -32,7 +32,7 @@ describe(IngressesComposerService, () => {
     const date = moment.utc("2026-02-17T12:00:00.000Z");
     const body = "north lunar node";
 
-    it("uses one body name and category for sign, decan and peak ingresses", () => {
+    it("uses one body name and tag for sign, decan and peak ingresses", () => {
       const sign = service.buildSignIngressEvent({ body, date, longitude: 5 });
       const decan = service.buildDecanIngressEvent({
         body,
@@ -42,20 +42,17 @@ describe(IngressesComposerService, () => {
       const peak = service.buildPeakIngressEvent({ body, date, longitude: 15 });
 
       for (const event of [sign, decan, peak]) {
-        expect(event.categories).toContain("North Lunar Node");
-        expect(event.categories).not.toContain("North lunar node");
+        expect(event.tags).toContain("North Lunar Node");
+        expect(event.tags).not.toContain("North lunar node");
         expect(event.description).toContain("North Lunar Node");
       }
     });
 
-    it("recovers the body from a start-case category", () => {
+    it("recovers the body from a start-case tag", () => {
       const sign = service.buildSignIngressEvent({ body, date, longitude: 5 });
 
       expect(
-        service.extractSignAndBodyFromCategories(
-          sign.categories,
-          "North Lunar Node",
-        ).body,
+        service.extractSignAndBodyFromTags(sign.tags, "North Lunar Node").body,
       ).toBe(body);
     });
   });

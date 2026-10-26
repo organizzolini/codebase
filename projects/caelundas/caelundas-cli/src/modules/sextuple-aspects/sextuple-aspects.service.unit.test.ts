@@ -25,7 +25,11 @@ function buildHexagramBoundary(
 ): DetectedCalendarEvent {
   const minute = moment.utc(isoMinute);
   return {
-    categories: [
+    description: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
+    end: minute,
+    start: minute,
+    summary: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
+    tags: [
       "Astronomy",
       "Astrology",
       "Compound Aspect",
@@ -39,10 +43,6 @@ function buildHexagramBoundary(
       "Sun",
       "Venus",
     ],
-    description: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
-    end: minute,
-    start: minute,
-    summary: `Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram ${phase.toLowerCase()}`,
   };
 }
 
@@ -389,11 +389,11 @@ describe(SextupleAspectsService, () => {
     it("returns empty array when no sextuple aspect events exist", () => {
       const events: DetectedCalendarEvent[] = [
         {
-          categories: ["Astronomy", "Astrology", "Simple Aspect"],
           description: "Sun conjunct Moon",
           end: moment.utc("2024-03-21T13:00:00.000Z"),
           start: moment.utc("2024-03-21T12:00:00.000Z"),
           summary: "Sun conjunct Moon",
+          tags: ["Astronomy", "Astrology", "Simple Aspect"],
         },
       ];
 
@@ -404,7 +404,12 @@ describe(SextupleAspectsService, () => {
 
     it("creates progressive event from forming to dissolving pair", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary:
+          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -418,15 +423,16 @@ describe(SextupleAspectsService, () => {
           "Sun",
           "Venus",
         ],
-        description: "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary:
-          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description:
+          "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary:
+          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -440,12 +446,6 @@ describe(SextupleAspectsService, () => {
           "Sun",
           "Venus",
         ],
-        description:
-          "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary:
-          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -463,13 +463,18 @@ describe(SextupleAspectsService, () => {
       expect(progressiveEvents[0]?.description).toBe(
         "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram",
       );
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
     });
 
     it("does not create progressive event when only forming exists", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary:
+          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -483,11 +488,6 @@ describe(SextupleAspectsService, () => {
           "Sun",
           "Venus",
         ],
-        description: "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary:
-          "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
       };
 
       const progressiveEvents = service.detectProgressive([formingEvent]);
@@ -497,7 +497,13 @@ describe(SextupleAspectsService, () => {
 
     it("does not create progressive event when only dissolving exists", () => {
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description:
+          "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary:
+          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -511,12 +517,6 @@ describe(SextupleAspectsService, () => {
           "Sun",
           "Venus",
         ],
-        description:
-          "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary:
-          "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([dissolvingEvent]);
@@ -527,51 +527,13 @@ describe(SextupleAspectsService, () => {
     it("handles multiple forming/dissolving pairs", () => {
       const events: DetectedCalendarEvent[] = [
         {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Sextuple Aspect",
-            "Hexagram",
-            "Forming",
-            "Jupiter",
-            "Mars",
-            "Moon",
-            "Saturn",
-            "Sun",
-            "Venus",
-          ],
           description:
             "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary:
             "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
-        },
-        {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Sextuple Aspect",
-            "Hexagram",
-            "Dissolving",
-            "Jupiter",
-            "Mars",
-            "Moon",
-            "Saturn",
-            "Sun",
-            "Venus",
-          ],
-          description:
-            "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
-          end: moment.utc("2024-03-21T14:00:00.000Z"),
-          start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
-        },
-        {
-          categories: [
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -585,15 +547,15 @@ describe(SextupleAspectsService, () => {
             "Sun",
             "Venus",
           ],
-          description:
-            "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
-          end: moment.utc("2024-03-22T10:00:00.000Z"),
-          start: moment.utc("2024-03-22T10:00:00.000Z"),
-          summary:
-            "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
         },
         {
-          categories: [
+          description:
+            "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          end: moment.utc("2024-03-21T14:00:00.000Z"),
+          start: moment.utc("2024-03-21T14:00:00.000Z"),
+          summary:
+            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -607,12 +569,50 @@ describe(SextupleAspectsService, () => {
             "Sun",
             "Venus",
           ],
+        },
+        {
+          description:
+            "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          end: moment.utc("2024-03-22T10:00:00.000Z"),
+          start: moment.utc("2024-03-22T10:00:00.000Z"),
+          summary:
+            "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Sextuple Aspect",
+            "Hexagram",
+            "Forming",
+            "Jupiter",
+            "Mars",
+            "Moon",
+            "Saturn",
+            "Sun",
+            "Venus",
+          ],
+        },
+        {
           description:
             "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
           end: moment.utc("2024-03-22T14:00:00.000Z"),
           start: moment.utc("2024-03-22T14:00:00.000Z"),
           summary:
             "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Sextuple Aspect",
+            "Hexagram",
+            "Dissolving",
+            "Jupiter",
+            "Mars",
+            "Moon",
+            "Saturn",
+            "Sun",
+            "Venus",
+          ],
         },
       ];
 
@@ -637,29 +637,35 @@ describe(SextupleAspectsService, () => {
       const events: DetectedCalendarEvent[] = [
         // First body combination
         {
-          categories: [
-            "Astronomy",
-            "Astrology",
-            "Compound Aspect",
-            "Sextuple Aspect",
-            "Hexagram",
-            "Forming",
-            "Jupiter",
-            "Mars",
-            "Moon",
-            "Saturn",
-            "Sun",
-            "Venus",
-          ],
           description:
             "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
           end: moment.utc("2024-03-21T10:00:00.000Z"),
           start: moment.utc("2024-03-21T10:00:00.000Z"),
           summary:
             "➡️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram forming",
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Compound Aspect",
+            "Sextuple Aspect",
+            "Hexagram",
+            "Forming",
+            "Jupiter",
+            "Mars",
+            "Moon",
+            "Saturn",
+            "Sun",
+            "Venus",
+          ],
         },
         {
-          categories: [
+          description:
+            "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          end: moment.utc("2024-03-21T14:00:00.000Z"),
+          start: moment.utc("2024-03-21T14:00:00.000Z"),
+          summary:
+            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -673,16 +679,16 @@ describe(SextupleAspectsService, () => {
             "Sun",
             "Venus",
           ],
-          description:
-            "Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
-          end: moment.utc("2024-03-21T14:00:00.000Z"),
-          start: moment.utc("2024-03-21T14:00:00.000Z"),
-          summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♀-♄ Jupiter, Mars, Moon, Saturn, Sun, Venus hexagram dissolving",
         },
         // Different body combination
         {
-          categories: [
+          description:
+            "Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram forming",
+          end: moment.utc("2024-03-21T11:00:00.000Z"),
+          start: moment.utc("2024-03-21T11:00:00.000Z"),
+          summary:
+            "➡️ ✡ ☉-☽-♂-♃-♆-♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram forming",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -696,15 +702,15 @@ describe(SextupleAspectsService, () => {
             "Sun",
             "Uranus",
           ],
-          description:
-            "Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram forming",
-          end: moment.utc("2024-03-21T11:00:00.000Z"),
-          start: moment.utc("2024-03-21T11:00:00.000Z"),
-          summary:
-            "➡️ ✡ ☉-☽-♂-♃-♆-♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram forming",
         },
         {
-          categories: [
+          description:
+            "Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram dissolving",
+          end: moment.utc("2024-03-21T15:00:00.000Z"),
+          start: moment.utc("2024-03-21T15:00:00.000Z"),
+          summary:
+            "⬅️ ✡ ☉-☽-♂-♃-♆-♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram dissolving",
+          tags: [
             "Astronomy",
             "Astrology",
             "Compound Aspect",
@@ -718,27 +724,25 @@ describe(SextupleAspectsService, () => {
             "Sun",
             "Uranus",
           ],
-          description:
-            "Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram dissolving",
-          end: moment.utc("2024-03-21T15:00:00.000Z"),
-          start: moment.utc("2024-03-21T15:00:00.000Z"),
-          summary:
-            "⬅️ ✡ ☉-☽-♂-♃-♆-♅ Jupiter, Mars, Moon, Neptune, Sun, Uranus hexagram dissolving",
         },
       ];
 
       const progressiveEvents = service.detectProgressive(events);
 
       expect(progressiveEvents).toHaveLength(2);
-      expect(progressiveEvents[0]?.categories).toContain("Saturn");
-      expect(progressiveEvents[0]?.categories).toContain("Venus");
-      expect(progressiveEvents[1]?.categories).toContain("Neptune");
-      expect(progressiveEvents[1]?.categories).toContain("Uranus");
+      expect(progressiveEvents[0]?.tags).toContain("Saturn");
+      expect(progressiveEvents[0]?.tags).toContain("Venus");
+      expect(progressiveEvents[1]?.tags).toContain("Neptune");
+      expect(progressiveEvents[1]?.tags).toContain("Uranus");
     });
 
     it("continues searching when sorted progressive groups contain undefined slots", () => {
       const formingEvent = {
-        categories: [
+        description: "forming",
+        end: moment.utc("2024-03-21T12:00:00.000Z"),
+        start: moment.utc("2024-03-21T12:00:00.000Z"),
+        summary: "forming",
+        tags: [
           "Sextuple Aspect",
           "Hexagram",
           "Forming",
@@ -749,13 +753,13 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-        description: "forming",
-        end: moment.utc("2024-03-21T12:00:00.000Z"),
-        start: moment.utc("2024-03-21T12:00:00.000Z"),
-        summary: "forming",
       } as DetectedCalendarEvent;
       const dissolvingEvent = {
-        categories: [
+        description: "dissolving",
+        end: moment.utc("2024-03-21T13:00:00.000Z"),
+        start: moment.utc("2024-03-21T13:00:00.000Z"),
+        summary: "dissolving",
+        tags: [
           "Sextuple Aspect",
           "Hexagram",
           "Dissolving",
@@ -766,10 +770,6 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-        description: "dissolving",
-        end: moment.utc("2024-03-21T13:00:00.000Z"),
-        start: moment.utc("2024-03-21T13:00:00.000Z"),
-        summary: "dissolving",
       } as DetectedCalendarEvent;
       const sortBySpy = vi
         .spyOn(_, "sortBy")
@@ -787,7 +787,11 @@ describe(SextupleAspectsService, () => {
 
     it("creates progressive sextuple events when a dissolving pair is found", () => {
       const formingEvent = {
-        categories: [
+        description: "forming",
+        end: moment.utc("2024-03-21T12:00:00.000Z"),
+        start: moment.utc("2024-03-21T12:00:00.000Z"),
+        summary: "forming",
+        tags: [
           "Sextuple Aspect",
           "Hexagram",
           "Forming",
@@ -798,13 +802,13 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-        description: "forming",
-        end: moment.utc("2024-03-21T12:00:00.000Z"),
-        start: moment.utc("2024-03-21T12:00:00.000Z"),
-        summary: "forming",
       } as DetectedCalendarEvent;
       const dissolvingEvent = {
-        categories: [
+        description: "dissolving",
+        end: moment.utc("2024-03-21T13:00:00.000Z"),
+        start: moment.utc("2024-03-21T13:00:00.000Z"),
+        summary: "dissolving",
+        tags: [
           "Sextuple Aspect",
           "Hexagram",
           "Dissolving",
@@ -815,17 +819,13 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-        description: "dissolving",
-        end: moment.utc("2024-03-21T13:00:00.000Z"),
-        start: moment.utc("2024-03-21T13:00:00.000Z"),
-        summary: "dissolving",
       } as DetectedCalendarEvent;
       const progressiveEvent = {
-        categories: ["Sextuple Aspect", "Hexagram"],
         description: "progressive",
         end: moment.utc("2024-03-21T13:00:00.000Z"),
         start: moment.utc("2024-03-21T12:00:00.000Z"),
         summary: "progressive",
+        tags: ["Sextuple Aspect", "Hexagram"],
       } as DetectedCalendarEvent;
       const groupedSpy = vi
         .spyOn(composerService, "groupSextupleEventsByKey")
@@ -842,7 +842,11 @@ describe(SextupleAspectsService, () => {
 
     it("ignores non-dissolving follow-up events in progressive detection", () => {
       const formingEvent = {
-        categories: [
+        description: "forming",
+        end: moment.utc("2024-03-21T12:00:00.000Z"),
+        start: moment.utc("2024-03-21T12:00:00.000Z"),
+        summary: "forming",
+        tags: [
           "Sextuple Aspect",
           "Hexagram",
           "Forming",
@@ -853,13 +857,13 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-        description: "forming",
-        end: moment.utc("2024-03-21T12:00:00.000Z"),
-        start: moment.utc("2024-03-21T12:00:00.000Z"),
-        summary: "forming",
       } as DetectedCalendarEvent;
       const nonDissolvingEvent = {
-        categories: [
+        description: "perfective",
+        end: moment.utc("2024-03-21T13:00:00.000Z"),
+        start: moment.utc("2024-03-21T13:00:00.000Z"),
+        summary: "perfective",
+        tags: [
           "Sextuple Aspect",
           "Hexagram",
           "Perfective",
@@ -870,10 +874,6 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-        description: "perfective",
-        end: moment.utc("2024-03-21T13:00:00.000Z"),
-        start: moment.utc("2024-03-21T13:00:00.000Z"),
-        summary: "perfective",
       } as DetectedCalendarEvent;
       const groupedSpy = vi
         .spyOn(composerService, "groupSextupleEventsByKey")
@@ -1049,11 +1049,11 @@ describe(SextupleAspectsService, () => {
         const buildHexagramSpy = vi
           .spyOn(composerService, "buildHexagramEvent")
           .mockReturnValue({
-            categories: ["Sextuple Aspect", "Hexagram", "Forming"],
             description: "hexagram forming",
             end: moment.utc("2024-03-21T12:00:00.000Z"),
             start: moment.utc("2024-03-21T12:00:00.000Z"),
             summary: "hexagram forming",
+            tags: ["Sextuple Aspect", "Hexagram", "Forming"],
           });
 
         expect(

@@ -20,11 +20,11 @@ function detected(
   end = start,
 ): DetectedCalendarEvent {
   return {
-    categories: [],
     description: "",
     end: moment.utc(end),
     start: moment.utc(start),
     summary,
+    tags: [],
   };
 }
 
