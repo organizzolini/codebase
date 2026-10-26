@@ -4,11 +4,13 @@ import { Injectable } from "@nestjs/common";
 
 import { CssService } from "../css/css.service";
 import { HclService } from "../hcl/hcl.service";
+import { JsonService } from "../json/json.service";
 import { PythonService } from "../python/python.service";
 import { ShellService } from "../shell/shell.service";
 import { SqlService } from "../sql/sql.service";
 import { TomlService } from "../toml/toml.service";
 import { TypescriptService } from "../typescript/typescript.service";
+import { YamlService } from "../yaml/yaml.service";
 
 import type { Language, Tokenizer } from "./languages.types";
 
@@ -33,6 +35,8 @@ export class LanguagesService {
     cssService: CssService,
     hclService: HclService,
     tomlService: TomlService,
+    jsonService: JsonService,
+    yamlService: YamlService,
   ) {
     const languages: Language[] = [
       typescriptService,
@@ -42,6 +46,8 @@ export class LanguagesService {
       cssService,
       hclService,
       tomlService,
+      jsonService,
+      yamlService,
     ];
 
     for (const language of languages) {

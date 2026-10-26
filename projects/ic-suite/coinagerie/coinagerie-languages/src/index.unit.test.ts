@@ -10,6 +10,8 @@ describe("coinagerie-languages index", () => {
         "CssService",
         "HclModule",
         "HclService",
+        "JsonModule",
+        "JsonService",
         "LanguagesModule",
         "LanguagesService",
         "PythonModule",
@@ -22,6 +24,8 @@ describe("coinagerie-languages index", () => {
         "TomlService",
         "TypescriptModule",
         "TypescriptService",
+        "YamlModule",
+        "YamlService",
       ].toSorted(),
     );
   });

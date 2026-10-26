@@ -17,7 +17,7 @@ import { projectDefaults } from "../../../../configuration/callidescope.config.j
 export default {
   ...projectDefaults,
   limits: {
-    maximumBreadth: 7,
+    maximumBreadth: 9,
     maximumDepth: 6,
   },
 };

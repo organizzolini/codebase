@@ -3,11 +3,13 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { CssModule } from "../css/css.module";
 import { HclModule } from "../hcl/hcl.module";
+import { JsonModule } from "../json/json.module";
 import { PythonModule } from "../python/python.module";
 import { ShellModule } from "../shell/shell.module";
 import { SqlModule } from "../sql/sql.module";
 import { TomlModule } from "../toml/toml.module";
 import { TypescriptModule } from "../typescript/typescript.module";
+import { YamlModule } from "../yaml/yaml.module";
 
 import { LanguagesService } from "./languages.service";
 
@@ -19,11 +21,13 @@ describe(LanguagesService, () => {
       imports: [
         CssModule,
         HclModule,
+        JsonModule,
         PythonModule,
         ShellModule,
         SqlModule,
         TomlModule,
         TypescriptModule,
+        YamlModule,
       ],
       providers: [LanguagesService],
     }).compile();
@@ -68,6 +72,10 @@ describe(LanguagesService, () => {
     ["main.tf", "# hidden\nregionName = 1", "regionName"],
     ["vars.tfvars", "# hidden\nregionName = 1", "regionName"],
     ["config.hcl", "# hidden\nregionName = 1", "regionName"],
+    ["package.json", '{"hidden": "x", "keyName": 1}', "keyName"],
+    ["tsconfig.jsonc", '// hidden\n{"keyName": 1}', "keyName"],
+    ["config.yaml", "# hidden\nkeyName: 1", "keyName"],
+    ["config.yml", "# hidden\nkeyName: 1", "keyName"],
     ["pyproject.toml", "# hidden\nprojectName = 1", "projectName"],
   ])("finds a lexical tokenizer for %s", (filePath, source, expected) => {
     expect(service.tokenizerFor(filePath)?.(source, filePath)).toContain(

@@ -38,6 +38,34 @@ const CONFIGURATION = {
   ].join("\n"),
 };
 
+/** One file per language, each with a word in a comment or a string to hide. */
+const POLYGLOT = {
+  "dialects/data.json": '{"jsonKey": "hiddenJson"}\n',
+  "dialects/data.yaml": "# hiddenYaml\nyamlKey: hiddenValue\n",
+  "dialects/infrastructure.tf": [
+    "# hiddenHcl",
+    'resource "hclType" "hclName" {',
+    '  hclAttribute = "hiddenValue"',
+    "}",
+    "",
+  ].join("\n"),
+  "dialects/query.sql": '-- hiddenSql\nSELECT sqlColumn FROM "sqlTable";\n',
+  "dialects/script.py": [
+    "# hiddenPython",
+    "def python_function():",
+    '    return {"pythonKey": "hiddenValue"}',
+    "",
+  ].join("\n"),
+  "dialects/script.sh": '# hiddenShell\nshellVariable="hiddenValue"\n',
+  "dialects/settings.toml": [
+    "# hiddenToml",
+    "[tomlTable]",
+    'tomlKey = "hiddenValue"',
+    "",
+  ].join("\n"),
+  "dialects/style.css": "/* hiddenCss */\n.cssSelector { color: red; }\n",
+};
+
 interface RunResult {
   exitCode: null | number;
   standardError: string;
@@ -113,6 +141,56 @@ describe("main end-to-end suite", () => {
       expect(result.standardOutput).toContain("- **lunar**:\n- **phase**:");
       expect(result.standardOutput).not.toContain("hidden");
       expect(existsSync(path.join(root, "README.md"))).toBe(false);
+    },
+    SPAWN_TIMEOUT,
+  );
+
+  it(
+    "merges the words of every language into one glossary and hides what each skips",
+    () => {
+      root = createFixtureTree({ ...POLYGLOT, ...CONFIGURATION });
+
+      const result = run(root, []);
+      const words = [...result.standardOutput.matchAll(/^- \*\*(.+)\*\*:/gmu)]
+        .map(([, word]) => word)
+        .toSorted();
+
+      expect(result.exitCode).toBe(0);
+      expect(words).toStrictEqual(
+        [
+          "attribute",
+          "color",
+          "column",
+          "css",
+          "data",
+          "def",
+          "dialects",
+          "function",
+          "from",
+          "hcl",
+          "infrastructure",
+          "json",
+          "key",
+          "name",
+          "python",
+          "query",
+          "red",
+          "resource",
+          "return",
+          "script",
+          "selector",
+          "select",
+          "settings",
+          "shell",
+          "sql",
+          "style",
+          "table",
+          "toml",
+          "type",
+          "variable",
+          "yaml",
+        ].toSorted(),
+      );
     },
     SPAWN_TIMEOUT,
   );

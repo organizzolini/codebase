@@ -116,10 +116,10 @@ describe(CollectCommand, () => {
   it("prints the glossary block when given no flag", async () => {
     const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
-    await runIn(SOURCE, {});
+    await runIn({ ...CONFIGURATION, ...SOURCE }, {});
 
     expect(write).toHaveBeenCalledWith(
-      expect.stringContaining("- **answer**:\n- **main**:"),
+      expect.stringContaining("- **answer**:\n- **main**:\n- **value**:"),
     );
     expect(process.exitCode).toBeUndefined();
   });

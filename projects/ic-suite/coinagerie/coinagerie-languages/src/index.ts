@@ -8,6 +8,10 @@ export { HclModule } from "./modules/hcl/hcl.module";
 
 export { HclService } from "./modules/hcl/hcl.service";
 
+export { JsonModule } from "./modules/json/json.module";
+
+export { JsonService } from "./modules/json/json.service";
+
 export { LanguagesModule } from "./modules/languages/languages.module";
 
 export { LanguagesService } from "./modules/languages/languages.service";
@@ -32,3 +36,7 @@ export { TomlService } from "./modules/toml/toml.service";
 export { TypescriptModule } from "./modules/typescript/typescript.module";
 
 export { TypescriptService } from "./modules/typescript/typescript.service";
+
+export { YamlModule } from "./modules/yaml/yaml.module";
+
+export { YamlService } from "./modules/yaml/yaml.service";
