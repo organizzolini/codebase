@@ -312,6 +312,7 @@ graph LR
   file_src_modules_database_database_service_unit_test_ts["src/modules/database/database.service.unit.test.ts"]
   file_src_modules_database_database_types_ts["src/modules/database/database.types.ts"]
   file_src_modules_database_migrations_1791164926316_migration_ts["src/modules/database/migrations/1791164926316-migration.ts"]
+  file_src_modules_database_migrations_1792000000000_migration_ts["src/modules/database/migrations/1792000000000-migration.ts"]
   file_src_modules_entities_dictionary_form_adjectival_form_entity_ts["src/modules/entities/dictionary/form/adjectival-form.entity.ts"]
   file_src_modules_entities_dictionary_form_adverb_form_entity_ts["src/modules/entities/dictionary/form/adverb-form.entity.ts"]
   file_src_modules_entities_dictionary_form_finite_verb_form_entity_ts["src/modules/entities/dictionary/form/finite-verb-form.entity.ts"]
@@ -353,6 +354,7 @@ graph LR
   file_vitest_config_ts["vitest.config.ts"]
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_database_constants_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1791164926316_migration_ts
+  file_src_modules_database_data_source_constants_ts --> file_src_modules_database_migrations_1792000000000_migration_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_adjectival_form_entity_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_adverb_form_entity_ts
   file_src_modules_database_data_source_constants_ts --> file_src_modules_entities_dictionary_form_finite_verb_form_entity_ts
@@ -481,23 +483,23 @@ graph LR
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4900-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-209.44_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-4938-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-211.59_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-10-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-52-3178c6?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-53-3178c6?style=flat-square)
 
 ### Measured Targets
 
-![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-25.90_kB_gzip-6b7280?style=flat-square)
+![Compiled JavaScript Size](https://img.shields.io/badge/Compiled_JavaScript_Size-26.38_kB_gzip-6b7280?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-52-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-53-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-8-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-151-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-101-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-102-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -505,16 +507,16 @@ graph LR
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
 ![Test Files](https://img.shields.io/badge/Test_Files-6-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-13-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-35-7c3aed?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-36-7c3aed?style=flat-square)
 ![Functions](https://img.shields.io/badge/Functions-195-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-18-15803d?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-20-15803d?style=flat-square)
 ![Sync Functions](https://img.shields.io/badge/Sync_Functions-187-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-26-059669?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-28-059669?style=flat-square)
 ![Constants](https://img.shields.io/badge/Constants-151-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-208-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-110-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-130-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-229-475569?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-210-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-111-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-131-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-232-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-3-ca8a04?style=flat-square)
 
 ### Python
@@ -587,14 +589,14 @@ graph LR
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-2-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-363-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-325-7c3aed?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-4-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-387-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-337-7c3aed?style=flat-square)
 ![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
 ![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-31-22c55e?style=flat-square)
 ![SQL Updates](https://img.shields.io/badge/SQL_Updates-17-0ea5e9?style=flat-square)
 ![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-18-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-58-0284c7?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-62-0284c7?style=flat-square)
 ![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-37-059669?style=flat-square)
 ![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)

@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:cae3f28596fb9dbf25c67ddd104acee409a2553a2481a48c55e13faa3f973d5c",
+  "claims": [
+    {
+      "id": "claim_82043b01245a49f885c685a638e9338a",
+      "statement": "A Generator is a named pairing of a template with the inputs needed to render it, declared once in the conformetry configuration and reachable from both hosts.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L8-L11",
+          "version": "repo-lines-v1:sha256:be11f5f111415a6ac8958df90894d90cabb83e87d092ea00407a61af8a67228e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDdiYzRjMWJjMjM3NWNkOWNkOGUyMGY4MjI2NWU1OWE0ODcwMTljZjI1ZjJmMGU5Njg3MTM4YmM3YWRhZWE3MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzU2ODE3OTk5Yzg0NzBkYjBjZTA0OTg5NGIyNzcyNTU0ZGUxOTk3MGY0NmYyMWNlMzg5MGYzZTBmMTkyODVlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzljOWI5NGYzYmQxNzc5MjJhN2FkNDQ5ZmZlZTNlNjJhOWZjOWU0MzY4MWRhMjBjNDIyZTY5NmNjZmMxYTM1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjE5NWQwOGFmNzJmMjc1OGZkNmE4ODRmNjRhYzg1MWY1NDcyMmJiY2Q2NjE2ODUyYjU3NjNiODBlYzQ5ODg1YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_337cbdfadc18422ca19e7f296e172616",
+      "statement": "A Template is a folder of ordinary files that a generator renders, and the standard every instance is measured against afterwards.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L13-L16",
+          "version": "repo-lines-v1:sha256:eac9071d5e1e14a4d3fa552ba013981663f9b993eef6fa9d97ab1e153c29a1e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjAxZWJiNTY2ZGUyNDljODZhMjA4MzE5NGUwNTYyMGRkYTg5MDY0OTBlOTk1YTVhNDM5OTYyNTA5NzZiNDJhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmZiMzZhMDk4Mjc5MmYyNjY2ZDkzOWI4YzJkZWYxOGFjMTE4NDIyODE0NzA5MjEzNTAwOWUxMzZjNTEwZjYxYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQ3OThhZDMzMzUwOGU1NWU1MjA1MTkwOGU3NmM0ODBjNDY4MzZjNzFkOTE5Zjk3NDcyOTVjNjg5MjdiNGZlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjI4M2I3Yjg4NTM0YzNlNGZmMzFmZDVlMzAxNjk4ZWFkMTdkYTI3MDllMjQyYTJhMGZmZWQyZTY3NzM3M2NkZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cfd32207719849b7abed331adc089a5a",
+      "statement": "An Instance is generated code on disk that a template explains — a whole module directory, a single file, or a set of files located together by one pattern.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L18-L21",
+          "version": "repo-lines-v1:sha256:00edcb68ebe807a1c7657b9a39b152c9fdf9a30b399d05ac55540ac15215aa57:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDMwNzMyYTViMjAyNWY0YWVjN2M5NmM0M2ZiY2NjMmFiNmRkY2E3YjI3ZjI1NzhhYjNiYzEzZjc1ZGE5MzVmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWE2YTQ0ZDY5NGE2Nzc5ODUzY2JiYjRhNjA0ODhmMmVlNmIyZmVlYmQwZTRhYzg4NzQwYjNkMTJlNDM0NTY1MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTljMzc2NDYwYWQ3YmVjMzk3YzAzOGI5YzEwYjhlMGNiYjZmYzExYWY4MzQ3YWE1YTY1NTRhOWM2NjJkNTYwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmQ2MTEzNjQwOTA1ZGM3NmFiNWE3YTY0ZTEzYzAzNDg4MjkyNmQ5M2MwYmJkMzk4ODIxN2Y5NmNhYmJlY2IwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4fded47ff6cc40f4a6cd1089bc7a8cd1",
+      "statement": "A Language is the comparison engine for one family of file types, selected by file extension, that measures an instance against its template.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L23-L26",
+          "version": "repo-lines-v1:sha256:2e7b79a12a4bd896bf08a59696dad466d2a10beb463755760ae314e1be945fc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzFkMWZlMmQ1OGJmYWRiOTIxMjEzYjBkNjA1ZDk4NTY0NTFjMzNhZGMwOTY0NWI0YTdiNTE2NDc0YjVlMjRjNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGQ0NjJlZDM3ZjY0N2U4MWQyNzMyZTRjOWM1YWIxNGVhNDJiZWYxYjZiYTJhMDQ2ZWM4ZmRlYWU1NzJiYjMwNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTkzODdlZjI0MzVjMWFlNzBlMTdlNzIyZjk4NmViYjg2NGU0YjEwMzhiNGMzMTIyYWY2OWQ1MzQ4MTIwZWQxNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTlhMDMxZDIyNDI0ZDQ4MTUxOTQ1OGU4MjNkYzRjZGViYzZmZjZiZjU2OWU0MjUzMGNmZTQxMWE0YzEzOWFiNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3d31ccb7b6a547d2848c17b21dd2a0d9",
+      "statement": "The Fallback is the line-by-line text comparison that every file extension no Language claims is routed to; an unclaimed extension is never skipped — the Fallback is the floor under a validation run, not a gap in it.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L28-L32",
+          "version": "repo-lines-v1:sha256:24d35941f6a1b1d27c4478bef060eafabda87076cb750865262bccbb6431fb26:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1YjRkZDA4Y2QzMGUwZTJlYzZiMWQ4N2U5YTc2ZTgwMGZkNTQ2ZmVlMTFmZDM4MTA3YjM5ZDNlNmExNGI4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEwZTcwNTQ2ODRmOTIwOWNiYWU5NDZhZTJmYjc4YmFjNzY1YTQyOWQwZWRhNjExOTE3YWJkNjNkY2YxNDE4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWY2ODNjNDlmMWZjNjA1YjU5NTYyZjI0Yzk3N2U3NGNkOWFiZTI0NDI0NTE0YWZmMGMxYzgwNWE5MzNlODNkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTgyNGEzZTVkNTI2ZmY1MzFjYzQ5YjgwM2ZlODJhN2VmOTZiNjk2ZDlhYTUxZTAxYjQxNzUzYjUyMzg2ZDljMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a7c0ffa082e445e9e9a3a3f20d46faf",
+      "statement": "A Difference is something a template declares that its instance lacks; content the instance adds is never a difference.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L34-L37",
+          "version": "repo-lines-v1:sha256:e70755bd472559a18401a88189d775a64df2138787c61cb0fd9a10ff75b35b43:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNhZWJmODIyMzRjZmQzMTMxY2NiMGIxMjBkNTljNjRkMzI4OWZjYmU0MWM0YWU3YmIxNjQwM2RhY2I1ZmI1NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTJhNDQ3NDUyYmQ5YTQ2YzAxOGRhYzRiNTVjYjFkMTVhMGI1ZTkyMTE5Njg2OGQ2YThiYzdiODYyODE2OTk5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDMwMzIxNTM3OTYzMGNjODBiZGFjMWE4NTAyNTgyYzI0Njk1NDRjM2IyZGJmNmYyMmRlMDY3NjVmOGYzM2RiZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjI3ZDYyZDVmNzYxY2Y3NzhiNjhiYTk2M2I1NDc3YmYyZTM1MzYyMDk1NWI5NjE4YzhmZDZjYjg0MzQ5NmMwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9c6f3da308c470f8504debb75e5935a",
+      "statement": "An Error is a difference severe enough to fail a validation run.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L39-L41",
+          "version": "repo-lines-v1:sha256:8a49014b758575e8240b21bca36702317ea7a63d1354f9de1d0e2ced02b5c672:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjI5ZjViZGQwYjVmN2NiYWY1ZDkzYmNlYzg5ODY4YWZmNDFhZTI4YTY0ODliY2U0M2VkNjMyZjU4N2M1MDRkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRmMDViZjliZTQxYmNjMDgwMzBmZTQwZjNlZGQzMTVhMGViNTllNGVlN2M5OWVmNmJmMTRiZWU3Y2Y3ZThlZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODY5ODQwYTgyZTI2YjhiNjU2OTllNTU3ODk0Y2Q5ZjZhOTVkMTYyYWQzNDk4N2VlZGQzYTIzNDkyYjljMjM4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWY4ODc1MDBiOTYzZDQyOTUxNDcyNzI1YjI4MjE4NGY5MzBlNjlhYmRhMTA3MGQ1ODIxZDJmNzNkY2FiN2M2ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_347f9cf7b48d43aab54f639637c2ddd0",
+      "statement": "Conformance is how completely an instance carries what its template declares.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L43-L45",
+          "version": "repo-lines-v1:sha256:525372da194cecdb52451a161031fe403d3beb972b449058a72ce8125eb8f9b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjRmZTBiODM4OWE1ZmE1YWUyMDJkYjk2Y2FhMTNjY2QyYjE3NjI5OWQ5MDM1NjIwMDg5NTc3YWZjZTQ0MmE4NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjY5NWUxNWI2NmM5MDUwMWRjZTEzOTM4MDRjNGU4ZWMwM2Q1YzMzYzE2MDUwYzhlZjM3NGZhMGI4MGY1MWYxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGY3ZWI5YjUzNTUwM2EyODEwOGMwNzBlYTk4NThiZjQzYzgzMGY4MDI1N2JhMTM0NGQ3ZjhjYWJhOGYzZTk4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2VjZGY1YjU0MWY4MGQyNTgxNTJlODNmMzk4YWE1Mzk1YmYzZDk4MDViNzYxOTYyYzQ3ZDU5ZGRmMjgyOGJmZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_87084d7272d74fc686c77f9d03a59a81",
+      "statement": "Languages are selected by file extension via LanguagesService.resolveValidators, which filters injected validators to those claiming extensions present in the run, then widens the Text validator descriptor to claim all unclaimed extensions.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/languages/languages.service.ts#L86-L117",
+          "version": "repo-lines-v1:sha256:c96ed091be6f2136372991e217bd6706665130e22ca89232537f7b911327a797:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_98ba8bbf209042439d6bae5ce3859d15",
+      "statement": "The conformance score is calculated as (totalWeight - failedWeight) / totalWeight, where totalWeight includes conforming documents so an instance is scored against all template requirements, not just the parts it got wrong.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts#L33-L50",
+          "version": "repo-lines-v1:sha256:36c21f6c301d2788ad28978c3d25db344461ce76e000aad1a41da3597e151037:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNmYwMzE5NTk0YmEzZWFmNTMxMjA0ZWJiMGE0NGY0YTc0Y2ZmODY4ZmE1N2ExZWE2ZTJiMTczNzE5MzRlZjMifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts#L94-L130",
+          "version": "repo-lines-v1:sha256:c5a19a438dc371fd29a7808588d894baadbc2cb541c751c28a0f3b1a300e3e48:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ebe4c7f456f49258942c979db9fddd0",
+      "statement": "An empty template (totalWeight <= 0) receives a perfect score of 1 because it asks for nothing and nothing is exactly what the instance supplied.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.constants.ts#L12-L20",
+          "version": "repo-lines-v1:sha256:0feac0c6e71aa71b24d9b3a0b30936a97b24301b5b999534430a455570badfb9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDYzOTAxN2Q0ZTczY2YzODdlNTE4MjE0MWI3MDg1ZDFiYzUyYWIwY2FkYTJlNzY5YmJkN2IzYjg2ZTJmZTg0MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODUzYmM0MjY4OTg1YTg0YTM1ZDQ5ZTJiNDM2N2ZmNjg5MDFjNjc4ZDBkMjllOWRjOTdjNjc3OTFmNGEwZjFjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDJmZDk2NDBlZTU3OTA5MTVkYjBlMWY5MjlmYWQwNzgyNjlhYWY5MDBlN2U0MTcwZGE5ZjhjMjQ0Njg4MmUwYSJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-languages/src/modules/scoring/scoring.service.ts#L42-L45",
+          "version": "repo-lines-v1:sha256:86057154d00669ea51719f6ca0bec934757c4654486d1551f1b580d743ca382d:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc0MTk0MDc0ZTdiMTViMzE1NWI5MDFiOGYxODk4MTU1YWI5ZTliOWQ5YTQyY2VmN2MwYzIyODdkZjVjNjk2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGYxNDk5ZDk5ZDllNTA3ZWU1ODFkYzhmNDAyYjRiN2E0NGY3NjNlODVlZWUyNDlhYTc1ODk0NWFmNDRmYzMzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODRhZjQ4ODA3OTE4ODk5NmMxMjdiZTZmODg3YmE5ZmM5Yjc3MjJiOWVhMTY5MmE5YWEwODE2NjUzNDVmMTAzNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_455f839bc3f342f1aacd0c33558724d6",
+      "statement": "Difference weight restores proportion: a missing class is reported once but weighted for its whole subtree, while a missing import is weighted only for itself.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/src/modules/conformetry-core/conformetry-core.types.ts#L42-L53",
+          "version": "repo-lines-v1:sha256:ea7ff00f4c4f1b7e32cf5c3a1234e38f04ab6c5abd6b5e496ec7731c711e55b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjN2M2Yjk4ZTIwZGIyM2Y5MWRlYzc4ZDBmZTAwYmRhM2RkMTc0YTlhZmYwZDRiMGNmYTNiZDI5ZGViMGQyMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZThkOWM0NDYzZWVhNjBlZTUxNDg1ZGNhMGMyMmY3NGIxNjhmN2FhYjRhNTVlYTBkMGYwYzNjMTkwMGNhYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_758ebe0c960146ce97f7d7a619799ca3",
+      "statement": "The threshold resolution chain is instances[].threshold ?? generator.threshold ?? runThreshold ?? 1, with the narrowest (strictest) threshold winning when multiple groups match the same instance.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-configuration/README.md#L176-L204",
+          "version": "repo-lines-v1:sha256:00c49c880855eda17847b5c337b467ca6eaaf72eeff5528d93060f71a4f17ec0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0OTNiNmQ1OTI4NGZjNmE0YzkyMTJjYzVjNjBlOWY5Y2Y0MDAxZWY4MWI4YmQyZTQyYzA1YTZjYjc0NzViNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNjZjMDNlN2RiOTIzOGI1ZDY4YjhkODE2NGFiM2JlYmE4ZTU1MmFhMTY2MTYzNjFhZTg0MjE5ZDFhZjY0YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNGNmN2RkODEzZmE3ZTQxZWY4NDFkNmE4ZDNiMmY3NTIyYjIyMjhhMTQyYWNiNzU1Mjc3MzE2Mjk3OWExNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YzJiOGJjOTIyNDk2ZWM4NjgyNTA0ZGUwMTMwZmQ3ZTZjZWRlZTZhN2JmYzEzYmRmMjc0ZGU1NWRmNjVkMDkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

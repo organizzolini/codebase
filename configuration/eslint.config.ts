@@ -81,6 +81,12 @@ export default [
       "**/build",
       "**/tmp",
       "**/*.min.js",
+      // OpenWiki's output — the generated pages and the `.claims/` and
+      // `.page-manifest.json` bookkeeping beside them. The generator rewrites
+      // all of it on every refresh, so nothing here is hand-edited. Matched
+      // from either root: `documentation/` is linted by the root run and by
+      // its own project, whose paths start at `openwiki/`.
+      "**/openwiki/**",
       // Python tool caches — generated, gitignored, and never source. .pytest_cache
       // writes a README.md, which the root eslint target's `**/*.md` glob reaches
       "**/.pytest_cache/**",
@@ -1527,22 +1533,6 @@ export default [
     files: ["**/codependix-*graph.json"],
     rules: {
       "jsonc/sort-array-values": "off",
-    },
-  },
-
-  // 📚 OpenWiki bookkeeping
-  // `.last-update.json` is written by the OpenWiki CLI with `updatedAt` ahead
-  // of `model`. The generator rewrites it on every refresh, so sorting its keys
-  // here would be undone by the next scheduled run — and `documentation/` is
-  // linted as a whole, by the root run and by its own project, whose paths
-  // start at `openwiki/` rather than `documentation/openwiki/`.
-  {
-    files: [
-      "documentation/openwiki/.last-update.json",
-      "openwiki/.last-update.json",
-    ],
-    rules: {
-      "jsonc/sort-keys": "off",
     },
   },
 

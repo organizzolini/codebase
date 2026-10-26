@@ -29,13 +29,13 @@ export class DailyCyclesBuilderService {
 
   // 🔐 Private Fields
 
-  private static readonly lunarCategories = [
+  private static readonly lunarTags = [
     "Astronomy",
     "Astrology",
     "Daily Lunar Cycle",
     "Lunar",
   ];
-  private static readonly solarCategories = [
+  private static readonly solarTags = [
     "Astronomy",
     "Astrology",
     "Daily Solar Cycle",
@@ -90,19 +90,19 @@ export class DailyCyclesBuilderService {
    * @example
    * ```typescript
    * const event = getLunarNadirEvent(new Date('2025-01-21T06:30:00Z'));
-   * // event.summary === '🌙 ⏬ Lunar Nadir'
+   * // event.summary === '🌙⏬ Lunar Nadir'
    * ```
    */
   buildLunarNadirEvent(date: Moment): DetectedCalendarEvent {
     const description = "Lunar Nadir";
-    const summary = `🌙 ⏬ ${description}`;
+    const summary = `🌙⏬ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -121,19 +121,19 @@ export class DailyCyclesBuilderService {
    * @example
    * ```typescript
    * const event = getLunarZenithEvent(new Date('2025-01-21T18:45:00Z'));
-   * // event.summary === '🌙 ⏫ Lunar Zenith'
+   * // event.summary === '🌙⏫ Lunar Zenith'
    * ```
    */
   buildLunarZenithEvent(date: Moment): DetectedCalendarEvent {
     const description = "Lunar Zenith";
-    const summary = `🌙 ⏫ ${description}`;
+    const summary = `🌙⏫ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -152,19 +152,19 @@ export class DailyCyclesBuilderService {
    * @example
    * ```typescript
    * const event = getMoonriseEvent(new Date('2025-01-21T12:30:00Z'));
-   * // event.summary === '🌙 🔼 Moonrise'
+   * // event.summary === '🌙🔼 Moonrise'
    * ```
    */
   buildMoonriseEvent(date: Moment): DetectedCalendarEvent {
     const description = "Moonrise";
-    const summary = `🌙 🔼 ${description}`;
+    const summary = `🌙🔼 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -183,19 +183,19 @@ export class DailyCyclesBuilderService {
    * @example
    * ```typescript
    * const event = getMoonsetEvent(new Date('2025-01-22T01:15:00Z'));
-   * // event.summary === '🌙 🔽 Moonset'
+   * // event.summary === '🌙🔽 Moonset'
    * ```
    */
   buildMoonsetEvent(date: Moment): DetectedCalendarEvent {
     const description = "Moonset";
-    const summary = `🌙 🔽 ${description}`;
+    const summary = `🌙🔽 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.lunarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.lunarTags,
       timezone: "America/New_York",
     });
   }
@@ -208,10 +208,10 @@ export class DailyCyclesBuilderService {
    * when Sun crosses the anti-meridian (north-south line through nadir, opposite of zenith).
    *
    * @param date - Exact time of solar nadir.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
-   * - Summary: "☀️ ⬇️ Solar Nadir"
+   * - Summary: "☀️⬇️ Solar Nadir"
    * - Emoji: ☀️ (sun), ⬇️ (double downward arrow)
    * - Also known as "solar midnight" or "anti-transit"
    * - Logs event to console with America/New_York timezone
@@ -221,24 +221,24 @@ export class DailyCyclesBuilderService {
    * - Opposite point to solar zenith (180° away on celestial sphere)
    *
    * @see {@link isMinimum} for nadir detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
    * const event = getSolarNadirEvent(new Date('2026-01-22T05:30:00Z'));
-   * // Returns: { summary: "☀️ ⬇️ Solar Nadir", start: ..., end: ..., ... }
+   * // Returns: { summary: "☀️⬇️ Solar Nadir", start: ..., end: ..., ... }
    * ```
    */
   buildSolarNadirEvent(date: Moment): DetectedCalendarEvent {
     const description = "Solar Nadir";
-    const summary = `☀️ ⏬ ${description}`;
+    const summary = `☀️⏬ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
@@ -251,10 +251,10 @@ export class DailyCyclesBuilderService {
    * Sun crosses the meridian (north-south line through zenith and nadir).
    *
    * @param date - Exact time of solar zenith.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
-   * - Summary: "☀️ ⬆️ Solar Zenith"
+   * - Summary: "☀️⬆️ Solar Zenith"
    * - Emoji: ☀️ (sun), ⬆️ (double upward arrow)
    * - Also known as "solar noon" or "meridian transit"
    * - Logs event to console with America/New_York timezone
@@ -263,24 +263,24 @@ export class DailyCyclesBuilderService {
    * - Solar zenith time differs from clock noon due to equation of time and longitude
    *
    * @see {@link isMaximum} for zenith detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
    * const event = getSolarZenithEvent(new Date('2026-01-21T17:30:00Z'));
-   * // Returns: { summary: "☀️ ⬆️ Solar Zenith", start: ..., end: ..., ... }
+   * // Returns: { summary: "☀️⬆️ Solar Zenith", start: ..., end: ..., ... }
    * ```
    */
   buildSolarZenithEvent(date: Moment): DetectedCalendarEvent {
     const description = "Solar Zenith";
-    const summary = `☀️ ⏫ ${description}`;
+    const summary = `☀️⏫ ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
@@ -292,10 +292,10 @@ export class DailyCyclesBuilderService {
    * horizon moving upward (geometric sunrise, not accounting for atmospheric refraction).
    *
    * @param date - Exact time of sunrise.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
-   * - Summary: "☀️ 🔼 Sunrise"
+   * - Summary: "☀️🔼 Sunrise"
    * - Emoji: ☀️ (sun), 🔼 (upward arrow)
    * - Logs event to console with America/New_York timezone
    * - Uses geometric horizon (0° elevation), not visual horizon
@@ -303,24 +303,24 @@ export class DailyCyclesBuilderService {
    * - Does not account for observer altitude above sea level
    *
    * @see {@link isRise} for sunrise detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
    * const event = getSunriseEvent(new Date('2026-01-21T12:15:00Z'));
-   * // Returns: { summary: "☀️ 🔼 Sunrise", start: ..., end: ..., ... }
+   * // Returns: { summary: "☀️🔼 Sunrise", start: ..., end: ..., ... }
    * ```
    */
   buildSunriseEvent(date: Moment): DetectedCalendarEvent {
     const description = "Sunrise";
-    const summary = `☀️ 🔼 ${description}`;
+    const summary = `☀️🔼 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }
@@ -332,10 +332,10 @@ export class DailyCyclesBuilderService {
    * horizon moving downward (geometric sunset, not accounting for atmospheric refraction).
    *
    * @param date - Exact time of sunset.
-   * @returns Calendar event with summary, description, and standard solar cycle categories.
+   * @returns Calendar event with summary, description, and standard solar cycle tags.
    *
    * @remarks
-   * - Summary: "☀️ 🔽 Sunset"
+   * - Summary: "☀️🔽 Sunset"
    * - Emoji: ☀️ (sun), 🔽 (downward arrow)
    * - Logs event to console with America/New_York timezone
    * - Uses geometric horizon (0° elevation), not visual horizon
@@ -344,24 +344,24 @@ export class DailyCyclesBuilderService {
    * - Marks beginning of nautical/civil twilight period
    *
    * @see {@link isSet} for sunset detection algorithm
-   * @see {@link categories} for event categorization
+   * @see {@link tags} for event tagging
    *
    * @example
    * ```typescript
    * const event = getSunsetEvent(new Date('2026-01-22T00:45:00Z'));
-   * // Returns: { summary: "☀️ 🔽 Sunset", start: ..., end: ..., ... }
+   * // Returns: { summary: "☀️🔽 Sunset", start: ..., end: ..., ... }
    * ```
    */
   buildSunsetEvent(date: Moment): DetectedCalendarEvent {
     const description = "Sunset";
-    const summary = `☀️ 🔽 ${description}`;
+    const summary = `☀️🔽 ${description}`;
 
     return this.calendarService.buildInstantEvent({
-      categories: DailyCyclesBuilderService.solarCategories,
       date,
       description,
       logger: this.logger,
       summary,
+      tags: DailyCyclesBuilderService.solarTags,
       timezone: "America/New_York",
     });
   }

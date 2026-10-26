@@ -14,9 +14,11 @@ lcel
 metasearch
 milvus
 multimodality
+nemotron
 nomic
 ollama
 opencode
+openrouter
 openwebui
 qdrant
 qwen

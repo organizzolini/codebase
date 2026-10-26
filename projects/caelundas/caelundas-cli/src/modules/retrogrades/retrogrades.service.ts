@@ -44,7 +44,7 @@ export class RetrogradesService {
 
   // 🔐 Private Fields
 
-  private static readonly categories = ["Astronomy", "Astrology", "Direction"];
+  private static readonly tags = ["Astronomy", "Astrology", "Direction"];
 
   // 🔑 Public Fields
 
@@ -135,16 +135,14 @@ export class RetrogradesService {
 
     const planetCapitalized = bodyDisplayName(planet);
 
-    // Extract planet symbol from beginning event summary (first non-whitespace character sequence)
-    const symbolMatch = /^(\S+)/.exec(beginningEvent.summary);
-    const symbol = symbolMatch ? symbolMatch[1] : "";
+    const symbol = symbolByBody[planet];
 
     return {
-      categories: ["Astronomy", "Astrology", "Retrogrades"],
       description: `${planetCapitalized} Retrograde`,
       end,
       start,
-      summary: `${symbol} ↩️ ${planetCapitalized} Retrograde`,
+      summary: `${symbol}↩️ ${planetCapitalized} Retrograde`,
+      tags: ["Astronomy", "Astrology", "Retrogrades", planetCapitalized],
     };
   }
 
@@ -214,14 +212,14 @@ export class RetrogradesService {
    * Creates a formatted calendar event for a retrograde or direct station.
    *
    * Generates a calendar event with Unicode symbols and descriptive text for a
-   * planetary stationary point. Events are categorized by direction to distinguish
+   * planetary stationary point. Events are tagged by direction to distinguish
    * retrograde stations from direct stations.
    *
    * @remarks
    * - Summary format: `[bodySymbol] [directionSymbol] [Body] Stationary [Direction]`
-   * - Example retrograde: "☿ ↩️ Mercury Stationary Retrograde"
-   * - Example direct: "☿ ➡️ Mercury Stationary Direct"
-   * - Adds "Retrograde" or "Direct" category based on direction
+   * - Example retrograde: "☿↩️ Mercury Stationary Retrograde"
+   * - Example direct: "☿➡️ Mercury Stationary Direct"
+   * - Adds "Retrograde" or "Direct" tag based on direction
    * - Uses Unicode astronomical symbols: ☿ (Mercury), ♀ (Venus), ♂ (Mars), ♃ (Jupiter), etc.
    * - Direction symbols: ↩️ (retrograde), ➡️ (direct)
    * - Logs event to console with ISO timestamp
@@ -237,7 +235,7 @@ export class RetrogradesService {
    *   timestamp: new Date('2026-03-15T08:30:00Z'),
    *   direction: "retrograde"
    * });
-   * // Returns: { summary: "☿ ↩️ Mercury Stationary Retrograde", start: ..., ... }
+   * // Returns: { summary: "☿↩️ Mercury Stationary Retrograde", start: ..., ... }
    * ```
    */
   buildRetrogradeEvent(args: {
@@ -254,7 +252,7 @@ export class RetrogradesService {
     const orbitalDirectionSymbol = symbolByOrbitalDirection[direction];
 
     const description = `${bodyCapitalized} Stationary ${orbitalDirectionCapitalized}`;
-    const summary = `${retrogradeBodySymbol} ${orbitalDirectionSymbol} ${description}`;
+    const summary = `${retrogradeBodySymbol}${orbitalDirectionSymbol} ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),
@@ -262,14 +260,15 @@ export class RetrogradesService {
     });
 
     const retrogradeEvent: DetectedCalendarEvent = {
-      categories: [
-        ...RetrogradesService.categories,
-        ...(direction === "retrograde" ? ["Retrograde"] : ["Direct"]),
-      ],
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags: [
+        ...RetrogradesService.tags,
+        bodyCapitalized,
+        ...(direction === "retrograde" ? ["Retrograde"] : ["Direct"]),
+      ],
     };
 
     return retrogradeEvent;
@@ -302,7 +301,7 @@ export class RetrogradesService {
    *   coordinateEphemerisByBody: ephemerides,
    *   currentMinute: moment('2026-03-15T08:30:00Z')
    * });
-   * // Returns: [{ summary: "☿ ↩️ Mercury Stationary Retrograde", start: ..., ... }]
+   * // Returns: [{ summary: "☿↩️ Mercury Stationary Retrograde", start: ..., ... }]
    * ```
    */
   detect(args: {
@@ -329,11 +328,11 @@ export class RetrogradesService {
    *
    *
    * @remarks
-   * - Filters to events with "Direction" category
+   * - Filters to events with "Direction" tag
    * - Processes each planet separately (retrograde periods don't overlap between planets)
    * - Pairs retrograde stations (beginnings) with direct stations (endings)
    * - Skips unpaired events (e.g., retrograde still active at end of range)
-   * - Progressive events use "Retrogrades" category (plural) vs "Retrograde" for stations
+   * - Progressive events use "Retrogrades" tag (plural) vs "Retrograde" for stations
    * - Summary format: `[bodySymbol] ↩️ [Body] Retrograde`
    *
    * @see {@link pairProgressiveEvents} for pairing algorithm
@@ -350,8 +349,8 @@ export class RetrogradesService {
    * ];
    * const durations = getRetrogradeProgressiveEvents(allEvents);
    * // Returns: [
-   * //   { summary: "☿ ↩️ Mercury Retrograde", start: Mar 15, end: Apr 8, ... },
-   * //   { summary: "♀ ↩️ Venus Retrograde", start: Jul 22, end: Sep 3, ... }
+   * //   { summary: "☿↩️ Mercury Retrograde", start: Mar 15, end: Apr 8, ... },
+   * //   { summary: "♀↩️ Venus Retrograde", start: Jul 22, end: Sep 3, ... }
    * // ]
    * ```
    */
@@ -359,7 +358,7 @@ export class RetrogradesService {
     const progressiveEvents: DetectedCalendarEvent[] = [];
 
     const retrogradeEvents = events.filter((event) =>
-      event.categories.includes("Direction"),
+      event.tags.includes("Direction"),
     );
 
     // Process each planet separately

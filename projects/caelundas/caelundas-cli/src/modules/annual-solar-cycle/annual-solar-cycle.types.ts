@@ -8,10 +8,10 @@ import type { Moment } from "moment-timezone";
 
 /** Arguments used to build a single annual solar cycle event. */
 export interface BuildSolarCycleEventArguments {
-  categories: readonly string[];
   date: Moment;
   description: string;
   summary: string;
+  tags: readonly string[];
 }
 
 /** Arguments required to detect all annual solar cycle events at a minute. */

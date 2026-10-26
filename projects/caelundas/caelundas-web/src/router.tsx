@@ -1,5 +1,6 @@
 import { createRouter, type Router } from "@tanstack/react-router";
 
+import { createBrowserEventsDatabase } from "./lib/events-database/events-database.browser";
 import { routeTree } from "./routeTree.gen";
 
 /**
@@ -8,6 +9,9 @@ import { routeTree } from "./routeTree.gen";
  */
 export function getRouter(): Router<typeof routeTree> {
   return createRouter({
+    // The browser database starts its worker on the first query, so creating
+    // it while the static shell is rendered ahead of time loads nothing.
+    context: { eventsDatabase: createBrowserEventsDatabase() },
     defaultPreload: "intent",
     routeTree,
     scrollRestoration: true,

@@ -1,0 +1,142 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+
+import { CalendarToolbar } from "./calendar-toolbar";
+
+const NAVIGATION = {
+  next: () => {},
+  prev: () => {},
+  title: "March 2026",
+  today: () => {},
+};
+
+describe(CalendarToolbar, () => {
+  it("applies its class name", () => {
+    render(
+      <CalendarToolbar
+        className="calendar-toolbar"
+        navigation={NAVIGATION}
+      />,
+    );
+
+    expect(screen.getByTestId("calendar-toolbar").className).toBe(
+      "calendar-toolbar",
+    );
+  });
+
+  it("titles the period it is handed", () => {
+    render(<CalendarToolbar navigation={NAVIGATION} />);
+
+    expect(screen.getByRole("heading", { name: "March 2026" })).toBeDefined();
+  });
+
+  it("gives a phone's controls a row of their own under the title", () => {
+    render(
+      <CalendarToolbar
+        filters={<button type="button">Filters</button>}
+        navigation={NAVIGATION}
+        compact
+      />,
+    );
+
+    const controls = screen.getByTestId("calendar-toolbar-controls");
+
+    expect(
+      controls.contains(screen.getByRole("button", { name: "Filters" })),
+    ).toBe(true);
+    expect(
+      controls.contains(screen.getByRole("heading", { name: "March 2026" })),
+    ).toBe(false);
+  });
+
+  it("keeps one row when wide, and when a phone has no controls", () => {
+    const { rerender } = render(
+      <CalendarToolbar
+        filters={<button type="button">Filters</button>}
+        navigation={NAVIGATION}
+      />,
+    );
+
+    expect(screen.queryByTestId("calendar-toolbar-controls")).toBeNull();
+
+    rerender(
+      <CalendarToolbar
+        navigation={NAVIGATION}
+        compact
+      />,
+    );
+
+    expect(screen.queryByTestId("calendar-toolbar-controls")).toBeNull();
+  });
+
+  it("puts the title in the group with the arrows and Today", () => {
+    render(<CalendarToolbar navigation={NAVIGATION} />);
+
+    const group = screen.getByRole("group", { name: "Navigate" });
+
+    for (const name of ["Previous", "Next", "Today"]) {
+      expect(group.contains(screen.getByRole("button", { name }))).toBe(true);
+    }
+
+    expect(
+      group.contains(screen.getByRole("heading", { name: "March 2026" })),
+    ).toBe(true);
+  });
+
+  it("switches Today off when the days shown include today", () => {
+    const { rerender } = render(
+      <CalendarToolbar navigation={{ ...NAVIGATION, isToday: true }} />,
+    );
+
+    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
+      "disabled",
+      true,
+    );
+
+    rerender(
+      <CalendarToolbar navigation={{ ...NAVIGATION, isToday: false }} />,
+    );
+
+    expect(screen.getByRole("button", { name: "Today" })).toHaveProperty(
+      "disabled",
+      false,
+    );
+  });
+
+  it("draws the filters from the left, then the views and the date at the right", () => {
+    render(
+      <CalendarToolbar
+        filters={<button type="button">Filter</button>}
+        navigation={NAVIGATION}
+        onViewChange={() => {}}
+        view="month"
+      />,
+    );
+
+    const filter = screen.getByRole("button", { name: "Filter" });
+    const views = screen.getByRole("group", { name: "View" });
+    const navigate = screen.getByRole("group", { name: "Navigate" });
+
+    expect(
+      filter.compareDocumentPosition(views) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
+    expect(
+      views.compareDocumentPosition(navigate) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeGreaterThan(0);
+    expect(views.contains(filter)).toBe(false);
+  });
+
+  it("holds the date's width however long the period's name runs", () => {
+    const { rerender } = render(<CalendarToolbar navigation={NAVIGATION} />);
+    const first = screen.getByRole("heading").className;
+
+    rerender(
+      <CalendarToolbar
+        navigation={{ ...NAVIGATION, title: "Thursday, October 22, 2026" }}
+      />,
+    );
+
+    expect(screen.getByRole("heading").className).toBe(first);
+  });
+});

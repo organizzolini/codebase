@@ -4,6 +4,7 @@ import _ from "lodash";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { majorAspects } from "../caelundas/caelundas.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 import {
@@ -36,13 +37,10 @@ export class MajorAspectEventService {
   // 🔐 Private Fields
 
   private readonly phaseMetadata = {
-    dissolving: { emoji: "⬅️", label: "Dissolving", verb: "dissolving" },
-    forming: { emoji: "➡️", label: "Forming", verb: "forming" },
-    perfective: { emoji: "🎯", label: "Perfective", verb: "perfective" },
-  } as const satisfies Record<
-    AspectPhase,
-    { emoji: string; label: string; verb: string }
-  >;
+    dissolving: { label: "Dissolving", verb: "dissolving" },
+    forming: { label: "Forming", verb: "forming" },
+    perfective: { label: "Perfective", verb: "perfective" },
+  } as const satisfies Record<AspectPhase, { label: string; verb: string }>;
 
   // 🔑 Public Fields
 
@@ -58,7 +56,7 @@ export class MajorAspectEventService {
     phase: AspectPhase;
     timestamp: Moment;
   }): DetectedCalendarEvent {
-    const { categories, description, summary } = this.buildAspectEventParts({
+    const { description, summary, tags } = this.buildAspectEventParts({
       body1: args.body1,
       body2: args.body2,
       majorAspect: args.majorAspect,
@@ -70,23 +68,23 @@ export class MajorAspectEventService {
     });
 
     return {
-      categories,
       description,
       end: args.timestamp,
       start: args.timestamp,
       summary,
+      tags,
     };
   }
 
   /**
-   * Builds event categories, description, and summary for one aspect event.
+   * Builds event tags, description, and summary for one aspect event.
    */
   private buildAspectEventParts(args: {
     body1: Body;
     body2: Body;
     majorAspect: MajorAspect;
     phase: AspectPhase;
-  }): { categories: string[]; description: string; summary: string } {
+  }): { description: string; summary: string; tags: string[] } {
     const { body1, body2, majorAspect, phase } = args;
 
     const body1Capitalized = bodyDisplayName(body1);
@@ -94,11 +92,13 @@ export class MajorAspectEventService {
     const body1Symbol = symbolByBody[body1];
     const body2Symbol = symbolByBody[body2];
     const majorAspectSymbol = symbolByMajorAspect[majorAspect];
-    const { emoji: phaseEmoji, label, verb } = this.phaseMetadata[phase];
+    const { label, verb } = this.phaseMetadata[phase];
     const description = `${body1Capitalized} ${verb} ${majorAspect} ${body2Capitalized}`;
 
     return {
-      categories: [
+      description,
+      summary: `${body1Symbol}${majorAspectSymbol}${body2Symbol} ${description.replace(PHASE_WORD_PATTERN, "")}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Simple Aspect",
@@ -108,8 +108,6 @@ export class MajorAspectEventService {
         _.startCase(majorAspect),
         label,
       ],
-      description,
-      summary: `${phaseEmoji} ${body1Symbol} ${majorAspectSymbol} ${body2Symbol} ${description}`,
     };
   }
 

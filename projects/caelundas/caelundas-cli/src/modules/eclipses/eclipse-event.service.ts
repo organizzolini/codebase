@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -32,8 +33,6 @@ export class EclipseEventService {
 
   // 🔐 Private Fields
 
-  private readonly categories = ["Astronomy", "Astrology", "Eclipse"];
-
   private readonly phaseLabelByPhase: Record<
     EclipsePhase,
     { symbol: string; word: string }
@@ -45,13 +44,15 @@ export class EclipseEventService {
 
   private readonly symbolByBody = { Lunar: "🌙🐉", Solar: "☀️🐉" };
 
+  private readonly tags = ["Astronomy", "Astrology", "Eclipse"];
+
   // 🔑 Public Fields
 
   // 🔏 Private Methods
 
   /**
    * Builds one eclipse contact event, titled with its type, body and phase,
-   * for example "🌐 🌙🐉▶️ Total Lunar Eclipse begins".
+   * for example "🌐🌙🐉▶️ Total Lunar Eclipse begins".
    */
   private buildEclipseEvent(args: {
     body: "Lunar" | "Solar";
@@ -67,7 +68,7 @@ export class EclipseEventService {
     const typeLabel = eclipseTypeLabelByType[type];
     const { symbol, word } = this.phaseLabelByPhase[phase];
     const title = `${typeLabel} ${body} Eclipse ${word}`;
-    const summary = `${frameSymbol} ${this.symbolByBody[body]}${symbol} ${title}`;
+    const summary = `${frameSymbol}${this.symbolByBody[body]}${symbol} ${title}`;
     const dateString = date.clone().tz("America/New_York").toISOString(true);
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
@@ -76,17 +77,17 @@ export class EclipseEventService {
     });
 
     return {
-      categories: [...this.categories, body, frameLabel, typeLabel],
       description: `${title} (${frameLabel})`,
       end: date,
       start: date,
       summary,
+      tags: [...this.tags, body, frameLabel, typeLabel, _.startCase(phase)],
     };
   }
 
   /**
    * Builds the span of one eclipse from its beginning to its ending, typed
-   * by the beginning's type category.
+   * by the beginning's type tag.
    */
   private getEclipseDurationEvent(args: {
     beginning: DetectedCalendarEvent;
@@ -97,22 +98,17 @@ export class EclipseEventService {
     const { beginning, body, ending, frameLabel } = args;
     const frameSymbol = frameLabel === "Geocentric" ? "🌐" : "📍";
     const typeLabel = Object.values(eclipseTypeLabelByType).find((label) =>
-      beginning.categories.includes(label),
+      beginning.tags.includes(label),
     );
     const title = [typeLabel, `${body} Eclipse (${frameLabel})`]
       .filter(Boolean)
       .join(" ");
     return {
-      categories: [
-        ...this.categories,
-        body,
-        frameLabel,
-        ...(typeLabel ? [typeLabel] : []),
-      ],
       description: title,
       end: ending.start,
       start: beginning.start,
-      summary: `${frameSymbol} ${this.symbolByBody[body]} ${title}`,
+      summary: `${frameSymbol}${this.symbolByBody[body]} ${title}`,
+      tags: [...this.tags, body, frameLabel, ...(typeLabel ? [typeLabel] : [])],
     };
   }
 
@@ -125,9 +121,7 @@ export class EclipseEventService {
     body: "Lunar" | "Solar",
   ): DetectedCalendarEvent[] {
     const events = eclipseEvents.filter(
-      (event) =>
-        event.categories.includes(body) &&
-        event.categories.includes(frameLabel),
+      (event) => event.tags.includes(body) && event.tags.includes(frameLabel),
     );
     const beginnings = events.filter((event) =>
       event.description.includes("begins"),
@@ -178,7 +172,7 @@ export class EclipseEventService {
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const eclipseEvents = events.filter((event) =>
-      event.categories.includes("Eclipse"),
+      event.tags.includes("Eclipse"),
     );
 
     return [

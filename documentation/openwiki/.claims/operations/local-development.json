@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fb9e521408b8844bde2a057a7e83cd25e889ce559bb7173e9ef27c64b248fd5f",
+  "claims": [
+    {
+      "id": "claim_30dc8a5f4ef74ee3936fe068af7960fb",
+      "statement": "The codebase provides two dev container configurations: 'Codebase Devcontainer (Local)' using Docker-outside-of-Docker (DooD) for local machines, and 'Codebase Devcontainer (Cloud)' using Docker-in-Docker (DinD) for Codespaces and CI.",
+      "evidence": [
+        {
+          "resource": "repo://.devcontainer/README.md#L34-L38",
+          "version": "repo-lines-v1:sha256:a142e3845ea2c744f7e5c2a3f54a4f0d7cbc2678d92267c30f40dc63d9ccefc3:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjlhODQzOWUwNGU5NjUwMzQ1YmE4NmQ1NjRhZWMxNGFlZWRlNjE1ZDUxM2FmZTNjMGFiZDNkZmVmMjUxNTkyZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmQ4MWMwNjE4Zjk2Y2M0MjMyOTZiMDMwZmE0MjE3MjNhMWM1ZTQ0NGIyYTkyYWE0OTU2N2ZlNTgwZmJmN2FhOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2NmYmY0MGZiOGQwM2RiZDgxZThlZTExY2IwMTYwNDJmOTU2ZTI1YzhkOTNkZWMxZDM4YTEzZDJkZWM1YTQ1NCJ9"
+        },
+        {
+          "resource": "repo://.devcontainer/README.md#L39-L48",
+          "version": "repo-lines-v1:sha256:db1bb946d53842a36c36678fa8fe8e63d319d75da56ac398f6d0c1c7b9e39204:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyYzk4YTE1MTBiZTIyZTJhNzVmNjdjNzBlMzllZGJjYTExZWQ1MTU2MGUxMzI0NzlmYTU0NTk0YzhlMmI2MWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNDRiZmY4NGI0YjM5MjEzMzM4MTc2MDliYmQ5N2ZjNTA1NjBhNzA3YTI1YzJlN2QwZTFiODBmNWYyOTAzMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkZjdiZWVkNDU2ZTExOWUzZTQ1ODJmYjRjZDk5OGZlMzJlNjVjYzA4N2MwOGZhNjE4NDIyODdjNTkwNTQ5ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3YTc1Nzk5NzNmYjA2ZGRhM2Y3MGMyMjM4YzQyMWExZTAwZGYxNjIxMGRlMzI2N2RiYWE4MmQ0YWU2ZjYyZGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd4efb803b014657ac8cdb383b04155d",
+      "statement": "The dev container pre-installs Node.js 22.20.0, pnpm 10.20.0, kubectl, Helm, Terraform, GitHub CLI, Docker, and SQLite via Dev Container Features and apt-get.",
+      "evidence": [
+        {
+          "resource": "repo://.devcontainer/README.md#L89-L97",
+          "version": "repo-lines-v1:sha256:7366b5d8b966b9f3d7647b876237f10582d4c9e999156241fd164a2de0b54376:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E5NDZkMWI4Y2FhOWY0YjI0ZGMyZTkzOTgyNzI1NTYzOGUwMjkzN2Y4YzJjNGY4NjZmMTc4NDYwN2U2YzczMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzZiZmYyNTgxZDRmNzgwMWU1M2M3ZDFlYTk3Y2Y0NjAwMjliNjFkZjI2NGM1ZTExODdmNDM2NjllYTI0YWM2MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2I0ODJkOWZkNDMzODI0NzhhYzk3ODVmNGI1MzcxZDE2OTY3ZjI1OTkwNzc4MDc0NzgyOTU2MjhlZDY5MTllMCJ9"
+        },
+        {
+          "resource": "repo://.devcontainer/README.md#L9-L16",
+          "version": "repo-lines-v1:sha256:6a969d4d0a95ab993d87b751d5caf81494712bcc17b10bdcd45309e5d22c237c:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTUwNGRhMzU1NTY1NjY1N2RhYzYxNzdjZDI3OTc1NzUwNTc4YmFjMTkzMWQ1MGEyZjUxYmIzMzE3NWFlZjg0OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWYxZDM0OTJjMmUxZDdkZWFlOWYwMTIzMTFhZTllZGYzOWIwNDc4YjgzNGYwYTA3MmMyZjhjMGQ5NDk2MGRmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmNlZDIyZTI2N2U2YjYxMjNmZGViY2ZhN2Y5NWU1M2RkZThmMjU4N2Y3Y2ZlNjdiYWY4YzNkMGY1OTQ2ZTdiNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2e71f1c0e3b44fe1bdbca7e0d3d9eaff",
+      "statement": "Docker Compose defines three services: postgres (port 5432), searxng (port 8889), and open-webui (port 3001).",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L1-L70",
+          "version": "repo-lines-v1:sha256:b434b76a66ac24446dd803d5b1e19c02f9b210354f7e8c31c8eb137b21860a62:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyNmQ3MTY0MTFhY2YzMzRlYTY0ZDRhNWE5MGEzOTg1MTg4ODc4Y2Y3ZTljYzcyNzNhOWVjMTE1Zjc2NGVhNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzFlMjYwMzk4YWQ2MTA5MTRkZmMyOGYwNDhkMzkyNjRiYTdkNTAzMjc4ZGQyZjhiYjFjNGMxNGI0OTlkOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MTUyYmMyNWJkN2Q5YTQ1MmIwMGViYTMwZjMwZGJhN2NkMDk0YzM2YTYzNWIyNmQyOWIxODBlMmZlNzYzYTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ee6604b479e74dfc8e5928db92fd8bb1",
+      "statement": "The PostgreSQL service creates project databases from the POSTGRES_PROJECTS list (caelundas, lexico, meanderaw) only when the volume is empty, creating a <project>_username role, <project>_development database, and <project> schema for each.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/README.md#L42-L48",
+          "version": "repo-lines-v1:sha256:2f7223e174fbe71fa82d1336136d054f5250a4ba8ba1c726a80d91a55301144d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBjOGUwOTE4NGQ4YmVmNjA0MGRlOGI3NWExMTFhZjZjNTc3NGNlMjlkM2JkNmIzOWIwYTg5ZTM4Y2JkM2JmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQxOTM4OGVlMjFjY2RkMmNkOTcyN2E3ZTk2OTM0YTExYmY1NDE3ZTkxNzdlYzBjNjRkYTZkZjU2YmI5N2I1MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGE5N2FlNDZhYjUwZTYwZWIyMDNkNjk4ZGNmMzFiNmQ2NzBlOTlhMjJlMmQxM2UzYWY4Y2VjZjc0YjYyOWExNSJ9"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L30-L32",
+          "version": "repo-lines-v1:sha256:82bdcc0aae30855bee3a8f6a88a7aff31f6d0f0e01b3f80cee94eb366ab5a38f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjI3NDYzMzRmZGJkNjUxMzIzOWYxMzI2ZGI4YjYxMjc1N2I1YjMyYzA4MDhiNTA4MWE5OTM3ZjY1MzNiOGRiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJjYjgxY2Y2NzVhMjMxMzAyMzhkYWY3MjVmOWZhZmQ4MGE0MGIwYmY4YzlhODI4Njc3NGM0MjkxNWU2NzcyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDQyM2ViMzYyOWRlNjE4ZmJiZDI4NDM0YmFiMjk5ODZmZjU2N2JhYjJmZjYxOTQ4MTU0M2RkNzA4MmFhZjMwOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA1OTRlNmY4N2VmNWMyOTNiMTMwNWU2MTI1N2IzNDg4ZGNlODQzZmE5NTRjNTQ5YWE3NmZiZjk0NmFjYTM1OSJ9"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L81-L100",
+          "version": "repo-lines-v1:sha256:8d042fa4c8f66452e8da0da5dfb9e27980d05e148de01aaa8f551b0d6eecc40c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmOGNiODk0Yzc3YzQyNWZjY2Q1OGVhZjJlZGY1MjcwZmFiMjljOGQ5NmFkZjExNmEwNTIyN2I0ZWUxMGM3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdjYTY2MTcxMDZkNmNmNmNlYzhkZjA3MGYzZWQwNzIwNzlmY2ZjOGZhMWFiMDhjZWU5OTkxMjUyMTA1MTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzYTBiNzc3OWExYzRjOGIxYWJiYzE3ODhlNTVmODA4Yzc2NGY5ODUzNTY5NmE0MmMyN2I4OTFkYjNlMWRmN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxZTg1MDkyNjA4ZThjMmE2MDkyNGMyOGIzNTFmNjEyOTcwOWM5NmZkY2QxZDE2YWEzYTFlMDY2ZGM2N2U4ZjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b1702906fbf474ba711784d9c182239",
+      "statement": "Nx targets in the infrastructure project provide service management: postgres (up/down/recreate), searxng (up/down/open), open-webui (up/down/open).",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/README.md#L69-L76",
+          "version": "repo-lines-v1:sha256:1615004198f911fa8eafb9a62b3b297c5d36eb272031e6b16db653b03a2be08f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGRhMTNmN2E4YjJlMjEzN2U4ODI0NmFmNzYxYWI2MTMxZjljMGEzZjQzNDM2NWE1YmJlNzgyNjAyMTg1YTI3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM2OGI5NjFlNjEzMDBlMDMxNGE2YTZhNmM1NjAwZTJhOTZlOWFlZGQ3MWU0OGNmMzVmYjMyNTEwZGNkNWY3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ2ZjkzNzUxYjMxNTNhZjY1N2YzMmY5NzE2ZmVmYjMxNGUxNGM2Mzk0NjkzN2U1MjhiZGExYTFkYjZjMDFmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTQzYWNhMDE2YTdmNDAwYmE1YWE1NmNiZTI2YTQxYmZiNTkxOTllOWE3YzAxMzg1MDAxMzg1MzQxNWMxN2YwZSJ9"
+        },
+        {
+          "resource": "repo://infrastructure/project.json#L56-L93",
+          "version": "repo-lines-v1:sha256:525f14ab3c7437971191f3e9f854e2360c3cd6fcacdca09cb41fe85f1fe11dd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyOTIzYTJkNDliNjQ0ZGU0ZTBiZTU5ZDgzMTcwYzRhOWMyYzUwMTE4OTcxYjFiMTcxYmY1NGNiZDNhYWUyNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4OTNjMmQ5MTIzZDZiOWY5NzAyMTllYjM1MWY5ZDU1NzliN2RkYzRmMzkxM2Q3ZDRjNzk4MDYwOGFkYTY3MzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkOTQ5OWI5MGNhYWVhZTM1YTBiY2MzOGNlZjgzM2QyZjE5MWY5NDc3ZDQ5OTdiNDQ1OTZkMTgxZWMzMDQyOGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ada7a92f4db544bf9dcc19e0ceb6a874",
+      "statement": "Root .env is created from .env.default on first setup and is gitignored; it provides shared service URLs, PostgreSQL admin credentials, GitHub tokens, and OpenWiki configuration.",
+      "evidence": [
+        {
+          "resource": "repo://.env.default#L1-L26",
+          "version": "repo-lines-v1:sha256:36001527bafb8839466465fbeb956d77f43b79985c4aa3f4c8ba46e277b1f846:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NjE1ZjgxNzE5NWUxZjc4YTA2ZGZmN2E0MjI3N2Q5OWRkM2VjMzBlNTJiODIwOTk3YWJjNDA3N2IyMmJiODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZGFhMmUxNjY1Y2RjMTAwYmM5MjJjNzg2YzI5MzA2M2I4YTQwOGI2ZmQzNzA5ZDliN2I3ODE4MDJmY2ZhZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L29-L29",
+          "version": "repo-lines-v1:sha256:ba824cf81e426b39a62cfb997e588b4ecf72d4bb23ba559a1897f90a983e3739:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE4MjRjZjgxZTQyNmIzOWE2MmNmYjk5N2U1ODhiNGVjZjcyZDRiYjIzYmE1NTlhMTg5N2Y5MGE5ODNlMzczOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmE4MjRjZjgxZTQyNmIzOWE2MmNmYjk5N2U1ODhiNGVjZjcyZDRiYjIzYmE1NTlhMTg5N2Y5MGE5ODNlMzczOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDNmNWI0ZWYxMGQ1NmEzZDI5ZDg2ZGJiNWQ5NDE4ZmQ0NmIyYzA0NzI2NmQ1ZDlhNjM4OTFlMzViZmFiZjcyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODJiZGNjMGFhZTMwODU1YmVlM2E4ZjZhODhhN2FmZjMxZjZkMGYwZTAxYjNmODBjZWU5NGViMzY2YWI1YTM4ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd11beea77e64506a160d56a919a291d",
+      "statement": "Each project has its own .env.default that must be copied to .env (gitignored) containing project-prefixed database variables (e.g., CAELUNDAS_POSTGRES_*, LEXICO_POSTGRES_*, MEANDERAW_POSTGRES_*) defaulting to the local container's per-project role, database, and schema.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/.env.default#L1-L14",
+          "version": "repo-lines-v1:sha256:4c7830a997a77c1bdb5f2550b0a9956f55f8886c3da23720bf5bb4fa75b70c89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NjE1ZjgxNzE5NWUxZjc4YTA2ZGZmN2E0MjI3N2Q5OWRkM2VjMzBlNTJiODIwOTk3YWJjNDA3N2IyMmJiODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZTkzY2I3NmQzMmY2MTljNTVjMWY1YjU5YTkxMzIxMzMxNDIyMWJlNTQ3MjgyNDkzNzlhODQ4ODc0NWUyZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/.env.default#L1-L7",
+          "version": "repo-lines-v1:sha256:5b5c3d075bc940209c4f7a75780721356f344200e602ebc0fd1b345d483db37e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjk2MTVmODE3MTk1ZTFmNzhhMDZkZmY3YTQyMjc3ZDk5ZGQzZWMzMGU1MmI4MjA5OTdhYmM0MDc3YjIyYmI4OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWUyNzMwOTUxNmFmY2M3NDE2MjQ5M2I5M2E2MzcxNDczNzk3MDIwYzkzODhiYzhjZTg3Y2FiOTMxMjhjYjNmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/.env.default#L1-L9",
+          "version": "repo-lines-v1:sha256:94d72c986d4da67132573646c75098ce48f9322228215e5fb50489cc51c7d2a9:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjk2MTVmODE3MTk1ZTFmNzhhMDZkZmY3YTQyMjc3ZDk5ZGQzZWMzMGU1MmI4MjA5OTdhYmM0MDc3YjIyYmI4OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhZmQzNTgwMzcyYjFlNTU0ZGZkZDQzZTg3ZWIyNzY5NThmNTM1YTYxNDI2ZTkwOTE1ZGY2NmY2MDU3OTlmMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L24-L30",
+          "version": "repo-lines-v1:sha256:6b11f59481a2872c735f2772a33ca09be35f8c2dde361f7fb35481ad7725dbc8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmYzYjUwM2MxZGNjOWEwMDJhZmY0YjA1YTFlYzg4M2E0MTYxZmQ0NTI5YmE5MDU5M2M5MjA5MWU1MmY4NTBiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjI3ODVmOWExOWY1ZWY5YjEyMDBhZTNiM2NiNDk3ZmVjNDc0NWYyMzZiY2U2YTQxODUzNDJlNjk4M2Q5NjExNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzUyNDM2ODNhNjYzZmEyYTExN2IyZTRjMjUzYWQ3NWNkMGE5NTU0MjFiYTRhODRkY2QzYjNmMmIxMzNlNmZjNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRjNDU0MzU1NTJmMzBmZTU2MTIyNzg5ZWYyMTE4OThhY2FiZGU5NDNlMDk0MzQ2MmI0OWM0YTVmZTVhZTY3ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c049b615698d41eab76f9b950db03e15",
+      "statement": "Node.js/TypeScript dependencies are installed with 'pnpm install' at the repository root; Python dependencies are installed with 'uv sync --project configuration' from the repository root using the uv workspace declared in configuration/pyproject.toml.",
+      "evidence": [
+        {
+          "resource": "repo://configuration/pyproject.toml#L12-L13",
+          "version": "repo-lines-v1:sha256:bc159077399159cbb5fab84d554ff029fb843dd88c5de1818df9e66e995e7a62:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTVkNDQ4YTRkMTY2Mzg3ZmMzOWE2ZDE0NjBiNDNmZWIwZDc3YmIyNjAzYmY2YzM4NjBjNmVlODkyZTAxNjUwZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZhNWVmMzBiMmJmNmZjZWNmZDNhZDhjNWQ5N2I0NGY1NDhmZWI2NWE2NmU3M2Y3MTZjNDU1NGIwNTQ3N2I5OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzhiMTk0NzgxYzg2NjE2NDk1ODRiNzI3MWYxZmI2MjA3YmJmODEyOWY3YWEwMGViY2Y2MWM3YTYzYmNhMGM1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjQ5NTdiZTE2Mjc1NjFjYTdiNDc0MzkwZWIyZmFiMzY2MjdlNWQyYWU1ZDY3MzNhZjk3NmM3YzAxMGUyMmIwNiJ9"
+        },
+        {
+          "resource": "repo://package.json#L91-L91",
+          "version": "repo-lines-v1:sha256:47d421ce838f9293386e65b70b46e9e9f475a744d86c9c80e4453296aa68ad68:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdkNDIxY2U4MzhmOTI5MzM4NmU2NWI3MGI0NmU5ZTlmNDc1YTc0NGQ4NmM5YzgwZTQ0NTMyOTZhYTY4YWQ2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdkNDIxY2U4MzhmOTI5MzM4NmU2NWI3MGI0NmU5ZTlmNDc1YTc0NGQ4NmM5YzgwZTQ0NTMyOTZhYTY4YWQ2OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWY4MGJjNjMwMDdiN2MyNTdjZTZmODc0NWM0NTA4ODUwMzVhY2Q3MWU4NDA1YmMwN2UyNmU4MDI3N2EzNzA2OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGM0NjA5ZGJjZTg3YTA5MTZhNzQxODBiMzhmYzNkMDI4MTk1NWY5MWQ0NmRiMTk2OGI3ZDcxODMwNDBhMmFjOSJ9"
+        },
+        {
+          "resource": "repo://pnpm-workspace.yaml#L1-L12",
+          "version": "repo-lines-v1:sha256:6ac56fb79b4bf60aedec74487517a43149340befc587d5dafd43e4ddeab478c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYjA3NmViODBhZGUxOWZlYTNlMGE0MzE5ODZiNjU1ZjVmYTU5ZWQ2MjY3ZTEwN2Q2ODhiNjFjM2Y0MjE3OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NGI4NzA5NWY3ODMxY2RiYTVkZDdlYWMzMjkyMzg3MWU5MmY2NjMwNGJkMzM2MDkzM2VmOGU1MjM3NTk4OTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3YTY5N2ZmNGVhM2I4ZTA0ZDdjZWJiZDkxNWFiYTJhZjVhZGU4ZmY3ZDAxMjI4NzlmOGVhMDFhMjYxOTUxZDIifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L31-L33",
+          "version": "repo-lines-v1:sha256:d814aec04ec522595af1e141195b3e2c80e8368a348f28a6ab1e95cc81d8e3c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWRlMmY1MzI4ZWU2ZTgwNTBlOGFhZmQ4ZGM4NjlhMDY5Y2Q5NTg0ZWRhYWY1NGZlNTg5ZDczYzNiN2RjZDc5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2M5YjhkNDJmNTBkNGYxN2Q1MmQ0NmNhMWQyNmU5MWZjNjFhYjlmZTQzMWNkM2M2ZDgxODExYWI4NjFjNWRmNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzIxMDZkYThkNTg1YmJjNjcxNmViMWUzMTU3NWRjZjcwMmMxZDYyZGNhMjRlNWQzYmU2ZGJhOTdmZTk3ZDc5NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f1ab8fc552a146f8ac9db68adeb26e0b",
+      "statement": "Affirmancy quickstart requires starting Ollama, SearxNG, and Open WebUI services, pulling the gemma4:e2b model, then running the affirmancy.ipynb notebook.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L35-L49",
+          "version": "repo-lines-v1:sha256:b71098e5ced017daf542f1a863735b3902309fdde2351510e3d92ad1801b440a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhYjRmODE0ZjU1YjUwOWY0M2I4ZDBjYzg0OWRlZDk5OTcxMTE0NzMxMzRjZmUyYzg2YjE2ZmYxZjc3ZTVlNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZTI0NzdmZjVkY2EzMzMzNDJkNjhmYTUxMTZhMjU0N2ZhOTEzMGI4M2QzNDUwZjFmNjYwOTY4YzIzMDVhMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwMjRmNTQ4Y2RmZjBjMTM3MWZkMTcyYWRkYjFkZTI4MzkyMzNkYjQwY2Y2MWM2ZWU0ZTAzMzY2YjljZjIzYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95676d3634fd41b1af604bd0507843c8",
+      "statement": "Caelundas quickstart requires downloading Swiss Ephemeris data files, copying .env.default to .env, running migrations against the local Postgres container, then generating the calendar.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L12-L26",
+          "version": "repo-lines-v1:sha256:fa9f2c4850a5caed68f96a537604bc4ee866eb617b5930f1e21d993c68042dbd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWE0OTAwZTI5MmM0NTU0YTQwNTliOWRkMThmOTY1YzgxYzJmMWUxMmZjNDhlODY4MmFlMzI2MzAyOWNiYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNmI5NDI3MTE2YWYwOTQ4Y2Y5NTMxNjM1MWY4YzFlMWIxOWNiZTBhZGE3YjBhYTRmNzQ2ZTdjN2QzMmQ3MzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxNTYwNDI2NjVmMmFlOGVmMWQzYWI0ZDU1N2MwYjVhYjQyYzYxYzM2OThmNzhlZGRiZGYzOTNhODgyYzI2NzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_53245e4f1e0b4c89b0097d52ec69e758",
+      "statement": "Lexico CLI quickstart requires copying .env.default to .env and running 'nx run lexico-cli:start', with optional stage flags for dictionary, library, literature, and wiktionary ingestion.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L30-L40",
+          "version": "repo-lines-v1:sha256:4b644f4036d0370315d8212fa186c91b07ccf9e7b1d30941191bda25d21285f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NGMwYjYxMGMxZGI5MDAwNzY3OTViNWM2MGE5ZDFlNzhkYjYyYjRhYWRiMDQ3MTQ5YTMxMzNjMDI0OTM1YmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYTk2ODk0Mzc3ZjY3YzcwYzY3NmYzOTA5N2U0Njc1MmZlY2Q3OGE4MTFhN2YwMzViMjYwOWU2Mjc0YzE4ZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5MmFkNTM1ODk5ZjZiNDAyZTk4N2NjZDI0ZGJiYTIxY2E3YTdlNGI3OWRkZjQ0ODQwZmFmYTI3YzhlOTI1NWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlY2EzMmUzZjMxY2RhODMxNzVlOWRlOTdkOWUwYmUxYzc2ZTU2MGFkMTFjNDFkMzBjNGE4ZTdlMzg4MDk1OTgifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/README.md#L8-L20",
+          "version": "repo-lines-v1:sha256:628abffc694be5a9620e9fb00034fceb39abd1a5c3861f93f8b94b5c013142bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyOWE0OTAwZTI5MmM0NTU0YTQwNTliOWRkMThmOTY1YzgxYzJmMWUxMmZjNDhlODY4MmFlMzI2MzAyOWNiYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYTljN2QwNjJjODRkNWU0MmNmMTE4NzNlMzlkYTNkOWM4ZGIxODAyOTlkMDFlNTMxZGI4OWM2MDUxYjkwMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3YjZjYTE5ZTA5NzcyMjNlYzgxZWUxZmUyMTA1OTlkMDg4MjljNWJkYjIwMjY1Y2Q3OGFiOTE4YWE2OGRlMjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ae5af4acaf13446fb7f84f2367e21530",
+      "statement": "Meanderaw quickstart requires starting the Postgres container, running migrations, then running 'nx run meanderaw-cli:start' which defaults to the draw command; single-drawing mode requires --rows, --columns, and --code flags.",
+      "evidence": [
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L1-L7",
+          "version": "repo-lines-v1:sha256:1567a6555563e05a221f2cff6efe64b7f6c8316b1f7e31551bbd25d9e79b1667:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI0YWMyNWQ4OTIyZTJiMTJiNmIyMDY0OWRjZGI0YjIwZmQxNzRhZGQzNDA2NmJhZTZjYTczZTdhZGEwYTk0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ0YTY1OTA3MTY2MmM4YjM2NzEzYjMwNjZiYWU4ZmRkOGE0ZWY4OWQ2M2FhZGVlZWFmNDQ4OWYwMWRmYjg2MyJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L32-L46",
+          "version": "repo-lines-v1:sha256:4a7095bb8cf32df537fe70374b45e0872bf10fed73bb54d480338160ca74db2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MzM5OWY1NDhiMmQ1Nzg2MmI1Y2VkYzBiM2JhNGYyMjllYThlODYwNjcxZmJmMDNhNjQyNjVjZGI4YjlhZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwZTA1YWQyM2U5NjZhNjQ5YmRlN2UxMjEwMzU4OTRjMWQ0YTk1ZjM1NzgyNjYxNDdlNjA1NGE3OWI5NjU3NDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmZjcyZTM1ODI2NmI1Y2YyM2I4ZTk2ZTE1ZjczNzI0ODRlMDk3OGU5OTM3MDJmZTEzNTQ0NmUyZTc1M2QyOGIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-24T21:02:40.299Z"
+  }
+}

@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
 import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { aspectBodies as quadrupleAspectBodies } from "../caelundas/caelundas.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
 import {
@@ -60,11 +61,10 @@ export class QuadrupleAspectsBaseService {
     formingEvent: DetectedCalendarEvent,
     dissolvingEvent: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
-    const categories = formingEvent.categories.filter(
+    const tags = formingEvent.tags.filter(
       (c) => c !== "Forming" && c !== "Perfective" && c !== "Dissolving",
     );
     return {
-      categories,
       description: formingEvent.description.replace(
         / (forming|exact|dissolving)( \(.*\))?$/i,
         "",
@@ -72,6 +72,7 @@ export class QuadrupleAspectsBaseService {
       end: dissolvingEvent.start,
       start: formingEvent.start,
       summary: this.aspectPhaseEmojiService.spanTitle(formingEvent.summary),
+      tags,
     };
   }
 
@@ -273,14 +274,7 @@ export class QuadrupleAspectsBaseService {
   }
 
   /**
-   * Maps aspect phase to the summary prefix marker.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
-  }
-
-  /**
-   * Creates one quadruple-aspect event with normalized categories and symbol-rich summary.
+   * Creates one quadruple-aspect event with normalized tags and symbol-rich summary.
    */
   getQuadrupleAspectEvent(
     eventArguments: GetQuadrupleAspectEventArguments,
@@ -310,10 +304,9 @@ export class QuadrupleAspectsBaseService {
       phase,
       quadrupleAspect,
     });
-    const phaseEmoji = this.getPhaseEmoji(phase);
-    const symbolsPart = `${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]}-${symbolByBody[body4]}`;
-    const summary = `${phaseEmoji}${symbolByQuadrupleAspect[quadrupleAspect]} ${symbolsPart} ${description}`;
-    const categories = this.makeQuadrupleAspectCategories({
+    const symbolsPart = `${symbolByBody[body1]}${symbolByBody[body2]}${symbolByBody[body3]}${symbolByBody[body4]}`;
+    const summary = `${symbolByQuadrupleAspect[quadrupleAspect]}${symbolsPart} ${description.replace(PHASE_WORD_PATTERN, "")}`;
+    const tags = this.makeQuadrupleAspectTags({
       body1Capitalized: body1DisplayName,
       body2Capitalized: body2DisplayName,
       body3Capitalized: body3DisplayName,
@@ -323,11 +316,11 @@ export class QuadrupleAspectsBaseService {
       quadrupleAspect,
     });
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -355,22 +348,22 @@ export class QuadrupleAspectsBaseService {
    */
   makeProgressiveGroupKey(event: DetectedCalendarEvent): string {
     const planets = _.sortBy(
-      event.categories.filter((category) =>
+      event.tags.filter((tag) =>
         quadrupleAspectBodies
           .map((quadrupleAspectBody) => bodyDisplayName(quadrupleAspectBody))
-          .includes(category),
+          .includes(tag),
       ),
     );
-    const aspect = event.categories.find((category) =>
-      ["Grand Cross", "Kite"].includes(category),
+    const aspect = event.tags.find((tag) =>
+      ["Grand Cross", "Kite"].includes(tag),
     );
     return `${planets.join("-")}_${aspect}`;
   }
 
   /**
-   * Makes quadruple aspect categories.
+   * Makes quadruple aspect tags.
    */
-  makeQuadrupleAspectCategories(args: {
+  makeQuadrupleAspectTags(args: {
     body1Capitalized: string;
     body2Capitalized: string;
     body3Capitalized: string;
@@ -388,7 +381,7 @@ export class QuadrupleAspectsBaseService {
       phase,
       quadrupleAspect,
     } = args;
-    const categories = [
+    const tags = [
       "Astronomy",
       "Astrology",
       "Compound Aspect",
@@ -401,9 +394,9 @@ export class QuadrupleAspectsBaseService {
       body4Capitalized,
     ];
     if (focalOrApexBody) {
-      categories.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
+      tags.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
     }
-    return categories;
+    return tags;
   }
 
   /**

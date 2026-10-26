@@ -260,11 +260,11 @@ describe(PerfectiveService, () => {
         { aspect: "square", bodies: ["mars", "pluto"] },
       ];
       const seededEvent = {
-        categories: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
         description: "Mars, Mercury, Pluto t-square forming",
         end: firstMinute,
         start: firstMinute,
         summary: "seeded compound forming",
+        tags: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
       } satisfies DetectedCalendarEvent;
 
       datetimeMock.generateDates.mockReturnValue([firstDate, secondDate]);
@@ -309,11 +309,11 @@ describe(PerfectiveService, () => {
       const date = moment.tz("2025-06-15", "America/New_York");
       const minute = date.clone().startOf("day");
       const ingressEvent = {
-        categories: ["Astronomy", "Astrology", "Ingress"],
         description: "Sun enters Gemini",
         end: minute,
         start: minute,
         summary: "ingress",
+        tags: ["Astronomy", "Astrology", "Ingress"],
       } satisfies DetectedCalendarEvent;
 
       datetimeMock.generateDates.mockReturnValue([date]);
@@ -342,6 +342,45 @@ describe(PerfectiveService, () => {
 
       expect(monthlyLunarCycleMock.detectApsides).not.toHaveBeenCalled();
       expect(phasesMock.getMartianPhaseEvents).not.toHaveBeenCalled();
+    });
+
+    it("runs the Venusian, Mercurian and Martian phase detectors when no families are named", () => {
+      const date = moment.tz("2025-06-15", "America/New_York");
+      const minute = date.clone().startOf("day");
+      const phaseEvent = (marker: string): DetectedCalendarEvent => ({
+        description: `${marker} phase`,
+        end: minute,
+        start: minute,
+        summary: `${marker} phase`,
+        tags: ["Astronomy", "Astrology", "Planetary Phase", marker],
+      });
+
+      datetimeMock.generateDates.mockReturnValue([date]);
+      datetimeMock.generateMinutes.mockReturnValue([minute]);
+      ephemerisAggMock.getEphemerides.mockReturnValue(emptyEphemerides);
+      phasesMock.getVenusianPhaseEvents.mockReturnValueOnce([
+        phaseEvent("Venusian"),
+      ]);
+      phasesMock.getMercurianPhaseEvents.mockReturnValueOnce([
+        phaseEvent("Mercurian"),
+      ]);
+      phasesMock.getMartianPhaseEvents.mockReturnValueOnce([
+        phaseEvent("Martian"),
+      ]);
+
+      const markers = service
+        .detect(baseInput)
+        .flatMap(({ tags }) =>
+          tags.filter((tag) =>
+            ["Martian", "Mercurian", "Venusian"].includes(tag),
+          ),
+        );
+
+      expect(markers.toSorted()).toStrictEqual([
+        "Martian",
+        "Mercurian",
+        "Venusian",
+      ]);
     });
 
     it("logs a completion summary with the total event count", () => {

@@ -6,6 +6,10 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectsUtilitiesService } from "../aspects/aspects-utilities.service";
+import {
+  symbolByBody,
+  symbolByMajorAspect,
+} from "../caelundas/symbol-caelundas.constants";
 import { MathService } from "../math/math.service";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -13,6 +17,7 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 import { MajorAspectEventService } from "./major-aspect-event.service";
 import { MajorAspectProgressiveService } from "./major-aspect-progressive.service";
 
+import type { Body, MajorAspect } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../database/database.types";
 
 vi.mock("fs", () => ({
@@ -29,7 +34,7 @@ describe(MajorAspectProgressiveService, () => {
       aspectCapitalized: string;
       body1Capitalized: string;
       body2Capitalized: string;
-      categories: string[];
+      tags: string[];
     }) => { aspect: string; body1: string; body2: string };
     getAspectGroupKey: (event: DetectedCalendarEvent) => string;
     getMajorAspectProgressiveEvent: (
@@ -62,7 +67,7 @@ describe(MajorAspectProgressiveService, () => {
         aspectCapitalized: string;
         body1Capitalized: string;
         body2Capitalized: string;
-        categories: string[];
+        tags: string[];
       }) => { aspect: string; body1: string; body2: string };
       getAspectGroupKey: (event: DetectedCalendarEvent) => string;
       getMajorAspectProgressiveEvent: (
@@ -88,7 +93,11 @@ describe(MajorAspectProgressiveService, () => {
       phase: string,
       timestamp: Moment,
     ): DetectedCalendarEvent => ({
-      categories: [
+      description: `${body1} ${phase.toLowerCase()} ${aspect.toLowerCase()} ${body2}`,
+      end: timestamp,
+      start: timestamp,
+      summary: `${symbolByBody[body1.toLowerCase() as Body]}${symbolByMajorAspect[aspect.toLowerCase() as MajorAspect]}${symbolByBody[body2.toLowerCase() as Body]} ${body1} ${aspect.toLowerCase()} ${body2}`,
+      tags: [
         "Astronomy",
         "Astrology",
         "Major Aspect",
@@ -97,10 +106,6 @@ describe(MajorAspectProgressiveService, () => {
         aspect,
         phase,
       ],
-      description: `${body1} ${phase} ${aspect} ${body2}`,
-      end: timestamp,
-      start: timestamp,
-      summary: `${body1} ${aspect} ${body2}`,
     });
 
     it("spans an aspect to the north lunar node from the events as built", () => {
@@ -159,11 +164,12 @@ describe(MajorAspectProgressiveService, () => {
       expect(progressiveEvents[0]).toBeDefined();
       expect(progressiveEvents[0]?.start).toStrictEqual(forming.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolving.start);
-      expect(progressiveEvents[0]?.categories).toContain("Simple Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("Major Aspect");
-      expect(progressiveEvents[0]?.summary).toContain("☀️");
-      expect(progressiveEvents[0]?.summary).toContain("☿");
-      expect(progressiveEvents[0]?.summary).toContain("☌");
+      expect(progressiveEvents[0]?.tags).toContain("Simple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Major Aspect");
+      expect(progressiveEvents[0]?.summary).toBe("☀️☌☿ Sun conjunct Mercury");
+      expect(progressiveEvents[0]?.summary).toBe(
+        forming.summary.replace(" forming", ""),
+      );
     });
 
     it("handles multiple aspect types for same body pair", () => {
@@ -272,11 +278,11 @@ describe(MajorAspectProgressiveService, () => {
         moment.utc("2024-03-21T14:00:00.000Z"),
       );
       const nonAspectEvent: DetectedCalendarEvent = {
-        categories: ["Solar", "Daily Cycle"],
         description: "Sunrise",
         end: moment.utc("2024-03-21T12:00:00.000Z"),
         start: moment.utc("2024-03-21T12:00:00.000Z"),
         summary: "Sunrise",
+        tags: ["Solar", "Daily Cycle"],
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -300,25 +306,25 @@ describe(MajorAspectProgressiveService, () => {
       expect(progressiveEvents).toStrictEqual([]);
     });
 
-    it("returns empty key when group categories are incomplete", () => {
+    it("returns empty key when group tags are incomplete", () => {
       expect(
         privateService.getAspectGroupKey({
-          categories: ["Astronomy", "Astrology", "Major Aspect"],
           description: "invalid",
           end: moment.utc("2024-03-21T14:00:00.000Z"),
           start: moment.utc("2024-03-21T14:00:00.000Z"),
           summary: "invalid",
+          tags: ["Astronomy", "Astrology", "Major Aspect"],
         }),
       ).toBe("");
     });
 
-    it("throws when categories cannot extract aspect info", () => {
+    it("throws when tags cannot extract aspect info", () => {
       const invalidEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Major Aspect", "Sun"],
         description: "invalid",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary: "invalid",
+        tags: ["Astronomy", "Astrology", "Major Aspect", "Sun"],
       };
 
       expect(() =>
@@ -326,18 +332,18 @@ describe(MajorAspectProgressiveService, () => {
           invalidEvent,
           invalidEvent,
         ),
-      ).toThrow("Could not extract aspect info from categories");
+      ).toThrow("Could not extract aspect info from tags");
     });
 
-    it("throws when type casting receives invalid category values", () => {
+    it("throws when type casting receives invalid tag values", () => {
       expect(() =>
         privateService.castAspectPartsToTypes({
           aspectCapitalized: "Invalid Aspect",
           body1Capitalized: "Invalid Body",
           body2Capitalized: "Moon",
-          categories: ["Invalid Aspect", "Invalid Body", "Moon"],
+          tags: ["Invalid Aspect", "Invalid Body", "Moon"],
         }),
-      ).toThrow("Could not extract typed values from categories");
+      ).toThrow("Could not extract typed values from tags");
     });
 
     it("handles undefined sorted body entries before type casting", () => {
@@ -345,17 +351,11 @@ describe(MajorAspectProgressiveService, () => {
         .spyOn(_, "sortBy")
         .mockReturnValue([undefined, "Moon"] as unknown);
       const eventWithAspect: DetectedCalendarEvent = {
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Major Aspect",
-          "Conjunct",
-          "Moon",
-        ],
         description: "invalid",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary: "invalid",
+        tags: ["Astronomy", "Astrology", "Major Aspect", "Conjunct", "Moon"],
       };
 
       expect(() =>
@@ -363,7 +363,7 @@ describe(MajorAspectProgressiveService, () => {
           eventWithAspect,
           eventWithAspect,
         ),
-      ).toThrow("Could not extract typed values from categories");
+      ).toThrow("Could not extract typed values from tags");
 
       sortBySpy.mockRestore();
     });
@@ -373,17 +373,11 @@ describe(MajorAspectProgressiveService, () => {
         .spyOn(_, "sortBy")
         .mockReturnValue(["Moon", undefined] as unknown);
       const eventWithAspect: DetectedCalendarEvent = {
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Major Aspect",
-          "Conjunct",
-          "Moon",
-        ],
         description: "invalid",
         end: moment.utc("2024-03-21T14:00:00.000Z"),
         start: moment.utc("2024-03-21T14:00:00.000Z"),
         summary: "invalid",
+        tags: ["Astronomy", "Astrology", "Major Aspect", "Conjunct", "Moon"],
       };
 
       expect(() =>
@@ -391,7 +385,7 @@ describe(MajorAspectProgressiveService, () => {
           eventWithAspect,
           eventWithAspect,
         ),
-      ).toThrow("Could not extract typed values from categories");
+      ).toThrow("Could not extract typed values from tags");
 
       sortBySpy.mockRestore();
     });
@@ -420,15 +414,9 @@ describe(MajorAspectProgressiveService, () => {
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.start).toStrictEqual(forming.start);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolving.start);
-      expect(progressiveEvents[0]?.summary).toContain("☿");
-      expect(progressiveEvents[0]?.summary).toContain("♀️");
-      expect(progressiveEvents[0]?.summary).toContain("☌");
+      expect(progressiveEvents[0]?.summary).toBe("☿☌♀️ Mercury conjunct Venus");
       expect(
-        progressiveEvents.filter(
-          (event) =>
-            event.summary.includes("🎯") ||
-            event.categories.includes("Perfective"),
-        ),
+        progressiveEvents.filter((event) => event.tags.includes("Perfective")),
       ).toHaveLength(0);
     });
 

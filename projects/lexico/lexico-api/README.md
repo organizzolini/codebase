@@ -814,9 +814,9 @@ Call stacks traced through `projects/lexico/lexico-api`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 381 |
+| Callables | 387 |
 | Files | 111 |
-| Calls traced | 222 |
+| Calls traced | 227 |
 | Call stacks | 54 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
@@ -878,9 +878,9 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 SearchResolver.searchEnglish(arguments_: SearchEnglishArguments): Promise<Connection<LexemeSearchResult>> [projects/lexico/lexico-api/src/modules/search/search.resolver.ts:31]
    ↳ Searches English definitions and translations using full-text and substring matching.
-  └─> SearchService.searchEnglish(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:389]
+  └─> SearchService.searchEnglish(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:428]
      ↳ Searches English translations and definitions using full-text and substring matching.
-    └─> SearchService.paginateRankedLexemes(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:209]
+    └─> SearchService.paginateRankedLexemes(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:220]
        ↳ Pages ranked lexemes in SQL, best score first and then by id: the ranking is joined to the lexemes, the cursors bound…
       └─> paginateQuery(…): Promise<Connection<Node>> [projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:54]
          ↳ Pages a filtered query into a Relay connection in SQL: the cursors become keyset bounds on the sort key and id, `first`…
@@ -902,17 +902,17 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 SearchResolver.searchLatin(arguments_: SearchLatinArguments): Promise<Connection<LexemeSearchResult>> [projects/lexico/lexico-api/src/modules/search/search.resolver.ts:47]
    ↳ Searches Latin lemmas and inflected forms with enclitic parsing and fuzzy matching.
-  └─> SearchService.searchLatin(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:418]
+  └─> SearchService.searchLatin(…): Promise<Connection<LexemeSearchMatch>> [projects/lexico/lexico-api/src/modules/search/search.service.ts:458]
      ↳ Performs tiered Latin dictionary search with enclitic parsing and fuzzy matching.
-    └─> SearchService.paginateRankedLexemes(…)(scored: ScoredLexeme[]): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:438]
-      └─> SearchService.describeLatinMatches(…): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:102]
+    └─> SearchService.paginateRankedLexemes(…)(scored: ScoredLexeme[]): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:478]
+      └─> SearchService.describeLatinMatches(…): Promise<LexemeSearchMatch[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:106]
          ↳ Describes each Latin match on a page the way merging its tiers would: the morphological identifiers of every matched…
-        └─> SearchService.map(…)(wordForm: WordForm): string | null [projects/lexico/lexico-api/src/modules/search/search.service.ts:136]
-          └─> formatFormIdentifier(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:59]
+        └─> SearchService.map(…)(wordForm: WordForm): string | null [projects/lexico/lexico-api/src/modules/search/search.service.ts:140]
+          └─> formatFormIdentifier(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:66]
              ↳ Formats grammatical and morphological description strings from a lexical Form.
-            └─> formatDeclinedForm(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:127]
+            └─> formatDeclinedForm(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:163]
                ↳ Formats nominal, adjectival, and participial declined forms.
-              └─> formatNonFiniteForm(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:143]
+              └─> formatNonFiniteForm(form: Form): null | string [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:179]
                  ↳ Formats non-finite verb and uninflected forms like infinitives, gerunds, supines, and adverbs.
 ```
 
@@ -1159,7 +1159,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **18. `toLexemeSearchResult`** — depth ≥ 7 · orphan-root
 
 ```text
-🚀 toLexemeSearchResult(match: LexemeSearchMatch): LexemeSearchResult [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:104]
+🚀 toLexemeSearchResult(match: LexemeSearchMatch): LexemeSearchResult [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:139]
    ↳ Maps a search match, and the lexeme it matched, to the result the API returns.
   └─> toLexemeType(lexeme: Lexeme): LexemeType [projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:26]
      ↳ Maps a lexeme entity, and each relation it loaded, to its GraphQL type.
@@ -1368,7 +1368,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **34. `readSearchCursor`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 readSearchCursor(cursor: string): CursorClaim | null [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:79]
+🚀 readSearchCursor(cursor: string): CursorClaim | null [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:105]
    ↳ Reads the lexeme and score a search cursor names, as the row it claims: its id, and its negated score as the sort key…
   └─> fromCursorSafe<T = unknown>(cursor?: null | string, parse?: (value: unknown) => T): null | T [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:114]
      ↳ Safely decodes a cursor string, returning null if invalid, null, or undefined.
@@ -1379,9 +1379,9 @@ What this project is judged against, as declared in its own `callidescope.config
 **35. `SearchService.load`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 SearchService.load(…): Promise<{ id: string; enclitic: string | null; identifiers: string[]; lexeme: Lexeme; score: number; source: SearchMatchSource; }[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:235]
-  └─> SearchService.map(…)(lexeme: Lexeme): { lexeme: Lexeme; score: number; } [projects/lexico/lexico-api/src/modules/search/search.service.ts:240]
-    └─> toRankedScore(key: unknown): number [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:120]
+🚀 SearchService.load(…): Promise<{ id: string; distance: number | null; enclitic: string | null; identifiers: string[]; lexeme: Lexeme; score: number; source: SearchMatchSource; }[]> [projects/lexico/lexico-api/src/modules/search/search.service.ts:246]
+  └─> SearchService.map(…)(lexeme: Lexeme): { lexeme: Lexeme; score: number; } [projects/lexico/lexico-api/src/modules/search/search.service.ts:251]
+    └─> toRankedScore(key: unknown): number [projects/lexico/lexico-api/src/modules/search/search.utilities.ts:156]
        ↳ Reads a ranked row's score back from the sort key it pages by, which is the score negated so the best score sorts first.
 ```
 
@@ -1510,7 +1510,7 @@ What this project is judged against, as declared in its own `callidescope.config
 **50. `SearchService.encode`** — depth 2 · orphan-root
 
 ```text
-🚀 SearchService.encode(position: CursorPosition): string [projects/lexico/lexico-api/src/modules/search/search.service.ts:220]
+🚀 SearchService.encode(position: CursorPosition): string [projects/lexico/lexico-api/src/modules/search/search.service.ts:231]
   └─> toCursor(data: unknown): string [projects/common/interface/src/modules/graphql-server/graphql-server.utilities.ts:254]
      ↳ Encodes structured data into an opaque Base64 cursor string.
 ```
@@ -1555,27 +1555,27 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `SearchService.describeLatinMatches` | 11 | `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.filter(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.forEach(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.flatMap(…)`, `SearchService.filter(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:102` |
+| `SearchService.describeLatinMatches` | 11 | `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.filter(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.forEach(…)`, `SearchService.map(…)`, `SearchService.filter(…)`, `SearchService.flatMap(…)`, `SearchService.filter(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:106` |
 | `paginateQuery` | 8 | `readCount`, `readPage`, `decodeCursor`, `slicePage`, `loadInOrder`, `map(…)`, `createConnection`, `map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:54` |
-| `SearchService.searchLatin` | 7 | `MacronsService.removeMacrons`, `createEmptyConnection`, `decomposeEnclitic`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankLatinMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:418` |
+| `SearchService.searchLatin` | 7 | `MacronsService.removeMacrons`, `createEmptyConnection`, `decomposeEnclitic`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankLatinMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:458` |
 
 <details>
-<summary>106 more callables</summary>
+<summary>108 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
+| `SearchService.rankLatinMatches` | 6 | `SearchService.headwordOrWordMatches`, `SearchService.translatedCondition`, `SearchService.rankLemmaPattern`, `maximumFuzzyDistance`, `SearchService.rankFuzzyMatches`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:347` |
 | `paginateQueryByParent` | 5 | `readCount`, `findCursorPositions`, `countPartitions`, `loadPartitionPages`, `assembleConnection` | `projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:86` |
-| `SearchService.searchEnglish` | 5 | `createEmptyConnection`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankEnglishMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:389` |
+| `SearchService.searchEnglish` | 5 | `createEmptyConnection`, `SearchService.paginateRankedLexemes(…)`, `SearchService.paginateRankedLexemes`, `SearchService.rankEnglishMatches`, `SearchService.logSearch` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:428` |
 | `toLexemeType` | 4 | `toDeletableFields`, `mapRelationConnection`, `mapNullableRelation`, `mapNullableRelationConnection` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.utilities.ts:26` |
 | `LiteratureService.searchLiterature` | 4 | `createEmptyConnection`, `LiteratureService.searchAuthors`, `LiteratureService.searchTexts`, `LiteratureService.searchLines` | `projects/lexico/lexico-api/src/modules/literature/literature.service.ts:259` |
-| `SearchService.rankLatinMatches` | 4 | `SearchService.headwordOrWordMatches`, `SearchService.translatedCondition`, `SearchService.rankLemmaPattern`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:308` |
 | `toTextType` | 3 | `toDeletableFields`, `mapRelation`, `mapNullableRelation` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:153` |
 | `toTokenType` | 3 | `toDeletableFields`, `mapRelation`, `mapNullableRelation` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:165` |
 | `loadInOrder` | 3 | `map(…)`, `map(…)`, `flatMap(…)` | `projects/lexico/lexico-api/src/modules/literature/literature.utilities.ts:210` |
 | `countPartitions` | 3 | `windowCondition`, `toRowKey`, `map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:164` |
 | `findCursorPositions` | 3 | `readCursorId`, `filter(…)`, `map(…)` | `projects/lexico/lexico-api/src/modules/literature/literature-relations.utilities.ts:204` |
-| `SearchService.paginateRankedLexemes` | 3 | `paginateQuery`, `SearchService.mapConnection(…)`, `mapConnection` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:209` |
-| `SearchService.load` | 3 | `SearchService.createLexemeQuery`, `SearchService.map(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:235` |
+| `SearchService.paginateRankedLexemes` | 3 | `paginateQuery`, `SearchService.mapConnection(…)`, `mapConnection` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:220` |
+| `SearchService.load` | 3 | `SearchService.createLexemeQuery`, `SearchService.map(…)`, `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:246` |
 | `transform(…)` | 2 | `filter(…)`, `map(…)` | `projects/lexico/lexico-api/src/lexico-api.constants.ts:14` |
 | `LexemesResolver.lexeme` | 2 | `LexemesService.findById`, `toLexemeType` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:26` |
 | `LexemesResolver.lexemes` | 2 | `LexemesService.findByIds`, `LexemesResolver.map(…)` | `projects/lexico/lexico-api/src/modules/lexemes/lexemes.resolver.ts:41` |
@@ -1606,8 +1606,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TextsResolver.text` | 2 | `LiteratureService.findTextByLookup`, `toTextType` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:117` |
 | `TextsResolver.texts` | 2 | `LiteratureService.listTextsConnection`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:136` |
 | `TokensResolver.tokens` | 2 | `LiteratureService.listTokensForLineConnection`, `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/tokens.resolver.ts:29` |
-| `readSearchCursor` | 2 | `fromCursorSafe`, `toCursor` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:79` |
-| `SearchService.encode` | 2 | `toCursor`, `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:220` |
+| `readSearchCursor` | 2 | `fromCursorSafe`, `toCursor` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:105` |
+| `SearchService.map(…)` | 2 | `toLatinMatchSource`, `fuzzyScoreToDistance` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:157` |
+| `SearchService.encode` | 2 | `toCursor`, `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:231` |
 | `SearchResolver.searchEnglish` | 2 | `mapConnection`, `SearchService.searchEnglish` | `projects/lexico/lexico-api/src/modules/search/search.resolver.ts:31` |
 | `SearchResolver.searchLatin` | 2 | `mapConnection`, `SearchService.searchLatin` | `projects/lexico/lexico-api/src/modules/search/search.resolver.ts:47` |
 | `WordsService.findByDataList` | 2 | `WordsService.map(…)`, `WordsService.flatMap(…)` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:52` |
@@ -1652,16 +1653,17 @@ What this project is judged against, as declared in its own `callidescope.config
 | `TextsResolver.childTexts` | 1 | `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:49` |
 | `TextsResolver.linesForText` | 1 | `mapConnection` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:67` |
 | `TextsResolver.parentText` | 1 | `mapNullableRelation` | `projects/lexico/lexico-api/src/modules/literature/texts.resolver.ts:85` |
-| `formatFormIdentifier` | 1 | `formatDeclinedForm` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:59` |
-| `toLexemeSearchResult` | 1 | `toLexemeType` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:104` |
-| `formatDeclinedForm` | 1 | `formatNonFiniteForm` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:127` |
-| `SearchService.map(…)` | 1 | `formatFormIdentifier` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:136` |
-| `SearchService.flatMap(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:150` |
-| `SearchService.map(…)` | 1 | `toLatinMatchSource` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:153` |
-| `SearchService.logSearch` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:189` |
-| `SearchService.map(…)` | 1 | `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:240` |
-| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:402` |
-| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.describeLatinMatches` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:438` |
+| `formatFormIdentifier` | 1 | `formatDeclinedForm` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:66` |
+| `toLexemeSearchResult` | 1 | `toLexemeType` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:139` |
+| `formatDeclinedForm` | 1 | `formatNonFiniteForm` | `projects/lexico/lexico-api/src/modules/search/search.utilities.ts:163` |
+| `SearchService.map(…)` | 1 | `formatFormIdentifier` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:140` |
+| `SearchService.flatMap(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:154` |
+| `SearchService.logSearch` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:200` |
+| `SearchService.map(…)` | 1 | `toRankedScore` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:251` |
+| `SearchService.rankFuzzyMatches` | 1 | `SearchService.distance` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:319` |
+| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.map(…)` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:441` |
+| `SearchService.map(…)` | 1 | `toEnglishMatchSource` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:442` |
+| `SearchService.paginateRankedLexemes(…)` | 1 | `SearchService.describeLatinMatches` | `projects/lexico/lexico-api/src/modules/search/search.service.ts:478` |
 | `WordsService.findFormsByData` | 1 | `WordsService.findByData` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:93` |
 | `WordsService.findLexemeLinksByData` | 1 | `WordsService.findByData` | `projects/lexico/lexico-api/src/modules/words/words.service.ts:101` |
 | `LexemeWordFormResolver.wordForms` | 1 | `mapRelationConnection` | `projects/lexico/lexico-api/src/modules/words/lexeme-word-form.resolver.ts:39` |
@@ -1680,8 +1682,8 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-17933-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-555.78_kB-6b7280?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-18186-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-563.60_kB-6b7280?style=flat-square)
 ![Folders](https://img.shields.io/badge/Folders-11-4a4a4a?style=flat-square)
 ![Source Files](https://img.shields.io/badge/Source_Files-181-3178c6?style=flat-square)
 
@@ -1691,8 +1693,8 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Interfaces](https://img.shields.io/badge/Interfaces-56-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-40-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-1-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-312-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-433-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-313-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-436-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
@@ -1701,15 +1703,15 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Test Files](https://img.shields.io/badge/Test_Files-57-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-27-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-82-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-984-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-295-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-783-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-496-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-1026-dc2626?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1005-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-298-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-804-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-499-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-1042-dc2626?style=flat-square)
 ![Imports](https://img.shields.io/badge/Imports-992-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-231-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-581-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-967-475569?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-238-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-586-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-978-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-0-ca8a04?style=flat-square)
 
 ### Python

@@ -4,7 +4,7 @@ import _ from "lodash";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { aspectBodies as tripleAspectBodies } from "../caelundas/caelundas.constants";
 import {
   bodyDisplayName,
@@ -36,7 +36,6 @@ export class TripleAspectsComposerService {
 
   constructor(
     private readonly aspectGraphService: AspectGraphService,
-    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
     private readonly logger: LoggerService,
     private readonly progressiveUtilitiesService: ProgressiveUtilitiesService,
   ) {
@@ -60,9 +59,7 @@ export class TripleAspectsComposerService {
       tripleAspectBodies.map((body) => bodyDisplayName(body)),
     );
     const bodiesCapitalized = _.sortBy(
-      forming.categories.filter((category) =>
-        tripleAspectBodyNames.has(category),
-      ),
+      forming.tags.filter((tag) => tripleAspectBodyNames.has(tag)),
     );
 
     if (bodiesCapitalized.length !== 3) {
@@ -78,45 +75,6 @@ export class TripleAspectsComposerService {
     }
 
     return this.resolveProgressiveMeta(bodiesCapitalized, aspect);
-  }
-
-  /**
-   * Builds triple aspect categories.
-   */
-  private buildTripleAspectCategories(args: {
-    body1Capitalized: string;
-    body2Capitalized: string;
-    body3Capitalized: string;
-    focalOrApexBody: Body | undefined;
-    phase: AspectPhase;
-    tripleAspect: TripleAspect;
-  }): string[] {
-    const {
-      body1Capitalized,
-      body2Capitalized,
-      body3Capitalized,
-      focalOrApexBody,
-      phase,
-      tripleAspect,
-    } = args;
-
-    const categories = [
-      "Astronomy",
-      "Astrology",
-      "Compound Aspect",
-      "Triple Aspect",
-      _.startCase(tripleAspect),
-      _.startCase(phase),
-      body1Capitalized,
-      body2Capitalized,
-      body3Capitalized,
-    ];
-
-    if (focalOrApexBody) {
-      categories.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
-    }
-
-    return categories;
   }
 
   /**
@@ -136,34 +94,42 @@ export class TripleAspectsComposerService {
   }
 
   /**
-   * Derives focal extra info.
+   * Builds triple aspect tags.
    */
-  private getFocalExtraInfo(
-    formingCategories: string[],
-    aspect: TripleAspect,
-  ): string {
-    const focalCategory = formingCategories.find((category) =>
-      category.includes(" Focal"),
-    );
-    if (!focalCategory) {
-      return "";
+  private buildTripleAspectTags(args: {
+    body1Capitalized: string;
+    body2Capitalized: string;
+    body3Capitalized: string;
+    focalOrApexBody: Body | undefined;
+    phase: AspectPhase;
+    tripleAspect: TripleAspect;
+  }): string[] {
+    const {
+      body1Capitalized,
+      body2Capitalized,
+      body3Capitalized,
+      focalOrApexBody,
+      phase,
+      tripleAspect,
+    } = args;
+
+    const tags = [
+      "Astronomy",
+      "Astrology",
+      "Compound Aspect",
+      "Triple Aspect",
+      _.startCase(tripleAspect),
+      _.startCase(phase),
+      body1Capitalized,
+      body2Capitalized,
+      body3Capitalized,
+    ];
+
+    if (focalOrApexBody) {
+      tags.push(`${bodyDisplayName(focalOrApexBody)} Focal`);
     }
 
-    const focalBody = focalCategory.replace(" Focal", "");
-    if (aspect === "t-square") {
-      return ` (focal: ${focalBody})`;
-    }
-    if (aspect === "yod") {
-      return ` (apex: ${focalBody})`;
-    }
-    return "";
-  }
-
-  /**
-   * Derives phase emoji.
-   */
-  private getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
+    return tags;
   }
 
   /**
@@ -248,20 +214,16 @@ export class TripleAspectsComposerService {
       return null;
     }
 
-    const {
-      aspect,
-      body1,
-      body1Capitalized,
-      body2,
-      body2Capitalized,
-      body3,
-      body3Capitalized,
-    } = meta;
-    const extraInfo = this.getFocalExtraInfo(args.forming.categories, aspect);
+    const { aspect, body1Capitalized, body2Capitalized, body3Capitalized } =
+      meta;
     const descBodies = `${body1Capitalized}, ${body2Capitalized}, ${body3Capitalized}`;
 
     return {
-      categories: [
+      description: `${descBodies} ${aspect}`,
+      end: args.dissolving.start,
+      start: args.forming.start,
+      summary: args.forming.summary.replace(PHASE_WORD_PATTERN, ""),
+      tags: [
         "Astronomy",
         "Astrology",
         "Compound Aspect",
@@ -271,10 +233,6 @@ export class TripleAspectsComposerService {
         body2Capitalized,
         body3Capitalized,
       ],
-      description: `${descBodies} ${aspect}`,
-      end: args.dissolving.start,
-      start: args.forming.start,
-      summary: `${symbolByTripleAspect[aspect]} ${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${descBodies} ${aspect}${extraInfo}`,
     };
   }
 
@@ -313,7 +271,7 @@ export class TripleAspectsComposerService {
       phase,
       tripleAspect,
     });
-    const summary = `${this.getPhaseEmoji(phase)}${symbolByTripleAspect[tripleAspect]} ${symbolByBody[body1]}-${symbolByBody[body2]}-${symbolByBody[body3]} ${description}`;
+    const summary = `${symbolByTripleAspect[tripleAspect]}${symbolByBody[body1]}${symbolByBody[body2]}${symbolByBody[body3]} ${description.replace(PHASE_WORD_PATTERN, "")}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: timestamp.toISOString(),
@@ -321,7 +279,11 @@ export class TripleAspectsComposerService {
     });
 
     return {
-      categories: this.buildTripleAspectCategories({
+      description,
+      end: timestamp,
+      start: timestamp,
+      summary,
+      tags: this.buildTripleAspectTags({
         body1Capitalized,
         body2Capitalized,
         body3Capitalized,
@@ -329,10 +291,6 @@ export class TripleAspectsComposerService {
         phase,
         tripleAspect,
       }),
-      description,
-      end: timestamp,
-      start: timestamp,
-      summary,
     };
   }
 
@@ -359,12 +317,10 @@ export class TripleAspectsComposerService {
       tripleAspectBodies.map((body) => bodyDisplayName(body)),
     );
     const planets = _.sortBy(
-      event.categories.filter((category) =>
-        tripleAspectBodyNames.has(category),
-      ),
+      event.tags.filter((tag) => tripleAspectBodyNames.has(tag)),
     );
-    const aspect = event.categories.find((category) =>
-      ["Grand Trine", "T Square", "Yod"].includes(category),
+    const aspect = event.tags.find((tag) =>
+      ["Grand Trine", "T Square", "Yod"].includes(tag),
     );
 
     if (planets.length === 3 && aspect) {
@@ -399,8 +355,8 @@ export class TripleAspectsComposerService {
     );
 
     return pairs.flatMap(([forming, dissolving]) => {
-      const aspectCapitalized = forming.categories.find((category) =>
-        ["Grand Trine", "T Square", "Yod"].includes(category),
+      const aspectCapitalized = forming.tags.find((tag) =>
+        ["Grand Trine", "T Square", "Yod"].includes(tag),
       );
       const event =
         aspectCapitalized === undefined

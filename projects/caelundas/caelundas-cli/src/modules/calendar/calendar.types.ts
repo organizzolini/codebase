@@ -30,12 +30,12 @@ export interface BuildCalendarFileContentParameters {
  * Arguments used to build and log an instantaneous event.
  */
 export interface BuildInstantEventArguments {
-  categories: string[];
   date: Moment;
   description: string;
   logger: {
     info: (message: string, context?: string, data?: LogData) => void;
   };
   summary: string;
+  tags: string[];
   timezone: string;
 }

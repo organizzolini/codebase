@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/architecture/common-packages.md": {
+      "pageVersion": "sha256:e85128865830290b82f9bddad195b7a17ea712a3e2e589ce7e905a387b44ed01",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/architecture/ic-suite.md": {
+      "pageVersion": "sha256:ee1c5e524b6768f7fb72d3fa0afc54ca0e19ca3da7086fa213d4592e08bfd4c3",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/architecture/infrastructure.md": {
+      "pageVersion": "sha256:1b5671e6ddb46358c29f4a62f59568861a78bb95d455daeaae41a73f2925086e",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/architecture/overview.md": {
+      "pageVersion": "sha256:fb5d55e25c9d976d321e4d0eadfab57afdddf24851d39dfba786c5ad784e0101",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/concepts/generator-template-instance.md": {
+      "pageVersion": "sha256:cae3f28596fb9dbf25c67ddd104acee409a2553a2481a48c55e13faa3f973d5c",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/concepts/meander-theory.md": {
+      "pageVersion": "sha256:865f2fa1f45e3a773f3b1e352d31ed318c0f9a778a80d2c6d594f9fad6344b07",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/domain/affirmancy.md": {
+      "pageVersion": "sha256:4ee057cc0426eab316b7f5cb7701ca2c17e2acbf61d6a44160860f3cf29a5b1e",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/domain/caelundas.md": {
+      "pageVersion": "sha256:044a49dcab1361999ee515257713a00cff1463f5a7be8dd31e02b0904d24d2a5",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/domain/callidescope.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:0279fbe754ca77d16d4bcad49d6d2ffcdb8d09dbca426400bebb5cfc7750adb6",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/codependix.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:07d1f6d3694fc355c04a15d5aef0765ebe8c4608642475ec410c29629e2f4a22",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/codometer.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:3db3c13ed08a6cf4c009b262152a3921c2afcea28e128985f9831a83e182c810",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/conformetry.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:1f8fda26d1d7fe09a0f87ae9b46ecbd5fdbcd549c4b0c526a76857c004909659",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/lexico.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:07ac31ffc60cf468243ca07bf25b9c9cbeaab67c21c4e4ad74393ff90b77af20",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/meanderaw.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:0ff30674160d8384f7ef5599e7791a055e4fbb936731a6e04f197d1eee4b1c05",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/overview.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:60a1a6965aff955e2e6d0bc3835b81571372201333a6b243786624c71d502e92",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/domain/projects.md": {
+      "pageVersion": "sha256:cb8aabf5abf1b2efd7e77310994203f85964ca5029054c03ef9370ade4f4b573",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/integrations/external-services.md": {
+      "pageVersion": "sha256:87ea837b40569e66c943630de819e81e4f2e321c997fad4f891646a0c10576b9",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/integrations/ollama-searxng.md": {
+      "pageVersion": "sha256:4c912d590bed4b1988a9b6f93bf822024738303943104756bd82015769dd2717",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/integrations/swiss-ephemeris.md": {
+      "pageVersion": "sha256:875032d9eee31b696896310ac91ac917d761c1493246a69c8b994de443cb3736",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/operations/database-management.md": {
+      "pageVersion": "sha256:bf24f139113ed94c2a1f991738980b1dd3d0d052305c728a8cf10a37d2b6864c",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/operations/local-development.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:4d4e901d01442ab4c897cb7c088dfc63f879ff25891f7c3e4ee9cca4611458af",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/quickstart.md": {
+      "pageVersion": "sha256:8ab4391989b899c63b5b8009152bdda63e6f9e013e0ca1167862e36c32553ca4",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/testing/affirmancy.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:29d6d5bdceb236d5d1032fe84bcfb8e6e35c68fdf5146a7436bf531d9a1b4004",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/testing/integration.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:645e55c467f803db7a0c11b8f039180c1b12c12feecdd8f9847654ff076922b4",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/testing/lexico.md": {
+      "gitHead": "653471e9254c3ad16f9e8645f8c168e19a642205",
+      "sourceFingerprint": "sha256:88709e0ffe95afacf9cb18ed3c66743751beeaaf0aaeb6411a4d697b99c299cb",
+      "pageVersion": "sha256:b8a11f9718666368baf74fe8368fd6c062e651218cf88a9f3223d68e65235773",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "708979ae-fbc6-44e9-8839-0e247691464e"
+    },
+    "/openwiki/testing/meanderaw.md": {
+      "pageVersion": "sha256:5100425b556d5d7109c3a3a3d6b6cf6c715791a708e2e026420052a93da64e27",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/testing/overview.md": {
+      "pageVersion": "sha256:d408dbe4cb9e2b480df3373c2df401cf0270709a5137c9ccf452e178a3ebc00f",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/workflows/ci-cd.md": {
+      "pageVersion": "sha256:944d058e1306ac04858988ed408d19041b139a32798a3cceb4ba85a977886a73",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/workflows/code-quality.md": {
+      "pageVersion": "sha256:020098130c269e5ce5a8cc4ea7cf3e39af0a3960035d376e790aac565365c9e8",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/workflows/development.md": {
+      "pageVersion": "sha256:afc7858892a8ae0507fef246167b563a17c40581ffe35060d8a16646cb6b72c8",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/workflows/release.md": {
+      "pageVersion": "sha256:212a98409a6f077365b087045a6e65c2d9b9a2e77ca03a9e459da072e285d226",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    },
+    "/openwiki/workflows/scaffolding.md": {
+      "pageVersion": "sha256:bbea2b2c789112e1890485d37aebe464773c0311c6bee3eac2a0bf1239a4272b",
+      "completedBy": "openwiki/0.7.0",
+      "completedRunId": "7df9edd9-5baa-49ed-be58-ff5524d7fdac",
+      "gitHead": "964665d92ad2136b200dbb9ba11e1243ec28e2f6",
+      "sourceFingerprint": "sha256:fed78493115a552f20b3d2f16a7ed9df7ed6483d4ba2ac94d07ca65ec2b5e9b0"
+    }
+  }
+}

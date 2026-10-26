@@ -6,7 +6,7 @@ NestJS CLI that refreshes the repository documentation from code. It also holds 
 nx run documentation:refresh-documentation
 ```
 
-Needs the `OPENWIKI_*` and provider key environment variables OpenWiki reads; the 🧑‍🏫 Refresh Documentation workflow supplies them.
+Needs the `OPENWIKI_*` and provider key environment variables OpenWiki reads. The 🧑‍🏫 Refresh Documentation workflow supplies them: a free OpenRouter model, with the key in the `OPENROUTER_API_KEY` repository secret.
 
 ## Test
 

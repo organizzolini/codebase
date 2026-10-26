@@ -1,25 +1,25 @@
 // ♟️ Constants
 
-export const ANNUAL_SOLAR_CYCLE_BASE_CATEGORIES = [
+export const ANNUAL_SOLAR_CYCLE_BASE_TAGS = [
   "Astronomy",
   "Astrology",
   "Annual Solar Cycle",
   "Solar",
 ] as const;
 
-export const APHELION_CATEGORY = "Aphelion";
-export const PERIHELION_CATEGORY = "Perihelion";
+export const APHELION_TAG = "Aphelion";
+export const PERIHELION_TAG = "Perihelion";
 
-export const SOLAR_ADVANCING_CATEGORY = "Advancing";
-export const SOLAR_RETREATING_CATEGORY = "Retreating";
+export const SOLAR_ADVANCING_TAG = "Advancing";
+export const SOLAR_RETREATING_TAG = "Retreating";
 
 export const SOLAR_ADVANCING_DESCRIPTION =
   "Solar Advancing (Aphelion to Perihelion)";
 export const SOLAR_RETREATING_DESCRIPTION =
   "Solar Retreating (Perihelion to Aphelion)";
 
-export const SOLAR_ADVANCING_SUMMARY = "☀️ 🔥 Solar Advancing";
-export const SOLAR_RETREATING_SUMMARY = "☀️ ❄️ Solar Retreating";
+export const SOLAR_ADVANCING_SUMMARY = "☀️🔥 Solar Advancing";
+export const SOLAR_RETREATING_SUMMARY = "☀️❄️ Solar Retreating";
 
 export const SOLAR_CYCLE_EVENT_TIMEZONE = "America/New_York";
 

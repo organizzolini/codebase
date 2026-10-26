@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fb5d55e25c9d976d321e4d0eadfab57afdddf24851d39dfba786c5ad784e0101",
+  "claims": [
+    {
+      "id": "claim_562338b830ca4969b96436690c62796c",
+      "statement": "The codebase has four application domains: affirmancy, caelundas, lexico, and meanderaw, each organized as a vertical slice under projects/ with its own applications and data models.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/project.json",
+          "version": "repo-file-v1:sha256:014f3e4afdd5ee216429096cff18a94a084c4a52656aeb1c5b47644948f46cba"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/project.json",
+          "version": "repo-file-v1:sha256:48cd8e7f17157593ca60f5ea7546f88d3687f113cba13905185264e259bb5336"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/project.json",
+          "version": "repo-file-v1:sha256:b2e78ace9c7c99d9ff160f497172cb7df8938abcce6b180c7da7e555b1b9c349"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/project.json",
+          "version": "repo-file-v1:sha256:9055fa9fcbe4b94143d9963e195f81bebb4489402768f441ac55cbf220466591"
+        }
+      ]
+    },
+    {
+      "id": "claim_576a88738ea545b996e36054a5538e07",
+      "statement": "Application domains depend on shared common packages (interface, observability, persistence, presentation) but do not depend on each other.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/project.json#L4-L14",
+          "version": "repo-lines-v1:sha256:8a46fd532b24bd8ce33b1c7ebd17339b65a5f65b0be6aecff8b43ae7abae8ebc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMDE3YjE2NTNjMDQ3ODAzYjc2MTNiYjRjM2FiMmI5MDc0NzRiMWU3MWE0NDllNWMxOTk4MjljYzM4MjVhM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NGQ4YzA3MzQyOTg5MzEwMTU3NmQ4OGQ5OTEyN2U4OWQ2ODkxZDNiMTdlODlkZjAyZWM5YWU3MDcwNWQ4YmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YWZiNWYyN2RiMzhjNTRmZTRkYWQxN2E2NzQyOGMwOTU2ZmJlMDhlOGU3OWY4YWRiYTFjMWNjNjA0ZGQ2YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5Zjc4N2U1N2UzNDhkMTVjNzhiMTBjMDgzNjVhMTRiMjRkZjQ4NjM0MjBhYmFlOTk4MWU3M2E0OWJkNWViNjYifQ"
+        },
+        {
+          "resource": "repo://projects/common/interface/project.json",
+          "version": "repo-file-v1:sha256:f2d77a8658affa8f47fe2d87ef7b427d57fe043343a99d6ef802658fd1adea06"
+        },
+        {
+          "resource": "repo://projects/common/observability/project.json",
+          "version": "repo-file-v1:sha256:994e83ab9efbcae6ee06ec69fee224fc55dd2bc445e548e351380f8b9fe05bb8"
+        },
+        {
+          "resource": "repo://projects/common/persistence/project.json",
+          "version": "repo-file-v1:sha256:02194a2a2cf1a2d20d49f8d3cc4041ddb33ddd336b2fbec44092ec1c54ad70bd"
+        },
+        {
+          "resource": "repo://projects/common/presentation/project.json",
+          "version": "repo-file-v1:sha256:9eaf7f82ce46f0c8002e1f74f8560751aa724534e1decd4063ab31e9aabb1724"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/project.json#L4-L13",
+          "version": "repo-lines-v1:sha256:a4d8d701a2dea538f9352fe15771be2f52bd9312ac9767843d8def45aa3a0b19:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMDE3YjE2NTNjMDQ3ODAzYjc2MTNiYjRjM2FiMmI5MDc0NzRiMWU3MWE0NDllNWMxOTk4MjljYzM4MjVhM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NGQ4YzA3MzQyOTg5MzEwMTU3NmQ4OGQ5OTEyN2U4OWQ2ODkxZDNiMTdlODlkZjAyZWM5YWU3MDcwNWQ4YmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmNGQ2ODU2MmIzNjI4NGVjZjI3MDk5NmM4MDU0MzVlMGIyZmE1NGE4MjYwODljZjczYWQxYTllNTRiYzAzODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2M2M2NjUzOTkzMDRkZDhjY2NlOThjYzEyNzVkMWMwN2IyMTBjNmJhNGJjZmNlYzVkYjRhYzkxOTE1ZTg5NzUifQ"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/project.json#L4-L14",
+          "version": "repo-lines-v1:sha256:b27b3af10b3591b20ed2d33dbc7cf9696ea202704203820671bdb994d1c45007:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMDE3YjE2NTNjMDQ3ODAzYjc2MTNiYjRjM2FiMmI5MDc0NzRiMWU3MWE0NDllNWMxOTk4MjljYzM4MjVhM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NGQ4YzA3MzQyOTg5MzEwMTU3NmQ4OGQ5OTEyN2U4OWQ2ODkxZDNiMTdlODlkZjAyZWM5YWU3MDcwNWQ4YmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTJlMzNmMzNkYTViYjZlODJjM2RmNzAyMmQ4ZWVhNjU4ZDUzYmQ3MzliOWY1NTg5Njc5MWM2YzQwYzY2NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5Zjc4N2U1N2UzNDhkMTVjNzhiMTBjMDgzNjVhMTRiMjRkZjQ4NjM0MjBhYmFlOTk4MWU3M2E0OWJkNWViNjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2542d6a42fc9461fb7256b157592c49b",
+      "statement": "The IC-Suite contains four independently versioned toolchains (callidescope, codependix, codometer, conformetry) each following a five-layer spine: core → configuration → analysis → output → cli, with an optional nx plugin layer at the cli level.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L22-L35",
+          "version": "repo-lines-v1:sha256:d66100f8e3b4d2e1318e6d732be574c6e63b3ccc8e2dce4ea9ea881cfe221e97:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZjFmYTdiNTczMzdhZmJiNjY3NTRmMmVkMWU3ZWI3YzFhZmI4MzBlOWVmZWY1MGIzMzgxMDViZjk0OGJhYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhZDg1MDBkOWE0MDJmYmMzN2UyY2QxMmY0Y2E0MTMxMDk0MTUzMzU3NzUxNjlkNWUxZDA3MzE1OTBiMTQ3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMjg3ZTZjNDhiYzdiYTY1YjI5MjcyM2Q1NTM1ZmYwY2MwYTU3MDkzNWViNGVjODgyNGE5NTdhNWM5MGUwMTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViZDNhNDE2MTM5M2EzYzVmNWRjZmQ2NTAyZWZkOGIxOGFlMmZiMTBiYmZkMDQyNmM2OWM4MzAwN2M1N2QzODEifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/project.json",
+          "version": "repo-file-v1:sha256:bc1a77847c2570aafdefd1237c5ae7fb3b0cd4ee7b9501c7d962d86027a59a99"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-core/project.json",
+          "version": "repo-file-v1:sha256:5146e4eda402a85071635549ffeee692f70c49af9fcff9b8b9af47fb47740b78"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-core/project.json",
+          "version": "repo-file-v1:sha256:e257f7516255825d9804c797ae2dabbdc856726539235953848146b8200a9d16"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/project.json",
+          "version": "repo-file-v1:sha256:d0aba2f3fcace7f90a1d4dd8a24de2adb74f5bc5934b3c3ab852960a38ff6dad"
+        }
+      ]
+    },
+    {
+      "id": "claim_1f265338c08f4dfd8cc716305e158a60",
+      "statement": "IC-Suite toolchains share only the observability package (pino-backed logger); no cross-toolchain @ic-suite/* package exists — this is a deliberate constraint from ADR 0013.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L101-L109",
+          "version": "repo-lines-v1:sha256:243bfc02b01d75f93945a5ac50c56f66b3dd81a3c60caf158b816e80129342de:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjNhMDg1NTY2MWE5NDY3N2ZmMGQxZmY5ZmZiYTAzOTYxNjAxOTdjN2I5MmJiNTJhYTJkOTgzNzBkYzU0ZWRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhlM2ViYmNiZThjMzZjOWJmMGVmNTEyMGMzY2FiYTgzZmU1NjIwYTNhNGM1YjY5NjFjMzZlOWE1NzVjNTVmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmFhNDAyZjEzNjZjOGY1ODkwOWE4MGY1MDc0MzU2NjgzMjMzNWYyN2IyY2U0YzhhYTkzMzkxOGEzMmM2MjE5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjUxM2Y1OGQ4ZWJkZWViZmExNDEzNTMzODRlZmMxMTkzODRkNWI2NzUzZGEwNDJlYWQ0NDMzYmU5MjQ0ODY1ZiJ9"
+        },
+        {
+          "resource": "repo://projects/common/observability/project.json",
+          "version": "repo-file-v1:sha256:994e83ab9efbcae6ee06ec69fee224fc55dd2bc445e548e351380f8b9fe05bb8"
+        }
+      ]
+    },
+    {
+      "id": "claim_37b7ae1c14444f0f800fe881e8688438",
+      "statement": "Common packages (interface, observability, persistence, presentation) are internal workspace libraries (type:package) used by application domains and IC-Suite toolchains, not published to npm.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/project.json",
+          "version": "repo-file-v1:sha256:f2d77a8658affa8f47fe2d87ef7b427d57fe043343a99d6ef802658fd1adea06"
+        },
+        {
+          "resource": "repo://projects/common/observability/project.json",
+          "version": "repo-file-v1:sha256:994e83ab9efbcae6ee06ec69fee224fc55dd2bc445e548e351380f8b9fe05bb8"
+        },
+        {
+          "resource": "repo://projects/common/persistence/project.json",
+          "version": "repo-file-v1:sha256:02194a2a2cf1a2d20d49f8d3cc4041ddb33ddd336b2fbec44092ec1c54ad70bd"
+        },
+        {
+          "resource": "repo://projects/common/presentation/project.json",
+          "version": "repo-file-v1:sha256:9eaf7f82ce46f0c8002e1f74f8560751aa724534e1decd4063ab31e9aabb1724"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ff317324238417eaf968f1922f3cb5a",
+      "statement": "Infrastructure includes Helm charts (kubernetes-job), Terraform (Linode LKE), Docker Compose (local Postgres, SearxNG, Open WebUI), and GitHub Actions workflows for CI/CD/Compliance.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/README.md#L69-L81",
+          "version": "repo-lines-v1:sha256:c7b44353b7d715f1e1406048354db3636f97b1930be246270bade6dc7bd6ce83:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTEzZjdhOGIyZTIxMzdlODgyNDZhZjc2MWFiNjEzMWY5YzBhM2Y0MzQzNjVhNWJiZTc4MjYwMjE4NWEyNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMTVmMjU0NjAyZDVmZTk1MDU0ZjFiYjU0ZjFkYTZiMDk4ZTAxYzc2ZjE4NzcwZTUxZGRkYzQ2ZTdjMDg5ZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NmY5Mzc1MWIzMTUzYWY2NTdmMzJmOTcxNmZlZmIzMTRlMTRjNjM5NDY5MzdlNTI4YmRhMWExZGI2YzAxZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NDZiNTFiODZhN2U4OGQwNmQ5ZGNmMDgwODlhY2I2YWE4NDQ2MDUwOGUyODg5YjM1N2JmMDQ2NTg3YjExYzIifQ"
+        },
+        {
+          "resource": "repo://infrastructure/README.md#L7-L13",
+          "version": "repo-lines-v1:sha256:9acd434ca199f3d00e2c790ab992c507909b5e94e296c19e594189abbdb9dfba:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAxNmRlNDc0OGNjYzYxOGQ2NzQyYmU1NGFkNDhiOWRhM2RmODI3YjJmMWY5NTg4YTFlYTdlNzdjMWExZGM3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2I0ZjhjNWY1NTExYzI1NjQ5MTFiZDNjYzYyMTZhMDhhYmQ4ZmNmNzI2MjA4ZTBmMjAzY2YyOGM1NzBkZTZkOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA5Y2ZiNmUxYzE1Y2JiYTAzOWM1ZmNjMjFmZmVhZGVlMjA5NjM2Njg0Y2ZmZjdlZjJlZmIxYzJlMzRjYWFmYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_aeb964372a324f16ad7012b7c99a92d0",
+      "statement": "Dependency direction: applications depend on common packages; IC-Suite toolchains are independent but consumed by configuration tooling; infrastructure runs applications and provides shared services.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L326-L446",
+          "version": "repo-lines-v1:sha256:c78fab44bc623d1b64e49b1ff0befdd8dc53b4e6f0d81fd268ab26e7fddd07ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiMTcyZTdhNjczNGYwZDc3NWNlYzgwZGJmYjk1NWI2N2EyMDlmZWY0NzkwMTUzNjU3NDY1NTAwZmY0ZDcyMjIyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NTY3MGRjMzFlZmQzMmRkYTYwMDQzODIwN2RiZWM3ZjBhMzExN2QyZDYwZWY1OGZjMGQ0NTZhOWQ4YWJiMDU1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4MzYxMjI3N2ExZTU4ZDdhNDY5Mjc3ZWZjYjM0Njk2ZjEwMDNiZTY5MmIyZDAxZDg3YjZiMGMwMGU5NmE0ZGNmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMzRmNjRlYmFjYjMzNzlmMTI2NTRlNjRmMDZmMzRlNjliMWE5NGEzNzViY2U5YTM3OWEwNjMwODAxOTFiODFkIn0"
+        },
+        {
+          "resource": "repo://configuration/codependix.config.ts#L172-L286",
+          "version": "repo-lines-v1:sha256:a8c133139231f6e4f9b6a441e51f728e62f5cd0eb80f7a8021760e31574a61be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmOTJkYWI5ZGU5NzI3Y2Y0NWQ2ODM5YmZhYWY4ZDRkZWM5ZTY4MDAwMGU3MWM2ZjI5ZWJjOTgzZTU5NjdiOWQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiOTc4ZTI1MDNiOGNmMzdhMDZmN2Q2ZjBhM2E2YjZmZTM1NjkxZmJjYWI1MGI4Nzc1Y2FiNmZhYmM3MWM1OTJiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYTdiNjg2ZTM0YTZhNDBmZGY2MzdlMzY5ZmMxY2I0NWQ3YTk2ZGRlYWIxNDA3ODY4Mzc4MzIwMmI5ZmJiNDRkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5YzI4NDk1ZDNjYWUwNDhhYmIzMGExY2I4ZjRkMDQ5YTRhZjQyMjk4NjQ0NjZjNWQ0MTZmNmM3YmRkMWEwMDllIn0"
+        },
+        {
+          "resource": "repo://infrastructure/README.md#L32-L38",
+          "version": "repo-lines-v1:sha256:64011e94c25302403792bb34f74444c1555123caac0a57ae399e0c8eab60c2ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjIxOGU0ZDc1NzdmYzA5NGI5NWM3ZDBjNjg1ZTExNzhhNGNhZmRlNzViMDNkODY1NDZjYTc4ZjcwYmRiZTZjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODY1YjFmMzRhZTAwNTE0Mjk1NzQ5MWRiZTkwYmQ0NDBiYzEyMDdiNzFjNDVhYzM2ZDUxOTA1YzNhYzk1NTU2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQxOTM4OGVlMjFjY2RkMmNkOTcyN2E3ZTk2OTM0YTExYmY1NDE3ZTkxNzdlYzBjNjRkYTZkZjU2YmI5N2I1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e81f961611aa48a49f5196b3314f3ad8",
+      "statement": "ADR 0024 mandates every project lives under projects/ with domain grouping folders; project type is determined by type:application / type:package tags, not folder location.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0024-nest-every-project-under-projects.md#L9-L22",
+          "version": "repo-lines-v1:sha256:1fd7545507d3ac850d3d331f3733bfa5332868822634f28aedddf37e477f511a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkM2RiYzRlN2U3Y2JlNWRkYzg5MWIwODA3MTJmNjM1MWM5NGI3MjhlYzhiZDg1NTZmNDYxMmIwNzBkMjdiNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhZjM0ZTkzZjM1N2NmMzg1OGZkNzJhZTY2NDk3NDc1ZWU4MWE2ZWYxNTc3OGUwY2ZmY2QxNzFmZmY3YWQyMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNmMwNzljOTk3ZTEwOTA5NDk2MzE3Yzg4ZmIyYzAxYTYwZjYzYjYzMzM2NDJhOGUyMzUyNzc0NmUyNWFjOGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4389a704977b46b69a337914263cae04",
+      "statement": "ADR 0013 defines the IC-Suite five-layer spine vocabulary with layer:* tags, the core-vs-configuration test, per-suite analysis layer naming, and the no-shared-package constraint.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L101-L109",
+          "version": "repo-lines-v1:sha256:243bfc02b01d75f93945a5ac50c56f66b3dd81a3c60caf158b816e80129342de:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjNhMDg1NTY2MWE5NDY3N2ZmMGQxZmY5ZmZiYTAzOTYxNjAxOTdjN2I5MmJiNTJhYTJkOTgzNzBkYzU0ZWRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhlM2ViYmNiZThjMzZjOWJmMGVmNTEyMGMzY2FiYTgzZmU1NjIwYTNhNGM1YjY5NjFjMzZlOWE1NzVjNTVmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmFhNDAyZjEzNjZjOGY1ODkwOWE4MGY1MDc0MzU2NjgzMjMzNWYyN2IyY2U0YzhhYTkzMzkxOGEzMmM2MjE5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjUxM2Y1OGQ4ZWJkZWViZmExNDEzNTMzODRlZmMxMTkzODRkNWI2NzUzZGEwNDJlYWQ0NDMzYmU5MjQ0ODY1ZiJ9"
+        },
+        {
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L13-L35",
+          "version": "repo-lines-v1:sha256:66b08f0d100fded36b5c065b488ed25a735ccdb4d5c8aaab7260a7ff4c7bfd41:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhZDg1MDBkOWE0MDJmYmMzN2UyY2QxMmY0Y2E0MTMxMDk0MTUzMzU3NzUxNjlkNWUxZDA3MzE1OTBiMTQ3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YmMwNGNkYTZjYWNhYjEwYTJjOGE4MGQ2ZWQyOWZiYjZjODJiNThjNzQ5OTg2MzcxYzg1NDlhYzFlZjRiMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViZDNhNDE2MTM5M2EzYzVmNWRjZmQ2NTAyZWZkOGIxOGFlMmZiMTBiYmZkMDQyNmM2OWM4MzAwN2M1N2QzODEifQ"
+        },
+        {
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L47-L58",
+          "version": "repo-lines-v1:sha256:041b24e853eb1bdf0a553e25ce608a36c7cfa9bffb13cac51ad9f7a3b40e6398:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmN2ZlZThlY2Q4MjdhNzZkMWUwMzE2NDM5MDA3NTUzODFmMTA4MjVmNzAyOGE5N2VmMWYxZWMyYmZkOWQ4ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyYTM1NDQ3OTUzNmE2NDViNjdlMjVjOGRiNDRlYWM4ZjdiYjBlNjNkNzc0NWY1ODYyMWNjYWRkYjlkYTE4NjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMmE0YjAyOGY3NzI1MjMyODhhYzQ5YzRlMzU0MjE2OTQwNTczYTcxMWU2MzU2MDVkZDUzMDI3Mzc4MTRjZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyZTk1ZDEyZThjYTRkODRhZmVmYTczNTA0YzlmNTdjNWU5MThkNTQyZDc4NDAwYzAzM2RkZTczYjJmZTBjZWUifQ"
+        },
+        {
+          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L60-L70",
+          "version": "repo-lines-v1:sha256:7ccc6a8e63700b84d8c5777c16277f587a67823799fca6977920e30b9616a745:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMzkxMzJhZDZlOGFiZTJmODhiMTg5ZDYzOWIxZWM1ZTY1M2Y5OWNlMmFiYjBlNmQyN2E4YzE2ZjFmN2YzMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYzQ2NTk0NTM4OWIxYzcxNjU4ZmRmZTk2ZDIzNGFmNTVlNmI0NTY3ODZhODM2ZmIwNGQ3OTU1YTI1MTQ1NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNjg1NWI4YzJhZGFhZGE5MTVkMzk3NGU2MGFmY2ZhNDVmMGZkMjA5YzUwMmU1ZjA4YWU0MGQyMzI5ODExMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmYjhmYWI2YmQ4OTQzNDY3YzRkOGY0MTI4ZDc4OGE3MzMzMzI3Y2IxZmIxOGI4ZWRjODEzYzZlMDVlMDc2NzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7bf74317eca44366be8876b2eafec6f0",
+      "statement": "The conformetry toolchain implements a cross-cutting template/instance validation loop that operates across all project types in the workspace: generators declared in configuration/conformetry.config.ts bind templates to instance patterns, instances are discovered and matched against templates by best-fit, language modules compare instances to templates by file type, and validation runs in both CLI and Nx plugin hosts with CI integration.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L8-L45",
+          "version": "repo-lines-v1:sha256:9eaf49a0590ad92bdb7b11eefd7f9c42c742765b74862837c4257d39b415f293:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3YmM0YzFiYzIzNzVjZDljZDhlMjBmODIyNjVlNTlhNDg3MDE5Y2YyNWYyZjBlOTY4NzEzOGJjN2FkYWVhNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OTVlMTViNjZjOTA1MDFkY2UxMzkzODA0YzRlOGVjMDNkNWMzM2MxNjA1MGM4ZWYzNzRmYTBiODBmNTFmMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5YzliOTRmM2JkMTc3OTIyYTdhZDQ0OWZmZWUzZTYyYTlmYzllNDM2ODFkYTIwYzQyMmU2OTZjY2ZjMWEzNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlY2RmNWI1NDFmODBkMjU4MTUyZTgzZjM5OGFhNTM5NWJmM2Q5ODA1Yjc2MTk2MmM0N2Q1OWRkZjI4MjhiZmUifQ"
+        },
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L50-L120",
+          "version": "repo-lines-v1:sha256:3410f188d53065677e9f81dbbf559a60ad4537125471ececb67d0e120e06b588:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZTIxN2VjNzE3MGE2MDkzMmUyN2EwMWMwMjczMTQyMmRkNjgzYTE5NTJjYzNhMTg4YWQyODA4ZjE2MTFiYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTBlYjZjY2RiMGZlZmNjM2M5YTg4M2M4NzljOTg2NmJlMzM5MzFjYWFhYmYzNjYyZDdhYzRjNDEzZWM4YjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNDBmMGU5NjUzYTQyOGZmMDhiNmQ1YmE5NzEwYzdmN2EzYmJhMmYxMzhkYzk4MWFlMjVmOWY5OTkwYmY1ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkMjMzZjZjMTdkNmE3Y2EwYjUxNjE4NWEyZDEzNDljODcxZmRmZTlhYjhlYzg5ZDFhY2Y0MDRlYjkzYjg1NTcifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-configuration/README.md",
+          "version": "repo-file-v1:sha256:95c5953c52e9719ad16fc6a9b8d04f9d2546b2638d437addf7f5b7eb30752fa3"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts",
+          "version": "repo-file-v1:sha256:6370d76ee7468ca16398324c72f1661d1170182d2afee79516475bffb8b2b84e"
+        }
+      ]
+    },
+    {
+      "id": "claim_d70689adf9f04ae296fa30b207e04a93",
+      "statement": "Nx enforces module boundary rules via project tags and ESLint depConstraints: applications (type:application) cannot import other applications; packages (type:package) cannot import applications; applications can import packages; packages can import packages. These rules are codified in codependix boundary definitions and enforced by the codependix-gate Nx target in CI.",
+      "evidence": [
+        {
+          "resource": "repo://configuration/codependix.config.ts",
+          "version": "repo-file-v1:sha256:72fe9decdbfb6dc02c76d97c5636eb4c4be31d2831507f6aef51964223f51d00"
+        },
+        {
+          "resource": "repo://nx.json#L180-L200",
+          "version": "repo-lines-v1:sha256:96faef7d2f20ef24826a174ddbd0a4fb69088ea78f97e92f79d5bd4307b07947:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2M2Q1MzVjZTM4MDYzZDZiNGM1MWQ4YzM4NmE3ZjliM2U1ODBhMTRhMTBjMDdiMTk4ZGZhZjE5YzkzYTNiZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyYjBkNWYzMzBmMzY5YjU5ZGQxM2U5MmJjNzk4ZjIwM2IyOTkwYjRmMDFkZTVlNDRjMDE1NmJmOGYyZmVhNmUifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/project.json#L6-L11",
+          "version": "repo-lines-v1:sha256:9c5f3f039ba87951db4ce7bcebc7596e7dd7fec01362381b7582dda32952c97b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJmZTRlODk0NjNhYmYyNDg4YzE0ZDk1NWU0NGNhMWMzMDYxOThmYjI0ZjRmM2I0MzcyYTQ3OTBlZmI4YWU0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY0ZDhjMDczNDI5ODkzMTAxNTc2ZDg4ZDk5MTI3ZTg5ZDY4OTFkM2IxN2U4OWRmMDJlYzlhZTcwNzA1ZDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODJlM2NhYTYzMGM2YTYzNWFlNzk1NDZlNjNhMGQ5NTFjNDIxYTBiODZiNjg2Njg1NjJhZTg0ZDg0MmY5ZGM0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzRkZGE5NjU1MjI5NzMxZjgxMzAyMzJhMjJjNmI1YmEyMjVlMjU0YzVmZTllMWQ5ODZlZjAxMjQ5NTIwZThmNSJ9"
+        },
+        {
+          "resource": "repo://projects/common/interface/project.json#L6-L11",
+          "version": "repo-lines-v1:sha256:973897bed5de52b8dad6b9606abb456bbb0b54038434e8e35c568533142fbbad:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJmZTRlODk0NjNhYmYyNDg4YzE0ZDk1NWU0NGNhMWMzMDYxOThmYjI0ZjRmM2I0MzcyYTQ3OTBlZmI4YWU0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY0ZDhjMDczNDI5ODkzMTAxNTc2ZDg4ZDk5MTI3ZTg5ZDY4OTFkM2IxN2U4OWRmMDJlYzlhZTcwNzA1ZDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjhkNjBiMmI4MmM5MTY3ODdmZjY5ZTVkN2FhYjFhZWRjMTBjM2M0NDZkODc0NGYzZjgwMThkOTc5NDZmYjQyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjlmNzg3ZTU3ZTM0OGQxNWM3OGIxMGMwODM2NWExNGIyNGRmNDg2MzQyMGFiYWU5OTgxZTczYTQ5YmQ1ZWI2NiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:0279fbe754ca77d16d4bcad49d6d2ffcdb8d09dbca426400bebb5cfc7750adb6",
+  "claims": [
+    {
+      "id": "claim_f56e52d7b6234feabba03751b3fe7c03",
+      "statement": "Callidescope is a call stack tracing toolchain published as 7 npm packages under the @callidescope scope: agents, cli, configuration, core, examples, graph, nx, and output.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L113-L124",
+          "version": "repo-lines-v1:sha256:e4092b96c133f9255b356afcefd6f976db03ed2c229585f3cd56fafe33dcca86:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlYzg4YWNmNWM1ZjllMjQ0YmVlYmNiNTNlMzAyMjZmYmUwNzkzYjVjNmU4MjhhYWZmMTA1MjgxMThlOWViNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZTJjNDZiOWY0ODhmOTA3Y2VmOThmYjMyZGY5YmVlZmEzMGMzZWRlYTcwODUzYWE0ZTgwYTNhNWM1Nzk0MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2NTQ4M2M4OThiOTVkYWU1ZDliM2Y1YzM4YTE0ZTI3MDY5NTlkZDFhZGY4YmQ0Yzc4OWYzZDY2YWExMjZlMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZmU5YWJlMGZhZDEzMTkyZjRiZjU0ZjYxMDFhODc1M2Y2NzA4OWRmMzk3YjQ2YTQyMGFmNDQ1Y2E2NGU0ZDAifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-agents/package.json",
+          "version": "repo-file-v1:sha256:22a6de0d820010c2fee85f650a545453990d3ac6d5cacde1aaeab27954c3e40a"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/package.json",
+          "version": "repo-file-v1:sha256:1b5e88bc97867e2d256428d4c195dce42720543a725e2f81199d3ba941d93c41"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/package.json",
+          "version": "repo-file-v1:sha256:5a75dc27ac20194c6cda6d611df7ef118dafa47df1284678f4736a67aa817a94"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/package.json",
+          "version": "repo-file-v1:sha256:37aa5d2b93e56b2e725bc133709b9cf7c7c60256a253c7a0b619b0e200843a4c"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-examples/package.json",
+          "version": "repo-file-v1:sha256:00bb358767d03fb2894ff8054cc2bb8869b78cc63d57a48d81f2310146e6848c"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/package.json",
+          "version": "repo-file-v1:sha256:a0ac6b9e5355e5fb029e2c8b6bca31aa4c09e2bbae3df73e8d46b60e2de30dbf"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/package.json",
+          "version": "repo-file-v1:sha256:fdef3fd1c60b5b16c34022cf6072f6ebaa2326ea465d3d80b3e322c2faaf4420"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-output/package.json",
+          "version": "repo-file-v1:sha256:fb37b8046d36263d924a93267d0285e462fce6b0625c39fea24c431d877ccde4"
+        }
+      ]
+    },
+    {
+      "id": "claim_a660b607afe04249ba848bf8928152bf",
+      "statement": "Callidescope defines five core concepts with precise vocabulary: Callable (function-like declaration traced by file and byte offset), Stack (entry point + deepest path, reports floor when path runs through unresolved call), Depth (frames on stack, entry point inclusive, one of two gated limits), Breadth (distinct direct callees, other gated limit), and Entry Point (callable rooting a stack, declared is only kind a person chose).",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L200-L247",
+          "version": "repo-lines-v1:sha256:fb6dd0f5a47036d439c1b017d2b311ff33f739a99f336384ff357e328bd1875f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1ZmRmMGEwYjU0Mjk3YzcwMTk5ZTg1MTA3OWQyZTRjMmNkODg0OWI4MjZmOGZhODM5YzU4N2FkM2U4ZDI4NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ZTc2NTkwOTJlNDkyZThhYWM3NmJiZTc5NTJmMmQ5MTcyNTBmODk1OGE4MDk1ODI0NTNmY2IxYmQzYWI2OTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyNTc4MDhjMmIxMTU3MTQ3ODczZDdlMjI3ODdjZmJiNWY2MWU3YTgxYWEzY2JmODUxMjJlNzQ5NjBkODdhOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NmNjZTBlOTZiYTRkMzY2ZjJiNThkOGQ3NTNjMTYwOTgwZWJiOWU4YWUzYTU5ZDY0ZmI3OTBhYmUzZDZjMWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_25a73ea35e3142b49853659f41edbd20",
+      "statement": "Callidescope has no notion of a module and measures no cohesion; module spread and possibly misplaced findings were removed per ADR 0006, along with the module identity identifier and four limits that tuned them.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L243-L247",
+          "version": "repo-lines-v1:sha256:a169c25a1e5f340a559ca82f4b5609217faf7add7fdbcb979216aae85c6ea2a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmM1MTczYmQ5OTEzMTJlMjIyY2ZiZGRiN2Y1ZDc1Nzc4NjRlYzFhOTU5NTEwN2E2ZmExNmYwNmM3OGQ4ZjlhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzZlNzY1OTA5MmU0OTJlOGFhYzc2YmJlNzk1MmYyZDkxNzI1MGY4OTU4YTgwOTU4MjQ1M2ZjYjFiZDNhYjY5MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWY0YzA0OTA1ZDRiOThlZDA0M2JhNGU5NmE3YzMwZWE0MDk4MmJjNjY4ZTY4ZTVkYTdjMDNmODQ0NzNjYWZlMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDk2Y2NlMGU5NmJhNGQzNjZmMmI1OGQ4ZDc1M2MxNjA5ODBlYmI5ZThhZTNhNTlkNjRmYjc5MGFiZTNkNmMxZSJ9"
+        },
+        {
+          "resource": "repo://documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md#L1-L10",
+          "version": "repo-lines-v1:sha256:046863057b44a880a1d07885110aba099942d9afe781d5f444c471924a3d8d32:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlZGVjZWZkZDU3OGFmOGM5YWM5MDlmODU3NmE4OGY1ZDJlY2NmODk4NDcxMWNmY2VhNWFkMDFmNjc5YTFmM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2Q4ZDE2MzEyYjY2NDViZjI4MmZlNGI0ZjdmNzFjMmE1ZDRmMzI5MDFjZDIzNTVhZGE4MzI4ZGU1Zjk0YzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjZmQ1Y2U4MDFkMDA2MDA1YzMwMTc2OWVhZjg2YWZkNGRiNTI0ODFmODllNjE0OTExMTQ5M2NmMWE3ZmU1NDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_230986abdec44acbbee02984d8a39d4c",
+      "statement": "The @callidescope/configuration package reads callidescope.config.ts for workspace and project configuration, resolves defaults, handles flag precedence (flags may only override declared values), and enforces two per-project gated limits: maximumDepth (default 6) and maximumBreadth (no default).",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/README.md#L1-L60",
+          "version": "repo-lines-v1:sha256:7a847f0871b587cca3c3c0f41efcb799dcbe10f3774f79f550004be29eb7493c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzZTkyM2M1ZTNkZDliMjUxYzJmMTNiYTc5OGFmMWZjZDNhMmM5NjhmZDc5ODVlZGFlYTZjOWQ3OTBhYWNmYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjNjBhNzlmOGM5YzE3NDljNTg0MzZjYzM2Njg4MzUyYjA5MmUzMGUyYjFmOGViZjA1YmVhMjQ0ZjZmMWVhMDgifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/src/modules/configuration/configuration.types.ts#L92-L110",
+          "version": "repo-lines-v1:sha256:c3abd61b5c9e4f4a3b6143181500ff795becfc3f261a270e037897b29094e364:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlN2YzNTQ1MzA5MGQwYmZmMTdjYTQwZTRkN2RmMzY3ZTg1MGQ3OTNjOTA2YTEyZDE5OGFhZGYxOTRmZDliNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzA1NTU0ZDU2NTAwYzNlN2ZhYmJiYTUwNmFjODhhYTZhNWM4Y2NkY2JkZTA4ZmU2OTVhNTYxY2Q2NGU1ZTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e54f50c7c0544669ebb7465681fe42d",
+      "statement": "Project configurations are complete (every traced project must have a callidescope.config.ts with all four fields: entryPoints, exclude, limits, write); nothing is inherited — projectDefaults is spread into the project's file where every number is visible. A traced project with no file or a file missing a field is refused by name.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/README.md#L261-L358",
+          "version": "repo-lines-v1:sha256:43705a1a1b61de3c5991f5f21eea2665210d91a4f997cc61c8085c9e43a3ca44:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjZDQ4YmE4NTg3OTU3MDE4YWMzY2FlODIzZjE2YWIyMmViNTFjY2JlNWE1MWExYzA5OTM4YTkwNzFmN2Q2NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMzQzNzU4MDYxM2I0MjNkNmUzYjVkYzU0MWEzMTgxYTgwY2Q2YTU1NWQyZWNkOTE5NWU1OGM1ZDhkMzM1YmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyMzBhOWIxZTY3ZWFhOTM0MzkyZDk5OTJjNDg0YzE3YWQzZGU3MzhiNjIwMzYyNTA3ODdlOWI1YmY3NzZkZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmYTE4NDEyMTFlNTE0ZGM1MjQxOGZjMGRmMDE2YmMxMzIyYzA4ZmY2NDgwMGE1MWUyOWM1MDliMjQ1ZTViMDIifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-examples/callidescope.config.ts#L1-L82",
+          "version": "repo-lines-v1:sha256:a78e2c34536b451c5235164c4b2cdffaefa31dd72c7834245f7ba34b31d879db:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MTU1MjY2OGExMzYzNWUzNmNkMTg1MTY0ZTBkMzE1NmFkMTBlNWQzMWJkMTlhOWE1ODZmMTlhMjM4ZmE5YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0MjA4NThmZGQ3MTFiZDk3OTQzYTZjM2M0YjE1ZmRlYmYyMjA0NmZiODlkZWIzMWJjZDhlNzI5M2JmZDFmNzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8428f27ee1004163997887048e7d115f",
+      "statement": "The @callidescope/graph package builds the call graph from TypeScript source using ProgramService, CallablesService, ClassesService, EntriesService, ExternalService, and GraphAssemblyService; depth is measured on a condensed graph (cycles collapsed), breadth on the raw graph; structural interface resolution stops at MAXIMUM_IMPLEMENTATION_CANDIDATES=8 constant.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0006-narrow-callidescope-to-depth-and-breadth.md#L12-L15",
+          "version": "repo-lines-v1:sha256:2ca57b84013d770f2d3eecb7071c113afe1a24b9dacf820636838a7b87075a4f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWIyZGQxYzQ2ZDVhYjY5ZThkMjBkZmExZjMzNjQ4MGRiODQzYmQxNjRjMGE2ODkxNDgxMmRlZDE3YWRlMTBjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTlkZTFjMmQ1MDdmZWFhYTZkNzMzNjMwOTUyZDEwMmIwNWM4ODMzOGQ3ODJjMGFkOTRlMjE3M2IyOGIwMTcxNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTQ4ZWU1MmJhZjYwNzEyMDQ5MDllM2YyYTU2Mjk0ZDI5ODQxNGRkM2Y2YzIwNWFkNjk1YjQ2MTFhN2EwY2YxMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ZiOGZhYjZiZDg5NDM0NjdjNGQ4ZjQxMjhkNzg4YTczMzMzMjdjYjFmYjE4YjhlZGM4MTNjNmUwNWUwNzY3NiJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/breadth.service.ts",
+          "version": "repo-file-v1:sha256:916cc96145fed90ebd8a13f31917f433f13bfb8c9ffe032816aa1b9616068999"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph-assembly.service.ts",
+          "version": "repo-file-v1:sha256:7a725c7e88809e5abdb84da15297cc08c99ae280ffcf37e974ca132de9435c3e"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/graph/graph-depth.service.ts",
+          "version": "repo-file-v1:sha256:8ce20628a2518d3539af4aeff6a57bf9829fec7b1b54811e0219f7360a55646d"
+        }
+      ]
+    },
+    {
+      "id": "claim_0ff6fe16fbcf4bf6896c4d470dd503f0",
+      "statement": "The @callidescope/cli package provides the command-line host with commands callidescope (default trace), depth, breadth, limits; CallidescopeService orchestrates discovery, collection, graph assembly, analysis, and reporting; it resolves NestJS injected dependencies via the TypeScript compiler API.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/README.md#L55-L66",
+          "version": "repo-lines-v1:sha256:900604042de021da1bd30525c3761adcd8ba8267987601120fb496405152bbca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MmVhZjRmZDJiMTk3MmE5NzI4ODRlZGY4YjYyMWRlMTFjODNiODFkOGZhM2MyODMyZTNlMzhkMjBkNmZlNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1YzljNmJjZWI4NDg0NzEwMjk2MzJiOWE2NWE3NTQxYzMxYTk4MmM2YmRlZWU3MjI5MGU3N2FmYThhY2IyMDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MTkwYmIxNDY4YTMxNTM4YTE5YTg5MWQ4NDUyZTM3YWNiYmQzZjA1MTFlNDM4NWVhMTAwNjgxOGI1MWY1ZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4MjY4MDQ3ZjU0NDVjZGVmYzhjNzBiZjcwY2M2ZTBmMDkxMjVkMDg1ODA2YTI1NjA2YjEzMTNhZmM1MTRkZmEifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.service.ts#L43-L64",
+          "version": "repo-lines-v1:sha256:2b22ed6ea2ab594e8a16d915e4ed418c1bcb7911ae9881cf52f8aa7f77f5da2e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0Mzk0MzEyOTMyYjgyNDEzNjc5ZDA5ODU2ZTBmMGI0MjQ2YjE3YWY3MmVmNTRkNDA3Y2YzMTgyZDdkMWM2MzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3ZmUxODA4YTFhNjIwMzM0NTUxMjM5NzRkY2E5MDIxODgwZjEyOTIzNDgzYzY4YjRkYmY2NTcwYjYzNGYzMDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61100ee6b49042b796d5541a04763cde",
+      "statement": "The @callidescope/nx Nx plugin infers four targets per project (trace, depth, breadth, gate) that follow the Nx dependency graph; gate judges only the scoped projects against their own limits, with depth always judged and breadth judged where maximumBreadth is declared.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts#L126-L178",
+          "version": "repo-lines-v1:sha256:45c293ecfb6cab480e0757f988ecf6563f9824edd7fb2d38bf08e577fdfc4431:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNTM0Yjg4ZDA0MDhkZTMxZmMyN2QyNjg1ZjIwMmFmZTkyOTRkZDA2MzdjNWRiYmM5MWY5OTE3NDIwNGE1NGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdiNmM2MmQ0MzA3YmM1NjE2ODExNWY4OGNlZTRhNjg3ZTMxMDYzNGYxNmY0NTllNDk2OTU2ZjFkZWJmMmU4YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5N2ZhYmE3MGYzYzJjM2NjYTc0MmIxNDc4ZmM2MzhkODUxMDI4ZTM0NmFiMWI3YzRhZTI1OTAyNTE3NmM0MDAifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/plugin/plugin.service.ts#L266-L297",
+          "version": "repo-lines-v1:sha256:3577f6b4f98162861efb04477ff225f572984be7c360dffca7ec73c95beb0e7c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZGZhMTYyYWI0ZDFjNmQ3NDUxOTNlN2VlMjQ2YjI5NmI3YjFhZjc1YjNjZGRiYTFlOGFmYzJkMWQ3MDdiNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlNTA1NTdhNTRiNDFkOGIzNzI2MmE2ODE0MzJmNDU3ZTZiM2U5ZDgyM2IzYmQ5N2JiNjNiNTRmZjMwOTgyYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1d33adb5fcf24bb28d036001b7fbbbcf",
+      "statement": "The @callidescope/output package renders findings into markdown (tree view with anchors), mermaid (flowchart diagrams), and JSON formats; OutputMarkdownService splices blocks between anchors with byte-for-byte staleness checking; ProjectReportsService finds owned findings and unread projects.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-output/src/modules/output-markdown/output-markdown.service.ts#L20-L100",
+          "version": "repo-lines-v1:sha256:aea6566efb714610c2fbeb5e6b0de32c1ac48aa8243cc805b2a1931989b91b04:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMDU0ZjM5OWMyOGIwODJmOGZhMDRmYjdjNjVjOWQyZmQ4MDI3YTQxOTM4MjQ0YjZmN2QxMjc4MDljYTdhZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMTY0ZGQ2ZWZmMTRjMWUwODdiMDM2ZGJjZGE2YTA4NTU2YzlmZmUyNDZlN2FhM2YzZWY5Y2U5ZmYxMjNkZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxYzUyM2Y0MzEwZjZlYzBjMGQ0ZTI5NGY2YmQ3MzhiOTYzOTk3YTg1ZmMyODBkODk1ZjM0MTBlZDMxNDZmNTYifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-output/src/modules/report-findings/report-findings.service.ts",
+          "version": "repo-file-v1:sha256:98da4b8593261fdcecc43a8f8c71c44611b6e79284833e524c91950042814469"
+        }
+      ]
+    },
+    {
+      "id": "claim_8029ea1f57904a80a98003156e076d2e",
+      "statement": "Callidescope's entry point rules are additive: declared addresses, framework decorators (13 defaults), exported functions from barrel files, lifecycle methods, bootstrap functions, and orphan promotion (callables with no callers). Orphan promotion is a safety net against missing rules silently removing subtrees.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/README.md#L66-L92",
+          "version": "repo-lines-v1:sha256:54ea6dd47927a01343646730cafbfe85af49a460a32ded15d5044180058bae38:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3NmJjZjE2ZGJjZmJlNTAxOThiOTYzMGRhMjc0ZWI2OTdkOWM2MjRiNDFmMDhiNTNiNjQxZDQ0MjQ4NzU5ZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3M2JiNjk0MjRkZjdkZTNhOTUzOGU3NWExMDk4M2Y1ZjgzOWFjMGIwOTFhNDNjNzBjZGZmYzI3NjU3OGQxYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ODY5MTBjOTk5ZGM5YmE3MWU3YzUzNGIyMmE5NGI3ZDgzYzhlMTQzYzIxNmU5Y2E5YjZkNjllNjY5MjA1NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3YTVhNTRkNzYzZDc1NjUxMjkwM2Y5ZmUzNTA0ZDViZGUxYTYyZTU2ZmE0NTYzMmNmMDE1ZTRlMDg0MjNhZjkifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/src/modules/entries/entries.service.ts#L32-L48",
+          "version": "repo-lines-v1:sha256:de3d6b3c1e5b688fc72a860cb905c8c543545c213d2e8a65f6b28eaad2cbb2c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlYWU0OWYwM2E0YjVlNjZlZjBkMWIzOTRkYWM1ZDE2NmI2YzI5NTBjNGU3M2QwNmEyZjM3YmQzYjliNjQxMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4OGVmNDEwYjE0MGQzYTY3NjM1YTM3Yzc3YWIzNzE0YTI4ZTM3YTBlYTI4ODNmOThmYzUxNmY4YjQ2MDI3YTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e722cddf22842858d57322406548637",
+      "statement": "Exclusions filter collection, not discovery: excluded files remain in the TypeScript program (compiled and type-checked) but their callables are never collected; a call into an excluded file becomes an unresolved call, making depth a floor rather than a measurement.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.service.ts#L107-L126",
+          "version": "repo-lines-v1:sha256:c8c41e2af9bde0b8a34e3826a1e46c5737d70215a19b3bfeac535a2cac89e95a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MDNiYWNiYzA1MGI4ZTc1MWFlNDNjNjJhZTAwMTc4NmY5YTRiNjZkY2NhZmExMzc4Y2UyMjEyOGMxY2ExNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkMzA2ZGVlY2RjNzBmYTgzZDM3YTI2ODYxOWIwYmNmMDFhZWRjYzkxYmI1ZTJlNzVkM2I1YzVlNDNkNjVmMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3MjYxYjY1ZTAyMWY1MmRiY2NlYjAxMTAxOTYzYWMzM2ZlMWNmZWMxZDlmYWExMDFhN2FhMmRjY2MzYjA4NmQifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/README.md#L103-L120",
+          "version": "repo-lines-v1:sha256:594bd38fc9d1534ed01b864849fc32e4832484e3dea1baf547c1a934144fc434:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxZGIyY2QzZWUwZmM3ZmY5MjcwOWQ0MDI2NDExMjI2YjAxMGQwMjQ1MTUzZjgzNjNlZTYzMjAyYTRmYWY5MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2YjE1MzA5YTI5MmQwMDUzZWE2MmI2ZGM4YjY1NjljZDgyNmFkMjYxYWY0ZWNmNzIwOTk2MjMyYTE0ZDZjOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyNWQ1YmFhOGJmNjk5YzYwNzc1N2EzZjkyNjE1Y2ZiNzFiODg4NzRiNWFkZmUxN2IxMzMxMTVkNDQ5MjMxMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZGI3ZmFjOTU4OGE4YjMyYzBhYTc0Zjg0ZDcxZjhlNTQ1NWE1ZTc1Y2JmMTQ4ZmIyMDkxNWFhMTUyOGEzNGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f9759c33f9d446c8aa616b6c897421cf",
+      "statement": "Two failures are unconditional: 'Rejected a project it could not read' (tsconfig.json parse failure) and 'Traced nothing' (zero callables collected); both exist to prevent a green gate over an unexamined workspace.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/README.md#L161-L182",
+          "version": "repo-lines-v1:sha256:96ac4117cab5612ae2b0d356c1ebd2bfb33009334446b9372a3b790b5b3643c1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0MzkxM2U1YjEzNWNkY2NlMDhjMzc0YWJlMjIzNmU3YTMyYzI2N2E1Zjg4NGZiMTYyOTk1ZDcyNTc3MWIwNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyM2Q3MWM5ZGU3ZTBhMTJkNGUxMDNiYmMzMjM3Mjg3ZTFiZjUxN2Y1NTgzMzNiYzJmMjBjOWVhYjU0NmQ2YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5MmY0NDM1ZTg2ZmVmNDg3MzdkZWQxZjRkYWQ4ZjhjOGVkNGZjYWMxMzI2NTMwMmI5NjhjZDA2N2EwMGY1YTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViZjhjMTE1ZTRkZjZhNDJlY2Y0MTVlZWRjNTc3ZTMxMWIxYWQ3ZGM1OGFmODg3NGNhZjEyMTRjMTVhZTBhMGUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-24T21:02:40.299Z"
+  }
+}

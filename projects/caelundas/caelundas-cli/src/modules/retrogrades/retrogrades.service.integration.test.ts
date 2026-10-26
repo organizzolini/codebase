@@ -130,8 +130,8 @@ describe("retrogrades.events integration", () => {
     const events = service.detect({ coordinateEphemerisByBody, minute });
 
     expect(events).toHaveLength(1);
-    expect(events[0]?.categories).toContain("Direction");
-    expect(events[0]?.categories).toContain("Retrograde");
+    expect(events[0]?.tags).toContain("Direction");
+    expect(events[0]?.tags).toContain("Retrograde");
     expect(events[0]?.description).toContain("Mercury Stationary Retrograde");
     expect(events[0]?.start).toStrictEqual(minute);
   });
@@ -151,8 +151,8 @@ describe("retrogrades.events integration", () => {
     const events = service.detect({ coordinateEphemerisByBody, minute });
 
     expect(events).toHaveLength(1);
-    expect(events[0]?.categories).toContain("Direction");
-    expect(events[0]?.categories).toContain("Direct");
+    expect(events[0]?.tags).toContain("Direction");
+    expect(events[0]?.tags).toContain("Direct");
     expect(events[0]?.description).toContain("Mercury Stationary Direct");
     expect(events[0]?.start).toStrictEqual(minute);
   });
