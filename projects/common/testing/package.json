@@ -6,7 +6,10 @@
     "@nestjs/common": "catalog:",
     "@nestjs/testing": "catalog:",
     "@nx/devkit": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@testing-library/react": "catalog:",
     "msw": "catalog:",
+    "react": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:",
     "vitest": "catalog:"
@@ -15,12 +18,16 @@
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",
-    "@vitest/coverage-v8": "catalog:"
+    "@types/react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "jsdom": "catalog:"
   },
   "exports": {
     ".": "./src/index.ts",
     "./graphql": "./src/graphql.ts",
     "./nestjs": "./src/nestjs.ts",
+    "./react": "./src/react.ts",
+    "./react/setup": "./src/react-setup.ts",
     "./setup": "./src/setup.ts",
     "./package.json": "./package.json"
   },
@@ -46,6 +53,14 @@
         "default": "./dist/src/nestjs.js",
         "types": "./dist/src/nestjs.d.ts"
       },
+      "./react": {
+        "default": "./dist/src/react.js",
+        "types": "./dist/src/react.d.ts"
+      },
+      "./react/setup": {
+        "default": "./dist/src/react-setup.js",
+        "types": "./dist/src/react-setup.d.ts"
+      },
       "./setup": {
         "default": "./dist/src/setup.js",
         "types": "./dist/src/setup.d.ts"
@@ -61,7 +76,8 @@
     "ignoreCatch": true,
     "ignoreFiles": [
       "**/*.test.ts",
-      "**/*.test.tsx"
+      "**/*.test.tsx",
+      "src/modules/route-render/route-render.utilities.tsx"
     ],
     "strict": true
   },
