@@ -5,6 +5,7 @@ import { LanguagesService } from "@coinagerie/languages";
 import { Injectable } from "@nestjs/common";
 
 import { DiscoveryService } from "../discovery/discovery.service";
+import { FoldingService } from "../folding/folding.service";
 import { WordsService } from "../words/words.service";
 
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
@@ -14,8 +15,8 @@ import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration"
  * word the code uses.
  *
  * Discovers the files, splits every path into words, tokenizes every file a
- * language claims and splits its identifiers into words, then de-duplicates
- * and sorts. A file no language claims still contributes its path.
+ * language claims and splits its identifiers into words, folds each word into
+ * its headword, then de-duplicates and sorts. A file no language claims still contributes its path.
  */
 @Injectable()
 export class VocabularyService {
@@ -23,6 +24,7 @@ export class VocabularyService {
 
   constructor(
     private readonly discoveryService: DiscoveryService,
+    private readonly foldingService: FoldingService,
     private readonly languagesService: LanguagesService,
     private readonly wordsService: WordsService,
   ) {}
@@ -81,7 +83,7 @@ export class VocabularyService {
         configuration.directory,
         relativePath,
       )) {
-        words.add(word);
+        words.add(this.foldingService.fold(word));
       }
     }
 

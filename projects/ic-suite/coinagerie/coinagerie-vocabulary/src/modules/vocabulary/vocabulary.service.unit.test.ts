@@ -7,6 +7,7 @@ import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { DiscoveryModule } from "../discovery/discovery.module";
+import { FoldingModule } from "../folding/folding.module";
 import { WordsModule } from "../words/words.module";
 
 import { VocabularyService } from "./vocabulary.service";
@@ -21,7 +22,7 @@ describe(VocabularyService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [DiscoveryModule, LanguagesModule, WordsModule],
+      imports: [DiscoveryModule, FoldingModule, LanguagesModule, WordsModule],
       providers: [VocabularyService],
     }).compile();
 
@@ -83,7 +84,7 @@ describe(VocabularyService, () => {
       "logo",
       "lunar",
       "mark",
-      "notes",
+      "note",
       "phase",
       "readme",
       "service",
@@ -91,9 +92,26 @@ describe(VocabularyService, () => {
     ]);
   });
 
+  it("folds plurals and inflections into one headword", async () => {
+    writeTree({
+      "src/aspects.ts": [
+        "export const aspect = configured(aspects);",
+        "const configuring = configuration;",
+        "",
+      ].join("\n"),
+    });
+
+    await expect(service.collect(configure())).resolves.toStrictEqual([
+      "aspect",
+      "configuration",
+      "configure",
+      "src",
+    ]);
+  });
+
   it("scans only what the configuration includes and does not exclude", async () => {
     writeTree({
-      "src/kept.ts": "const keptName = 1;\n",
+      "src/first.ts": "const firstName = 1;\n",
       "src/left.test.ts": "const leftName = 1;\n",
       "vendor/other.ts": "const otherName = 1;\n",
     });
@@ -105,7 +123,7 @@ describe(VocabularyService, () => {
           include: ["src/**"],
         }),
       ),
-    ).resolves.toStrictEqual(["kept", "name", "src"]);
+    ).resolves.toStrictEqual(["first", "name", "src"]);
   });
 
   it("leaves out every file the configuration writes a glossary to", async () => {
