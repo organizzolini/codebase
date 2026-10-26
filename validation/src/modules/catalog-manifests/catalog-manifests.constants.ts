@@ -37,6 +37,7 @@ export const INTERNAL_PACKAGE_SCOPES = [
   "@codebase/",
   "@codependix/",
   "@codometer/",
+  "@coinagerie/",
   "@conformetry/",
   "@jimmypaolini/",
 ];
