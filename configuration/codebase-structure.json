@@ -1096,6 +1096,14 @@
                     "ruleId": "codebase-project"
                   }
                 ],
+                "name": "coinagerie"
+              },
+              {
+                "children": [
+                  {
+                    "ruleId": "codebase-project"
+                  }
+                ],
                 "name": "conformetry"
               }
             ],
