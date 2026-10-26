@@ -3,8 +3,8 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { ExportModule } from "./modules/export/export.module";
-import { ImportModule } from "./modules/import/import.module";
+import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
+import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
 
 /**
  * Root module of the database command line. Each command names its
@@ -13,6 +13,11 @@ import { ImportModule } from "./modules/import/import.module";
  * opens no connection until a command's options are validated.
  */
 @Module({
-  imports: [DiscoveryModule, LoggerModule, ExportModule, ImportModule],
+  imports: [
+    DiscoveryModule,
+    LoggerModule,
+    PostgresqlExportModule,
+    PostgresqlImportModule,
+  ],
 })
 export class MainModule {}

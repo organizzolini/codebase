@@ -24,17 +24,10 @@ but that file:
 
 1. The tables come from one of two places. By default `build-database` creates
    them from `data/events-schema.sql` and fills them from the text seed
-   `data/events-seed.sql`, which is what tests, CI and `start` use. With its
-   `export` configuration (`build:export`, `start:export` and
-   `preview:export` pass it down) `scripts/export-events-database.ts` runs
-   `persistence export --sqlite` over the `caelundas` schema's
-   `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` into
-   `output/events-export.sqlite`, connecting through the same
-   `CAELUNDAS_POSTGRES_*` variables and `caelundas-cli/.env` ingestion reads.
-   It checks the address answers first and fails naming it, since the export
-   reports a refused connection with an empty message. `events-schema.sql`
-   mirrors the export's table and column names exactly; keep it in step with
-   `caelundas-cli`'s migration.
+   `data/events-seed.sql`, which is what tests, CI and `start` use. With
+   `--from <file>` it copies a SQLite file that already holds the
+   `calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` tables.
+   `events-schema.sql` mirrors those table and column names exactly.
 2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
    everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
    and path), `calendar_event_tag_nodes` (one row per event and tag, ancestors
@@ -47,8 +40,8 @@ but that file:
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
-   fingerprinted assets. `build-database` is never cached, since the export
-   reads a database Nx cannot hash; `build` hashes the file it wrote through a
+   fingerprinted assets. `build-database` is never cached, since `--from`
+   reads a file Nx cannot hash; `build` hashes the file it wrote through a
    `dependentTasksOutputFiles` input, so a build from new data never restores
    the build of the old.
 4. In the browser, `events-database.worker.ts` downloads the file, opens it
@@ -107,12 +100,11 @@ src/
     calendar/                    # Search parameters, windows, loader, formatting
     events-database/             # EventsDatabase, its SQL, worker, and client
 data/
-  events-schema.sql              # The exported tables, for tests and the build
-  events-seed.sql                # Text seed standing in for exported rows
-  events-views.sql               # Views applied over the export
+  events-schema.sql              # The source tables, for tests and the build
+  events-seed.sql                # Text seed standing in for real rows
+  events-views.sql               # Views applied over the source tables
 scripts/
-  build-events-database.ts       # Writes output/events.sqlite, from the seed or --export
-  export-events-database.ts      # Runs persistence export --sqlite against Postgres
+  build-events-database.ts       # Writes output/events.sqlite, from the seed or --from
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over data/*.sql
@@ -367,4 +359,4 @@ focusable by themselves.
 - [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
   The `EventsDatabase` interface
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
-- [data/events-views.sql](data/events-views.sql): The post-export tables and views
+- [data/events-views.sql](data/events-views.sql): The tables and views applied over the source file

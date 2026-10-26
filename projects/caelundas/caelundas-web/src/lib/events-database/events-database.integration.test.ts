@@ -1,6 +1,5 @@
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -22,52 +21,20 @@ const BUILD_SCRIPT = path.join(
   "build-events-database.ts",
 );
 
-/**
- * A local port nothing listens on: one the system handed out and was given
- * back.
- */
-async function findClosedPort(): Promise<number> {
-  const server = createServer();
-
-  await new Promise<void>((resolve) => {
-    server.listen(0, "127.0.0.1", resolve);
-  });
-  const address = server.address();
-  await new Promise<void>((resolve) => {
-    server.close(() => {
-      resolve();
-    });
-  });
-
-  if (address === null || typeof address === "string") {
-    throw new Error("The test server reported no port");
-  }
-
-  return address.port;
-}
-
-/**
- * Runs the script `build-database` runs, with the arguments given and the
- * environment given added to this process's own.
- */
-function runBuildScript(
-  commandLine: string[],
-  environment: NodeJS.ProcessEnv = {},
-): { status: null | number; stderr: string } {
+/** Runs the script `build-database` runs, with the arguments given. */
+function runBuildScript(commandLine: string[]): { status: null | number } {
   const result = spawnSync(process.execPath, [BUILD_SCRIPT, ...commandLine], {
     cwd: PROJECT_ROOT,
     encoding: "utf8",
-    env: { ...process.env, ...environment },
   });
 
-  return { status: result.status, stderr: result.stderr };
+  return { status: result.status };
 }
 
 /**
- * Writes a file holding the tables `persistence export --sqlite` writes from
- * the `caelundas` schema, filled with the seed, and no views.
+ * Writes a file holding the tables, filled with the seed, and no views.
  */
-function writeExportedFile(file: string): void {
+function writeSourceFile(file: string): void {
   const database = new DatabaseSync(file);
 
   for (const fileName of ["events-schema.sql", "events-seed.sql"]) {
@@ -76,9 +43,9 @@ function writeExportedFile(file: string): void {
   database.close();
 }
 
-// The bundled file is built by `build-database`, whose export configuration
-// exports the ingested tables and applies the views over them. The file it
-// writes is read through the `/` route, the way the page reads it.
+// The bundled file is built by `build-database`, which applies the views over
+// a file holding the tables. The file it writes is read through the `/`
+// route, the way the page reads it.
 describe("the bundled events database", () => {
   let directory: string;
 
@@ -91,16 +58,16 @@ describe("the bundled events database", () => {
   });
 
   it(
-    "shows the events of a file built from an export",
+    "shows the events of a file built from a source file",
     SCRIPT_TEST,
     async () => {
-      const exported = path.join(directory, "events-export.sqlite");
+      const source = path.join(directory, "events-source.sqlite");
       const bundled = path.join(directory, "events.sqlite");
-      writeExportedFile(exported);
+      writeSourceFile(source);
 
       const { status } = runBuildScript([
         "--from",
-        exported,
+        source,
         "--output",
         bundled,
       ]);
@@ -114,27 +81,6 @@ describe("the bundled events database", () => {
       await expect(
         screen.findByText("Mars Conjunct Venus"),
       ).resolves.toBeDefined();
-    },
-  );
-
-  it(
-    "names the address when the export cannot reach Postgres",
-    SCRIPT_TEST,
-    async () => {
-      const port = await findClosedPort();
-
-      const { status, stderr } = runBuildScript(
-        ["--export", "--output", path.join(directory, "events.sqlite")],
-        {
-          CAELUNDAS_POSTGRES_HOST: "127.0.0.1",
-          CAELUNDAS_POSTGRES_PORT: String(port),
-        },
-      );
-
-      expect(status).toBe(1);
-      expect(stderr).toContain(
-        `Cannot reach Postgres at 127.0.0.1:${String(port)}`,
-      );
     },
   );
 });

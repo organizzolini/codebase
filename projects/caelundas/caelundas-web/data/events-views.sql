@@ -1,5 +1,5 @@
--- What the web app reads, created over the exported tables after every
--- export. The export copies tables only, so everything derived lives here.
+-- What the web app reads, created over the source tables after every build.
+-- A source file holds tables only, so everything derived lives here.
 -- The file is read-only once built, so the tag tree's derived rows are
 -- written out as tables, once, rather than recomputed by every query as
 -- views would be: the tree's depth, root and path take a correlated

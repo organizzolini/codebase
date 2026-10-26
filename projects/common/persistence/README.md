@@ -1,6 +1,6 @@
 # 🐘 Persistence
 
-The shared Postgres package every database-backed project connects through, and a command line that moves tables between databases.
+The shared package every database-backed project connects through, to Postgres or to a SQLite file, and a command line that moves tables between Postgres databases.
 
 ## Purpose
 
@@ -31,6 +31,12 @@ Key exports and responsibilities:
   exports, from the same options
 - `IdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
   updated, and soft-deleted columns
+- `SqliteModule.forRoot`: The same for a SQLite file, from one
+  `<PROJECT>_SQLITE_DATABASE` variable; see [SQLite](#sqlite)
+- `createSqliteDataSource`, `sqliteEnvironmentSchema`: The SQLite twins of
+  `createDataSource` and `postgresEnvironmentSchema`
+- `SqliteIdentifiableEntity` …: The SQLite base entities: a `uuid` id the
+  application generates, and `datetime` columns
 - `startPostgresContainer`: From `@codebase/persistence/testing`: a migrated
   Postgres 18 container laid out like local Docker
 - `startDatabaseTestingModule`: From `@codebase/persistence/testing`: a Nest
@@ -268,6 +274,67 @@ Docker must be running.
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.
 
+## SQLite
+
+`SqliteModule.forRoot` connects a project to its own SQLite file through
+TypeORM's `better-sqlite3` driver, the way `PostgresqlModule.forRoot` connects
+one to Postgres: the options name the entities, and the file comes from the
+project's prefixed variable through `ConfigService`.
+
+```ts
+SqliteModule.forRoot({
+  entities: [CalendarEvent],
+  migrations: [CreateCalendarEvents1767225600000],
+  project: "caelundas",
+});
+```
+
+| Variable                    | Default            | Meaning                          |
+| --------------------------- | ------------------ | -------------------------------- |
+| `<PROJECT>_SQLITE_DATABASE` | `<project>.sqlite` | The database file, or `:memory:` |
+
+An unprefixed `SQLITE_DATABASE` is never read. Spread
+`sqliteEnvironmentSchema({ project })` into the application's environment
+schema, and export `createSqliteDataSource({ entities, migrations, project })`
+from a `data-source.constants.ts` for the TypeORM command line.
+
+### How SQLite differs from Postgres
+
+The options are shared (snake case, `synchronize` off, no logging); these are
+not:
+
+- **Migrations run on start** when `forRoot` is given any. Postgres runs them
+  as their own step because several processes starting together would race on
+  one schema; a SQLite file has one writer. `createSqliteDataSource` still
+  never runs them.
+- **One writer.** better-sqlite3 is synchronous and holds one connection, so
+  keep a project's writes on the module's connection; a second one writing
+  waits `timeout` (5 s) and then fails with `SQLITE_BUSY`. Write-ahead logging
+  stays off, so a finished database is one file rather than three.
+- **No schema, role, or host.** The path is the whole connection, so there is
+  no search path to pin and no credentials to mask. TypeORM's driver turns
+  `PRAGMA foreign_keys` on itself.
+- **No native `uuid`, `timestamptz`, or `numeric`**, and TypeORM refuses
+  those column types at connect time. The Postgres base entities therefore
+  cannot be shared; the SQLite ones sit beside them. Store a decimal that must
+  survive exactly, such as a latitude or longitude, as `text`.
+- **No column comments**, so the SQLite entities carry none.
+- **Ids are version 4, not `uuidv7()`.** TypeORM reads a database-generated
+  key back only from `rowid`, so a text key with a SQL default throws on
+  `insert`. `SqliteIdentifiableEntity` uses `@PrimaryGeneratedColumn("uuid")`,
+  which TypeORM fills in the application on `save`, bulk `insert`, and
+  `upsert` alike, but which does not sort by insertion time. Without
+  `RETURNING`, TypeORM reads the new keys back with a select that answers in
+  key order, so a bulk `insert`'s `identifiers` are the new ids but not in the
+  order the rows were given: match rows by a natural key, never by position.
+- **Timestamps are `datetime`**: UTC text in `YYYY-MM-DD HH:MM:SS[.SSS]`
+  form, which is ISO 8601 with a space for the `T`, sorts as text, and is what
+  SQLite's date functions and TypeORM's own `CURRENT_TIMESTAMP` updates write.
+  An ISO string with `T` and `Z` would mix two formats in one column.
+  Properties stay `Date`.
+- **Partial indexes** take the same `WHERE` as Postgres, but write it as
+  SQLite does: no `::` casts, no `now()`, `1` and `0` for booleans.
+
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables
@@ -278,24 +345,23 @@ with the working directory at `projects/common/persistence`, so a relative `--fi
 resolves from there, and `*.dump` is gitignored there:
 
 ```bash
-pnpm exec nx run persistence:start:export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
-pnpm exec nx run persistence:start:import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:postgresql-export --args="--source-uri postgresql://user:password@localhost:5432/source --schema fixture --table widgets --data --ddl --file sample.dump"
+pnpm exec nx run persistence:start:postgresql-import --args="--target-uri postgresql://user:password@localhost:5432/target --schema fixture --table widgets --data --ddl --file sample.dump"
 ```
 
 ### Options
 
-| Option               | Command | Does                                                                              |
-| -------------------- | ------- | --------------------------------------------------------------------------------- |
-| `--source-uri <uri>` | export  | Required. The database to dump                                                    |
-| `--target-uri <uri>` | import  | Required. The database to restore into                                            |
-| `--table <name>`     | both    | Required, repeatable. A table to move                                             |
-| `--schema <name>`    | both    | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
-| `--data`, `--ddl`    | both    | Rows, table definitions (DDL), or both; at least one is required                  |
-| `--file <path>`      | both    | Required. The dump to write or read                                               |
-| `--sqlite`           | export  | Write a SQLite file instead of a dump; `import` rejects it                        |
-| `--overwrite`        | export  | Replace `--file` when it exists                                                   |
-| `--clean`            | import  | Clear the selected tables before restoring, with no confirmation                  |
-| `--dry-run`          | both    | Validate and print the plan without connecting to a database or changing anything |
+| Option               | Command           | Does                                                                              |
+| -------------------- | ----------------- | --------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | postgresql-export | Required. The database to dump                                                    |
+| `--target-uri <uri>` | postgresql-import | Required. The database to restore into                                            |
+| `--table <name>`     | both              | Required, repeatable. A table to move                                             |
+| `--schema <name>`    | both              | The schema unqualified `--table` names resolve in, like `pg_dump --schema`        |
+| `--data`, `--ddl`    | both              | Rows, table definitions (DDL), or both; at least one is required                  |
+| `--file <path>`      | both              | Required. The dump to write or read                                               |
+| `--overwrite`        | postgresql-export | Replace `--file` when it exists                                                   |
+| `--clean`            | postgresql-import | Clear the selected tables before restoring, with no confirmation                  |
+| `--dry-run`          | both              | Validate and print the plan without connecting to a database or changing anything |
 
 Qualified names (`schema.table`) are used as written. There is no default
 schema: without `--schema`, an unqualified `--table` fails before anything
@@ -303,8 +369,7 @@ runs, naming it. Naming one table twice moves it once.
 
 ### Export
 
-`export` writes a custom-format dump, or with `--sqlite` a SQLite file (see
-[Export to SQLite](#export-to-sqlite)). It passes
+`postgresql-export` writes a custom-format dump. It passes
 `--strict-names` to `pg_dump`, so a table that does not exist fails the run
 with a message naming it and the source, never a smaller dump. An existing
 `--file` is refused unless `--overwrite` is given.
@@ -315,58 +380,9 @@ and the partial file is removed. `--dry-run` still checks that `pg_dump` is
 installed, then prints the source database, what each table would export, and
 whether `--file` would be created or overwritten.
 
-### Export to SQLite
-
-`export --sqlite` writes the selected tables to a SQLite file through a
-separate service, `SqliteExportService`, that reads rows through the `pg`
-driver and writes them with `node:sqlite`. It never starts `pg_dump`, needs
-none of the PostgreSQL client tools, and adds no native SQLite dependency, so
-it runs anywhere Node 24 runs. `--source-uri`, `--table`, `--schema`,
-`--file`, `--overwrite`, and `--dry-run` mean what they mean for the default
-export, and the overwrite guard and the missing-table error behave as they do
-there; only `--dry-run` differs, in checking no client tool. The service
-names no table of its own, so any table in any schema can be exported:
-
-```bash
-pnpm exec nx run persistence:start:export --args="--sqlite --source-uri postgresql://user:password@localhost:5432/source --schema caelundas --table calendar_events --data --ddl --file events.sqlite"
-```
-
-`--ddl` writes each table's definition: its columns, `NOT NULL` where the
-source forbids null, and its primary key, which Postgres shows only for a
-table the role owns or can write to, so a read-only role gets none. `--data`
-writes its rows. A SQLite
-file cannot hold rows without their table, so `--data` alone still creates the
-tables, with the same definition. Indexes, foreign keys, defaults, and
-comments are not carried over; create what a reader needs afterwards. Each
-table takes its name without its schema, and two tables that would share a
-name fail the export. Every table is read from one snapshot, as `pg_dump`
-reads, through a cursor a thousand rows at a time, and written in one SQLite
-transaction, to a `.partial` file that replaces
-`--file` only once the export succeeds.
-
-Postgres column types become SQLite types a browser can query:
-
-| Postgres                                         | SQLite    | Stored as                           |
-| ------------------------------------------------ | --------- | ----------------------------------- |
-| `timestamptz`                                    | `TEXT`    | ISO 8601 in UTC, to the millisecond |
-| `date`                                           | `TEXT`    | `YYYY-MM-DD`                        |
-| `numeric`, `real`, `double precision`            | `REAL`    | A real number                       |
-| `smallint`, `integer`, `bigint`                  | `INTEGER` | The number, exactly                 |
-| `boolean`                                        | `INTEGER` | 0 or 1                              |
-| `text`, `character`, `character varying`, `uuid` | `TEXT`    | The text                            |
-| any array such as `text[]`, `json`, `jsonb`      | `TEXT`    | JSON text                           |
-
-A null stays null. A column of any other type fails the export before it
-writes anything, naming the column, its Postgres type, and the table, so
-nothing is silently dropped.
-
-`import` rejects `--sqlite` with a message that names the option, before any
-process starts or connection opens: nothing imports a SQLite file into
-Postgres, and the file extension is never checked.
-
 ### Import
 
-`import` restores the selected tables in one transaction that stops at the
+`postgresql-import` restores the selected tables in one transaction that stops at the
 first error, so by default it deletes nothing and a conflict leaves the target
 as it was. Before any connection opens it lists the dump and fails when it
 lacks the rows or definitions `--data` and `--ddl` ask for. Owners and
@@ -377,8 +393,8 @@ target.
 `--clean` would drop or truncate.
 
 `--clean` empties the selected tables first and never asks for confirmation,
-in a terminal or out of one. Run `import --dry-run` with the same options
-before `import --clean` to see the tables, database, and host it would clear:
+in a terminal or out of one. Run `postgresql-import --dry-run` with the same options
+before `postgresql-import --clean` to see the tables, database, and host it would clear:
 
 - With `--ddl`, `pg_restore --clean --if-exists` drops and recreates them.
 - With `--data` alone, a `TRUNCATE` on exactly the selected tables empties
@@ -394,8 +410,7 @@ sequences behind them.
 ### Requirements
 
 Both commands need the PostgreSQL 18 client tools, `pg_dump` for export and
-`pg_restore` for import, and check their version before any database work.
-The exception is `export --sqlite`, which needs none. A
+`pg_restore` for import, and check their version before any database work. A
 missing tool or another major version fails with the setup script to run:
 `scripts/local/software/persistence.sh` installs them with Homebrew, and the
 devcontainer installs them too.
