@@ -163,6 +163,8 @@ export type Lexeme = {
 
 export type LexemeSearchResult = {
   __typename?: 'LexemeSearchResult';
+  /** Edit distance of a fuzzy match from the search term */
+  distance?: Maybe<Scalars['Int']['output']>;
   /** Enclitic suffix separated from search token (e.g. que, ve, ne) */
   enclitic?: Maybe<Scalars['String']['output']>;
   /** Morphological and grammatical tags identifying matched form */
@@ -536,7 +538,9 @@ export enum SearchMatchSource {
   Fuzzy = 'FUZZY',
   LemmaExact = 'LEMMA_EXACT',
   Prefix = 'PREFIX',
+  TranslationExact = 'TRANSLATION_EXACT',
   TranslationFulltext = 'TRANSLATION_FULLTEXT',
+  TranslationPrefix = 'TRANSLATION_PREFIX',
   WordExact = 'WORD_EXACT'
 }
 
@@ -763,7 +767,7 @@ export type SearchEnglishQueryVariables = Exact<{
 }>;
 
 
-export type SearchEnglishQuery = { __typename?: 'Query', searchEnglish: { __typename?: 'LexemeSearchResultConnection', edges: Array<{ __typename?: 'LexemeSearchResultEdge', node: { __typename?: 'LexemeSearchResult', enclitic?: string | null, identifiers: Array<string>, score: number, source: SearchMatchSource, lexeme: { __typename?: 'Lexeme', id: string, etymology?: string | null, lemma: string, partOfSpeech: string, inflection?:
+export type SearchEnglishQuery = { __typename?: 'Query', searchEnglish: { __typename?: 'LexemeSearchResultConnection', edges: Array<{ __typename?: 'LexemeSearchResultEdge', node: { __typename?: 'LexemeSearchResult', distance?: number | null, enclitic?: string | null, identifiers: Array<string>, score: number, source: SearchMatchSource, lexeme: { __typename?: 'Lexeme', id: string, etymology?: string | null, lemma: string, partOfSpeech: string, inflection?:
             | { __typename?: 'AdjectiveInflection', declension: string, degree: string }
             | { __typename?: 'AdverbInflection', adverbType: string, degree: string }
             | { __typename?: 'NounInflection', declension: string, gender: string }
@@ -787,7 +791,7 @@ export type SearchLatinQueryVariables = Exact<{
 }>;
 
 
-export type SearchLatinQuery = { __typename?: 'Query', searchLatin: { __typename?: 'LexemeSearchResultConnection', edges: Array<{ __typename?: 'LexemeSearchResultEdge', node: { __typename?: 'LexemeSearchResult', enclitic?: string | null, identifiers: Array<string>, score: number, source: SearchMatchSource, lexeme: { __typename?: 'Lexeme', id: string, etymology?: string | null, lemma: string, partOfSpeech: string, inflection?:
+export type SearchLatinQuery = { __typename?: 'Query', searchLatin: { __typename?: 'LexemeSearchResultConnection', edges: Array<{ __typename?: 'LexemeSearchResultEdge', node: { __typename?: 'LexemeSearchResult', distance?: number | null, enclitic?: string | null, identifiers: Array<string>, score: number, source: SearchMatchSource, lexeme: { __typename?: 'Lexeme', id: string, etymology?: string | null, lemma: string, partOfSpeech: string, inflection?:
             | { __typename?: 'AdjectiveInflection', declension: string, degree: string }
             | { __typename?: 'AdverbInflection', adverbType: string, degree: string }
             | { __typename?: 'NounInflection', declension: string, gender: string }

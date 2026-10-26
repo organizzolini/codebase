@@ -4,6 +4,7 @@ import {
   Languages,
   ListStart,
   ScanSearch,
+  TextSearch,
 } from "lucide-react";
 
 import {
@@ -38,17 +39,16 @@ const LANGUAGES: Readonly<
 
 /**
  * How closely the word matched what was searched, as an icon and what it says.
- * The API calls a match on part of a word "fuzzy", but it is a plain substring
- * match, so it is described as what it is.
  */
 const TYPES: Readonly<
   Record<
-    "contains" | "exact" | "starts-with",
+    "contains" | "exact" | "fuzzy" | "starts-with",
     { icon: LucideIcon; label: string }
   >
 > = {
-  contains: { icon: ScanSearch, label: "Fuzzy match" },
+  contains: { icon: TextSearch, label: "Contains" },
   exact: { icon: Equal, label: "Exact match" },
+  fuzzy: { icon: ScanSearch, label: "Fuzzy match" },
   "starts-with": { icon: ListStart, label: "Starts with" },
 };
 
@@ -62,13 +62,13 @@ const KINDS: Readonly<
     {
       hint: string;
       language: "english" | "latin";
-      type: "contains" | "exact" | "starts-with";
+      type: "contains" | "exact" | "fuzzy" | "starts-with";
     }
   >
 > = {
   contains: {
-    hint: "The headword contains what you searched for",
-    language: "latin",
+    hint: "A translation mentions what you searched for",
+    language: "english",
     type: "contains",
   },
   enclitic: {
@@ -86,6 +86,11 @@ const KINDS: Readonly<
     language: "latin",
     type: "exact",
   },
+  fuzzy: {
+    hint: "A headword or form a few letters away from what you searched for",
+    language: "latin",
+    type: "fuzzy",
+  },
   prefix: {
     hint: "The headword starts with what you searched for",
     language: "latin",
@@ -101,11 +106,6 @@ const KINDS: Readonly<
     language: "english",
     type: "starts-with",
   },
-  "translation-text": {
-    hint: "A translation mentions what you searched for",
-    language: "english",
-    type: "contains",
-  },
 };
 
 // 🔖 Type
@@ -114,6 +114,8 @@ const KINDS: Readonly<
  * How a search matched a lexeme.
  */
 export interface LexemeMatchInfo {
+  /** For a fuzzy match, how many edits it is from the query. */
+  distance?: number | undefined;
   /** For a headword match on part of a word, how many letters it has beyond the query. */
   extraLetters?: number | undefined;
   kind: LexemeMatchKind;
@@ -127,10 +129,10 @@ export type LexemeMatchKind =
   | "enclitic"
   | "exact-form"
   | "exact-headword"
+  | "fuzzy"
   | "prefix"
   | "translation-exact"
-  | "translation-prefix"
-  | "translation-text";
+  | "translation-prefix";
 
 /**
  * The properties LexemeMatch accepts.
@@ -158,10 +160,7 @@ export function LexemeMatch(
   const { hint, language, type } = KINDS[match.kind];
   const LanguageIcon = LANGUAGES[language].icon;
   const TypeIcon = TYPES[type].icon;
-  const extra =
-    match.extraLetters === undefined || match.extraLetters === 0
-      ? ""
-      : ` (+${String(match.extraLetters)} ${match.extraLetters === 1 ? "letter" : "letters"})`;
+  const extra = describeExtent(match);
 
   // 💪 Handlers
 
@@ -202,4 +201,20 @@ export function LexemeMatch(
       </TooltipProvider>
     </div>
   );
+}
+
+// 🛠 Utilities
+
+/**
+ * Says how far a match is from the query: its edit distance when fuzzy, or the
+ * letters a headword has beyond it.
+ */
+function describeExtent(match: LexemeMatchInfo): string {
+  if (match.distance !== undefined) {
+    return ` (${String(match.distance)} ${match.distance === 1 ? "edit" : "edits"} away)`;
+  }
+  if (match.extraLetters === undefined || match.extraLetters === 0) {
+    return "";
+  }
+  return ` (+${String(match.extraLetters)} ${match.extraLetters === 1 ? "letter" : "letters"})`;
 }
