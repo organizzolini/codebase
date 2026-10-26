@@ -4,27 +4,43 @@ import { Repository } from "typeorm";
 
 import { LoggerService } from "@codebase/observability";
 
+import { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
+import { TagsService } from "../tags/tags.service";
 
 import {
   CALENDAR_EVENT_BATCH_SIZE,
   CALENDAR_EVENT_CONFLICT_COLUMNS,
+  CALENDAR_EVENT_RETURNING_COLUMNS,
+  CALENDAR_EVENT_TAG_BATCH_SIZE,
   CALENDAR_EVENT_UPDATE_COLUMNS,
 } from "./calendar-events.constants";
-import { formatCoordinate } from "./calendar-events.utilities";
+import {
+  calendarEventKey,
+  formatCoordinate,
+  mapWrittenIds,
+  toTagLinks,
+} from "./calendar-events.utilities";
 
-import type { DetectedCalendarEvent } from "../database/database.types";
 import type {
-  Coordinates,
+  DetectedCalendarEvent,
+  StoredCalendarEvent,
+} from "../database/database.types";
+import type {
+  CalendarEventRow,
+  CalendarEventTagLink,
   FindInRangeParameters,
+  Observer,
 } from "./calendar-events.types";
-import type { UpdatableEntity } from "@codebase/persistence";
+import type { EntityManager } from "typeorm";
 
 /**
  * Persists the events a run detects and reads them back for rendering.
  *
  * An event is keyed by its summary, start, and the location it was computed
  * for, so writing the same event again updates its row instead of adding one.
+ * Its tags are stored as links to nodes of the tag tree, which
+ * {@link TagsService} resolves its raw tag strings to.
  */
 @Injectable()
 export class CalendarEventsService {
@@ -34,6 +50,7 @@ export class CalendarEventsService {
     private readonly logger: LoggerService,
     @InjectRepository(CalendarEvent)
     private readonly calendarEventRepository: Repository<CalendarEvent>,
+    private readonly tagsService: TagsService,
   ) {
     this.logger.setContext(CalendarEventsService.name);
   }
@@ -44,36 +61,121 @@ export class CalendarEventsService {
 
   // 🔏 Private Methods
 
-  /** The row an event becomes for one location. */
+  /**
+   * The names of the tags each event is linked to directly, ordered by code
+   * point, as Postgres's "C" collation would, so the order never depends on
+   * the database's locale.
+   */
+  private async findTagNames(
+    eventIds: readonly string[],
+  ): Promise<Map<string, string[]>> {
+    const links = await this.calendarEventRepository.manager
+      .createQueryBuilder(CalendarEventTag, "eventTag")
+      .innerJoin("eventTag.tag", "tag")
+      .select("eventTag.calendarEventId", "calendarEventId")
+      .addSelect("tag.name", "name")
+      .where("eventTag.calendarEventId = ANY(:eventIds)", { eventIds })
+      .getRawMany<{ calendarEventId: string; name: string }>();
+    const names = new Map<string, string[]>();
+
+    for (const { calendarEventId, name } of links) {
+      names.set(calendarEventId, [...(names.get(calendarEventId) ?? []), name]);
+    }
+
+    for (const [calendarEventId, eventNames] of names) {
+      names.set(calendarEventId, eventNames.toSorted());
+    }
+
+    return names;
+  }
+
+  /**
+   * Replaces the tag links of the written events with `links`: every link
+   * those events already had is deleted first, so a tag a re-run no longer
+   * reports is dropped, and a repeated link is inserted once.
+   */
+  private async replaceTagLinks(
+    manager: EntityManager,
+    eventIds: readonly string[],
+    links: readonly CalendarEventTagLink[],
+  ): Promise<void> {
+    await manager
+      .createQueryBuilder()
+      .delete()
+      .from(CalendarEventTag)
+      .where("calendarEventId = ANY(:eventIds)", { eventIds })
+      .execute();
+
+    for (
+      let offset = 0;
+      offset < links.length;
+      offset += CALENDAR_EVENT_TAG_BATCH_SIZE
+    ) {
+      await manager
+        .createQueryBuilder()
+        .insert()
+        .into(CalendarEventTag)
+        .values(links.slice(offset, offset + CALENDAR_EVENT_TAG_BATCH_SIZE))
+        .orIgnore()
+        .execute();
+    }
+  }
+
+  /** The row an event becomes for one observer. */
   private toRow(
     event: DetectedCalendarEvent,
-    coordinates: Coordinates,
-  ): Omit<CalendarEvent, keyof UpdatableEntity> {
+    observer: Observer,
+  ): CalendarEventRow {
     return {
       color: event.color ?? null,
       description: event.description,
       end: event.end,
-      latitude: formatCoordinate(coordinates.latitude),
+      latitude: formatCoordinate(observer.latitude),
       location: event.location ?? null,
-      longitude: formatCoordinate(coordinates.longitude),
+      longitude: formatCoordinate(observer.longitude),
       start: event.start,
       summary: event.summary,
-      tags: event.tags,
+      timezone: observer.timezone,
     };
+  }
+
+  /**
+   * Writes one batch of rows, updating any already stored, and returns the
+   * id each was written under, by {@link calendarEventKey}, from the summary
+   * and start each row reads back with its id.
+   */
+  private async writeRows(
+    manager: EntityManager,
+    rows: readonly CalendarEventRow[],
+  ): Promise<Map<string, string>> {
+    const { generatedMaps } = await manager
+      .createQueryBuilder()
+      .insert()
+      .into(CalendarEvent)
+      .values([...rows])
+      .orUpdate(
+        [...CALENDAR_EVENT_UPDATE_COLUMNS],
+        [...CALENDAR_EVENT_CONFLICT_COLUMNS],
+      )
+      .returning([...CALENDAR_EVENT_RETURNING_COLUMNS])
+      .execute();
+
+    return mapWrittenIds(generatedMaps);
   }
 
   // 🌎 Public Methods
 
   /**
    * Returns the stored events at one location that overlap a range, ordered
-   * by start. An event overlaps when it starts before the range ends and ends
-   * after the range starts, so one spanning either edge, like a retrograde,
-   * is included; an instant is included when it falls inside the range.
+   * by start, each with the names of the tags it is linked to directly. An event overlaps when it
+   * starts before the range ends and ends after the range starts, so one
+   * spanning either edge, like a retrograde, is included; an instant is
+   * included when it falls inside the range.
    */
   async findInRange(
     parameters: FindInRangeParameters,
-  ): Promise<CalendarEvent[]> {
-    return this.calendarEventRepository
+  ): Promise<StoredCalendarEvent[]> {
+    const events = await this.calendarEventRepository
       .createQueryBuilder("calendarEvent")
       .where("calendarEvent.latitude = :latitude", {
         latitude: formatCoordinate(parameters.latitude),
@@ -89,46 +191,69 @@ export class CalendarEventsService {
       .orderBy("calendarEvent.start", "ASC")
       .addOrderBy("calendarEvent.summary", "ASC")
       .getMany();
+
+    if (events.length === 0) {
+      return [];
+    }
+
+    const tagNames = await this.findTagNames(events.map(({ id }) => id));
+
+    return events.map((event) =>
+      Object.assign(event, { tags: tagNames.get(event.id) ?? [] }),
+    );
   }
 
   /**
-   * Writes events for one location, updating the row of any event already
-   * stored. Rows go in batches that stay under Postgres's bind-parameter
-   * limit, and a repeated key within the input keeps its last occurrence, as
-   * one statement may not update the same row twice.
+   * Writes events for one observer, with its timezone, updating the row of
+   * any event already stored, and replaces each one's tag links with links
+   * to the nodes of the tag tree its raw tags resolve to, inserting any node
+   * that is missing. It all runs in one transaction. Rows go in batches that stay under Postgres's
+   * bind-parameter limit, and a repeated key within the input keeps its last
+   * occurrence, as one statement may not update the same row twice.
    */
   async upsert(
     events: DetectedCalendarEvent[],
-    coordinates: Coordinates,
+    observer: Observer,
   ): Promise<void> {
-    const rowsByKey = new Map<string, ReturnType<typeof this.toRow>>();
+    const eventsByKey = new Map<string, DetectedCalendarEvent>();
     for (const event of events) {
-      const row = this.toRow(event, coordinates);
-      rowsByKey.set(`${row.summary}\u0000${row.start.toISOString()}`, row);
+      eventsByKey.set(calendarEventKey(event.summary, event.start), event);
     }
-    const rows = [...rowsByKey.values()];
+    const keyed = [...eventsByKey.entries()];
 
-    for (
-      let offset = 0;
-      offset < rows.length;
-      offset += CALENDAR_EVENT_BATCH_SIZE
-    ) {
-      await this.calendarEventRepository
-        .createQueryBuilder()
-        .insert()
-        .into(CalendarEvent)
-        .values(rows.slice(offset, offset + CALENDAR_EVENT_BATCH_SIZE))
-        .orUpdate(
-          [...CALENDAR_EVENT_UPDATE_COLUMNS],
-          [...CALENDAR_EVENT_CONFLICT_COLUMNS],
-        )
-        .execute();
+    if (keyed.length === 0) {
+      return;
     }
+
+    await this.calendarEventRepository.manager.transaction(async (manager) => {
+      const tagIds = await this.tagsService.resolve(
+        manager,
+        keyed.flatMap(([, event]) => event.tags),
+      );
+
+      for (
+        let offset = 0;
+        offset < keyed.length;
+        offset += CALENDAR_EVENT_BATCH_SIZE
+      ) {
+        const batch = keyed.slice(offset, offset + CALENDAR_EVENT_BATCH_SIZE);
+        const ids = await this.writeRows(
+          manager,
+          batch.map(([, event]) => this.toRow(event, observer)),
+        );
+        await this.replaceTagLinks(
+          manager,
+          [...ids.values()],
+          toTagLinks(batch, ids, tagIds),
+        );
+      }
+    });
 
     this.logger.info("💾 Stored events", undefined, {
-      count: rows.length,
-      latitude: coordinates.latitude,
-      longitude: coordinates.longitude,
+      count: keyed.length,
+      latitude: observer.latitude,
+      longitude: observer.longitude,
+      timezone: observer.timezone,
     });
   }
 }
