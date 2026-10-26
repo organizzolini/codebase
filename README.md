@@ -882,12 +882,16 @@ graph LR
   module_integration_LoggerModule["integration/LoggerModule"]
   module_integration_MainModule["integration/MainModule"]
   module_integration_MergeTaskCacheModule["integration/MergeTaskCacheModule"]
+  module_integration_PackageManifestModule["integration/PackageManifestModule"]
   module_integration_ProcessRunnerModule["integration/ProcessRunnerModule"]
   module_integration_ReportCodometerChangesModule["integration/ReportCodometerChangesModule"]
   module_integration_RunAffectedModule["integration/RunAffectedModule"]
   module_integration_SetupCodebaseModule["integration/SetupCodebaseModule"]
   module_integration_TaskDatabaseModule["integration/TaskDatabaseModule"]
   module_integration_UpgradeDependenciesModule["integration/UpgradeDependenciesModule"]
+  module_integration_UpgradeNodeModule["integration/UpgradeNodeModule"]
+  module_integration_UpgradePnpmModule["integration/UpgradePnpmModule"]
+  module_integration_UpgradePythonModule["integration/UpgradePythonModule"]
   module_integration_VerifyTaskDatabaseModule["integration/VerifyTaskDatabaseModule"]
   module_lexico_api_DatabaseModule["lexico-api/DatabaseModule"]
   module_lexico_api_GraphQLModule["lexico-api/GraphQLModule"]
@@ -1717,6 +1721,13 @@ graph LR
   module_integration_SetupCodebaseModule --> module_integration_ImportPrTaskCacheModule
   module_integration_SetupCodebaseModule --> module_integration_TaskDatabaseModule
   module_integration_UpgradeDependenciesModule --> module_integration_ProcessRunnerModule
+  module_integration_UpgradeDependenciesModule --> module_integration_UpgradeNodeModule
+  module_integration_UpgradeDependenciesModule --> module_integration_UpgradePnpmModule
+  module_integration_UpgradeDependenciesModule --> module_integration_UpgradePythonModule
+  module_integration_UpgradeNodeModule --> module_integration_PackageManifestModule
+  module_integration_UpgradePnpmModule --> module_integration_PackageManifestModule
+  module_integration_UpgradePnpmModule --> module_integration_ProcessRunnerModule
+  module_integration_UpgradePythonModule --> module_integration_ProcessRunnerModule
   module_integration_VerifyTaskDatabaseModule --> module_integration_TaskDatabaseModule
   module_lexico_api_DatabaseModule --> module_lexico_api_PostgresqlModule
   module_lexico_api_GraphQLModule --> module_lexico_api_GraphQLSchemaBuilderModule
@@ -3941,6 +3952,11 @@ graph LR
   file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts["integration/src/modules/merge-task-cache/merge-task-cache.module.ts"]
   file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts["integration/src/modules/merge-task-cache/merge-task-cache.module.unit.test.ts"]
   file_integration_src_modules_merge_task_cache_merge_task_cache_types_ts["integration/src/modules/merge-task-cache/merge-task-cache.types.ts"]
+  file_integration_src_modules_package_manifest_package_manifest_constants_ts["integration/src/modules/package-manifest/package-manifest.constants.ts"]
+  file_integration_src_modules_package_manifest_package_manifest_module_ts["integration/src/modules/package-manifest/package-manifest.module.ts"]
+  file_integration_src_modules_package_manifest_package_manifest_service_ts["integration/src/modules/package-manifest/package-manifest.service.ts"]
+  file_integration_src_modules_package_manifest_package_manifest_service_unit_test_ts["integration/src/modules/package-manifest/package-manifest.service.unit.test.ts"]
+  file_integration_src_modules_package_manifest_package_manifest_types_ts["integration/src/modules/package-manifest/package-manifest.types.ts"]
   file_integration_src_modules_process_runner_process_runner_constants_ts["integration/src/modules/process-runner/process-runner.constants.ts"]
   file_integration_src_modules_process_runner_process_runner_module_ts["integration/src/modules/process-runner/process-runner.module.ts"]
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts["integration/src/modules/process-runner/process-runner.module.unit.test.ts"]
@@ -3990,6 +4006,23 @@ graph LR
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts["integration/src/modules/upgrade-dependencies/upgrade-dependencies.types.ts"]
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts["integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts"]
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_unit_test_ts["integration/src/modules/upgrade-dependencies/upgrade-dependencies.utilities.unit.test.ts"]
+  file_integration_src_modules_upgrade_node_upgrade_node_constants_ts["integration/src/modules/upgrade-node/upgrade-node.constants.ts"]
+  file_integration_src_modules_upgrade_node_upgrade_node_module_ts["integration/src/modules/upgrade-node/upgrade-node.module.ts"]
+  file_integration_src_modules_upgrade_node_upgrade_node_service_ts["integration/src/modules/upgrade-node/upgrade-node.service.ts"]
+  file_integration_src_modules_upgrade_node_upgrade_node_service_unit_test_ts["integration/src/modules/upgrade-node/upgrade-node.service.unit.test.ts"]
+  file_integration_src_modules_upgrade_node_upgrade_node_types_ts["integration/src/modules/upgrade-node/upgrade-node.types.ts"]
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_constants_ts["integration/src/modules/upgrade-pnpm/upgrade-pnpm.constants.ts"]
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_module_ts["integration/src/modules/upgrade-pnpm/upgrade-pnpm.module.ts"]
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts["integration/src/modules/upgrade-pnpm/upgrade-pnpm.service.ts"]
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts["integration/src/modules/upgrade-pnpm/upgrade-pnpm.service.unit.test.ts"]
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_types_ts["integration/src/modules/upgrade-pnpm/upgrade-pnpm.types.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_constants_ts["integration/src/modules/upgrade-python/upgrade-python.constants.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_module_ts["integration/src/modules/upgrade-python/upgrade-python.module.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_service_ts["integration/src/modules/upgrade-python/upgrade-python.service.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_service_unit_test_ts["integration/src/modules/upgrade-python/upgrade-python.service.unit.test.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_types_ts["integration/src/modules/upgrade-python/upgrade-python.types.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_utilities_ts["integration/src/modules/upgrade-python/upgrade-python.utilities.ts"]
+  file_integration_src_modules_upgrade_python_upgrade_python_utilities_unit_test_ts["integration/src/modules/upgrade-python/upgrade-python.utilities.unit.test.ts"]
   file_integration_src_modules_verify_task_database_verify_task_database_command_ts["integration/src/modules/verify-task-database/verify-task-database.command.ts"]
   file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts["integration/src/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
   file_integration_src_modules_verify_task_database_verify_task_database_constants_ts["integration/src/modules/verify-task-database/verify-task-database.constants.ts"]
@@ -9332,6 +9365,10 @@ graph LR
   file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_command_ts
   file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_integration_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_integration_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_integration_src_modules_task_database_task_database_module_ts
+  file_integration_src_modules_package_manifest_package_manifest_module_ts --> file_integration_src_modules_package_manifest_package_manifest_service_ts
+  file_integration_src_modules_package_manifest_package_manifest_service_ts --> file_integration_src_modules_package_manifest_package_manifest_constants_ts
+  file_integration_src_modules_package_manifest_package_manifest_service_ts --> file_integration_src_modules_package_manifest_package_manifest_types_ts
+  file_integration_src_modules_package_manifest_package_manifest_service_unit_test_ts --> file_integration_src_modules_package_manifest_package_manifest_service_ts
   file_integration_src_modules_process_runner_process_runner_module_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
   file_integration_src_modules_process_runner_process_runner_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
@@ -9416,10 +9453,14 @@ graph LR
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_integration_src_modules_upgrade_node_upgrade_node_module_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_module_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_integration_src_modules_upgrade_python_upgrade_python_module_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts
@@ -9429,11 +9470,45 @@ graph LR
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_integration_src_modules_upgrade_node_upgrade_node_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_integration_src_modules_upgrade_python_upgrade_python_service_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_upgrade_node_upgrade_node_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_integration_src_modules_upgrade_python_upgrade_python_service_ts
+  file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
   file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_unit_test_ts --> file_integration_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts
+  file_integration_src_modules_upgrade_node_upgrade_node_module_ts --> file_integration_src_modules_package_manifest_package_manifest_module_ts
+  file_integration_src_modules_upgrade_node_upgrade_node_module_ts --> file_integration_src_modules_upgrade_node_upgrade_node_service_ts
+  file_integration_src_modules_upgrade_node_upgrade_node_service_ts --> file_integration_src_modules_package_manifest_package_manifest_service_ts
+  file_integration_src_modules_upgrade_node_upgrade_node_service_ts --> file_integration_src_modules_upgrade_node_upgrade_node_constants_ts
+  file_integration_src_modules_upgrade_node_upgrade_node_service_unit_test_ts --> file_integration_src_modules_package_manifest_package_manifest_service_ts
+  file_integration_src_modules_upgrade_node_upgrade_node_service_unit_test_ts --> file_integration_src_modules_upgrade_node_upgrade_node_service_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_integration_src_modules_package_manifest_package_manifest_module_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_integration_src_modules_package_manifest_package_manifest_service_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_constants_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_integration_src_modules_package_manifest_package_manifest_service_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_integration_src_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_constants_ts --> file_integration_src_modules_process_runner_process_runner_types_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_module_ts --> file_integration_src_modules_process_runner_process_runner_module_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_module_ts --> file_integration_src_modules_upgrade_python_upgrade_python_service_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_service_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_service_ts --> file_integration_src_modules_upgrade_python_upgrade_python_constants_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_service_ts --> file_integration_src_modules_upgrade_python_upgrade_python_utilities_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_integration_src_modules_process_runner_process_runner_service_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_integration_src_modules_upgrade_python_upgrade_python_constants_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_integration_src_modules_upgrade_python_upgrade_python_service_ts
+  file_integration_src_modules_upgrade_python_upgrade_python_utilities_unit_test_ts --> file_integration_src_modules_upgrade_python_upgrade_python_utilities_ts
   file_integration_src_modules_verify_task_database_verify_task_database_command_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_integration_src_modules_task_database_task_database_service_ts
   file_integration_src_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_integration_src_modules_verify_task_database_verify_task_database_command_ts
@@ -13575,36 +13650,36 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Repository
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-62662-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-4.71_MB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-156-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-594-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-63976-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-4.74_MB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-160-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-616-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-587-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-144-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-609-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-147-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-8-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
-![Decorators](https://img.shields.io/badge/Decorators-247-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-1425-6366f1?style=flat-square)
+![Decorators](https://img.shields.io/badge/Decorators-255-db2777?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-1473-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-4-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-6-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-188-10b981?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-193-10b981?style=flat-square)
 ![External Packages](https://img.shields.io/badge/External_Packages-55-8b5cf6?style=flat-square)
-![Classes](https://img.shields.io/badge/Classes-200-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-2854-16a34a?style=flat-square)
-![Methods](https://img.shields.io/badge/Methods-887-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-2778-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-963-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-3029-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-2806-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-798-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-3004-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-5738-475569?style=flat-square)
+![Classes](https://img.shields.io/badge/Classes-208-7c3aed?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-2931-16a34a?style=flat-square)
+![Methods](https://img.shields.io/badge/Methods-899-15803d?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-2832-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-998-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-3094-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-2883-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-830-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-3074-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-5854-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-4-ca8a04?style=flat-square)
 
 ### Python
@@ -13640,7 +13715,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### YAML
 
 ![YAML Files](https://img.shields.io/badge/YAML_Files-22-cb171e?style=flat-square)
-![YAML Lines](https://img.shields.io/badge/YAML_Lines-3189-e34c26?style=flat-square)
+![YAML Lines](https://img.shields.io/badge/YAML_Lines-3191-e34c26?style=flat-square)
 ![YAML Documents](https://img.shields.io/badge/YAML_Documents-22-f97316?style=flat-square)
 ![YAML Mappings](https://img.shields.io/badge/YAML_Mappings-436-7c3aed?style=flat-square)
 ![YAML Sequences](https://img.shields.io/badge/YAML_Sequences-90-8b5cf6?style=flat-square)
@@ -13648,7 +13723,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![YAML Scalars](https://img.shields.io/badge/YAML_Scalars-3045-16a34a?style=flat-square)
 ![YAML Anchors](https://img.shields.io/badge/YAML_Anchors-0-059669?style=flat-square)
 ![YAML Aliases](https://img.shields.io/badge/YAML_Aliases-0-10b981?style=flat-square)
-![YAML Comments](https://img.shields.io/badge/YAML_Comments-604-64748b?style=flat-square)
+![YAML Comments](https://img.shields.io/badge/YAML_Comments-606-64748b?style=flat-square)
 ![YAML Max Depth](https://img.shields.io/badge/YAML_Max_Depth-8-ea580c?style=flat-square)
 
 ### TOML
@@ -13715,14 +13790,14 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 
 ### Conventions
 
-![Module Files](https://img.shields.io/badge/Module_Files-66-7c3aed?style=flat-square)
-![Service Files](https://img.shields.io/badge/Service_Files-72-0284c7?style=flat-square)
+![Module Files](https://img.shields.io/badge/Module_Files-70-7c3aed?style=flat-square)
+![Service Files](https://img.shields.io/badge/Service_Files-76-0284c7?style=flat-square)
 ![Command Files](https://img.shields.io/badge/Command_Files-51-16a34a?style=flat-square)
-![Constants Files](https://img.shields.io/badge/Constants_Files-68-ea580c?style=flat-square)
-![Types Files](https://img.shields.io/badge/Types_Files-62-db2777?style=flat-square)
-![Utilities Files](https://img.shields.io/badge/Utilities_Files-6-0ea5e9?style=flat-square)
+![Constants Files](https://img.shields.io/badge/Constants_Files-72-ea580c?style=flat-square)
+![Types Files](https://img.shields.io/badge/Types_Files-66-db2777?style=flat-square)
+![Utilities Files](https://img.shields.io/badge/Utilities_Files-7-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
-![Unit Tests](https://img.shields.io/badge/Unit_Tests-178-ca8a04?style=flat-square)
+![Unit Tests](https://img.shields.io/badge/Unit_Tests-183-ca8a04?style=flat-square)
 ![Integration Tests](https://img.shields.io/badge/Integration_Tests-4-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-6-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
@@ -13760,23 +13835,23 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-143-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27520-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27801-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
-![H2](https://img.shields.io/badge/H2-837-8b5cf6?style=flat-square)
-![H3](https://img.shields.io/badge/H3-748-a78bfa?style=flat-square)
+![H2](https://img.shields.io/badge/H2-838-8b5cf6?style=flat-square)
+![H3](https://img.shields.io/badge/H3-751-a78bfa?style=flat-square)
 ![H4](https://img.shields.io/badge/H4-87-c4b5fd?style=flat-square)
 ![H5](https://img.shields.io/badge/H5-0-ddd6fe?style=flat-square)
 ![H6](https://img.shields.io/badge/H6-0-ede9fe?style=flat-square)
-![Paragraphs](https://img.shields.io/badge/Paragraphs-6342-64748b?style=flat-square)
+![Paragraphs](https://img.shields.io/badge/Paragraphs-6350-64748b?style=flat-square)
 ![Lists](https://img.shields.io/badge/Lists-963-16a34a?style=flat-square)
 ![List Items](https://img.shields.io/badge/List_Items-4566-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
-![Tables](https://img.shields.io/badge/Tables-282-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2708-0ea5e9?style=flat-square)
+![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2793-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-912-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
-![Code Blocks](https://img.shields.io/badge/Code_Blocks-559-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-14889-ef4444?style=flat-square)
+![Code Blocks](https://img.shields.io/badge/Code_Blocks-564-dc2626?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15225-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -13789,10 +13864,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 6758 |
-| Files | 2029 |
-| Calls traced | 7490 |
-| Call stacks | 1851 |
+| Callables | 6777 |
+| Files | 2046 |
+| Calls traced | 7511 |
+| Call stacks | 1855 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
 | Unfollowable calls | 369 |
