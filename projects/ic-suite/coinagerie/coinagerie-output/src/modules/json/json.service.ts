@@ -1,7 +1,7 @@
 import { MalformedGlossaryError } from "@coinagerie/core";
 import { Injectable } from "@nestjs/common";
 
-import { STRING_TOKEN_PATTERN } from "./json.constants";
+import { TOKEN_PATTERN } from "./json.constants";
 
 import type {
   GlossaryFormatHandler,
@@ -61,19 +61,23 @@ export class JsonService implements GlossaryFormatHandler {
    * Refuses a word listed twice, which `JSON.parse` would resolve silently
    * by keeping the last definition and dropping the first.
    *
-   * Only called on content already known to be a flat object of strings, so
-   * its string tokens alternate key and value.
+   * Walks the tokens of content already known to be an object, reading the
+   * first string after the opening brace or after a top-level comma as a key.
    */
   private refuseDuplicates(context: JsonParseContext): void {
     const seen = new Set<string>();
+    let depth = 0;
+    let previous = "";
 
-    [...context.content.matchAll(STRING_TOKEN_PATTERN)].forEach(
-      (token, index) => {
-        if (index % 2 === 1) {
-          return;
-        }
+    for (const token of context.content.matchAll(TOKEN_PATTERN)) {
+      const text = token[0];
+      const isKey =
+        depth === 1 &&
+        text.startsWith('"') &&
+        (previous === "{" || previous === ",");
 
-        const word = JSON.parse(token[0]) as string;
+      if (isKey) {
+        const word = String(JSON.parse(text));
 
         if (seen.has(word)) {
           this.fail(
@@ -84,8 +88,12 @@ export class JsonService implements GlossaryFormatHandler {
         }
 
         seen.add(word);
-      },
-    );
+      }
+
+      depth += "{[".includes(text) ? 1 : 0;
+      depth -= "}]".includes(text) ? 1 : 0;
+      previous = text;
+    }
   }
 
   // 🌎 Public Methods
@@ -104,6 +112,8 @@ export class JsonService implements GlossaryFormatHandler {
       return this.fail(context, "the file must be an object of words");
     }
 
+    this.refuseDuplicates(context);
+
     const glossary = new Map<string, string>();
 
     for (const [word, definition] of Object.entries(parsed)) {
@@ -113,8 +123,6 @@ export class JsonService implements GlossaryFormatHandler {
 
       glossary.set(word, definition);
     }
-
-    this.refuseDuplicates(context);
 
     return glossary;
   }

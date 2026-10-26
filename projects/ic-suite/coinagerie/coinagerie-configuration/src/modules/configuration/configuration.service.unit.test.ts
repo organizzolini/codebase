@@ -189,6 +189,10 @@ describe(ConfigurationService, () => {
       "a description holding a list item",
       'export default { outputs: [{ description: "Intro.\\n- item", path: "a.md", type: "markdown" }] };\n',
     ],
+    [
+      "two outputs naming the same file",
+      'export default { outputs: [{ path: "a.txt", type: "json" }, { path: "./a.txt", type: "markdown" }] };\n',
+    ],
     ["a default export that is not an object", "export default 42;\n"],
     ["a file that throws while loading", 'throw new Error("broken");\n'],
     ["a file that throws something other than an error", 'throw "broken";\n'],
@@ -311,6 +315,16 @@ describe(ConfigurationService, () => {
           type: "markdown",
         },
       ]);
+    });
+
+    it("refuses two flags that name the same file, naming the command line", async () => {
+      const loading = service.loadConfiguration({
+        overrides: { outputJson: "same.md", outputMarkdown: "same.md" },
+        workingDirectory: directory,
+      });
+
+      await expect(loading).rejects.toThrow(InvalidConfigurationError);
+      await expect(loading).rejects.toThrow("the command line");
     });
 
     it.each<[string, object]>([

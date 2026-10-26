@@ -171,24 +171,39 @@ export class ConfigurationService {
       workingDirectory: args.workingDirectory,
     });
 
+    const outputs = (configuration.outputs ?? []).map(
+      (output): ResolvedCoinagerieOutput => {
+        const absolutePath = path.resolve(directory, output.path);
+
+        return output.type === "json"
+          ? { path: absolutePath, type: "json" }
+          : {
+              description: flags.data.description ?? output.description,
+              path: absolutePath,
+              type: "markdown",
+            };
+      },
+    );
+    const seen = new Set<string>();
+
+    for (const output of outputs) {
+      // Two destinations on one file would overwrite each other on every write.
+      if (seen.has(output.path)) {
+        throw new InvalidConfigurationError(
+          args.configurationPath ?? "the command line",
+          `Two outputs name ${output.path}, and each write would overwrite the other`,
+        );
+      }
+
+      seen.add(output.path);
+    }
+
     return {
       configurationPath: args.configurationPath,
       directory,
       exclude: { paths: configuration.exclude?.paths ?? [] },
       include: configuration.include ?? [...DEFAULT_INCLUDE],
-      outputs: (configuration.outputs ?? []).map(
-        (output): ResolvedCoinagerieOutput => {
-          const absolutePath = path.resolve(directory, output.path);
-
-          return output.type === "json"
-            ? { path: absolutePath, type: "json" }
-            : {
-                description: flags.data.description ?? output.description,
-                path: absolutePath,
-                type: "markdown",
-              };
-        },
-      ),
+      outputs,
     };
   }
 

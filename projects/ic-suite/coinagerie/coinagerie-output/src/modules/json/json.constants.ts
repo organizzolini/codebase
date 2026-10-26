@@ -1,9 +1,11 @@
 // ♟️ Constants
 
 /**
- * One JSON string token, quotes included, escapes honored.
+ * One JSON token: a string with its quotes and escapes, a bracket, comma, or
+ * colon, or any other run of literal characters. Whitespace is skipped.
  *
- * In a flat object of strings the tokens alternate key and value, which is
- * what lets a duplicated key be found: `JSON.parse` keeps only the last.
+ * Enough to walk an object's top level and tell its keys from its values,
+ * which is what lets a duplicated key be found: `JSON.parse` keeps only the
+ * last, whatever type the first one had.
  */
-export const STRING_TOKEN_PATTERN = /"(?:[^"\\]|\\.)*"/gu;
+export const TOKEN_PATTERN = /"(?:[^"\\]|\\.)*"|[[\]{},:]|[^\s[\]{},:"]+/gu;

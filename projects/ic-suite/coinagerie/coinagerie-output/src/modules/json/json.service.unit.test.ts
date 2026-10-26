@@ -104,6 +104,24 @@ describe(JsonService, () => {
         'the value of "angle" is not a string',
       ],
       [
+        "a duplicated word whose first value is null",
+        '{\n  "a": null,\n  "a": "x"\n}',
+        3,
+        'the word "a" is listed twice',
+      ],
+      [
+        "a duplicated word whose first value is an object",
+        '{ "a": { "k": "v" },\n "a": "x" }',
+        2,
+        'the word "a" is listed twice',
+      ],
+      [
+        "a duplicated word after a non-string value",
+        '{\n  "a": 1,\n  "b": "x",\n  "b": "x"\n}',
+        4,
+        'the word "b" is listed twice',
+      ],
+      [
         "a duplicated word",
         '{\n  "angle": "one",\n  "aspect": "",\n  "angle": "two"\n}',
         4,
