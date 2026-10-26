@@ -8,7 +8,7 @@ import { RefreshDocumentationCommand } from "./refresh-documentation.command";
 import { RefreshDocumentationService } from "./refresh-documentation.service";
 
 describe(RefreshDocumentationCommand, () => {
-  const refresh = vi.fn<() => boolean>();
+  const refresh = vi.fn<() => Promise<boolean>>();
   let command: RefreshDocumentationCommand;
   let logger: LoggerService;
 
@@ -59,7 +59,7 @@ describe(RefreshDocumentationCommand, () => {
   });
 
   it("leaves the exit code alone when the refresh succeeds", async () => {
-    refresh.mockReturnValue(true);
+    refresh.mockResolvedValue(true);
 
     await command.run();
 
@@ -68,7 +68,7 @@ describe(RefreshDocumentationCommand, () => {
   });
 
   it("fails the process when the refresh fails", async () => {
-    refresh.mockReturnValue(false);
+    refresh.mockResolvedValue(false);
 
     await command.run();
 
