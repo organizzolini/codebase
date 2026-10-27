@@ -54,8 +54,7 @@ import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-sea
 // read from the location rather than declared as loader dependencies: a
 // dependency would make each search its own match, which shows the skeleton
 // again. The loader's own cache, keyed by window and filter, stands in for
-// the router's. The backdrop's keys are the one change that skips even the
-// reload, so tuning the sky leaves the calendar alone.
+// the router's.
 export const Route = createFileRoute("/")({
   component: IndexPage,
   errorComponent: IndexError,
@@ -63,6 +62,7 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Caelundas" }] }),
   pendingComponent: IndexPending,
   pendingMs: 200,
+  // A change to the backdrop's keys alone skips even the reload.
   shouldReload: ({ location }) =>
     getCalendarReloadKey(location.search) !== loadedKeys.current,
   ssr: false,
