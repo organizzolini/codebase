@@ -1,9 +1,9 @@
 import { Column, UpdateDateColumn } from "typeorm";
 
-import { CreatableEntity } from "./creatable.entity";
+import { PostgresqlCreatableEntity } from "./creatable.entity";
 
 /** Adds when a row was last updated and, optionally, who updated it. */
-export abstract class UpdatableEntity extends CreatableEntity {
+export abstract class PostgresqlUpdatableEntity extends PostgresqlCreatableEntity {
   @UpdateDateColumn({
     comment: "Timestamp when the record was last updated",
     type: "timestamptz",

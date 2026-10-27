@@ -8,7 +8,7 @@ import {
   TreeParent,
 } from "typeorm";
 
-import { UpdatableEntity } from "@codebase/persistence";
+import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /**
  * One node of the `tags` tree, in the schema that `CAELUNDAS_POSTGRES_SCHEMA`
@@ -39,7 +39,7 @@ import { UpdatableEntity } from "@codebase/persistence";
   ancestorColumnName: () => "ancestor_id",
   descendantColumnName: () => "descendant_id",
 })
-export class Tag extends UpdatableEntity {
+export class Tag extends PostgresqlUpdatableEntity {
   @TreeChildren()
   children?: Tag[];
 

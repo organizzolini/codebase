@@ -1,7 +1,7 @@
-export { CreatableEntity } from "./modules/postgresql/entities/creatable.entity";
-export { DeletableEntity } from "./modules/postgresql/entities/deletable.entity";
-export { IdentifiableEntity } from "./modules/postgresql/entities/identifiable.entity";
-export { UpdatableEntity } from "./modules/postgresql/entities/updatable.entity";
+export { PostgresqlCreatableEntity } from "./modules/postgresql/entities/creatable.entity";
+export { PostgresqlDeletableEntity } from "./modules/postgresql/entities/deletable.entity";
+export { PostgresqlIdentifiableEntity } from "./modules/postgresql/entities/identifiable.entity";
+export { PostgresqlUpdatableEntity } from "./modules/postgresql/entities/updatable.entity";
 // 📤 Exports
 export {
   DEFAULT_POSTGRES_HOST,
