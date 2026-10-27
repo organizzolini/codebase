@@ -44,8 +44,11 @@ nx run caelundas-web:vitest
 ## Night sky link parameters
 
 The backdrop reads these from the page link; a value that does not parse falls
-back to its default. Colors are three or six hexadecimal digits, with or
-without the `#`, which a link carries as `%23`.
+back to its default. Colors are text of three or six hexadecimal digits, with
+or without the `#`. Write the `#` as `%23`, for example `sky.top=%23102040`:
+the router reads an all-digit value such as `123456` or `1e5` as a number,
+which cannot be told from the color it was meant to be, so a number falls back
+to the default.
 
 - `sky=off` removes the backdrop.
 - `sky.lat` and `sky.lon` move the observer, New York by default; a latitude of

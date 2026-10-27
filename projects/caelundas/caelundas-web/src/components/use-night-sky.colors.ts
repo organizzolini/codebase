@@ -22,24 +22,26 @@ export function formatSkyDefinitions(
 ): string {
   return (
     '<defs><linearGradient id="sky-background" x1="0" y1="0" x2="0" y2="1">' +
-    `<stop offset="0" stop-color="${normalizeHexColor(topColor, DEFAULT_OPTIONS.backgroundTopColor)}"/>` +
-    `<stop offset="1" stop-color="${normalizeHexColor(bottomColor, DEFAULT_OPTIONS.backgroundBottomColor)}"/>` +
+    `<stop offset="0" stop-color="${normalizeHexadecimalColor(topColor, DEFAULT_OPTIONS.backgroundTopColor)}"/>` +
+    `<stop offset="1" stop-color="${normalizeHexadecimalColor(bottomColor, DEFAULT_OPTIONS.backgroundBottomColor)}"/>` +
     `</linearGradient>${STAR_GLOW_DEFINITION}</defs>`
   );
 }
 
 /**
  * Reads a hexadecimal color of three or six digits, with or without the `#`,
- * as lowercase `#rrggbb`, or answers the fallback for anything else.
+ * as lowercase `#rrggbb`, or answers the fallback for anything else. A number
+ * is never read: the router turns `1e5` into one, and what it meant is gone.
  */
-export function normalizeHexColor(value: unknown, fallback: string): string {
-  const text = typeof value === "number" ? String(value) : value;
-
-  if (typeof text !== "string" || !COLOR_DIGITS_PATTERN.test(text)) {
+export function normalizeHexadecimalColor(
+  value: unknown,
+  fallback: string,
+): string {
+  if (typeof value !== "string" || !COLOR_DIGITS_PATTERN.test(value)) {
     return fallback;
   }
 
-  const digits = text.replace("#", "").toLowerCase();
+  const digits = value.replace("#", "").toLowerCase();
   const full =
     digits.length === 3
       ? Array.from(digits, (digit) => `${digit}${digit}`).join("")

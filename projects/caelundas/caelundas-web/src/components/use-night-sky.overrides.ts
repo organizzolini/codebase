@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { normalizeHexColor as normalizeHexadecimalColor } from "./use-night-sky.colors";
+import { normalizeHexadecimalColor } from "./use-night-sky.colors";
 import { DEFAULT_OBSERVER, DEFAULT_OPTIONS } from "./use-night-sky.constants";
 
 /**
