@@ -1,3 +1,5 @@
+import { SURFACE_CLASS_NAMES } from "./calendar-surfaces.constants";
+
 // ♟️ Constants
 
 // A phone's week keeps each day wide enough to read, scrolling sideways in
@@ -12,7 +14,7 @@ export const OVERFLOW_CLASS_NAMES = { morePopover: "w-80" };
 
 export const SCROLLING_WEEK_CLASS_NAMES = {
   timeGrid: "min-w-[48rem]",
-  timeGutter: "bg-background sticky start-0 z-[15]",
+  timeGutter: `${SURFACE_CLASS_NAMES.timeGutter} sticky start-0 z-[15]`,
 };
 
 // The calendar sets each event's native `title` unless this drops it, and
