@@ -62,21 +62,33 @@ export function useNightSky(): string | undefined {
   // of their own, so the calendar's first paint does not wait for them, and
   // they are read only when there is a sky to draw.
   useEffect(() => {
-    if (hidden) {
-      return;
+    let mounted = true;
+
+    // A chunk that fails to load, or a catalog that fails its schema, leaves
+    // the page without a sky and says why, rather than failing unseen.
+    if (!hidden) {
+      void Promise.all([
+        import("./use-night-sky.catalog.json"),
+        import("./use-night-sky.utilities"),
+      ])
+        .then(([catalog, utilities]) => {
+          if (mounted) {
+            setEngine({
+              buildNightSky: utilities.buildNightSky,
+              computeStartingSiderealDegrees:
+                utilities.computeStartingSiderealDegrees,
+              stars: starCatalogSchema.parse(catalog.default),
+            });
+          }
+        })
+        .catch((error: unknown) => {
+          console.error("The night sky could not be loaded", error);
+        });
     }
 
-    void Promise.all([
-      import("./use-night-sky.catalog.json"),
-      import("./use-night-sky.utilities"),
-    ]).then(([catalog, utilities]) => {
-      setEngine({
-        buildNightSky: utilities.buildNightSky,
-        computeStartingSiderealDegrees:
-          utilities.computeStartingSiderealDegrees,
-        stars: starCatalogSchema.parse(catalog.default),
-      });
-    });
+    return () => {
+      mounted = false;
+    };
   }, [hidden]);
 
   // The sky is built to the window's size, which is read after mount and
