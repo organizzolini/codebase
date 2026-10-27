@@ -66,8 +66,9 @@ defining by a synonym that is itself undefined.
   indented paragraphs. A definition may start on the line after the bare
   bullet.
 - **JSON**: the value is the definition string, with `\n` for a line break.
-- **Leave the bold headword exactly as written.** Editing it creates a new
-  word, and the next `--write` deletes the old bullet with its definition.
+- **Leave the bold headword exactly as written**, except to follow a rename in
+  the code. Editing it otherwise creates a new word, and the next `--write`
+  deletes the old bullet with its definition.
 - A word that appears in two glossaries is defined where it is listed. Nothing
   copies a definition between destinations, and a word the parent glossary
   already holds is usually excluded from the child.

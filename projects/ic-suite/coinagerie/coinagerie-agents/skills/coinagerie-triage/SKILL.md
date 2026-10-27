@@ -47,9 +47,10 @@ The glossary lists a word the code no longer uses, and `--write` deletes it
 **together with its definition**. Ask why it went stale before writing:
 
 - **Renamed.** The definition belongs to the new word, and a rename is the case
-  that loses hand-written text. Copy the old bullet's definition under the new
-  headword after the write, or recover it from version control history of the
-  glossary file.
+  that loses hand-written text. Before any write, edit the old bullet's bold
+  headword to the new word by hand: the definition stays, and the check then
+  passes without a write. After a write that already deleted it, recover the
+  text from version control history of the glossary file.
 - **Removed on purpose.** Write. Tracking the code is the design.
 - **Newly excluded** by a words or paths entry. Write; the deletion is the
   intent.
@@ -63,9 +64,9 @@ confirm it passes.
 
 ## A glossary it cannot parse
 
-The error names the file and line, and nothing was written. Causes: a line in
+The error names the file, and the line for a markdown fault, and nothing was written. Causes: a line in
 the block that is neither a bullet nor indented continuation, a word listed
-twice, `**word**:` with no space after the colon, a missing, doubled, or
+twice, text placed directly after the colon with no space, a missing, doubled, or
 reversed anchor, invalid JSON, or a value that is not a string. Fix the named
 line by hand, and every definition around it survives.
 
@@ -91,6 +92,6 @@ start over with every definition empty.
 | -------------------------------------------------- | ---------------------------------------------------------------------------- |
 | exclude every missing word so the check goes green | decide each word with the table above; an excluded word loses its definition |
 | widen `exclude.paths` until nothing is missing     | exclude only files that are not the codebase's own words                     |
-| run `--write` and move on                          | read the stale list for renames first                                        |
+| run `--write` and move on                          | read the stale list for renames, and edit each renamed headword first        |
 | delete the block and regenerate                    | fix the line the error names                                                 |
 | call a passing check finished                      | a green check allows empty definitions; define what you added                |
