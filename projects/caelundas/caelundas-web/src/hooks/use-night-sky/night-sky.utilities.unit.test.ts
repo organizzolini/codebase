@@ -8,10 +8,11 @@ import {
   computeStartingSiderealDegrees,
 } from "./night-sky.utilities";
 import catalog from "./use-night-sky.catalog.json";
+import { starCatalogSchema } from "./use-night-sky.schemas";
 
 import type { StarRow } from "./night-sky.types";
 
-const stars = catalog as unknown as readonly StarRow[];
+const stars = starCatalogSchema.parse(catalog);
 const LATITUDE = 40.73;
 const LONGITUDE = -74;
 const WIDTH = 1100;
@@ -123,6 +124,17 @@ describe("night sky", () => {
       });
 
       expect(svg).toContain('from="-100.000" to="-460.000"');
+    });
+
+    it("stands still at minus the sidereal angle, the animation's starting angle", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        localSiderealDegrees: 100,
+        still: true,
+      });
+
+      expect(svg).toContain('<g transform="rotate(-100.000)">');
+      expect(svg).not.toContain("animateTransform");
     });
 
     it("puts the pole above the top edge and sets the period from the speed", () => {

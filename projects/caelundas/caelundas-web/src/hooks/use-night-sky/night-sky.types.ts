@@ -75,6 +75,11 @@ export interface NightSkyOptions {
   stars: readonly StarRow[];
   /** Multiplier on dot size. Defaults to 1. */
   starScale?: number;
+  /**
+   * Draws the sky at its starting angle, with no animation, for a reader who
+   * asks for reduced motion. Defaults to false.
+   */
+  still?: boolean;
   /** Degrees of altitude shown, top to bottom. Defaults to 20. */
   verticalFieldOfViewDegrees?: number;
   /** Pixel width of the area the SVG fills. */

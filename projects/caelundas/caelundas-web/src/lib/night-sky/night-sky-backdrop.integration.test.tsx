@@ -5,6 +5,7 @@ import { renderRoute } from "../../../testing/render-route";
 import { setReducedMotion } from "../../../testing/viewport";
 import { EventsCalendar } from "../../components/events-calendar";
 import { NightSkyBackdropMount } from "../../components/night-sky-backdrop";
+import { computeStartingSiderealDegrees } from "../../components/use-night-sky.utilities";
 import { getRouter } from "../../router";
 
 // The route helper renders under a bare root, so the backdrop the real root
@@ -226,6 +227,20 @@ describe("night sky backdrop", () => {
     expect(vi.mocked(EventsCalendar)).toHaveBeenCalledTimes(rendered);
   });
 
+  it("says when it reduces a field of view that would put the pole on screen", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    await renderRoute("/?date=2026-03-01&sky.vFov=90");
+    await findSky();
+
+    await waitFor(() => {
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining("field of view was reduced"),
+      );
+    });
+    warn.mockRestore();
+  });
+
   it("draws nothing for sky=off", async () => {
     await renderRoute("/?date=2026-03-01&sky=off");
 
@@ -249,9 +264,14 @@ describe("night sky backdrop", () => {
   it("stands still when the page asks for reduced motion, and follows the setting", async () => {
     setReducedMotion(true);
     await renderRoute("/?date=2026-03-01");
-    await findSky();
+    const still = await findSky();
 
     expect(queryAnimation()).toBeNull();
+    // It stands at the angle the turning sky starts from, not at zero.
+    expect(readRotation(still)).toBeCloseTo(
+      -computeStartingSiderealDegrees(new Date(), -74),
+      0,
+    );
 
     act(() => {
       setReducedMotion(false);
@@ -299,6 +319,17 @@ describe("night sky backdrop", () => {
 function readInner(): string | undefined {
   return screen.getByTestId("night-sky-backdrop").querySelector("svg")
     ?.innerHTML;
+}
+
+/**
+ * The angle the sky's star group stands at, when it is not animated.
+ */
+function readRotation(svg: SVGSVGElement): number {
+  const transform = svg
+    .querySelector("g[transform^='rotate']")
+    ?.getAttribute("transform");
+
+  return Number.parseFloat(transform?.slice("rotate(".length) ?? "NaN");
 }
 
 /**

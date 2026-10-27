@@ -33,6 +33,7 @@ export const DEFAULT_OPTIONS = {
   faintestMagnitude: 6.5,
   pixelsPerSecond: 12,
   starScale: 1,
+  still: false,
   verticalFieldOfViewDegrees: 20,
 } as const;
 

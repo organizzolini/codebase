@@ -15,6 +15,23 @@ import type {
 } from "./use-night-sky.utilities";
 
 /**
+ * What a sky is built with: the catalog and the generator, loaded together.
+ */
+interface Engine {
+  buildNightSky: typeof buildNightSky;
+  computeStartingSiderealDegrees: typeof computeStartingSiderealDegrees;
+  stars: readonly StarRow[];
+}
+
+/**
+ * The window's size in pixels.
+ */
+interface Size {
+  height: number;
+  width: number;
+}
+
+/**
  * Builds the night sky behind the page as an SVG, or nothing while the star
  * catalog loads, when the link turns it off, and for a latitude of zero or
  * below, which the northern view cannot draw. It reads only its own keys of
@@ -40,7 +57,7 @@ export function useNightSky(): string | undefined {
 
   // 🏗 Setup
   const hidden = overrides.off || overrides.latitudeDegrees <= 0;
-  const sky = useMemo(
+  const built = useMemo(
     () =>
       engine === undefined || size === undefined || hidden
         ? undefined
@@ -52,8 +69,9 @@ export function useNightSky(): string | undefined {
               overrides.longitudeDegrees,
             ),
             stars: engine.stars,
-          }).svg,
-    [engine, hidden, overrides, size],
+            still: reducedMotion,
+          }),
+    [engine, hidden, overrides, reducedMotion, size],
   );
 
   // ♻️ Lifecycle
@@ -91,6 +109,15 @@ export function useNightSky(): string | undefined {
     };
   }, [hidden]);
 
+  // A field of view that would put the pole on screen is reduced, and says so.
+  useEffect(() => {
+    if (built?.measurements.fieldOfViewClamped) {
+      console.warn(
+        `The night sky's field of view was reduced to ${built.measurements.fieldOfViewLimitDegrees.toFixed(1)} degrees to keep the pole off screen`,
+      );
+    }
+  }, [built]);
+
   // The sky is built to the window's size, which is read after mount and
   // again once a resize has settled.
   useEffect(() => {
@@ -113,27 +140,7 @@ export function useNightSky(): string | undefined {
   }, []);
 
   // 🎨 Result
-  return reducedMotion ? sky?.replace(ANIMATION_PATTERN, "") : sky;
-}
-
-// Only the one element that turns the sky is animated.
-const ANIMATION_PATTERN = /<animateTransform[^>]*\/>/u;
-
-/**
- * What a sky is built with: the catalog and the generator, loaded together.
- */
-interface Engine {
-  buildNightSky: typeof buildNightSky;
-  computeStartingSiderealDegrees: typeof computeStartingSiderealDegrees;
-  stars: readonly StarRow[];
-}
-
-/**
- * The window's size in pixels.
- */
-interface Size {
-  height: number;
-  width: number;
+  return built?.svg;
 }
 
 /**
