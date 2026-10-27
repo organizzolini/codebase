@@ -184,6 +184,7 @@ Repository measurement toolchain that counts a codebase and reports what it foun
 
 Vocabulary toolchain that lists the words a codebase uses and keeps a glossary of them in step with the code
 
+**[coinagerie-agents](projects/ic-suite/coinagerie/coinagerie-agents)** - Agent skills for the coinagerie toolchain, installable by any workspace that uses coinagerie\
 **[coinagerie-cli](projects/ic-suite/coinagerie/coinagerie-cli)** - Command-line tool that lists the vocabulary of a codebase and keeps a glossary of it in step with the code\
 **[coinagerie-configuration](projects/ic-suite/coinagerie/coinagerie-configuration)** - Configuration schema, loader, and command-line flag resolution for the coinagerie vocabulary toolchain\
 **[coinagerie-core](projects/ic-suite/coinagerie/coinagerie-core)** - Contracts for the coinagerie vocabulary toolchain: the glossary, the vocabulary report, and shared constants\

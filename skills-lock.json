@@ -85,6 +85,30 @@
       "skillPath": "projects/ic-suite/codometer/codometer-agents/skills/codometer-triage/SKILL.md",
       "computedHash": "62e8780c9c34bac6592d8d8d5dfb0930ece3477d6e1e5d49125a00ce82ebcc71"
     },
+    "coinagerie-collect": {
+      "source": "Organizzolini/codebase",
+      "sourceType": "github",
+      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-collect/SKILL.md",
+      "computedHash": "4d5b65ad7a7d505ac8dec881ee63dcf691199ee8796238c54eab7f8a6d425319"
+    },
+    "coinagerie-configure": {
+      "source": "Organizzolini/codebase",
+      "sourceType": "github",
+      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-configure/SKILL.md",
+      "computedHash": "d2b6d96d2cc97e0c858a8c5daf238a89cbeeb595140566223b1f42dd26d0fc0f"
+    },
+    "coinagerie-define": {
+      "source": "Organizzolini/codebase",
+      "sourceType": "github",
+      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-define/SKILL.md",
+      "computedHash": "50a543784702824ec950d1b25eb36b0f0c8b55499a0b6f7e07898b9525bc0035"
+    },
+    "coinagerie-triage": {
+      "source": "Organizzolini/codebase",
+      "sourceType": "github",
+      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-triage/SKILL.md",
+      "computedHash": "3db1dedf88c11f0ff6ef5cabc3a0e9a2f11b1a5b8ae73aaa0b2c468f8bb626dc"
+    },
     "conformetry-configure": {
       "source": "Organizzolini/codebase",
       "sourceType": "github",
