@@ -1,8 +1,9 @@
 import { act, cleanup, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "../../../testing/render-route";
 import { setReducedMotion } from "../../../testing/viewport";
+import { EventsCalendar } from "../../components/events-calendar";
 import { NightSkyBackdropMount } from "../../components/night-sky-backdrop";
 import { getRouter } from "../../router";
 
@@ -30,6 +31,19 @@ vi.mock(import("../../router"), async (importOriginal) => {
     }),
   };
 });
+
+// Counts how often the page renders the calendar, to show a change to the
+// sky's keys leaves it alone.
+vi.mock(import("../../components/events-calendar"), async (importOriginal) => {
+  const original = await importOriginal();
+
+  return { ...original, EventsCalendar: vi.fn(original.EventsCalendar) };
+});
+
+const WINDOW_SIZE = {
+  innerHeight: globalThis.innerHeight,
+  innerWidth: globalThis.innerWidth,
+};
 
 /**
  * How many stars the sky draws.
@@ -72,6 +86,11 @@ function readPeriod(svg: SVGSVGElement): number {
 }
 
 describe("night sky backdrop", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    Object.assign(globalThis, WINDOW_SIZE);
+  });
+
   it("sits behind the page, out of reach of the pointer and of readers", async () => {
     await renderRoute("/?date=2026-03-01");
 
@@ -182,6 +201,31 @@ describe("night sky backdrop", () => {
     });
   });
 
+  it("leaves the calendar alone when only the sky's keys change", async () => {
+    await renderRoute("/?date=2026-03-01");
+
+    const sky = await findSky();
+    const normal = sky.innerHTML;
+    const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+    const rendered = vi.mocked(EventsCalendar).mock.calls.length;
+
+    await act(async () => {
+      await router?.navigate({
+        search: (previous: Record<string, unknown>) => ({
+          ...previous,
+          "sky.maxMag": 3,
+        }),
+        to: "/",
+      });
+    });
+
+    await waitFor(() => {
+      expect(readInner()).not.toBe(normal);
+    });
+
+    expect(vi.mocked(EventsCalendar)).toHaveBeenCalledTimes(rendered);
+  });
+
   it("draws nothing for sky=off", async () => {
     await renderRoute("/?date=2026-03-01&sky=off");
 
@@ -244,7 +288,6 @@ describe("night sky backdrop", () => {
     act(() => {
       vi.advanceTimersByTime(1000);
     });
-    vi.useRealTimers();
 
     expect(readViewBox()).toBe("0 0 500 600");
   });

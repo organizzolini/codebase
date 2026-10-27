@@ -52,8 +52,8 @@ export interface CalendarSearch {
   /**
    * The night sky backdrop's overrides, `sky=off` and the `sky.*` keys. The
    * calendar neither reads nor validates them: the backdrop does, and they
-   * are named here so validating the search does not drop them. Each is a number, a boolean
-   * or text, as the router read it.
+   * are named here so validating the search does not drop them. Each is a number, a
+   * boolean or text, as the router read it.
    */
   sky?: SkySearchValue | undefined;
   "sky.altBottom"?: SkySearchValue | undefined;
