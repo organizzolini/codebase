@@ -55,7 +55,9 @@ The MSW mock server and the pagination oracle moved to
 `testing/index.ts` re-exports them until every consumer imports the new
 entry. The testing package depends on this one, so importing it from here
 closes a cycle; the module-boundary and codependix rules allow that cycle
-among the common packages only.
+among the common packages only, and `implicitDependencies: ["!testing"]` in
+`project.json` drops the edge back to `testing` from the Nx graph, so
+`build` has no task cycle.
 
 ### Code Generation
 
