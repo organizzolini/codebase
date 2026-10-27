@@ -27,11 +27,11 @@ coinagerie --config packages/widgets/coinagerie.config.ts --check
 
 ## Three modes
 
-| Invocation           | Writes                                 | Exits 1 when                                                  |
-| -------------------- | -------------------------------------- | ------------------------------------------------------------- |
-| `coinagerie`         | nothing; prints a glossary to stdout   | the configuration or command line is rejected                 |
-| `coinagerie --check` | nothing                                | a destination has a missing or stale word                     |
-| `coinagerie --write` | each destination whose content changes | a glossary cannot be parsed, or the configuration is rejected |
+| Invocation           | Writes                                 | Exits 1 when                                                                                                             |
+| -------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `coinagerie`         | nothing; prints a glossary to stdout   | the configuration or command line is rejected                                                                            |
+| `coinagerie --check` | nothing                                | a destination has a missing or stale word, a glossary cannot be parsed, or the configuration or command line is rejected |
+| `coinagerie --write` | each destination whose content changes | a glossary cannot be parsed, or the configuration is rejected                                                            |
 
 - `--check` and `--write` together are refused.
 - Each needs a destination, which is an `outputs` entry in the configuration or
@@ -40,7 +40,8 @@ coinagerie --config packages/widgets/coinagerie.config.ts --check
 - A bare run prints the **code's** words with every definition empty. It never
   reads a destination, so it cannot show a definition anyone wrote. Markdown is
   the default print; `--format json` prints a flat object. `--format` is
-  ignored beside `--check` or `--write`.
+  ignored beside `--check` or `--write`, though an invalid value is still
+  rejected.
 
 ## What counts as a word
 
@@ -103,7 +104,7 @@ jq -r 'to_entries[] | select(.value == "") | .key' glossary.json
   is written: an unrecognized line, a duplicated word, invalid JSON, a
   non-string value. Nothing on disk changes.
 - Diagnostics go to stderr, and a print run's stdout carries only the glossary.
-  A failed check logs one line per out-of-step destination:
+  A failed check logs one line per out-of-step destination (abridged here):
 
 ```text
 ERROR: 🪙 Found a glossary out of step with the code {"missing":["gate"],"path":"/repo/README.md","stale":["ephemeris"]}
@@ -116,15 +117,15 @@ Act on the failure with the `coinagerie-triage` skill.
 Each flag replaces the field it names; a field with no flag keeps the
 configuration file's value.
 
-| Flag                       | Replaces                                                |
-| -------------------------- | ------------------------------------------------------- |
-| `--config <path>`          | which configuration file is read                        |
-| `--include <glob>`         | `include`; repeat for several                           |
-| `--exclude-paths <glob>`   | `exclude.paths`; repeat for several                     |
-| `--output-json <path>`     | the whole `outputs` list, with one JSON destination     |
-| `--output-markdown <path>` | the whole `outputs` list, with one markdown destination |
-| `--description <text>`     | the description of every markdown destination           |
-| `--format json\|markdown`  | what a bare run prints                                  |
+| Flag                       | Replaces                                                                    |
+| -------------------------- | --------------------------------------------------------------------------- |
+| `--config <path>`          | which configuration file is read                                            |
+| `--include <glob>`         | `include`; repeat for several                                               |
+| `--exclude-paths <glob>`   | `exclude.paths`; repeat for several                                         |
+| `--output-json <path>`     | the whole `outputs` list, with a JSON destination                           |
+| `--output-markdown <path>` | the whole `outputs` list, with a markdown destination (both flags give two) |
+| `--description <text>`     | the description of every markdown destination                               |
+| `--format json\|markdown`  | what a bare run prints                                                      |
 
 Destination paths are relative to the working directory, globs to the scanned
 folder. No flag exists for `exclude.words` or `fold`: both are code, so they

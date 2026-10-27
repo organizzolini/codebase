@@ -37,9 +37,9 @@ export default {
 } satisfies CoinagerieConfiguration;
 ```
 
-The type import is optional. `@coinagerie/languages` and
-`@coinagerie/configuration` must be installed beside the configuration: an
-unresolvable import fails the run as "Cannot find module".
+The type import is optional and erased at load time. `@coinagerie/languages`
+must be installed beside the configuration: an unresolvable import fails the
+run as "Cannot find module".
 
 ## The folder is the root
 
@@ -51,7 +51,8 @@ against the folder of the configuration that was loaded, not the base's.
   `path.matchesGlob`, where `*` and `**` never match a name starting with a
   dot: a custom `include` has to name `.github/**` and its kin outright.
 - `exclude.paths` takes globs. A glob matching a folder prunes the whole
-  folder, so `["dist"]` behaves like a `.gitignore` line.
+  folder. Globs match from the scanned folder, so `["dist"]` prunes only the
+  top-level `dist`; write `**/dist` to prune it at any depth.
 - `.gitignore` is honored on top of both, every one from the repository root
   (nearest ancestor holding `.git`) down, negations included.
 - A glossary destination is never scanned, but the configuration file is: its
@@ -82,8 +83,8 @@ export default { exclude: { words: parentWords } };
 - Exclusion runs **after folding**, and each entry is lowercased and folded the
   way the code's words are: excluding `service` also covers `services`, and
   excluding `implements` covers the `implement` it folds into.
-- An entry is one word. It is never split, so `"fooBar"` excludes nothing a
-  run could produce; list `foo` and `bar`.
+- An entry is one word. It is never split, so `"fooBar"` never excludes `foo`
+  or `bar`; list each.
 - An excluded word leaves the glossary, and the next `--write` deletes its
   definition. Exclude a word because it carries no meaning of its own, not
   because its definition is missing.
@@ -135,7 +136,7 @@ import base from "../coinagerie.base";
 
 export default {
   ...base,
-  exclude: { ...base.exclude, paths: [...(base.exclude.paths ?? []), "fixtures"] },
+  exclude: { ...base.exclude, paths: [...(base.exclude?.paths ?? []), "fixtures"] },
   outputs: [{ path: "README.md", type: "markdown" }],
 };
 ```
@@ -156,16 +157,18 @@ anything.
 
 ## When a run rejects the configuration
 
-| Symptom                                  | Cause and fix                                                        |
-| ---------------------------------------- | -------------------------------------------------------------------- |
-| `expected object, received function`     | the file exports a function; export a plain object                   |
-| `Unrecognized key: "<name>"`             | a misspelled or misplaced field; fix the key                         |
-| `Invalid input` at `exclude.words`       | it holds something other than a list or a function                   |
-| `fold must return a non-empty string...` | the function returned `""`, a space, `*`, a promise, or a non-string |
-| `exclude.words boom`                     | the function threw; the error carries the configuration's path       |
-| `Cannot find module`                     | install the package beside the configuration                         |
-| `Two outputs name a.json`                | give each destination its own file                                   |
-| `Configuration file not found`           | a named `--config` is relative to the working directory              |
+| Symptom                                     | Cause and fix                                                        |
+| ------------------------------------------- | -------------------------------------------------------------------- |
+| `expected object, received function`        | the file exports a function; export a plain object                   |
+| `Unrecognized key: "<name>"`                | a misspelled or misplaced field; fix the key                         |
+| `Invalid input` at `exclude.words`          | it holds something other than a list or a function                   |
+| `fold must return a non-empty string...`    | the function returned `""`, a space, `*`, a promise, or a non-string |
+| `exclude.words boom`                        | the function threw; the error carries the configuration's path       |
+| `Cannot find module`                        | install the package beside the configuration                         |
+| `Two outputs name a.json`                   | give each destination its own file                                   |
+| `A description may not hold a list item...` | the description has a `-`, `*`, `+`, or `<!--` line; reword it       |
+| `fold threw on "<word>"`                    | the fold function raised; fix it for that word                       |
+| `Configuration file not found`              | a named `--config` is relative to the working directory              |
 
 For what to do about a failed check rather than a rejected configuration, use
 the `coinagerie-triage` skill.
