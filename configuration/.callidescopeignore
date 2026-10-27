@@ -18,12 +18,13 @@ notepads/
 # `nx run callidescope-examples:callidescope`.
 projects/ic-suite/callidescope/callidescope-examples/
 
-# The four agent-skill packages. Each publishes a toolchain's skill markdown
+# The five agent-skill packages. Each publishes a toolchain's skill markdown
 # and holds barely a callable between them — nothing worth tracing, and no
 # real code underneath for a depth number to ever grow into.
 projects/ic-suite/callidescope/callidescope-agents/
 projects/ic-suite/codependix/codependix-agents/
 projects/ic-suite/codometer/codometer-agents/
+projects/ic-suite/coinagerie/coinagerie-agents/
 projects/ic-suite/conformetry/conformetry-agents/
 
 # The codependix, codometer, and conformetry examples packages. Each is a
