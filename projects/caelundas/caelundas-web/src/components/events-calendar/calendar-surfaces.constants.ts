@@ -15,3 +15,17 @@ export const SURFACE_CLASS_NAMES = {
   navigationTitle: "bg-background/50",
   timeGutter: "bg-background/35",
 } as const;
+
+/**
+ * The same for the vendored calendars' surfaces, which live in the shared
+ * presentation package and are changed from here: through the class hooks the
+ * event calendar offers, and through selectors on the slots the Gantt
+ * names, which need no edit to the package.
+ */
+export const VENDORED_SURFACE_CLASS_NAMES = {
+  ganttHeaders:
+    "[&_[data-slot=gantt-timeline-header]]:bg-background/35 [&_[data-slot=gantt-tree-header]]:bg-background/35",
+  ganttScrollbars:
+    "[&_[data-slot=gantt-timeline-scrollbar-rail]]:bg-background/35 [&_[data-slot=gantt-tree-scrollbar-rail]]:bg-background/35 [&_[data-slot=scroll-area-scrollbar]]:bg-background/35",
+  timeGridHeader: "bg-background/35",
+} as const;
