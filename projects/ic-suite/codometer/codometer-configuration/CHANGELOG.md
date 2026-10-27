@@ -1,3 +1,9 @@
+## 0.0.51 (2026-10-27)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.51
+
 ## 0.0.50 (2026-10-26)
 
 ### 🧱 Updated Dependencies

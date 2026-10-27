@@ -29,20 +29,32 @@ describe(LexemeMatch, () => {
     expect(screen.getByLabelText("Starts with")).toBeDefined();
   });
 
-  it("calls a match on part of a word fuzzy", () => {
-    render(<LexemeMatch match={{ extraLetters: 2, kind: "contains" }} />);
+  it("calls a match a few edits away fuzzy", () => {
+    render(<LexemeMatch match={{ distance: 1, kind: "fuzzy" }} />);
 
     expect(screen.getByLabelText("Fuzzy match")).toBeDefined();
   });
 
-  it("explains an icon in a tooltip, with how many letters a partial match has beyond the query", async () => {
-    render(<LexemeMatch match={{ extraLetters: 2, kind: "contains" }} />);
+  it("explains a fuzzy icon in a tooltip, with how many edits away the match is", async () => {
+    render(<LexemeMatch match={{ distance: 2, kind: "fuzzy" }} />);
 
     fireEvent.focus(screen.getByLabelText("Fuzzy match"));
 
     await expect(
       screen.findByText(
-        "Fuzzy match: The headword contains what you searched for (+2 letters)",
+        "Fuzzy match: A headword or form a few letters away from what you searched for (2 edits away)",
+      ),
+    ).resolves.toBeDefined();
+  });
+
+  it("explains a prefix icon in a tooltip, with how many letters it has beyond the query", async () => {
+    render(<LexemeMatch match={{ extraLetters: 2, kind: "prefix" }} />);
+
+    fireEvent.focus(screen.getByLabelText("Starts with"));
+
+    await expect(
+      screen.findByText(
+        "Starts with: The headword starts with what you searched for (+2 letters)",
       ),
     ).resolves.toBeDefined();
   });
