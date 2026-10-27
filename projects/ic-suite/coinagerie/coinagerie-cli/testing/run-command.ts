@@ -6,6 +6,11 @@ const COMMAND_PATH = path.resolve(
   "../src/coinagerie-cli.main.ts",
 );
 
+const PROJECT_TSCONFIG_PATH = path.resolve(
+  import.meta.dirname,
+  "../tsconfig.json",
+);
+
 /** Long enough for a cold swc start on a slow runner. */
 export const SPAWN_TIMEOUT = 120_000;
 
@@ -27,7 +32,11 @@ export function run(root: string, args: string[]): RunResult {
     {
       cwd: root,
       encoding: "utf8",
-      env: { ...process.env, FORCE_COLOR: "0" },
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0",
+        SWC_NODE_PROJECT: PROJECT_TSCONFIG_PATH,
+      },
       timeout: SPAWN_TIMEOUT,
     },
   );

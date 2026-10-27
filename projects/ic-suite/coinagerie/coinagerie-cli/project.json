@@ -44,6 +44,7 @@
       "inputs": [
         "...",
         "{workspaceRoot}/configuration/vite.library.config.ts",
+        "{workspaceRoot}/projects/ic-suite/coinagerie/coinagerie-examples/examples/**",
         {
           "externalDependencies": ["vite"]
         }
