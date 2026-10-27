@@ -28,6 +28,8 @@ export const J2000_JULIAN_DAY = 2_451_545;
 // 🔭 Defaults
 
 export const DEFAULT_OPTIONS = {
+  backgroundBottomColor: "#0d1533",
+  backgroundTopColor: "#04060f",
   bottomAltitudeDegrees: 0,
   debug: false,
   faintestMagnitude: 6.5,
@@ -131,15 +133,11 @@ export const COLOR_INDEX_HIGHEST = 2;
 
 // 🖼 Markup
 
-export const SKY_DEFINITIONS =
-  '<defs><linearGradient id="sky-background" x1="0" y1="0" x2="0" y2="1">' +
-  '<stop offset="0" stop-color="#04060f"/>' +
-  '<stop offset="1" stop-color="#0d1533"/>' +
-  "</linearGradient>" +
+export const STAR_GLOW_DEFINITION =
   '<radialGradient id="star-glow">' +
   '<stop offset="0" stop-color="#cfd9ff" stop-opacity=".42"/>' +
   '<stop offset="1" stop-color="#cfd9ff" stop-opacity="0"/>' +
-  "</radialGradient></defs>";
+  "</radialGradient>";
 
 export const DEBUG_LINE_ATTRIBUTES =
   'fill="none" stroke="#ffb877" vector-effect="non-scaling-stroke"';

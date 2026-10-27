@@ -137,6 +137,30 @@ describe("night sky", () => {
       expect(svg).not.toContain("animateTransform");
     });
 
+    it("draws the background gradient in the colors it is given", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        backgroundBottomColor: "#123",
+        backgroundTopColor: "A0B1C2",
+      });
+      const plain = buildNightSky(baseOptions).svg;
+
+      expect(svg).toContain('offset="0" stop-color="#a0b1c2"');
+      expect(svg).toContain('offset="1" stop-color="#112233"');
+      expect(plain).toContain('offset="0" stop-color="#04060f"');
+      expect(plain).toContain('offset="1" stop-color="#0d1533"');
+    });
+
+    it("keeps anything but a hexadecimal color out of the markup", () => {
+      const { svg } = buildNightSky({
+        ...baseOptions,
+        backgroundTopColor: 'red"/><script>',
+      });
+
+      expect(svg).not.toContain("<script>");
+      expect(svg).toContain('offset="0" stop-color="#04060f"');
+    });
+
     it("puts the pole above the top edge and sets the period from the speed", () => {
       const slow = buildNightSky(baseOptions).measurements;
       const fast = buildNightSky({

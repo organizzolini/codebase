@@ -57,6 +57,10 @@ export interface NightSkyMeasurements {
  * What the builder needs to draw one night sky.
  */
 export interface NightSkyOptions {
+  /** Hexadecimal color at the bottom of the background. Defaults to #0d1533. */
+  backgroundBottomColor?: string;
+  /** Hexadecimal color at the top of the background. Defaults to #04060f. */
+  backgroundTopColor?: string;
   /** Altitude at the bottom edge of the window. Defaults to 0. */
   bottomAltitudeDegrees?: number;
   /** Draws the zoomed-out tuning view instead of the backdrop. */

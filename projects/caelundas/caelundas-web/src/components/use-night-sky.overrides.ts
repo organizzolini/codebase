@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { normalizeHexColor as normalizeHexadecimalColor } from "./use-night-sky.colors";
 import { DEFAULT_OBSERVER, DEFAULT_OPTIONS } from "./use-night-sky.constants";
 
 /**
@@ -7,6 +8,8 @@ import { DEFAULT_OBSERVER, DEFAULT_OPTIONS } from "./use-night-sky.constants";
  * defaults.
  */
 export interface NightSkyOverrides {
+  backgroundBottomColor: string;
+  backgroundTopColor: string;
   bottomAltitudeDegrees: number;
   debug: boolean;
   faintestMagnitude: number;
@@ -27,6 +30,14 @@ export function readNightSkyOverrides(
   search: Readonly<Record<string, unknown>>,
 ): NightSkyOverrides {
   return {
+    backgroundBottomColor: normalizeHexadecimalColor(
+      search["sky.bottom"],
+      DEFAULT_OPTIONS.backgroundBottomColor,
+    ),
+    backgroundTopColor: normalizeHexadecimalColor(
+      search["sky.top"],
+      DEFAULT_OPTIONS.backgroundTopColor,
+    ),
     bottomAltitudeDegrees: readNumber(
       search["sky.altBottom"],
       z.number().min(0).max(89),

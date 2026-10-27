@@ -69,12 +69,14 @@ export function validateCalendarSearch(
     ...readCalendarSearch(search),
     sky: parseSkyValue(search["sky"]),
     "sky.altBottom": parseSkyValue(search["sky.altBottom"]),
+    "sky.bottom": parseSkyValue(search["sky.bottom"]),
     "sky.debug": parseSkyValue(search["sky.debug"]),
     "sky.lat": parseSkyValue(search["sky.lat"]),
     "sky.lon": parseSkyValue(search["sky.lon"]),
     "sky.maxMag": parseSkyValue(search["sky.maxMag"]),
     "sky.pixelsPerSecond": parseSkyValue(search["sky.pixelsPerSecond"]),
     "sky.starScale": parseSkyValue(search["sky.starScale"]),
+    "sky.top": parseSkyValue(search["sky.top"]),
     "sky.vFov": parseSkyValue(search["sky.vFov"]),
   };
 }
