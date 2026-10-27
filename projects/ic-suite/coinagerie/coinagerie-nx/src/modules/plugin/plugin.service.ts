@@ -15,7 +15,6 @@ import {
 import type { CoinageriePluginOptions } from "../options/options.types";
 import type { InferredTargets, InferTargetsArguments } from "./plugin.types";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Everything this plugin does, behind one injectable.
  *
