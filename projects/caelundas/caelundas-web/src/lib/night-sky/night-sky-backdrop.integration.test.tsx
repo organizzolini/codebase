@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderRoute } from "../../../testing/render-route";
 import { setReducedMotion } from "../../../testing/viewport";
 import { NightSkyBackdropMount } from "../../components/night-sky-backdrop";
+import { getRouter } from "../../router";
 
 // The route helper renders under a bare root, so the backdrop the real root
 // mounts is wrapped around the router's matches here.
@@ -12,7 +13,7 @@ vi.mock(import("../../router"), async (importOriginal) => {
 
   return {
     ...original,
-    getRouter: () => {
+    getRouter: vi.fn(() => {
       const router = original.getRouter();
 
       router.update({
@@ -26,7 +27,7 @@ vi.mock(import("../../router"), async (importOriginal) => {
       });
 
       return router;
-    },
+    }),
   };
 });
 
@@ -159,6 +160,28 @@ describe("night sky backdrop", () => {
     expect(movedSky.innerHTML).not.toBe(normal);
   });
 
+  it("rebuilds the sky when the link changes while the page is open", async () => {
+    await renderRoute("/?date=2026-03-01");
+
+    const sky = await findSky();
+    const normal = sky.innerHTML;
+    const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+
+    await act(async () => {
+      await router?.navigate({
+        search: (previous: Record<string, unknown>) => ({
+          ...previous,
+          "sky.lat": 60,
+        }),
+        to: "/",
+      });
+    });
+
+    await waitFor(() => {
+      expect(readInner()).not.toBe(normal);
+    });
+  });
+
   it("draws nothing for sky=off", async () => {
     await renderRoute("/?date=2026-03-01&sky=off");
 
@@ -226,6 +249,14 @@ describe("night sky backdrop", () => {
     expect(readViewBox()).toBe("0 0 500 600");
   });
 });
+
+/**
+ * The markup of the sky the backdrop now holds.
+ */
+function readInner(): string | undefined {
+  return screen.getByTestId("night-sky-backdrop").querySelector("svg")
+    ?.innerHTML;
+}
 
 /**
  * The viewBox of the sky the backdrop now holds.
