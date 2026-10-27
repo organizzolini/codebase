@@ -141,27 +141,10 @@ jobs:
             fi
           fi
 
-          if [ "$TARGET_ID" = "apply-terraform" ]; then
-            if [ "$EVENT_NAME" = "pull_request" ]; then
-              echo "⏭️ Pull requests never apply infrastructure"
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-            if [ "$EVENT_NAME" != "workflow_dispatch" ] \
-              && [ -n "$PUSH_BEFORE" ] && [[ ! "$PUSH_BEFORE" =~ ^0+$ ]]; then
-              COMPARISON="$(gh api "repos/$REPOSITORY/compare/${PUSH_BEFORE}...${SHA}")"
-              FILE_COUNT="$(jq '.files | length' <<< "$COMPARISON")"
-              APPLY_PATTERN='^(infrastructure/terraform/openrouter/|\.github/workflows/continuous-deployment\.yml$)'
-
-              if [ "$FILE_COUNT" -lt 300 ] \
-                && ! jq -r '.files[].filename' <<< "$COMPARISON" | grep -qE "$APPLY_PATTERN"; then
-                echo "⏭️ No OpenRouter Terraform changes detected; skipping the apply."
-                echo "skip=true" >> "$GITHUB_OUTPUT"
-                exit 0
-              fi
-            fi
-            echo "🏗️ Applying the OpenRouter Terraform"
+          if [ "$TARGET_ID" = "apply-terraform" ] && [ "$EVENT_NAME" = "pull_request" ]; then
+            echo "⏭️ Pull requests never apply infrastructure"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
           echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -425,28 +408,39 @@ jobs:
           create-storage-record: false
 
       # Infrastructure Steps
+      # A push to main is compared with the commit before it, from the clone
+      # above. A manual run applies whatever the module holds.
+      - name: 🚦 Detect Terraform Changes
+        id: terraform-changes
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform' &&
+          github.event_name == 'push'
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            terraform:
+              - infrastructure/terraform/openrouter/**
+
       - name: 🕋 Setup Codebase for Infrastructure
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'apply-terraform'
+          matrix.target.id == 'apply-terraform' &&
+          (github.event_name == 'workflow_dispatch' ||
+          steps.terraform-changes.outputs.terraform == 'true')
         uses: ./.github/actions/setup-codebase
         with:
           nx-shas: "false"
           python-dependencies: "false"
+          terraform: "true"
           uv: "false"
-
-      - name: 🏗️ Setup Terraform
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'apply-terraform'
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_wrapper: false
 
       - name: 🏗️ Apply Terraform
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'apply-terraform'
+          matrix.target.id == 'apply-terraform' &&
+          (github.event_name == 'workflow_dispatch' ||
+          steps.terraform-changes.outputs.terraform == 'true')
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}

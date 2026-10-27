@@ -58,6 +58,9 @@ inputs:
   trivy:
     description: Install trivy (infrastructure scanning)
     default: "false"
+  terraform:
+    description: Install terraform (infrastructure lint, plan, and apply)
+    default: "false"
   eslint-cache:
     description: Restore and save the ESLint cache
     default: "false"
@@ -183,6 +186,17 @@ runs:
         enable-cache: ${{ inputs.python-dependencies }}
         cache-dependency-glob: configuration/uv.lock
         add-problem-matchers: "false"
+
+    # Pinned so a runner does not move to a new Terraform on its own: the state
+    # file records the version that last wrote it. 1.14.5 is the version the
+    # OpenRouter module was validated with. The wrapper is off so a step's
+    # output is Terraform's own, which the plan comment reads.
+    - name: 🏗️ Setup Terraform
+      if: inputs.terraform == 'true'
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.14.5
+        terraform_wrapper: false
 
     # Guarded on `uv` as well as its own input: `python-dependencies` defaults
     # on, so a job that opts out of installing uv would otherwise inherit a sync

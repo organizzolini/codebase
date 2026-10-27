@@ -167,6 +167,12 @@ jobs:
             ${{ matrix.check.target == 'test-code' && !matrix.check.shard &&
             'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
+          # The infrastructure project's `terraform-format` and
+          # `terraform-validate` run as part of lint-code, and the runner image
+          # no longer ships terraform.
+          terraform: >-
+            ${{ (matrix.check.target == 'lint-code' ||
+            matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
             ${{ github.job }}-${{ matrix.check.target }}${{ matrix.check.shard
@@ -176,41 +182,24 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
 
+      # Only a same-repository pull request is planned: a fork is not given the
+      # secrets the plan needs. On a pull request the action lists the changed
+      # files through the API, so it needs no clone.
       - name: 🚦 Detect Terraform Changes
         id: terraform-changes
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        env:
-          BASE_REF: ${{ github.base_ref }}
-          EVENT_NAME: ${{ github.event_name }}
-          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
-        run: |
-          if [ "$EVENT_NAME" != "pull_request" ] \
-            || [ "$HEAD_REPOSITORY" != "$GITHUB_REPOSITORY" ]; then
-            echo "⏭️ Only a same-repository pull request is planned."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          elif git diff --name-only "origin/${BASE_REF}...HEAD" \
-            | grep -qE '^infrastructure/terraform/openrouter/'; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "⏭️ No OpenRouter Terraform changes; skipping the plan."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      # The infrastructure project's `terraform-format` and `terraform-validate`
-      # run as part of lint-code, and the runner image no longer ships terraform.
-      - name: 🏗️ Setup Terraform
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          (matrix.check.target == 'lint-code' ||
-          steps.terraform-changes.outputs.changed == 'true')
-        uses: hashicorp/setup-terraform@v3
+          matrix.check.target == 'plan-terraform' &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: dorny/paths-filter@v4
         with:
-          terraform_wrapper: false
+          filters: |
+            terraform:
+              - infrastructure/terraform/openrouter/**
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
-        if: steps.terraform-changes.outputs.changed == 'true'
+        if: steps.terraform-changes.outputs.terraform == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
@@ -222,7 +211,7 @@ jobs:
       # Posts the plan as one comment that each push updates. A failed plan
       # fails the leg above and shows in its log instead.
       - name: 📊 Report Plan
-        if: steps.terraform-changes.outputs.changed == 'true'
+        if: steps.terraform-changes.outputs.terraform == 'true'
         uses: borchero/terraform-plan-comment@v2
         with:
           token: ${{ github.token }}
