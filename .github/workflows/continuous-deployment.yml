@@ -156,6 +156,21 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # Decides what the infrastructure leg has to set up before anything is
+      # set up. A push to main is compared with the commit before it, from the
+      # clone above; a manual run applies whatever the module holds.
+      - name: 🚦 Detect Terraform Changes
+        id: terraform-changes
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform' &&
+          github.event_name == 'push'
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            terraform:
+              - infrastructure/terraform/**
+
       # Devcontainer Build & Publish Steps
       - name: 🗂️ Setup Environment File
         if: >-
@@ -221,14 +236,22 @@ jobs:
             bash .devcontainer/scripts/test-devcontainer.sh
 
       # Release Steps
-      - name: 🕋 Setup Codebase for Release
+      # The one setup of the release and infrastructure legs. The release needs
+      # Python and uv; the infrastructure leg needs terraform and neither.
+      - name: 🕋 Setup Codebase
         id: setup
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'push-releases'
+          (matrix.target.id == 'push-releases' ||
+          (matrix.target.id == 'apply-terraform' &&
+          (github.event_name == 'workflow_dispatch' ||
+          steps.terraform-changes.outputs.terraform == 'true')))
         uses: ./.github/actions/setup-codebase
         with:
           nx-shas: "false"
+          python-dependencies: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
+          terraform: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
+          uv: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
 
       - name: 🔐 Import GPG Key
         if: >-
@@ -408,33 +431,6 @@ jobs:
           create-storage-record: false
 
       # Infrastructure Steps
-      # A push to main is compared with the commit before it, from the clone
-      # above. A manual run applies whatever the module holds.
-      - name: 🚦 Detect Terraform Changes
-        id: terraform-changes
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'apply-terraform' &&
-          github.event_name == 'push'
-        uses: dorny/paths-filter@v4
-        with:
-          filters: |
-            terraform:
-              - infrastructure/terraform/openrouter/**
-
-      - name: 🕋 Setup Codebase for Infrastructure
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'apply-terraform' &&
-          (github.event_name == 'workflow_dispatch' ||
-          steps.terraform-changes.outputs.terraform == 'true')
-        uses: ./.github/actions/setup-codebase
-        with:
-          nx-shas: "false"
-          python-dependencies: "false"
-          terraform: "true"
-          uv: "false"
-
       - name: 🏗️ Apply Terraform
         if: >-
           steps.check-skip.outputs.skip != 'true' &&

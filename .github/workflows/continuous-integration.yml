@@ -124,12 +124,31 @@ jobs:
             timeout-minutes: 15
 
     steps:
+      # Decides first what the job has to do, so the skip decision below and
+      # every step after it know it up front. Only a same-repository pull
+      # request is planned: a fork is not given the secrets the plan needs. On a
+      # pull request the action lists the changed files through the API, so it
+      # needs no clone.
+      - name: 🚦 Detect Terraform Changes
+        id: terraform-changes
+        if: >-
+          matrix.check.target == 'plan-terraform' &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            terraform:
+              - infrastructure/terraform/**
+
       - name: 🚦 Skip Conditionally
         id: check-skip
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_BRANCH: ${{ github.head_ref }}
           EVENT_NAME: ${{ github.event_name }}
+          TARGET: ${{ matrix.check.target }}
+          TERRAFORM_CHANGED: ${{ steps.terraform-changes.outputs.terraform }}
         run: |
           if [ "$EVENT_NAME" = "pull_request" ]; then
             RUNS_ENDPOINT="repos/${{ github.repository }}/actions"
@@ -142,6 +161,12 @@ jobs:
               echo "skip=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
+          fi
+
+          if [ "$TARGET" = "plan-terraform" ] && [ "$TERRAFORM_CHANGED" != "true" ]; then
+            echo "⏭️ No Terraform changes to plan."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
           echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -182,24 +207,10 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
 
-      # Only a same-repository pull request is planned: a fork is not given the
-      # secrets the plan needs. On a pull request the action lists the changed
-      # files through the API, so it needs no clone.
-      - name: 🚦 Detect Terraform Changes
-        id: terraform-changes
+      - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform' &&
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: dorny/paths-filter@v4
-        with:
-          filters: |
-            terraform:
-              - infrastructure/terraform/openrouter/**
-
-      - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
-        if: steps.terraform-changes.outputs.terraform == 'true'
+          matrix.check.target == 'plan-terraform'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
@@ -211,7 +222,9 @@ jobs:
       # Posts the plan as one comment that each push updates. A failed plan
       # fails the leg above and shows in its log instead.
       - name: 📊 Report Plan
-        if: steps.terraform-changes.outputs.terraform == 'true'
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
         uses: borchero/terraform-plan-comment@v2
         with:
           token: ${{ github.token }}
