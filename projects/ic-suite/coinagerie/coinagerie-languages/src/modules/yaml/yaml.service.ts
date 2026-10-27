@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { YAML_EXTENSIONS, YAML_RULES, YAML_UNMATCHED } from "./yaml.constants";
 
+import type { Language } from "../languages/languages.types";
 import type { YamlHit } from "./yaml.types";
 
 /**
@@ -14,7 +15,7 @@ import type { YamlHit } from "./yaml.types";
  * document as a whole, so a half-written file still yields every key it has.
  */
 @Injectable()
-export class YamlService {
+export class YamlService implements Language {
   // 🏗 Dependency Injection
 
   constructor() {}

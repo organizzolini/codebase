@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { SHELL_EXTENSIONS, SHELL_GRAMMAR } from "./shell.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of a shell script.
  *
@@ -11,7 +13,7 @@ import { SHELL_EXTENSIONS, SHELL_GRAMMAR } from "./shell.constants";
  * and commands are kept, and so is a quoted associative array key.
  */
 @Injectable()
-export class ShellService {
+export class ShellService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}

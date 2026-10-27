@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import {
   mkdirSync,
   mkdtempSync,
@@ -10,7 +12,15 @@ import path from "node:path";
 
 import { DEFAULT_INCLUDE } from "@coinagerie/configuration";
 import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { DiscoveryService } from "./discovery.service";
 import { IgnoreRulesService } from "./ignore-rules.service";
@@ -191,5 +201,26 @@ describe(DiscoveryService, () => {
     expect(discover({ skip: [path.join(root, "GLOSSARY.md")] })).toStrictEqual([
       "README.md",
     ]);
+  });
+
+  describe("discoveryService when its dependencies are not yet defined", () => {
+    afterEach(() => {
+      vi.doUnmock("./ignore-rules.service");
+      vi.resetModules();
+    });
+
+    it("records Object as each injection type, as a circular import would", async () => {
+      vi.resetModules();
+      vi.doMock("./ignore-rules.service", () => ({
+        IgnoreRulesService: undefined,
+      }));
+
+      const { DiscoveryService: Reloaded } =
+        await import("./discovery.service");
+
+      expect(Reflect.getMetadata("design:paramtypes", Reloaded)).toStrictEqual([
+        Object,
+      ]);
+    });
   });
 });

@@ -1,13 +1,14 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { ConfigurationModule } from "@coinagerie/configuration";
 import {
   ComparisonModule,
   DeliveryModule,
+  JsonModule,
   MarkdownModule,
 } from "@coinagerie/output";
-import { VocabularyModule } from "@coinagerie/vocabulary";
+import { VocabularyModule, VocabularyService } from "@coinagerie/vocabulary";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -28,6 +29,7 @@ const COLLECT_DEPENDENCIES = [
   ComparisonModule,
   ConfigurationModule,
   DeliveryModule,
+  JsonModule,
   MarkdownModule,
   VocabularyModule,
 ];
@@ -41,6 +43,7 @@ const CONFIGURATION = {
     "",
   ].join("\n"),
 };
+const START_ANCHOR = "<!-- coinagerie:start -->";
 const SOURCE = { "main.ts": "const answerValue = 1;\n" };
 
 describe(CollectCommand, () => {
@@ -111,6 +114,20 @@ describe(CollectCommand, () => {
     expect(command.parseCheck()).toBe(true);
     expect(command.parseWrite()).toBe(true);
     expect(command.parseConfig("custom.config.ts")).toBe("custom.config.ts");
+    expect(command.parseDescription("Words.")).toBe("Words.");
+    expect(command.parseFormat("json")).toBe("json");
+    expect(command.parseOutputJson("a.json")).toBe("a.json");
+    expect(command.parseOutputMarkdown("A.md")).toBe("A.md");
+  });
+
+  it.each<[string, (value: string, previous?: string[]) => string[]]>([
+    ["--include", (value, previous) => command.parseInclude(value, previous)],
+    [
+      "--exclude-paths",
+      (value, previous) => command.parseExcludePaths(value, previous),
+    ],
+  ])("collects every occurrence of %s", (_flag, parse) => {
+    expect(parse("b", parse("a"))).toStrictEqual(["a", "b"]);
   });
 
   it("prints the glossary block when given no flag", async () => {
@@ -122,6 +139,44 @@ describe(CollectCommand, () => {
       expect.stringContaining("- **answer**:\n- **main**:\n- **value**:"),
     );
     expect(process.exitCode).toBeUndefined();
+  });
+
+  it("prints the glossary as flat json when --format json asks", async () => {
+    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+
+    await runIn({ ...CONFIGURATION, ...SOURCE }, { format: "json" });
+
+    const printed = String(write.mock.calls[0]?.[0]);
+
+    expect(printed.startsWith('{\n  "answer": "",\n  "main": "",')).toBe(true);
+    expect(printed.endsWith("\n}\n")).toBe(true);
+    expect(printed).not.toContain(START_ANCHOR);
+  });
+
+  it("lets flags name the destinations the file does not", async () => {
+    const fixture = await runIn(SOURCE, {
+      outputJson: "words.json",
+      outputMarkdown: "WORDS.md",
+      write: true,
+    });
+
+    expect(
+      JSON.parse(readFileSync(path.join(fixture, "words.json"), "utf8")),
+    ).toMatchObject({ answer: "", main: "", value: "" });
+    expect(readFileSync(path.join(fixture, "WORDS.md"), "utf8")).toContain(
+      "- **answer**:",
+    );
+  });
+
+  it("lets flags narrow the scan the file configured", async () => {
+    const fixture = await runIn(
+      { ...CONFIGURATION, ...SOURCE, "other.ts": "const strayName = 1;\n" },
+      { include: ["main.ts"], write: true },
+    );
+
+    expect(
+      readFileSync(path.join(fixture, "GLOSSARY.md"), "utf8"),
+    ).not.toContain("stray");
   });
 
   it("writes every destination, then checks clean", async () => {
@@ -147,6 +202,8 @@ describe(CollectCommand, () => {
     ],
     ["both --check and --write", CONFIGURATION, { check: true, write: true }],
     ["a check with no destination configured", {}, { check: true }],
+    ["a format it does not know", {}, { format: "yaml" }],
+    ["a flag the configuration refuses", {}, { outputJson: "" }],
     [
       "a configuration file that is not there",
       {},
@@ -185,4 +242,48 @@ describe(CollectCommand, () => {
       ),
     ).rejects.toThrow("EISDIR");
   });
+
+  it("lets a failure that is not a configuration fault escape while collecting", async () => {
+    vi.spyOn(VocabularyService.prototype, "collect").mockRejectedValue(
+      new Error("disk gone"),
+    );
+
+    await expect(runIn(SOURCE, {})).rejects.toThrow("disk gone");
+  });
+
+  it.each([
+    [
+      "an exclude.words that throws",
+      "exclude: { paths: [], words: () => { throw new Error('unreadable'); } }",
+    ],
+    ["a fold that returns nothing useful", "fold: () => ''"],
+  ])(
+    "aborts on %s, naming the configuration file and writing nothing",
+    async (_case, field) => {
+      const fixture = await runIn(
+        {
+          ...SOURCE,
+          "coinagerie.config.ts": [
+            "export default {",
+            `  ${field},`,
+            '  outputs: [{ path: "GLOSSARY.md", type: "markdown" }],',
+            "};",
+            "",
+          ].join("\n"),
+        },
+        { write: true },
+      );
+
+      expect(process.exitCode).toBe(1);
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining("🪙"),
+        undefined,
+        expect.any(Object),
+      );
+      expect(JSON.stringify(vi.mocked(logger.error).mock.calls)).toContain(
+        path.join(fixture, "coinagerie.config.ts"),
+      );
+      expect(existsSync(path.join(fixture, "GLOSSARY.md"))).toBe(false);
+    },
+  );
 });

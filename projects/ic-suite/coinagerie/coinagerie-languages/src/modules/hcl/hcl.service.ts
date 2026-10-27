@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { HCL_EXTENSIONS, HCL_GRAMMAR } from "./hcl.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of an HCL file, such as Terraform configuration.
  *
@@ -12,7 +14,7 @@ import { HCL_EXTENSIONS, HCL_GRAMMAR } from "./hcl.constants";
  * as a quoted string and the labels of a block header.
  */
 @Injectable()
-export class HclService {
+export class HclService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}

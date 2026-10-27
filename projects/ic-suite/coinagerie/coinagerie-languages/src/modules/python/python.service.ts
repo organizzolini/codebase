@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { PYTHON_EXTENSIONS, PYTHON_GRAMMAR } from "./python.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of a Python file.
  *
@@ -11,7 +13,7 @@ import { PYTHON_EXTENSIONS, PYTHON_GRAMMAR } from "./python.constants";
  * string is kept, because it is a name the author chose.
  */
 @Injectable()
-export class PythonService {
+export class PythonService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}

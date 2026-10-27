@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { TOML_EXTENSIONS, TOML_GRAMMAR } from "./toml.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of a TOML document.
  *
@@ -11,7 +13,7 @@ import { TOML_EXTENSIONS, TOML_GRAMMAR } from "./toml.constants";
  * keys, including those in a dotted path or a table header, are kept.
  */
 @Injectable()
-export class TomlService {
+export class TomlService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}

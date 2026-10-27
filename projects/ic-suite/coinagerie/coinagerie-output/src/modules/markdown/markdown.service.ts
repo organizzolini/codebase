@@ -298,11 +298,15 @@ export class MarkdownService implements GlossaryFormatHandler {
    * deletes text a person wrote there.
    */
   write(args: WriteGlossaryArguments): string {
+    const configured =
+      "description" in args.destination
+        ? args.destination.description
+        : undefined;
+
     return this.splice(
       args.content,
       this.render({
-        description:
-          args.destination.description ?? this.readDescription(args.content),
+        description: configured ?? this.readDescription(args.content),
         glossary: args.glossary,
       }),
     );

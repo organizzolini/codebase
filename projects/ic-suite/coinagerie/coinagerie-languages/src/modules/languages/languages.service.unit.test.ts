@@ -1,5 +1,6 @@
+import "reflect-metadata";
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CssModule } from "../css/css.module";
 import { HclModule } from "../hcl/hcl.module";
@@ -91,5 +92,42 @@ describe(LanguagesService, () => {
     "archive.ts.gz",
   ])("finds no tokenizer for %s", (filePath) => {
     expect(service.tokenizerFor(filePath)).toBeUndefined();
+  });
+
+  describe("languagesService when its dependencies are not yet defined", () => {
+    const DEPENDENCIES = [
+      ["../css/css.service", "CssService"],
+      ["../hcl/hcl.service", "HclService"],
+      ["../json/json.service", "JsonService"],
+      ["../python/python.service", "PythonService"],
+      ["../shell/shell.service", "ShellService"],
+      ["../sql/sql.service", "SqlService"],
+      ["../toml/toml.service", "TomlService"],
+      ["../typescript/typescript.service", "TypescriptService"],
+      ["../yaml/yaml.service", "YamlService"],
+    ] as const;
+
+    afterEach(() => {
+      for (const [modulePath] of DEPENDENCIES) {
+        vi.doUnmock(modulePath);
+      }
+
+      vi.resetModules();
+    });
+
+    it("records Object as each injection type, as a circular import would", async () => {
+      vi.resetModules();
+
+      for (const [modulePath, exportName] of DEPENDENCIES) {
+        vi.doMock(modulePath, () => ({ [exportName]: undefined }));
+      }
+
+      const { LanguagesService: Reloaded } =
+        await import("./languages.service");
+
+      expect(Reflect.getMetadata("design:paramtypes", Reloaded)).toStrictEqual(
+        DEPENDENCIES.map(() => Object),
+      );
+    });
   });
 });

@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { CSS_EXTENSIONS, CSS_GRAMMAR } from "./css.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of a CSS stylesheet.
  *
@@ -12,7 +14,7 @@ import { CSS_EXTENSIONS, CSS_GRAMMAR } from "./css.constants";
  * are kept as the raw identifiers they are written as.
  */
 @Injectable()
-export class CssService {
+export class CssService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}

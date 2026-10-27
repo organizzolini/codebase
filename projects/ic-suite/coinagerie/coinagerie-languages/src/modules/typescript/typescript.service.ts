@@ -8,6 +8,8 @@ import {
   TYPESCRIPT_SCRIPT_KINDS,
 } from "./typescript.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of a TypeScript or JavaScript file from its syntax
  * tree.
@@ -18,7 +20,7 @@ import {
  * half-finished edit still contributes every name it has.
  */
 @Injectable()
-export class TypescriptService {
+export class TypescriptService implements Language {
   // 🏗 Dependency Injection
 
   constructor() {}

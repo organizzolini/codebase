@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { JSON_EXTENSIONS, JSON_GRAMMAR } from "./json.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the keys of a JSON document.
  *
@@ -12,7 +14,7 @@ import { JSON_EXTENSIONS, JSON_GRAMMAR } from "./json.constants";
  * skipped, which also reads JSONC such as a `tsconfig.json`.
  */
 @Injectable()
-export class JsonService {
+export class JsonService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}

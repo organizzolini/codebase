@@ -4,6 +4,8 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { SQL_EXTENSIONS, SQL_GRAMMAR } from "./sql.constants";
 
+import type { Language } from "../languages/languages.types";
+
 /**
  * Reads the identifiers of a SQL script.
  *
@@ -11,7 +13,7 @@ import { SQL_EXTENSIONS, SQL_GRAMMAR } from "./sql.constants";
  * quoted name such as `"order"` is an identifier in SQL, so it is kept.
  */
 @Injectable()
-export class SqlService {
+export class SqlService implements Language {
   // 🏗 Dependency Injection
 
   constructor(private readonly scannerService: ScannerService) {}
