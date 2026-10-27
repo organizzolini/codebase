@@ -4,16 +4,6 @@ on:
   push:
     branches:
       - main
-  # Builds and tests the devcontainer before a change to it merges. Nothing is
-  # released or published from a pull request; the skip step below and the
-  # image push filters both hold to that.
-  pull_request:
-    paths:
-      - .devcontainer/**
-      - .env.default
-      - .github/workflows/continuous-deployment.yml
-      - infrastructure/docker/docker-compose.yml
-      - package.json
   workflow_dispatch:
 
 permissions:
@@ -30,11 +20,11 @@ permissions:
   artifact-metadata: write
 
 # Never cancel a deployment/release run. Concurrency is scoped per-ref so
-# releases on main queue sequentially without colliding. A pull request's run
-# only builds the devcontainer, so a newer push to it replaces the older run.
+# releases and applies on main queue sequentially without colliding. Pull
+# requests run Continuous Integration, not this workflow.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
 
 jobs:
   continuous-deployment:
@@ -62,6 +52,15 @@ jobs:
             name: Releases
             emoji: 🦸
             timeout: 32
+          # Applies the OpenRouter Terraform when a push to main changes it.
+          # Plans of the same change are reported on the pull request by
+          # Continuous Integration. State is in a Linode Object Storage bucket
+          # with no lock, so this workflow's per-ref concurrency group, which
+          # never cancels, is what keeps two applies from overlapping.
+          - id: apply-terraform
+            name: Infrastructure
+            emoji: 🏗️
+            timeout: 20
 
     steps:
       # Decides from the GitHub API alone, before any checkout, so a run with
@@ -81,17 +80,10 @@ jobs:
           TARGET_ID: ${{ matrix.target.id }}
           EVENT_NAME: ${{ github.event_name }}
           PUSH_BEFORE: ${{ github.event.before }}
-          PULL_REQUEST_BASE: ${{ github.event.pull_request.base.sha }}
-          PULL_REQUEST_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           if [ "$TARGET_ID" = "build-devcontainer" ] && [ "$EVENT_NAME" != "workflow_dispatch" ]; then
-            if [ "$EVENT_NAME" = "pull_request" ]; then
-              BASE="$PULL_REQUEST_BASE"
-              HEAD="$PULL_REQUEST_HEAD"
-            else
-              BASE="$PUSH_BEFORE"
-              HEAD="$SHA"
-            fi
+            BASE="$PUSH_BEFORE"
+            HEAD="$SHA"
 
             if [ -z "$BASE" ] || [[ "$BASE" =~ ^0+$ ]]; then
               echo "🧑‍🏭 No previous revision to compare against; building the devcontainer."
@@ -117,11 +109,6 @@ jobs:
           fi
 
           if [ "$TARGET_ID" = "push-releases" ]; then
-            if [ "$EVENT_NAME" = "pull_request" ]; then
-              echo "⏭️ Pull requests never release"
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
             tip="$(gh api "repos/$REPOSITORY/commits/main" --jq .sha)"
             if [ "$tip" != "$SHA" ]; then
               echo "⏭️ $SHA superseded by $tip, whose run releases instead"
@@ -140,6 +127,21 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      # Decides what the infrastructure leg has to set up before anything is
+      # set up. A push to main is compared with the commit before it, from the
+      # clone above; a manual run applies whatever the module holds.
+      - name: 🚦 Detect Terraform Changes
+        id: terraform-changes
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform' &&
+          github.event_name == 'push'
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            terraform:
+              - infrastructure/terraform/**
 
       # Devcontainer Build & Publish Steps
       - name: 🗂️ Setup Environment File
@@ -206,14 +208,22 @@ jobs:
             bash .devcontainer/scripts/test-devcontainer.sh
 
       # Release Steps
-      - name: 🕋 Setup Codebase for Release
+      # The one setup of the release and infrastructure legs. The release needs
+      # Python and uv; the infrastructure leg needs terraform and neither.
+      - name: 🕋 Setup Codebase
         id: setup
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'push-releases'
+          (matrix.target.id == 'push-releases' ||
+          (matrix.target.id == 'apply-terraform' &&
+          (github.event_name == 'workflow_dispatch' ||
+          steps.terraform-changes.outputs.terraform == 'true')))
         uses: ./.github/actions/setup-codebase
         with:
           nx-shas: "false"
+          python-dependencies: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
+          terraform: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
+          uv: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
 
       - name: 🔐 Import GPG Key
         if: >-
@@ -391,6 +401,22 @@ jobs:
         with:
           subject-checksums: ${{ runner.temp }}/attestation-subjects.txt
           create-storage-record: false
+
+      # Infrastructure Steps
+      - name: 🏗️ Apply Terraform
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'apply-terraform' &&
+          (github.event_name == 'workflow_dispatch' ||
+          steps.terraform-changes.outputs.terraform == 'true')
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
+          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
+          TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+        run: pnpm exec nx run infrastructure:terraform-apply
 
       # The only save of this workflow's Nx cache, which the next release
       # restores. Every project is built above, at the versions the release

@@ -21,6 +21,8 @@ on:
 permissions:
   actions: read
   contents: write
+  # The devcontainer leg signs in to the registry to read the image it caches from.
+  packages: read
   pull-requests: write
   issues: write
 
@@ -110,14 +112,70 @@ jobs:
             name: Publishable Packages
             emoji: 📦
             timeout-minutes: 15
+          # Plans the OpenRouter Terraform when a pull request changes it, and
+          # comments what the plan would create, update, replace, and delete. It
+          # is a comment, not part of the body, so it cannot race the Codometer
+          # report that rewrites the body. Nothing is applied: Continuous
+          # Deployment does that once the change reaches `main`. The leg always
+          # reports, so it can be a required check, and its steps run only for a
+          # same-repository pull request that changes the module, since a fork
+          # is not given the secrets the plan needs.
+          - target: plan-terraform
+            name: Infrastructure
+            emoji: 🏗️
+            timeout-minutes: 15
+          # Builds and tests the devcontainer image when a pull request changes
+          # a file the image or its test reads, without publishing it:
+          # Continuous Deployment builds and pushes the image on `main`. Like
+          # the infrastructure leg it always reports, and does its work only
+          # when the change calls for it. It needs none of the Node setup.
+          - target: build-devcontainer
+            name: Devcontainer
+            emoji: 🐋
+            timeout-minutes: 20
 
     steps:
+      # Decides first what the job has to do, so the skip decision below and
+      # every step after it know it up front. Only a same-repository pull
+      # request is planned: a fork is not given the secrets the plan needs. On a
+      # pull request the action lists the changed files through the API, so it
+      # needs no clone.
+      - name: 🚦 Detect Terraform Changes
+        id: terraform-changes
+        if: >-
+          matrix.check.target == 'plan-terraform' &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            terraform:
+              - infrastructure/terraform/**
+
+      - name: 🚦 Detect Devcontainer Changes
+        id: devcontainer-changes
+        if: >-
+          matrix.check.target == 'build-devcontainer' &&
+          github.event_name == 'pull_request'
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            devcontainer:
+              - .devcontainer/**
+              - .env.default
+              - .github/workflows/continuous-deployment.yml
+              - infrastructure/docker/docker-compose.yml
+              - package.json
+
       - name: 🚦 Skip Conditionally
         id: check-skip
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_BRANCH: ${{ github.head_ref }}
           EVENT_NAME: ${{ github.event_name }}
+          TARGET: ${{ matrix.check.target }}
+          TERRAFORM_CHANGED: ${{ steps.terraform-changes.outputs.terraform }}
+          DEVCONTAINER_CHANGED: ${{ steps.devcontainer-changes.outputs.devcontainer }}
         run: |
           if [ "$EVENT_NAME" = "pull_request" ]; then
             RUNS_ENDPOINT="repos/${{ github.repository }}/actions"
@@ -132,6 +190,18 @@ jobs:
             fi
           fi
 
+          if [ "$TARGET" = "plan-terraform" ] && [ "$TERRAFORM_CHANGED" != "true" ]; then
+            echo "⏭️ No Terraform changes to plan."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$TARGET" = "build-devcontainer" ] && [ "$DEVCONTAINER_CHANGED" != "true" ]; then
+            echo "⏭️ No devcontainer changes to build."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - name: 📥 Checkout Repository
@@ -142,19 +212,27 @@ jobs:
 
       - name: 🕋 Setup Codebase
         id: setup
-        if: steps.check-skip.outputs.skip != 'true'
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target != 'build-devcontainer'
         uses: ./.github/actions/setup-codebase
         with:
           gitleaks: ${{ matrix.check.target == 'secure-code' && 'true' || 'false' }}
           trivy: ${{ matrix.check.target == 'secure-code' && 'true' || 'false' }}
           python-dependencies: >-
             ${{ matrix.check.target != 'build-projects' &&
-            matrix.check.target != 'verify-publishable-packages' && 'true' ||
-            'false' }}
+            matrix.check.target != 'verify-publishable-packages' &&
+            matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           postgres-client: >-
             ${{ matrix.check.target == 'test-code' && !matrix.check.shard &&
             'true' || 'false' }}
-          uv: "true"
+          uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
+          # The infrastructure project's `terraform-format` and
+          # `terraform-validate` run as part of lint-code, and the runner image
+          # no longer ships terraform.
+          terraform: >-
+            ${{ (matrix.check.target == 'lint-code' ||
+            matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
             ${{ github.job }}-${{ matrix.check.target }}${{ matrix.check.shard
@@ -163,6 +241,32 @@ jobs:
           nx-shas: "true"
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
+
+      - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
+          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
+          TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+        run: pnpm exec nx run infrastructure:terraform-plan
+
+      # Posts the plan as one comment that each push updates. A failed plan
+      # fails the leg above and shows in its log instead.
+      - name: 📊 Report Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@v2
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/openrouter
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
@@ -183,6 +287,64 @@ jobs:
           NODE_OPTIONS='' node --import @swc-node/register/esm-register \
             publication/src/publication.main.ts publishable-packages-gate
 
+      - name: 🗂️ Setup Environment File
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'build-devcontainer'
+        run: |
+          cp .env.default .env
+          echo "LOCAL_WORKSPACE_FOLDER=$GITHUB_WORKSPACE" >> .env
+
+      - name: 🔧 Set up Docker Buildx
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'build-devcontainer'
+        uses: docker/setup-buildx-action@v4
+
+      - name: 🔐 Login to GitHub Container Registry
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'build-devcontainer'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐳 Build Devcontainer Image
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'build-devcontainer'
+        uses: devcontainers/ci@v0.3
+        with:
+          configFile: .devcontainer/cloud/devcontainer.json
+          imageName: ghcr.io/organizzolini/codebase-devcontainer
+          cacheFrom: |
+            ghcr.io/organizzolini/codebase-devcontainer:latest
+          push: never
+          env: |
+            CI=true
+            GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔬 Test Devcontainer Image
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'build-devcontainer'
+        uses: devcontainers/ci@v0.3
+        with:
+          configFile: .devcontainer/cloud/devcontainer.json
+          imageName: ghcr.io/organizzolini/codebase-devcontainer
+          cacheFrom: |
+            ghcr.io/organizzolini/codebase-devcontainer:latest
+          push: never
+          env: |
+            CI=true
+            GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          runCmd: |
+            bash .devcontainer/scripts/test-devcontainer.sh
+
       # Nx's task-based affected selects each task by its own inputs, so this
       # only adds the one correction it cannot make: a changed conformetry
       # template selects no instance project, because `.nxignore` hides it. See
@@ -192,7 +354,9 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target != 'secure-code' &&
-          matrix.check.target != 'verify-publishable-packages'
+          matrix.check.target != 'verify-publishable-packages' &&
+          matrix.check.target != 'plan-terraform' &&
+          matrix.check.target != 'build-devcontainer'
         continue-on-error: ${{ matrix.check.target == 'build-projects' }}
         env:
           NX_VERBOSE_LOGGING: ${{ inputs.verbose || false }}
@@ -234,7 +398,10 @@ jobs:
       # the pull request's instead, from the artifact the pull request's run
       # uploads here.
       - name: 🧹 Cleanup Codebase
-        if: always() && steps.check-skip.outputs.skip != 'true'
+        if: >-
+          always() &&
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target != 'build-devcontainer'
         uses: ./.github/actions/cleanup-codebase
         with:
           nx-cache: ${{ github.event_name == 'merge_group' && 'false' || 'true' }}
