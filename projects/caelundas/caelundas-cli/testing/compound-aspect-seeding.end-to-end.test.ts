@@ -28,15 +28,15 @@ const windows = [
   ],
 ] as const;
 
-/** The two bodies and the aspect a simple-aspect event names in its categories. */
+/** The two bodies and the aspect a simple-aspect event names in its tags. */
 function parseSimpleAspect(
   event: DetectedCalendarEvent,
 ): null | { aspect: Aspect; body1: Body; body2: Body } {
-  const categories = event.categories.map((category) => category.toLowerCase());
+  const tags = event.tags.map((tag) => tag.toLowerCase());
   const [body1, body2, ...others] = aspectBodies.filter((body) =>
-    categories.includes(body),
+    tags.includes(body),
   );
-  const aspect = categories.find((category) => isAspect(category));
+  const aspect = tags.find((tag) => isAspect(tag));
   if (!aspect || !body1 || !body2 || others.length > 0) return null;
   return { aspect, body1, body2 };
 }
@@ -95,8 +95,8 @@ describe(
           .filter(
             (event) =>
               event.start.isSame(firstMinute) &&
-              ["Simple Aspect", "Forming"].every((category) =>
-                event.categories.includes(category),
+              ["Simple Aspect", "Forming"].every((tag) =>
+                event.tags.includes(tag),
               ),
           )
           .filter((event) => {

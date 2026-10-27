@@ -8,6 +8,13 @@ type ConfigOptions =
       validate?: (config: Record<string, unknown>) => unknown;
     };
 
+/**
+ * A minute rather than the shared ten seconds: importing the whole
+ * application afresh, every detector and the database entities with it,
+ * took ten seconds locally, and a CI runner is several times slower.
+ */
+const IMPORT_TIMEOUT_MILLISECONDS = 60_000;
+
 describe("caelundas module", () => {
   let mainModule: unknown;
   let configOptions: ConfigOptions;
@@ -20,7 +27,7 @@ describe("caelundas module", () => {
     const importedModule = await import("../../caelundas-cli.module");
     mainModule = importedModule.MainModule;
     configOptions = forRootSpy.mock.calls[0]?.[0];
-  });
+  }, IMPORT_TIMEOUT_MILLISECONDS);
 
   it("configures the global env validator", () => {
     expect(mainModule).toBeDefined();

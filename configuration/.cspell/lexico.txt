@@ -40,6 +40,12 @@ dēlektō
 Ecclesiasticorum
 EDCS
 Epigraphik
+amabilis
+amoro
+bellissimus
+bellun
+bellus
+canti
 eram
 erant
 erimus
@@ -61,6 +67,8 @@ forem
 forent
 foret
 fortior
+fortunae
+fortunx
 forēmus
 forēs
 forētis
@@ -158,6 +166,7 @@ keˈli
 lamentationes
 latinitas
 latinorum
+latro
 leviticus
 lexico
 libri

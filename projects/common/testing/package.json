@@ -10,6 +10,7 @@
     "@nestjs/typeorm": "catalog:",
     "@nx/devkit": "catalog:",
     "@tanstack/react-router": "catalog:",
+    "@testcontainers/postgresql": "catalog:",
     "@testing-library/react": "catalog:",
     "msw": "catalog:",
     "react": "catalog:",

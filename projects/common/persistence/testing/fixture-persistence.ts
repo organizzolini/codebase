@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 
-import { startPostgresContainer } from "../src/modules/postgresql/postgresql-container.utilities";
+import { startPostgresContainer } from "@codebase/testing/postgres";
 
 import { CreateWidgets1767225600000 } from "./fixtures/migrations/1767225600000-create-widgets";
 import { CreateParts1767225600001 } from "./fixtures/migrations/1767225600001-create-parts";

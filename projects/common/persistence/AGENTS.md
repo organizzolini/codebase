@@ -43,10 +43,10 @@ src/
       postgresql.types.ts
       postgresql.utilities.ts         # postgresEnvironmentSchema, postgresDataSourceOptions, createDataSource, variable names
       entities/                     # identifiable → creatable → updatable → deletable
-      postgresql-container.*.ts       # startPostgresContainer, exported for integration suites
-    export/                         # The export command: options, plan, dry run, atomic write
+    export/                         # The export command: options, plan, dry run, atomic write, --sqlite routing
     import/                         # The import command: options, plan, --clean (no prompt), dry run
     postgres-client/                # pg_dump, pg_restore, and truncate behind one service
+    sqlite-export/                  # export --sqlite: node:sqlite writer, column type mapping, no client tools
 testing/
   index.ts                          # The @codebase/persistence/testing entry, re-exporting @codebase/testing/postgres
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
@@ -70,7 +70,9 @@ testing/
   helpers live in `@codebase/testing/postgres`, which depends on this
   package; the cycle that closes is allowed among the common packages only.
   Keep it out of `src/`, and remove it once every consumer imports the new
-  entry.
+  entry. This package's integration suites import the container from there
+  too. `implicitDependencies: ["!testing"]` in `project.json` drops the edge
+  back to `testing` from the Nx graph, so `build` has no task cycle.
 - **Never name a real project in this package's tests.** Use `fixture`, and
   `sample` where a second is needed.
 - **Keep the command line connectionless.** `MainModule` holds no

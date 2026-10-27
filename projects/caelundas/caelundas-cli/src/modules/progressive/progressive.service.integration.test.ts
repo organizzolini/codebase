@@ -122,8 +122,8 @@ describe("progressiveService span pairing", () => {
       station("direct", "2026-07-23T21:00:00Z"),
     ]);
 
-    expect(spans(between, "☿ ↩️ Mercury Retrograde")).toStrictEqual([]);
-    expect(spans(control, "☿ ↩️ Mercury Retrograde")).toStrictEqual([
+    expect(spans(between, "☿↩️ Mercury Retrograde")).toStrictEqual([]);
+    expect(spans(control, "☿↩️ Mercury Retrograde")).toStrictEqual([
       { end: "2026-07-23T21:00:00.000Z", start: "2026-06-29T17:00:00.000Z" },
     ]);
 
@@ -154,7 +154,7 @@ describe("progressiveService span pairing", () => {
 
     const progressive = progressiveService.detect(perfective);
     const aspectSpans = progressive
-      .filter((event) => event.categories.includes("Major Aspect"))
+      .filter((event) => event.tags.includes("Major Aspect"))
       .map((event) => ({
         end: event.end.toISOString(),
         start: event.start.toISOString(),

@@ -53,13 +53,14 @@ describe(EclipseEventService, () => {
         type: "annular",
       });
 
-      expect(event.summary).toBe("🌐 ☀️🐉▶️ Annular Solar Eclipse begins");
+      expect(event.summary).toBe("🌐☀️🐉▶️ Annular Solar Eclipse begins");
       expect(event.description).toBe(
         "Annular Solar Eclipse begins (Geocentric)",
       );
-      expect(event.categories).toContain("Annular");
-      expect(event.categories).toContain("Solar");
-      expect(event.categories).toContain("Geocentric");
+      expect(event.tags).toContain("Annular");
+      expect(event.tags).toContain("Solar");
+      expect(event.tags).toContain("Geocentric");
+      expect(event.tags).toContain("Beginning");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
     });
@@ -74,11 +75,11 @@ describe(EclipseEventService, () => {
         type: "annular",
       });
 
-      expect(event.summary).toBe("📍 ☀️🐉▶️ Annular Solar Eclipse begins");
+      expect(event.summary).toBe("📍☀️🐉▶️ Annular Solar Eclipse begins");
       expect(event.description).toBe(
         "Annular Solar Eclipse begins (Topocentric Visibility)",
       );
-      expect(event.categories).toContain("Topocentric Visibility");
+      expect(event.tags).toContain("Topocentric Visibility");
     });
 
     it("builds maximum and ending solar eclipse events", () => {
@@ -98,9 +99,9 @@ describe(EclipseEventService, () => {
       });
 
       expect(maximumEvent.summary).toBe(
-        "🌐 ☀️🐉🎯 Annular Solar Eclipse maximum",
+        "🌐☀️🐉🎯 Annular Solar Eclipse maximum",
       );
-      expect(endingEvent.summary).toBe("🌐 ☀️🐉◀️ Annular Solar Eclipse ends");
+      expect(endingEvent.summary).toBe("🌐☀️🐉◀️ Annular Solar Eclipse ends");
     });
   });
 
@@ -115,11 +116,11 @@ describe(EclipseEventService, () => {
         type: "total",
       });
 
-      expect(event.summary).toBe("🌐 🌙🐉▶️ Total Lunar Eclipse begins");
+      expect(event.summary).toBe("🌐🌙🐉▶️ Total Lunar Eclipse begins");
       expect(event.description).toBe("Total Lunar Eclipse begins (Geocentric)");
-      expect(event.categories).toContain("Total");
-      expect(event.categories).toContain("Lunar");
-      expect(event.categories).toContain("Geocentric");
+      expect(event.tags).toContain("Total");
+      expect(event.tags).toContain("Lunar");
+      expect(event.tags).toContain("Geocentric");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
     });
@@ -134,11 +135,11 @@ describe(EclipseEventService, () => {
         type: "total",
       });
 
-      expect(event.summary).toBe("📍 🌙🐉▶️ Total Lunar Eclipse begins");
+      expect(event.summary).toBe("📍🌙🐉▶️ Total Lunar Eclipse begins");
       expect(event.description).toBe(
         "Total Lunar Eclipse begins (Topocentric Visibility)",
       );
-      expect(event.categories).toContain("Topocentric Visibility");
+      expect(event.tags).toContain("Topocentric Visibility");
     });
 
     it("builds maximum and ending lunar eclipse events", () => {
@@ -157,17 +158,19 @@ describe(EclipseEventService, () => {
         type: "total",
       });
 
-      expect(maximumEvent.summary).toBe(
-        "🌐 🌙🐉🎯 Total Lunar Eclipse maximum",
-      );
-      expect(endingEvent.summary).toBe("🌐 🌙🐉◀️ Total Lunar Eclipse ends");
+      expect(maximumEvent.summary).toBe("🌐🌙🐉🎯 Total Lunar Eclipse maximum");
+      expect(endingEvent.summary).toBe("🌐🌙🐉◀️ Total Lunar Eclipse ends");
     });
   });
 
   describe("detectProgressive", () => {
     it("creates progressive events for geocentric solar and lunar eclipse ranges", () => {
       const solarBeginning: DetectedCalendarEvent = {
-        categories: [
+        description: "Partial Solar Eclipse begins (Geocentric)",
+        end: moment.utc("2024-04-08T18:00:00.000Z"),
+        start: moment.utc("2024-04-08T18:00:00.000Z"),
+        summary: "🌐☀️🐉▶️ Solar Eclipse begins",
+        tags: [
           "Astronomy",
           "Astrology",
           "Eclipse",
@@ -175,26 +178,20 @@ describe(EclipseEventService, () => {
           "Geocentric",
           "Partial",
         ],
-        description: "Partial Solar Eclipse begins (Geocentric)",
-        end: moment.utc("2024-04-08T18:00:00.000Z"),
-        start: moment.utc("2024-04-08T18:00:00.000Z"),
-        summary: "🌐 ☀️🐉▶️ Solar Eclipse begins",
       };
       const solarEnding: DetectedCalendarEvent = {
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Eclipse",
-          "Solar",
-          "Geocentric",
-        ],
         description: "Solar Eclipse ends (Geocentric)",
         end: moment.utc("2024-04-08T19:00:00.000Z"),
         start: moment.utc("2024-04-08T19:00:00.000Z"),
-        summary: "🌐 ☀️🐉◀️ Solar Eclipse ends",
+        summary: "🌐☀️🐉◀️ Solar Eclipse ends",
+        tags: ["Astronomy", "Astrology", "Eclipse", "Solar", "Geocentric"],
       };
       const lunarBeginning: DetectedCalendarEvent = {
-        categories: [
+        description: "Penumbral Lunar Eclipse begins (Geocentric)",
+        end: moment.utc("2024-09-18T02:00:00.000Z"),
+        start: moment.utc("2024-09-18T02:00:00.000Z"),
+        summary: "🌐🌙🐉▶️ Lunar Eclipse begins",
+        tags: [
           "Astronomy",
           "Astrology",
           "Eclipse",
@@ -202,23 +199,13 @@ describe(EclipseEventService, () => {
           "Geocentric",
           "Penumbral",
         ],
-        description: "Penumbral Lunar Eclipse begins (Geocentric)",
-        end: moment.utc("2024-09-18T02:00:00.000Z"),
-        start: moment.utc("2024-09-18T02:00:00.000Z"),
-        summary: "🌐 🌙🐉▶️ Lunar Eclipse begins",
       };
       const lunarEnding: DetectedCalendarEvent = {
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Eclipse",
-          "Lunar",
-          "Geocentric",
-        ],
         description: "Lunar Eclipse ends (Geocentric)",
         end: moment.utc("2024-09-18T03:00:00.000Z"),
         start: moment.utc("2024-09-18T03:00:00.000Z"),
-        summary: "🌐 🌙🐉◀️ Lunar Eclipse ends",
+        summary: "🌐🌙🐉◀️ Lunar Eclipse ends",
+        tags: ["Astronomy", "Astrology", "Eclipse", "Lunar", "Geocentric"],
       };
 
       vi.mocked(progressiveUtilitiesService.pairProgressiveEvents)
@@ -237,23 +224,23 @@ describe(EclipseEventService, () => {
       expect(progressiveEvents).toHaveLength(2);
 
       const solarDurationEvent = progressiveEvents.find((event) =>
-        event.categories.includes("Solar"),
+        event.tags.includes("Solar"),
       );
       const lunarDurationEvent = progressiveEvents.find((event) =>
-        event.categories.includes("Lunar"),
+        event.tags.includes("Lunar"),
       );
 
       expect(solarDurationEvent?.description).toBe(
         "Partial Solar Eclipse (Geocentric)",
       );
       expect(solarDurationEvent?.summary).toBe(
-        "🌐 ☀️🐉 Partial Solar Eclipse (Geocentric)",
+        "🌐☀️🐉 Partial Solar Eclipse (Geocentric)",
       );
       expect(lunarDurationEvent?.description).toBe(
         "Penumbral Lunar Eclipse (Geocentric)",
       );
       expect(lunarDurationEvent?.summary).toBe(
-        "🌐 🌙🐉 Penumbral Lunar Eclipse (Geocentric)",
+        "🌐🌙🐉 Penumbral Lunar Eclipse (Geocentric)",
       );
     });
 
@@ -266,11 +253,11 @@ describe(EclipseEventService, () => {
 
       const result = service.detectProgressive([
         {
-          categories: ["Astronomy"],
           description: "Unrelated",
           end: moment.utc("2024-01-01T00:00:00.000Z"),
           start: moment.utc("2024-01-01T00:00:00.000Z"),
           summary: "Unrelated",
+          tags: ["Astronomy"],
         },
       ]);
 
@@ -279,17 +266,11 @@ describe(EclipseEventService, () => {
 
     it("leaves the type out of a span whose beginning carries none", () => {
       const makeEvent = (word: string): DetectedCalendarEvent => ({
-        categories: [
-          "Astronomy",
-          "Astrology",
-          "Eclipse",
-          "Lunar",
-          "Geocentric",
-        ],
         description: `Lunar Eclipse ${word} (Geocentric)`,
         end: moment.utc("2024-03-25T07:00:00.000Z"),
         start: moment.utc("2024-03-25T07:00:00.000Z"),
         summary: `Lunar Eclipse ${word}`,
+        tags: ["Astronomy", "Astrology", "Eclipse", "Lunar", "Geocentric"],
       });
       const beginning = makeEvent("begins");
       const ending = makeEvent("ends");
@@ -300,7 +281,7 @@ describe(EclipseEventService, () => {
       const [span] = service.detectProgressive([beginning, ending]);
 
       expect(span?.description).toBe("Lunar Eclipse (Geocentric)");
-      expect(span?.categories).toStrictEqual([
+      expect(span?.tags).toStrictEqual([
         "Astronomy",
         "Astrology",
         "Eclipse",
@@ -311,7 +292,11 @@ describe(EclipseEventService, () => {
 
     it("creates topocentric progressive events for solar and lunar eclipse ranges", () => {
       const solarBeginning: DetectedCalendarEvent = {
-        categories: [
+        description: "Hybrid Solar Eclipse begins (Topocentric Visibility)",
+        end: moment.utc("2024-04-08T18:00:00.000Z"),
+        start: moment.utc("2024-04-08T18:00:00.000Z"),
+        summary: "📍☀️🐉▶️ Solar Eclipse begins",
+        tags: [
           "Astronomy",
           "Astrology",
           "Eclipse",
@@ -319,26 +304,26 @@ describe(EclipseEventService, () => {
           "Topocentric Visibility",
           "Hybrid",
         ],
-        description: "Hybrid Solar Eclipse begins (Topocentric Visibility)",
-        end: moment.utc("2024-04-08T18:00:00.000Z"),
-        start: moment.utc("2024-04-08T18:00:00.000Z"),
-        summary: "📍 ☀️🐉▶️ Solar Eclipse begins",
       };
       const solarEnding: DetectedCalendarEvent = {
-        categories: [
+        description: "Solar Eclipse ends (Topocentric Visibility)",
+        end: moment.utc("2024-04-08T19:00:00.000Z"),
+        start: moment.utc("2024-04-08T19:00:00.000Z"),
+        summary: "📍☀️🐉◀️ Solar Eclipse ends",
+        tags: [
           "Astronomy",
           "Astrology",
           "Eclipse",
           "Solar",
           "Topocentric Visibility",
         ],
-        description: "Solar Eclipse ends (Topocentric Visibility)",
-        end: moment.utc("2024-04-08T19:00:00.000Z"),
-        start: moment.utc("2024-04-08T19:00:00.000Z"),
-        summary: "📍 ☀️🐉◀️ Solar Eclipse ends",
       };
       const lunarBeginning: DetectedCalendarEvent = {
-        categories: [
+        description: "Total Lunar Eclipse begins (Topocentric Visibility)",
+        end: moment.utc("2024-09-18T02:00:00.000Z"),
+        start: moment.utc("2024-09-18T02:00:00.000Z"),
+        summary: "📍🌙🐉▶️ Lunar Eclipse begins",
+        tags: [
           "Astronomy",
           "Astrology",
           "Eclipse",
@@ -346,23 +331,19 @@ describe(EclipseEventService, () => {
           "Topocentric Visibility",
           "Total",
         ],
-        description: "Total Lunar Eclipse begins (Topocentric Visibility)",
-        end: moment.utc("2024-09-18T02:00:00.000Z"),
-        start: moment.utc("2024-09-18T02:00:00.000Z"),
-        summary: "📍 🌙🐉▶️ Lunar Eclipse begins",
       };
       const lunarEnding: DetectedCalendarEvent = {
-        categories: [
+        description: "Lunar Eclipse ends (Topocentric Visibility)",
+        end: moment.utc("2024-09-18T03:00:00.000Z"),
+        start: moment.utc("2024-09-18T03:00:00.000Z"),
+        summary: "📍🌙🐉◀️ Lunar Eclipse ends",
+        tags: [
           "Astronomy",
           "Astrology",
           "Eclipse",
           "Lunar",
           "Topocentric Visibility",
         ],
-        description: "Lunar Eclipse ends (Topocentric Visibility)",
-        end: moment.utc("2024-09-18T03:00:00.000Z"),
-        start: moment.utc("2024-09-18T03:00:00.000Z"),
-        summary: "📍 🌙🐉◀️ Lunar Eclipse ends",
       };
 
       vi.mocked(progressiveUtilitiesService.pairProgressiveEvents)
@@ -381,23 +362,23 @@ describe(EclipseEventService, () => {
       expect(progressiveEvents).toHaveLength(2);
 
       const solarDurationEvent = progressiveEvents.find((event) =>
-        event.categories.includes("Solar"),
+        event.tags.includes("Solar"),
       );
       const lunarDurationEvent = progressiveEvents.find((event) =>
-        event.categories.includes("Lunar"),
+        event.tags.includes("Lunar"),
       );
 
       expect(solarDurationEvent?.description).toBe(
         "Hybrid Solar Eclipse (Topocentric Visibility)",
       );
       expect(solarDurationEvent?.summary).toBe(
-        "📍 ☀️🐉 Hybrid Solar Eclipse (Topocentric Visibility)",
+        "📍☀️🐉 Hybrid Solar Eclipse (Topocentric Visibility)",
       );
       expect(lunarDurationEvent?.description).toBe(
         "Total Lunar Eclipse (Topocentric Visibility)",
       );
       expect(lunarDurationEvent?.summary).toBe(
-        "📍 🌙🐉 Total Lunar Eclipse (Topocentric Visibility)",
+        "📍🌙🐉 Total Lunar Eclipse (Topocentric Visibility)",
       );
     });
   });

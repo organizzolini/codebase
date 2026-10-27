@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:bbea2b2c789112e1890485d37aebe464773c0311c6bee3eac2a0bf1239a4272b",
+  "claims": [
+    {
+      "id": "claim_c83651c93645446a8296e842a9b1ba4f",
+      "statement": "The workspace uses conformetry generators via Nx (nx g conformetry:<generator>) for all project, module, and file scaffolding, with templates synced from configuration/conformetry.config.ts.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L223-L227",
+          "version": "repo-lines-v1:sha256:3c971ab917a67bd377e41f69313e37868b80efd15ea255f201c0b0fa300d77f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjgxMDAzZTRkNTBhZTE5ZTA1MzYxZDQ2ZTkxMDc1YzFlODEzZjJlMmE3MWYwYjRjZjg3ODZjMzVjYTNlYWRkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmI3NzhkZjYwM2QzODQ2Y2JjMWQ3ZjNhMjVkOTk4ODE3NTlkNTE2OWU4M2RkYWY3MThmODk4MjVhNjY1ZmU2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmRmZDAzMjU3Yjg4OWRiMDk3ZjM0MmI3ZTBmZDIwZjllZmEzYTFhOTAzMjI3ZGExOTFlYjU0ZmE1ZmRjMjk3NyJ9"
+        },
+        {
+          "resource": "repo://README.md#L237-L259",
+          "version": "repo-lines-v1:sha256:6fb72fc4dc6836f0b045d327e8e8ea7bd2d665c02a81c1c972797b7249201edc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0ZTYzNzU3YjhmZjU2YzMzN2YzZjlmNjViOWViYzk0NWJmYTMzMDYxNjU2NjI3ODdlMTAzMmZiNzdkNjMzY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkOTM2ZDhhMjE0ZDEyOGRmZmFjNmVhZTMyM2M4OTYzY2FiMWRiYjIyNWZiNWM5ZTk5MTU1MDcxNGI1ODViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5YzA5ZGI3ZTUxODJkYjhmZTJjYjI0ZGRiODkzYWIxY2IxZjc2ODM2YjJjMTIwNTNjZjZlYzYyMGZiMzYxMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwNTZiYzNjNWVjYTRmYmQxNTIxYzQ5MWU1NzA3MmNkZmE2OTEwZDdkMzhhMDk5M2UxZWFkZWIzN2E5ZDYwY2QifQ"
+        },
+        {
+          "resource": "repo://configuration/conformetry.config.ts",
+          "version": "repo-file-v1:sha256:0cbfe18065bce65e74e2b17efb9d290c261e0a85ea1d051f9878bfe5f8a59ae6"
+        }
+      ]
+    },
+    {
+      "id": "claim_beda8c74c4a148ef90d152ea4c4e3552",
+      "statement": "There are exactly 14 conformetry generators divided into three tiers: 5 project generators (jupyter-notebook-application, nestjs-command-project, nestjs-graphql-application, nestjs-service-project, tanstack-application), 5 module generators (nestjs-command-module, nestjs-dataloader-module, nestjs-graphql-module, nestjs-service-module, tanstack-server-function), and 4 file generators (nestjs-service-file, nestjs-resolver-file, react-component, react-hook, tanstack-route).",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L241-L259",
+          "version": "repo-lines-v1:sha256:67ef72baf882804ab91443ebb53c224867e9bdab539c277e5bd68b467810e9e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NmNiZGU5MjdjNzNkNjAzMTU5ODcxN2RmYzhiZjY0YWY4MmE3MGUxMDExNWU4YTBjODk2MDljMzY2NDRjZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkOTM2ZDhhMjE0ZDEyOGRmZmFjNmVhZTMyM2M4OTYzY2FiMWRiYjIyNWZiNWM5ZTk5MTU1MDcxNGI1ODViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhMWNkMmU3OTkxMWIwYjRkNTVlM2QzYThiOTQ5ZDNkNWQxYzg4NTZkYmRhMzkyYzNhYjdjZmJkYTRkZThkY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwNTZiYzNjNWVjYTRmYmQxNTIxYzQ5MWU1NzA3MmNkZmE2OTEwZDdkMzhhMDk5M2UxZWFkZWIzN2E5ZDYwY2QifQ"
+        },
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L50-L355",
+          "version": "repo-lines-v1:sha256:00a90c3fd6f578c58a600e79d2c96fb93b0ec611a5983edc764f65f407059f86:eyJzZWxlY3RlZExpbmVDb3VudCI6MzA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzY2UyMTdlYzcxNzBhNjA5MzJlMjdhMDFjMDI3MzE0MjJkZDY4M2ExOTUyY2MzYTE4OGFkMjgwOGYxNjExYmMyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMDJkMmMwZDZkYzVlNzRkOTJmYTE0YjkxZGJlYTI2NDA5MGJlYjM1ZmRiOTE4OGQ5YjM0MTE4MWRjZTlmNGNlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzMzQwZjBlOTY1M2E0MjhmZjA4YjZkNWJhOTcxMGM3ZjdhM2JiYTJmMTM4ZGM5ODFhZTI1ZjlmOTk5MGJmNWU3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MiwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZDE4N2U0MjJjZDc0ZWM4NTZlYTk2M2E4OGRmNGUyM2MyZWZlMWM1NWU0YWNiOTUyOTI5MjQwZjI2NDI4YTZmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d4b3785e0914ecbbb5c3c4fbfc820e3",
+      "statement": "Every Nx project carries an explicit type tag (type:application or type:package) in its project.json, not derived from folder name, and this tag is used by conformetry to match instance groups per ADR 0011.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0011-hold-one-path-law-for-every-project-type.md#L9-L14",
+          "version": "repo-lines-v1:sha256:d840d97358261faa35a153aefd3cfc1c07160593398ef9519b7a0eed19eec30f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjdkYTMzMzQ2ZDUxNzg1ZWZiMjBlMDU0YTk4ZDQxMzkwYzU5ZmRmZmMzZTllNDFlMGNkZDNlZjllYTM1ZDdiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjNkYzRkYmY2Y2I4NDQxNGIyOTBhMDk0Y2YzOTc1N2NhOTk0ZDRhNWY4YzM1ZjdlZjhiZDA1OWU5YWU4ZWNhYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzM1M2U2ODg2YzA3MzBjZjcwMjJhMDA0OTM3OTQ4ODgxMDQzOTc3NTcyN2JjOTk5ZmJlZWY0NDA1N2U2NzRlMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2ZiOGZhYjZiZDg5NDM0NjdjNGQ4ZjQxMjhkNzg4YTczMzMzMjdjYjFmYjE4YjhlZGM4MTNjNmUwNWUwNzY3NiJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/project.json#L6-L14",
+          "version": "repo-lines-v1:sha256:9a5e53cc2d7a13462b63ea61c7ceb91979b808e906ac86db349fb57ecfeb7689:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJmZTRlODk0NjNhYmYyNDg4YzE0ZDk1NWU0NGNhMWMzMDYxOThmYjI0ZjRmM2I0MzcyYTQ3OTBlZmI4YWU0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY0ZDhjMDczNDI5ODkzMTAxNTc2ZDg4ZDk5MTI3ZTg5ZDY4OTFkM2IxN2U4OWRmMDJlYzlhZTcwNzA1ZDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGIxNmE2MWY5MmVjNTFlN2YxMzliMDc5MDM3ZTFmOTJmNDRmZmJlODFkNWZjNzk3MjQ0ODBiYWQ1NDQxNDY1MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjc2NjQzOTFlMDQ1NjAwNmFmMDcwOWFjMDMzN2Q2ZDA4ZmM1MzdhODU4MjI0NTc0MDBmYmY0NGRiNjVjMGZiZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f09c4526b8114f46a98bad7f7955b643",
+      "statement": "Project generators use untagged instance groups (workspace globs) while module/file generators use tagged instance groups matched per-project via tags like framework:nestjs, language:graphql, framework:tanstack-start, framework:react.",
+      "evidence": [
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L167-L354",
+          "version": "repo-lines-v1:sha256:a3b695af2f756ce04b8f967b91464c511c25aae6a5c4fc404b94b47d625b4b99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTg4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI4MTc2MTZiZWI0NDNhYzliYzAyYTM4M2M4MzliNzdmMzBmZDhjMzFjOGFkODg2MTM0NmJlZjYwN2RhNjIzZDRlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ZDVjZDJmYjRmM2RmODg0NTE1MjU1YjM5NTIzZjJmOGI1NDcyYmVlYTlmNTY2ZmZjYTIwNGRiODAyNTYxMDQxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwMjlmZTlkMzg3ODUxYjMxNmVjMDVkMTkxYzFiMTBiYTdhNTVmMjk1NDU5OWY5NDE1MDI2MGI0ZDg3OTg5ZmIwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4YThmMTlkOGIzNzY5YWNjZjQxOWNjZGRhOTMxMjIzM2ViYzY4NjBlNTIwNzlhN2FkODUzZWVlZjM2ODhlNTNmIn0"
+        },
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L54-L165",
+          "version": "repo-lines-v1:sha256:613373a972fcec210b31fd4b260dcf7f3d2e7fcbadf85e58ef0530ae6bb5eaed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyMTExZjIzOWFjNjVjOWZlY2Q0Zjc5NzVkNGVlMGM2NzdiNThhOGVhNjc4NTJlYTI1ZDI3OTIzOTI1MThkMmY4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ZDVjZDJmYjRmM2RmODg0NTE1MjU1YjM5NTIzZjJmOGI1NDcyYmVlYTlmNTY2ZmZjYTIwNGRiODAyNTYxMDQxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJiNjNkNWFlNzEwMjU0MzdmZTM4NWYyY2Y4MjNhMjBmNmM0YTA5ZTg5YmUxMjdiZGJjMDk2ZmIzNTRiMTUwNTJkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjZWM5NzU0ZmY1Y2M5Nzg0MjM0Yzk2MWEyNGJlNWFmOTg4OGM1ODIzZTc0M2E0Y2QwMWIyZmRhZGQ1YzczYzJmIn0"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/src/modules/instances/instances.service.ts#L68-L99",
+          "version": "repo-lines-v1:sha256:9d2e25ca1251452fcedffb97d9acc93f59cf1f833cdf5d93bb92d6a0ef3f3ea0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4Zjk0YTQ4OTA3Mjk5Y2JlMzljOWZhY2JjYzdlYjA1MTA0N2JmYTM5NDExNTI1NmMwZjIwNTQ1MjJhMDkzZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1ZTYwYzUzZjFhMjA4YTJlZGY1ZWNmOTNhNjJjNjYzMTQ0OTMwOTEyNjUwNGVlNjlkNzU1MjBlNGI3MDg0YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2NmYzNDA2NWM5OTZiODVjNTI5OGQ2ZmFlYTY2Y2RmMTg5OTUzMzc1NzU3MThkMzE1NWMzYTgzNzQ1OTA2YTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_48e3bc693bf14e0a87db00933766b858",
+      "statement": "The nx-generate skill must be invoked first before exploring or calling MCP tools when scaffolding; it enforces generator discovery, dry-runs, reading generator source code, examining existing patterns, and verification.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/nx-generate/SKILL.md#L1-L42",
+          "version": "repo-lines-v1:sha256:979429caa4e5d0d23d9250d0bab2f397bdbf683414f8e2d1f90275d79f776c61:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3M2Y0ODkxMmI0YzgzOTgzNTVlMTM2OTE3NmYxZDU0NDljYzAyZDE3ZTkwYmYzYzMyZjNiMDJkYjkwOTE5MWUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/nx-generate/SKILL.md#L106-L135",
+          "version": "repo-lines-v1:sha256:a867f42df7a189cb600b154de6706160663eb18008c8bbd9b688d89514dc690b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzMGUwN2IwODc5ZTU5ZGUxNDFhY2E0ZGZjYmY3MmI0OTg5OGVmNTRiNDk2MTA3MThmYWFkNWIyMjAxMWJjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZDU4NDIxMmI4ODA5YTIwZjFmNDU2MjY1YmI3ZjUzNjk3MWJiZjJmZWZhNzczZjZiZmRkODc5MGJjNTUyOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViOWI0MjY1OGNmMzNjMjNlOTY5OWY5M2VlMWRlYjU2ZDJkMWEzNDYxMWEzZDNhNTBiYTBjZmUyYjljNDMxNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyNDFmOTE4ZWZiYzFiZmU0OTRhZDMwMzhkNjUxZDNjZTZkZjYxYjkyYjI4YmYzZjY3OWNkNTBiYTE5YjE4NjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5892d0f25c1d4970b934c31263f3d808",
+      "statement": "The conformetry Nx plugin is emitted to projects/ic-suite/conformetry/conformetry-nx/ by running nx run synchronization:conformetry-generators:write, and workspace tools run from this configuration project per ADR 0025.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/adr/0025-run-the-workspace-tools-from-a-configuration-project.md#L13-L19",
+          "version": "repo-lines-v1:sha256:c5fdc475dd203d6a3538bd791dda231a2d71236ca043aaaa37a0ee054833c122:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY5ZmUxODNiYTc2NjU4M2NjMmU0ZGJlMjY2NzA3ODM3MmI0ZTljNzExYzA0ZDFlNDk5NDRmN2Y1NjdlZmViMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzVhNDEyMTg5MzVjODM1OWUxNGRkMTQzYmYxZmFmMDEyNTE5OTgzZTQyZmQwNjI0MGIyN2U3MDBhNWQzMjFiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2IxNTdhNmQyNzY3ZmY3ZjQxMzNlZTI3NjUxMzY3YzZmZGZmN2FiNGZkOWJhM2NiNDI2MmUyYWE0NDkwY2NhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzFkM2EwYTAzNWU5ZmM0NDFkNGM5NTAxNmUwMDA2NTA3ZWM1MmUwYTY5MmNmNDBhZDc5NTM5NWEyZDlhMjc5YiJ9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/generators.json",
+          "version": "repo-file-v1:sha256:08a56af1488ce63b94932a53eafaae85407a1f3614d7258ec58b9c2557a44b86"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-nx/project.json",
+          "version": "repo-file-v1:sha256:16ac1adc2e43ffc7ea4fada7b9eed2128cafcca0b4c545c6c178ec69393d0d31"
+        }
+      ]
+    },
+    {
+      "id": "claim_2666836c4d4e4796b3506e0c0d698463",
+      "statement": "The conformetry CLI provides a `generate` command requiring `--config`, `--template`, and `--directory` flags; omitting `--template` at a terminal shows an interactive autocomplete picker, while in CI (no terminal) it refuses with a list of available templates.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L63-L93",
+          "version": "repo-lines-v1:sha256:2913ee6e4ab842e398d4f17459567f71b2c4454c1f0778b3b9b02b446639849a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhNzUxMjZmZTcyNjI5Njg2YmU3ZTRhYjlmYTZiOWU1NGM2NDFjZjVlMDUzYmZkMTliZjNhNDNhODk3MjFkNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkMDFmZmRlYTNhMDZlMGQ0Y2UxYjAzYjJmOTBmNzMzMGRmNzE4MGMxYmM5NDI2ZmRhNTY4NGY5NGY3YTc0ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjZGNkN2VkMjVjOGFkOWI0NzA4ODE3MzE5N2NmNjhlNzNiOGU2NWNkN2E3YzZmYzA2MTg2MjYwMWZiYjNiZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4NzE0NTMxOTA5MGU5ZGM4OWUxMWIzYjFiMDQ3ODk0MzYzMWU0NzFiMmY4NWExYzk4M2EzZDNhM2YzNmE1MjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f1016fcfa0f4f49ba1e81eb8e672158",
+      "statement": "Every input a conformetry template declares is required; with a terminal missing inputs are prompted interactively, without a terminal they are refused naming the missing flag.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L107-L123",
+          "version": "repo-lines-v1:sha256:bd009085793d16a59ad0f56ab52dc5d54b2cf2be21d8b4e4432eb57e25b0555f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0MDMzNzM2ODZlM2I0N2ZhYjE3YTVmZmQ3NWRhMWI0YmU5NzcyMDYxY2I4MDVjZjlkMTg5ZmZiY2U2N2M5ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1YzY1YmIwOTgwNGI2YzBjOTcyNmRlOGI2OTIxZDVhNDhhM2VlMjZmZTAwZGNiZWY4OTMzZDEwZjAzMzdjZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyZmVlMDkzNWJhZDNlNDc0MzlmMmYxZjhmNzNmNDRiZGJkNGYwNzU5ZTkzZDYwNDlmODViZjAyOGQ4MGYyYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0ZTVmZWFlNjY0NGJhY2M2YjI5NDg2NmNiN2JjZDY5NzgyNDk5NmI4ZGE0NTBlZGE3NjBkNjM1YTFkMWI1MzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_953d0eed3aab426e8aa13f4bd858fed4",
+      "statement": "The `conformetry validate` command validates instances against their templates, exits non-zero when any instance scores below its threshold (default 100%), and runs in CI as part of `guard-code`.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L196-L211",
+          "version": "repo-lines-v1:sha256:86ced27b877de55980638866e6c8ec8ed8461654999fc061a2b91ed79b39680a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ZTcyOTQzNjBlOTU0ZDM0MWFkMjcxYzI5MTVhZjJiMWYzZDQ5ODNlZmNkZDg2YWM3NzEwMzQ3NjJkN2Y1ZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4MDI3M2ZmYjQwYzg5ZTk4MGZhODZlM2RhMjJiMjE1NTlhMjc0YzJiYzE3YmVmODVkYjZlYzk4MDlmMjM1NWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZjg4Zjk3ZTk0NjZmMDhkNGJiOTVjYjM1OWQ0N2I2MTgzNjZhMDI0ZTkxMjhiZTE2ZjRkOTZkNWFlYTYzNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1MTU0NzllNDY4ZWFlMTEyNWIxN2FhNzFjMzJjMjhjMTRmZGNhY2UwNTcxOTAxYzUyMGVlYTU1NDQyMzEyZDIifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L209-L211",
+          "version": "repo-lines-v1:sha256:6b81cbfe1ae5886e49d774a31786c938129bad0804f725d5899ea9769295113e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzA0MmE5MTIxYTJmZmM5ZTM4ZGNlNWZjYWVkZGIxZDE5YzNjMWQ0MWZlOTRkMjk2NGRkN2JiODBjNzBiZTc1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjgwMjczZmZiNDBjODllOTgwZmE4NmUzZGEyMmIyMTU1OWEyNzRjMmJjMTdiZWY4NWRiNmVjOTgwOWYyMzU1ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNlNmJhYThlZDZlMjIwMmUzNWM2OGVhNDFmMzA0NmVkZTg1YTZiYWYyZTlkZGY0ODExMTA3MjU1ZjEwOTRmMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODUxNTQ3OWU0NjhlYWUxMTI1YjE3YWE3MWMzMmMyOGMxNGZkY2FjZTA1NzE5MDFjNTIwZWVhNTU0NDIzMTJkMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d87ef40b0e5849059d5df38a5ae47e77",
+      "statement": "Validation scoring reports met/total/percentage at file, instance, and total levels; a missing element costs its entire subtree; thresholds can be set at instance group, generator, or CLI flag level (narrowest first).",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L246-L299",
+          "version": "repo-lines-v1:sha256:da5b4dfc861c8816fc7f86a8927f1bf19e8fc22df8902eb488ce246a4aae7988:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2NTVlOTdlYjEwMjc2ZGM4MGNhOWU4Mzg3ODk0Y2Y2Y2YxNjY1YWEyOTlhZDE5MTM0NmRhZTUxMmE4MTdiOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMjdjOTE0NGE0MjdkZGMzOWYxZDEwN2VhNWZhMDYwZWU5Y2FhZDJkNTQzNzFmYTg2YTYxNWVkODllYzQ3Y2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwNTAxYjAwOTg1YzNiMGI2MDBmMDIyZGJjNmViYmI5Y2FkNzQ2MzRkOTc1MGM2MWQwOTk2ODQ0YmViMGQzMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyYzJjMzZmNmFhM2MzNzAzNmVhYzllNTRlMmViYWJhMTU5NmI2YzBjY2I1ZWE1OTNjZjdhZGVhNDFjODhkNTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c451e932482d49b0b259b191e588355e",
+      "statement": "Templates scoped by project tags cannot be located by the CLI host (`conformetry validate`) because tag resolution belongs to the Nx plugin; such groups are left out rather than expanded from the working directory.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/README.md#L231-L239",
+          "version": "repo-lines-v1:sha256:a3af58a94f700c3137427fb6d06282eafc9f17846e38a5ab7e7219c7dc713080:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNjMTQxNWM2ZGRiM2FjYThjNmI3NTQyZTMzM2M2NmM5MTQyMWNlNGFkNjMyMTlkZGYwOWJiYTc0ZDFkMDQ1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODhhM2U4NGFkOTNlMjQyZDlkNGFhY2NiN2JjYTcyMzQ5ZjI1OWMzZTA2YWYzZDQyODA3NTliYzZkNzU2ODk1OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDc1MTBkNTcwNmY3MzJiMjgxYjY0ZWZlMmZlZmNkMzUxOGZlYzNmOWJiNjhmYzM1Nzk5MmM1NjUwNjQ0YmIzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTkyNGQyZWY3ZTY4OGYxOWFhYTQzNmZjODNlZGU0ZGQ5ZTA1ZTZhMjUxNjhhNWY3MTE0OWIzN2NlZDhhYjUyYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d0625c12025840fcb04a9b1fca918323",
+      "statement": "The SHADCN_GENERATED_PATTERNS exclusion in configuration/conformetry.config.ts removes presentation components managed by shadcn CLI (components/examples/**, components/reui/**, components/ui/**, hooks/**, lib/**) from conformetry validation to avoid conflicts with shadcn overwrites.",
+      "evidence": [
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L279-L286",
+          "version": "repo-lines-v1:sha256:15ca7ea75a77c0e5ddd46cfd7dc8af72d3b1177f5e48934bffcc9a38d63aeb3b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWI2YzU3OTFlNmUwYzVjZGQ0NDEzOWE0Zjk2Yzc1YWEzMDA0MmRiMmI4MzE3YTBiMDU1YWM1Y2M2OWM5MDY5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjMzZmMxNmY1Y2U0ZGZiYmZkZDJjZWRjZjM5ZmNlMThmODVmZTQ0NGVmYTlhNTM3NTZmMTgyMTI1MDJjYTJiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTJmOWZkMDlhNmQxYzIzM2Q5YjZmNzU0MDQwY2ZkMjNjMDk4OWIwNjM2ZjRiMjgyNTA5Njg4MmUwMGFiNDgyYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTRiMzIzNzhhNTNkMTcwYjk5YjNjOWY5OTZjMDFmMWFhNzM2ZGU0OTdlODZjNjAzYTljMTY4MmViMzRkNjc5MiJ9"
+        },
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L302-L308",
+          "version": "repo-lines-v1:sha256:349f6c3f7087c40595e65e602a9fb6cb5f68f79a73674be1077be48780038028:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWI2YzU3OTFlNmUwYzVjZGQ0NDEzOWE0Zjk2Yzc1YWEzMDA0MmRiMmI4MzE3YTBiMDU1YWM1Y2M2OWM5MDY5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDE0ODMzYTdmMGVkODk2MzBhYzVkM2ZlNWRiYjU3YjVjMTJkYjU5OGJlMGNiNjc0ZGQ2YWUwM2QzYmEwYTc4YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjc5Y2ViMmVkYTUwYWVmYzI3MmFmZDg2MmE0YmUxNWE1MTdmNGVlYjhmMDg4ZGNiZDJkNDZkY2U0YjExMTExNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2U2ZmIyMjVhZDU3MWVmNTljYWQ0ZTk4NTczOWJlNzAzYjczZGEzMzQ0NzNlMDQ3NGIyZDBhNmViY2YzNjdlNiJ9"
+        },
+        {
+          "resource": "repo://configuration/conformetry.config.ts#L36-L48",
+          "version": "repo-lines-v1:sha256:5b3ebfeeb28c5f144cb9cdbf0cf9f23543d7f7a43d595391aadd220f8a9a8a16:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhNWVjMGRlYjBhNDM3M2M0NmE4NTFlMDYwNjYwMGJiMGNhYjM3OTJmZWY1NWQ3ZTZiMzE5NmU1ODhmNjI5ZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxZDhhMWE5OTI0OWUxNWY5ZmQ5YTk1MzcwYWY3MDE5NzQzNmZlYmU0NjM0YWMyOTEzZDBiN2ZhNzFkNGFlMTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7bdf26c33184740841d0a90a23f25b9",
+      "statement": "The nx-generate skill enforces a 7-step workflow: discover generators, match to request, read generator source, examine existing patterns, dry-run, run generator with --no-interactive, format and verify.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/nx-generate/SKILL.md#L1-L42",
+          "version": "repo-lines-v1:sha256:979429caa4e5d0d23d9250d0bab2f397bdbf683414f8e2d1f90275d79f776c61:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3M2Y0ODkxMmI0YzgzOTgzNTVlMTM2OTE3NmYxZDU0NDljYzAyZDE3ZTkwYmYzYzMyZjNiMDJkYjkwOTE5MWUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/nx-generate/SKILL.md#L106-L135",
+          "version": "repo-lines-v1:sha256:a867f42df7a189cb600b154de6706160663eb18008c8bbd9b688d89514dc690b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzMGUwN2IwODc5ZTU5ZGUxNDFhY2E0ZGZjYmY3MmI0OTg5OGVmNTRiNDk2MTA3MThmYWFkNWIyMjAxMWJjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZDU4NDIxMmI4ODA5YTIwZjFmNDU2MjY1YmI3ZjUzNjk3MWJiZjJmZWZhNzczZjZiZmRkODc5MGJjNTUyOWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViOWI0MjY1OGNmMzNjMjNlOTY5OWY5M2VlMWRlYjU2ZDJkMWEzNDYxMWEzZDNhNTBiYTBjZmUyYjljNDMxNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyNDFmOTE4ZWZiYzFiZmU0OTRhZDMwMzhkNjUxZDNjZTZkZjYxYjkyYjI4YmYzZjY3OWNkNTBiYTE5YjE4NjEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

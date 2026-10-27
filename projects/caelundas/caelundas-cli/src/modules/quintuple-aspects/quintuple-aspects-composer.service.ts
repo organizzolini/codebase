@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { aspectBodies as quintupleAspectBodies } from "../caelundas/caelundas.constants";
@@ -35,7 +35,6 @@ export class QuintupleAspectsComposerService {
   constructor(
     private readonly mathService: MathService,
     private readonly compoundPhaseService: CompoundPhaseService,
-    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
     private readonly progressiveCompoundEventService: ProgressiveCompoundEventService,
   ) {}
 
@@ -118,9 +117,23 @@ export class QuintupleAspectsComposerService {
   }
 
   /**
-   * Builds canonical categories used for grouping and downstream progressive pairing.
+   * Formats summary as `aspectSymbol + symbolChain + description`, the description minus its phase word.
    */
-  buildQuintupleAspectCategories(
+  buildQuintupleAspectSummary(args: {
+    aspectSymbol: string;
+    description: string;
+    symbols: string[];
+  }): string {
+    const { aspectSymbol, description, symbols } = args;
+    const symbolChain = symbols.join("");
+
+    return `${aspectSymbol}${symbolChain} ${description.replace(PHASE_WORD_PATTERN, "")}`;
+  }
+
+  /**
+   * Builds canonical tags used for grouping and downstream progressive pairing.
+   */
+  buildQuintupleAspectTags(
     bodiesSorted: string[],
     quintupleAspect: QuintupleAspect,
     phase: AspectPhase,
@@ -134,22 +147,6 @@ export class QuintupleAspectsComposerService {
       _.startCase(phase),
       ...bodiesSorted,
     ];
-  }
-
-  /**
-   * Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
-   */
-  buildQuintupleAspectSummary(args: {
-    aspectSymbol: string;
-    description: string;
-    phase: AspectPhase;
-    symbols: string[];
-  }): string {
-    const { aspectSymbol, description, phase, symbols } = args;
-    const phaseEmoji = this.getPhaseEmoji(phase);
-    const symbolChain = symbols.join("-");
-
-    return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
   }
 
   /**
@@ -171,21 +168,20 @@ export class QuintupleAspectsComposerService {
     const summary = this.buildQuintupleAspectSummary({
       aspectSymbol,
       description,
-      phase,
       symbols,
     });
-    const categories = this.buildQuintupleAspectCategories(
+    const tags = this.buildQuintupleAspectTags(
       bodiesSorted,
       quintupleAspect,
       phase,
     );
 
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -277,13 +273,6 @@ export class QuintupleAspectsComposerService {
     return orderedBodies;
   }
 
-  /**
-   * Maps phase to the event-summary marker prefix.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
-  }
-
   /** Creates one quintuple-aspect boundary event for the provided five bodies. */
   getQuintupleAspectEvent(
     eventArguments: GetQuintupleAspectEventArguments,
@@ -329,15 +318,15 @@ export class QuintupleAspectsComposerService {
     events: DetectedCalendarEvent[],
   ): Record<string, DetectedCalendarEvent[]> {
     const quintupleAspectEvents = events.filter((event) =>
-      event.categories.includes("Quintuple Aspect"),
+      event.tags.includes("Quintuple Aspect"),
     );
 
     return _.groupBy(quintupleAspectEvents, (event) => {
-      const filteredPlanets = event.categories.filter((category) =>
-        quintupleAspectBodies.map((b) => bodyDisplayName(b)).includes(category),
+      const filteredPlanets = event.tags.filter((tag) =>
+        quintupleAspectBodies.map((b) => bodyDisplayName(b)).includes(tag),
       );
       const planets = _.sortBy(filteredPlanets);
-      const aspect = event.categories.find((c) => ["Pentagram"].includes(c));
+      const aspect = event.tags.find((c) => ["Pentagram"].includes(c));
 
       return `${planets.join("-")}_${aspect}`;
     });

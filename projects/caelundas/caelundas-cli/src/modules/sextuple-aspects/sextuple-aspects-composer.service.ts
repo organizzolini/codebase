@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { aspectBodies as sextupleAspectBodies } from "../caelundas/caelundas.constants";
 import { bodyDisplayName, groupByToMap } from "../caelundas/caelundas.types";
@@ -32,7 +32,6 @@ export class SextupleAspectsComposerService {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly aspectPhaseEmojiService: AspectPhaseEmojiService,
     private readonly progressiveCompoundEventService: ProgressiveCompoundEventService,
   ) {}
 
@@ -133,9 +132,23 @@ export class SextupleAspectsComposerService {
   }
 
   /**
-   * Builds canonical categories used for grouping and progressive pairing.
+   * Formats summary as `aspectSymbol + symbolChain + description`, the description minus its phase word.
    */
-  buildSextupleAspectCategories(
+  buildSextupleAspectSummary(args: {
+    aspectSymbol: string;
+    description: string;
+    symbols: string[];
+  }): string {
+    const { aspectSymbol, description, symbols } = args;
+    const symbolChain = symbols.join("");
+
+    return `${aspectSymbol}${symbolChain} ${description.replace(PHASE_WORD_PATTERN, "")}`;
+  }
+
+  /**
+   * Builds canonical tags used for grouping and progressive pairing.
+   */
+  buildSextupleAspectTags(
     bodiesSorted: string[],
     sextupleAspect: SextupleAspect,
     phase: AspectPhase,
@@ -149,22 +162,6 @@ export class SextupleAspectsComposerService {
       _.startCase(phase),
       ...bodiesSorted,
     ];
-  }
-
-  /**
-   * Formats summary as `phaseEmoji + aspectSymbol + symbolChain + description`.
-   */
-  buildSextupleAspectSummary(args: {
-    aspectSymbol: string;
-    description: string;
-    phase: AspectPhase;
-    symbols: string[];
-  }): string {
-    const { aspectSymbol, description, phase, symbols } = args;
-    const phaseEmoji = this.getPhaseEmoji(phase);
-    const symbolChain = symbols.join("-");
-
-    return `${phaseEmoji}${aspectSymbol} ${symbolChain} ${description}`;
   }
 
   /**
@@ -186,21 +183,20 @@ export class SextupleAspectsComposerService {
     const summary = this.buildSextupleAspectSummary({
       aspectSymbol,
       description,
-      phase,
       symbols,
     });
-    const categories = this.buildSextupleAspectCategories(
+    const tags = this.buildSextupleAspectTags(
       bodiesSorted,
       sextupleAspect,
       phase,
     );
 
     return {
-      categories,
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags,
     };
   }
 
@@ -334,13 +330,6 @@ export class SextupleAspectsComposerService {
   }
 
   /**
-   * Maps phase to the event-summary marker prefix.
-   */
-  getPhaseEmoji(phase: AspectPhase): string {
-    return this.aspectPhaseEmojiService.getPhaseEmoji(phase);
-  }
-
-  /**
    * Creates one sextuple-aspect boundary event for the provided six bodies.
    */
   getSextupleAspectEvent(
@@ -388,15 +377,15 @@ export class SextupleAspectsComposerService {
     events: DetectedCalendarEvent[],
   ): Record<string, DetectedCalendarEvent[]> {
     const sextupleAspectEvents = events.filter((event) =>
-      event.categories.includes("Sextuple Aspect"),
+      event.tags.includes("Sextuple Aspect"),
     );
 
     return _.groupBy(sextupleAspectEvents, (event) => {
-      const filteredPlanets = event.categories.filter((category) =>
-        sextupleAspectBodies.map((b) => bodyDisplayName(b)).includes(category),
+      const filteredPlanets = event.tags.filter((tag) =>
+        sextupleAspectBodies.map((b) => bodyDisplayName(b)).includes(tag),
       );
       const planets = _.sortBy(filteredPlanets);
-      const aspect = event.categories.find((c) =>
+      const aspect = event.tags.find((c) =>
         ["Grand Sextile", "Hexagram"].includes(c),
       );
 

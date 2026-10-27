@@ -5,7 +5,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -24,7 +23,11 @@ function buildTSquareBoundary(
 ): DetectedCalendarEvent {
   const minute = moment.utc(isoMinute);
   return {
-    categories: [
+    description: `Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
+    end: minute,
+    start: minute,
+    summary: `⊤🌚-🌙-♀️ Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
+    tags: [
       "Astronomy",
       "Astrology",
       "Compound Aspect",
@@ -36,10 +39,6 @@ function buildTSquareBoundary(
       "Venus",
       "Venus Focal",
     ],
-    description: `Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
-    end: minute,
-    start: minute,
-    summary: `➡️ ⊤ 🌚-🌙-♀️ Lunar Apogee, Moon, Venus t-square ${phase} (Venus focal)`,
   };
 }
 
@@ -51,7 +50,6 @@ describe(TripleAspectsService, () => {
       providers: [
         LoggerService,
         AspectGraphService,
-        AspectPhaseEmojiService,
         CompoundPhaseService,
         ProgressiveUtilitiesService,
         TripleAspectsComposerService,
@@ -93,7 +91,7 @@ describe(TripleAspectsService, () => {
       });
 
       expect(events.length).toBeGreaterThanOrEqual(1);
-      expect(events[0]?.categories).toContain("Triple Aspect");
+      expect(events[0]?.tags).toContain("Triple Aspect");
     });
 
     it("emits a T-square once when its legs are in both snapshots", () => {
@@ -177,7 +175,11 @@ describe(TripleAspectsService, () => {
   describe("detectProgressive", () => {
     it("creates progressive event from matching forming and dissolving pair", () => {
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun t-square forming (Mars focal)",
+        end: moment.utc("2024-03-21T10:00:00.000Z"),
+        start: moment.utc("2024-03-21T10:00:00.000Z"),
+        summary: "T-Square forming",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -189,14 +191,14 @@ describe(TripleAspectsService, () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square forming (Mars focal)",
-        end: moment.utc("2024-03-21T10:00:00.000Z"),
-        start: moment.utc("2024-03-21T10:00:00.000Z"),
-        summary: "T-Square forming",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
+        end: moment.utc("2024-03-21T14:00:00.000Z"),
+        start: moment.utc("2024-03-21T14:00:00.000Z"),
+        summary: "T-Square dissolving",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -208,10 +210,6 @@ describe(TripleAspectsService, () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
-        end: moment.utc("2024-03-21T14:00:00.000Z"),
-        start: moment.utc("2024-03-21T14:00:00.000Z"),
-        summary: "T-Square dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -221,7 +219,7 @@ describe(TripleAspectsService, () => {
 
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.description).toContain("t-square");
-      expect(progressiveEvents[0]?.categories).toContain("Triple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Triple Aspect");
     });
 
     it("pairs two occurrences of one T-square into two spans despite duplicate boundaries", () => {
@@ -249,11 +247,11 @@ describe(TripleAspectsService, () => {
     it("skips events without a progressive group key", () => {
       const events = service.detectProgressive([
         {
-          categories: ["Astronomy", "Astrology", "Triple Aspect", "Forming"],
           description: "Invalid triple aspect",
           end: moment.utc("2024-03-21T12:00:00.000Z"),
           start: moment.utc("2024-03-21T12:00:00.000Z"),
           summary: "Invalid triple aspect",
+          tags: ["Astronomy", "Astrology", "Triple Aspect", "Forming"],
         },
       ]);
 

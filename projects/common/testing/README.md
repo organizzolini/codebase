@@ -29,6 +29,10 @@ Add the package as a development dependency:
 "devDependencies": { "@codebase/testing": "workspace:*" }
 ```
 
+A project whose `testing/` folder imports it lists it under `dependencies`
+instead, because the dependency check counts `testing/` files as shipped code;
+`interface` and `persistence` do.
+
 ### Core
 
 ```ts

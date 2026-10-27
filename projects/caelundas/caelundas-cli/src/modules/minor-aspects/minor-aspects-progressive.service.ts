@@ -5,10 +5,6 @@ import {
   minorAspects,
 } from "../caelundas/caelundas.constants";
 import { isBody, isMinorAspect } from "../caelundas/caelundas.types";
-import {
-  symbolByBody,
-  symbolByMinorAspect,
-} from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -39,10 +35,10 @@ export class MinorAspectsProgressiveService {
    * Builds a stable grouping key from sorted bodies plus aspect name for pairing.
    */
   buildGroupKey(event: DetectedCalendarEvent): string {
-    return this.progressiveAspectService.buildAspectGroupKeyFromCategories({
+    return this.progressiveAspectService.buildAspectGroupKeyFromTags({
       aspects: minorAspects,
       bodies: minorAspectBodies,
-      categories: event.categories,
+      tags: event.tags,
     });
   }
 
@@ -53,16 +49,16 @@ export class MinorAspectsProgressiveService {
     aspectCapitalized: string;
     body1Capitalized: string;
     body2Capitalized: string;
-    categories: string[];
+    tags: string[];
   }): { aspect: MinorAspect; body1: Body; body2: Body } {
     const typedParts =
       this.progressiveAspectService.extractTypedAspectPartsOrThrow({
         aspects: minorAspects,
         bodies: minorAspectBodies,
-        categories: args.categories,
-        errorMessage: "Could not extract typed values from categories",
+        errorMessage: "Could not extract typed values from tags",
         isAspect: isMinorAspect,
         isBody,
+        tags: args.tags,
       });
 
     return {
@@ -78,8 +74,7 @@ export class MinorAspectsProgressiveService {
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     return this.progressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(
       {
-        aspectCategory: "Minor Aspect",
-        categoryLabel: "minor aspect",
+        aspectTag: "Minor Aspect",
         events,
         getAspectGroupKey: (event) => this.buildGroupKey(event),
         getProgressiveEvent: (beginning, ending) =>
@@ -90,6 +85,7 @@ export class MinorAspectsProgressiveService {
             endings,
             label,
           ),
+        tagLabel: "minor aspect",
       },
     );
   }
@@ -102,15 +98,13 @@ export class MinorAspectsProgressiveService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return this.progressiveAspectService.createSimpleAspectProgressiveEvent({
-      aspectCategory: "Minor Aspect",
       aspects: minorAspects,
+      aspectTag: "Minor Aspect",
       beginning,
       bodies: minorAspectBodies,
       ending,
       isAspect: isMinorAspect,
       isBody,
-      symbolByAspect: symbolByMinorAspect,
-      symbolByBody,
     });
   }
 
@@ -123,8 +117,7 @@ export class MinorAspectsProgressiveService {
   ): DetectedCalendarEvent[] {
     return this.progressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(
       {
-        aspectCategory: "Minor Aspect",
-        categoryLabel: "minor aspect",
+        aspectTag: "Minor Aspect",
         events: aspectGroupEvents,
         fixedAspectGroupKey: aspectGroupKey,
         getAspectGroupKey: () => "",
@@ -136,6 +129,7 @@ export class MinorAspectsProgressiveService {
             endings,
             label,
           ),
+        tagLabel: "minor aspect",
       },
     );
   }

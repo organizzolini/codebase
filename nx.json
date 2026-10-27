@@ -1130,7 +1130,7 @@
           "projects": ["tag:framework:typeorm"]
         },
         "inputs": [
-          "{projectRoot}/**/*.sql",
+          "{projectRoot}/src/**/*.sql",
           "{workspaceRoot}/configuration/squawk.toml",
           "shared-globals",
           {
@@ -1138,7 +1138,7 @@
           }
         ],
         "options": {
-          "command": "squawk --config configuration/squawk.toml '{projectRoot}/**/*.sql'",
+          "command": "squawk --config configuration/squawk.toml '{projectRoot}/src/**/*.sql'",
           "cwd": "{workspaceRoot}"
         }
       }

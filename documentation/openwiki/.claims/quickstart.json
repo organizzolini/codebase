@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8ab4391989b899c63b5b8009152bdda63e6f9e013e0ca1167862e36c32553ca4",
+  "claims": [
+    {
+      "id": "claim_95880b6257564397a792093d780f2e33",
+      "statement": "The repository contains four application domains under projects/: affirmancy (Python LangGraph agent), caelundas (NestJS CLI + TanStack Start web), lexico (NestJS CLI + GraphQL API + TanStack Start web), and meanderaw (NestJS CLI + TanStack Start web).",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md",
+          "version": "repo-file-v1:sha256:9a10de3f85946474bb28e1d43779d12bda4b381be0b16e6f31bbf17bbce2db01"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md",
+          "version": "repo-file-v1:sha256:496df5ed40a4c669aa807f87d3193b308144aca90e950bb0a04c2ed24ccb3f66"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/package.json",
+          "version": "repo-file-v1:sha256:1860ebfbdd500213a4160942379de4447bf028ab68f8dad3005b014e9aa506a5"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/README.md",
+          "version": "repo-file-v1:sha256:87b8383d428235795681e874f761687bc25458a76dbfc8cb3a1e6305ffbaa4d9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8afeec476f754e9ca84e5adb1debfb65",
+      "statement": "The IC-Suite under projects/ic-suite/ contains four independently versioned toolchains: callidescope (call stack tracing), codependix (dependency graph export), codometer (repository measurement), and conformetry (template generation & validation), each following a five-layer spine (core → configuration → analysis → output → cli) per ADR 0013.",
+      "evidence": [
+        {
+          "resource": "repo://CONTEXT.md#L311-L339",
+          "version": "repo-lines-v1:sha256:f29040446c45fd02932d81f6977e1b25b4c699a49820a6f83881690b99a2af7a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmODUxMjcyODA1OTk2M2M0NDY3YTE5YzlmYmQ4ZjU1MmZhMDZkNzY0ZDI1MWRhYmQ5OTgyYmJkZjkxY2RiYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczYjM1NDZmMDY3NzliYjUyNGRmYzIyZDU2ZDZiZjBhM2E1Y2E1MWEwYmU2MzgyNGY1ZjI3NDM1YTIwODA4ZjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyY2Y1NTQ1MGFkM2RiMmIzNDYzMzkzMGRiZDMyNjQ1NWNhNGI1MWMwNzkzMGYzYmI1NmRhMjUyOGEwODJmNmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxZTg1NjExNjFhMGQxM2U1MDNiNDNmMzZiMTE4OWUzMjA4ODhjMzMxMTc5YmJiNTA5ZDJlZDRhNDliNmEwOGQifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/package.json",
+          "version": "repo-file-v1:sha256:1b5e88bc97867e2d256428d4c195dce42720543a725e2f81199d3ba941d93c41"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/package.json",
+          "version": "repo-file-v1:sha256:3a99cb195ebb188d8d0370623ff99ab9086d07322f896866639541fe33aa8bf1"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-cli/package.json",
+          "version": "repo-file-v1:sha256:124d9b0b587071336842cf09a8c5594a9966653d24d8f15e454ce182f37fde27"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-cli/package.json",
+          "version": "repo-file-v1:sha256:4ba6bf30bc5aa5cec5c1f4031b2b4fbea3b10998aaa2771e1fa04341c6fc84af"
+        }
+      ]
+    },
+    {
+      "id": "claim_457514d4613047b68e91b73508b5606d",
+      "statement": "Four common shared packages under projects/common/ provide shared infrastructure: persistence (Postgres, TypeORM, Testcontainers), interface (GraphQL Relay types), presentation (React components), and observability (Pino logger).",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/package.json",
+          "version": "repo-file-v1:sha256:b163c1fcaae275faa5960d9ef1273d7cd8f448557e7d742ee897a24654ef5daf"
+        },
+        {
+          "resource": "repo://projects/common/observability/package.json",
+          "version": "repo-file-v1:sha256:375be4d823aac256b1f7092f580afa4c70667fea5fc2c0be2e322251e35e5566"
+        },
+        {
+          "resource": "repo://projects/common/persistence/package.json",
+          "version": "repo-file-v1:sha256:9e7606ae302b13c47501b7ae476767d396dac509911c0e0a6845e47022b2b8dd"
+        },
+        {
+          "resource": "repo://projects/common/presentation/package.json",
+          "version": "repo-file-v1:sha256:1ec0cb348f65b959ef975bdb1aad104f20f9b42418f8592cd4c1ffbe85b53023"
+        }
+      ]
+    },
+    {
+      "id": "claim_524e8fc055a742fbadbda23949dd477e",
+      "statement": "The development workflow defined in AGENTS.md follows an 8-step process: Clarify (brainstorming + grill-with-docs/grill-me), Specify (to-spec), Decompose (to-tickets), Handoff (handoff), Build (implement + TDD + ponytail), Review (requesting-code-review + code-review + ponytail-review), Validate (validate-code + verification-before-completion), Integrate (finishing-a-development-branch + submit-changes + commit-code + create-pull-request).",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L21-L86",
+          "version": "repo-lines-v1:sha256:309ab2dadadb76b4d2f8ed5b0f3ea60b968916f67a996a09800bc7b70e4cc431:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2RiMjQ2NGZlOWYyNzVmZTI5NjEyN2QyNDcwYTJmNmExNDc5MDYxNmE0MjNiZDNhNWUzOGU1MGNiNmEzY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwZWQxOTNhZWEyODU2NGJjMDA5MmNhYzhmN2ExZjUyN2Q4NmJjMGRmNjhhMzFmYjhlN2E0N2ZiMWJmZmIwMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNjE4YzQ2OTY5ZmQwNWQzNDFmMjdhMzRmNWZjZGI1OWY5NzY4ODM0NjRiZDkwYzk0MzNmZWFlYzM5M2FkNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0OWNiYzkwZGIwYzcwNTExNDNiMWJiZWRjZDc4M2IwMDhiMWUwNzYyZDg3NzdhZjczMGZmMTE1MWJjYzc1MDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b24d13b7386d4f15aba3d7fecddf8895",
+      "statement": "Tests run via `nx run <project>:vitest:<unit|integration>` for TypeScript projects and `pytest` for Python projects; coverage and size gates are strictly enforced.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L228-L230",
+          "version": "repo-lines-v1:sha256:bdfd03257b889db097f342b7e0fd20f9efa3a1a903227da191eb54fa5fdc2977:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2Mzc5MWVjN2NkZTE5Mzg1NDhjNmM1MmRhZThhOTg0YzExNGU0YTlkZjUzNGE2YjhmN2RkMWQ3ZTNkOWI3YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzAzN2FhMDgzZWJkOTg4NmI4MDU1NDMwNTJhY2RmNjBmZDBmOGE5ZWYyMmY1MDhlOTk4MWI0ZjYwNGRhNjc4OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_439fadfac4a946f0acd8d899d7ca6609",
+      "statement": "Local development uses a dev container (Docker-outside-of-Docker for local, Docker-in-Docker for cloud) with Docker Compose services for Postgres, SearxNG, and Open WebUI.",
+      "evidence": [
+        {
+          "resource": "repo://.devcontainer/cloud/devcontainer.json",
+          "version": "repo-file-v1:sha256:79717bafc59ba5e4d65792d68550e59ac2247e52e2381abf417994cf8ae604e8"
+        },
+        {
+          "resource": "repo://.devcontainer/local/devcontainer.json",
+          "version": "repo-file-v1:sha256:69dfda904fe8bdfba0c1dd395e851fc95dbcbfd14af92ed638298401bd225c56"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml",
+          "version": "repo-file-v1:sha256:245c8158a30df7ee6d76df4bec7b79cc3802ed53912e9f2fc5119865c38eabfe"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

@@ -2,9 +2,9 @@
 
 import type {
   PostgresContainerOptions,
-  PostgresqlModuleOptions,
   StartedPostgresContainer,
-} from "@codebase/persistence";
+} from "../postgres-container/postgres-container.types";
+import type { PostgresqlModuleOptions } from "@codebase/persistence";
 import type { ModuleMetadata } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import type { TypeOrmModule } from "@nestjs/typeorm";

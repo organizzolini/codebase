@@ -1,3 +1,5 @@
+/* cspell:words FULLTEXT */
+
 /* cspell:words puella puellam puellamque aquave videsne vides neque atque denique amavisti amavisse amandi amatum */
 
 import { describe, expect, it } from "vitest";
@@ -20,6 +22,9 @@ import { LexemeSearchResult, SearchMatchSource } from "./search.entities";
 import {
   decomposeEnclitic,
   formatFormIdentifier,
+  fuzzyScoreToDistance,
+  maximumFuzzyDistance,
+  toEnglishMatchSource,
   toLatinMatchSource,
   toLexemeSearchResult,
   toRankedScore,
@@ -264,18 +269,53 @@ describe("search utilities suite", () => {
   describe(toLatinMatchSource, () => {
     it("names the tier each Latin score comes from", () => {
       expect(
-        [1, 0.9, 0.8, 0.7, 0.4].map((score) => toLatinMatchSource(score)),
+        [1, 0.9, 0.8, 0.7].map((score) => toLatinMatchSource(score)),
       ).toStrictEqual([
         SearchMatchSource.LEMMA_EXACT,
         SearchMatchSource.WORD_EXACT,
         SearchMatchSource.ENCLITIC,
         SearchMatchSource.PREFIX,
-        SearchMatchSource.FUZZY,
       ]);
+    });
+
+    it("reads each fuzzy score as a fuzzy match", () => {
+      expect(
+        [0.3, 0.2].map((score) => toLatinMatchSource(score)),
+      ).toStrictEqual([SearchMatchSource.FUZZY, SearchMatchSource.FUZZY]);
     });
 
     it("reads a score no tier gives as a fuzzy match", () => {
       expect(toLatinMatchSource(0.55)).toBe(SearchMatchSource.FUZZY);
+    });
+  });
+
+  describe(toEnglishMatchSource, () => {
+    it("names the tier each English score comes from", () => {
+      expect(
+        [1, 0.8, 0.6].map((score) => toEnglishMatchSource(score)),
+      ).toStrictEqual([
+        SearchMatchSource.TRANSLATION_EXACT,
+        SearchMatchSource.TRANSLATION_PREFIX,
+        SearchMatchSource.TRANSLATION_FULLTEXT,
+      ]);
+    });
+  });
+
+  describe(fuzzyScoreToDistance, () => {
+    it("reads the edit distance a fuzzy score was given for", () => {
+      expect(
+        [0.3, 0.2].map((score) => fuzzyScoreToDistance(score)),
+      ).toStrictEqual([1, 2]);
+    });
+  });
+
+  describe(maximumFuzzyDistance, () => {
+    it("allows no edits to a short term, one to a medium one, and two to a long one", () => {
+      expect(
+        ["am", "amo", "amoro", "amabilis"].map((term) =>
+          maximumFuzzyDistance(term),
+        ),
+      ).toStrictEqual([0, 1, 1, 2]);
     });
   });
 
@@ -296,6 +336,7 @@ describe("search utilities suite", () => {
         lemma: "puella",
       });
       const result = toLexemeSearchResult({
+        distance: 1,
         enclitic: "que",
         identifiers: ["accusative singular"],
         lexeme,
@@ -305,6 +346,7 @@ describe("search utilities suite", () => {
 
       expect(result).toBeInstanceOf(LexemeSearchResult);
       expect(result).toMatchObject({
+        distance: 1,
         enclitic: "que",
         identifiers: ["accusative singular"],
         score: 3,

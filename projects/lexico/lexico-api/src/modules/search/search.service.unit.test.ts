@@ -101,8 +101,10 @@ describe(SearchService, () => {
       expect(lexemeQueryBuilder.setParameters).toHaveBeenCalledWith(
         expect.objectContaining({
           encliticLemma: "-que",
-          latinFuzzy0: "%cantoque%",
-          latinFuzzy1: "%canto%",
+          latinFuzzy0: "cantoque",
+          latinFuzzy0Maximum: 2,
+          latinFuzzy1: "canto",
+          latinFuzzy1Maximum: 1,
           latinPrefix0: "cantoque%",
           latinPrefix1: "canto%",
           latinStem: ["canto"],

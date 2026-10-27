@@ -25,18 +25,18 @@ describe(TwilightsBuilderService, () => {
   });
 
   const beginningEvent: DetectedCalendarEvent = {
-    categories: ["Twilight"],
     description: "Beginning",
     end: moment.utc("2024-03-21T05:00:00.000Z"),
     start: moment.utc("2024-03-21T05:00:00.000Z"),
     summary: "Beginning",
+    tags: ["Twilight"],
   };
   const endingEvent: DetectedCalendarEvent = {
-    categories: ["Twilight"],
     description: "Ending",
     end: moment.utc("2024-03-21T06:00:00.000Z"),
     start: moment.utc("2024-03-21T06:00:00.000Z"),
     summary: "Ending",
+    tags: ["Twilight"],
   };
 
   beforeEach(() => {
@@ -57,7 +57,7 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.summary).toBe("🌠 Astronomical Dawn");
       expect(event.description).toBe("Astronomical Dawn");
-      expect(event.categories).toContain("Astronomical Dawn");
+      expect(event.tags).toContain("Astronomical Dawn");
     });
 
     it("builds Civil Dawn event", () => {
@@ -70,7 +70,7 @@ describe(TwilightsBuilderService, () => {
       expect(event.description).toBe("Civil Dawn");
       expect(event.start).toStrictEqual(date);
       expect(event.end).toStrictEqual(date);
-      expect(event.categories).toStrictEqual([
+      expect(event.tags).toStrictEqual([
         "Astronomy",
         "Astrology",
         "Twilight",
@@ -86,8 +86,8 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.summary).toBe("🌌 Astronomical Dusk");
       expect(event.description).toBe("Astronomical Dusk");
-      expect(event.categories).toContain("Twilight");
-      expect(event.categories).toContain("Astronomical Dusk");
+      expect(event.tags).toContain("Twilight");
+      expect(event.tags).toContain("Astronomical Dusk");
     });
 
     it("builds Civil Dusk event", () => {
@@ -98,7 +98,7 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.summary).toBe("🌇 Civil Dusk");
       expect(event.description).toBe("Civil Dusk");
-      expect(event.categories).toContain("Civil Dusk");
+      expect(event.tags).toContain("Civil Dusk");
     });
 
     it("builds Nautical Dawn event", () => {
@@ -109,7 +109,7 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.summary).toBe("🌅 Nautical Dawn");
       expect(event.description).toBe("Nautical Dawn");
-      expect(event.categories).toContain("Nautical Dawn");
+      expect(event.tags).toContain("Nautical Dawn");
     });
 
     it("builds Nautical Dusk event", () => {
@@ -120,7 +120,7 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.summary).toBe("🌉 Nautical Dusk");
       expect(event.description).toBe("Nautical Dusk");
-      expect(event.categories).toContain("Nautical Dusk");
+      expect(event.tags).toContain("Nautical Dusk");
     });
   });
 
@@ -137,7 +137,7 @@ describe(TwilightsBuilderService, () => {
       expect(event.description).toBe("Daylight");
       expect(event.start).toStrictEqual(beginningEvent.start);
       expect(event.end).toStrictEqual(endingEvent.start);
-      expect(event.categories).toContain("Daylight");
+      expect(event.tags).toContain("Daylight");
     });
 
     it("builds Night duration event", () => {
@@ -147,7 +147,7 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.summary).toBe("🌃 Night");
       expect(event.description).toBe("Night");
-      expect(event.categories).toContain("Night");
+      expect(event.tags).toContain("Night");
     });
 
     it("builds Astronomical Twilight (Morning) duration event", () => {
@@ -159,8 +159,8 @@ describe(TwilightsBuilderService, () => {
       );
 
       expect(event.description).toBe("Astronomical Twilight (Morning)");
-      expect(event.categories).toContain("Astronomical Twilight");
-      expect(event.categories).toContain("Morning");
+      expect(event.tags).toContain("Astronomical Twilight");
+      expect(event.tags).toContain("Morning");
     });
 
     it("builds Astronomical Twilight (Evening) duration event", () => {
@@ -172,8 +172,8 @@ describe(TwilightsBuilderService, () => {
       );
 
       expect(event.description).toBe("Astronomical Twilight (Evening)");
-      expect(event.categories).toContain("Astronomical Twilight");
-      expect(event.categories).toContain("Evening");
+      expect(event.tags).toContain("Astronomical Twilight");
+      expect(event.tags).toContain("Evening");
     });
 
     it("builds Nautical Twilight (Evening) duration event", () => {
@@ -185,8 +185,8 @@ describe(TwilightsBuilderService, () => {
       );
 
       expect(event.description).toBe("Nautical Twilight (Evening)");
-      expect(event.categories).toContain("Nautical Twilight");
-      expect(event.categories).toContain("Evening");
+      expect(event.tags).toContain("Nautical Twilight");
+      expect(event.tags).toContain("Evening");
     });
   });
 });

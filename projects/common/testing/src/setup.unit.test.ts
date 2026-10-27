@@ -2,6 +2,8 @@ import fs from "node:fs";
 
 import { describe, expect, it, vi } from "vitest";
 
+import { promptsMock } from "./modules/mocks/mocks.constants";
+
 // 🧪 Tests
 
 // The project's own `testing/setup.ts` loads `src/setup.ts`, so this file
@@ -29,6 +31,16 @@ describe("the shared Vitest setup", () => {
   it("clears every mock's calls before the next test", () => {
     expect(counter).not.toHaveBeenCalled();
     expect(console.log).not.toHaveBeenCalled();
+  });
+
+  it("survives a test that resets every mock", () => {
+    vi.resetAllMocks();
+
+    expect(promptsMock.getMockImplementation()).toBeUndefined();
+  });
+
+  it("answers an unanswered prompt as cancelled again in the next test", async () => {
+    await expect(promptsMock({ name: "next" })).resolves.toStrictEqual({});
   });
 
   it("loads reflect-metadata, which Nest decorators need", () => {
