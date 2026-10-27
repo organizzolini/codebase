@@ -1,7 +1,7 @@
 import { PrimaryGeneratedColumn } from "typeorm";
 
 /**
- * The SQLite twin of the Postgres `IdentifiableEntity`: a `uuid` primary key
+ * The SQLite twin of the Postgres `PostgresqlIdentifiableEntity`: a `uuid` primary key
  * held as `text`, which TypeORM generates in the application on every insert
  * path, bulk `insert` and `upsert` included.
  *

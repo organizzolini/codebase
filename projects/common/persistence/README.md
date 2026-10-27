@@ -29,7 +29,7 @@ Key exports and responsibilities:
   variables through `ConfigService`
 - `createDataSource`: The `DataSource` a project's TypeORM command-line entry
   exports, from the same options
-- `IdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
+- `PostgresqlIdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
   updated, and soft-deleted columns
 - `SqliteModule.forRoot`: The same for a SQLite file, from one
   `<PROJECT>_SQLITE_DATABASE` variable; see [SQLite](#sqlite)
@@ -111,12 +111,12 @@ snake case, as lexico does with its pluralizing strategy.
 Each table's entity extends the narrowest base it needs, so a table without
 soft deletion carries no `deletedAt`:
 
-| Base                 | Adds                                                                |
-| -------------------- | ------------------------------------------------------------------- |
-| `IdentifiableEntity` | `id`, a `uuid` the database assigns with Postgres 18's `uuidv7()`   |
-| `CreatableEntity`    | `createdAt` (`timestamptz`) and a nullable `createdBy` (`uuid`)     |
-| `UpdatableEntity`    | `updatedAt` (`timestamptz`) and a nullable `updatedBy` (`uuid`)     |
-| `DeletableEntity`    | `deletedAt` (`timestamptz`, soft delete) and a nullable `deletedBy` |
+| Base                           | Adds                                                                |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `PostgresqlIdentifiableEntity` | `id`, a `uuid` the database assigns with Postgres 18's `uuidv7()`   |
+| `PostgresqlCreatableEntity`    | `createdAt` (`timestamptz`) and a nullable `createdBy` (`uuid`)     |
+| `PostgresqlUpdatableEntity`    | `updatedAt` (`timestamptz`) and a nullable `updatedBy` (`uuid`)     |
+| `PostgresqlDeletableEntity`    | `deletedAt` (`timestamptz`, soft delete) and a nullable `deletedBy` |
 
 They are plain TypeORM, with no GraphQL; a project that exposes them over
 GraphQL adds its `@Field` decorators in a thin layer of its own. Nothing

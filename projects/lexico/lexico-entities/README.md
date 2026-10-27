@@ -74,7 +74,7 @@ morphology does not fit one flat row. A form is an `AdjectivalForm`,
 ### Base classes
 
 Every entity but `Inflection` extends
-[`@codebase/persistence`](../../common/persistence/README.md)'s `DeletableEntity` directly. It
+[`@codebase/persistence`](../../common/persistence/README.md)'s `PostgresqlDeletableEntity` directly. It
 declares the columns — a `uuid` id the database assigns with `uuidv7()`, then
 the created, updated, and soft-deleted timestamps and their nullable `*By`
 columns — so no entity restates them.
