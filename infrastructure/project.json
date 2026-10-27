@@ -148,10 +148,10 @@
     "terraform-plan": {
       "cache": false,
       "dependsOn": ["terraform-init"],
-      "description": "Plan the OpenRouter Terraform and write plan.tfplan and plan.json beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
+      "description": "Plan the OpenRouter Terraform and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform plan -input=false -lock=false -out=plan.tfplan && terraform show -json plan.tfplan > plan.json",
+        "command": "terraform plan -input=false -lock=false -out=plan.tfplan",
         "cwd": "{projectRoot}/terraform/openrouter"
       }
     },

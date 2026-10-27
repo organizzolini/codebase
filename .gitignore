@@ -30,7 +30,6 @@ __pycache__/
 *.tfstate
 *.tfstate.*
 *.tfplan
-infrastructure/terraform/openrouter/plan.json
 *.tfvars
 crash.log
 .kube

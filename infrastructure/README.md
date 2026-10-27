@@ -37,7 +37,7 @@ The `terraform/openrouter` root keeps its state in a Linode Object Storage bucke
 ```bash
 nx run infrastructure:terraform-format    # fmt -check, part of lint-code
 nx run infrastructure:terraform-validate  # no backend or credentials needed, part of lint-code
-nx run infrastructure:terraform-plan      # writes plan.tfplan and plan.json
+nx run infrastructure:terraform-plan      # writes plan.tfplan
 nx run infrastructure:terraform-apply     # applies; CI does this on main
 ```
 
