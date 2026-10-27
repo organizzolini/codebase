@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
+import { readExample } from "../../../testing/examples";
 import {
   createFixtureTree,
   removeFixtureTree,
@@ -12,11 +13,8 @@ import { run, SPAWN_TIMEOUT } from "../../../testing/run-command";
 const START = "<!-- coinagerie:start -->";
 const END = "<!-- coinagerie:end -->";
 
-/** A source file whose words are `aspect`, `angle`, `lunar`, `phase`, `service`, and `src`. */
-const SOURCE = {
-  "src/lunar-phase.service.ts":
-    "export class LunarPhaseService { readonly aspectAngle = 1; }\n",
-};
+/** The source file of the `check-failures` example: `aspect`, `angle`, `lunar`, `phase`, `service`, and `src`. */
+const SOURCE = readExample("check-failures", "src");
 
 /** Both destinations, the JSON one first, and nothing else scanned. */
 const CONFIGURATION = {

@@ -3,82 +3,88 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
+import { readExample } from "../testing/examples";
 import { createFixtureTree, removeFixtureTree } from "../testing/fixture-tree";
 import { run, SPAWN_TIMEOUT } from "../testing/run-command";
 
 import { environmentSchema } from "./coinagerie-cli.constants";
 
 const START = "<!-- coinagerie:start -->";
-const END = "<!-- coinagerie:end -->";
 
-/** A source file whose words are `aspect`, `angle`, `lunar`, `phase`, `service`, and `src`. */
-const SOURCE = {
-  "src/lunar-phase.service.ts": [
-    "// hiddenComment",
-    "export class LunarPhaseService {",
-    '  readonly aspectAngle = "hiddenString";',
-    "}",
-    "",
-  ].join("\n"),
-};
+/** The words of the `zero-config` example, one file per language. */
+const POLYGLOT_WORDS = [
+  "angle",
+  "book",
+  "cloud",
+  "color",
+  "config",
+  "cover",
+  "datum",
+  "def",
+  "degree",
+  "dome",
+  "elevation",
+  "from",
+  "header",
+  "infrastructure",
+  "lead",
+  "length",
+  "limit",
+  "location",
+  "log",
+  "magnitude",
+  "max",
+  "meter",
+  "mirror",
+  "motor",
+  "name",
+  "night",
+  "note",
+  "observer",
+  "panel",
+  "park",
+  "primary",
+  "red",
+  "reserve",
+  "resource",
+  "return",
+  "roster",
+  "rotate",
+  "script",
+  "select",
+  "service",
+  "site",
+  "slot",
+  "speed",
+  "sql",
+  "src",
+  "star",
+  "state",
+  "style",
+  "target",
+  "telescope",
+];
 
-/** A configuration keeping the vocabulary to the source file alone. */
-const CONFIGURATION = {
-  "coinagerie.config.ts": [
-    "export default {",
-    '  exclude: { paths: ["coinagerie.config.ts", "tsconfig.json"] },',
-    '  outputs: [{ path: "README.md", type: "markdown" }],',
-    "};",
-    "",
-  ].join("\n"),
-};
-
-/** One file per language, each with a word in a comment or a string to hide. */
-const POLYGLOT = {
-  "dialects/data.json": '{"jsonKey": "hiddenJson"}\n',
-  "dialects/data.yaml": "# hiddenYaml\nyamlKey: hiddenValue\n",
-  "dialects/infrastructure.tf": [
-    "# hiddenHcl",
-    'resource "hclType" "hclName" {',
-    '  hclAttribute = "hiddenValue"',
-    "}",
-    "",
-  ].join("\n"),
-  "dialects/query.sql": '-- hiddenSql\nSELECT sqlColumn FROM "sqlTable";\n',
-  "dialects/script.py": [
-    "# hiddenPython",
-    "def python_function():",
-    '    return {"pythonKey": "hiddenValue"}',
-    "",
-  ].join("\n"),
-  "dialects/script.sh": '# hiddenShell\nshellVariable="hiddenValue"\n',
-  "dialects/settings.toml": [
-    "# hiddenToml",
-    "[tomlTable]",
-    'tomlKey = "hiddenValue"',
-    "",
-  ].join("\n"),
-  "dialects/style.css": "/* hiddenCss */\n.cssSelector { color: red; }\n",
-};
-
-/** A README whose glossary block holds exactly the given bullets. */
-function readme(...bullets: string[]): string {
-  return [
-    "# Fixture",
-    "",
-    START,
-    "",
-    "## 🪙 Coinagerie",
-    "",
-    ...bullets,
-    "",
-    END,
-    "",
-  ].join("\n");
+/** Runs `coinagerie --config <name>.config.ts <flags>` over the `check-failures` example. */
+function runCheckFailure(
+  root: string,
+  name: string,
+  ...flags: string[]
+): ReturnType<typeof run> {
+  return run(root, ["--config", `${name}.config.ts`, ...flags]);
 }
 
 describe("main end-to-end suite", () => {
   let root: string | undefined;
+
+  /** Stages an example's project, removed after the case that asked for it. */
+  function stage(
+    exampleName: string,
+    overrides: Record<string, string> = {},
+  ): string {
+    root = createFixtureTree({ ...readExample(exampleName), ...overrides });
+    return root;
+  }
 
   afterEach(() => {
     if (root !== undefined) {
@@ -95,68 +101,21 @@ describe("main end-to-end suite", () => {
   });
 
   it(
-    "prints the glossary and writes nothing when run with no configuration and no flag",
+    "prints the glossary of every language and writes nothing when run with no configuration and no flag",
     () => {
-      root = createFixtureTree(SOURCE);
+      const staged = stage("zero-config");
 
-      const result = run(root, []);
+      const result = run(staged, []);
+      const words = [
+        ...result.standardOutput.matchAll(/^- \*\*(.+)\*\*:/gmu),
+      ].map(([, word]) => word);
 
       expect(result.exitCode).toBe(0);
       expect(result.standardOutput).toContain(START);
       expect(result.standardOutput).toContain("## 🪙 Coinagerie");
-      expect(result.standardOutput).toContain("- **lunar**:\n- **phase**:");
+      expect(words).toStrictEqual(POLYGLOT_WORDS.toSorted());
       expect(result.standardOutput).not.toContain("hidden");
-      expect(existsSync(path.join(root, "README.md"))).toBe(false);
-    },
-    SPAWN_TIMEOUT,
-  );
-
-  it(
-    "merges the words of every language into one glossary and hides what each skips",
-    () => {
-      root = createFixtureTree({ ...POLYGLOT, ...CONFIGURATION });
-
-      const result = run(root, []);
-      const words = [...result.standardOutput.matchAll(/^- \*\*(.+)\*\*:/gmu)]
-        .map(([, word]) => word)
-        .toSorted();
-
-      expect(result.exitCode).toBe(0);
-      expect(words).toStrictEqual(
-        [
-          "attribute",
-          "color",
-          "column",
-          "css",
-          "datum",
-          "def",
-          "dialect",
-          "function",
-          "from",
-          "hcl",
-          "infrastructure",
-          "json",
-          "key",
-          "name",
-          "python",
-          "query",
-          "red",
-          "resource",
-          "return",
-          "script",
-          "selector",
-          "select",
-          "set",
-          "shell",
-          "sql",
-          "style",
-          "table",
-          "toml",
-          "type",
-          "variable",
-          "yaml",
-        ].toSorted(),
-      );
+      expect(existsSync(path.join(staged, "README.md"))).toBe(false);
     },
     SPAWN_TIMEOUT,
   );
@@ -164,18 +123,16 @@ describe("main end-to-end suite", () => {
   it(
     "fails a check naming every missing word",
     () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "README.md": readme("- **aspect**:", "- **lunar**:", "- **phase**:"),
-      });
+      const staged = stage("check-failures");
 
-      const result = run(root, ["--check"]);
+      const result = runCheckFailure(staged, "missing", "--check");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain("angle");
       expect(result.standardError).toContain("service");
-      expect(result.standardError).toContain(path.join(root, "README.md"));
+      expect(result.standardError).toContain(
+        path.join(staged, "glossaries", "missing.md"),
+      );
     },
     SPAWN_TIMEOUT,
   );
@@ -183,57 +140,36 @@ describe("main end-to-end suite", () => {
   it(
     "fails a check naming every stale word, and passes one whose definitions are empty",
     () => {
-      const words = ["angle", "aspect", "lunar", "phase", "service", "src"];
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "README.md": readme(
-          ...[...words, "vanished"].map((word) => `- **${word}**:`),
-        ),
-      });
+      const staged = stage("check-failures");
 
-      const stale = run(root, ["--check"]);
+      const stale = runCheckFailure(staged, "stale", "--check");
+      const empty = runCheckFailure(staged, "undefined", "--check");
 
       expect(stale.exitCode).toBe(1);
       expect(stale.standardError).toContain("vanished");
+      expect(empty.exitCode).toBe(0);
     },
-    SPAWN_TIMEOUT,
+    SPAWN_TIMEOUT * 2,
   );
 
   it(
     "writes a glossary that then checks clean, keeps definitions, and does not change on a second write",
     () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "README.md": readme(
-          "- **gone**: Deleted on write.",
-          "- **lunar**: Of the moon.",
-          "  Continued here.",
-        ),
-      });
-      const readmePath = path.join(root, "README.md");
+      const staged = stage("check-failures");
+      const glossaryPath = path.join(staged, "glossaries", "stale.md");
 
-      const written = run(root, ["--write"]);
-      const content = readFileSync(readmePath, "utf8");
-      const checked = run(root, ["--check"]);
-      const rewritten = run(root, ["--write"]);
+      const written = runCheckFailure(staged, "stale", "--write");
+      const content = readFileSync(glossaryPath, "utf8");
+      const checked = runCheckFailure(staged, "stale", "--check");
+      const rewritten = runCheckFailure(staged, "stale", "--write");
 
       expect(written.exitCode).toBe(0);
-      expect(content).toBe(
-        readme(
-          "- **angle**:",
-          "- **aspect**:",
-          "- **lunar**: Of the moon.",
-          "  Continued here.",
-          "- **phase**:",
-          "- **service**:",
-          "- **src**:",
-        ),
-      );
+      expect(content).toContain("- **angle**: The gap between two bodies.");
+      expect(content).toContain("- **phase**:\n");
+      expect(content).not.toContain("vanished");
       expect(checked.exitCode).toBe(0);
       expect(rewritten.exitCode).toBe(0);
-      expect(readFileSync(readmePath, "utf8")).toBe(content);
+      expect(readFileSync(glossaryPath, "utf8")).toBe(content);
     },
     SPAWN_TIMEOUT * 3,
   );
@@ -241,16 +177,12 @@ describe("main end-to-end suite", () => {
   it(
     "appends the block to a destination without anchors",
     () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "README.md": "# Fixture\n",
-      });
+      const staged = stage("outputs", { "README.md": "# Fixture\n" });
 
-      const result = run(root, ["--write"]);
+      const result = run(staged, ["--write"]);
 
       expect(result.exitCode).toBe(0);
-      expect(readFileSync(path.join(root, "README.md"), "utf8")).toContain(
+      expect(readFileSync(path.join(staged, "README.md"), "utf8")).toContain(
         `# Fixture\n\n${START}`,
       );
     },
@@ -258,22 +190,20 @@ describe("main end-to-end suite", () => {
   );
 
   it.each([
-    ["an unrecognized line", readme("- **lunar**:", "stray text")],
-    ["a duplicated word", readme("- **lunar**:", "- **lunar**: Again.")],
+    ["an unrecognized line", "unparsable"],
+    ["a duplicated word", "duplicate"],
   ])(
     "refuses to write a glossary with %s, leaving it byte for byte",
-    (_case, content) => {
-      root = createFixtureTree({
-        ...SOURCE,
-        ...CONFIGURATION,
-        "README.md": content,
-      });
+    (_case, name) => {
+      const staged = stage("check-failures");
+      const glossaryPath = path.join(staged, "glossaries", `${name}.md`);
+      const content = readFileSync(glossaryPath, "utf8");
 
-      const result = run(root, ["--write"]);
+      const result = runCheckFailure(staged, name, "--write");
 
       expect(result.exitCode).toBe(1);
-      expect(result.standardError).toContain(path.join(root, "README.md"));
-      expect(readFileSync(path.join(root, "README.md"), "utf8")).toBe(content);
+      expect(result.standardError).toContain(glossaryPath);
+      expect(readFileSync(glossaryPath, "utf8")).toBe(content);
     },
     SPAWN_TIMEOUT,
   );
@@ -281,16 +211,13 @@ describe("main end-to-end suite", () => {
   it(
     "reports a faulty configuration with its path",
     () => {
-      root = createFixtureTree({
-        ...SOURCE,
-        "coinagerie.config.ts": 'export default { include: "src" };\n',
-      });
+      const staged = stage("check-failures");
 
-      const result = run(root, ["--check"]);
+      const result = runCheckFailure(staged, "bad-shape", "--check");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(
-        path.join(root, "coinagerie.config.ts"),
+        path.join(staged, "bad-shape.config.ts"),
       );
     },
     SPAWN_TIMEOUT,
@@ -299,77 +226,85 @@ describe("main end-to-end suite", () => {
   it(
     "folds word forms, merges a configured family, and leaves out excluded words",
     () => {
-      root = createFixtureTree({
-        "coinagerie.config.ts": [
-          "export default {",
-          '  exclude: { paths: ["coinagerie.config.ts", "tsconfig.json"], words: async () => ["services"] },',
-          '  fold: (word: string) => (word === "configuration" ? "configure" : word),',
-          '  outputs: [{ path: "README.md", type: "markdown" }],',
-          "};",
-          "",
-        ].join("\n"),
-        "src/phase.ts": [
-          "export const aspects = configured(configuring);",
-          "export const configuration = services;",
-          "",
-        ].join("\n"),
-      });
+      const staged = stage("folding");
 
-      const written = run(root, ["--write"]);
+      const written = run(staged, ["--output-markdown", "WORDS.md", "--write"]);
+      const checked = run(staged, ["--output-markdown", "WORDS.md", "--check"]);
 
       expect(written.exitCode).toBe(0);
-      expect(readFileSync(path.join(root, "README.md"), "utf8")).toContain(
-        "- **aspect**:\n- **configure**:\n- **phase**:\n- **src**:\n",
+      expect(readFileSync(path.join(staged, "WORDS.md"), "utf8")).toContain(
+        "- **aspect**:\n- **configure**:\n- **engine**:\n- **src**:\n",
       );
-      expect(run(root, ["--check"]).exitCode).toBe(0);
+      expect(checked.exitCode).toBe(0);
+    },
+    SPAWN_TIMEOUT * 2,
+  );
+
+  it(
+    "leaves out ignored files, excluded paths, and excluded words",
+    () => {
+      const staged = stage("exclusions", {
+        "scratch/leftover.ts": "export const leftoverWord = 1;\n",
+      });
+
+      const result = run(staged, []);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.standardOutput).toContain(
+        "- **harbor**:\n- **high**:\n- **tide**:\n- **water**:\n",
+      );
+      expect(result.standardOutput).not.toMatch(/leftover|mock|generated/u);
+    },
+    SPAWN_TIMEOUT,
+  );
+
+  it(
+    "reads a layered glossary through exclude.words from the root glossary",
+    () => {
+      const staged = stage("layered-glossaries");
+      const flags = ["--config", "packages/billing/coinagerie.config.ts"];
+
+      const checked = run(staged, [...flags, "--check"]);
+
+      expect(checked.exitCode).toBe(0);
     },
     SPAWN_TIMEOUT,
   );
 
   it.each([
-    [
-      "an exclude.words that throws",
-      "exclude: { words: () => { throw new Error('unreadable'); } }",
-    ],
-    ["a fold that returns an empty string", "fold: () => ''"],
+    ["an exclude.words that throws", "throwing-words"],
+    ["a fold that returns an empty string", "empty-fold"],
   ])(
     "aborts on %s, naming the configuration file and writing nothing",
-    (_case, field) => {
-      root = createFixtureTree({
-        ...SOURCE,
-        "coinagerie.config.ts": [
-          "export default {",
-          `  ${field},`,
-          '  outputs: [{ path: "README.md", type: "markdown" }],',
-          "};",
-          "",
-        ].join("\n"),
-      });
+    (_case, name) => {
+      const staged = stage("check-failures");
+      const glossaryPath = path.join(staged, "glossaries", "missing.md");
+      const content = readFileSync(glossaryPath, "utf8");
 
-      const result = run(root, ["--write"]);
+      const result = runCheckFailure(staged, name, "--write");
 
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain(
-        path.join(root, "coinagerie.config.ts"),
+        path.join(staged, `${name}.config.ts`),
       );
-      expect(existsSync(path.join(root, "README.md"))).toBe(false);
+      expect(readFileSync(glossaryPath, "utf8")).toBe(content);
     },
     SPAWN_TIMEOUT,
   );
 
   it.each([
-    ["both --check and --write", ["--check", "--write"]],
-    ["--check with no destination configured", ["--check"]],
-    ["--write with no destination configured", ["--write"]],
+    ["both --check and --write", "zero-config", ["--check", "--write"]],
+    ["--check with no destination configured", "zero-config", ["--check"]],
+    ["--write with no destination configured", "zero-config", ["--write"]],
   ])(
     "refuses %s",
-    (_case, args) => {
-      root = createFixtureTree(SOURCE);
+    (_case, exampleName, args) => {
+      const staged = stage(exampleName);
 
-      const result = run(root, args);
+      const result = run(staged, args);
 
       expect(result.exitCode).toBe(1);
-      expect(existsSync(path.join(root, "README.md"))).toBe(false);
+      expect(existsSync(path.join(staged, "README.md"))).toBe(false);
     },
     SPAWN_TIMEOUT,
   );
