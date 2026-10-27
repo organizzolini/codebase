@@ -1,7 +1,7 @@
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
-import { typescriptKeywords } from "./typescript.constants";
+import { TYPESCRIPT_KEYWORDS as typescriptKeywords } from "./typescript.constants";
 
 /** Every keyword the compiler's scanner recognizes, reserved or contextual. */
 function scannerKeywords(): string[] {
