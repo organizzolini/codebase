@@ -593,6 +593,20 @@ export default [
               ],
               sourceTag: "name:coinagerie-cli",
             },
+            // The Nx plugin sits on top of the whole chain and nothing in the
+            // chain may depend back on it, which keeps `@nx/devkit` out of
+            // every package that reads a codebase.
+            {
+              onlyDependOnLibsWithTags: [
+                "name:coinagerie-cli",
+                "name:coinagerie-configuration",
+                "name:coinagerie-core",
+                "name:coinagerie-output",
+                "name:coinagerie-vocabulary",
+                "name:observability",
+              ],
+              sourceTag: "name:coinagerie-nx",
+            },
             // Conformetry package graph, on the ic-suite five-layer spine:
             // core, configuration, analysis, output, cli. `conformetry-core`
             // is the contracts leaf and holds no service, so nothing above it
