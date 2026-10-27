@@ -15,15 +15,20 @@ import {
   CONFIGURATION_SCHEMA,
   DEFAULT_INCLUDE,
   FOLDED_WORD_SCHEMA,
+  OVERRIDES_SCHEMA,
   WORD_LIST_SCHEMA,
 } from "./configuration.constants";
 
 import type {
+  CoinagerieConfiguration,
+  CoinagerieOutput,
+  ConfigurationOverrides,
   ExcludedWords,
   FoldWord,
   LoadConfigurationArguments,
   LoadedConfiguration,
   ResolvedCoinagerieConfiguration,
+  ResolvedCoinagerieOutput,
 } from "./configuration.types";
 
 /**
@@ -110,6 +115,48 @@ export class ConfigurationService {
   }
 
   /**
+   * The configuration with the command line's flags laid over it.
+   *
+   * A flag that is given replaces the field it names, so the file never has
+   * to be edited to try a variation.
+   */
+  private override(args: {
+    configuration: CoinagerieConfiguration;
+    flags: z.output<typeof OVERRIDES_SCHEMA>;
+    workingDirectory: string;
+  }): CoinagerieConfiguration {
+    const { configuration, flags, workingDirectory } = args;
+    const named: CoinagerieOutput[] = [
+      ...(flags.outputJson === undefined
+        ? []
+        : [
+            {
+              path: path.resolve(workingDirectory, flags.outputJson),
+              type: "json" as const,
+            },
+          ]),
+      ...(flags.outputMarkdown === undefined
+        ? []
+        : [
+            {
+              path: path.resolve(workingDirectory, flags.outputMarkdown),
+              type: "markdown" as const,
+            },
+          ]),
+    ];
+    const outputs = named.length > 0 ? named : (configuration.outputs ?? []);
+
+    return {
+      exclude: flags.excludePaths
+        ? { ...configuration.exclude, paths: flags.excludePaths }
+        : configuration.exclude,
+      fold: configuration.fold,
+      include: flags.include ?? configuration.include,
+      outputs,
+    };
+  }
+
+  /**
    * Imports a configuration file, validates its default export, and calls
    * its `exclude.words` function when it has one.
    *
@@ -159,24 +206,65 @@ export class ConfigurationService {
     directory: string;
     loaded: LoadedConfiguration;
     location: string;
+    overrides: ConfigurationOverrides | undefined;
+    workingDirectory: string;
   }): ResolvedCoinagerieConfiguration {
-    const { configuration, words } = args.loaded;
     const { directory, location } = args;
+    const flags = OVERRIDES_SCHEMA.safeParse(args.overrides ?? {});
+
+    // A flag the schema refuses is the command line's fault, not the file's.
+    if (!flags.success) {
+      throw new InvalidConfigurationError(
+        "the command line",
+        z.prettifyError(flags.error),
+      );
+    }
+
+    const configuration = this.override({
+      configuration: args.loaded.configuration,
+      flags: flags.data,
+      workingDirectory: args.workingDirectory,
+    });
+
+    const outputs: ResolvedCoinagerieOutput[] = [];
+    const seen = new Set<string>();
+
+    for (const output of configuration.outputs ?? []) {
+      const absolutePath = path.resolve(directory, output.path);
+
+      // Two destinations on one file would overwrite each other on every write.
+      if (seen.has(absolutePath)) {
+        throw new InvalidConfigurationError(
+          args.configurationPath ?? "the command line",
+          `Two outputs name ${absolutePath}, and each write would overwrite the other`,
+        );
+      }
+
+      seen.add(absolutePath);
+      outputs.push(
+        output.type === "json"
+          ? { path: absolutePath, type: "json" }
+          : {
+              description: flags.data.description ?? output.description,
+              path: absolutePath,
+              type: "markdown",
+            },
+      );
+    }
 
     return {
       configurationPath: args.configurationPath,
       directory,
-      exclude: { paths: configuration.exclude?.paths ?? [], words },
+      exclude: {
+        paths: configuration.exclude?.paths ?? [],
+        words: args.loaded.words,
+      },
       fold:
         configuration.fold === undefined
           ? undefined
           : this.guardFold(configuration.fold, location),
       include: configuration.include ?? [...DEFAULT_INCLUDE],
-      outputs: (configuration.outputs ?? []).map((output) => ({
-        description: output.description,
-        path: path.resolve(directory, output.path),
-        type: output.type,
-      })),
+      outputs,
     };
   }
 
@@ -219,6 +307,8 @@ export class ConfigurationService {
         directory: args.workingDirectory,
         loaded: { configuration: {}, words: [] },
         location: args.workingDirectory,
+        overrides: args.overrides,
+        workingDirectory: args.workingDirectory,
       });
     }
 
@@ -227,6 +317,8 @@ export class ConfigurationService {
       directory: path.dirname(configurationPath),
       loaded: await this.read(configurationPath),
       location: configurationPath,
+      overrides: args.overrides,
+      workingDirectory: args.workingDirectory,
     });
   }
 }

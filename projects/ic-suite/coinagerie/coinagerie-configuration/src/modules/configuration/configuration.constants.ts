@@ -36,6 +36,21 @@ export const DEFAULT_INCLUDE = ["**", "**/.*", "**/.*/**"] as const;
  */
 const DESCRIPTION_FORBIDDEN_LINE_PATTERN = /^\s*(?:[-*+]\s|<!--)/mu;
 
+const jsonOutputSchema = z.strictObject({
+  path: z.string().min(1),
+  type: z.literal("json"),
+});
+
+const descriptionSchema = z
+  .string()
+  .refine(
+    (description) => !DESCRIPTION_FORBIDDEN_LINE_PATTERN.test(description),
+    {
+      message:
+        "A description may not hold a list item or an HTML comment, which would read back as part of the glossary",
+    },
+  );
+
 /** A function, whose parameters and result are only known when it is called. */
 const isFunction = (value: unknown): value is (...args: never[]) => unknown =>
   typeof value === "function";
@@ -50,18 +65,18 @@ export const WORD_LIST_SCHEMA = z.array(z.string());
 export const FOLDED_WORD_SCHEMA = z.string().regex(/^[^\s*]+$/u);
 
 const markdownOutputSchema = z.strictObject({
-  description: z
-    .string()
-    .refine(
-      (description) => !DESCRIPTION_FORBIDDEN_LINE_PATTERN.test(description),
-      {
-        message:
-          "A description may not hold a list item or an HTML comment, which would read back as part of the glossary",
-      },
-    )
-    .optional(),
+  description: descriptionSchema.optional(),
   path: z.string().min(1),
   type: z.literal("markdown"),
+});
+
+/** The shape the command line's overrides must have. */
+export const OVERRIDES_SCHEMA = z.strictObject({
+  description: descriptionSchema.optional(),
+  excludePaths: z.array(z.string()).optional(),
+  include: z.array(z.string()).optional(),
+  outputJson: z.string().min(1).optional(),
+  outputMarkdown: z.string().min(1).optional(),
 });
 
 /**
@@ -89,5 +104,9 @@ export const CONFIGURATION_SCHEMA: z.ZodType<CoinagerieConfiguration> =
       .custom<FoldWord>(isFunction, { message: "Expected a function" })
       .optional(),
     include: z.array(z.string()).optional(),
-    outputs: z.array(markdownOutputSchema).optional(),
+    outputs: z
+      .array(
+        z.discriminatedUnion("type", [jsonOutputSchema, markdownOutputSchema]),
+      )
+      .optional(),
   });

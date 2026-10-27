@@ -15,6 +15,10 @@ export type {
   WriteGlossaryArguments,
 } from "./modules/delivery/delivery.types";
 
+export { JsonModule } from "./modules/json/json.module";
+
+export { JsonService } from "./modules/json/json.service";
+
 export { MarkdownModule } from "./modules/markdown/markdown.module";
 
 export { MarkdownService } from "./modules/markdown/markdown.service";

@@ -2,6 +2,7 @@ import { ConfigurationModule } from "@coinagerie/configuration";
 import {
   ComparisonModule,
   DeliveryModule,
+  JsonModule,
   MarkdownModule,
 } from "@coinagerie/output";
 import { VocabularyModule } from "@coinagerie/vocabulary";
@@ -24,6 +25,7 @@ import { CollectCommand } from "./collect.command";
     ComparisonModule,
     ConfigurationModule,
     DeliveryModule,
+    JsonModule,
     LoggerModule,
     MarkdownModule,
     VocabularyModule,
