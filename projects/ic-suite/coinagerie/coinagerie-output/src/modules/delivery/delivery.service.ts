@@ -15,7 +15,6 @@ import type {
 import type { ResolvedCoinagerieOutput } from "@coinagerie/configuration";
 import type { GlossaryDifference } from "@coinagerie/core";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Checks and writes every configured glossary destination.
  *
@@ -25,7 +24,6 @@ import type { GlossaryDifference } from "@coinagerie/core";
  * is ever copied from one to another.
  */
 @Injectable()
-/* v8 ignore stop */
 export class DeliveryService {
   // 🏗 Dependency Injection
 

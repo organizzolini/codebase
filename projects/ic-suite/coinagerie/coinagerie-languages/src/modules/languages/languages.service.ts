@@ -7,7 +7,6 @@ import { TypescriptService } from "../typescript/typescript.service";
 
 import type { Tokenizer } from "./languages.types";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Chooses the tokenizer for a file by its extension.
  *
@@ -16,7 +15,6 @@ import type { Tokenizer } from "./languages.types";
  * this package changes.
  */
 @Injectable()
-/* v8 ignore stop */
 export class LanguagesService {
   // 🏗 Dependency Injection
 
