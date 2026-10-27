@@ -10,6 +10,7 @@ describe("coinagerie-languages index", () => {
         "LanguagesService",
         "TypescriptModule",
         "TypescriptService",
+        "typescriptKeywords",
       ].toSorted(),
     );
   });

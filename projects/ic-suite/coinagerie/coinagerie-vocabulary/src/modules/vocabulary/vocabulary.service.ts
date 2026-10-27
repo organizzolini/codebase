@@ -5,6 +5,7 @@ import { LanguagesService } from "@coinagerie/languages";
 import { Injectable } from "@nestjs/common";
 
 import { DiscoveryService } from "../discovery/discovery.service";
+import { FoldingService } from "../folding/folding.service";
 import { WordsService } from "../words/words.service";
 
 import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration";
@@ -14,8 +15,11 @@ import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration"
  * word the code uses.
  *
  * Discovers the files, splits every path into words, tokenizes every file a
- * language claims and splits its identifiers into words, then de-duplicates
- * and sorts. A file no language claims still contributes its path.
+ * language claims and splits its identifiers into words, folds each word into
+ * its headword, leaves out the headwords the configuration excludes, then
+ * de-duplicates and sorts. A fault in the configuration's `fold` aborts the
+ * run, naming the configuration file. A file no language claims still
+ * contributes its path.
  */
 @Injectable()
 export class VocabularyService {
@@ -23,6 +27,7 @@ export class VocabularyService {
 
   constructor(
     private readonly discoveryService: DiscoveryService,
+    private readonly foldingService: FoldingService,
     private readonly languagesService: LanguagesService,
     private readonly wordsService: WordsService,
   ) {}
@@ -55,6 +60,30 @@ export class VocabularyService {
     ];
   }
 
+  /**
+   * The headwords the configuration leaves out.
+   *
+   * Its words are folded the way the code's are, so exclusion compares
+   * headwords: excluding `service` covers `services`, and excluding
+   * `implements` covers the `implement` it folds into.
+   */
+  private excludedHeadwords(
+    configuration: ResolvedCoinagerieConfiguration,
+  ): Set<string> {
+    const excluded = new Set<string>();
+
+    for (const word of configuration.exclude.words) {
+      const lowercase = word.toLowerCase();
+
+      // Folding is not idempotent (`bounding` folds to `bound`, which folds
+      // to `bind`), so a word already written as a headword stays excluded.
+      excluded.add(lowercase);
+      excluded.add(this.foldingService.headword(lowercase, configuration));
+    }
+
+    return excluded;
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -72,7 +101,9 @@ export class VocabularyService {
       include: configuration.include,
       skip: configuration.outputs.map((output) => output.path),
     });
+    const excluded = this.excludedHeadwords(configuration);
     const words = new Set<string>();
+    const headwords = new Map<string, string>();
 
     // One file at a time: reading every file at once opens them all at once,
     // which exhausts the file descriptors of a large repository.
@@ -81,7 +112,15 @@ export class VocabularyService {
         configuration.directory,
         relativePath,
       )) {
-        words.add(word);
+        const headword =
+          headwords.get(word) ??
+          this.foldingService.headword(word, configuration);
+
+        headwords.set(word, headword);
+
+        if (!excluded.has(headword)) {
+          words.add(headword);
+        }
       }
     }
 
