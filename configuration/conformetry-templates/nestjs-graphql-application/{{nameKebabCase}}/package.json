@@ -18,6 +18,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@faker-js/faker": "catalog:",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",

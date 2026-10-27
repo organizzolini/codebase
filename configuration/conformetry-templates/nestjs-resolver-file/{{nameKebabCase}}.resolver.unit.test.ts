@@ -1,20 +1,13 @@
-import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { {{namePascalCase}}Resolver } from "./{{nameKebabCase}}.resolver";
 
 describe({{namePascalCase}}Resolver, () => {
-  let resolver: {{namePascalCase}}Resolver;
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule({{namePascalCase}}Resolver);
 
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [{{namePascalCase}}Resolver],
-    }).compile();
-
-    resolver = await module.resolve({{namePascalCase}}Resolver);
-  });
-
-  it("is defined", () => {
-    expect(resolver).toBeDefined();
+    expect(instance).toBeInstanceOf({{namePascalCase}}Resolver);
   });
 });

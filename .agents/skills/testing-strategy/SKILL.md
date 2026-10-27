@@ -1,6 +1,6 @@
 ---
 name: testing-strategy
-description: "Use codebase testing conventions: unit, integration, end-to-end test naming and Nx commands, plus the four gates a change must clear — test coverage, type coverage, compiled size, and advisory duplication. Use when adding tests, recommending test coverage, running type-coverage, or checking which quality gates a touched project has to pass."
+description: "Use codebase testing conventions: unit, integration, end-to-end test naming and Nx commands, the shared helpers in @codebase/testing, the mocking standard, the per-project conformetry threshold ratchet, plus the four gates a change must clear — test coverage, type coverage, compiled size, and advisory duplication. Use when adding tests, recommending test coverage, running type-coverage, or checking which quality gates a touched project has to pass."
 license: MIT
 ---
 
@@ -16,6 +16,8 @@ Use when asked to:
 - Name test files correctly
 - Run tests via Nx
 - Recommend coverage or test scope
+- Build a Nest testing module, create a temporary directory, capture output, or render a route in a test
+- Migrate a project's tests onto `@codebase/testing`
 
 ## Test Types and Naming
 
@@ -31,6 +33,92 @@ nx run <project>:vitest:integration
 nx run <project>:vitest:end-to-end
 nx affected --target=vitest --base=main
 ```
+
+## Shared Helpers: `@codebase/testing`
+
+Reach for the shared package before writing setup by hand. Its subpaths are
+layered so each one depends only on what it wraps, which is what keeps the
+common packages out of a dependency cycle:
+
+| Import | Use it for | Depends on |
+| ------ | ---------- | ---------- |
+| `@codebase/testing` | `createTemporaryDirectory` / `useTemporaryDirectory`, `captureOutput`, `captureExitCode`, `overrideEnvironment`, `mockDates`, `loadFixture`, `mockChildProcess`, `mockPartially`, `stubFetch`, `answerPrompts` | nothing in the workspace |
+| `@codebase/testing/setup` | The shared Vitest setup file a project's `testing/setup.ts` imports | nothing in the workspace |
+| `@codebase/testing/nestjs` | `buildTestingModule`, `expectLoggerContext`, `expectModuleProvides` / `Exports` / `Imports`, `createWorkspaceTree` | `@codebase/observability` |
+| `@codebase/testing/graphql` | The MSW GraphQL mock server and the pagination oracle | `@codebase/interface` |
+| `@codebase/testing/postgres` | The Postgres container and the database testing module | `@codebase/persistence` |
+| `@codebase/testing/react` | `renderRoute`, `createServerFunctionStandIn`, `matchMediaStandIn` | TanStack Router |
+| `@codebase/testing/react/setup` | The shared jsdom setup a web app's `testing/setup.ts` imports | Testing Library |
+
+`observability`, `persistence`, and `interface` use the core entries only.
+Every helper that changes global state undoes it after the test, so nothing
+leaks into the next one. The [package README](../../../projects/common/testing/README.md)
+has an example per subpath.
+
+### Nest classes
+
+Build the class under test with `buildTestingModule`. It provides a logger mock
+on its own, provides a deep mock for each class in `mocks`, and resolves the
+instance typed. A dependency nothing provides fails the build, so resolving is
+the wiring check; do not add an `"is defined"` test.
+
+```ts
+import { buildTestingModule, expectLoggerContext } from "@codebase/testing/nestjs";
+
+const { instance, mock } = await buildTestingModule(ExportCommand, {
+  mocks: [PostgresqlUtilitiesService],
+});
+mock(PostgresqlUtilitiesService).dump.mockResolvedValue(undefined);
+
+await expectLoggerContext(ExportCommand, { mocks: [PostgresqlUtilitiesService] });
+```
+
+Assert a module's wiring with `expectModuleProvides`, `expectModuleExports`,
+and `expectModuleImports` rather than reading `@Module` metadata by hand.
+
+### Routes
+
+Route tests render the application's router through the shared helper, which
+drops the root's document shell, so no test mocks `__root`:
+
+```ts
+import { renderRoute } from "@codebase/testing/react";
+
+import { getRouter } from "../router";
+
+await renderRoute(getRouter(), "/search");
+```
+
+### Mocking standard
+
+- **Real temporary directories over `vi.mock("fs")`.** Write to a directory
+  from `createTemporaryDirectory` and assert what is on disk. Keep a file
+  system mock only where a real directory cannot reproduce the case, such as a
+  permission error.
+- **One `child_process` factory.** `vi.mock` is hoisted and cannot be wrapped,
+  so its factory returns `mockChildProcess(await importOriginal())` instead of
+  a hand-written module per file.
+- **Shared plumbing for the rest:** `stubFetch` for `fetch`, `answerPrompts`
+  with `promptsMock` for `prompts`, and `mockPartially` for a module whose other
+  exports stay real.
+- **Domain fixture builders stay local**, in the suite's own `testing/`
+  folder. Only generic helpers belong in the shared package.
+
+### Generated tests and the threshold ratchet
+
+The conformetry test templates generate tests in this shape, so scaffold with
+`conformetry-generate` and the first test already matches. Projects whose tests
+predate the templates are held to their measured score instead, in the
+`TEST_TEMPLATE_BASELINES` table of `configuration/conformetry.config.ts`. That
+table only ever shrinks:
+
+1. Migrate one project, or one small group, per pull request.
+2. Delete its entry from `TEST_TEMPLATE_BASELINES`, which raises its threshold
+   back to 1.
+3. Run `nx run <project>:conformetry-validate` and the coverage gate; both
+   must pass without lowering anything.
+
+Never add an entry, and never lower a value in it, to make a change pass.
 
 ## Coverage Verification
 
@@ -85,7 +173,8 @@ number on the change that broke it.
 
 ## Mocking with `createMock`
 
-Use `@golevelup/ts-vitest`'s `createMock<T>()` to auto-mock any TypeScript class or interface. It returns a fully-typed `DeepMocked<T>` where every method is a `vi.fn()` and every property is recursively mocked via `Proxy`. Never write manual stub objects — `createMock` eliminates the maintenance burden and stays in sync with the source type automatically.
+`buildTestingModule`'s `mocks` option calls `createMock` for you; reach for it
+directly for values the builder does not provide, such as repositories. Use `@golevelup/ts-vitest`'s `createMock<T>()` to auto-mock any TypeScript class or interface. It returns a fully-typed `DeepMocked<T>` where every method is a `vi.fn()` and every property is recursively mocked via `Proxy`. Never write manual stub objects — `createMock` eliminates the maintenance burden and stays in sync with the source type automatically.
 
 ```ts
 import { createMock } from "@golevelup/ts-vitest";
@@ -170,5 +259,6 @@ See the full guide with examples, do/don't guidance, and coverage tips: [Cheerio
 ## References
 
 - [testing-mocks skill](../testing-mocks/SKILL.md)
+- [`@codebase/testing` README](../../../projects/common/testing/README.md)
 - [Vitest documentation](https://vitest.dev/)
 - [Cheerio Testing Reference](./references/cheerio-testing.md)
