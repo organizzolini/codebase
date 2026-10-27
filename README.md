@@ -506,7 +506,6 @@ graph LR
   module_caelundas_cli_MonthlyLunarCycleModule["caelundas-cli/MonthlyLunarCycleModule"]
   module_caelundas_cli_PerfectiveModule["caelundas-cli/PerfectiveModule"]
   module_caelundas_cli_PhasesModule["caelundas-cli/PhasesModule"]
-  module_caelundas_cli_PostgresqlModule["caelundas-cli/PostgresqlModule"]
   module_caelundas_cli_ProgressiveModule["caelundas-cli/ProgressiveModule"]
   module_caelundas_cli_ProgressiveUtilitiesModule["caelundas-cli/ProgressiveUtilitiesModule"]
   module_caelundas_cli_QuadrupleAspectsModule["caelundas-cli/QuadrupleAspectsModule"]
@@ -514,6 +513,7 @@ graph LR
   module_caelundas_cli_RetrogradesModule["caelundas-cli/RetrogradesModule"]
   module_caelundas_cli_SextupleAspectsModule["caelundas-cli/SextupleAspectsModule"]
   module_caelundas_cli_SpecialtyAspectsModule["caelundas-cli/SpecialtyAspectsModule"]
+  module_caelundas_cli_SqliteModule["caelundas-cli/SqliteModule"]
   module_caelundas_cli_StelliumModule["caelundas-cli/StelliumModule"]
   module_caelundas_cli_TagsModule["caelundas-cli/TagsModule"]
   module_caelundas_cli_TripleAspectsModule["caelundas-cli/TripleAspectsModule"]
@@ -1106,7 +1106,7 @@ graph LR
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_CalendarModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_DailyCyclesModule --> module_caelundas_cli_MathModule
-  module_caelundas_cli_DatabaseModule --> module_caelundas_cli_PostgresqlModule
+  module_caelundas_cli_DatabaseModule --> module_caelundas_cli_SqliteModule
   module_caelundas_cli_DatabaseModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_EclipsesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_EclipsesModule --> module_caelundas_cli_MathModule
@@ -1137,7 +1137,6 @@ graph LR
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_MathModule
   module_caelundas_cli_PhasesModule --> module_caelundas_cli_ProgressiveUtilitiesModule
-  module_caelundas_cli_PostgresqlModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_AnnualSolarCycleModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_AspectsModule
   module_caelundas_cli_ProgressiveModule --> module_caelundas_cli_EclipsesModule
@@ -1160,6 +1159,7 @@ graph LR
   module_caelundas_cli_SpecialtyAspectsModule --> module_caelundas_cli_AspectsUtilitiesModule
   module_caelundas_cli_SpecialtyAspectsModule --> module_caelundas_cli_EphemerisModule
   module_caelundas_cli_SpecialtyAspectsModule --> module_caelundas_cli_ProgressiveUtilitiesModule
+  module_caelundas_cli_SqliteModule --> module_caelundas_cli_TypeOrmModule
   module_caelundas_cli_StelliumModule --> module_caelundas_cli_AspectsUtilitiesModule
   module_caelundas_cli_StelliumModule --> module_caelundas_cli_ProgressiveUtilitiesModule
   module_caelundas_cli_TripleAspectsModule --> module_caelundas_cli_AspectsUtilitiesModule
@@ -2042,8 +2042,6 @@ graph LR
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts["caelundas-cli/src/modules/calendar-events/calendar-events.service.ts"]
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts["caelundas-cli/src/modules/calendar-events/calendar-events.service.unit.test.ts"]
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts["caelundas-cli/src/modules/calendar-events/calendar-events.types.ts"]
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts["caelundas-cli/src/modules/calendar-events/calendar-events.utilities.ts"]
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts["caelundas-cli/src/modules/calendar-events/calendar-events.utilities.unit.test.ts"]
   file_caelundas_cli_src_modules_calendar_calendar_constants_ts["caelundas-cli/src/modules/calendar/calendar.constants.ts"]
   file_caelundas_cli_src_modules_calendar_calendar_module_ts["caelundas-cli/src/modules/calendar/calendar.module.ts"]
   file_caelundas_cli_src_modules_calendar_calendar_service_ts["caelundas-cli/src/modules/calendar/calendar.service.ts"]
@@ -2057,6 +2055,8 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.service.unit.test.ts"]
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_types_ts["caelundas-cli/src/modules/daily-cycles/daily-cycles.types.ts"]
   file_caelundas_cli_src_modules_database_data_source_constants_ts["caelundas-cli/src/modules/database/data-source.constants.ts"]
+  file_caelundas_cli_src_modules_database_data_source_constants_unit_test_ts["caelundas-cli/src/modules/database/data-source.constants.unit.test.ts"]
+  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts["caelundas-cli/src/modules/database/database.constants.integration.test.ts"]
   file_caelundas_cli_src_modules_database_database_constants_ts["caelundas-cli/src/modules/database/database.constants.ts"]
   file_caelundas_cli_src_modules_database_database_module_ts["caelundas-cli/src/modules/database/database.module.ts"]
   file_caelundas_cli_src_modules_database_database_service_ts["caelundas-cli/src/modules/database/database.service.ts"]
@@ -2067,7 +2067,7 @@ graph LR
   file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event-tag.entity.ts"]
   file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts["caelundas-cli/src/modules/database/entities/calendar-event.entity.ts"]
   file_caelundas_cli_src_modules_database_entities_tag_entity_ts["caelundas-cli/src/modules/database/entities/tag.entity.ts"]
-  file_caelundas_cli_src_modules_database_migrations_1792416080531_migration_ts["caelundas-cli/src/modules/database/migrations/1792416080531-migration.ts"]
+  file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts["caelundas-cli/src/modules/database/migrations/1793045891250-migration.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_constants_ts["caelundas-cli/src/modules/datetime/datetime.constants.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_module_ts["caelundas-cli/src/modules/datetime/datetime.module.ts"]
   file_caelundas_cli_src_modules_datetime_datetime_service_ts["caelundas-cli/src/modules/datetime/datetime.service.ts"]
@@ -2311,6 +2311,8 @@ graph LR
   file_caelundas_cli_testing_setup_ts["caelundas-cli/testing/setup.ts"]
   file_caelundas_cli_testing_stellium_cliques_unit_test_ts["caelundas-cli/testing/stellium-cliques.unit.test.ts"]
   file_caelundas_cli_testing_stellium_reference_unit_test_ts["caelundas-cli/testing/stellium-reference.unit.test.ts"]
+  file_caelundas_cli_testing_temporary_database_types_ts["caelundas-cli/testing/temporary-database.types.ts"]
+  file_caelundas_cli_testing_temporary_database_utilities_ts["caelundas-cli/testing/temporary-database.utilities.ts"]
   file_caelundas_cli_vitest_config_ts["caelundas-cli/vitest.config.ts"]
   file_caelundas_web_callidescope_config_ts["caelundas-web/callidescope.config.ts"]
   file_caelundas_web_codometer_config_ts["caelundas-web/codometer.config.ts"]
@@ -2451,7 +2453,6 @@ graph LR
   file_caelundas_web_src_lib_events_database_events_database_browser_types_ts["caelundas-web/src/lib/events-database/events-database.browser.types.ts"]
   file_caelundas_web_src_lib_events_database_events_database_constants_ts["caelundas-web/src/lib/events-database/events-database.constants.ts"]
   file_caelundas_web_src_lib_events_database_events_database_errors_ts["caelundas-web/src/lib/events-database/events-database.errors.ts"]
-  file_caelundas_web_src_lib_events_database_events_database_integration_test_ts["caelundas-web/src/lib/events-database/events-database.integration.test.ts"]
   file_caelundas_web_src_lib_events_database_events_database_local_time_ts["caelundas-web/src/lib/events-database/events-database.local-time.ts"]
   file_caelundas_web_src_lib_events_database_events_database_ts["caelundas-web/src/lib/events-database/events-database.ts"]
   file_caelundas_web_src_lib_events_database_events_database_types_ts["caelundas-web/src/lib/events-database/events-database.types.ts"]
@@ -5739,11 +5740,11 @@ graph LR
   file_affirmancy_testing_test_prompts_py --> file_affirmancy_src_prompts_py
   file_affirmancy_testing_test_services_py --> file_affirmancy_src_services_py
   file_affirmancy_testing_test_subjects_py --> file_affirmancy_src_subjects_py
+  file_caelundas_cli_src_caelundas_cli_constants_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_module_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
-  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_database_migrations_1792416080531_migration_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_service_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_ingresses_ingresses_service_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_src_modules_input_input_constants_ts
@@ -5753,6 +5754,8 @@ graph LR
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_types_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_calendar_command_utilities_ts
   file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_major_aspects_utilities_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_temporary_database_types_ts
+  file_caelundas_cli_src_caelundas_cli_main_end_to_end_test_ts --> file_caelundas_cli_testing_temporary_database_utilities_ts
   file_caelundas_cli_src_caelundas_cli_main_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_caelundas_cli_main_unit_test_ts --> file_caelundas_cli_src_caelundas_cli_module_ts
   file_caelundas_cli_src_caelundas_cli_module_ts --> file_caelundas_cli_src_caelundas_cli_constants_ts
@@ -5940,6 +5943,7 @@ graph LR
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_stellium_stellium_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_triple_aspects_triple_aspects_module_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_module_ts --> file_caelundas_cli_src_modules_twilights_twilights_module_ts
+  file_caelundas_cli_src_modules_caelundas_caelundas_module_unit_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_ts --> file_caelundas_cli_src_modules_caelundas_symbol_caelundas_constants_ts
   file_caelundas_cli_src_modules_caelundas_caelundas_types_unit_test_ts --> file_caelundas_cli_src_modules_caelundas_caelundas_constants_ts
@@ -5951,33 +5955,27 @@ graph LR
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_module_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_integration_test_ts --> file_caelundas_cli_src_modules_database_migrations_1792416080531_migration_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_service_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
+  file_caelundas_cli_src_modules_calendar_events_calendar_events_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_database_database_types_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_constants_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
-  file_caelundas_cli_src_modules_calendar_events_calendar_events_utilities_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_calendar_calendar_module_ts --> file_caelundas_cli_src_modules_calendar_calendar_service_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_constants_ts
   file_caelundas_cli_src_modules_calendar_calendar_service_ts --> file_caelundas_cli_src_modules_calendar_calendar_types_ts
@@ -6012,11 +6010,16 @@ graph LR
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_ephemeris_ephemeris_types_ts
   file_caelundas_cli_src_modules_daily_cycles_daily_cycles_service_unit_test_ts --> file_caelundas_cli_src_modules_math_math_service_ts
   file_caelundas_cli_src_modules_database_data_source_constants_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_data_source_constants_unit_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_src_modules_database_database_constants_integration_test_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_tag_entity_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_database_database_constants_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
   file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_database_service_ts
+  file_caelundas_cli_src_modules_database_database_module_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
+  file_caelundas_cli_src_modules_database_database_service_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
   file_caelundas_cli_src_modules_database_database_service_unit_test_ts --> file_caelundas_cli_src_modules_database_database_service_ts
   file_caelundas_cli_src_modules_database_database_types_ts --> file_caelundas_cli_src_modules_database_entities_calendar_event_entity_ts
   file_caelundas_cli_src_modules_database_database_utilities_unit_test_ts --> file_caelundas_cli_src_modules_database_database_utilities_ts
@@ -6909,7 +6912,6 @@ graph LR
   file_caelundas_cli_src_modules_tags_tag_map_functions_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
   file_caelundas_cli_src_modules_tags_tags_module_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
   file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_database_entities_tag_entity_ts
-  file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_tags_tags_constants_ts
   file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_tags_tags_types_ts
   file_caelundas_cli_src_modules_tags_tags_service_ts --> file_caelundas_cli_src_modules_tags_tags_utilities_ts
   file_caelundas_cli_src_modules_tags_tags_service_unit_test_ts --> file_caelundas_cli_src_modules_tags_tags_service_ts
@@ -7116,6 +7118,9 @@ graph LR
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_progressive_progressive_utilities_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_src_modules_stellium_stellium_service_ts
   file_caelundas_cli_testing_stellium_reference_unit_test_ts --> file_caelundas_cli_testing_reference_longitudes_constants_ts
+  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_database_constants_ts
+  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_src_modules_database_migrations_1793045891250_migration_ts
+  file_caelundas_cli_testing_temporary_database_utilities_ts --> file_caelundas_cli_testing_temporary_database_types_ts
   file_caelundas_web_src_components_calendar_agenda_tsx --> file_caelundas_web_src_components_calendar_event_row_tsx
   file_caelundas_web_src_components_calendar_agenda_tsx --> file_caelundas_web_src_components_virtual_list_tsx
   file_caelundas_web_src_components_calendar_agenda_tsx --> file_caelundas_web_src_lib_calendar_calendar_agenda_ts
@@ -7472,8 +7477,6 @@ graph LR
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_lib_events_database_events_database_browser_types_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
-  file_caelundas_web_src_lib_events_database_events_database_integration_test_ts --> file_caelundas_web_testing_events_database_ts
-  file_caelundas_web_src_lib_events_database_events_database_integration_test_ts --> file_caelundas_web_testing_render_route_tsx
   file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_constants_ts
   file_caelundas_web_src_lib_events_database_events_database_ts --> file_caelundas_web_src_lib_events_database_events_database_types_ts
   file_caelundas_web_src_lib_events_database_events_database_unit_test_ts --> file_caelundas_web_testing_events_database_ts
@@ -14511,7 +14514,7 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-143-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27827-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-27826-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-138-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-838-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-752-a78bfa?style=flat-square)
@@ -14523,11 +14526,11 @@ Repository statistics measured by [codometer](projects/ic-suite/codometer/codome
 ![List Items](https://img.shields.io/badge/List_Items-4573-22c55e?style=flat-square)
 ![Task List Items](https://img.shields.io/badge/Task_List_Items-57-4ade80?style=flat-square)
 ![Tables](https://img.shields.io/badge/Tables-285-0284c7?style=flat-square)
-![Table Rows](https://img.shields.io/badge/Table_Rows-2795-0ea5e9?style=flat-square)
+![Table Rows](https://img.shields.io/badge/Table_Rows-2794-0ea5e9?style=flat-square)
 ![Links](https://img.shields.io/badge/Links-915-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-1012-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-565-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-15250-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-15245-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-23-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-50-a16207?style=flat-square)
 <!-- codometer:end -->
@@ -14540,10 +14543,10 @@ The workspace's call graph, traced by [callidescope](projects/ic-suite/callidesc
 
 | Measure | Value |
 | --- | --- |
-| Callables | 7364 |
-| Files | 2146 |
-| Calls traced | 8057 |
-| Call stacks | 2065 |
+| Callables | 7370 |
+| Files | 2145 |
+| Calls traced | 8066 |
+| Call stacks | 2066 |
 | Deepest stack | 17 |
 | Stacks through recursion | 14 |
 | Unfollowable calls | 455 |

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.40.0](https://github.com/organizzolini/codebase/compare/v3.39.0...v3.40.0) (2026-10-27)
+
+### ✨ Features
+
+* **caelundas,persistence:** ✨ write caelundas events to a sqlite database ([#1876](https://github.com/organizzolini/codebase/issues/1876)) ([a9970e9](https://github.com/organizzolini/codebase/commit/a9970e9d00d2636826d0429eb7cb72f50ce40df3)), closes [#1874](https://github.com/organizzolini/codebase/issues/1874) [#1874](https://github.com/organizzolini/codebase/issues/1874)
+
 ## [3.39.0](https://github.com/organizzolini/codebase/compare/v3.38.0...v3.39.0) (2026-10-27)
 
 ### ✨ Features

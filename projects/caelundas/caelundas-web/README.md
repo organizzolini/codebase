@@ -53,7 +53,7 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 491 |
+| Callables | 492 |
 | Files | 90 |
 | Calls traced | 463 |
 | Call stacks | 80 |
@@ -1106,36 +1106,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-21298-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-786.98_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-15-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-159-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-21195-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-774.64_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-158-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-159-3178c6?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-158-3178c6?style=flat-square)
 ![Interfaces](https://img.shields.io/badge/Interfaces-97-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-505-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-502-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-62-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-19-8b5cf6?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-61-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-2-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-1284-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1281-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-7-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-1092-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-199-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-1097-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-656-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-294-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-1104-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-2134-475569?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-1090-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-198-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-1085-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-647-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-293-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-1099-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-2125-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-1-ca8a04?style=flat-square)
 
 ### Python
@@ -1156,16 +1156,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-157-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-38-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-105-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-89-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-183-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-47-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-116-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-98-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-41-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-149-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-49-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-168-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -1208,17 +1208,17 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-3-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-206-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-18-7c3aed?style=flat-square)
-![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-5-22c55e?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-0-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-0-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-0-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-0-22c55e?style=flat-square)
 ![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
 ![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-13-0284c7?style=flat-square)
-![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-0-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-22-64748b?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
 
 ### HCL
 
@@ -1254,7 +1254,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
 ![Unit Tests](https://img.shields.io/badge/Unit_Tests-26-ca8a04?style=flat-square)
-![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
@@ -1291,7 +1291,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-363-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-364-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-8-a78bfa?style=flat-square)
@@ -1307,7 +1307,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-6-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-114-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-115-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
