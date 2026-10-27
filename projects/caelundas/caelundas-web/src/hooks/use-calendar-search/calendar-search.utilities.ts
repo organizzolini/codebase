@@ -11,17 +11,28 @@ import {
   filterGroupSchema,
   groupLevelSchema,
   levelsSchema,
+  skySearchValueSchema,
 } from "./calendar-search.constants";
 import { parseCalendarSymbols } from "./calendar-symbols.utilities";
 
 import type { EventGrouping } from "../../components/calendar-group-by/event-groups.types";
-import type { CalendarSearch } from "./calendar-search.types";
+import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**
- * Reads the calendar's search parameters. A value that does not parse falls
- * back to its default rather than failing, so a stale link still opens.
+ * Answers what the loader's result depends on: the calendar's own search, so
+ * the route reloads for a calendar change and not for a sky one.
  */
-export function validateCalendarSearch(
+export function getCalendarReloadKey(
+  search: Readonly<Record<string, unknown>>,
+): string {
+  return JSON.stringify(readCalendarSearch(search));
+}
+
+/**
+ * Reads the calendar's own search parameters, leaving out the backdrop's, so
+ * a page that shows the calendar is not rendered again for a sky change.
+ */
+export function readCalendarSearch(
   search: Readonly<Record<string, unknown>>,
 ): CalendarSearch {
   const filter = filterGroupSchema.safeParse(search["filter"]).data;
@@ -47,6 +58,28 @@ export function validateCalendarSearch(
 }
 
 /**
+ * Reads the calendar's search parameters. A value that does not parse falls
+ * back to its default rather than failing, so a stale link still opens. The
+ * backdrop's keys pass through as they are, for it to read.
+ */
+export function validateCalendarSearch(
+  search: Readonly<Record<string, unknown>>,
+): CalendarSearch {
+  return {
+    ...readCalendarSearch(search),
+    sky: parseSkyValue(search["sky"]),
+    "sky.altBottom": parseSkyValue(search["sky.altBottom"]),
+    "sky.debug": parseSkyValue(search["sky.debug"]),
+    "sky.lat": parseSkyValue(search["sky.lat"]),
+    "sky.lon": parseSkyValue(search["sky.lon"]),
+    "sky.maxMag": parseSkyValue(search["sky.maxMag"]),
+    "sky.pixelsPerSecond": parseSkyValue(search["sky.pixelsPerSecond"]),
+    "sky.starScale": parseSkyValue(search["sky.starScale"]),
+    "sky.vFov": parseSkyValue(search["sky.vFov"]),
+  };
+}
+
+/**
  * Reads a grouping from the link: a list whose levels that do not parse are
  * dropped one by one, cut to the most levels a grouping nests, so a link
  * from an older grouping keeps what it still can. Anything but a list is no
@@ -57,4 +90,12 @@ function parseGrouping(value: unknown): EventGrouping | undefined {
     .safeParse(value)
     .data?.flatMap((level) => groupLevelSchema.safeParse(level).data ?? [])
     .slice(0, MAXIMUM_GROUP_LEVELS);
+}
+
+/**
+ * Keeps a sky key's value when the router read it as a number, a boolean or
+ * text, and forgets anything else, which the router could not write back.
+ */
+function parseSkyValue(value: unknown): SkySearchValue | undefined {
+  return skySearchValueSchema.safeParse(value).data;
 }

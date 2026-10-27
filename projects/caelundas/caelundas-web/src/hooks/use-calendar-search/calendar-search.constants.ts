@@ -56,3 +56,9 @@ export const filterGroupSchema = z.object({
   },
   type: z.literal("group"),
 });
+
+export const skySearchValueSchema = z.union([
+  z.boolean(),
+  z.number(),
+  z.string(),
+]);
