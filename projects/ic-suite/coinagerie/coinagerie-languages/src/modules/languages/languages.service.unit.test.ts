@@ -1,5 +1,6 @@
+import "reflect-metadata";
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { TypescriptModule } from "../typescript/typescript.module";
 
@@ -49,5 +50,26 @@ describe(LanguagesService, () => {
     "archive.ts.gz",
   ])("finds no tokenizer for %s", (filePath) => {
     expect(service.tokenizerFor(filePath)).toBeUndefined();
+  });
+
+  describe("languagesService when its dependencies are not yet defined", () => {
+    afterEach(() => {
+      vi.doUnmock("../typescript/typescript.service");
+      vi.resetModules();
+    });
+
+    it("records Object as each injection type, as a circular import would", async () => {
+      vi.resetModules();
+      vi.doMock("../typescript/typescript.service", () => ({
+        TypescriptService: undefined,
+      }));
+
+      const { LanguagesService: Reloaded } =
+        await import("./languages.service");
+
+      expect(Reflect.getMetadata("design:paramtypes", Reloaded)).toStrictEqual([
+        Object,
+      ]);
+    });
   });
 });
