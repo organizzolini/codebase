@@ -4,17 +4,13 @@ const config: KnipConfig = {
   $schema: "https://unpkg.com/knip@5/schema.json",
 
   // Globally ignored file patterns (tests, build output, caches)
-  // Every project carries a codometer.config.ts that the codometer command line
-  // reads by walking upward from the directory it measures. Nothing imports it,
-  // the way nothing imports eslint.config.ts — but knip has a plugin that knows
-  // about eslint and none that knows about codometer, so it is named here. A
-  // project's callidescope.config.ts is found the same way — resolved by name
-  // beside every project a trace reaches, never imported — so it is named here
-  // for the same reason. A project's own codependix.config.ts is optional and
-  // resolved the same way — beside every project a run maps, never imported —
-  // so it is named here too. A project's coinagerie.config.ts is read the same
-  // way — by name, from the folder a run starts in, never imported — and the
-  // shared configuration it spreads is the only file that imports anything.
+  // Each toolchain configuration named here is read by file name, never
+  // imported, the way nothing imports eslint.config.ts — but knip has a plugin
+  // for eslint and none for these. codometer walks upward from the directory it
+  // measures; callidescope resolves one beside every project a trace reaches;
+  // codependix, optionally, beside every project a run maps; and coinagerie
+  // from the folder a run starts in, where only the shared configuration a
+  // project spreads imports anything.
   ignore: [
     "**/*.test.ts",
     "**/callidescope.config.ts",
