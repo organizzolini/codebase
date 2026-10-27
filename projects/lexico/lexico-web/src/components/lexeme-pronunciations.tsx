@@ -8,17 +8,10 @@ import {
   CollapsibleTrigger,
 } from "@codebase/presentation";
 
+import type { LexemePronunciation } from "./lexeme-pronunciations.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
-
-/**
- * One way a lexeme is pronounced.
- */
-export interface LexemePronunciation {
-  phonetic: string;
-  variant: string;
-}
 
 /**
  * The properties LexemePronunciations accepts.

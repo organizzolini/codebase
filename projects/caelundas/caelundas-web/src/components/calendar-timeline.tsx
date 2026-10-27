@@ -1,53 +1,43 @@
-import {
-  createElement,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  Gantt,
-  type GanttColumn,
-  type GanttOccurrence,
-  type GanttRenderEventProps,
-  type GanttScale,
-  GanttView,
-  useGanttNavigation,
-} from "@codebase/presentation";
+import { Gantt, GanttView } from "@codebase/presentation";
 
-import { getEventLabel } from "../lib/calendar/calendar-glyphs";
+import { TIMELINE_DAY_INTERVAL } from "../constants/calendar-timeline-clusters.constants";
+import { useBarDialog } from "../hooks/use-bar-dialog/use-bar-dialog";
+import { createTimelineLayout } from "../utilities/calendar-timeline-lanes.utilities";
 import {
-  type TimelineBar,
-  toTimelineRows,
-} from "../lib/calendar/calendar-timeline";
-import {
-  TIMELINE_DAY_INTERVAL,
-  TIMELINE_UNIT_WIDTHS,
-} from "../lib/calendar/calendar-timeline-clusters";
-import {
-  createTimelineLayout,
-  type TimelineLayout,
-} from "../lib/calendar/calendar-timeline-lanes";
-import {
-  getVisibleTimelineRows,
   isSameRowSet,
-  type TimelineRowBox,
   windowTimelineBars,
-} from "../lib/calendar/calendar-timeline-window";
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+} from "../utilities/calendar-timeline-window.utilities";
+import { toTimelineRows } from "../utilities/calendar-timeline.utilities";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
-import { CalendarClusterDialog } from "./calendar-cluster-dialog";
-import { CalendarEventChip } from "./calendar-event-chip";
-import { CalendarEventTooltip } from "./calendar-event-tooltip";
+import {
+  COMPACT_TREE,
+  DAY_ZOOM,
+  INTERACTIONS,
+  LANE_ROWS,
+  QUIET_LABELS,
+  TIMELINE_METRICS,
+  TREE,
+  ZOOM,
+} from "./calendar-timeline.constants";
+import {
+  toCountColumns,
+  watchVisibleRows,
+} from "./calendar-timeline.utilities";
+import { TimelineBarContent } from "./timeline-bar-content";
+import { TimelineNavigation } from "./timeline-navigation";
 
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
+import type { TimelineLayout } from "../types/calendar-timeline-lanes.types";
+import type { TimelineBar } from "../types/calendar-timeline.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
 import type {
   CalendarEventRecord,
   EventFacet,
-} from "../lib/events-database/events-database.types";
-import type { CalendarNavigation } from "./calendar-navigation-group";
+} from "../types/events-database.types";
+import type { CalendarNavigation } from "./calendar-navigation-group.types";
+import type { GanttRenderEventProps, GanttScale } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -88,36 +78,6 @@ export interface CalendarTimelineProperties {
   scale?: GanttScale;
   timeZone: string;
 }
-
-const INTERACTIONS = { drag: false, resize: false, selectSlot: false };
-
-// The Gantt draws a day's axis in columns of no fewer than fifteen minutes;
-// zooming in a day as far as fifteen times spreads each minute over the
-// width a column takes at rest, so moments a minute apart read apart.
-const DAY_ZOOM = { max: 15, min: 0.5, step: 0.5 };
-const ZOOM = { max: 3, min: 0.5, step: 0.25 };
-
-// Beside a marker, a title runs into its neighbors' at any scale coarser than
-// a day, so there titles are left to each bar's own label and only a day's
-// are drawn.
-// The lanes of one row read as one: the line between a row and the lane
-// beneath it is not drawn.
-const LANE_ROWS =
-  "[&_[data-slot=gantt-row-group]:has(+[data-gantt-row-id*='#'])]:border-b-transparent";
-
-const QUIET_LABELS = "[&_[data-slot=gantt-bar-label]]:hidden";
-
-// The column widths the clusters are sized by, handed to the Gantt rather
-// than left to its defaults, so the two always agree.
-// The lanes are taller than the Gantt's own, to give the symbols room.
-const TIMELINE_METRICS = { laneHeight: 1.75, unitWidths: TIMELINE_UNIT_WIDTHS };
-
-// A phone gives the row names a narrow column and the time the rest.
-const COMPACT_TREE = { minWidth: 120, nameColumnWidth: 104, width: 168 };
-const TREE = { nameColumnWidth: 208, width: 288 };
-
-const TIMELINE_VIEWPORT =
-  '[data-slot="gantt-timeline-pane"] [data-slot="scroll-area-viewport"]';
 
 // 🧩 Component
 
@@ -255,247 +215,4 @@ export function CalendarTimeline(
       {dialog}
     </div>
   );
-}
-
-/**
- * What opens when a marker is clicked: the events it holds, titled by their
- * count, or by the name of the one event.
- */
-function describeBar(
-  bar: TimelineBar | undefined,
-): undefined | { records: readonly CalendarEventRecord[]; title: string } {
-  const records = bar?.records ?? [];
-  const [first] = records;
-
-  if (first === undefined) {
-    return undefined;
-  }
-
-  return {
-    records,
-    title:
-      records.length > 1
-        ? `${String(records.length)} events`
-        : getEventLabel(first).name,
-  };
-}
-
-/**
- * The timeline body's rows in order, each with its height as laid out.
- */
-function readRowBoxes(viewport: HTMLElement): TimelineRowBox[] {
-  return [...viewport.querySelectorAll<HTMLElement>("[data-gantt-row]")].map(
-    (row) => ({
-      height: row.getBoundingClientRect().height,
-      id: row.dataset["ganttRowId"] ?? "",
-    }),
-  );
-}
-
-/**
- * How far the timeline body's first row has scrolled above its viewport's
- * top, past the axis drawn over it, and how tall the viewport is.
- */
-function readViewport(viewport: HTMLElement): {
-  scrollTop: number;
-  viewportHeight: number;
-} {
-  const firstRow = viewport.querySelector<HTMLElement>("[data-gantt-row]");
-  const top = viewport.getBoundingClientRect().top;
-
-  return {
-    scrollTop: top - (firstRow?.getBoundingClientRect().top ?? top),
-    viewportHeight: viewport.clientHeight,
-  };
-}
-
-/**
- * Draws what a bar holds: a circle for an instant, at its moment and never
- * narrower than a lane is tall; the count of a cluster of crowded markers, in a circle;
- * or a span's title.
- */
-function TimelineBarContent(
-  properties: Readonly<Pick<GanttRenderEventProps<TimelineBar>, "occurrence">>,
-): ReactNode {
-  const { occurrence } = properties;
-  const records = occurrence.event.data?.records ?? [];
-  const [record] = records;
-
-  if (record === undefined) {
-    return (
-      <span className="truncate font-medium">{occurrence.event.title}</span>
-    );
-  }
-
-  if (records.length > 1) {
-    // A count says nothing of what is behind it, so it has a tooltip too.
-    return (
-      <CalendarEventTooltip
-        className="flex w-full justify-center"
-        event={record}
-        label={{
-          details: "Click to list them.",
-          name: `${String(records.length)} events`,
-        }}
-      >
-        <span
-          className="flex h-4 min-w-4 items-center justify-center rounded-full bg-(--gantt-event-color) px-1 text-[10px] leading-none font-semibold text-white tabular-nums"
-          data-slot="timeline-cluster"
-        >
-          {records.length}
-        </span>
-      </CalendarEventTooltip>
-    );
-  }
-
-  if (occurrence.start.getTime() === occurrence.end.getTime()) {
-    // The circle says nothing of what the event is, so it has the tooltip.
-    return (
-      <CalendarEventTooltip
-        className="flex"
-        event={record}
-      >
-        <span
-          className="block size-3.5 shrink-0 rounded-full border border-(--gantt-event-color) bg-(--gantt-event-color)/80"
-          data-slot="timeline-instant"
-          aria-hidden
-        />
-      </CalendarEventTooltip>
-    );
-  }
-
-  return (
-    <CalendarEventChip
-      className="min-w-0 font-medium"
-      event={record}
-    />
-  );
-}
-
-/**
- * Reports the timeline's own navigation, which only a child of the Gantt can
- * read, to the toolbar above it, and draws nothing.
- */
-function TimelineNavigation(
-  properties: Readonly<{
-    onNavigationChange: (navigation: CalendarNavigation) => void;
-  }>,
-): ReactNode {
-  const { onNavigationChange } = properties;
-  const navigation = useGanttNavigation();
-
-  // Before paint, so the toolbar never shows the title of the view before.
-  // Every render reports, which ends there: the toolbar re-renders only when
-  // the title it is handed differs.
-  useLayoutEffect(() => {
-    onNavigationChange(navigation);
-  });
-
-  return null;
-}
-
-/**
- * The tree panel's one extra column: how many distinct events each row
- * holds.
- */
-function toCountColumns(counts: ReadonlyMap<string, number>): GanttColumn[] {
-  return [
-    {
-      align: "end",
-      id: "events",
-      render: (context) => counts.get(context.resource.id),
-      title: "Events",
-      width: 64,
-    },
-  ];
-}
-
-/**
- * Holds the marker clicked and the dialog that lists its events: the handler
- * to give the Gantt, and the dialog to draw.
- */
-function useBarDialog(timeZone: string): {
-  dialog: ReactNode;
-  handleEventClick: (occurrence: GanttOccurrence<TimelineBar>) => void;
-} {
-  const [opened, setOpened] = useState<{
-    records: readonly CalendarEventRecord[];
-    title: string;
-  }>();
-
-  return {
-    dialog: createElement(CalendarClusterDialog, {
-      members: opened?.records,
-      onClose: () => {
-        setOpened(undefined);
-      },
-      timeZone,
-      title: opened?.title ?? "",
-    }),
-    handleEventClick: (occurrence) => {
-      setOpened(describeBar(occurrence.event.data));
-    },
-  };
-}
-
-/**
- * Reports the timeline body's visible rows once a frame at most, now and on
- * every scroll or resize of the body or its content, until the cleanup it
- * answers is called. The Gantt mounts its body after itself, so the body is
- * looked for again whenever the container's content changes.
- */
-function watchVisibleRows(
-  container: HTMLElement,
-  onChange: (visible: null | ReadonlySet<string>) => void,
-): () => void {
-  let frame = 0;
-  let viewport: HTMLElement | null = null;
-  const measure = (): void => {
-    frame = 0;
-
-    if (viewport !== null) {
-      onChange(
-        getVisibleTimelineRows(readRowBoxes(viewport), readViewport(viewport)),
-      );
-    }
-  };
-  const schedule = (): void => {
-    frame ||= requestAnimationFrame(measure);
-  };
-  const resizes = new ResizeObserver(schedule);
-  const attach = (): void => {
-    // Most changes are the bars redrawn inside a body already found.
-    if (viewport?.isConnected === true) {
-      return;
-    }
-
-    const found = container.querySelector<HTMLElement>(TIMELINE_VIEWPORT);
-
-    if (found === null) {
-      return;
-    }
-
-    viewport?.removeEventListener("scroll", schedule);
-    resizes.disconnect();
-    viewport = found;
-    viewport.addEventListener("scroll", schedule, { passive: true });
-    resizes.observe(viewport);
-
-    if (viewport.firstElementChild !== null) {
-      resizes.observe(viewport.firstElementChild);
-    }
-
-    schedule();
-  };
-  const mutations = new MutationObserver(attach);
-
-  mutations.observe(container, { childList: true, subtree: true });
-  attach();
-
-  return () => {
-    cancelAnimationFrame(frame);
-    mutations.disconnect();
-    resizes.disconnect();
-    viewport?.removeEventListener("scroll", schedule);
-  };
 }

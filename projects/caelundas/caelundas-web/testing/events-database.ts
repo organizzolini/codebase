@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-import { createEventsDatabase } from "../src/lib/events-database/events-database";
-import { LOCAL_TIME_FUNCTIONS } from "../src/lib/events-database/events-database.local-time";
+import { listLocalTimeFunctions } from "../src/utilities/events-database-local-time.utilities";
+import { createEventsDatabase } from "../src/utilities/events-database.utilities";
 
 import type {
   EventsDatabase,
@@ -11,7 +11,7 @@ import type {
   SqlExecutor,
   SqlRow,
   SqlValue,
-} from "../src/lib/events-database/events-database.types";
+} from "../src/types/events-database.types";
 
 const DATA_DIRECTORY = path.join(import.meta.dirname, "../data");
 
@@ -176,7 +176,7 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
  * Gives the database the local-time functions the browser's worker registers.
  */
 function registerLocalTimeFunctions(database: DatabaseSync): void {
-  for (const [name, localTime] of Object.entries(LOCAL_TIME_FUNCTIONS)) {
+  for (const [name, localTime] of Object.entries(listLocalTimeFunctions())) {
     database.function(name, { deterministic: true }, localTime);
   }
 }

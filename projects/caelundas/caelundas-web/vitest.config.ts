@@ -26,7 +26,8 @@ export default mergeConfig(
         exclude: [
           "src/**/*.test.ts",
           "src/**/*.test.tsx",
-          "src/**/*.browser.ts",
+          "src/constants/events-database-browser.constants.ts",
+          "src/utilities/events-database-browser.utilities.ts",
           "src/**/*.functions.ts",
           "src/**/*.worker.ts",
           "src/client.tsx",

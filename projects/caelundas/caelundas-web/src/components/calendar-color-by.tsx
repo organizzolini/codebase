@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
 
-import { createColorScheme } from "../lib/calendar/calendar-color-schemes";
+import { createColorScheme } from "../utilities/calendar-color-schemes.utilities";
 import {
   createEventGroupFields,
   toGroupLevel,
-} from "../lib/event-groups/event-group-fields";
+} from "../utilities/event-group-fields.utilities";
 
+import { TITLE } from "./calendar-color-by.constants";
 import { GroupLevelRow } from "./group-level-row";
 
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
-import type { EventFacet } from "../lib/events-database/events-database.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
+import type { EventFacet } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -30,8 +31,6 @@ export interface CalendarColorByProperties {
    */
   onColorByChange: (level: EventGroupLevel | undefined) => void;
 }
-
-const TITLE = "Color by";
 
 // 🧩 Component
 

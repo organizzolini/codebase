@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { VerbForms } from "./verb-forms";
 
-import type { VerbFormRow } from "./verb-forms";
+import type { VerbFormRow } from "./verb-forms.types";
 
 /**
  * Builds a finite form with only the fields a test varies.

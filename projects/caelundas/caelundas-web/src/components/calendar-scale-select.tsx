@@ -3,9 +3,9 @@ import { Button, ButtonGroup } from "@codebase/presentation";
 import {
   TIMELINE_SCALE_LABELS,
   TIMELINE_SCALES,
-  type TimelineScale,
-} from "../lib/calendar/calendar-views";
+} from "../constants/calendar-views.constants";
 
+import type { TimelineScale } from "../types/calendar-views.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

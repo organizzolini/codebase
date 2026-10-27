@@ -7,7 +7,7 @@ import {
   EmptyTitle,
 } from "@codebase/presentation";
 
-import { UnsupportedBrowserError } from "../lib/events-database/events-database.errors";
+import { UnsupportedBrowserError } from "../constants/events-database.constants";
 
 import type { ReactNode } from "react";
 

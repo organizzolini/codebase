@@ -4,12 +4,12 @@ import {
   DropdownMenuSubTrigger,
 } from "@codebase/presentation";
 
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
 import { CalendarColorBy } from "./calendar-color-by";
 
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
-import type { EventFacet } from "../lib/events-database/events-database.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
+import type { EventFacet } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

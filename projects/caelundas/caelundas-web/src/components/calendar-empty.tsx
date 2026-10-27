@@ -7,31 +7,11 @@ import {
   EmptyTitle,
 } from "@codebase/presentation";
 
-import type { CalendarEmptiness } from "../lib/calendar/calendar-loader";
-import type { EventsDataset } from "../lib/events-database/events-database.types";
+import { EMPTY_DESCRIPTIONS, EMPTY_TITLES } from "./calendar-empty.constants";
+import { OutsideDataset } from "./outside-dataset";
+
+import type { CalendarEmptiness } from "../types/calendar-loader.types";
 import type { ReactNode } from "react";
-
-/**
- * The kinds of emptiness that need no more than a title and a sentence.
- */
-type PlainEmptiness = Exclude<CalendarEmptiness["kind"], "range">;
-
-const EMPTY_TITLES: Readonly<
-  Record<PlainEmptiness, (period: string) => string>
-> = {
-  database: () => "No events yet",
-  filter: () => "No events match the filters",
-  match: (period) => `No events ${period}`,
-};
-
-const EMPTY_DESCRIPTIONS: Readonly<
-  Record<PlainEmptiness, (period: string) => string>
-> = {
-  database: () => "The events database is empty.",
-  filter: (period) =>
-    `Nothing ${period} passes the filters; change or clear them.`,
-  match: (period) => `Nothing in the data falls ${period}.`,
-};
 
 // 🔖 Type
 
@@ -129,43 +109,5 @@ export function CalendarEmpty(
         ) : null}
       </Empty>
     </div>
-  );
-}
-
-/**
- * Names the dates the data covers and offers to jump to the nearest of them.
- */
-function OutsideDataset(
-  properties: Readonly<{
-    dataset: EventsDataset;
-    jumpTo: Date;
-    onJump: (date: Date) => void;
-  }>,
-): ReactNode {
-  const { dataset, jumpTo, onJump } = properties;
-  const format = (date: Date): string =>
-    date.toLocaleDateString("en-US", {
-      dateStyle: "medium",
-      timeZone: dataset.timezone,
-    });
-
-  return (
-    <Empty className="bg-background/90 pointer-events-auto max-w-md border shadow-sm">
-      <EmptyHeader>
-        <EmptyTitle>Outside the data</EmptyTitle>
-        <EmptyDescription>
-          {`Events run from ${format(dataset.start)} to ${format(dataset.end)}.`}
-        </EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button
-          onClick={() => {
-            onJump(jumpTo);
-          }}
-        >
-          {`Go to ${format(jumpTo)}`}
-        </Button>
-      </EmptyContent>
-    </Empty>
   );
 }

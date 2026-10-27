@@ -6,11 +6,16 @@ import {
   SelectValue,
 } from "@codebase/presentation";
 
-import { compileEventFilter } from "../lib/event-filters/event-filter-compiler";
-import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
+import { EMPTY_EVENT_FILTER } from "../constants/event-filter-tree.constants";
+import { compileEventFilter } from "../utilities/event-filter-compiler.utilities";
 
-import type { ResolvedEventFilterCollection } from "../lib/event-filters/event-filter-collections";
-import type { EventFilterQuery } from "../lib/event-filters/event-filters.types";
+import {
+  ALL_EVENTS_ID,
+  CUSTOM_ID,
+} from "./calendar-collection-picker.constants";
+
+import type { ResolvedEventFilterCollection } from "../types/event-filter-collections.types";
+import type { EventFilterQuery } from "../types/event-filters.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -25,9 +30,6 @@ export interface CalendarCollectionPickerProperties {
   onSelect: (filter: EventFilterQuery) => void;
   query: EventFilterQuery;
 }
-
-const ALL_EVENTS_ID = "all-events";
-const CUSTOM_ID = "custom";
 
 // 🧩 Component
 

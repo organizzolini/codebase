@@ -1,8 +1,8 @@
 import { CalendarNavigationGroup } from "./calendar-navigation-group";
 import { CalendarViewSelect } from "./calendar-view-select";
 
-import type { CalendarViewName } from "../lib/calendar/calendar-views";
-import type { CalendarNavigation } from "./calendar-navigation-group";
+import type { CalendarViewName } from "../types/calendar-views.types";
+import type { CalendarNavigation } from "./calendar-navigation-group.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

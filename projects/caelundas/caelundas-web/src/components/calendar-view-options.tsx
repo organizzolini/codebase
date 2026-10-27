@@ -7,7 +7,7 @@ import {
   DropdownMenuSubTrigger,
 } from "@codebase/presentation";
 
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
 import { CalendarGroupBy } from "./calendar-group-by";
 import { CalendarScaleSelect } from "./calendar-scale-select";
@@ -15,9 +15,9 @@ import { CalendarScaleSelect } from "./calendar-scale-select";
 import type {
   CalendarViewName,
   TimelineScale,
-} from "../lib/calendar/calendar-views";
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
-import type { EventFacet } from "../lib/events-database/events-database.types";
+} from "../types/calendar-views.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
+import type { EventFacet } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

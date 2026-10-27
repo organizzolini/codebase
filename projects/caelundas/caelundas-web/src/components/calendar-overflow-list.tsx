@@ -2,15 +2,18 @@ import { useMemo } from "react";
 
 import {
   getAgendaRange,
-  getEventRowHeight,
   toAgendaRows,
-} from "../lib/calendar/calendar-agenda";
-import { formatCalendarDay } from "../lib/calendar/calendar-format";
+} from "../utilities/calendar-agenda.utilities";
+import { formatCalendarDay } from "../utilities/calendar-format.utilities";
 
 import { CalendarEventRow } from "./calendar-event-row";
+import {
+  getEventRowKey,
+  getRowHeight,
+} from "./calendar-overflow-list.utilities";
 import { VirtualList } from "./virtual-list";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { CalendarEventRecord } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -86,21 +89,4 @@ export function CalendarOverflowList(
       />
     </div>
   );
-}
-
-/**
- * Names a row by its event.
- */
-function getEventRowKey(row: { record: CalendarEventRecord }): string {
-  return row.record.id;
-}
-
-/**
- * Every row of the list is one event's, as tall as its tags need.
- */
-function getRowHeight(
-  row: Readonly<{ record: CalendarEventRecord }>,
-  width: number,
-): number {
-  return getEventRowHeight(row.record.tags, width);
 }

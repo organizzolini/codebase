@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
 import { GroupLevelRow } from "./group-level-row";
 
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
 
 const FIELDS = createEventGroupFields([
   {

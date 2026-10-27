@@ -6,12 +6,14 @@ import {
   DialogTitle,
 } from "@codebase/presentation";
 
-import { getEventRowHeight } from "../lib/calendar/calendar-agenda";
-
+import {
+  getEventRowKey,
+  getRowHeight,
+} from "./calendar-cluster-dialog.utilities";
 import { CalendarEventRow } from "./calendar-event-row";
 import { VirtualList } from "./virtual-list";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { CalendarEventRecord } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -94,18 +96,4 @@ export function CalendarClusterDialog(
       </Dialog>
     </div>
   );
-}
-
-/**
- * Names a row by its event.
- */
-function getEventRowKey(record: CalendarEventRecord): string {
-  return record.id;
-}
-
-/**
- * Every row of the list is one event's, as tall as its tags need.
- */
-function getRowHeight(record: CalendarEventRecord, width: number): number {
-  return getEventRowHeight(record.tags, width);
 }

@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@codebase/presentation";
 
+import { FORM_MATCHES } from "./lexeme-card.constants";
 import { LexemeEtymology } from "./lexeme-etymology";
 import { LexemeForms } from "./lexeme-forms";
 import { LexemeHeader } from "./lexeme-header";
@@ -8,20 +9,9 @@ import { LexemeMatch } from "./lexeme-match";
 import { LexemePronunciations } from "./lexeme-pronunciations";
 import { LexemeTranslations } from "./lexeme-translations";
 
-import type { LoadLexemeForms } from "./lexeme-forms";
-import type { LexemeInflection } from "./lexeme-header";
-import type { LexemeMatchInfo } from "./lexeme-match";
-import type { LexemePronunciation } from "./lexeme-pronunciations";
+import type { LexemeResult } from "./lexeme-card.types";
+import type { LoadLexemeForms } from "./lexeme-forms.types";
 import type { ReactNode } from "react";
-
-// ♟️ Constants
-
-/**
- * The ways a search can match a lexeme through one of its inflected forms, as
- * opposed to its headword, a prefix of it, or a translation: only then is it
- * worth saying which form matched.
- */
-const FORM_MATCHES = new Set(["ENCLITIC", "WORD_EXACT"]);
 
 // 🔖 Type
 
@@ -33,28 +23,6 @@ export interface LexemeCardProperties {
   /** Loads the forms of a lexeme when its table is first opened. */
   loadForms: LoadLexemeForms;
   result: LexemeResult;
-}
-
-/**
- * One lexeme a search matched, with what a card shows of it.
- */
-export interface LexemeResult {
-  enclitic?: null | string;
-  etymology?: null | string;
-  forms?: Awaited<ReturnType<LoadLexemeForms>>;
-  id: string;
-  /** What the matched form is, such as "first person singular present active indicative". */
-  identifiers: string[];
-  inflection?: LexemeInflection | null;
-  lemma: string;
-  /** How the search matched this lexeme. */
-  match: LexemeMatchInfo;
-  partOfSpeech: string;
-  principalParts: string[];
-  pronunciations: LexemePronunciation[];
-  /** How the search matched this lexeme, such as `LEMMA_EXACT` or `WORD_EXACT`. */
-  source?: string;
-  translations: string[];
 }
 
 // 🧩 Component

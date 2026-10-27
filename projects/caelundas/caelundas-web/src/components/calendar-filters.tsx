@@ -1,55 +1,31 @@
-import { ListFilter } from "lucide-react";
-
 import {
-  Badge,
   Button,
   ButtonGroup,
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-  FilterChip,
   Filters,
-  flattenFilterRules,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  useFilterState,
   useMediaQuery,
 } from "@codebase/presentation";
 
-import {
-  countActiveEventFilterRules,
-  EMPTY_EVENT_FILTER,
-} from "../lib/event-filters/event-filter-tree";
-import {
-  DATE_RANGE_EDITOR,
-  TAG_OPTIONS_EDITOR,
-} from "../lib/event-filters/event-filters.constants";
+import { EMPTY_EVENT_FILTER } from "../constants/event-filter-tree.constants";
+import { useFilterQuery } from "../hooks/use-filter-query/use-filter-query";
+import { countActiveEventFilterRules } from "../utilities/event-filter-tree.utilities";
 
 import { CalendarCollectionPicker } from "./calendar-collection-picker";
 import { CalendarColorOptions } from "./calendar-color-options";
+import { EDITORS, TABLET_QUERY } from "./calendar-filters.constants";
+import { renderFiltersButton } from "./calendar-filters.utilities";
 import { CalendarViewMenu } from "./calendar-view-menu";
-import { FilterDateRangeEditor } from "./filter-date-range-editor";
-import { FilterTagEditor } from "./filter-tag-editor";
-import { useFilterQuery } from "./use-filter-query";
+import { FilterChipRow } from "./filter-chip-row";
+import { FilterSurface } from "./filter-surface";
 
-import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
+import type { CalendarSymbols } from "../types/calendar-symbols.types";
 import type {
   EventFilterField,
   EventFilterQuery,
   EventFilterValue,
-} from "../lib/event-filters/event-filters.types";
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
-import type { EventFacet } from "../lib/events-database/events-database.types";
-import type { FilterEditorRegistry } from "@codebase/presentation";
-import type { ReactElement, ReactNode } from "react";
+} from "../types/event-filters.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
+import type { EventFacet } from "../types/events-database.types";
+import type { ReactNode } from "react";
 
 // 🔖 Type
 
@@ -114,13 +90,6 @@ export interface CalendarFiltersProperties {
    */
   viewOptions?: ReactNode;
 }
-
-const TITLE = "Filter";
-const EDITORS: FilterEditorRegistry = {
-  [DATE_RANGE_EDITOR]: FilterDateRangeEditor,
-  [TAG_OPTIONS_EDITOR]: FilterTagEditor,
-};
-const TABLET_QUERY = "(min-width: 768px)";
 
 // 🧩 Component
 
@@ -234,125 +203,5 @@ export function CalendarFilters(
         </Filters>
       ) : null}
     </div>
-  );
-}
-
-/**
- * Draws one chip per rule of the tree in the surrounding `Filters`, nested
- * ones included, in a row that wraps onto more rows. Unlike
- * the vendored chip row, it leaves out the Add filter button: rules are added
- * in the builder.
- */
-function FilterChipRow(): ReactNode {
-  const { query } = useFilterState<EventFilterValue>();
-  const rules = flattenFilterRules(query);
-
-  if (rules.length === 0) {
-    return null;
-  }
-
-  return (
-    <div
-      aria-label={TITLE}
-      className="contents"
-      role="toolbar"
-    >
-      {rules.map((rule, index) => (
-        <FilterChip
-          key={rule.id}
-          index={index}
-          rule={rule}
-        />
-      ))}
-    </div>
-  );
-}
-
-/**
- * Opens the builder over the calendar from its trigger: a popover from 1024
- * pixels wide, a drawer from the side from 768, and a bottom sheet below
- * that, so it never keeps any of the calendar's space.
- */
-function FilterSurface(
-  properties: Readonly<{
-    children: ReactNode;
-    isTablet: boolean;
-    trigger: ReactElement;
-  }>,
-): ReactNode {
-  const { children, isTablet, trigger } = properties;
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-
-  if (isDesktop) {
-    return (
-      <Popover>
-        <PopoverTrigger render={trigger} />
-        <PopoverContent
-          align="start"
-          aria-label={TITLE}
-          className="max-h-[80dvh] w-[42rem] max-w-[95vw] gap-3 overflow-y-auto p-3"
-          sideOffset={8}
-        >
-          {children}
-        </PopoverContent>
-      </Popover>
-    );
-  }
-
-  if (isTablet) {
-    return (
-      <Drawer swipeDirection="right">
-        <DrawerTrigger render={trigger} />
-        <DrawerContent className="data-[swipe-axis=x]:sm:[--drawer-content-width:36rem]">
-          <DrawerHeader>
-            <DrawerTitle>{TITLE}</DrawerTitle>
-          </DrawerHeader>
-          <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
-        </DrawerContent>
-      </Drawer>
-    );
-  }
-
-  return (
-    <Sheet>
-      <SheetTrigger render={trigger} />
-      <SheetContent
-        className="max-h-[85dvh]"
-        side="bottom"
-      >
-        <SheetHeader>
-          <SheetTitle>{TITLE}</SheetTitle>
-        </SheetHeader>
-        <div className="min-h-0 overflow-y-auto px-3 pb-4">{children}</div>
-      </SheetContent>
-    </Sheet>
-  );
-}
-
-/**
- * The Filters button, badged with the number of finished rules, which its
- * accessible name also says.
- */
-function renderFiltersButton(activeCount: number): ReactElement {
-  return (
-    <Button
-      aria-label={
-        activeCount === 0 ? TITLE : `${TITLE}, ${String(activeCount)} active`
-      }
-      size="sm"
-      variant="outline"
-    >
-      <ListFilter aria-hidden="true" />
-      {TITLE}
-      {activeCount === 0 ? null : (
-        <Badge
-          aria-hidden="true"
-          className="tabular-nums"
-          variant="secondary"
-        >
-          {activeCount}
-        </Badge>
-      )}
-    </Button>
   );
 }

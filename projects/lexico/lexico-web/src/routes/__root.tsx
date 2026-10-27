@@ -7,7 +7,7 @@ import {
   useMatches,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { PanelLeft, Search } from "lucide-react";
+import { PanelLeft } from "lucide-react";
 
 import {
   Button,
@@ -26,23 +26,12 @@ import {
   useSidebar,
 } from "@codebase/presentation";
 
-import { Logo } from "../components/layout";
+import { Logo } from "../components/layout/logo";
+import { navigationItems } from "../constants/root.constants";
 import applicationCss from "../styles/application.css?url";
 
+import type { NavigationItem } from "../types/root.types";
 import type { ReactNode } from "react";
-
-/**
- * Navigation item.
- */
-interface NavigationItem {
-  href: string;
-  icon: ReactNode;
-  label: string;
-}
-
-const navigationItems: NavigationItem[] = [
-  { href: "/search", icon: <Search className="h-5 w-5" />, label: "Search" },
-];
 
 // 🧭 Route
 
@@ -169,7 +158,7 @@ function NavigationLink(
         render={<Link to={item.href} />}
         tooltip={item.label}
       >
-        {item.icon}
+        <item.icon className="h-5 w-5" />
         <span>{item.label}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>

@@ -246,6 +246,20 @@
       ],
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
+    "component-file": {
+      "name": "^[a-z0-9-]+(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.(ts|tsx)$"
+    },
+    "component-folder": {
+      "children": [
+        {
+          "ruleId": "component-folder"
+        },
+        {
+          "ruleId": "component-file"
+        }
+      ],
+      "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
+    },
     "documentation-project": {
       "children": [
         {
@@ -538,6 +552,14 @@
       ],
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
     },
+    "hook-folder": {
+      "children": [
+        {
+          "name": "^{folder-name}(.(constants|schemas|types|utilities))?(.(unit|integration).test)?.ts$"
+        }
+      ],
+      "name": "^use-[a-z0-9-]+$"
+    },
     "infrastructure-project": {
       "children": [
         {
@@ -637,6 +659,195 @@
         }
       ],
       "name": "^{templatePlaceholder}$"
+    },
+    "web-application-project": {
+      "children": [
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "ruleId": "component-folder"
+                },
+                {
+                  "ruleId": "component-file"
+                }
+              ],
+              "name": "components"
+            },
+            {
+              "children": [
+                {
+                  "name": "^[a-z0-9-]+.constants(.(unit|integration).test)?.(ts|tsx)$"
+                }
+              ],
+              "name": "constants"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "hook-folder"
+                }
+              ],
+              "name": "hooks"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "enforceExistence": "__lib_folders_are_forbidden_in_web_applications__",
+              "name": "lib"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "module-folder"
+                }
+              ],
+              "name": "modules"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "routes"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "styles"
+            },
+            {
+              "children": [
+                {
+                  "ruleId": "kebab-case-folder"
+                },
+                {
+                  "ruleId": "any-file"
+                }
+              ],
+              "name": "assets"
+            },
+            {
+              "children": [
+                {
+                  "name": "^[a-z0-9-]+.types(.(unit|integration).test)?.(ts|tsx)$"
+                }
+              ],
+              "name": "types"
+            },
+            {
+              "children": [
+                {
+                  "name": "^[a-z0-9-]+.utilities(.(unit|integration).test)?.(ts|tsx)$"
+                }
+              ],
+              "name": "utilities"
+            },
+            {
+              "name": "^[a-z0-9-]+.worker.ts$"
+            },
+            {
+              "ruleId": "source-entry-file"
+            },
+            {
+              "ruleId": "source-entry-support-file"
+            }
+          ],
+          "name": "src"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "testing"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "scripts"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "data"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "coverage"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "output"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "public"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "^[a-z0-9-]+-web$"
     }
   },
   "structure": {
@@ -837,6 +1048,9 @@
           {
             "children": [
               {
+                "ruleId": "web-application-project"
+              },
+              {
                 "ruleId": "codebase-project"
               }
             ],
@@ -844,6 +1058,9 @@
           },
           {
             "children": [
+              {
+                "ruleId": "web-application-project"
+              },
               {
                 "ruleId": "codebase-project"
               }
@@ -890,6 +1107,9 @@
           {
             "children": [
               {
+                "ruleId": "web-application-project"
+              },
+              {
                 "ruleId": "codebase-project"
               }
             ],
@@ -898,10 +1118,16 @@
           {
             "children": [
               {
+                "ruleId": "web-application-project"
+              },
+              {
                 "ruleId": "codebase-project"
               }
             ],
             "name": "meanderaw"
+          },
+          {
+            "ruleId": "web-application-project"
           },
           {
             "ruleId": "codebase-project"

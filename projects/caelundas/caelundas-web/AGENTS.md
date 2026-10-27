@@ -55,7 +55,7 @@ but that file:
    read-only in memory with sqlite-wasm, and answers selects. No persistent
    storage is used, so no cross-origin isolation headers are needed.
 
-Every query lives in `src/lib/events-database/events-database.ts`, behind the
+Every query lives in `src/utilities/events-database.utilities.ts`, behind the
 `EventsDatabase` interface, over a `SqlExecutor`. The browser's executor posts
 each select to the worker; the tests' executor runs it on `node:sqlite` over
 the same three SQL files. The route reads the database from the router
@@ -85,11 +85,21 @@ src/
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
     <route>.integration.test.tsx # Ignored by the route generator
   components/
-    <component>.tsx
+    <component>.tsx                # One component and its Properties
     <component>.unit.test.tsx
+    <component>.<kind>.ts          # Its types, constants, or utilities
   hooks/
-    use-<hook>.ts
-    use-<hook>.unit.test.ts
+    use-<hook>/
+      use-<hook>.ts                # One hook
+      use-<hook>.<kind>.ts         # Its types, constants, and utilities
+      use-<hook>.unit.test.ts
+  constants/
+    <name>.constants.ts            # Constants more than one file shares
+  types/
+    <name>.types.ts                # Types more than one file shares
+  utilities/
+    <name>.utilities.ts            # Functions more than one file shares
+    <name>.utilities.unit.test.ts
   modules/
     <feature>/                   # Server functions and the utilities behind them
   styles/
@@ -103,9 +113,10 @@ The calendar adds its data layer and the files that build its database:
 
 ```text
 src/
-  lib/
-    calendar/                    # Search parameters, windows, loader, formatting
-    events-database/             # EventsDatabase, its SQL, worker, and client
+  events-database.worker.ts      # The worker that opens the database file
+  constants/                     # calendar-*, event-*, and events-database-* constants
+  types/                         # ...their types
+  utilities/                     # ...and the functions over them: windows, loader, SQL
 data/
   events-schema.sql              # The exported tables, for tests and the build
   events-seed.sql                # Text seed standing in for exported rows
@@ -179,7 +190,7 @@ route's files apart from a component's when conformance is checked.
 `vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
 components are not code-split into lazy chunks under test.
 
-The views' route tests live in `src/lib/calendar/calendar-views.integration.test.tsx`, beside
+The views' route tests live in `src/utilities/calendar-views.utilities.integration.test.tsx`, beside
 the route's own, only to keep each file under the line limit; shared steps
 live in `testing/calendar-page.ts`.
 
@@ -196,11 +207,11 @@ chips, the Filters button with a count of the finished rules, and the view
 selector. Times render in the zone the dataset's events carry.
 
 - The views are month, week, three-day, day, agenda, and timeline, listed in
-  `src/lib/calendar/calendar-views.ts`; the app owns that list, so a view is
+  `src/constants/calendar-views.constants.ts`; the app owns that list, so a view is
   added or cut there. The `view` search parameter holds the one picked.
   Without it, the view follows the width: the agenda below 768 pixels, the
   month above, read synchronously so the first render is already right.
-- Three widths are told apart, in `src/lib/calendar/calendar-viewport.ts`: a
+- Three widths are told apart, in `src/utilities/calendar-viewport.utilities.ts`: a
   phone below 768 pixels, a tablet from 768, and a desktop from 1024. Below a
   desktop the view selector is a menu, as six buttons do not fit beside the
   other controls. On a phone the week also scrolls sideways with a sticky
@@ -213,10 +224,10 @@ selector. Times render in the zone the dataset's events carry.
   calendar or Gantt can read that, and the toolbar calls the latest report.
 - The agenda and a month cell's "+N more" list are the app's own, windowed by
   `VirtualList` over the pure functions in
-  `src/lib/calendar/calendar-virtual-window.ts`. An event is listed once, on
+  `src/utilities/calendar-virtual-window.utilities.ts`. An event is listed once, on
   the day it begins, or on the first day for one already under way.
 - Each load reads only the days the view shows plus a day either side
-  (`getViewWindows` in `src/lib/calendar/calendar-window.ts`), through a cache
+  (`getViewWindows` in `src/utilities/calendar-window.utilities.ts`), through a cache
   keyed by window and filter. The agenda lists 30 days and grows by 30, up to
   366, when scrolled to its end or its last row's button is pressed; the
   `days` search parameter holds how many.
@@ -233,7 +244,7 @@ selector. Times render in the zone the dataset's events carry.
   from before tags could be picked still names a `depth`. A level may instead
   be a year, quarter, month, week, day, weekday, hour, or duration bucket
   read in each event's own zone.
-  `compileEventGrouping` in `src/lib/event-groups/` turns a grouping into one
+  `compileEventGrouping` in `src/utilities/event-group-*.utilities.ts` turns a grouping into one
   SQL source of group keys per level, which `findEvents` reads into each
   event's `groups`; `buildEventGroups` builds the tree from them. An event
   falls in every group of a level it has a key for, so an event of two
@@ -249,7 +260,7 @@ selector. Times render in the zone the dataset's events carry.
   offer, and the View menu's Color by submenu picks it with the same field
   picker and tag tree. The loader reads it as one more level after the
   grouping's, so each event arrives with its keys for it in `groups`;
-  `createColorScheme` (`src/lib/calendar/calendar-color-schemes.ts`) turns
+  `createColorScheme` (`src/utilities/calendar-color-schemes.utilities.ts`) turns
   them into colors, handing out the palette in the tree's order, from the
   weekdays, hours and durations known ahead, or from a key's own text for a
   period. An event with several values, such as an aspect between two planets,
@@ -265,14 +276,14 @@ selector. Times render in the zone the dataset's events carry.
   Instants are drawn as circles, and a cluster of them as a circle holding its count, at their moment, spans as bars of their
   true length, and markers closer than one marker's width at the scale and
   zoom shown are clustered into a count
-  (`src/lib/calendar/calendar-timeline-clusters.ts`). Bars that still overlap
+  (`src/utilities/calendar-timeline-clusters.utilities.ts`). Bars that still overlap
   are packed into lanes (`calendar-timeline-lanes.ts`): a row that needs more
   than one gets a row without a title beneath it for each further lane, so
   nothing is drawn over anything else. Lanes are packed over every bar of the
   row, not only those on screen, so scrolling never moves a row.
 - The Gantt draws every row and bar it is handed, windowing neither, so the
   timeline hands bars only to the rows scrolled into view and a few beyond
-  (`src/lib/calendar/calendar-timeline-window.ts`). Rows keep one track
+  (`src/utilities/calendar-timeline-window.utilities.ts`). Rows keep one track
   each, so a row's height stays put as its bars come and go; overlapping
   bars in one row are drawn over each other rather than stacked.
 
@@ -310,7 +321,7 @@ selector. Times render in the zone the dataset's events carry.
   named like one of those is left to the derived field.
 - Date, weekday, and hour are read in each event's own zone through the
   `event_local_*` SQL functions in
-  `src/lib/events-database/events-database.local-time.ts`, which the worker
+  `src/utilities/events-database-local-time.utilities.ts`, which the worker
   and the tests' executor both register: SQLite itself knows no zones.
 
 - While the database loads, `CalendarSkeleton` stands in for the page: a
@@ -328,8 +339,8 @@ selector. Times render in the zone the dataset's events carry.
 - The `date` search parameter (`YYYY-MM-DD`) holds the day the view opens on;
   one that does not parse falls back to today.
 - The `filter` search parameter holds the ReUI filter tree as JSON, validated
-  in `src/lib/calendar/calendar-search.ts`; one that does not parse is
-  dropped. `compileEventFilter` in `src/lib/event-filters/` turns it into the
+  by the schemas in `src/constants/calendar-search.constants.ts`; one that does not parse is
+  dropped. `compileEventFilter` in `src/utilities/event-filter-*.utilities.ts` turns it into the
   SQL condition `findEvents` applies, leaving out unfinished rules, and a
   month the filters empty says so apart from one with no events at all.
 
@@ -352,7 +363,7 @@ a drawer on a tablet, and a bottom sheet on a phone.
 
 No view is withheld at any width. One that stops working at some width is
 cut by deleting it from `CALENDAR_VIEWS` and the records keyed by it in
-`src/lib/calendar/calendar-views.ts`, which the compiler then follows to
+`src/constants/calendar-views.constants.ts`, which the compiler then follows to
 every other place that names it. Not checked: the "+N more" list of a busy
 month, as the seed holds no busy day, and keyboard-only scrolling of the
 agenda and the timeline in browsers that do not make a scrollable region
@@ -364,7 +375,7 @@ focusable by themselves.
 - [src/routes/\_\_root.tsx](src/routes/__root.tsx): Document shell
 - [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
 - [vitest.config.ts](vitest.config.ts): Test configuration
-- [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
+- [src/types/events-database.types.ts](src/types/events-database.types.ts):
   The `EventsDatabase` interface
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
 - [data/events-views.sql](data/events-views.sql): The post-export tables and views

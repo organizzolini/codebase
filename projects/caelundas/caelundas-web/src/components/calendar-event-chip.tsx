@@ -1,12 +1,12 @@
 import { useContext } from "react";
 
-import { getEventLabel } from "../lib/calendar/calendar-glyphs";
-import { CalendarSymbolsContext } from "../lib/calendar/calendar-symbols";
+import { CalendarSymbolsContext } from "../constants/calendar-symbols.constants";
+import { getEventLabel } from "../utilities/calendar-glyphs.utilities";
 
 import { CalendarEventTooltip } from "./calendar-event-tooltip";
 import { EventGlyphs } from "./event-glyphs";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { CalendarEventRecord } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

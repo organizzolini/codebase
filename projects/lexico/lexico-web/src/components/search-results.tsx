@@ -4,8 +4,8 @@ import { useBreakpoint } from "@codebase/presentation";
 
 import { LexemeCard } from "./lexeme-card";
 
-import type { LexemeResult } from "./lexeme-card";
-import type { LoadLexemeForms } from "./lexeme-forms";
+import type { LexemeResult } from "./lexeme-card.types";
+import type { LoadLexemeForms } from "./lexeme-forms.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

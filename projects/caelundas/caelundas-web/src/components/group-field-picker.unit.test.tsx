@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
 import { GroupFieldPicker } from "./group-field-picker";
 
-import type { EventGroupField } from "../lib/event-groups/event-groups.types";
+import type { EventGroupField } from "../types/event-groups.types";
 
 const FIELDS = createEventGroupFields([
   {
@@ -19,7 +19,9 @@ const FIELDS = createEventGroupFields([
 
 function renderPicker(
   overrides: Partial<Parameters<typeof GroupFieldPicker>[0]> = {},
-): { onSelect: ReturnType<typeof vi.fn<(field: EventGroupField) => void>> } {
+): {
+  onSelect: ReturnType<typeof vi.fn<(field: EventGroupField) => void>>;
+} {
   const onSelect = vi.fn<(field: EventGroupField) => void>();
 
   render(

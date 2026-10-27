@@ -14,9 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@codebase/presentation";
 
-import { DEFAULT_CALENDAR_SYMBOLS } from "../lib/calendar/calendar-symbols";
+import { DEFAULT_CALENDAR_SYMBOLS } from "../constants/calendar-symbols.constants";
 
-import type { CalendarSymbols } from "../lib/calendar/calendar-symbols";
+import type { CalendarSymbols } from "../types/calendar-symbols.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

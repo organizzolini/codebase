@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { z } from "zod";
 
 import { DEFAULT_FILTER_LABELS } from "@codebase/presentation";
 
-import { TAG_OPERATORS } from "../lib/event-filters/event-filters.constants";
+import { TAG_OPERATORS } from "../constants/event-filters.constants";
 
 import { FilterTagEditor } from "./filter-tag-editor";
+import { NOTHING, TAG_IDS } from "./group-tag-picker.constants";
 
-import type { EventGroupField } from "../lib/event-groups/event-groups.types";
+import type { EventGroupField } from "../types/event-groups.types";
 import type { FilterEditorProps } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
@@ -23,10 +23,6 @@ export interface GroupTagPickerProperties {
   onChange: (tags: string[]) => void;
   tags: readonly string[];
 }
-
-const NOTHING = (): void => {};
-
-const TAG_IDS = z.array(z.string());
 
 // 🧩 Component
 

@@ -3,8 +3,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SearchResults } from "./search-results";
 
-import type { LexemeResult } from "./lexeme-card";
-import type { LoadLexemeForms } from "./lexeme-forms";
+import type { LexemeResult } from "./lexeme-card.types";
+import type { LoadLexemeForms } from "./lexeme-forms.types";
 
 /**
  * Builds a result with only the fields the test varies.

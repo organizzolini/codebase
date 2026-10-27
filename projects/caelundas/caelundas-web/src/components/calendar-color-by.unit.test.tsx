@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { EVENT_COLOR_RULES } from "../lib/calendar/calendar-colors";
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import { EVENT_COLOR_RULES } from "../constants/calendar-colors.constants";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
 import { CalendarColorBy } from "./calendar-color-by";
 
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
 
 const FACETS = [
   {

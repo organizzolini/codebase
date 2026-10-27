@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { createEventGroupFields } from "../lib/event-groups/event-group-fields";
+import { createEventGroupFields } from "../utilities/event-group-fields.utilities";
 
 import { GroupTagPicker } from "./group-tag-picker";
 

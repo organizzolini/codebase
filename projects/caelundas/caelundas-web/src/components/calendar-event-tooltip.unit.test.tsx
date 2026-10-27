@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { CalendarEventTooltip } from "./calendar-event-tooltip";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { CalendarEventRecord } from "../types/events-database.types";
 
 const EVENT: CalendarEventRecord = {
   color: null,

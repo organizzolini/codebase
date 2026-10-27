@@ -1,17 +1,17 @@
 import { useContext } from "react";
 
+import { CalendarSymbolsContext } from "../constants/calendar-symbols.constants";
 import {
   formatDuration,
   formatEventSpan,
   formatEventTime,
-} from "../lib/calendar/calendar-format";
-import { getEventLabel } from "../lib/calendar/calendar-glyphs";
-import { CalendarSymbolsContext } from "../lib/calendar/calendar-symbols";
+} from "../utilities/calendar-format.utilities";
+import { getEventLabel } from "../utilities/calendar-glyphs.utilities";
 
 import { EventGlyphs } from "./event-glyphs";
 import { EventTagPills } from "./event-tag-pills";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { CalendarEventRecord } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type

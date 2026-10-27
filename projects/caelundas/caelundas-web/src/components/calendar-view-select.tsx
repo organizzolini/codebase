@@ -1,11 +1,3 @@
-import {
-  CalendarDays,
-  CalendarRange,
-  ChartGantt,
-  Columns3,
-  List,
-  Square,
-} from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 import {
@@ -19,17 +11,18 @@ import {
 } from "@codebase/presentation";
 
 import {
-  isDesktopViewport,
-  subscribeToDesktopViewport,
-} from "../lib/calendar/calendar-viewport";
-import {
   CALENDAR_VIEW_LABELS,
   CALENDAR_VIEWS,
-  type CalendarViewName,
-  parseCalendarView,
-} from "../lib/calendar/calendar-views";
+} from "../constants/calendar-views.constants";
+import {
+  isDesktopViewport,
+  subscribeToDesktopViewport,
+} from "../utilities/calendar-viewport.utilities";
+import { parseCalendarView } from "../utilities/calendar-views.utilities";
 
-import type { LucideIcon } from "lucide-react";
+import { VIEW_ICONS } from "./calendar-view-select.constants";
+
+import type { CalendarViewName } from "../types/calendar-views.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -47,15 +40,6 @@ export interface CalendarViewSelectProperties {
   onViewChange: (view: CalendarViewName) => void;
   view: CalendarViewName;
 }
-
-const VIEW_ICONS: Readonly<Record<CalendarViewName, LucideIcon>> = {
-  agenda: List,
-  day: Square,
-  month: CalendarDays,
-  "three-day": Columns3,
-  timeline: ChartGantt,
-  week: CalendarRange,
-};
 
 // 🧩 Component
 

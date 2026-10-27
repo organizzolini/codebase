@@ -291,7 +291,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   },
   {
     description:
-      "A React hook and unit test file template for an existing React project, placed in src/hooks",
+      "A React hook, the result type it returns, and its unit test, in its own src/hooks/use-<name>/ folder of an existing React project",
     inputs: defineInputs({
       name: z
         .string()
@@ -301,10 +301,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
     }),
     instances: [
       {
-        patterns: [
-          "src/hooks/use-!(*.unit.test).ts",
-          "src/hooks/use-*.unit.test.ts",
-        ],
+        patterns: ["src/hooks/use-*"],
         exclude: SHADCN_GENERATED_PATTERNS,
         tags: ["framework:react"],
       },

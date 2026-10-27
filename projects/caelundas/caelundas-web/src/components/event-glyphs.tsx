@@ -1,4 +1,4 @@
-import { toGlyphParts } from "../lib/calendar/calendar-icons";
+import { toGlyphParts } from "../utilities/calendar-icons.utilities";
 
 import type { ReactNode } from "react";
 

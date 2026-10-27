@@ -3,6 +3,7 @@
 // rather than being mapped in each project's tsconfig `paths`.
 /// <reference path="./types/eslint-plugin-better-max-params/index.d.ts" />
 
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -66,6 +67,182 @@ const tsconfigRootDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
 );
+
+/**
+ * The absolute root of every project whose `project.json` carries all of
+ * `tags`. Rules for a kind of project are scoped by its tags this way, so no
+ * project is named here and a new one is covered the moment it is tagged.
+ */
+function findProjectRoots(tags: readonly string[]): string[] {
+  return fs
+    .globSync("projects/**/project.json", {
+      cwd: tsconfigRootDir,
+      exclude: (file) => String(file).includes("node_modules"),
+    })
+    .filter((file) => {
+      const project = JSON.parse(
+        fs.readFileSync(path.join(tsconfigRootDir, file), "utf8"),
+      ) as { tags?: string[] };
+
+      return tags.every((tag) => project.tags?.includes(tag) === true);
+    })
+    .map((file) => path.join(tsconfigRootDir, path.dirname(file)));
+}
+
+/**
+ * Syntax no source file may use. A block that sets `no-restricted-syntax`
+ * replaces these rather than adding to them, so it spreads them back in.
+ */
+const RESTRICTED_SYNTAX = [
+  {
+    message:
+      "for..in iterates over the prototype chain. Use Object.{keys,values,entries} instead.",
+    selector: "ForInStatement",
+  },
+  {
+    message:
+      "Labels create confusing control flow. Use named functions or early returns instead.",
+    selector: "LabeledStatement",
+  },
+  {
+    message: "'with' is disallowed in strict mode.",
+    selector: "WithStatement",
+  },
+];
+
+/**
+ * Every React application: its `src/` is held to one file shape per kind.
+ */
+const WEB_APPLICATION_ROOTS = findProjectRoots([
+  "framework:react",
+  "type:application",
+]);
+
+/**
+ * The file kinds a web application's `src/` may hold, relative to its root.
+ * Any other `.ts` or `.tsx` file there fits no kind and fails.
+ */
+const WEB_APPLICATION_FILE_KINDS = [
+  "**/*.constants.ts",
+  "**/*.schemas.ts",
+  "**/*.test.ts",
+  "**/*.test.tsx",
+  "**/*.types.ts",
+  "**/*.utilities.ts",
+  "**/*.worker.ts",
+  "src/client.tsx",
+  "src/components/**/*.tsx",
+  "src/hooks/*/use-*.ts",
+  "src/modules/*/*.functions.ts",
+  "src/routeTree.gen.ts",
+  "src/router.tsx",
+  "src/routes/**/*.tsx",
+];
+
+/**
+ * A hook file's siblings, which share its `use-` prefix but not its shape.
+ */
+const HOOK_SIBLING_FILES = [
+  "**/*.constants.ts",
+  "**/*.schemas.ts",
+  "**/*.test.ts",
+  "**/*.types.ts",
+  "**/*.utilities.ts",
+];
+
+/**
+ * The file-shape blocks for one web application, rooted at `basePath` so the
+ * same globs match whether ESLint runs from the workspace or the project.
+ */
+function defineWebApplicationFileShape(basePath: string): ConfigWithExtends[] {
+  return [
+    {
+      basePath,
+      files: ["src/**/*.ts", "src/**/*.tsx"],
+      ignores: WEB_APPLICATION_FILE_KINDS,
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          ...RESTRICTED_SYNTAX,
+          {
+            message:
+              "This file fits no kind a web application allows. Name it *.types.ts, *.constants.ts, *.utilities.ts, or *.schemas.ts, move a hook to src/hooks/use-<name>/use-<name>.ts, or a component to src/components/.",
+            selector: "Program",
+          },
+        ],
+      },
+    },
+    {
+      basePath,
+      files: ["src/components/**/*.tsx"],
+      ignores: ["**/*.test.tsx"],
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          ...RESTRICTED_SYNTAX,
+          {
+            message:
+              "A component file holds its imports, one exported component, and its exported Properties type. Move other symbols to sibling *.types.ts, *.constants.ts, or *.utilities.ts files, or another component to its own file.",
+            selector:
+              "Program > :not(ImportDeclaration):not(ExportNamedDeclaration[declaration.type='FunctionDeclaration'][declaration.id.name=/^[A-Z]/]):not(ExportNamedDeclaration[declaration.type=/^TS(InterfaceDeclaration|TypeAliasDeclaration)$/][declaration.id.name=/Properties$/])",
+          },
+          {
+            message:
+              "A component file exports one component. Move this one to its own file.",
+            selector:
+              "Program > ExportNamedDeclaration[declaration.type='FunctionDeclaration'] ~ ExportNamedDeclaration[declaration.type='FunctionDeclaration']",
+          },
+          {
+            message:
+              "A component file declares only its own Properties type. Move this one to the file of the component it belongs to.",
+            selector:
+              "Program > ExportNamedDeclaration[declaration.type=/^TS(InterfaceDeclaration|TypeAliasDeclaration)$/] ~ ExportNamedDeclaration[declaration.type=/^TS(InterfaceDeclaration|TypeAliasDeclaration)$/]",
+          },
+        ],
+      },
+    },
+    {
+      basePath,
+      files: ["src/hooks/*/use-*.ts"],
+      ignores: HOOK_SIBLING_FILES,
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          ...RESTRICTED_SYNTAX,
+          {
+            message:
+              "A hook file holds its imports and one exported hook. Move types, constants, and helpers to its sibling *.types.ts, *.constants.ts, and *.utilities.ts files.",
+            selector:
+              "Program > :not(ImportDeclaration):not(ExportNamedDeclaration[declaration.type='FunctionDeclaration'][declaration.id.name=/^use[A-Z]/])",
+          },
+          {
+            message:
+              "A hook file exports one hook. Move this one to its own src/hooks/use-<name>/ folder.",
+            selector:
+              "Program > ExportNamedDeclaration[declaration.type='FunctionDeclaration'] ~ ExportNamedDeclaration[declaration.type='FunctionDeclaration']",
+          },
+        ],
+      },
+    },
+    {
+      basePath,
+      files: ["src/routes/**/*.tsx"],
+      ignores: ["**/*.test.tsx"],
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          ...RESTRICTED_SYNTAX,
+          {
+            message:
+              "A route file holds its imports, its exported Route, and the components the route renders. Move other symbols to *.types.ts, *.constants.ts, or *.utilities.ts files.",
+            selector:
+              "Program > :not(ImportDeclaration):not(ExportNamedDeclaration[declaration.type='VariableDeclaration'][declaration.declarations.0.id.name='Route']):not(FunctionDeclaration[id.name=/^[A-Z]/])",
+          },
+        ],
+      },
+    },
+  ];
+}
 
 export default [
   // 🚫 Global Ignores
@@ -941,23 +1118,7 @@ export default [
       "no-loop-func": "off", // @typescript-eslint/no-loop-func handles this
       "no-param-reassign": "warn",
       "no-promise-executor-return": "error",
-      "no-restricted-syntax": [
-        "error",
-        {
-          message:
-            "for..in iterates over the prototype chain. Use Object.{keys,values,entries} instead.",
-          selector: "ForInStatement",
-        },
-        {
-          message:
-            "Labels create confusing control flow. Use named functions or early returns instead.",
-          selector: "LabeledStatement",
-        },
-        {
-          message: "'with' is disallowed in strict mode.",
-          selector: "WithStatement",
-        },
-      ],
+      "no-restricted-syntax": ["error", ...RESTRICTED_SYNTAX],
       "no-self-compare": "error",
       "no-shadow": "off", // @typescript-eslint/no-shadow handles this
       "no-throw-literal": "off", // TypeScript ESLint handles this
@@ -1097,6 +1258,13 @@ export default [
       ],
     },
   },
+
+  // 🕸️ Web Application File Shape
+  // Every project tagged framework:react and type:application holds each
+  // file in its src/ to one kind: a component, a hook, a route, or a types,
+  // constants, or utilities file. The three file shapes above cover the last
+  // three; these blocks cover the rest and reject a file that is none.
+  ...WEB_APPLICATION_ROOTS.flatMap(defineWebApplicationFileShape),
 
   // 🔷 TypeScript Strict Type-Checked
   // Enables strict + stylistic type-checked rule sets from typescript-eslint.

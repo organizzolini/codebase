@@ -1,4 +1,4 @@
-import { Logo } from "./layout";
+import { Logo } from "./layout/logo";
 
 import type { ReactNode } from "react";
 

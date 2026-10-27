@@ -9,49 +9,13 @@ import {
   CollapsibleTrigger,
 } from "@codebase/presentation";
 
-import { AdjectiveForms } from "./adjective-forms";
-import { NounForms } from "./noun-forms";
-import { VerbForms } from "./verb-forms";
+import { FormsOfKind } from "./forms-of-kind";
+import { TABLE_KINDS } from "./lexeme-forms.constants";
 
+import type { FormsState, LoadLexemeForms } from "./lexeme-forms.types";
 import type { ReactNode } from "react";
 
-// ♟️ Constants
-
-/**
- * The parts of speech that have a table of forms, and which kind of table.
- */
-const TABLE_KINDS: Readonly<Record<string, "conjugation" | "declension">> = {
-  adjective: "declension",
-  determiner: "declension",
-  noun: "declension",
-  numeral: "declension",
-  participle: "declension",
-  pronoun: "declension",
-  properNoun: "declension",
-  suffix: "declension",
-  verb: "conjugation",
-};
-
 // 🔖 Type
-
-/**
- * One form of a lexeme and the word written for it, as the API reports it. Which
- * fields are filled depends on the kind of form.
- */
-export interface LexemeFormRow {
-  case?: string;
-  degree?: string;
-  gender?: string;
-  id: string;
-  /** The kind of form, such as `NominalForm` or `FiniteVerbForm`. */
-  kind: string;
-  mood?: string;
-  number?: string;
-  person?: string;
-  tense?: string;
-  voice?: string;
-  word: string;
-}
 
 /**
  * The properties LexemeForms accepts.
@@ -62,20 +26,6 @@ export interface LexemeFormsProperties {
   loadForms: LoadLexemeForms;
   partOfSpeech: string;
 }
-
-/**
- * Loads every form of a lexeme with the word written for it.
- */
-export type LoadLexemeForms = (lexemeId: string) => Promise<LexemeFormRow[]>;
-
-/**
- * Where loading a lexeme's forms stands.
- */
-type FormsState =
-  | { rows: LexemeFormRow[]; status: "loaded" }
-  | { status: "error" }
-  | { status: "idle" }
-  | { status: "loading" };
 
 // 🧩 Component
 
@@ -182,36 +132,4 @@ export function LexemeForms(
       </Collapsible>
     </div>
   );
-}
-
-// 🔏 Private Functions
-
-/**
- * The table for the kind of forms a lexeme turned out to have, or a note that
- * it has none.
- */
-function FormsOfKind(
-  properties: Readonly<{ partOfSpeech: string; rows: LexemeFormRow[] }>,
-): ReactNode {
-  const { partOfSpeech, rows } = properties;
-
-  if (partOfSpeech === "verb") {
-    return rows.length === 0 ? <NoForms /> : <VerbForms rows={rows} />;
-  }
-
-  const adjectival = rows.filter((row) => row.kind === "AdjectivalForm");
-  const nominal = rows.filter((row) => row.kind === "NominalForm");
-
-  if (adjectival.length > 0) {
-    return <AdjectiveForms rows={adjectival} />;
-  }
-
-  return nominal.length === 0 ? <NoForms /> : <NounForms rows={nominal} />;
-}
-
-/**
- * The note shown when a lexeme has no forms on record.
- */
-function NoForms(): ReactNode {
-  return <p className="text-sm text-muted-foreground">No forms on record.</p>;
 }

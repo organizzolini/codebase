@@ -15,7 +15,7 @@ export interface LogoProperties {
 /**
  * Render the Lexico brand logo at a configurable width.
  */
-function Logo(properties: LogoProperties): React.ReactElement {
+export function Logo(properties: LogoProperties): React.ReactElement {
   const { className, width = 320 } = properties;
   // Logo has 4:3 aspect ratio
   const height = width * (4 / 3);
@@ -36,5 +36,3 @@ function Logo(properties: LogoProperties): React.ReactElement {
     </div>
   );
 }
-
-export { Logo };

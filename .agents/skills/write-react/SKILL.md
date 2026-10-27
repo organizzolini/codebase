@@ -18,7 +18,7 @@ the file by hand:
 | Shape | Generator | Lands in |
 | ----- | --------- | -------- |
 | Component | `nx g conformetry:react-component --name=user-card --project=<project>` | `src/components/user-card.tsx` |
-| Hook | `nx g conformetry:react-hook --name=use-user --project=<project>` | `src/hooks/use-user.ts` |
+| Hook | `nx g conformetry:react-hook --name=use-user --project=<project>` | `src/hooks/use-user/` |
 | Route | `nx g conformetry:tanstack-route --name=word.$id --path=/word/$id --project=<project>` | `src/routes/word.$id.tsx` |
 | Server functions | `nx g conformetry:tanstack-server-function --name=bookmarks --project=<project>` | `src/modules/bookmarks/` |
 | Application | `nx g conformetry:tanstack-application --name=<name> --directory=projects` | `projects/<name>/` |
@@ -27,6 +27,31 @@ A template is the standard its instances are validated against, bodies
 included: every declaration, statement, and section comment it writes must
 still be in the file afterwards, in order. Add to a generated file freely;
 removing or renaming what the template wrote is what fails validation.
+
+## File Shape
+
+In a React application — a project tagged `framework:react` and
+`type:application` — every file in `src/` is one kind, and ESLint fails a file
+that holds anything else:
+
+| File | Holds only |
+| ---- | ---------- |
+| `src/components/<name>.tsx` | Imports, one exported component, and its exported `<Name>Properties` |
+| `src/hooks/use-<name>/use-<name>.ts` | Imports and one exported hook |
+| `src/routes/<route>.tsx` | Imports, the exported `Route`, and the components it renders |
+| `*.types.ts` | Types and interfaces |
+| `*.constants.ts` | `const` declarations, and the `Error` classes thrown beside them |
+| `*.utilities.ts` | Function declarations |
+
+What a component or hook uses besides itself goes in sibling files that share
+its name: `calendar-agenda.constants.ts` beside `calendar-agenda.tsx`, and
+`use-user.types.ts` inside `src/hooks/use-user/`. What several files share goes
+in `src/types/`, `src/constants/`, or `src/utilities/`. A second component is
+a second component file. A `lib/` folder is not allowed, and any other `.ts`
+file in `src/` — a barrel `index.ts`, a loose helper — fails as a kind it is
+not. The hook generator writes the folder with the hook, its test, and the
+`<Name>Result` type it returns; add `.constants.ts` and `.utilities.ts` beside
+them once the hook has some, since an empty one is an unused file to knip.
 
 ## Component Structure
 
@@ -106,8 +131,10 @@ A component's root is a `<div>` that receives `className` and a
 `data-testid` of its own kebab-case name, so a test can always find it.
 
 A hook follows the same layout under a `// 🧩 Hook` marker, with 🪝 Hooks,
-🏗 Setup, 💪 Handlers, ♻️ Lifecycle, and 🎁 Result inside it, its state held in `value`.
-Its name carries the `use-` prefix, so `use-user.ts` exports `useUser`.
+🏗 Setup, 💪 Handlers, ♻️ Lifecycle, and 🎁 Result inside it, and returns the
+`<Name>Result` interface its `.types.ts` declares, with its parameters' type
+beside it. Its name carries the `use-` prefix, so `use-user/use-user.ts`
+exports `useUser`.
 
 ## components
 
@@ -276,7 +303,7 @@ Use Vitest and React Testing Library, beside the file under test:
 | File | Test | Shape |
 | ---- | ---- | ----- |
 | `user-card.tsx` | `user-card.unit.test.tsx` | `describe(UserCard, …)`, rendering with `render` |
-| `use-user.ts` | `use-user.unit.test.ts` | `describe(useUser, …)`, rendering with `renderHook` |
+| `use-user/use-user.ts` | `use-user/use-user.unit.test.ts` | `describe(useUser, …)`, rendering with `renderHook` |
 | `word.$id.tsx` | `word.$id.integration.test.tsx` | `describe("word.$id", …)`, rendering with `renderRoute` |
 
 `renderRoute` comes from a generated application's `testing/render-route.tsx`:

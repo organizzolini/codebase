@@ -18,8 +18,10 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
-import type { EventGroupField } from "../lib/event-groups/event-groups.types";
-import type { CascaderLabels, CascaderNode } from "@codebase/presentation";
+import { LABELS, NOTHING } from "./group-field-picker.constants";
+
+import type { EventGroupField } from "../types/event-groups.types";
+import type { CascaderNode } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -37,20 +39,6 @@ export interface GroupFieldPickerProperties {
   onSelect: (field: EventGroupField) => void;
   value: string;
 }
-
-/**
- * The picker's own words, the filter's: the cascader reads its keys by other
- * names than the filter's labels, so they are bridged as the filter does.
- */
-const LABELS: Partial<CascaderLabels> = {
-  back: DEFAULT_FILTER_LABELS.back,
-  empty: DEFAULT_FILTER_LABELS.empty,
-  panelLabel: DEFAULT_FILTER_LABELS.fieldsLabel,
-  rootLevel: DEFAULT_FILTER_LABELS.fieldsLabel,
-  search: DEFAULT_FILTER_LABELS.searchFields,
-};
-
-const NOTHING = (): void => {};
 
 // 🧩 Component
 

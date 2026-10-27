@@ -31,11 +31,21 @@ src/
     <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
     <route>.integration.test.tsx # Ignored by the route generator
   components/
-    <component>.tsx
+    <component>.tsx                # One component and its Properties
     <component>.unit.test.tsx
+    <component>.<kind>.ts          # Its types, constants, or utilities
   hooks/
-    use-<hook>.ts
-    use-<hook>.unit.test.ts
+    use-<hook>/
+      use-<hook>.ts                # One hook
+      use-<hook>.<kind>.ts         # Its types, constants, and utilities
+      use-<hook>.unit.test.ts
+  constants/
+    <name>.constants.ts            # Constants more than one file shares
+  types/
+    <name>.types.ts                # Types more than one file shares
+  utilities/
+    <name>.utilities.ts            # Functions more than one file shares
+    <name>.utilities.unit.test.ts
   modules/
     <feature>/                   # Server functions and the utilities behind them
   styles/

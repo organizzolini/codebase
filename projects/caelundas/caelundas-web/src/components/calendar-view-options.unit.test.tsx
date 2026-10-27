@@ -8,8 +8,8 @@ import { CalendarViewOptions } from "./calendar-view-options";
 import type {
   CalendarViewName,
   TimelineScale,
-} from "../lib/calendar/calendar-views";
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
+} from "../types/calendar-views.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
 import type { ReactNode } from "react";
 
 const FACETS = [

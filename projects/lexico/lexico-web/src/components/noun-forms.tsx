@@ -1,34 +1,10 @@
 import { FormsTable } from "./forms-table";
+import { CASES, NUMBERS } from "./noun-forms.constants";
 
+import type { NounFormRow } from "./noun-forms.types";
 import type { ReactNode } from "react";
 
-// ♟️ Constants
-
-/**
- * The cases in the order grammar books list them.
- */
-const CASES = [
-  "nominative",
-  "genitive",
-  "dative",
-  "accusative",
-  "ablative",
-  "vocative",
-  "locative",
-];
-
-const NUMBERS = ["singular", "plural"];
-
 // 🔖 Type
-
-/**
- * One form of a noun and the word written for it.
- */
-export interface NounFormRow {
-  case?: string;
-  number?: string;
-  word: string;
-}
 
 /**
  * The properties NounForms accepts.

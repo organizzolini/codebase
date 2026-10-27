@@ -11,14 +11,9 @@ import {
   Spinner,
 } from "@codebase/presentation";
 
+import { SEARCH_DEBOUNCE_MILLISECONDS } from "./search-bar.constants";
+
 import type { ReactNode, SyntheticEvent } from "react";
-
-// ♟️ Constants
-
-/**
- * How long typing must pause before the query is searched, in milliseconds.
- */
-const SEARCH_DEBOUNCE_MILLISECONDS = 300;
 
 // 🔖 Type
 

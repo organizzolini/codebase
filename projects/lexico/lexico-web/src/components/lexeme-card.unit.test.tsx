@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { LexemeCard } from "./lexeme-card";
 
-import type { LexemeResult } from "./lexeme-card";
-import type { LoadLexemeForms } from "./lexeme-forms";
+import type { LexemeResult } from "./lexeme-card.types";
+import type { LoadLexemeForms } from "./lexeme-forms.types";
 
 const result: LexemeResult = {
   etymology: "From Proto-Italic.",

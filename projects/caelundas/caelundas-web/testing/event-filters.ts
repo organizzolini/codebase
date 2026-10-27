@@ -1,4 +1,4 @@
-import { compileEventFilter } from "../src/lib/event-filters/event-filter-compiler";
+import { compileEventFilter } from "../src/utilities/event-filter-compiler.utilities";
 
 import {
   createTestSqlExecutor,
@@ -9,7 +9,7 @@ import type {
   EventFilterNode,
   EventFilterQuery,
   EventFilterRule,
-} from "../src/lib/event-filters/event-filters.types";
+} from "../src/types/event-filters.types";
 
 /**
  * A rule on any field by its id, complete unless a test leaves something

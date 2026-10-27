@@ -2,36 +2,13 @@ import { useState } from "react";
 
 import { Tabs, TabsList, TabsTrigger } from "@codebase/presentation";
 
+import { CASES, GENDERS, NUMBERS } from "./adjective-forms.constants";
 import { FormsTable } from "./forms-table";
 
+import type { AdjectiveFormRow } from "./adjective-forms.types";
 import type { ReactNode } from "react";
 
-// ♟️ Constants
-
-const CASES = [
-  "nominative",
-  "genitive",
-  "dative",
-  "accusative",
-  "ablative",
-  "vocative",
-];
-
-const GENDERS = ["masculine", "feminine", "neuter"];
-
-const NUMBERS = ["singular", "plural"];
-
 // 🔖 Type
-
-/**
- * One form of an adjective and the word written for it.
- */
-export interface AdjectiveFormRow {
-  case?: string;
-  gender?: string;
-  number?: string;
-  word: string;
-}
 
 /**
  * The properties AdjectiveForms accepts.

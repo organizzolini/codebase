@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { CalendarSymbolsContext } from "../lib/calendar/calendar-symbols";
+import { CalendarSymbolsContext } from "../constants/calendar-symbols.constants";
 
 import { CalendarEventChip } from "./calendar-event-chip";
 
-import type { CalendarEventRecord } from "../lib/events-database/events-database.types";
+import type { CalendarEventRecord } from "../types/events-database.types";
 
 const EVENT: CalendarEventRecord = {
   color: null,

@@ -2,16 +2,17 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@codebase/presentation";
 
+import { MAXIMUM_GROUP_LEVELS } from "../constants/event-groups.constants";
 import {
   createEventGroupFields,
   toGroupLevel,
-} from "../lib/event-groups/event-group-fields";
-import { MAXIMUM_GROUP_LEVELS } from "../lib/event-groups/event-groups.constants";
+} from "../utilities/event-group-fields.utilities";
 
+import { TITLE } from "./calendar-group-by.constants";
 import { GroupLevelRow } from "./group-level-row";
 
-import type { EventGroupLevel } from "../lib/event-groups/event-groups.types";
-import type { EventFacet } from "../lib/events-database/events-database.types";
+import type { EventGroupLevel } from "../types/event-groups.types";
+import type { EventFacet } from "../types/events-database.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -26,8 +27,6 @@ export interface CalendarGroupByProperties {
   grouping: readonly EventGroupLevel[];
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
 }
-
-const TITLE = "Group by";
 
 // 🧩 Component
 

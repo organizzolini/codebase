@@ -8,15 +8,9 @@ import {
   CollapsibleTrigger,
 } from "@codebase/presentation";
 
+import { VISIBLE_TRANSLATION_COUNT } from "./lexeme-translations.constants";
+
 import type { ReactNode } from "react";
-
-// ♟️ Constants
-
-/**
- * How many translations show while the section is folded, so one entry with
- * dozens of senses cannot dominate the masonry.
- */
-const VISIBLE_TRANSLATION_COUNT = 2;
 
 // 🔖 Type
 

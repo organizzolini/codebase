@@ -6,20 +6,12 @@ import {
   TableRow,
 } from "@codebase/presentation";
 
-import { ABBREVIATIONS } from "./lexeme-identifiers";
+import { ABBREVIATIONS } from "./lexeme-identifiers.constants";
 
+import type { FormsTableAxis } from "./forms-table.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
-
-/**
- * One row or column of a forms table: the key its words are looked up by and
- * the label it shows.
- */
-export interface FormsTableAxis {
-  key: string;
-  label: string;
-}
 
 /**
  * The properties FormsTable accepts.

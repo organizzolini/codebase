@@ -11,26 +11,26 @@ import { CalendarFilters } from "../components/calendar-filters";
 import { CalendarSkeleton } from "../components/calendar-skeleton";
 import { CalendarViewOptions } from "../components/calendar-view-options";
 import { EventsCalendar } from "../components/events-calendar";
-import { useCalendarSearch } from "../components/use-calendar-search";
-import { loadCalendar } from "../lib/calendar/calendar-loader";
-import { validateCalendarSearch } from "../lib/calendar/calendar-search";
 import {
   CalendarSymbolsContext,
   DEFAULT_CALENDAR_SYMBOLS,
-} from "../lib/calendar/calendar-symbols";
-import {
-  isWideViewport,
-  subscribeToViewport,
-} from "../lib/calendar/calendar-viewport";
+} from "../constants/calendar-symbols.constants";
 import {
   AGENDA_DAY_COUNT,
   CALENDAR_VIEW_PERIODS,
   DEFAULT_TIMELINE_SCALE,
-  getDefaultCalendarView,
-} from "../lib/calendar/calendar-views";
-import { parseCalendarDate } from "../lib/calendar/calendar-window";
-import { createEventFilterFields } from "../lib/event-filters/event-filter-fields";
-import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
+} from "../constants/calendar-views.constants";
+import { EMPTY_EVENT_FILTER } from "../constants/event-filter-tree.constants";
+import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-search";
+import { loadCalendar } from "../utilities/calendar-loader.utilities";
+import { validateCalendarSearch } from "../utilities/calendar-search.utilities";
+import {
+  isWideViewport,
+  subscribeToViewport,
+} from "../utilities/calendar-viewport.utilities";
+import { getDefaultCalendarView } from "../utilities/calendar-views.utilities";
+import { parseCalendarDate } from "../utilities/calendar-window.utilities";
+import { createEventFilterFields } from "../utilities/event-filter-fields.utilities";
 
 // 🧭 Route
 

@@ -111,11 +111,11 @@ Call stacks traced through `projects/lexico/lexico-web`, deepest first. Each fra
 
 | Measure | Value |
 | --- | --- |
-| Callables | 132 |
-| Files | 29 |
-| Calls traced | 78 |
+| Callables | 134 |
+| Files | 59 |
+| Calls traced | 80 |
 | Call stacks | 21 |
-| Deepest stack | 4 |
+| Deepest stack | 5 |
 | Stacks through recursion | 0 |
 | Unfollowable calls | 15 |
 
@@ -130,86 +130,89 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Call stacks (depth)
 
-**1. `FormsTable`** — depth ≥ 4 · orphan-root
+**1. `handler(…)`** — depth 5 · orphan-root
 
 ```text
-🚀 FormsTable(properties: Readonly<FormsTableProperties>): ReactNode [projects/lexico/lexico-web/src/components/forms-table.tsx:46]
+🚀 handler(…)(…): Promise<LexemeResult[]> [projects/lexico/lexico-web/src/constants/search.constants.ts:22]
+  └─> searchDictionary(query: string): Promise<LexemeResult[]> [projects/lexico/lexico-web/src/utilities/search.utilities.ts:72]
+     ↳ Searches the dictionary in Latin and in English at once, since a query is not labeled with the language it is written…
+    └─> searchLatin(query: string): Promise<ResultNode[]> [projects/lexico/lexico-web/src/utilities/search.utilities.ts:148]
+       ↳ Searches Latin through the lexico API and returns the results it matched.
+      └─> searchLanguage(…): ResultNode[] [projects/lexico/lexico-web/src/utilities/search.utilities.ts:200]
+         ↳ Searches Latin or English through the lexico API, which exposes each as its own query, and returns the results it…
+        └─> map(…)(edge: { node: ResultNode; }): ResultNode [projects/lexico/lexico-web/src/utilities/search.utilities.ts:214]
+```
+
+**2. `FormsTable`** — depth ≥ 4 · orphan-root
+
+```text
+🚀 FormsTable(properties: Readonly<FormsTableProperties>): ReactNode [projects/lexico/lexico-web/src/components/forms-table.tsx:38]
    ↳ A grid of the words a lexeme's forms are written as, such as a noun's cases down the side and its numbers across the…
-  └─> map(…)(row: FormsTableAxis, rowIndex: number): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:70]
-    └─> map(…)(column: FormsTableAxis, columnIndex: number): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:75]
-      └─> map(…)(word: string): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:109]
+  └─> map(…)(row: FormsTableAxis, rowIndex: number): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:62]
+    └─> map(…)(column: FormsTableAxis, columnIndex: number): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:67]
+      └─> map(…)(word: string): JSX.Element [projects/lexico/lexico-web/src/components/forms-table.tsx:101]
 ```
 
-**2. `VerbForms`** — depth 4 · orphan-root
+**3. `VerbForms`** — depth 4 · orphan-root
 
 ```text
-🚀 VerbForms(properties: Readonly<VerbFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:117]
+🚀 VerbForms(properties: Readonly<VerbFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:34]
    ↳ A verb's conjugation: tabs for voice, then mood, then tense, over a table of its words by person and number, and a last…
-  └─> narrow(rows: VerbFormRow[], selection: Selection): Conjugation [projects/lexico/lexico-web/src/components/verb-forms.tsx:241]
+  └─> narrow(rows: VerbFormRow[], selection: Selection): Conjugation [projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:16]
      ↳ Narrows a conjugation down by the voice, mood and tense chosen.
-    └─> filter(…)(voice: string): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:245]
-      └─> some(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:245]
-```
-
-**3. `handler(…)`** — depth 4 · orphan-root
-
-```text
-🚀 handler(…)(…): Promise<LexemeResult[]> [projects/lexico/lexico-web/src/routes/search.tsx:247]
-  └─> searchLatin(query: string): Promise<ResultNode[]> [projects/lexico/lexico-web/src/routes/search.tsx:216]
-     ↳ Searches Latin through the lexico API and returns the results it matched.
-    └─> searchLanguage(…): ResultNode[] [projects/lexico/lexico-web/src/routes/search.tsx:194]
-       ↳ Searches Latin or English through the lexico API, which exposes each as its own query, and returns the results it…
-      └─> map(…)(edge: { node: ResultNode; }): ResultNode [projects/lexico/lexico-web/src/routes/search.tsx:208]
+    └─> filter(…)(voice: string): boolean [projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:20]
+      └─> some(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:20]
 ```
 
 <details>
 <summary>18 more call stacks</summary>
 
-**4. `LexemeIdentifiers`** — depth 3 · orphan-root
+**4. `AdjectiveForms`** — depth 3 · orphan-root
 
 ```text
-🚀 LexemeIdentifiers(properties: Readonly<LexemeIdentifiersProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60]
-   ↳ What the searched word is as a form of this lexeme, such as "1ST SG PRES ACT IND", for when a search matched an…
-  └─> map(…)(identifier: string): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:85]
-    └─> flatMap(…)(this: undefined, word: string): string | never[] [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:94]
-```
-
-**5. `AdjectiveForms`** — depth 3 · orphan-root
-
-```text
-🚀 AdjectiveForms(properties: Readonly<AdjectiveFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/adjective-forms.tsx:50]
+🚀 AdjectiveForms(properties: Readonly<AdjectiveFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/adjective-forms.tsx:27]
    ↳ An adjective's declension: a table of its words by case and number for each gender, switched with tabs.
-  └─> filter(…)(gender: string): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:59]
-    └─> some(…)(row: AdjectiveFormRow): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:60]
+  └─> filter(…)(gender: string): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:36]
+    └─> some(…)(row: AdjectiveFormRow): boolean [projects/lexico/lexico-web/src/components/adjective-forms.tsx:37]
 ```
 
-**6. `NounForms`** — depth 3 · orphan-root
+**5. `NounForms`** — depth 3 · orphan-root
 
 ```text
-🚀 NounForms(properties: Readonly<NounFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/noun-forms.tsx:47]
+🚀 NounForms(properties: Readonly<NounFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/noun-forms.tsx:23]
    ↳ A noun's declension: its words by case and number. Cases the noun has no form for are left out.
-  └─> filter(…)(case_: string): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:55]
-    └─> some(…)(row: NounFormRow): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:55]
+  └─> filter(…)(case_: string): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:31]
+    └─> some(…)(row: NounFormRow): boolean [projects/lexico/lexico-web/src/components/noun-forms.tsx:31]
 ```
 
-**7. `handleOpenChange`** — depth ≥ 3 · orphan-root
+**6. `handleOpenChange`** — depth ≥ 3 · orphan-root
 
 ```text
-🚀 handleOpenChange(open: boolean): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:121]
+🚀 handleOpenChange(open: boolean): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:71]
    ↳ Opens or closes the table, loading the forms on the way open.
-  └─> load(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:103]
+  └─> load(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:53]
      ↳ Asks for the forms, unless they are already loaded or on their way.
-    └─> catch(…)(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:113]
+    └─> catch(…)(): void [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:63]
 ```
 
-**8. `LexemeHeader`** — depth 3 · orphan-root
+**7. `LexemeHeader`** — depth 3 · orphan-root
 
 ```text
-🚀 LexemeHeader(properties: Readonly<LexemeHeaderProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-header.tsx:40]
+🚀 LexemeHeader(properties: Readonly<LexemeHeaderProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-header.tsx:28]
    ↳ The top of a lexeme card: its principal parts, or its lemma when none were ingested, over its part of speech and…
-  └─> describeInflection(…): string[] [projects/lexico/lexico-web/src/components/lexeme-header.tsx:106]
+  └─> describeInflection(…): string[] [projects/lexico/lexico-web/src/components/lexeme-header.utilities.ts:30]
      ↳ What an inflection says about a lexeme, as the fields its part of speech fills, with the empty ones left out.
-    └─> filter(…)(detail: string | null | undefined): detail is string [projects/lexico/lexico-web/src/components/lexeme-header.tsx:117]
+    └─> findDescriber(…): (inflection: LexemeInflection) => (string | null | undefined)[] [projects/lexico/lexico-web/src/components/lexeme-header.utilities.ts:97]
+       ↳ How to describe the inflection of a part of speech, or its plain details when it has no inflection of its own.
+```
+
+**8. `LexemeIdentifiers`** — depth 3 · orphan-root
+
+```text
+🚀 LexemeIdentifiers(properties: Readonly<LexemeIdentifiersProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:26]
+   ↳ What the searched word is as a form of this lexeme, such as "1ST SG PRES ACT IND", for when a search matched an…
+  └─> map(…)(identifier: string): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:51]
+    └─> flatMap(…)(this: undefined, word: string): string | never[] [projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60]
 ```
 
 **9. `SearchResults`** — depth ≥ 3 · orphan-root
@@ -224,96 +227,96 @@ What this project is judged against, as declared in its own `callidescope.config
 **10. `SearchPage`** — depth 3 · orphan-root
 
 ```text
-🚀 SearchPage(): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:371]
+🚀 SearchPage(): ReactNode [projects/lexico/lexico-web/src/routes/search.tsx:85]
    ↳ The search page: a search bar over either the landing logo or the results.
-  └─> useMemo(…)(): Map<string, LexemeFormRow[]> [projects/lexico/lexico-web/src/routes/search.tsx:380]
-    └─> map(…)(result: LexemeResult): readonly [string, LexemeFormRow[]] [projects/lexico/lexico-web/src/routes/search.tsx:382]
+  └─> useMemo(…)(): Map<string, LexemeFormRow[]> [projects/lexico/lexico-web/src/routes/search.tsx:94]
+    └─> map(…)(result: LexemeResult): readonly [string, LexemeFormRow[]] [projects/lexico/lexico-web/src/routes/search.tsx:96]
 ```
 
 **11. `ApplicationSidebar`** — depth 2 · orphan-root
 
 ```text
-🚀 ApplicationSidebar(): ReactNode [projects/lexico/lexico-web/src/routes/__root.tsx:88]
+🚀 ApplicationSidebar(): ReactNode [projects/lexico/lexico-web/src/routes/__root.tsx:77]
    ↳ Application sidebar: a rail that collapses to icons, with the brand in the header, navigation in a labelled group, and…
-  └─> map(…)(item: NavigationItem): JSX.Element [projects/lexico/lexico-web/src/routes/__root.tsx:126]
+  └─> map(…)(item: NavigationItem): JSX.Element [projects/lexico/lexico-web/src/routes/__root.tsx:115]
 ```
 
 **12. `SearchBar`** — depth 2 · orphan-root
 
 ```text
-🚀 SearchBar(properties: Readonly<SearchBarProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-bar.tsx:41]
+🚀 SearchBar(properties: Readonly<SearchBarProperties>): ReactNode [projects/lexico/lexico-web/src/components/search-bar.tsx:36]
    ↳ The search field. It searches as you type, once typing pauses, and at once when the form is submitted.
-  └─> useMemo(…)(): lodash.DebouncedFunc<(query: string) => void> [projects/lexico/lexico-web/src/components/search-bar.tsx:56]
+  └─> useMemo(…)(): lodash.DebouncedFunc<(query: string) => void> [projects/lexico/lexico-web/src/components/search-bar.tsx:51]
 ```
 
 **13. `anonymous`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(case_: string, number: string): string[] [projects/lexico/lexico-web/src/components/adjective-forms.tsx:103]
-  └─> map(…)(row: AdjectiveFormRow): string [projects/lexico/lexico-web/src/components/adjective-forms.tsx:106]
+🚀 anonymous(case_: string, number: string): string[] [projects/lexico/lexico-web/src/components/adjective-forms.tsx:80]
+  └─> map(…)(row: AdjectiveFormRow): string [projects/lexico/lexico-web/src/components/adjective-forms.tsx:83]
 ```
 
 **14. `anonymous`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(case_: string, number: string): string[] [projects/lexico/lexico-web/src/components/noun-forms.tsx:71]
-  └─> map(…)(row: NounFormRow): string [projects/lexico/lexico-web/src/components/noun-forms.tsx:74]
+🚀 anonymous(case_: string, number: string): string[] [projects/lexico/lexico-web/src/components/noun-forms.tsx:47]
+  └─> map(…)(row: NounFormRow): string [projects/lexico/lexico-web/src/components/noun-forms.tsx:50]
 ```
 
-**15. `anonymous`** — depth 2 · orphan-root
+**15. `AxisTabs`** — depth 2 · orphan-root
 
 ```text
-🚀 anonymous(person: string, number: string): string[] [projects/lexico/lexico-web/src/components/verb-forms.tsx:175]
-  └─> map(…)(row: VerbFormRow): string [projects/lexico/lexico-web/src/components/verb-forms.tsx:180]
-```
-
-**16. `AxisTabs`** — depth 2 · orphan-root
-
-```text
-🚀 AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:200]
+🚀 AxisTabs(properties: Readonly<AxisTabsProperties>): ReactNode [projects/lexico/lexico-web/src/components/axis-tabs.tsx:30]
    ↳ One row of tabs for a single axis of the conjugation, such as its moods.
-  └─> map(…)(option: string): JSX.Element [projects/lexico/lexico-web/src/components/verb-forms.tsx:216]
+  └─> map(…)(option: string): JSX.Element [projects/lexico/lexico-web/src/components/axis-tabs.tsx:60]
 ```
 
-**17. `NonFiniteForms`** — depth 2 · orphan-root
+**16. `NonFiniteForms`** — depth 2 · orphan-root
 
 ```text
-🚀 NonFiniteForms(properties: Readonly<{ rows: VerbFormRow[]; }>): ReactNode [projects/lexico/lexico-web/src/components/verb-forms.tsx:275]
+🚀 NonFiniteForms(properties: Readonly<NonFiniteFormsProperties>): ReactNode [projects/lexico/lexico-web/src/components/non-finite-forms.tsx:22]
    ↳ The forms that have no person, such as infinitives, participles, gerunds and supines, each named for its kind and what…
-  └─> filter(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/verb-forms.tsx:278]
+  └─> filter(…)(row: VerbFormRow): boolean [projects/lexico/lexico-web/src/components/non-finite-forms.tsx:30]
+```
+
+**17. `anonymous`** — depth 2 · orphan-root
+
+```text
+🚀 anonymous(person: string, number: string): string[] [projects/lexico/lexico-web/src/components/verb-forms.tsx:92]
+  └─> map(…)(row: VerbFormRow): string [projects/lexico/lexico-web/src/components/verb-forms.tsx:97]
 ```
 
 **18. `FormsOfKind`** — depth 2 · orphan-root
 
 ```text
-🚀 FormsOfKind(…): ReactNode [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:193]
+🚀 FormsOfKind(properties: Readonly<FormsOfKindProperties>): ReactNode [projects/lexico/lexico-web/src/components/forms-of-kind.tsx:26]
    ↳ The table for the kind of forms a lexeme turned out to have, or a note that it has none.
-  └─> filter(…)(row: LexemeFormRow): boolean [projects/lexico/lexico-web/src/components/lexeme-forms.tsx:202]
+  └─> filter(…)(row: LexemeFormRow): boolean [projects/lexico/lexico-web/src/components/forms-of-kind.tsx:34]
 ```
 
 **19. `LexemeMatch`** — depth 2 · orphan-root
 
 ```text
-🚀 LexemeMatch(properties: Readonly<LexemeMatchProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-match.tsx:152]
+🚀 LexemeMatch(properties: Readonly<LexemeMatchProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-match.tsx:31]
    ↳ Two small icons saying how the search matched this lexeme: whether through a Latin word or an English translation, and…
-  └─> describeExtent(match: LexemeMatchInfo): string [projects/lexico/lexico-web/src/components/lexeme-match.tsx:212]
+  └─> describeExtent(match: LexemeMatchInfo): string [projects/lexico/lexico-web/src/components/lexeme-match.utilities.ts:9]
      ↳ Says how far a match is from the query: its edit distance when fuzzy, or the letters a headword has beyond it.
 ```
 
 **20. `LexemePronunciations`** — depth 2 · orphan-root
 
 ```text
-🚀 LexemePronunciations(properties: Readonly<LexemePronunciationsProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:38]
+🚀 LexemePronunciations(properties: Readonly<LexemePronunciationsProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:31]
    ↳ How a lexeme is pronounced in each variant of Latin that has a transcription, such as classical and ecclesiastical,…
-  └─> map(…)({ phonetic, variant }: LexemePronunciation): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:78]
+  └─> map(…)({ phonetic, variant }: LexemePronunciation): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:71]
 ```
 
 **21. `LexemeTranslations`** — depth 2 · orphan-root
 
 ```text
-🚀 LexemeTranslations(properties: Readonly<LexemeTranslationsProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-translations.tsx:37]
+🚀 LexemeTranslations(properties: Readonly<LexemeTranslationsProperties>): ReactNode [projects/lexico/lexico-web/src/components/lexeme-translations.tsx:31]
    ↳ A lexeme's English translations as a bulleted list under a heading. Folded, it shows the first two; opened, all of them.
-  └─> map(…)(translation: string): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-translations.tsx:83]
+  └─> map(…)(translation: string): JSX.Element [projects/lexico/lexico-web/src/components/lexeme-translations.tsx:77]
 ```
 
 </details>
@@ -322,52 +325,53 @@ What this project is judged against, as declared in its own `callidescope.config
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `narrow` | 8 | `filter(…)`, `filter(…)`, `pick`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:241` |
-| `AdjectiveForms` | 6 | `filter(…)`, `filter(…)`, `filter(…)`, `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:50` |
-| `map(…)` | 6 | `map(…)`, `toLexemeInflection`, `describeMatch`, `flatMap(…)`, `flatMap(…)`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:263` |
+| `narrow` | 8 | `filter(…)`, `filter(…)`, `pick`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:16` |
+| `AdjectiveForms` | 6 | `filter(…)`, `filter(…)`, `filter(…)`, `map(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:27` |
+| `map(…)` | 6 | `map(…)`, `toLexemeInflection`, `describeMatch`, `flatMap(…)`, `flatMap(…)`, `map(…)` | `projects/lexico/lexico-web/src/utilities/search.utilities.ts:88` |
 
 <details>
-<summary>37 more callables</summary>
+<summary>38 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
-| `NounForms` | 3 | `filter(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:47` |
+| `NounForms` | 3 | `filter(…)`, `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:23` |
 | `SearchResults` | 3 | `from(…)`, `useEffect(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:31` |
-| `handler(…)` | 3 | `searchLatin`, `searchEnglish`, `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:247` |
-| `SearchPage` | 3 | `useMemo(…)`, `useCallback(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:371` |
-| `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:41` |
-| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:103` |
-| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:71` |
-| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:175` |
-| `NonFiniteForms` | 2 | `filter(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:275` |
-| `load` | 2 | `catch(…)`, `then(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:103` |
-| `FormsOfKind` | 2 | `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:193` |
-| `LexemeTranslations` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-translations.tsx:37` |
+| `searchDictionary` | 3 | `searchLatin`, `searchEnglish`, `map(…)` | `projects/lexico/lexico-web/src/utilities/search.utilities.ts:72` |
+| `SearchPage` | 3 | `useMemo(…)`, `useCallback(…)`, `useCallback(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:85` |
+| `SearchBar` | 2 | `useMemo(…)`, `useEffect(…)` | `projects/lexico/lexico-web/src/components/search-bar.tsx:36` |
+| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:80` |
+| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:47` |
+| `NonFiniteForms` | 2 | `filter(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/non-finite-forms.tsx:22` |
+| `anonymous` | 2 | `map(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:92` |
+| `FormsOfKind` | 2 | `filter(…)`, `filter(…)` | `projects/lexico/lexico-web/src/components/forms-of-kind.tsx:26` |
+| `load` | 2 | `catch(…)`, `then(…)` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:53` |
+| `describeInflection` | 2 | `findDescriber`, `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-header.utilities.ts:30` |
+| `LexemeTranslations` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-translations.tsx:31` |
 | `map(…)` | 2 | `map(…)`, `map(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:84` |
-| `searchEnglish` | 2 | `queryApi`, `searchLanguage` | `projects/lexico/lexico-web/src/routes/search.tsx:178` |
-| `searchLatin` | 2 | `queryApi`, `searchLanguage` | `projects/lexico/lexico-web/src/routes/search.tsx:216` |
-| `ApplicationSidebar` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:88` |
-| `LexemeIdentifiers` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:60` |
-| `map(…)` | 1 | `flatMap(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:85` |
-| `FormsTable` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:46` |
-| `map(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:70` |
-| `map(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:75` |
-| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:59` |
-| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:66` |
-| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:55` |
-| `VerbForms` | 1 | `narrow` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:117` |
-| `AxisTabs` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:200` |
-| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:245` |
-| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:250` |
-| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:255` |
-| `handleOpenChange` | 1 | `load` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:121` |
-| `LexemeHeader` | 1 | `describeInflection` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:40` |
-| `describeInflection` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:106` |
-| `LexemeMatch` | 1 | `describeExtent` | `projects/lexico/lexico-web/src/components/lexeme-match.tsx:152` |
-| `LexemePronunciations` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:38` |
+| `searchEnglish` | 2 | `queryApi`, `searchLanguage` | `projects/lexico/lexico-web/src/utilities/search.utilities.ts:133` |
+| `searchLatin` | 2 | `queryApi`, `searchLanguage` | `projects/lexico/lexico-web/src/utilities/search.utilities.ts:148` |
+| `ApplicationSidebar` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/__root.tsx:77` |
+| `FormsTable` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:38` |
+| `map(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:62` |
+| `map(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/forms-table.tsx:67` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:36` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/adjective-forms.tsx:43` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/noun-forms.tsx:31` |
+| `AxisTabs` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/axis-tabs.tsx:30` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:20` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:25` |
+| `filter(…)` | 1 | `some(…)` | `projects/lexico/lexico-web/src/components/verb-forms.utilities.ts:30` |
+| `VerbForms` | 1 | `narrow` | `projects/lexico/lexico-web/src/components/verb-forms.tsx:34` |
+| `handleOpenChange` | 1 | `load` | `projects/lexico/lexico-web/src/components/lexeme-forms.tsx:71` |
+| `LexemeHeader` | 1 | `describeInflection` | `projects/lexico/lexico-web/src/components/lexeme-header.tsx:28` |
+| `LexemeIdentifiers` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:26` |
+| `map(…)` | 1 | `flatMap(…)` | `projects/lexico/lexico-web/src/components/lexeme-identifiers.tsx:51` |
+| `LexemeMatch` | 1 | `describeExtent` | `projects/lexico/lexico-web/src/components/lexeme-match.tsx:31` |
+| `LexemePronunciations` | 1 | `map(…)` | `projects/lexico/lexico-web/src/components/lexeme-pronunciations.tsx:31` |
 | `from(…)` | 1 | `filter(…)` | `projects/lexico/lexico-web/src/components/search-results.tsx:45` |
-| `searchLanguage` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:194` |
-| `useMemo(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:380` |
+| `searchLanguage` | 1 | `map(…)` | `projects/lexico/lexico-web/src/utilities/search.utilities.ts:200` |
+| `handler(…)` | 1 | `searchDictionary` | `projects/lexico/lexico-web/src/constants/search.constants.ts:22` |
+| `useMemo(…)` | 1 | `map(…)` | `projects/lexico/lexico-web/src/routes/search.tsx:94` |
 
 </details>
 <!-- callidescope:end -->

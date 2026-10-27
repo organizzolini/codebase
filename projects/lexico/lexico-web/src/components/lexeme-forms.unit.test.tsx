@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { LexemeForms } from "./lexeme-forms";
 
-import type { LexemeFormRow, LoadLexemeForms } from "./lexeme-forms";
+import type { LexemeFormRow, LoadLexemeForms } from "./lexeme-forms.types";
 
 const nominal: LexemeFormRow[] = [
   {

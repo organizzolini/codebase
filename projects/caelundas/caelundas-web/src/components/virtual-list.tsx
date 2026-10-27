@@ -3,7 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import {
   getRowOffsets,
   getVirtualWindow,
-} from "../lib/calendar/calendar-virtual-window";
+} from "../utilities/calendar-virtual-window.utilities";
+
+import {
+  OVERSCAN,
+  UNMEASURED_HEIGHT,
+  UNMEASURED_WIDTH,
+} from "./virtual-list.constants";
 
 import type { ReactNode, UIEvent } from "react";
 
@@ -37,15 +43,6 @@ export interface VirtualListProperties<Row> {
   renderRow: (row: Row) => ReactNode;
   rows: readonly Row[];
 }
-
-// Rows drawn beyond each edge of the viewport, so a fast fling does not
-// show blank space before the next render catches up.
-const OVERSCAN = 6;
-
-// The height assumed until the viewport is measured, and wherever it never
-// is, as under jsdom: about a phone screen of rows.
-const UNMEASURED_HEIGHT = 720;
-const UNMEASURED_WIDTH = 640;
 
 // 🧩 Component
 

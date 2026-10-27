@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { EMPTY_EVENT_FILTER } from "../lib/event-filters/event-filter-tree";
+import { EMPTY_EVENT_FILTER } from "../constants/event-filter-tree.constants";
 
 import { CalendarCollectionPicker } from "./calendar-collection-picker";
 
