@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.38.0](https://github.com/organizzolini/codebase/compare/v3.37.0...v3.38.0) (2026-10-27)
+
+### ✨ Features
+
+* **infrastructure:** ✨ add openrouter terraform module ([#1855](https://github.com/organizzolini/codebase/issues/1855)) ([fd97f8a](https://github.com/organizzolini/codebase/commit/fd97f8a2a04e1256a8a2c8ce4f78ecc081a9a51b))
+
 ## [3.37.0](https://github.com/organizzolini/codebase/compare/v3.36.0...v3.37.0) (2026-10-26)
 
 ### ✨ Features
