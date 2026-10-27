@@ -7,6 +7,8 @@ import {
   EmptyTitle,
 } from "@codebase/presentation";
 
+import { SURFACE_CLASS_NAMES } from "../events-calendar/calendar-surfaces.constants";
+
 import type { EventsDataset } from "../events-calendar/events-database.types";
 import type { ReactNode } from "react";
 
@@ -54,7 +56,9 @@ export function OutsideDataset(
       data-testid="outside-dataset"
       style={{ display: "contents" }}
     >
-      <Empty className="bg-background/90 pointer-events-auto max-w-md border shadow-sm">
+      <Empty
+        className={`${SURFACE_CLASS_NAMES.emptyCard} pointer-events-auto max-w-md border shadow-sm`}
+      >
         <EmptyHeader>
           <EmptyTitle>Outside the data</EmptyTitle>
           <EmptyDescription>

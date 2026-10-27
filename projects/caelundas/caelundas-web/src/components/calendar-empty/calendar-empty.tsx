@@ -7,6 +7,8 @@ import {
   EmptyTitle,
 } from "@codebase/presentation";
 
+import { SURFACE_CLASS_NAMES } from "../events-calendar/calendar-surfaces.constants";
+
 import { EMPTY_DESCRIPTIONS, EMPTY_TITLES } from "./calendar-empty.constants";
 import { OutsideDataset } from "./outside-dataset";
 
@@ -88,7 +90,9 @@ export function CalendarEmpty(
       data-testid="calendar-empty"
       role="status"
     >
-      <Empty className="bg-background/90 pointer-events-auto max-w-md border shadow-sm">
+      <Empty
+        className={`${SURFACE_CLASS_NAMES.emptyCard} pointer-events-auto max-w-md border shadow-sm`}
+      >
         <EmptyHeader>
           <EmptyTitle>{EMPTY_TITLES[emptiness.kind](period)}</EmptyTitle>
           <EmptyDescription>
