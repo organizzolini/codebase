@@ -12,10 +12,18 @@ describe(readNightSkyOverrides, () => {
     });
   });
 
-  it("reads a color the router turned into a number", () => {
-    expect(readNightSkyOverrides({ "sky.top": 123_456 })).toMatchObject({
+  it("reads an all-digit color written with the #", () => {
+    expect(readNightSkyOverrides({ "sky.top": "#123456" })).toMatchObject({
       backgroundTopColor: "#123456",
     });
+  });
+
+  it("falls back for a number, which the router makes of 1e5 and cannot give back", () => {
+    for (const value of [123_456, 1e5, 100, 0]) {
+      expect(readNightSkyOverrides({ "sky.top": value })).toMatchObject({
+        backgroundTopColor: "#04060f",
+      });
+    }
   });
 
   it("falls back to the default colors for anything that is not hexadecimal", () => {
