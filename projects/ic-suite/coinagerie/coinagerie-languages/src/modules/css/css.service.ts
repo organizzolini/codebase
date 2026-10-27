@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { CSS_EXTENSIONS, CSS_GRAMMAR } from "./css.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the identifiers of a CSS stylesheet.
  *
@@ -13,7 +12,6 @@ import { CSS_EXTENSIONS, CSS_GRAMMAR } from "./css.constants";
  * are kept as the raw identifiers they are written as.
  */
 @Injectable()
-/* v8 ignore stop */
 export class CssService {
   // 🏗 Dependency Injection
 

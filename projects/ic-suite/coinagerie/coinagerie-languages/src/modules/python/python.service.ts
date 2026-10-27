@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { PYTHON_EXTENSIONS, PYTHON_GRAMMAR } from "./python.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the identifiers of a Python file.
  *
@@ -12,7 +11,6 @@ import { PYTHON_EXTENSIONS, PYTHON_GRAMMAR } from "./python.constants";
  * string is kept, because it is a name the author chose.
  */
 @Injectable()
-/* v8 ignore stop */
 export class PythonService {
   // 🏗 Dependency Injection
 

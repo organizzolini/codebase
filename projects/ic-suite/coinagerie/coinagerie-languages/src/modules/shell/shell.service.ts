@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { SHELL_EXTENSIONS, SHELL_GRAMMAR } from "./shell.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the identifiers of a shell script.
  *
@@ -12,7 +11,6 @@ import { SHELL_EXTENSIONS, SHELL_GRAMMAR } from "./shell.constants";
  * and commands are kept, and so is a quoted associative array key.
  */
 @Injectable()
-/* v8 ignore stop */
 export class ShellService {
   // 🏗 Dependency Injection
 

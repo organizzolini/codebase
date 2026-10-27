@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { HCL_EXTENSIONS, HCL_GRAMMAR } from "./hcl.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the identifiers of an HCL file, such as Terraform configuration.
  *
@@ -13,7 +12,6 @@ import { HCL_EXTENSIONS, HCL_GRAMMAR } from "./hcl.constants";
  * as a quoted string and the labels of a block header.
  */
 @Injectable()
-/* v8 ignore stop */
 export class HclService {
   // 🏗 Dependency Injection
 

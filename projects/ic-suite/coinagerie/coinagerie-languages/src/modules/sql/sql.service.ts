@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { SQL_EXTENSIONS, SQL_GRAMMAR } from "./sql.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the identifiers of a SQL script.
  *
@@ -12,7 +11,6 @@ import { SQL_EXTENSIONS, SQL_GRAMMAR } from "./sql.constants";
  * quoted name such as `"order"` is an identifier in SQL, so it is kept.
  */
 @Injectable()
-/* v8 ignore stop */
 export class SqlService {
   // 🏗 Dependency Injection
 

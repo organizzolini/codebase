@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { JSON_EXTENSIONS, JSON_GRAMMAR } from "./json.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the keys of a JSON document.
  *
@@ -13,7 +12,6 @@ import { JSON_EXTENSIONS, JSON_GRAMMAR } from "./json.constants";
  * skipped, which also reads JSONC such as a `tsconfig.json`.
  */
 @Injectable()
-/* v8 ignore stop */
 export class JsonService {
   // 🏗 Dependency Injection
 

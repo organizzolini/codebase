@@ -4,7 +4,6 @@ import { ScannerService } from "../scanner/scanner.service";
 
 import { TOML_EXTENSIONS, TOML_GRAMMAR } from "./toml.constants";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Reads the identifiers of a TOML document.
  *
@@ -12,7 +11,6 @@ import { TOML_EXTENSIONS, TOML_GRAMMAR } from "./toml.constants";
  * keys, including those in a dotted path or a table header, are kept.
  */
 @Injectable()
-/* v8 ignore stop */
 export class TomlService {
   // 🏗 Dependency Injection
 

@@ -1,5 +1,5 @@
 import { Test } from "@nestjs/testing";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ScannerModule } from "../scanner/scanner.module";
 
@@ -19,6 +19,24 @@ describe(SqlService, () => {
 
   it("is defined", () => {
     expect(service).toBeDefined();
+  });
+
+  it("declares an Object dependency when the scanner is not loaded yet", async () => {
+    // An import cycle can leave the scanner undefined while this class is
+    // decorated, and the decorator metadata then falls back to Object.
+    vi.resetModules();
+    vi.doMock("../scanner/scanner.service", () => ({
+      ScannerService: undefined,
+    }));
+
+    const { SqlService: Reloaded } = await import("./sql.service");
+
+    expect(Reflect.getMetadata("design:paramtypes", Reloaded)).toStrictEqual([
+      Object,
+    ]);
+
+    vi.doUnmock("../scanner/scanner.service");
+    vi.resetModules();
   });
 
   it.each([
