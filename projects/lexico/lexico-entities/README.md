@@ -74,7 +74,7 @@ morphology does not fit one flat row. A form is an `AdjectivalForm`,
 ### Base classes
 
 Every entity but `Inflection` extends
-[`@codebase/persistence`](../../common/persistence/README.md)'s `DeletableEntity` directly. It
+[`@codebase/persistence`](../../common/persistence/README.md)'s `PostgresqlDeletableEntity` directly. It
 declares the columns — a `uuid` id the database assigns with `uuidv7()`, then
 the created, updated, and soft-deleted timestamps and their nullable `*By`
 columns — so no entity restates them.
@@ -151,7 +151,7 @@ maintainer's call once the counts below match.
    [Moving data between databases](../../common/persistence/README.md#moving-data-between-databases):
 
    ```bash
-   pnpm exec nx run persistence:start:export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
+   pnpm exec nx run persistence:start:postgresql-export --args="--source-uri postgresql://postgres:postgres@localhost:5432/postgres --schema public --table authors --table forms --table inflections --table lexemes --table lines --table principal_parts --table pronunciations --table texts --table tokens --table translations --table word_forms --table word_lexemes --table words --data --file ../../data/lexico-public.dump"
    ```
 
 4. **Build the empty schema** with the migration, as `lexico_username`:

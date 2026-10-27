@@ -12,9 +12,6 @@
   ],
   "targets": {
     "build": {
-      "configurations": {
-        "export": {}
-      },
       "dependsOn": ["build-database"],
       "description": "Build the application for production",
       "executor": "nx:run-commands",
@@ -34,12 +31,7 @@
     },
     "build-database": {
       "cache": false,
-      "configurations": {
-        "export": {
-          "command": "node scripts/build-events-database.ts --export"
-        }
-      },
-      "description": "Write the SQLite file the static build bundles into output/, from the committed seed, or with the export configuration from the Postgres tables caelundas-cli ingested into",
+      "description": "Write the SQLite file the static build bundles into output/, from the committed seed",
       "executor": "nx:run-commands",
       "options": {
         "command": "node scripts/build-events-database.ts",
@@ -59,9 +51,6 @@
     "oxlint": {},
     "prettier": {},
     "preview": {
-      "configurations": {
-        "export": {}
-      },
       "dependsOn": ["build"],
       "description": "Serve the production build locally",
       "executor": "nx:run-commands",
@@ -72,9 +61,6 @@
     },
     "spell-check": {},
     "start": {
-      "configurations": {
-        "export": {}
-      },
       "dependsOn": ["build-database"],
       "description": "Start the development server with hot reload",
       "executor": "nx:run-commands",

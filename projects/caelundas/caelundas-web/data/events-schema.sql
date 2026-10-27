@@ -1,8 +1,7 @@
--- The tables `persistence export --sqlite` writes from the `caelundas` schema:
--- the events, the tag tree as a closure table, and the join between them.
--- Timestamps are ISO 8601 text in UTC, the way the export maps
--- `timestamptz`. Only tests and the development build create them from
--- here; the real file arrives with its tables already in place.
+-- The tables a source file holds: the events, the tag tree as a closure
+-- table, and the join between them. Timestamps are ISO 8601 text in UTC.
+-- Only tests and the development build create them from here; a real file
+-- arrives with its tables already in place.
 
 create table calendar_events (
     id text primary key,

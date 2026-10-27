@@ -1,6 +1,6 @@
 import { Column, Entity, Unique } from "typeorm";
 
-import { UpdatableEntity } from "@codebase/persistence";
+import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 import { createMomentTransformer } from "../database.utilities";
 
@@ -36,7 +36,7 @@ import type { Moment } from "moment-timezone";
   "latitude",
   "longitude",
 ])
-export class CalendarEvent extends UpdatableEntity {
+export class CalendarEvent extends PostgresqlUpdatableEntity {
   @Column("text", {
     comment: "Color hint for calendar display",
     nullable: true,
