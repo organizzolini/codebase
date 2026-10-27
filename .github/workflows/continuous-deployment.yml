@@ -4,16 +4,6 @@ on:
   push:
     branches:
       - main
-  # Builds and tests the devcontainer before a change to it merges. Nothing is
-  # released or published from a pull request; the skip step below and the
-  # image push filters both hold to that.
-  pull_request:
-    paths:
-      - .devcontainer/**
-      - .env.default
-      - .github/workflows/continuous-deployment.yml
-      - infrastructure/docker/docker-compose.yml
-      - package.json
   workflow_dispatch:
 
 permissions:
@@ -30,11 +20,11 @@ permissions:
   artifact-metadata: write
 
 # Never cancel a deployment/release run. Concurrency is scoped per-ref so
-# releases on main queue sequentially without colliding. A pull request's run
-# only builds the devcontainer, so a newer push to it replaces the older run.
+# releases and applies on main queue sequentially without colliding. Pull
+# requests run Continuous Integration, not this workflow.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
 
 jobs:
   continuous-deployment:
@@ -90,17 +80,10 @@ jobs:
           TARGET_ID: ${{ matrix.target.id }}
           EVENT_NAME: ${{ github.event_name }}
           PUSH_BEFORE: ${{ github.event.before }}
-          PULL_REQUEST_BASE: ${{ github.event.pull_request.base.sha }}
-          PULL_REQUEST_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           if [ "$TARGET_ID" = "build-devcontainer" ] && [ "$EVENT_NAME" != "workflow_dispatch" ]; then
-            if [ "$EVENT_NAME" = "pull_request" ]; then
-              BASE="$PULL_REQUEST_BASE"
-              HEAD="$PULL_REQUEST_HEAD"
-            else
-              BASE="$PUSH_BEFORE"
-              HEAD="$SHA"
-            fi
+            BASE="$PUSH_BEFORE"
+            HEAD="$SHA"
 
             if [ -z "$BASE" ] || [[ "$BASE" =~ ^0+$ ]]; then
               echo "🧑‍🏭 No previous revision to compare against; building the devcontainer."
@@ -126,11 +109,6 @@ jobs:
           fi
 
           if [ "$TARGET_ID" = "push-releases" ]; then
-            if [ "$EVENT_NAME" = "pull_request" ]; then
-              echo "⏭️ Pull requests never release"
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
             tip="$(gh api "repos/$REPOSITORY/commits/main" --jq .sha)"
             if [ "$tip" != "$SHA" ]; then
               echo "⏭️ $SHA superseded by $tip, whose run releases instead"
@@ -139,12 +117,6 @@ jobs:
             else
               echo "🦸 $SHA holds main's tip, releasing"
             fi
-          fi
-
-          if [ "$TARGET_ID" = "apply-terraform" ] && [ "$EVENT_NAME" = "pull_request" ]; then
-            echo "⏭️ Pull requests never apply infrastructure"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
           fi
 
           echo "skip=false" >> "$GITHUB_OUTPUT"
