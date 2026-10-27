@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["coinagerie-cli"],
+  "name": "coinagerie-examples",
+  "projectType": "library",
+  "sourceRoot": "projects/ic-suite/coinagerie/coinagerie-examples",
+  "tags": ["language:typescript", "name:coinagerie-examples", "type:package"],
+  "targets": {
+    "codometer": {},
+    "deprecate-code": {},
+    "examples": {
+      "cache": true,
+      "description": "Run every example this package ships, the way its own guide says to, and gate on the exit code that guide promises. This is the smoke gate over all of it — `vitest` is where the glossaries and the failure messages are asserted, in the prose that explains them. It also holds the two completeness checks no assertion about output would catch: a run with no expected exit code, and an example with no `README.md`, no `project/` folder, or no link from the package guide.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^default",
+        "{projectRoot}/**/*.ts",
+        "{projectRoot}/examples/**",
+        "default"
+      ],
+      "options": {
+        "command": "node --import @swc-node/register/esm-register testing/run-examples.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": []
+    },
+    "format-code": {},
+    "guard-code": {},
+    "knip": {},
+    "lint-code": {},
+    "markdown-lint": {},
+    "oxfmt": {},
+    "prettier": {},
+    "spell-check": {},
+    "test-code": {},
+    "type-coverage": {},
+    "typecheck": {},
+    "typecheck-code": {},
+    "yaml-lint": {}
+  }
+}
