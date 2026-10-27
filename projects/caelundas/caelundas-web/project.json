@@ -1,5 +1,17 @@
 {
   "name": "caelundas-web",
+  "namedInputs": {
+    "default": [
+      "!{projectRoot}/.cspell/**",
+      "!{projectRoot}/.eslintcache/**",
+      "!{projectRoot}/conformetry-templates/**",
+      "!{projectRoot}/cspell.config.yaml",
+      "{projectRoot}/**/*",
+      "{workspaceRoot}/projects/caelundas/caelundas-cli/data/*.sql",
+      "{workspaceRoot}/projects/caelundas/caelundas-cli/src/modules/database/migrations/*.sql",
+      "shared-globals"
+    ]
+  },
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-web/src",
   "tags": [
@@ -36,14 +48,14 @@
       "cache": false,
       "configurations": {
         "ingested": {
-          "command": "node scripts/build-events-database.ts --ingested"
+          "command": "pnpm exec nx run caelundas-cli:events-database --args=\"--output=../caelundas-web/output/events.sqlite\""
         }
       },
-      "description": "Write the SQLite file the static build bundles into output/, from the committed seed, or with the ingested configuration from the database.sqlite caelundas-cli wrote",
+      "description": "Write the SQLite file the static build bundles into output/, through caelundas-cli's events-database command: from the committed seed, or with the ingested configuration from the output/database.sqlite caelundas-cli wrote",
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/build-events-database.ts",
-        "cwd": "{projectRoot}"
+        "command": "pnpm exec nx run caelundas-cli:events-database --args=\"--seed --output=../caelundas-web/output/events.sqlite\"",
+        "cwd": "{workspaceRoot}"
       },
       "outputs": ["{projectRoot}/output/events.sqlite"]
     },

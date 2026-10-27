@@ -46,7 +46,7 @@ describe("main end-to-end suite", () => {
       OUTPUT_DIRECTORY: "./output",
     });
     expect(DATABASE_DEFAULT_FILE).toBe(
-      path.resolve(import.meta.dirname, "../database.sqlite"),
+      path.resolve(import.meta.dirname, "../output/database.sqlite"),
     );
   });
 

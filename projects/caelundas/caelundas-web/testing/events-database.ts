@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -13,7 +13,15 @@ import type {
   SqlValue,
 } from "../src/lib/events-database/events-database.types";
 
-const DATA_DIRECTORY = path.join(import.meta.dirname, "../data");
+// The database belongs to caelundas-cli: its tables are what its migration
+// creates, and its seed rows and the views over them are its data files. They
+// are read, never copied, so the web application's tests cannot drift from it.
+const CLI_ROOT = path.join(import.meta.dirname, "../../caelundas-cli");
+const DATA_DIRECTORY = path.join(CLI_ROOT, "data");
+const MIGRATIONS_DIRECTORY = path.join(
+  CLI_ROOT,
+  "src/modules/database/migrations",
+);
 
 /**
  * Which of the committed SQL files build a test's database.
@@ -121,12 +129,12 @@ export function createTestSqlExecutor(
   options: TestEventsDatabaseOptions = {},
 ): SqlExecutor {
   const database = new DatabaseSync(":memory:");
-  const fileNames = options.empty
-    ? ["events-schema.sql"]
-    : ["events-schema.sql", "events-seed.sql"];
+  database.exec(readTablesSql());
 
-  for (const fileName of fileNames) {
-    database.exec(readFileSync(path.join(DATA_DIRECTORY, fileName), "utf8"));
+  if (options.empty !== true) {
+    database.exec(
+      readFileSync(path.join(DATA_DIRECTORY, "events-seed.sql"), "utf8"),
+    );
   }
 
   // Extra rows go in with the seed, before the post-export SQL derives its
@@ -145,18 +153,6 @@ export function createTestSqlExecutor(
 }
 
 /**
- * Opens a built SQLite file read-only, the way the browser's worker opens the
- * file the build bundles, and returns the events database over it.
- */
-export function openTestEventsDatabase(file: string): EventsDatabase {
-  const database = new DatabaseSync(file, { readOnly: true });
-
-  registerLocalTimeFunctions(database);
-
-  return createEventsDatabase(createNodeSqliteExecutor(database));
-}
-
-/**
  * Runs selects against a `node:sqlite` database, the way the browser's worker
  * runs them against sqlite-wasm.
  */
@@ -170,6 +166,21 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
       });
     },
   };
+}
+
+/**
+ * The SQL that creates the tables: the latest migration's generated `-up.sql`.
+ */
+function readTablesSql(): string {
+  const file = readdirSync(MIGRATIONS_DIRECTORY)
+    .filter((name) => name.endsWith("-up.sql"))
+    .toSorted()
+    .at(-1);
+
+  return readFileSync(
+    path.join(MIGRATIONS_DIRECTORY, file ?? "missing-up.sql"),
+    "utf8",
+  );
 }
 
 /**

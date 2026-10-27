@@ -1,5 +1,2 @@
 # 🙈 Ignore
 **/data/ephemeris
-
-# 🗄️ The SQLite database a run writes, which caelundas-web reads
-database.sqlite

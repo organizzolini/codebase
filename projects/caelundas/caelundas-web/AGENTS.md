@@ -22,20 +22,22 @@ nx run caelundas-web:start
 The app reads one SQLite file in the browser. Nothing is fetched from a server
 but that file:
 
-1. The tables come from one of two places. By default `build-database` creates
-   them from `data/events-schema.sql` and fills them from the text seed
-   `data/events-seed.sql`, which is what tests, CI and `start` use. With its
-   `ingested` configuration (`build:ingested`, `start:ingested` and
-   `preview:ingested` pass it down) the script copies
-   `../caelundas-cli/database.sqlite`, the file `caelundas-cli` ingests into;
-   it fails naming that file when it is missing. With `--from <file>` it
-   copies any SQLite file that holds the `calendar_events`, `tags`,
-   `tags_closure` and `calendar_event_tags` tables. `events-schema.sql`
-   mirrors the tables of `caelundas-cli`'s migration statement for statement,
-   and `caelundas-cli`'s `database.schema.integration.test.ts` fails when the
-   two differ, so change them together.
-2. `data/events-views.sql` is applied over whatever wrote the tables. It owns
-   everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
+1. `caelundas-cli` owns the database, so this project holds no schema, seed, or
+   build script. Its `events-database` command writes the file: by default
+   `build-database` passes `--seed`, which creates a database with the
+   initial migration's tables and loads the text seed
+   `caelundas-cli/data/events-seed.sql`, which is what CI and `start` use.
+   With the `ingested` configuration (`build:ingested`, `start:ingested` and
+   `preview:ingested` pass it down) it copies
+   `caelundas-cli/output/database.sqlite`, the file `caelundas-cli` ingests
+   into, and fails naming that file when it is missing. The tests build the
+   same database in memory from the latest migration's generated `-up.sql`,
+   the seed, and the views, all read from `caelundas-cli`, so the web
+   application cannot drift from the tables the CLI writes. This project's
+   `namedInputs` list those files so a change to them reruns its tests.
+2. `caelundas-cli/data/events-views.sql` is applied over whatever wrote the
+   tables. It owns
+everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
    and path), `calendar_event_tag_nodes` (one row per event and tag, ancestors
    included, `is_direct` marking the tags given), and the view
    `calendar_events_derived` (each event with its duration, temporality, and
@@ -46,8 +48,8 @@ but that file:
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
-   fingerprinted assets. `build-database` is never cached, since `--ingested`
-   and `--from` read a file Nx cannot hash; `build` hashes the file it wrote through a
+   fingerprinted assets. `build-database` is never cached, since the ingested
+   configuration reads a file Nx cannot hash; `build` hashes the file it wrote through a
    `dependentTasksOutputFiles` input, so a build from new data never restores
    the build of the old.
 4. In the browser, `events-database.worker.ts` downloads the file, opens it
@@ -105,15 +107,9 @@ src/
   lib/
     calendar/                    # Search parameters, windows, loader, formatting
     events-database/             # EventsDatabase, its SQL, worker, and client
-data/
-  events-schema.sql              # The source tables, for tests and the build
-  events-seed.sql                # Text seed standing in for real rows
-  events-views.sql               # Views applied over the source tables
-scripts/
-  build-events-database.ts       # Writes output/events.sqlite, from the seed, --ingested or --from
 output/                          # Gitignored build artifact
 testing/
-  events-database.ts             # node:sqlite EventsDatabase over data/*.sql
+  events-database.ts             # node:sqlite EventsDatabase over caelundas-cli's SQL
 ```
 
 ## Development
@@ -365,4 +361,4 @@ focusable by themselves.
 - [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
   The `EventsDatabase` interface
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
-- [data/events-views.sql](data/events-views.sql): The tables and views applied over the source file
+- [events-views.sql](../caelundas-cli/data/events-views.sql): The tables and views applied over the source file

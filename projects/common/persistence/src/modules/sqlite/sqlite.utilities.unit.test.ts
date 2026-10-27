@@ -1,3 +1,7 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
 import { DefaultNamingStrategy } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { describe, expect, it } from "vitest";
@@ -6,6 +10,7 @@ import { z } from "zod";
 import {
   assertSqliteEnvironmentKeys,
   createSqliteDataSource,
+  ensureSqliteDirectory,
   sqliteConnection,
   sqliteDataSourceOptions,
   sqliteEnvironment,
@@ -34,6 +39,27 @@ describe("sqlite utilities", () => {
     });
   });
 
+  describe(ensureSqliteDirectory, () => {
+    it("creates the missing folders of a file database", () => {
+      const root = fs.mkdtempSync(path.join(os.tmpdir(), "sqlite-directory-"));
+      const database = path.join(root, "output", "nested", "fixture.sqlite");
+
+      ensureSqliteDirectory({ database });
+
+      expect(fs.existsSync(path.dirname(database))).toBe(true);
+      expect(fs.existsSync(database)).toBe(false);
+
+      fs.rmSync(root, { force: true, recursive: true });
+    });
+
+    it("leaves an existing folder and an in-memory database alone", () => {
+      expect(() => {
+        ensureSqliteDirectory({ database: `${os.tmpdir()}/x.sqlite` });
+        ensureSqliteDirectory({ database: ":memory:" });
+      }).not.toThrow();
+    });
+  });
+
   describe(createSqliteDataSource, () => {
     it("builds the command-line data source from the project's prefixed variable alone", () => {
       const dataSource = createSqliteDataSource(
@@ -43,13 +69,13 @@ describe("sqlite utilities", () => {
           project: "sample",
         },
         {
-          SAMPLE_SQLITE_DATABASE: "output/sample.sqlite",
+          SAMPLE_SQLITE_DATABASE: path.join(os.tmpdir(), "sample.sqlite"),
           SQLITE_DATABASE: "x",
         },
       );
 
       expect(dataSource.options).toMatchObject({
-        database: "output/sample.sqlite",
+        database: path.join(os.tmpdir(), "sample.sqlite"),
         migrations: ["src/modules/sample-database/migrations/*.ts"],
         migrationsRun: false,
         synchronize: false,

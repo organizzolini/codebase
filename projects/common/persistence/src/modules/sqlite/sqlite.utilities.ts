@@ -1,3 +1,6 @@
+import { mkdirSync } from "node:fs";
+import path from "node:path";
+
 import Database from "better-sqlite3";
 import { DataSource } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
@@ -55,7 +58,8 @@ export function assertSqliteEnvironmentKeys<Project extends string>(
 /**
  * The `DataSource` a project's TypeORM command-line entry exports, built from
  * the same options as `SqliteModule.forRoot` so a generated migration matches
- * what the application expects. It reads only the project's
+ * what the application expects, and creates the database's folder if it is
+ * missing. It reads only the project's
  * `<PROJECT>_SQLITE_*` variables, from `process.env` unless given others:
  *
  * ```ts
@@ -71,12 +75,21 @@ export function createSqliteDataSource(
   { project, ...settings }: SqliteOptions,
   environment: Readonly<Record<string, unknown>> = process.env,
 ): DataSource {
-  return new DataSource(
-    sqliteDataSourceOptions(
-      sqliteConnection({ environment, project }),
-      settings,
-    ),
-  );
+  const connection = sqliteConnection({ environment, project });
+  ensureSqliteDirectory(connection);
+
+  return new DataSource(sqliteDataSourceOptions(connection, settings));
+}
+
+/**
+ * Creates the folder a file database lives in, which the driver will not:
+ * `output/database.sqlite` needs `output/` first. A no-op for `:memory:` and
+ * for a folder that exists, so it can run on every start.
+ */
+export function ensureSqliteDirectory({ database }: SqliteConnection): void {
+  if (database !== ":memory:") {
+    mkdirSync(path.dirname(path.resolve(database)), { recursive: true });
+  }
 }
 
 /**

@@ -303,6 +303,7 @@ from a `data-source.constants.ts` for the TypeORM command line.
 The options are shared (snake case, `synchronize` off, no logging); these are
 not:
 
+- **The folder is created on start**: `SqliteModule` and `createSqliteDataSource` make a file database's missing folders, so `output/database.sqlite` needs no `output/` first.
 - **Migrations run on start** when `forRoot` is given any. Postgres runs them
   as their own step because several processes starting together would race on
   one schema; a SQLite file has one writer. `createSqliteDataSource` still

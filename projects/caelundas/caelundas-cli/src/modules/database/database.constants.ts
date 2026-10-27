@@ -13,10 +13,10 @@ export const DATABASE_ENTITIES = [CalendarEvent, CalendarEventTag, Tag];
 
 /**
  * Where the database file is when `CAELUNDAS_SQLITE_DATABASE` names none:
- * `database.sqlite` at the root of the `caelundas-cli` project, wherever the
+ * `output/database.sqlite` in the `caelundas-cli` project, wherever the
  * command runs from, so the web build always finds what ingestion wrote.
  */
 export const DATABASE_DEFAULT_FILE = path.resolve(
   import.meta.dirname,
-  "../../../database.sqlite",
+  "../../../output/database.sqlite",
 );

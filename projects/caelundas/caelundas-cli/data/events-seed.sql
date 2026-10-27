@@ -1,7 +1,7 @@
 -- A few weeks of events around March 2026, then a gap until late June, for
--- one observer in New York, in the tables `events-schema.sql` creates. Tests
--- and the development build load this text instead of a committed binary
--- file.
+-- one observer in New York, in the tables the initial migration creates.
+-- `events-database --seed` and caelundas-web's tests load this text instead of
+-- a committed binary file.
 
 insert into tags (id, created_at, updated_at, "name", parent_id) values
     ('tag-type', '2026-01-01 00:00:00', '2026-01-01 00:00:00', 'Type', null),

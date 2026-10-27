@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { SQLITE_OPTIONS } from "./sqlite.constants";
 import {
+  ensureSqliteDirectory,
   sqliteConnection,
   sqliteDataSourceOptions,
   sqliteEnvironmentKeys,
@@ -70,15 +71,18 @@ export class SqliteService implements TypeOrmOptionsFactory {
   }
 
   /**
-   * TypeORM's options for the project's connection. Migrations run on start
+   * TypeORM's options for the project's connection, after creating the
+   * database's folder when it is missing. Migrations run on start
    * when the module was given any, which Postgres never does: a local file
    * has one writer, so there is no second process to race the DDL.
    */
   createTypeOrmOptions(): SqliteDataSourceOptions {
     const { migrations = [], ...settings } = this.sqliteOptions();
+    const connection = this.connection();
+    ensureSqliteDirectory(connection);
 
     return {
-      ...sqliteDataSourceOptions(this.connection(), {
+      ...sqliteDataSourceOptions(connection, {
         ...settings,
         migrations,
       }),

@@ -64,6 +64,7 @@ export type {
 } from "./modules/sqlite/sqlite.types";
 export {
   createSqliteDataSource,
+  ensureSqliteDirectory,
   sqliteConnection,
   sqliteDataSourceOptions,
   sqliteEnvironment,

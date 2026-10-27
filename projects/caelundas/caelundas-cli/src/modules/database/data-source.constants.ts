@@ -11,7 +11,7 @@ import {
  * targets, built from the same options the runtime module uses so a
  * generated migration matches what the application expects. It reads the
  * same file the application does, `CAELUNDAS_SQLITE_DATABASE` or, by
- * default, `database.sqlite` at the root of the project.
+ * default, `output/database.sqlite` in the project.
  */
 export const caelundasDataSource = createSqliteDataSource(
   {

@@ -9,7 +9,7 @@ import { Migration1793045891250 } from "./migrations/1793045891250-migration";
 
 /**
  * Connects caelundas to the SQLite file its `CAELUNDAS_SQLITE_DATABASE`
- * variable names, by default `database.sqlite` at the root of the
+ * variable names, by default `output/database.sqlite` in the
  * `caelundas-cli` project.
  *
  * `SqliteModule.forRoot` reads that variable through the application's
