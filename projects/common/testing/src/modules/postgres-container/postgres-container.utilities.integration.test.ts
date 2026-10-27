@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { CreateWidgets1767225600000 } from "../../../testing/fixtures/migrations/1767225600000-create-widgets";
 
-import { POSTGRES_CONTAINER_IMAGES } from "./postgresql-container.constants";
-import { startPostgresContainer } from "./postgresql-container.utilities";
+import { POSTGRES_CONTAINER_IMAGES } from "./postgres-container.constants";
+import { startPostgresContainer } from "./postgres-container.utilities";
 
 import type { MigrationInterface } from "typeorm";
 

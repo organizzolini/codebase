@@ -5,18 +5,19 @@ import { DataSource } from "typeorm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
+import { startPostgresContainer } from "@codebase/testing/postgres";
+
 import { Gadget } from "../../../testing/fixtures/gadget.entity";
 import { CreateWidgets1767225600000 } from "../../../testing/fixtures/migrations/1767225600000-create-widgets";
 import { Widget } from "../../../testing/fixtures/widget.entity";
 
-import { startPostgresContainer } from "./postgresql-container.utilities";
 import { PostgresqlModule } from "./postgresql.module";
 import {
   createDataSource,
   postgresEnvironmentSchema,
 } from "./postgresql.utilities";
 
-import type { StartedPostgresContainer } from "./postgresql-container.types";
+import type { StartedPostgresContainer } from "@codebase/testing/postgres";
 import type { TestingModule } from "@nestjs/testing";
 import type { Repository } from "typeorm";
 

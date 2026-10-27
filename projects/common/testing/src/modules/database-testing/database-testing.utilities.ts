@@ -3,10 +3,9 @@ import { Test } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import {
-  PostgresqlModule,
-  startPostgresContainer,
-} from "@codebase/persistence";
+import { PostgresqlModule } from "@codebase/persistence";
+
+import { startPostgresContainer } from "../postgres-container/postgres-container.utilities";
 
 import type {
   DatabaseTestingModule,

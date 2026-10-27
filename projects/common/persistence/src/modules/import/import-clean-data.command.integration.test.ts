@@ -5,15 +5,16 @@ import path from "node:path";
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { startPostgresContainer } from "@codebase/testing/postgres";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   postgresUri,
 } from "../../../testing/fixture-persistence";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
+import type { StartedPostgresContainer } from "@codebase/testing/postgres";
 
 describe("import --clean --data", () => {
   let source: StartedPostgresContainer;

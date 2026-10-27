@@ -1,14 +1,12 @@
+// 📤 Exports
 export type {
   DatabaseTestingModule,
   DatabaseTestingModuleOptions,
 } from "./modules/database-testing/database-testing.types";
 export { startDatabaseTestingModule } from "./modules/database-testing/database-testing.utilities";
-// 📤 Exports
-export {
-  POSTGRES_CONTAINER_IMAGES,
-  startPostgresContainer,
-} from "@codebase/persistence";
+export { POSTGRES_CONTAINER_IMAGES } from "./modules/postgres-container/postgres-container.constants";
 export type {
   PostgresContainerOptions,
   StartedPostgresContainer,
-} from "@codebase/persistence";
+} from "./modules/postgres-container/postgres-container.types";
+export { startPostgresContainer } from "./modules/postgres-container/postgres-container.utilities";

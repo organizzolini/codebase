@@ -6,7 +6,6 @@
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
     "@nestjs/typeorm": "catalog:",
-    "@testcontainers/postgresql": "catalog:",
     "nest-commander": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",

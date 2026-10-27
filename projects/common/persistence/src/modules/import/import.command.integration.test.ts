@@ -15,6 +15,8 @@ import {
   vi,
 } from "vitest";
 
+import { startPostgresContainer } from "@codebase/testing/postgres";
+
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
@@ -22,10 +24,9 @@ import {
   postgresUri,
   startFixtureDatabase,
 } from "../../../testing/fixture-persistence";
-import { startPostgresContainer } from "../postgresql/postgresql-container.utilities";
 
 import type { FixtureDatabase } from "../../../testing/fixture-persistence";
-import type { StartedPostgresContainer } from "../postgresql/postgresql-container.types";
+import type { StartedPostgresContainer } from "@codebase/testing/postgres";
 
 // 🎯 The real execFile, wrapped so a test can read the arguments and
 // environment every client tool was started with.
