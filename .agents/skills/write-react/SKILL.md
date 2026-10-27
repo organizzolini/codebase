@@ -279,9 +279,10 @@ Use Vitest and React Testing Library, beside the file under test:
 | `use-user.ts` | `use-user.unit.test.ts` | `describe(useUser, …)`, rendering with `renderHook` |
 | `word.$id.tsx` | `word.$id.integration.test.tsx` | `describe("word.$id", …)`, rendering with `renderRoute` |
 
-`renderRoute` comes from a generated application's `testing/render-route.tsx`:
-it loads the real route tree in a memory-history router, so the route's loader,
-head, and page all run. That is why a route test is an integration test. The
+`renderRoute` comes from `@codebase/testing/react` and takes the application's
+router, as in `renderRoute(getRouter(), "/word/1")`: it loads the real route
+tree in a memory history without the root's document shell, so the route's
+loader, head, and page all run. That is why a route test is an integration test. The
 distinct suffix is also what keeps a route's files from fitting the component
 template when conformance is checked.
 
