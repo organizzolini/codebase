@@ -36,6 +36,25 @@ export const DEFAULT_OPTIONS = {
   verticalFieldOfViewDegrees: 20,
 } as const;
 
+/**
+ * The default observer, New York, whose sky the backdrop shows unless a link
+ * names another place.
+ */
+export const DEFAULT_OBSERVER = {
+  latitudeDegrees: 40.73,
+  longitudeDegrees: -74,
+} as const;
+
+// ⏱ Page
+
+/**
+ * How long the window must stay the same size before the sky is rebuilt to
+ * fit it.
+ */
+export const RESIZE_DEBOUNCE_MILLISECONDS = 250;
+
+export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
 // 📐 Geometry
 
 /**
