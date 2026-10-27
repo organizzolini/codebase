@@ -4,12 +4,16 @@
     "url": "https://github.com/organizzolini/codebase/issues"
   },
   "dependencies": {
+    "@coinagerie/configuration": "workspace:*",
+    "@coinagerie/core": "workspace:*",
+    "@nestjs/common": "catalog:ic-suite",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:"
   },
   "description": "Renders and parses the markdown and JSON glossaries and compares them with the vocabulary of a codebase",
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
+    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",

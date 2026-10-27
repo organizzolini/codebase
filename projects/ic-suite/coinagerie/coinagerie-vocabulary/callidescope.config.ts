@@ -1,11 +1,15 @@
 import { projectDefaults } from "../../../../configuration/callidescope.config.js";
 
 /**
- * What coinagerie-vocabulary is held to.
+ * What coinagerie-vocabulary is held to, measured rather than assumed.
  *
- * One, because the package is empty: it exports nothing and calls nothing yet.
- * The first ticket that adds behavior measures it and raises these numbers to
- * what that code does, set **at** the measurement rather than above it.
+ * Seven frames from `VocabularyService.collect` down through discovery's walk
+ * into the ignore rules, and seven callees in `DiscoveryService.discover`,
+ * which chains the walk, the ancestor scopes, the skip list, and the globs.
+ *
+ * Set **at** what the gate measured rather than above it: a stack at the
+ * limit passes, so the number is a starting point to ratchet down from rather
+ * than a target to grow into.
  *
  * @see configuration/callidescope.config.ts — `projectDefaults`, spread below
  * for everything this file does not override
@@ -13,7 +17,7 @@ import { projectDefaults } from "../../../../configuration/callidescope.config.j
 export default {
   ...projectDefaults,
   limits: {
-    maximumBreadth: 1,
-    maximumDepth: 1,
+    maximumBreadth: 7,
+    maximumDepth: 7,
   },
 };
