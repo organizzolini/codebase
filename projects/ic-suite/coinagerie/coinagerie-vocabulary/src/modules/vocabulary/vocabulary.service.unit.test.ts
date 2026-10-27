@@ -2,11 +2,12 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { DEFAULT_INCLUDE } from "@coinagerie/configuration";
-import { LanguagesModule } from "@coinagerie/languages";
+import { LanguagesModule, typescriptKeywords } from "@coinagerie/languages";
 import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { DiscoveryModule } from "../discovery/discovery.module";
+import { FoldingModule } from "../folding/folding.module";
 import { WordsModule } from "../words/words.module";
 
 import { VocabularyService } from "./vocabulary.service";
@@ -21,7 +22,7 @@ describe(VocabularyService, () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [DiscoveryModule, LanguagesModule, WordsModule],
+      imports: [DiscoveryModule, FoldingModule, LanguagesModule, WordsModule],
       providers: [VocabularyService],
     }).compile();
 
@@ -52,7 +53,8 @@ describe(VocabularyService, () => {
     return {
       configurationPath: undefined,
       directory: root,
-      exclude: { paths: [] },
+      exclude: { paths: [], words: [] },
+      fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
       ...overrides,
@@ -83,7 +85,7 @@ describe(VocabularyService, () => {
       "logo",
       "lunar",
       "mark",
-      "notes",
+      "note",
       "phase",
       "readme",
       "service",
@@ -91,9 +93,26 @@ describe(VocabularyService, () => {
     ]);
   });
 
+  it("folds plurals and inflections into one headword", async () => {
+    writeTree({
+      "src/aspects.ts": [
+        "export const aspect = configured(aspects);",
+        "const configuring = configuration;",
+        "",
+      ].join("\n"),
+    });
+
+    await expect(service.collect(configure())).resolves.toStrictEqual([
+      "aspect",
+      "configuration",
+      "configure",
+      "src",
+    ]);
+  });
+
   it("scans only what the configuration includes and does not exclude", async () => {
     writeTree({
-      "src/kept.ts": "const keptName = 1;\n",
+      "src/first.ts": "const firstName = 1;\n",
       "src/left.test.ts": "const leftName = 1;\n",
       "vendor/other.ts": "const otherName = 1;\n",
     });
@@ -101,11 +120,11 @@ describe(VocabularyService, () => {
     await expect(
       service.collect(
         configure({
-          exclude: { paths: ["**/*.test.ts"] },
+          exclude: { paths: ["**/*.test.ts"], words: [] },
           include: ["src/**"],
         }),
       ),
-    ).resolves.toStrictEqual(["kept", "name", "src"]);
+    ).resolves.toStrictEqual(["first", "name", "src"]);
   });
 
   it("leaves out every file the configuration writes a glossary to", async () => {
@@ -122,6 +141,91 @@ describe(VocabularyService, () => {
             },
           ],
         }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+  });
+
+  it("runs the configured fold after plurals and inflections are folded", async () => {
+    writeTree({
+      "src/main.ts": "const setups = configuration + configured;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({
+          fold: (word) => (word === "configuration" ? "configure" : word),
+        }),
+      ),
+    ).resolves.toStrictEqual(["configure", "main", "setup", "src"]);
+  });
+
+  it("excludes the words the configuration lists, and the forms folded into them", async () => {
+    writeTree({
+      "src/main.ts": "const gate = services + service + Service;\n",
+    });
+
+    await expect(
+      service.collect(
+        configure({ exclude: { paths: [], words: ["service"] } }),
+      ),
+    ).resolves.toStrictEqual(["gate", "main", "src"]);
+  });
+
+  it("excludes a word named by one of its forms, in any case", async () => {
+    writeTree({ "src/main.ts": "const gate = service + implement;\n" });
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], words: ["Services", "implements"] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["gate", "main", "src"]);
+  });
+
+  it("excludes after the configured fold, so a merged family goes together", async () => {
+    writeTree({ "src/main.ts": "const configuration = configure;\n" });
+    const fold = (word: string): string =>
+      word === "configuration" ? "configure" : word;
+
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], words: ["configuration"] },
+          fold,
+        }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+  });
+
+  it("excludes nothing of the language's keywords until they are spread into exclude.words", async () => {
+    writeTree({
+      "src/main.ts": "const options = { default: 1, type: 2, aspect: 3 };\n",
+    });
+
+    await expect(service.collect(configure())).resolves.toStrictEqual([
+      "aspect",
+      "default",
+      "main",
+      "option",
+      "src",
+      "type",
+    ]);
+    await expect(
+      service.collect(
+        configure({
+          exclude: { paths: [], words: [...typescriptKeywords, "options"] },
+        }),
+      ),
+    ).resolves.toStrictEqual(["aspect", "main", "src"]);
+  });
+
+  it("keeps a word excluded as a headword even when folding it again would move it", async () => {
+    writeTree({ "src/main.ts": "const boundingBox = bounded;\n" });
+
+    await expect(
+      service.collect(
+        configure({ exclude: { paths: [], words: ["bound", "box"] } }),
       ),
     ).resolves.toStrictEqual(["main", "src"]);
   });

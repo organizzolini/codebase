@@ -1,20 +1,15 @@
-import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createFixtureTree, removeFixtureTree } from "../testing/fixture-tree";
+import { run, SPAWN_TIMEOUT } from "../testing/run-command";
 
 import { environmentSchema } from "./coinagerie-cli.constants";
 
-const COMMAND_PATH = path.resolve(
-  import.meta.dirname,
-  "coinagerie-cli.main.ts",
-);
 const START = "<!-- coinagerie:start -->";
 const END = "<!-- coinagerie:end -->";
-const SPAWN_TIMEOUT = 120_000;
 
 /** A source file whose words are `aspect`, `angle`, `lunar`, `phase`, `service`, and `src`. */
 const SOURCE = {
@@ -38,11 +33,33 @@ const CONFIGURATION = {
   ].join("\n"),
 };
 
-interface RunResult {
-  exitCode: null | number;
-  standardError: string;
-  standardOutput: string;
-}
+/** One file per language, each with a word in a comment or a string to hide. */
+const POLYGLOT = {
+  "dialects/data.json": '{"jsonKey": "hiddenJson"}\n',
+  "dialects/data.yaml": "# hiddenYaml\nyamlKey: hiddenValue\n",
+  "dialects/infrastructure.tf": [
+    "# hiddenHcl",
+    'resource "hclType" "hclName" {',
+    '  hclAttribute = "hiddenValue"',
+    "}",
+    "",
+  ].join("\n"),
+  "dialects/query.sql": '-- hiddenSql\nSELECT sqlColumn FROM "sqlTable";\n',
+  "dialects/script.py": [
+    "# hiddenPython",
+    "def python_function():",
+    '    return {"pythonKey": "hiddenValue"}',
+    "",
+  ].join("\n"),
+  "dialects/script.sh": '# hiddenShell\nshellVariable="hiddenValue"\n',
+  "dialects/settings.toml": [
+    "# hiddenToml",
+    "[tomlTable]",
+    'tomlKey = "hiddenValue"',
+    "",
+  ].join("\n"),
+  "dialects/style.css": "/* hiddenCss */\n.cssSelector { color: red; }\n",
+};
 
 /** A README whose glossary block holds exactly the given bullets. */
 function readme(...bullets: string[]): string {
@@ -58,29 +75,6 @@ function readme(...bullets: string[]): string {
     END,
     "",
   ].join("\n");
-}
-
-/**
- * Runs the real command in a fixture tree, as a separate process, because
- * what is under test is its exit code, its streams, and the files it leaves.
- */
-function run(root: string, args: string[]): RunResult {
-  const result = spawnSync(
-    process.execPath,
-    ["--import", "@swc-node/register/esm-register", COMMAND_PATH, ...args],
-    {
-      cwd: root,
-      encoding: "utf8",
-      env: { ...process.env, FORCE_COLOR: "0" },
-      timeout: SPAWN_TIMEOUT,
-    },
-  );
-
-  return {
-    exitCode: result.status,
-    standardError: result.stderr,
-    standardOutput: result.stdout,
-  };
 }
 
 describe("main end-to-end suite", () => {
@@ -113,6 +107,56 @@ describe("main end-to-end suite", () => {
       expect(result.standardOutput).toContain("- **lunar**:\n- **phase**:");
       expect(result.standardOutput).not.toContain("hidden");
       expect(existsSync(path.join(root, "README.md"))).toBe(false);
+    },
+    SPAWN_TIMEOUT,
+  );
+
+  it(
+    "merges the words of every language into one glossary and hides what each skips",
+    () => {
+      root = createFixtureTree({ ...POLYGLOT, ...CONFIGURATION });
+
+      const result = run(root, []);
+      const words = [...result.standardOutput.matchAll(/^- \*\*(.+)\*\*:/gmu)]
+        .map(([, word]) => word)
+        .toSorted();
+
+      expect(result.exitCode).toBe(0);
+      expect(words).toStrictEqual(
+        [
+          "attribute",
+          "color",
+          "column",
+          "css",
+          "datum",
+          "def",
+          "dialect",
+          "function",
+          "from",
+          "hcl",
+          "infrastructure",
+          "json",
+          "key",
+          "name",
+          "python",
+          "query",
+          "red",
+          "resource",
+          "return",
+          "script",
+          "selector",
+          "select",
+          "set",
+          "shell",
+          "sql",
+          "style",
+          "table",
+          "toml",
+          "type",
+          "variable",
+          "yaml",
+        ].toSorted(),
+      );
     },
     SPAWN_TIMEOUT,
   );
@@ -248,6 +292,67 @@ describe("main end-to-end suite", () => {
       expect(result.standardError).toContain(
         path.join(root, "coinagerie.config.ts"),
       );
+    },
+    SPAWN_TIMEOUT,
+  );
+
+  it(
+    "folds word forms, merges a configured family, and leaves out excluded words",
+    () => {
+      root = createFixtureTree({
+        "coinagerie.config.ts": [
+          "export default {",
+          '  exclude: { paths: ["coinagerie.config.ts", "tsconfig.json"], words: async () => ["services"] },',
+          '  fold: (word: string) => (word === "configuration" ? "configure" : word),',
+          '  outputs: [{ path: "README.md", type: "markdown" }],',
+          "};",
+          "",
+        ].join("\n"),
+        "src/phase.ts": [
+          "export const aspects = configured(configuring);",
+          "export const configuration = services;",
+          "",
+        ].join("\n"),
+      });
+
+      const written = run(root, ["--write"]);
+
+      expect(written.exitCode).toBe(0);
+      expect(readFileSync(path.join(root, "README.md"), "utf8")).toContain(
+        "- **aspect**:\n- **configure**:\n- **phase**:\n- **src**:\n",
+      );
+      expect(run(root, ["--check"]).exitCode).toBe(0);
+    },
+    SPAWN_TIMEOUT,
+  );
+
+  it.each([
+    [
+      "an exclude.words that throws",
+      "exclude: { words: () => { throw new Error('unreadable'); } }",
+    ],
+    ["a fold that returns an empty string", "fold: () => ''"],
+  ])(
+    "aborts on %s, naming the configuration file and writing nothing",
+    (_case, field) => {
+      root = createFixtureTree({
+        ...SOURCE,
+        "coinagerie.config.ts": [
+          "export default {",
+          `  ${field},`,
+          '  outputs: [{ path: "README.md", type: "markdown" }],',
+          "};",
+          "",
+        ].join("\n"),
+      });
+
+      const result = run(root, ["--write"]);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.standardError).toContain(
+        path.join(root, "coinagerie.config.ts"),
+      );
+      expect(existsSync(path.join(root, "README.md"))).toBe(false);
     },
     SPAWN_TIMEOUT,
   );

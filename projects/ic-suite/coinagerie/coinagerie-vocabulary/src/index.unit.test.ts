@@ -8,6 +8,8 @@ describe("coinagerie-vocabulary index", () => {
       [
         "DiscoveryModule",
         "DiscoveryService",
+        "FoldingModule",
+        "FoldingService",
         "VocabularyModule",
         "VocabularyService",
         "WordsModule",

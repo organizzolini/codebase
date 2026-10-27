@@ -37,3 +37,20 @@ export const QUOTABLE_NAME_OWNER_KINDS: ReadonlySet<ts.SyntaxKind> = new Set([
   ts.SyntaxKind.PropertySignature,
   ts.SyntaxKind.SetAccessor,
 ]);
+
+/**
+ * Every keyword the TypeScript compiler reserves or treats as contextual,
+ * lowercased as the vocabulary compares words.
+ *
+ * Read from the compiler's own keyword range rather than written out, so the
+ * list can never fall behind the language: `interface`, `readonly`, `of`, and
+ * every other word its scanner knows. A plain array, so a configuration
+ * spreads it into `exclude.words` and the tool excludes nothing it was not
+ * asked to.
+ */
+export const TYPESCRIPT_KEYWORDS: string[] = Array.from(
+  { length: ts.SyntaxKind.LastKeyword - ts.SyntaxKind.FirstKeyword + 1 },
+  (_unused, offset) => ts.tokenToString(ts.SyntaxKind.FirstKeyword + offset),
+)
+  .filter((keyword): keyword is string => keyword !== undefined)
+  .toSorted();

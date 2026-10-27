@@ -12,7 +12,6 @@ import type {
   WalkArguments,
 } from "./discovery.types";
 
-/* v8 ignore start -- the decorator helper emits a branch no test can reach */
 /**
  * Lists the files a run scans.
  *
@@ -21,7 +20,6 @@ import type {
  * own `include` and `exclude.paths` globs decide among what is left.
  */
 @Injectable()
-/* v8 ignore stop */
 export class DiscoveryService {
   // 🏗 Dependency Injection
 

@@ -11,10 +11,15 @@ export { ConfigurationService } from "./modules/configuration/configuration.serv
 export type {
   CoinagerieConfiguration,
   CoinagerieExclusions,
+  CoinagerieJsonOutput,
   CoinagerieMarkdownOutput,
   CoinagerieOutput,
+  ConfigurationOverrides,
+  ExcludedWords,
+  FoldWord,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
+  ResolvedCoinagerieJsonOutput,
   ResolvedCoinagerieMarkdownOutput,
   ResolvedCoinagerieOutput,
 } from "./modules/configuration/configuration.types";

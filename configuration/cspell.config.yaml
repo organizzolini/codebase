@@ -350,6 +350,8 @@ words:
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.
   - cooldown
+  # The reduction of an inflected word to its lemma, and the wink-lemmatizer package that does it.
+  - lemmatizer
   # Nx's project-discovery ignore file, read when listing a workspace's projects.
   - nxignore
   - openwiki
