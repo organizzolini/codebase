@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { validateCalendarSearch } from "./calendar-search.utilities";
+import {
+  getCalendarReloadKey,
+  validateCalendarSearch,
+} from "./calendar-search.utilities";
 
 describe(validateCalendarSearch, () => {
   it("reads colors turned off", () => {
@@ -45,5 +48,32 @@ describe(validateCalendarSearch, () => {
       field: "tag:type",
     });
     expect(validateCalendarSearch({ color: "nope" }).color).toBeUndefined();
+  });
+
+  it("passes the sky keys through untouched, for the backdrop to read", () => {
+    const sky = {
+      sky: "off",
+      "sky.altBottom": 5,
+      "sky.debug": true,
+      "sky.lat": 51.5,
+      "sky.lon": -0.1,
+      "sky.maxMag": 5,
+      "sky.pixelsPerSecond": 20,
+      "sky.starScale": 1.5,
+      "sky.vFov": 30,
+    };
+
+    expect(validateCalendarSearch({ ...sky, view: "month" })).toMatchObject(
+      sky,
+    );
+  });
+
+  it("keeps the sky keys out of what decides a reload", () => {
+    expect(getCalendarReloadKey({ date: "2026-03-01", "sky.lat": 10 })).toBe(
+      getCalendarReloadKey({ date: "2026-03-01", "sky.lat": 20 }),
+    );
+    expect(getCalendarReloadKey({ date: "2026-03-01" })).not.toBe(
+      getCalendarReloadKey({ date: "2026-04-01" }),
+    );
   });
 });

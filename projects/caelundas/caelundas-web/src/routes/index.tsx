@@ -12,6 +12,7 @@ import { createEventFilterFields } from "../components/calendar-filters/event-fi
 import { EMPTY_EVENT_FILTER } from "../components/calendar-filters/event-filter-tree.constants";
 import { CalendarSkeleton } from "../components/calendar-skeleton/calendar-skeleton";
 import { CalendarViewOptions } from "../components/calendar-view-options/calendar-view-options";
+import { loadedKeys } from "../components/events-calendar/calendar-loader.constants";
 import { loadCalendar } from "../components/events-calendar/calendar-loader.utilities";
 import {
   isWideViewport,
@@ -26,7 +27,11 @@ import { getDefaultCalendarView } from "../components/events-calendar/calendar-v
 import { parseCalendarDate } from "../components/events-calendar/calendar-window.utilities";
 import { EventsCalendar } from "../components/events-calendar/events-calendar";
 import { readTimeZone } from "../components/events-calendar/events-calendar.utilities";
-import { validateCalendarSearch } from "../hooks/use-calendar-search/calendar-search.utilities";
+import {
+  getCalendarReloadKey,
+  readCalendarSearch,
+  validateCalendarSearch,
+} from "../hooks/use-calendar-search/calendar-search.utilities";
 import {
   CalendarSymbolsContext,
   DEFAULT_CALENDAR_SYMBOLS,
@@ -49,7 +54,8 @@ import { useCalendarSearch } from "../hooks/use-calendar-search/use-calendar-sea
 // read from the location rather than declared as loader dependencies: a
 // dependency would make each search its own match, which shows the skeleton
 // again. The loader's own cache, keyed by window and filter, stands in for
-// the router's.
+// the router's. The backdrop's keys are the one change that skips even the
+// reload, so tuning the sky leaves the calendar alone.
 export const Route = createFileRoute("/")({
   component: IndexPage,
   errorComponent: IndexError,
@@ -57,15 +63,21 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Caelundas" }] }),
   pendingComponent: IndexPending,
   pendingMs: 200,
-  shouldReload: true,
+  shouldReload: ({ location }) =>
+    getCalendarReloadKey(location.search) !== loadedKeys.current,
   ssr: false,
   validateSearch: validateCalendarSearch,
 
-  loader: async ({ context, location }) =>
-    loadCalendar(
+  loader: async ({ context, location, preload }) => {
+    if (!preload) {
+      loadedKeys.current = getCalendarReloadKey(location.search);
+    }
+
+    return loadCalendar(
       context.eventsDatabase,
       validateCalendarSearch(location.search),
-    ),
+    );
+  },
 });
 
 // 🧩 Component
@@ -101,7 +113,12 @@ function IndexPage(): ReactNode {
   // 🪝 Hooks
   const { colorBy, dataset, emptiness, events, facets, grouping } =
     Route.useLoaderData();
-  const search = Route.useSearch();
+  // The calendar's own search only: structural sharing hands back the same
+  // object when a sky key alone changed, so the page is not rendered again.
+  const search = Route.useSearch({
+    select: readCalendarSearch,
+    structuralSharing: true,
+  });
   const fields = useMemo(() => createEventFilterFields(facets), [facets]);
   const isWide = useSyncExternalStore(subscribeToViewport, isWideViewport);
   // While a reload runs, the notice of why the last window was empty would

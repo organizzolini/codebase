@@ -21,8 +21,30 @@ import {
 import { renderRoute } from "../../testing/render-route";
 import { setViewportWidth } from "../../testing/viewport";
 import { UnsupportedBrowserError } from "../components/events-calendar/events-database.constants";
+import { getRouter } from "../router";
 
 import { Route } from "./index";
+
+// The route helper builds its own router, so the one it built is kept for
+// a test that navigates it.
+vi.mock(import("../router"), async (importOriginal) => {
+  const original = await importOriginal();
+
+  return { ...original, getRouter: vi.fn(original.getRouter) };
+});
+
+/**
+ * The router the last render of a route was given.
+ */
+function getRenderedRouter(): ReturnType<typeof getRouter> {
+  const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+
+  if (router === undefined) {
+    throw new Error("No route has been rendered");
+  }
+
+  return router;
+}
 
 // Each click of the View menu re-renders the whole route, which a slow
 // continuous integration runner needs well past the default time for.
@@ -528,4 +550,64 @@ describe("index", () => {
       }, BUILDER_WAIT);
     },
   );
+
+  describe("sky link parameters", () => {
+    it("keeps them through the calendar's own navigation", async () => {
+      await renderRoute("/?date=2026-03-01&sky.lat=51.5");
+      const router = getRenderedRouter();
+      const toolbar = await findToolbar();
+
+      fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
+
+      await screen.findByRole("grid", { name: "April 2026" });
+
+      expect(router.state.location.search).toMatchObject({
+        date: "2026-04-01",
+        "sky.lat": 51.5,
+      });
+    });
+
+    it("does not run the loader again for a change to them alone", async () => {
+      const database = createTestEventsDatabase();
+      // The loader caches its event reads, so it is the dataset read, made on
+      // every load, that shows the loader ran.
+      const loads = vi.spyOn(database, "describeDataset");
+      await renderRoute("/?date=2026-03-01", { eventsDatabase: database });
+
+      const router = getRenderedRouter();
+
+      await screen.findByRole("grid", { name: "March 2026" });
+      loads.mockClear();
+      await router.navigate({
+        search: (previous) => ({ ...previous, "sky.lat": 51.5 }),
+        to: "/",
+      });
+
+      expect(loads).not.toHaveBeenCalled();
+      expect(router.state.location.search).toMatchObject({ "sky.lat": 51.5 });
+    });
+
+    it("still runs the loader for a change to the calendar", async () => {
+      const database = createTestEventsDatabase();
+      // The loader caches its event reads, so it is the dataset read, made on
+      // every load, that shows the loader ran.
+      const loads = vi.spyOn(database, "describeDataset");
+      await renderRoute("/?date=2026-03-01&sky.lat=51.5", {
+        eventsDatabase: database,
+      });
+
+      const router = getRenderedRouter();
+
+      await screen.findByRole("grid", { name: "March 2026" });
+      loads.mockClear();
+      await router.navigate({
+        search: (previous) => ({ ...previous, date: "2026-04-01" }),
+        to: "/",
+      });
+
+      await waitFor(() => {
+        expect(loads).toHaveBeenCalledWith();
+      });
+    });
+  });
 });
