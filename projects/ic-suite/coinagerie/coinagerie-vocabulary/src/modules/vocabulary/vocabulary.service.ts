@@ -18,7 +18,8 @@ import type { ResolvedCoinagerieConfiguration } from "@coinagerie/configuration"
  * language claims and splits its identifiers into words, folds each word into
  * its headword, leaves out the headwords the configuration excludes, then
  * de-duplicates and sorts. A fault in the configuration's `fold` aborts the
- * run, naming the configuration file. A file no language claims still contributes its path.
+ * run, naming the configuration file. A file no language claims still
+ * contributes its path.
  */
 @Injectable()
 export class VocabularyService {
@@ -69,11 +70,18 @@ export class VocabularyService {
   private excludedHeadwords(
     configuration: ResolvedCoinagerieConfiguration,
   ): Set<string> {
-    return new Set(
-      configuration.exclude.words.map((word) =>
-        this.foldingService.headword(word.toLowerCase(), configuration),
-      ),
-    );
+    const excluded = new Set<string>();
+
+    for (const word of configuration.exclude.words) {
+      const lowercase = word.toLowerCase();
+
+      // Folding is not idempotent (`bounding` folds to `bound`, which folds
+      // to `bind`), so a word already written as a headword stays excluded.
+      excluded.add(lowercase);
+      excluded.add(this.foldingService.headword(lowercase, configuration));
+    }
+
+    return excluded;
   }
 
   // 🌎 Public Methods
@@ -95,6 +103,7 @@ export class VocabularyService {
     });
     const excluded = this.excludedHeadwords(configuration);
     const words = new Set<string>();
+    const headwords = new Map<string, string>();
 
     // One file at a time: reading every file at once opens them all at once,
     // which exhausts the file descriptors of a large repository.
@@ -103,7 +112,11 @@ export class VocabularyService {
         configuration.directory,
         relativePath,
       )) {
-        const headword = this.foldingService.headword(word, configuration);
+        const headword =
+          headwords.get(word) ??
+          this.foldingService.headword(word, configuration);
+
+        headwords.set(word, headword);
 
         if (!excluded.has(headword)) {
           words.add(headword);

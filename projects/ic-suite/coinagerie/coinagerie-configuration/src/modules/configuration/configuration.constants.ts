@@ -43,8 +43,11 @@ const isFunction = (value: unknown): value is (...args: never[]) => unknown =>
 /** What `exclude.words` must come to once any function has been called. */
 export const WORD_LIST_SCHEMA = z.array(z.string());
 
-/** What a configured `fold` must return for every word. */
-export const FOLDED_WORD_SCHEMA = z.string().min(1);
+/**
+ * What a configured `fold` must return for every word: text with no
+ * whitespace or `*`, which a glossary bullet could not hold.
+ */
+export const FOLDED_WORD_SCHEMA = z.string().regex(/^[^\s*]+$/u);
 
 const markdownOutputSchema = z.strictObject({
   description: z

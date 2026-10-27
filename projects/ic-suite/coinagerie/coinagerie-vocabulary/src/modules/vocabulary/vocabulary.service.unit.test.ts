@@ -219,4 +219,14 @@ describe(VocabularyService, () => {
       ),
     ).resolves.toStrictEqual(["aspect", "main", "src"]);
   });
+
+  it("keeps a word excluded as a headword even when folding it again would move it", async () => {
+    writeTree({ "src/main.ts": "const boundingBox = bounded;\n" });
+
+    await expect(
+      service.collect(
+        configure({ exclude: { paths: [], words: ["bound", "box"] } }),
+      ),
+    ).resolves.toStrictEqual(["main", "src"]);
+  });
 });

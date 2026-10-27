@@ -212,9 +212,12 @@ describe(ConfigurationService, () => {
       "() => { throw 'no mapping'; }",
       "no mapping",
     ],
-    ["returns an empty string", "() => ''", "empty string"],
-    ["returns a number", "() => 42", "42"],
-    ["returns nothing", "() => undefined", "undefined"],
+    ["returns an empty string", "() => ''", `""`],
+    ["returns text with whitespace", "() => 'two words'", "two words"],
+    ["returns text with an asterisk", "() => 'a*b'", "a*b"],
+    ["returns a number", "() => 42", "type number"],
+    ["returns nothing", "() => undefined", "type undefined"],
+    ["returns a promise", "async () => 'aspect'", "synchronous"],
   ])(
     "refuses a fold that %s when it is called, naming the file",
     async (_case, source, reason) => {

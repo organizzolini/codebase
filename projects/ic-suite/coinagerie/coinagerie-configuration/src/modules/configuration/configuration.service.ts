@@ -75,7 +75,7 @@ export class ConfigurationService {
       if (!parsed.success) {
         throw new InvalidConfigurationError(
           location,
-          `fold must return a non-empty string, but returned ${folded === "" ? "an empty string" : String(folded)} for "${word}"`,
+          `fold must return a non-empty string without whitespace or "*", but returned ${typeof folded === "string" ? JSON.stringify(folded) : `a value of type ${typeof folded}`} for "${word}"; it must be synchronous`,
         );
       }
 
