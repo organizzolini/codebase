@@ -110,6 +110,18 @@ jobs:
             name: Publishable Packages
             emoji: 📦
             timeout-minutes: 15
+          # Plans the OpenRouter Terraform when a pull request changes it, and
+          # comments what the plan would create, update, replace, and delete. It
+          # is a comment, not part of the body, so it cannot race the Codometer
+          # report that rewrites the body. Nothing is applied: Continuous
+          # Deployment does that once the change reaches `main`. The leg always
+          # reports, so it can be a required check, and its steps run only for a
+          # same-repository pull request that changes the module, since a fork
+          # is not given the secrets the plan needs.
+          - target: plan-terraform
+            name: Infrastructure
+            emoji: 🏗️
+            timeout-minutes: 15
 
     steps:
       - name: 🚦 Skip Conditionally
@@ -149,12 +161,12 @@ jobs:
           trivy: ${{ matrix.check.target == 'secure-code' && 'true' || 'false' }}
           python-dependencies: >-
             ${{ matrix.check.target != 'build-projects' &&
-            matrix.check.target != 'verify-publishable-packages' && 'true' ||
-            'false' }}
+            matrix.check.target != 'verify-publishable-packages' &&
+            matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           postgres-client: >-
             ${{ matrix.check.target == 'test-code' && !matrix.check.shard &&
             'true' || 'false' }}
-          uv: "true"
+          uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
             ${{ github.job }}-${{ matrix.check.target }}${{ matrix.check.shard
@@ -164,15 +176,59 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'lint-code' && 'true' || 'false' }}
 
+      - name: 🚦 Detect Terraform Changes
+        id: terraform-changes
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          if [ "$EVENT_NAME" != "pull_request" ] \
+            || [ "$HEAD_REPOSITORY" != "$GITHUB_REPOSITORY" ]; then
+            echo "⏭️ Only a same-repository pull request is planned."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "origin/${BASE_REF}...HEAD" \
+            | grep -qE '^infrastructure/terraform/openrouter/'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⏭️ No OpenRouter Terraform changes; skipping the plan."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # The infrastructure project's `terraform-format` and `terraform-validate`
       # run as part of lint-code, and the runner image no longer ships terraform.
       - name: 🏗️ Setup Terraform
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'lint-code'
+          (matrix.check.target == 'lint-code' ||
+          steps.terraform-changes.outputs.changed == 'true')
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false
+
+      - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
+        if: steps.terraform-changes.outputs.changed == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
+          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
+        run: pnpm exec nx run infrastructure:terraform-plan
+
+      # Posts the plan as one comment that each push updates. A failed plan
+      # fails the leg above and shows in its log instead.
+      - name: 📊 Report Plan
+        if: steps.terraform-changes.outputs.changed == 'true'
+        uses: borchero/terraform-plan-comment@v2
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/openrouter
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
@@ -202,7 +258,8 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target != 'secure-code' &&
-          matrix.check.target != 'verify-publishable-packages'
+          matrix.check.target != 'verify-publishable-packages' &&
+          matrix.check.target != 'plan-terraform'
         continue-on-error: ${{ matrix.check.target == 'build-projects' }}
         env:
           NX_VERBOSE_LOGGING: ${{ inputs.verbose || false }}
@@ -257,71 +314,3 @@ jobs:
           eslint-cache: >-
             ${{ matrix.check.target == 'lint-code' &&
             github.event_name != 'merge_group' && 'true' || 'false' }}
-
-  # Plans the OpenRouter Terraform when a pull request changes it, and comments
-  # what the plan would create, update, replace, and delete. It is a comment,
-  # not part of the body, so it cannot race the Codometer report that rewrites
-  # the body. Nothing is applied: that happens in Continuous Deployment once the
-  # change reaches `main`. The plan needs secrets, which a fork's pull request
-  # is not given, so forks skip it.
-  terraform-plan:
-    name: 🏗️ Terraform Plan
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    if: >-
-      github.event_name == 'pull_request' &&
-      !github.event.pull_request.draft &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
-      AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
-      TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-      TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
-    steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: 🚦 Detect Terraform Changes
-        id: changes
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          if git diff --name-only "origin/${BASE_REF}...HEAD" \
-            | grep -qE '^infrastructure/terraform/openrouter/'; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "⏭️ No OpenRouter Terraform changes; skipping the plan."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: 🕋 Setup Codebase
-        if: steps.changes.outputs.changed == 'true'
-        uses: ./.github/actions/setup-codebase
-        with:
-          nx-shas: "false"
-          python-dependencies: "false"
-          uv: "false"
-
-      - name: 🏗️ Setup Terraform
-        if: steps.changes.outputs.changed == 'true'
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_wrapper: false
-
-      - name: 🏗️ Plan
-        if: steps.changes.outputs.changed == 'true'
-        run: pnpm exec nx run infrastructure:terraform-plan
-
-      # Posts the plan as one comment that each push updates. A failed plan
-      # fails the job above and shows in its log instead.
-      - name: 📊 Report Plan
-        if: steps.changes.outputs.changed == 'true'
-        uses: borchero/terraform-plan-comment@v2
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/openrouter
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan
