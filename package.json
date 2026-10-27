@@ -14,6 +14,7 @@
     "@codometer/configuration": "workspace:*",
     "@coinagerie/configuration": "workspace:*",
     "@coinagerie/languages": "workspace:*",
+    "@coinagerie/nx": "workspace:*",
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
     "@conformetry/cli": "workspace:*",

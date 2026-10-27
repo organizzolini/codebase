@@ -51,3 +51,77 @@ nx run coinagerie-nx:vitest
 ## 👔 Conformetry
 
 This project was generated from the [nestjs-service-project](../../configuration/conformetry-templates/nestjs-service-project) conformetry template.
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-nx:coinagerie-check:write`.
+
+- **abort**:
+- **absolute**:
+- **after**:
+- **alpha**:
+- **array**:
+- **assertion**:
+- **beta**:
+- **breadth**:
+- **bug**:
+- **callback**:
+- **clear**:
+- **close**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **decorator**:
+- **define**:
+- **describe**:
+- **each**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **factory**:
+- **fake**:
+- **filename**:
+- **fixture**:
+- **flat**:
+- **force**:
+- **gamma**:
+- **gitkeep**:
+- **homepage**:
+- **implementation**:
+- **injectable**:
+- **instance**:
+- **least**:
+- **length**:
+- **logger**:
+- **manifest**:
+- **maximum**:
+- **meta**:
+- **mj**:
+- **mkdtemp**:
+- **mock**:
+- **non**:
+- **nullable**:
+- **posix**:
+- **promise**:
+- **real**:
+- **recursive**:
+- **relative**:
+- **remove**:
+- **resolution**:
+- **sample**:
+- **second**:
+- **slice**:
+- **sort**:
+- **spy**:
+- **strict**:
+- **synthetic**:
+- **temporary**:
+- **timer**:
+- **trim**:
+- **vi**:
+
+<!-- coinagerie:end -->

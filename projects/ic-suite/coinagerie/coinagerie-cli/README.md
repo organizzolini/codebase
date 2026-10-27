@@ -43,3 +43,112 @@ nx run coinagerie-cli:vitest
 ## 👔 Conformetry
 
 This project was generated from the [nestjs-command-project](../../configuration/conformetry-templates/nestjs-command-project) conformetry template.
+
+<!-- coinagerie:start -->
+
+## 🪙 Coinagerie
+
+The words this package uses that the root glossary does not define, regenerated with `nx run coinagerie-cli:coinagerie-check:write`.
+
+- **absolute**:
+- **after**:
+- **anchor**:
+- **angle**:
+- **answer**:
+- **aspect**:
+- **assertion**:
+- **bootstrap**:
+- **breadth**:
+- **buffer**:
+- **bug**:
+- **bullet**:
+- **call**:
+- **clear**:
+- **close**:
+- **color**:
+- **comparison**:
+- **compile**:
+- **compiler**:
+- **console**:
+- **constant**:
+- **controller**:
+- **css**:
+- **decorator**:
+- **define**:
+- **deliver**:
+- **delivery**:
+- **describe**:
+- **destination**:
+- **dialect**:
+- **difference**:
+- **discovery**:
+- **each**:
+- **encode**:
+- **entry**:
+- **equal**:
+- **experimental**:
+- **factory**:
+- **fake**:
+- **field**:
+- **fixture**:
+- **flag**:
+- **force**:
+- **gitkeep**:
+- **glossary**:
+- **handler**:
+- **homepage**:
+- **implementation**:
+- **injectable**:
+- **inside**:
+- **instance**:
+- **invalid**:
+- **least**:
+- **length**:
+- **load**:
+- **logger**:
+- **lunar**:
+- **malformed**:
+- **maximum**:
+- **md**:
+- **meta**:
+- **miss**:
+- **mkdtemp**:
+- **mock**:
+- **other**:
+- **parameter**:
+- **phase**:
+- **polyglot**:
+- **previous**:
+- **promise**:
+- **prototype**:
+- **provide**:
+- **py**:
+- **real**:
+- **reason**:
+- **reconcile**:
+- **recursive**:
+- **reject**:
+- **rejection**:
+- **relative**:
+- **remove**:
+- **resolution**:
+- **rewrite**:
+- **runner**:
+- **sort**:
+- **spawn**:
+- **spy**:
+- **stack**:
+- **stale**:
+- **stdout**:
+- **strict**:
+- **stringify**:
+- **synthetic**:
+- **tf**:
+- **timer**:
+- **toml**:
+- **vanish**:
+- **vi**:
+- **vocabulary**:
+- **work**:
+
+<!-- coinagerie:end -->
