@@ -60,6 +60,8 @@ export const EXAMPLE_RUNS: ExampleRun[] = [
     exitCode: 0,
   },
   { args: ["--check"], example: "outputs", exitCode: 0 },
+  { args: ["--write"], example: "outputs", exitCode: 0 },
+  { args: ["--format", "json"], example: "outputs", exitCode: 0 },
   ...Object.entries(CHECK_FAILURE_EXIT_CODES).map(
     ([name, exitCode]): ExampleRun => ({
       args: ["--config", `${name}.config.ts`, "--check"],

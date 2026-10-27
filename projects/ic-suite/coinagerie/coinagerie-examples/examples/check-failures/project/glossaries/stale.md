@@ -3,6 +3,7 @@
 ## 🪙 Coinagerie
 
 - **angle**: The gap between two bodies.
+  Measured in degrees.
 - **aspect**:
 - **lunar**:
 - **phase**:

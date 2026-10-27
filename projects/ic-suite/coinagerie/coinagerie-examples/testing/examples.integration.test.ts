@@ -159,17 +159,23 @@ describe("every example this package ships", () => {
 
     it("turns a package word stale once the root glossary defines it", () => {
       const staged = stage("layered-glossaries");
-      fs.appendFileSync(
-        path.join(staged, "GLOSSARY.md"),
-        "\n- **invoice**: Moved up.\n",
+      fs.writeFileSync(
+        path.join(staged, "shared", "invoice.ts"),
+        "export const sharedInvoice = 1;\n",
       );
 
+      const moved = runCoinagerie(staged, [
+        "--config",
+        "coinagerie.config.ts",
+        "--write",
+      ]);
       const result = runCoinagerie(staged, [
         "--config",
         "packages/billing/coinagerie.config.ts",
         "--check",
       ]);
 
+      expect(moved.exitCode).toBe(0);
       expect(result.exitCode).toBe(1);
       expect(result.standardError).toContain("invoice");
     });
