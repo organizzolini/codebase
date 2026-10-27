@@ -293,6 +293,7 @@
     "**/node_modules/**",
     "**/projects/ic-suite/codometer/codometer-examples/examples/compiled/**",
     "**/projects/ic-suite/codometer/codometer-examples/examples/corpus/**",
+    "**/projects/ic-suite/coinagerie/coinagerie-examples/examples/**",
     "**/projects/ic-suite/conformetry/conformetry-examples/examples/*/instances/**",
     "**/projects/ic-suite/conformetry/conformetry-examples/examples/*/templates/**",
     "**/pnpm-lock.yaml",

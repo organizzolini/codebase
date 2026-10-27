@@ -138,6 +138,7 @@ const config: KnipConfig = {
         "configuration/conformetry-templates/**", // Generator templates are placeholder files, not executable workspace code
         "projects/ic-suite/codometer/codometer-examples/examples/compiled/**", // Stand-in build output, committed so a target example has something to measure
         "projects/ic-suite/codometer/codometer-examples/examples/corpus/**", // Sample corpus written to be counted; uncalled and unimported by construction
+        "projects/ic-suite/coinagerie/coinagerie-examples/examples/**", // Fixture projects written to be read for their words; uncalled and unimported by construction
         // Skill scripts are invoked by the skill framework, not imported in code
         "**/.agents/skills/**",
         "**/.claude/skills/**",
@@ -212,6 +213,15 @@ const config: KnipConfig = {
         "@swc-node/register", // Named as a string on the command line testing/codometer.ts spawns, never imported
       ],
       project: ["codometer.config.ts", "examples/**/*.ts", "testing/**/*.ts"],
+    },
+
+    // coinagerie-examples: Fixture projects and the harness that runs the
+    // coinagerie command line over them. The fixtures are read for their
+    // words, never imported, so knip is told where the entry points really are.
+    "projects/ic-suite/coinagerie/coinagerie-examples": {
+      entry: ["codometer.config.ts", "testing/**/*.ts"],
+      ignore: ["examples/**"],
+      project: ["testing/**/*.ts"],
     },
 
     // components: Shared React component library (shadcn/ui)
