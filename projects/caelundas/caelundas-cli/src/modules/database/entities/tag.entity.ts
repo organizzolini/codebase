@@ -8,11 +8,10 @@ import {
   TreeParent,
 } from "typeorm";
 
-import { PostgresqlUpdatableEntity } from "@codebase/persistence";
+import { SqliteUpdatableEntity } from "@codebase/persistence";
 
 /**
- * One node of the `tags` tree, in the schema that `CAELUNDAS_POSTGRES_SCHEMA`
- * names: a label an event can carry, such as a planet, a sign, or a kind of
+ * One node of the `tags` tree, in the caelundas SQLite file: a label an event can carry, such as a planet, a sign, or a kind of
  * event, nested under the broader label it refines.
  *
  * The tree has many roots, one per dimension. A tag's `name` is its own
@@ -39,20 +38,19 @@ import { PostgresqlUpdatableEntity } from "@codebase/persistence";
   ancestorColumnName: () => "ancestor_id",
   descendantColumnName: () => "descendant_id",
 })
-export class Tag extends PostgresqlUpdatableEntity {
+export class Tag extends SqliteUpdatableEntity {
   @TreeChildren()
   children?: Tag[];
 
-  @Column("text", { comment: "The tag's own label, unique among its siblings" })
+  /** The tag's own label, unique among its siblings. */
+  @Column("text")
   name!: string;
 
   @JoinColumn({ name: "parent_id" })
   @TreeParent({ onDelete: "CASCADE" })
   parent?: null | Tag;
 
-  @Column("uuid", {
-    comment: "The tag this one refines, or null for the root of a dimension",
-    nullable: true,
-  })
+  /** The tag this one refines, or null for the root of a dimension. */
+  @Column("text", { nullable: true })
   parentId?: null | string;
 }

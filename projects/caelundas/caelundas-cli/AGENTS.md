@@ -23,7 +23,7 @@ nx run caelundas-cli:start
 - **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
 - **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
 - **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Database**: Postgres via TypeORM and `@codebase/persistence` (the `calendar_events`, `tags`, `tags_closure`, and `calendar_event_tags` tables)
+- **Database**: a SQLite file via TypeORM and `@codebase/persistence`'s `SqliteModule` (the `calendar_events`, `tags`, `tags_closure`, and `calendar_event_tags` tables)
 - **Language**: Strict TypeScript
 
 ### Execution Flow
@@ -73,7 +73,7 @@ testing/                            # Shared test utilities
 src/modules/
   input/                               # Zod environmentSchema and config parsing
   calendar/                            # ICS and JSON file output formatting
-  database/                            # Postgres connection, entities, migrations
+  database/                            # SQLite connection, entities, migrations
   calendar-events/                     # Upsert and range queries over the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
   ephemeris/                           # Swiss Ephemeris access
@@ -87,7 +87,7 @@ src/modules/
 
 - **Input Validation** ([input.constants.ts](src/modules/input/input.constants.ts)): Zod schema for environment variables
 - **Ephemeris Retrieval** ([ephemeris/](src/modules/ephemeris/)): Swiss Ephemeris, computed locally
-- **Event Storage** ([calendar-events/](src/modules/calendar-events/) and [database/](src/modules/database/)): Upserts detected events into Postgres and reads them back by range and location
+- **Event Storage** ([calendar-events/](src/modules/calendar-events/) and [database/](src/modules/database/)): Upserts detected events into SQLite and reads them back by range and location
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events
 - **Output** ([calendar/](src/modules/calendar/)): iCal and JSON files, rendered from the stored rows
@@ -181,33 +181,39 @@ Full schema: [src/modules/input/input.constants.ts](src/modules/input/input.cons
 
 ### Database
 
-Postgres, in the `caelundas_development` database and `caelundas` schema, with four tables:
+A SQLite file, `output/database.sqlite` in this project by default (`CAELUNDAS_SQLITE_DATABASE` names another, or `:memory:`; gitignored), with four tables:
 
-- `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending the shared `PostgresqlUpdatableEntity`. Columns: `summary`, `description`, `start`/`end` (`timestamptz` instants), nullable `color` and `location`, `latitude numeric(8,6)` / `longitude numeric(9,6)`, and `timezone`, the observer's IANA zone, which `InputService` derives from the coordinates. Unique on `(summary, start, latitude, longitude)`
+- `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending the shared `SqliteUpdatableEntity`. Columns: `summary`, `description`, `start`/`end` (ISO 8601 UTC `text` instants), nullable `color` and `location`, `latitude` / `longitude` (`text` fixed to six decimals), and `timezone`, the observer's IANA zone, which `InputService` derives from the coordinates. Unique on `(summary, start, end, latitude, longitude)`. Ids are version 4 uuids the application generates, and the audit columns are `datetime` text in UTC
 - `tags` (entity `Tag`): A TypeORM closure-table tree with many roots. A `name`, unique among its siblings through two partial unique indexes (`tags_sibling_name`, `tags_root_name`), and a nullable `parent_id`. A full path is derived by walking ancestors; depth is the number of ancestors, never a column
 - `tags_closure`: TypeORM's closure table for `Tag`, one `(ancestor_id, descendant_id)` row per pair, each tag with itself included. Saving through a `TreeRepository` keeps it in step, so never insert a `Tag` with a plain `insert`
 - `calendar_event_tags` (entity `CalendarEventTag`): The event-tag links, keyed on `(calendar_event_id, tag_id)`, cascading from both sides, with the index `calendar_event_tags_tag_id_calendar_event_id` leading with the tag
 
 `CalendarEvent` is caelundas' only event type: detectors build it, `CalendarEventsService` stores and reads it, and the writers render it, with no mapper between them. Its shape differences from the table are settled in the entity, not at the call sites:
 
-- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `database.utilities.ts`, which reads them back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
+- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `database.utilities.ts`, which writes the ISO text and reads it back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
 - **Color and location**: optional as well as nullable (`color?: null | string`), so a detector leaves them out and a stored row reads back `null`; the writers treat the two alike.
-- **Coordinates**: `latitude`/`longitude` stay `numeric` strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
+- **Coordinates**: `latitude`/`longitude` stay strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
 
 A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `database.types.ts`, an `Omit` of the entity plus its raw `tags: string[]`. `findInRange` returns `StoredCalendarEvent`, the entity plus the names of its linked tags, ordered by name; it is assignable to `DetectedCalendarEvent`, so the writers take it too.
 
 Tags go from raw strings to tree nodes in one place: `classifyEvent` in `tags/tags.utilities.ts` turns an event's raw tags into the root-to-node paths it is classified under, and `TagsService.resolve` inserts any missing node through a `TreeRepository`. The static maps live in `tags/tag-map.constants.ts`: `SHARED_TAG_MAP` for raw tags that mean the same everywhere (bodies, signs, decans), and `CONTEXT_TAG_MAPS` keyed by the raw tag that marks a kind of event (`Simple Aspect`, `Ingress`, `Venusian`), so `Full` is a lunar phase under `Monthly Lunar Cycle` and a synodic stage under `Venusian`. The lookup tables behind the implied tags (element, body class, aspect nature, dignity, synodic stage) live in `tags/tag-dimensions.constants.ts`. Ingress kind, eclipse kind, dignity and temporality need several raw tags or the event's times, so `classifyEvent` derives them. A raw tag no map knows falls back to a root of its own, and `Astronomy` and `Astrology` classify nothing. Each root in `TAG_ROOT` is one dimension; never nest one dimension under another. An event links only to the deepest node of each branch and carries the nodes above it through the closure table. A new detector tag should get a map entry, not a new root.
 
-Connection variables are `CAELUNDAS_POSTGRES_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and `_SCHEMA`; the unprefixed `POSTGRES_*` are never read. Postgres returns `numeric` as strings, so compare coordinates as strings.
+The one connection variable is `CAELUNDAS_SQLITE_DATABASE`; the unprefixed `SQLITE_DATABASE` is never read. `database.constants.ts` resolves the default from the project folder, so a run from any directory writes the file `caelundas-web` reads.
+
+**Why `start` and `end` are ISO text, not `datetime`:** `SqliteUpdatableEntity`'s `datetime` text is `YYYY-MM-DD HH:MM:SS`, which `caelundas-web` would have to parse as UTC itself and which sorts wrongly against the `T`-and-`Z` text its queries bind. ISO text compares as the instants it names, and the views and queries need no change.
 
 ```bash
-nx run caelundas-cli:migration:run        # Apply pending migrations
 nx run caelundas-cli:migration:generate   # Generate the next migration from the entities
+nx run caelundas-cli:migration:run        # Apply pending migrations to the file
 ```
 
-The `migration` target reads its data source and migrations from `src/modules/database/`, named by its `module` option. Migrations never run on application start. `CalendarEventsService.upsert` runs in one transaction, takes the observer's coordinates and timezone, batches rows under Postgres's 65,535-parameter limit, uses `ON CONFLICT … DO UPDATE`, and replaces each written event's `calendar_event_tags` rows with links to the nodes `classifyEvent` classifies it under. The initial migration was regenerated at this schema rather than migrated, under a new name, so a database built from the old one is reset rather than upgraded: run `nx run caelundas-cli:migration:revert` from a checkout that still has the old migration, or drop and recreate the empty `caelundas` schema, then `migration:run` and rerun ingestion. `TagsService.resolve` locks the `tags` table for the transaction (`TAGS_LOCK_SQL`, a mode that blocks other writers but not readers) before inserting nodes, so concurrent runs never race on the tree's unique indexes.
+The `migration` target reads its data source and migrations from `src/modules/database/`, named by its `module` option. `DatabaseModule` runs the migration on start, since a local file has one writer, so a run creates the file and its tables. `migration:generate` writes SQLite's create-then-rebuild form, in upper case; the migration was tidied by hand to create each table with its foreign keys, and written in the lower-case form `sqlfluff` requires. TypeORM's SQLite loader matches upper-case SQL, so it would see every table as needing a rebuild: write the next migration by hand in the linted form, and `database.constants.integration.test.ts` checks that every entity's columns and indexes exist. The migration's `-up.sql` and `-down.sql` siblings come from `nx run synchronization:typeorm-migration-sql:write`, which `migration:generate` also runs, and `:check` fails when they are stale. `CalendarEventsService.upsert` runs in one transaction, takes the observer's coordinates and timezone, batches rows under SQLite's 32,766-parameter limit, uses `ON CONFLICT … DO UPDATE`, and replaces each written event's `calendar_event_tags` rows with links to the nodes `classifyEvent` classifies it under. SQLite has no `RETURNING` through TypeORM, so it turns the insert's entity reload off (one `OR` per row overruns SQLite's expression depth past 1,000 rows), writes `created_at` and `updated_at` itself (TypeORM does not advance `updated_at` on a conflicting insert here), and reads the ids back with one select per batch. `TagsService.resolve` takes no lock: a second writer waits for the first's transaction.
 
-Inspect: `docker exec -it postgres psql -U caelundas_username -d caelundas_development`
+Inspect: `sqlite3 projects/caelundas/caelundas-cli/output/database.sqlite`
+
+**Read model for `caelundas-web`**: the ingestion database is the one the web reads. The migration also creates `tag_nodes`, `calendar_event_tag_nodes` (each tag's depth, root and path, and one row per event and tag with ancestors, `is_direct` marking the tags given) and the view `calendar_events_derived`. They are stored tables, not views, because a tag's depth, root and path take a correlated subquery that every grouping would repeat. `CalendarEventsService.upsert` ends each transaction with `DatabaseService.refreshReadModel`, which runs `data/events-read-model.sql`, so a run leaves `output/database.sqlite` web-ready. `data/events-seed.sql` holds rows for `caelundas-web`'s tests and its seeded build, which read the migration's generated `-up.sql`, the seed and the read-model SQL from this project, so the web application owns no schema.
+
+The project's SQL (the migration's `-up.sql` and `-down.sql`, and `data/*.sql`) is linted and formatted by `sqlfluff-lint` and `sqlfluff-format` in the SQLite dialect, overriding the workspace's Postgres default in `project.json`. The migration's queries are written in the linter's form, so the siblings `synchronization:typeorm-migration-sql` extracts verbatim pass both. `squawk` is not enabled: it reads Postgres only.
 
 ## Kubernetes Deployment
 

@@ -4,7 +4,7 @@
 
 Caelundas computes planetary positions minute by minute over a date range,
 detects the astronomical events in them — aspects, phases, eclipses,
-retrogrades, ingresses, solstices, twilights — stores them in Postgres, and
+retrogrades, ingresses, solstices, twilights — stores them in a SQLite file, and
 renders an iCalendar file you can subscribe to in Google Calendar, Apple
 Calendar, or anything else that reads `.ics`, plus a JSON file of the same
 events.
@@ -18,10 +18,7 @@ nx run caelundas-cli:download-ephemeris
 # 2. Configure your observer location and date range
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 
-# 3. Create the tables (needs the local Postgres container running)
-nx run caelundas-cli:migration:run
-
-# 4. Generate the calendar
+# 3. Generate the calendar; the first run creates output/database.sqlite and its tables
 nx run caelundas-cli:start
 ```
 
@@ -40,12 +37,10 @@ END_DATE="2026-07-31"         # YYYY-MM-DD
 OUTPUT_DIRECTORY="./output"
 ```
 
-Every field is optional. The database connection is read from
-`CAELUNDAS_POSTGRES_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, and
-`_SCHEMA`,
-which default to the local Docker Postgres: the `caelundas_development`
-database, `caelundas` schema, and `caelundas_username` role. Location defaults to Philadelphia, and the date range
-to a two-month window centered on today.
+Every field is optional. The database is the SQLite file `CAELUNDAS_SQLITE_DATABASE`
+names, or `:memory:`; by default it is `output/database.sqlite` in this project's
+folder, wherever the command runs from, and is gitignored with the rest of `output/`. Location defaults to
+Philadelphia, and the date range to a two-month window centered on today.
 
 The **timezone is derived from your coordinates** rather than configured
 separately — a calendar whose location and timezone could disagree is a
@@ -235,18 +230,27 @@ under, and carries the nodes above through the closure table. The `.ics`
 output keeps the `CATEGORIES` property, and the JSON output a `tags` array,
 both holding the linked tags' names.
 
-Postgres returns `numeric` columns as strings, so compare coordinates as such.
-The schema comes from a generated migration: `nx run caelundas-cli:migration:run`
-applies it and `nx run caelundas-cli:migration:generate` creates the next one.
-Both read the data source and migrations from
-`src/modules/database/`, the folder the `migration` target's
-`module` option names.
+Coordinates are stored as text, fixed to six decimals, so the natural key
+compares them exactly; compare them as such. `start` and `end` are ISO 8601
+text in UTC, such as `2026-03-04T15:20:00.000Z`, which sorts as the instants
+it names.
 
-The initial migration was regenerated at this schema, under a new name, rather
-than migrated, so a database built from the old one cannot be upgraded in
-place. Revert it first with `nx run caelundas-cli:migration:revert` from a
-checkout that still has it, or drop the `caelundas` schema and recreate it
-empty, then run the migrations and rerun ingestion.
+A run creates `output/database.sqlite` and applies the migration when the
+table is missing, and adds to it on later runs: the same event for the same
+place updates its row. The schema comes from a generated migration:
+`nx run caelundas-cli:migration:generate` creates the next one, and
+`migration:run`, `migration:revert` and `migration:show` work on the file
+directly. They read the data source and migrations from
+`src/modules/database/`, the folder the `migration` target's `module` option
+names. The same file is what the web application, `caelundas-web`, reads: the
+migration creates the read model it queries (`tag_nodes`,
+`calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
+run ends by rewriting those tables with `data/events-read-model.sql`, so there
+is no separate build step. Build the web application with
+`nx run caelundas-web:build:ingested`, which copies the file.
+
+SQLite takes one writer at a time, so run one ingestion against a file at a
+time; a second waits five seconds and then fails with `SQLITE_BUSY`.
 
 ## Structure
 
@@ -260,7 +264,7 @@ src/
     ├── ephemeris/           # Swiss Ephemeris access: positions, horizons, phenomena
     ├── perfective/          # Exact-moment detection across every event service
     ├── progressive/         # Spans derived from those moments
-    ├── database/            # Postgres connection, entities, migrations
+    ├── database/            # SQLite connection, entities, migrations
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
     ├── calendar/            # iCalendar and JSON rendering and output
@@ -280,8 +284,8 @@ nx run caelundas-cli:start
 
 ## Test
 
-Integration and end-to-end suites start a throwaway Postgres 18 container, so
-Docker must be running.
+Integration and end-to-end suites use an in-memory or temporary SQLite file,
+so they need no container.
 
 ```bash
 nx run caelundas-cli:vitest
@@ -289,8 +293,8 @@ nx run caelundas-cli:vitest
 
 ```bash
 nx run caelundas-cli:vitest:unit          # Fast tests only
-nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a Postgres container
-nx run caelundas-cli:vitest:integration   # Calendar events service, against a Postgres container
+nx run caelundas-cli:vitest:end-to-end    # Full pipeline, against a temporary SQLite file
+nx run caelundas-cli:vitest:integration   # Calendar events service, against an in-memory SQLite file
 ```
 
 ## Development

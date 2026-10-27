@@ -4,10 +4,10 @@ The shared package every database-backed project connects through, to Postgres o
 
 ## Purpose
 
-Lexico, meanderaw, and caelundas each keep their tables in Postgres. This
-package holds the one way they do it, so the environment variables, the
-connection options, and the naming of each project's database, schema, and
-role are written once:
+Lexico and meanderaw each keep their tables in Postgres, and caelundas writes
+a SQLite file, [below](#sqlite). This package holds the one way they connect,
+so the environment variables, the connection options, and the naming of each
+Postgres project's database, schema, and role are written once:
 
 | Context        | Database                | Schema      | Role                                        |
 | -------------- | ----------------------- | ----------- | ------------------------------------------- |
@@ -303,6 +303,7 @@ from a `data-source.constants.ts` for the TypeORM command line.
 The options are shared (snake case, `synchronize` off, no logging); these are
 not:
 
+- **The folder is created on start**: `SqliteModule` and `createSqliteDataSource` make a file database's missing folders, so `output/database.sqlite` needs no `output/` first.
 - **Migrations run on start** when `forRoot` is given any. Postgres runs them
   as their own step because several processes starting together would race on
   one schema; a SQLite file has one writer. `createSqliteDataSource` still
