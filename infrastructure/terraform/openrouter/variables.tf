@@ -4,6 +4,18 @@ variable "openrouter_management_key" {
   sensitive   = true
 }
 
+variable "openrouter_api_key" {
+  description = "The refresh-documentation key's value, used only to write the preset. Terraform cannot read the value of a key it imported."
+  type        = string
+  sensitive   = true
+}
+
+variable "refresh_documentation_key_name" {
+  description = "Name of the existing OpenRouter key to import for the refresh-documentation job."
+  type        = string
+  default     = "Default key"
+}
+
 variable "workspace_id" {
   description = "ID of the existing OpenRouter workspace to import."
   type        = string
@@ -22,7 +34,7 @@ variable "models" {
 }
 
 variable "refresh_documentation_limit_usd" {
-  description = "Monthly spend cap in USD for the key and its guardrail."
+  description = "Monthly spend cap in USD for the refresh-documentation guardrail."
   type        = number
   default     = 5
 }

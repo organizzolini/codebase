@@ -32,7 +32,7 @@ helm uninstall <release-name>
 
 ### Manage OpenRouter with Terraform
 
-The `terraform/openrouter` root keeps its state in a Linode Object Storage bucket. Export `TF_STATE_BUCKET`, `AWS_ENDPOINT_URL_S3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `TF_VAR_openrouter_management_key`, then:
+The `terraform/openrouter` root keeps its state in a Linode Object Storage bucket. Export `TF_STATE_BUCKET`, `AWS_ENDPOINT_URL_S3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `TF_VAR_openrouter_management_key`, and `TF_VAR_openrouter_api_key`, then:
 
 ```bash
 nx run infrastructure:terraform-format    # fmt -check, part of lint-code
@@ -41,7 +41,7 @@ nx run infrastructure:terraform-plan      # writes plan.tfplan
 nx run infrastructure:terraform-apply     # applies; CI does this on main
 ```
 
-Continuous Integration plans a pull request that changes the root and comments the creates, updates, replaces, and deletes on it. Continuous Deployment applies a push to `main` that changes it. Both read the `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, `TERRAFORM_STATE_SECRET_ACCESS_KEY`, and `OPENROUTER_MANAGEMENT_KEY` repository secrets.
+Continuous Integration plans a pull request that changes the root and comments the creates, updates, replaces, and deletes on it. Continuous Deployment applies a push to `main` that changes it. Both read the `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, `TERRAFORM_STATE_SECRET_ACCESS_KEY`, `OPENROUTER_MANAGEMENT_KEY`, and `OPENROUTER_API_KEY` repository secrets. The last is the existing key the Terraform imports, whose value it writes the preset with.
 
 ### Run Local Services
 

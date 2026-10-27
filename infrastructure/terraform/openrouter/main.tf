@@ -27,8 +27,8 @@ terraform {
   }
 }
 
-# The Management key administers OpenRouter and cannot spend credits. It is the
-# one secret created by hand; every key below is created from it.
+# The Management key administers OpenRouter and cannot spend credits. It is
+# created by hand; everything below is managed from it.
 provider "openrouter" {
   api_key = var.openrouter_management_key
 }
@@ -59,11 +59,29 @@ resource "openrouter_guardrail" "refresh_documentation" {
   reset_interval = "monthly"
 }
 
+# The key the refresh-documentation job already uses, found by name in the
+# workspace and imported rather than created, so its value stays as it is in the
+# `OPENROUTER_API_KEY` secret. `limit` and `limit_reset` are left out on purpose:
+# a setting Terraform does not declare keeps the value the key has.
+data "openrouter_api_keys" "workspace" {
+  workspace_id = var.workspace_id
+}
+
+locals {
+  refresh_documentation_key = one([
+    for key in data.openrouter_api_keys.workspace.data : key
+    if key.name == var.refresh_documentation_key_name
+  ])
+}
+
+import {
+  to = openrouter_api_key.refresh_documentation
+  id = local.refresh_documentation_key.hash
+}
+
 resource "openrouter_api_key" "refresh_documentation" {
-  name         = "refresh-documentation"
+  name         = local.refresh_documentation_key.name
   workspace_id = openrouter_workspace.codebase.id
-  limit        = var.refresh_documentation_limit_usd
-  limit_reset  = "monthly"
 }
 
 resource "openrouter_guardrail_key_assignment" "refresh_documentation" {
@@ -89,7 +107,7 @@ resource "terraform_data" "refresh_documentation_preset" {
 
     environment = {
       PRESET_SLUG        = var.preset_slug
-      OPENROUTER_API_KEY = openrouter_api_key.refresh_documentation.key
+      OPENROUTER_API_KEY = var.openrouter_api_key
       PRESET_BODY = jsonencode({
         model  = var.models[0]
         models = var.models
