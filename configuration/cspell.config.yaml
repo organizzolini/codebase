@@ -29,6 +29,9 @@ ignorePaths:
   - "**/*.min.js"
   - "**/Modelfile*"
   - "**/CHANGELOG.md"
+  # The root glossary lists every word the code outside the projects uses, and
+  # a word is listed because the code spells it, however it is spelled.
+  - "**/GLOSSARY.md"
   - "**/coverage"
   - "**/dist"
   - "**/projects/lexico/lexico-cli/data/**"
@@ -348,19 +351,33 @@ overrides:
       - /\(\?![^)]*\)/g
 # cspell:enable
 words:
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - axio
   # The zsh function that loads bash-style completion, written into shell startup files.
   - bashcompinit
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - caelunda
   # The rc-style conformetry config filenames the Nx plugin looks for.
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.
   - cooldown
   # The reduction of an inflected word to its lemma, and the wink-lemmatizer package that does it.
   - lemmatizer
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - metadatum
+  - nestj
   # Nx's project-discovery ignore file, read when listing a workspace's projects.
   - nxignore
   - openwiki
   # OpenWiki's gitignore-style file of paths it must not treat as source.
   - openwikiignore
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - postgre
+  - protobufj
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
   # Observer sites in caelundas reference fixtures, checked against USNO.
@@ -369,3 +386,9 @@ words:
   - Tromsø
   # The markdown heading style written as text underlined by === or ---.
   - setext
+  # The code that folds a plural into its singular, which misreads a name ending in s.
+  - singularizer
+  # A headword the coinagerie singularizer or lemmatizer makes of a word the
+  # code wrote, which the shared coinagerie configuration folds back.
+  - vitej
+  - xarg

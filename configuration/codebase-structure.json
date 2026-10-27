@@ -761,6 +761,9 @@
         "name": "codependix-workspace-graph.json"
       },
       {
+        "name": "coinagerie.config.ts"
+      },
+      {
         "children": [
           {
             "ruleId": "kebab-case-folder"
@@ -780,6 +783,9 @@
       {
         "name": "documentation",
         "ruleId": "documentation-project"
+      },
+      {
+        "name": "GLOSSARY.md"
       },
       {
         "ruleId": "infrastructure-project"

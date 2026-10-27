@@ -57,7 +57,12 @@ Only files a tool insists on finding there: `nx.json`, `package.json`,
 for tools that require a root entrypoint), `.gitignore`, `.gitattributes`,
 `.gitmodules`, `.editorconfig`, `.nxignore`, `.openwikiignore`,
 `.node-version`, `.nvmrc`, `skills-lock.json`, and
-`validate-branch-name.config.cjs`, whose tool takes no config path.
+`validate-branch-name.config.cjs`, whose tool takes no config path. The root
+`coinagerie.config.ts` is the one exception to "named in `nx.json`": the folder
+holding a coinagerie configuration is the root its run scans, so the root
+glossary's configuration has to sit at the root, and it writes the
+`GLOSSARY.md` beside it. Every project's own `coinagerie.config.ts` spreads
+`coinagerieConfiguration` from `configuration/coinagerie.config.ts`.
 
 ## In the graph, and out of releases
 

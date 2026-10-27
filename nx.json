@@ -104,6 +104,18 @@
         "gateTargetName": "codependix-gate"
       },
       "plugin": "@codependix/nx"
+    },
+    {
+      "exclude": ["coinagerie.config.ts", "configuration/**"],
+      "options": {
+        "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\"",
+        "inputs": [
+          "{workspaceRoot}/configuration/coinagerie.config.ts",
+          "{workspaceRoot}/GLOSSARY.md",
+          "{workspaceRoot}/projects/ic-suite/coinagerie/*/src/**/!(*.test.*|*.spec.*)"
+        ]
+      },
+      "plugin": "@coinagerie/nx"
     }
   ],
   "pluginsConfig": {
@@ -442,6 +454,15 @@
         ]
       }
     ],
+    "coinagerie-check": {
+      "configurations": {
+        "write": {
+          "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\" --write"
+        }
+      },
+      "description": "The `write` configuration of the check target `@coinagerie/nx` infers for every project holding a `coinagerie.config.ts`: it writes the glossary instead of judging it. The plugin infers only the check, so the second configuration is added here, and its command repeats the plugin registration's `command` above, because a configuration replaces `options.command` outright rather than appending to it. The command resolves its paths from `$NX_WORKSPACE_ROOT` because it runs from each project's own folder, at a different depth in each.",
+      "outputs": ["{projectRoot}/README.md"]
+    },
     "dependency-cruiser": [
       {
         "cache": true,
