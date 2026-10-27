@@ -29,6 +29,9 @@ ignorePaths:
   - "**/*.min.js"
   - "**/Modelfile*"
   - "**/CHANGELOG.md"
+  # The root glossary lists every word the code outside the projects uses, and
+  # a word is listed because the code spells it, however it is spelled.
+  - "**/GLOSSARY.md"
   - "**/coverage"
   - "**/dist"
   - "**/projects/lexico/lexico-cli/data/**"

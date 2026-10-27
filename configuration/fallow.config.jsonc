@@ -64,6 +64,11 @@
     "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codometer.config.cjs",
     "{projects/**,documentation,installation,integration,publication,synchronization,validation}/codometer.config.ts",
     "codometer.config.ts",
+    // coinagerie reads a configuration by name from the folder a run starts
+    // in, so nothing in the module graph reaches one either: one per project,
+    // and the root file that writes the root glossary.
+    "{projects/**,documentation,installation,integration,publication,synchronization,validation}/coinagerie.config.ts",
+    "coinagerie.config.ts",
     // Read by the codometer command line, one per documented behavior, and
     // reached by nothing in the module graph for the same reason.
     "projects/ic-suite/codometer/codometer-examples/examples/**/*.config.ts",
