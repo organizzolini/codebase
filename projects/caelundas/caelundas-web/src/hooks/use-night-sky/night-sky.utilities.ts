@@ -7,6 +7,7 @@
 
 import { SiderealTime } from "astronomy-engine";
 
+import { formatSkyDefinitions } from "./use-night-sky.colors";
 import {
   COLOR_BUCKET_HIGHEST,
   COLOR_BUCKET_LOWEST,
@@ -31,7 +32,6 @@ import {
   RADIANS_PER_DEGREE,
   RING_MARGIN,
   SIDEREAL_DAY_SECONDS,
-  SKY_DEFINITIONS,
   STAR_RADIUS_BASE,
   STAR_RADIUS_FLOOR,
   STAR_RADIUS_PER_MAGNITUDE,
@@ -158,7 +158,7 @@ function assembleSvg(parts: {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewport.viewBox}" ` +
     `preserveAspectRatio="${viewport.aspectRatio}" role="img" ` +
-    `aria-label="Slowly rotating night sky">${SKY_DEFINITIONS}${
+    `aria-label="Slowly rotating night sky">${formatSkyDefinitions(options.backgroundTopColor, options.backgroundBottomColor)}${
       viewport.ground
     }<g transform="translate(${geometry.poleX} ${geometry.poleY.toFixed(1)})"><g${options.still ? ` transform="${start}"` : ""}>${sky}</g></g>${
       viewport.overlay
@@ -437,6 +437,10 @@ function renderStar(
  */
 function resolveOptions(options: NightSkyOptions): ResolvedNightSkyOptions {
   return {
+    backgroundBottomColor:
+      options.backgroundBottomColor ?? DEFAULT_OPTIONS.backgroundBottomColor,
+    backgroundTopColor:
+      options.backgroundTopColor ?? DEFAULT_OPTIONS.backgroundTopColor,
     bottomAltitudeDegrees:
       options.bottomAltitudeDegrees ?? DEFAULT_OPTIONS.bottomAltitudeDegrees,
     debug: options.debug ?? DEFAULT_OPTIONS.debug,

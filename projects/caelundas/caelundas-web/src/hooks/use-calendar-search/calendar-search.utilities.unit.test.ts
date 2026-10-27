@@ -54,12 +54,14 @@ describe(validateCalendarSearch, () => {
     const sky = {
       sky: "off",
       "sky.altBottom": 5,
+      "sky.bottom": "0d1533",
       "sky.debug": true,
       "sky.lat": 51.5,
       "sky.lon": -0.1,
       "sky.maxMag": 5,
       "sky.pixelsPerSecond": 20,
       "sky.starScale": 1.5,
+      "sky.top": "04060f",
       "sky.vFov": 30,
     };
 

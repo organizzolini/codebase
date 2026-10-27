@@ -57,12 +57,14 @@ export interface CalendarSearch {
    */
   sky?: SkySearchValue | undefined;
   "sky.altBottom"?: SkySearchValue | undefined;
+  "sky.bottom"?: SkySearchValue | undefined;
   "sky.debug"?: SkySearchValue | undefined;
   "sky.lat"?: SkySearchValue | undefined;
   "sky.lon"?: SkySearchValue | undefined;
   "sky.maxMag"?: SkySearchValue | undefined;
   "sky.pixelsPerSecond"?: SkySearchValue | undefined;
   "sky.starScale"?: SkySearchValue | undefined;
+  "sky.top"?: SkySearchValue | undefined;
   "sky.vFov"?: SkySearchValue | undefined;
   /**
    * `emojis` when events are drawn with their emoji; their icons when absent.

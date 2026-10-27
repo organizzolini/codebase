@@ -166,6 +166,28 @@ describe("night sky backdrop", () => {
     expect(countStars(fallbackSky)).toBe(normal);
   });
 
+  it("paints the background gradient in the colors of the link", async () => {
+    await renderRoute("/?date=2026-03-01&sky.top=ff0000&sky.bottom=%2300f");
+
+    const sky = await findSky();
+
+    expect(sky.innerHTML).toContain('offset="0" stop-color="#ff0000"');
+    expect(sky.innerHTML).toContain('offset="1" stop-color="#0000ff"');
+  });
+
+  it("never lets a color of the link into the markup unless it is hexadecimal", async () => {
+    await renderRoute(
+      "/?date=2026-03-01&sky.top=red%22/%3E%3Ci%3E&sky.bottom=%3Cb%3E",
+    );
+
+    const sky = await findSky();
+
+    expect(sky.querySelector("i, b")).toBeNull();
+    expect(sky.innerHTML).not.toContain("<i>");
+    expect(sky.innerHTML).toContain('offset="0" stop-color="#04060f"');
+    expect(sky.innerHTML).toContain('offset="1" stop-color="#0d1533"');
+  });
+
   it("moves the observer with the link", async () => {
     await renderRoute("/?date=2026-03-01");
 

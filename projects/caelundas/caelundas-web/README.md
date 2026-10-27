@@ -41,6 +41,24 @@ rely on.
 nx run caelundas-web:vitest
 ```
 
+## Night sky link parameters
+
+The backdrop reads these from the page link; a value that does not parse falls
+back to its default. Colors are three or six hexadecimal digits, with or
+without the `#`, which a link carries as `%23`.
+
+- `sky=off` removes the backdrop.
+- `sky.lat` and `sky.lon` move the observer, New York by default; a latitude of
+  0 or below draws nothing.
+- `sky.vFov` sets the degrees of altitude shown, and `sky.altBottom` the
+  altitude at the bottom edge.
+- `sky.pixelsPerSecond` sets the drift speed in on-screen pixels per second.
+- `sky.maxMag` sets the faintest magnitude drawn, and `sky.starScale`
+  multiplies the dot size.
+- `sky.top` and `sky.bottom` set the colors at the top and bottom of the
+  background, `04060f` and `0d1533` by default.
+- `sky.debug=true` draws the zoomed-out tuning view.
+
 ## Star catalog
 
 The night sky backdrop draws from `src/hooks/use-night-sky/use-night-sky.catalog.json`,
