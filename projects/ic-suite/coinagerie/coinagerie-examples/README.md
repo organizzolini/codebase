@@ -46,8 +46,8 @@ small enough to count by hand. A guide quoting "four words" is only worth
 reading if you can check.
 
 - Nothing in a fixture is meant to be good code. Every file exists to be read
-  for its words, and each carries a word in a comment or a string that has to
-  stay out of the glossary.
+  for its words, and the polyglot and check-failure sources carry words in
+  comments and strings that have to stay out of the glossary.
 - The `coinagerie` command line is also run against these fixtures by its own
   end-to-end suite, in [coinagerie-cli](../coinagerie-cli), so a change to a
   fixture is a change to that suite.

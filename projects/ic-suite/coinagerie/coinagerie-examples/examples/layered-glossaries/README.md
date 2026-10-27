@@ -26,10 +26,11 @@ file reading is the configuration's own.
 `date`, `due`, `invoice`, and `src`, but not `ledger` or `unit`, though its code
 uses both.
 
-Moving a word up is deliberate and manual. Add `invoice` to `GLOSSARY.md` and
-billing's check fails, naming `invoice` as stale: it is excluded now, so the
-package glossary should not list it. Delete the line from billing's README and
-the check passes again.
+Moving a word up is deliberate and manual, and only makes sense once shared
+code uses the word. Start using `invoice` under `shared/`, run the root's
+`--write`, and `GLOSSARY.md` lists it. Billing's check then fails, naming
+`invoice` as stale: it is excluded now, so the package glossary should not list
+it. Delete the line from billing's README and the check passes again.
 
 ## Next
 

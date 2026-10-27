@@ -27,6 +27,9 @@ and each also carries identifiers that must:
   the value beside it does not.
 - A file name contributes too: `rotate_mirror.py` gives `rotate` and `mirror`,
   and its extension is dropped.
+- Language keywords such as `def`, `return`, `from`, and `select`, and values
+  such as the CSS `red`, are words like any other. Nothing excludes them unless
+  you add a keyword list to `exclude.words`.
 - Nothing printed contains `hidden`, the word planted in every comment and
   string.
 

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
@@ -164,7 +164,9 @@ describe("main end-to-end suite", () => {
       const rewritten = runCheckFailure(staged, "stale", "--write");
 
       expect(written.exitCode).toBe(0);
-      expect(content).toContain("- **angle**: The gap between two bodies.");
+      expect(content).toContain(
+        "- **angle**: The gap between two bodies.\n  Measured in degrees.\n",
+      );
       expect(content).toContain("- **phase**:\n");
       expect(content).not.toContain("vanished");
       expect(checked.exitCode).toBe(0);
@@ -300,11 +302,14 @@ describe("main end-to-end suite", () => {
     "refuses %s",
     (_case, exampleName, args) => {
       const staged = stage(exampleName);
+      const listing = (): string[] =>
+        readdirSync(staged, { recursive: true }).map(String).toSorted();
+      const before = listing();
 
       const result = run(staged, args);
 
       expect(result.exitCode).toBe(1);
-      expect(existsSync(path.join(staged, "README.md"))).toBe(false);
+      expect(listing()).toStrictEqual(before);
     },
     SPAWN_TIMEOUT,
   );
