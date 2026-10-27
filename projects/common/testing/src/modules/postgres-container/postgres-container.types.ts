@@ -3,7 +3,7 @@
 import type {
   PostgresConnection,
   PostgresDataSourceSettings,
-} from "./postgresql.types";
+} from "@codebase/persistence";
 
 /** What `startPostgresContainer` is given. */
 export interface PostgresContainerOptions {

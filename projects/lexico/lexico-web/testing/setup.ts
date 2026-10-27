@@ -5,47 +5,23 @@ import {
   resetGraphqlMockServer,
   startGraphqlMockServer,
   stopGraphqlMockServer,
-} from "@codebase/interface/testing";
+} from "@codebase/testing/graphql";
+import { matchMediaStandIn } from "@codebase/testing/react";
 
 // `createServerFn` only runs inside the Start server runtime, so a route that
-// defines a server function would throw under test. This stand-in builds the
-// same chain but calls the handler directly, which is all a route test needs.
-vi.mock(import("@tanstack/react-start"), async (importOriginal) => {
-  const original = await importOriginal();
+// defines a server function would throw under test; the shared stand-in builds
+// the same chain but hands the handler back to be called directly.
+vi.mock("@tanstack/react-start", async (importOriginal) => {
+  const { createServerFunctionStandIn } =
+    await import("@codebase/testing/react");
 
   return {
-    ...original,
-    createServerFn: (() => {
-      const builder = {
-        handler: (handler: (input: unknown) => unknown) => handler,
-        validator: () => builder,
-      };
-
-      return builder;
-    }) as unknown as typeof original.createServerFn,
+    ...(await importOriginal<object>()),
+    createServerFn: createServerFunctionStandIn,
   };
 });
 
-/**
- * A jsdom stand-in for `window.matchMedia`, which components read on render.
- */
-function matchMedia(): MediaQueryList {
-  return {
-    addEventListener: vi.fn<() => void>(),
-    dispatchEvent: vi.fn<() => boolean>(),
-    matches: false,
-    media: "",
-    onchange: null,
-    removeEventListener: vi.fn<() => void>(),
-  } as unknown as MediaQueryList;
-}
-
-vi.stubGlobal("matchMedia", matchMedia);
-Object.defineProperty(globalThis.window, "matchMedia", {
-  configurable: true,
-  value: matchMedia,
-  writable: true,
-});
+vi.stubGlobal("matchMedia", matchMediaStandIn);
 
 beforeAll(() => {
   startGraphqlMockServer();

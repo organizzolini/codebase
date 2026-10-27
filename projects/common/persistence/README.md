@@ -31,9 +31,9 @@ Key exports and responsibilities:
   exports, from the same options
 - `IdentifiableEntity` …: Base entities: a `uuidv7()` id, then created,
   updated, and soft-deleted columns
-- `startPostgresContainer`: From `@codebase/persistence/testing`: a migrated
+- `startPostgresContainer`: From `@codebase/testing/postgres`: a migrated
   Postgres 18 container laid out like local Docker
-- `startDatabaseTestingModule`: From `@codebase/persistence/testing`: a Nest
+- `startDatabaseTestingModule`: From `@codebase/testing/postgres`: a Nest
   testing module connected to such a container
 
 ## Usage
@@ -188,7 +188,7 @@ generated column or view:
 
 ### Integration tests
 
-`@codebase/persistence/testing` starts a throwaway `postgres:18-alpine`, falling
+`startPostgresContainer` starts a throwaway `postgres:18-alpine`, falling
 back to Google's mirror of Docker Hub, laid out the way the local container
 is: a `<project>_username` role owning a `<project>_testing` database with a
 `<project>` schema in it. It then builds the schema by running the project's
@@ -201,7 +201,7 @@ connected to it, the container's `<PROJECT>_POSTGRES_*` set on `process.env`
 over any already there:
 
 ```ts
-import { startDatabaseTestingModule } from "@codebase/persistence/testing";
+import { startDatabaseTestingModule } from "@codebase/testing/postgres";
 
 const database = await startDatabaseTestingModule({
   entities: [Meander],
@@ -244,7 +244,7 @@ it as `database` too, or the testing module connects twice; `database` and
 `startPostgresContainer` alone suits a suite that needs no Nest module:
 
 ```ts
-import { startPostgresContainer } from "@codebase/persistence/testing";
+import { startPostgresContainer } from "@codebase/testing/postgres";
 
 const container = await startPostgresContainer({
   migrations: [InitialMigration1767225600000],
@@ -258,12 +258,11 @@ await container.stop();
 
 `connection` is the project's own role, never the container's admin login,
 and `environment` is the same connection as `<PROJECT>_POSTGRES_*` variables.
-Testcontainers and `@nestjs/testing` are dependencies of this entry, so a
-consuming suite imports its types from here rather than redeclaring them.
-The entry lives under `testing/` rather than `src/`: dependency-cruiser's
-`no-test-imports-in-app` lets only a `testing/` path import test tooling, so
-import it only from tests and `testing/` harnesses.
-Docker must be running.
+Both helpers, and their types, come from the common testing package's
+`@codebase/testing/postgres` entry, so a consuming suite imports them from
+there rather than redeclaring them, as this package's own integration suites
+do; `@codebase/persistence/testing` re-exports them until every consumer has
+moved. Docker must be running.
 
 A project name must be lowercase letters, digits, and underscores, starting
 with a letter, so it can prefix a variable and name a database unquoted.

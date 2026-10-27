@@ -1,8 +1,8 @@
 {
   "dependencies": {
+    "@codebase/testing": "workspace:*",
     "@graphql-codegen/cli": "catalog:",
     "@nestjs/graphql": "catalog:",
-    "msw": "catalog:",
     "reflect-metadata": "catalog:",
     "tslib": "catalog:"
   },
