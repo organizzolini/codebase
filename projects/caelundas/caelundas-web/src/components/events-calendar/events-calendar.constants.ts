@@ -1,4 +1,7 @@
-import { SURFACE_CLASS_NAMES } from "./calendar-surfaces.constants";
+import {
+  SURFACE_CLASS_NAMES,
+  VENDORED_SURFACE_CLASS_NAMES,
+} from "./calendar-surfaces.constants";
 
 // ♟️ Constants
 
@@ -14,6 +17,7 @@ export const OVERFLOW_CLASS_NAMES = { morePopover: "w-80" };
 
 export const SCROLLING_WEEK_CLASS_NAMES = {
   timeGrid: "min-w-[48rem]",
+  timeGridHeader: VENDORED_SURFACE_CLASS_NAMES.timeGridHeader,
   timeGutter: `${SURFACE_CLASS_NAMES.timeGutter} sticky start-0 z-[15]`,
 };
 
