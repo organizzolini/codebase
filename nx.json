@@ -106,7 +106,7 @@
       "plugin": "@codependix/nx"
     },
     {
-      "exclude": ["coinagerie.config.ts", "configuration/**"],
+      "exclude": ["coinagerie.config.ts"],
       "options": {
         "command": "SWC_NODE_PROJECT=\"$NX_WORKSPACE_ROOT/configuration/tsconfig.json\" node --import @swc-node/register/esm-register \"$NX_WORKSPACE_ROOT/projects/ic-suite/coinagerie/coinagerie-cli/src/coinagerie-cli.main.ts\"",
         "inputs": [
