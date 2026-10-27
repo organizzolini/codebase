@@ -102,6 +102,14 @@ Relationships (shortcut `B R`), but it is exposed through **no public API** —
 not REST, not GraphQL. Sub-issues and dependencies are the only relationships
 that can be created programmatically.
 
+## Every pull request closes an issue
+
+A pull request must close or reference an issue through GitHub's own link: a closing keyword in its body (`Closes #N`, conventionally the first `🔗 Related` bullet) or the Development sidebar. A plain `Related to #N` records no link and does not count. For a planned pull request the issue is its parent Task; for a standalone change it is a root Bug (`fix`) or Feature (anything else).
+
+Agents use the [link-issue](../../.agents/skills/link-issue/SKILL.md) skill to find the planned ticket, to file one before ad-hoc work starts, or to backfill one when the work is already done.
+
+**The issue holds the why and the intent** — problem, motivation, acceptance criteria, scope, decisions, and plan. **The pull request holds the what, as built** — a conventional title, a Summary of the outcome, Details of what changed (including departures from the plan), and how it was verified. Each states a thing once and links to the other.
+
 ## Marking work in progress
 
 **Applying `status:in-progress` is the first write of an implementation

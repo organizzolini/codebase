@@ -42,6 +42,16 @@ From the diff, automatically determine:
 
 These values drive the branch name, commit message, and PR title throughout all phases.
 
+## Phase 0 — Issue
+
+Every pull request closes an issue. Before branching, settle which one with the [link-issue skill](../link-issue/SKILL.md):
+
+1. **Planned**: the task came from a ticket, so use that parent issue.
+2. **Not yet started**: no ticket exists, so file one now.
+3. **Already done**: the changes sit in the working tree with no issue, so backfill one from the diff.
+
+Keep the issue number; Phase 3 closes it. **Skip if:** the branch already has an open PR that lists an issue under `closingIssuesReferences`.
+
 ## Phase 1 — Branch
 
 1. Check current branch: `git rev-parse --abbrev-ref HEAD`
@@ -124,10 +134,10 @@ gh pr list --head <branch> --state open
    Keep it under 128 characters, and target about 115 or less so merge-queue
    suffixes do not push the queued commit subject over the limit.
 2. Body: Auto-generate from the diff using the PR template structure (all 4 sections are mandatory and non-empty):
-   - **🌰 Summary**: Overall purpose as one plain paragraph of at most 48 words
+   - **🌰 Summary**: Overall purpose as one plain paragraph of at most 48 words; the issue keeps the requirements, so do not restate them
    - **📝 Details**: Only a bulleted list of meaningful changes, one marker throughout, at most 512 words
    - **🧪 Testing**: Only an ordered list of `nx run <project>:<target>` commands and manual steps; indent any code block under its step
-   - **🔗 Related**: Opens with a `-` list of issue links discovered from branch name, commits, `gh issue list --search`, or related files/documentation (never omit or leave empty); anything may follow the list
+   - **🔗 Related**: Opens with a `-` list whose first bullet is `Closes #N` for the Phase 0 issue, then any related documentation links; anything may follow the list
 3. Pre-flight validate the PR body locally before submission:
 
    ```bash
@@ -190,6 +200,14 @@ gh pr list --head <branch> --state open
 
    If any expected label or the assignee is missing, add it with `gh pr edit <number> --add-label <label>` / `--add-assignee @me` rather than leaving it to Validate Conventions to catch and fail on.
 
+9. Confirm GitHub recorded the issue link:
+
+   ```bash
+   gh pr view <branch> --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
+   ```
+
+   An empty result means the link is missing: fix the `Closes #N` keyword, or add the issue under Development in the pull request sidebar (a stacked pull request, whose base is not `main`, may need that). See [link-issue](../link-issue/SKILL.md#link-it).
+
 For complete PR conventions and description guidelines, see [create-pull-request skill](../create-pull-request/SKILL.md). For the full label vocabulary, the `opened`/`reopened` reconciliation step that creates missing labels, and how to fix each individual metadata failure, see the [triage-integration skill](../triage-integration/SKILL.md).
 
 ## Output
@@ -198,6 +216,7 @@ After completing all phases, print a summary table:
 
 | Phase    | Result                                                    |
 | -------- | --------------------------------------------------------- |
+| Issue    | Used `#N` / Filed `#N` / Backfilled `#N`                  |
 | Branch   | Created `<branch>` / Already on `<branch>`                |
 | Commit   | `<type>(<scope>): <gitmoji> <subject>` / Skipped (clean)  |
 | PR       | Created `<url>` / Already exists `<url>`                  |
@@ -206,6 +225,7 @@ After completing all phases, print a summary table:
 
 ## Resources
 
+- [link-issue skill](../link-issue/SKILL.md) — Find, file, or backfill the issue the PR closes
 - [checkout-branch skill](../checkout-branch/SKILL.md) — Branch naming conventions
 - [rename-branch skill](../rename-branch/SKILL.md) — Rename non-conforming branches before commit/push
 - [commit-code skill](../commit-code/SKILL.md) — Commit message format, types, scopes, gitmoji
