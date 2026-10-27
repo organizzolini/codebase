@@ -26,7 +26,7 @@ projects/ic-suite/codependix/codependix-agents/
 projects/ic-suite/codometer/codometer-agents/
 projects/ic-suite/conformetry/conformetry-agents/
 
-# The codependix, codometer, and conformetry examples packages. Each is a
+# The codependix, codometer, coinagerie, and conformetry examples packages. Each is a
 # fixture corpus built to be read or run, not a library — tracing one reports
 # on a corpus's incidental shape rather than on production code. Excluded
 # outright rather than left to inherit the workspace default, the same
@@ -39,6 +39,7 @@ projects/ic-suite/conformetry/conformetry-agents/
 # longer needs naming on its own now that the whole package is excluded.
 projects/ic-suite/codependix/codependix-examples/
 projects/ic-suite/codometer/codometer-examples/
+projects/ic-suite/coinagerie/coinagerie-examples/
 projects/ic-suite/conformetry/conformetry-examples/
 
 # The workspace root, as a project of its own. It holds a `tsconfig.json`, so
