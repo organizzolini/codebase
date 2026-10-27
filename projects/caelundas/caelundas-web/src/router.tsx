@@ -14,7 +14,8 @@ export function getRouter(): Router<typeof routeTree, "never", true> {
     context: { eventsDatabase: createBrowserEventsDatabase() },
     defaultPreload: "intent",
     // A page that selects part of the search is rendered again only when that
-    // part changed.
+    // part changed. The night sky hook's overrides stay stable through it: if
+    // it is removed, pass `structuralSharing: true` to that hook's select.
     defaultStructuralSharing: true,
     routeTree,
     scrollRestoration: true,

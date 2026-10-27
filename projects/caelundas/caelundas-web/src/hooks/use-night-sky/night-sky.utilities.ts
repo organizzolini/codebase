@@ -149,7 +149,10 @@ function assembleSvg(parts: {
   viewport: Viewport;
 }): string {
   const { geometry, motion, options, rendered, viewport } = parts;
-  const spin = formatSpin(options.localSiderealDegrees, motion.periodSeconds);
+  const spin = options.still
+    ? ""
+    : formatSpin(options.localSiderealDegrees, motion.periodSeconds);
+  const start = `rotate(${(-options.localSiderealDegrees).toFixed(3)})`;
   const sky = `${spin}${formatGlowGroup(rendered)}${formatStarGroups(rendered)}`;
 
   return (
@@ -157,7 +160,7 @@ function assembleSvg(parts: {
     `preserveAspectRatio="${viewport.aspectRatio}" role="img" ` +
     `aria-label="Slowly rotating night sky">${SKY_DEFINITIONS}${
       viewport.ground
-    }<g transform="translate(${geometry.poleX} ${geometry.poleY.toFixed(1)})"><g>${sky}</g></g>${
+    }<g transform="translate(${geometry.poleX} ${geometry.poleY.toFixed(1)})"><g${options.still ? ` transform="${start}"` : ""}>${sky}</g></g>${
       viewport.overlay
     }</svg>`
   );
@@ -445,6 +448,7 @@ function resolveOptions(options: NightSkyOptions): ResolvedNightSkyOptions {
     pixelsPerSecond: options.pixelsPerSecond ?? DEFAULT_OPTIONS.pixelsPerSecond,
     stars: options.stars,
     starScale: options.starScale ?? DEFAULT_OPTIONS.starScale,
+    still: options.still ?? DEFAULT_OPTIONS.still,
     verticalFieldOfViewDegrees:
       options.verticalFieldOfViewDegrees ??
       DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
