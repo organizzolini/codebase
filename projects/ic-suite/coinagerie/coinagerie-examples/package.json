@@ -1,0 +1,30 @@
+{
+  "author": "Jimmy Paolini",
+  "bugs": {
+    "url": "https://github.com/organizzolini/codebase/issues"
+  },
+  "description": "Small invented multi-language fixture projects, one per coinagerie feature, with a guided tour",
+  "devDependencies": {
+    "@nx/eslint-plugin": "catalog:",
+    "@swc-node/register": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "homepage": "https://github.com/organizzolini/codebase/tree/main/projects/ic-suite/coinagerie/coinagerie-examples#readme",
+  "license": "MIT",
+  "name": "@coinagerie/examples",
+  "private": true,
+  "repository": {
+    "directory": "projects/ic-suite/coinagerie/coinagerie-examples",
+    "type": "git",
+    "url": "git+https://github.com/organizzolini/codebase.git"
+  },
+  "type": "module",
+  "typeCoverage": {
+    "atLeast": 100,
+    "strict": true
+  },
+  "version": "0.0.0"
+}

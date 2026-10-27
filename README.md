@@ -188,6 +188,7 @@ Vocabulary toolchain that lists the words a codebase uses and keeps a glossary o
 **[coinagerie-cli](projects/ic-suite/coinagerie/coinagerie-cli)** - Command-line tool that lists the vocabulary of a codebase and keeps a glossary of it in step with the code\
 **[coinagerie-configuration](projects/ic-suite/coinagerie/coinagerie-configuration)** - Configuration schema, loader, and command-line flag resolution for the coinagerie vocabulary toolchain\
 **[coinagerie-core](projects/ic-suite/coinagerie/coinagerie-core)** - Contracts for the coinagerie vocabulary toolchain: the glossary, the vocabulary report, and shared constants\
+**[coinagerie-examples](projects/ic-suite/coinagerie/coinagerie-examples)** - Small invented multi-language fixture projects, one per coinagerie feature, with a guided tour\
 **[coinagerie-languages](projects/ic-suite/coinagerie/coinagerie-languages)** - Per-language identifier tokenizers and keyword lists for the coinagerie vocabulary toolchain\
 **[coinagerie-nx](projects/ic-suite/coinagerie/coinagerie-nx)** - Nx plugin that infers a coinagerie check target for every project with a coinagerie configuration\
 **[coinagerie-output](projects/ic-suite/coinagerie/coinagerie-output)** - Renders and parses the markdown and JSON glossaries and compares them with the vocabulary of a codebase\
