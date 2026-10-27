@@ -5,6 +5,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { LoggerService } from "@codebase/observability";
 
+import { DatabaseService } from "../database/database.service";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { TagsService } from "../tags/tags.service";
 import { tagPathKey } from "../tags/tags.utilities";
@@ -22,6 +23,7 @@ describe(CalendarEventsService, () => {
         CalendarEventsService,
         LoggerService,
         TagsService,
+        { provide: DatabaseService, useValue: {} },
         { provide: getRepositoryToken(CalendarEvent), useValue: {} },
       ],
     }).compile();

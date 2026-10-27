@@ -22,29 +22,26 @@ nx run caelundas-web:start
 The app reads one SQLite file in the browser. Nothing is fetched from a server
 but that file:
 
-1. `caelundas-cli` owns the database, so this project holds no schema, seed, or
-   build script. Its `events-database` command writes the file: by default
-   `build-database` passes `--seed`, which creates a database with the
-   initial migration's tables and loads the text seed
-   `caelundas-cli/data/events-seed.sql`, which is what CI and `start` use.
-   With the `ingested` configuration (`build:ingested`, `start:ingested` and
-   `preview:ingested` pass it down) it copies
-   `caelundas-cli/output/database.sqlite`, the file `caelundas-cli` ingests
-   into, and fails naming that file when it is missing. The tests build the
-   same database in memory from the latest migration's generated `-up.sql`,
-   the seed, and the views, all read from `caelundas-cli`, so the web
-   application cannot drift from the tables the CLI writes. This project's
-   `namedInputs` list those files so a change to them reruns its tests.
-2. `caelundas-cli/data/events-views.sql` is applied over whatever wrote the
-   tables. It owns
-everything the app reads beyond them: `tag_nodes` (each tag's depth, root,
-   and path), `calendar_event_tag_nodes` (one row per event and tag, ancestors
-   included, `is_direct` marking the tags given), and the view
+1. `caelundas-cli` owns the database and leaves it web-ready, so this project
+   holds no schema or seed. The migration there creates the read model this
+   app queries, and every ingestion run ends by rewriting it with
+   `caelundas-cli/data/events-read-model.sql`: `tag_nodes` (each tag's depth,
+   root, and path), `calendar_event_tag_nodes` (one row per event and tag,
+   ancestors included, `is_direct` marking the tags given), and the view
    `calendar_events_derived` (each event with its duration, temporality, and
-   UTC time parts). The first two are written out as indexed tables rather
-   than views: the file never changes once built, and as views every grouping
-   and tag filter recomputed the tree's depth, root, and path per tag, which
-   made a grouped read twenty to fifty times slower.
+   UTC time parts). The first two are stored tables rather than views, as every
+   grouping and tag filter recomputed the tree's depth, root, and path per tag
+   as views, which made a grouped read twenty to fifty times slower.
+2. `scripts/build-events-database.ts` writes `output/events.sqlite`. With the
+   `ingested` configuration (`build:ingested`, `start:ingested` and
+   `preview:ingested` pass it down) it copies
+   `caelundas-cli/output/database.sqlite`, and fails naming it when it is
+   missing. By default, which CI and `start` use, it creates a database from
+   the latest migration's generated `-up.sql`, the seed
+   `caelundas-cli/data/events-seed.sql` and the read-model SQL. The tests
+   build the same database in memory the same way, so the web application
+   cannot drift from the tables the CLI writes. This project's `namedInputs`
+   list those files so a change to them reruns its tests.
 3. `nx run caelundas-web:build-database` writes the result to
    `output/events.sqlite`, which is gitignored. `build` and `start` depend on
    it, and Vite emits it, the worker, and sqlite-wasm's `.wasm` file as
@@ -107,6 +104,8 @@ src/
   lib/
     calendar/                    # Search parameters, windows, loader, formatting
     events-database/             # EventsDatabase, its SQL, worker, and client
+scripts/
+  build-events-database.ts       # Writes output/events.sqlite, from the seed or --ingested
 output/                          # Gitignored build artifact
 testing/
   events-database.ts             # node:sqlite EventsDatabase over caelundas-cli's SQL
@@ -361,4 +360,4 @@ focusable by themselves.
 - [src/lib/events-database/events-database.types.ts](src/lib/events-database/events-database.types.ts):
   The `EventsDatabase` interface
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page
-- [events-views.sql](../caelundas-cli/data/events-views.sql): The tables and views applied over the source file
+- [events-read-model.sql](../caelundas-cli/data/events-read-model.sql): The SQL that rewrites the read-model tables

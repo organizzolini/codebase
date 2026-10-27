@@ -14,7 +14,8 @@ import type {
 } from "../src/lib/events-database/events-database.types";
 
 // The database belongs to caelundas-cli: its tables are what its migration
-// creates, and its seed rows and the views over them are its data files. They
+// creates, and its seed rows and the SQL that rewrites its read model are its
+// data files. They
 // are read, never copied, so the web application's tests cannot drift from it.
 const CLI_ROOT = path.join(import.meta.dirname, "../../caelundas-cli");
 const DATA_DIRECTORY = path.join(CLI_ROOT, "data");
@@ -32,7 +33,7 @@ export interface TestEventsDatabaseOptions {
    */
   empty?: boolean;
   /**
-   * More SQL run after the seed and before the post-export SQL, such as rows
+   * More SQL run after the seed and before the read-model SQL, such as rows
    * for a dimension the seed lacks.
    */
   extraSql?: string;
@@ -137,14 +138,14 @@ export function createTestSqlExecutor(
     );
   }
 
-  // Extra rows go in with the seed, before the post-export SQL derives its
-  // tables from them, as the export's rows would.
+  // Extra rows go in with the seed, before the read-model SQL derives its
+  // tables from them, as a run's rows would.
   if (options.extraSql !== undefined) {
     database.exec(options.extraSql);
   }
 
   database.exec(
-    readFileSync(path.join(DATA_DIRECTORY, "events-views.sql"), "utf8"),
+    readFileSync(path.join(DATA_DIRECTORY, "events-read-model.sql"), "utf8"),
   );
 
   registerLocalTimeFunctions(database);
@@ -169,18 +170,15 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
 }
 
 /**
- * The SQL that creates the tables: the latest migration's generated `-up.sql`.
+ * The SQL that creates the tables and the read model: every migration's
+ * generated `-up.sql`, in order.
  */
 function readTablesSql(): string {
-  const file = readdirSync(MIGRATIONS_DIRECTORY)
+  return readdirSync(MIGRATIONS_DIRECTORY)
     .filter((name) => name.endsWith("-up.sql"))
     .toSorted()
-    .at(-1);
-
-  return readFileSync(
-    path.join(MIGRATIONS_DIRECTORY, file ?? "missing-up.sql"),
-    "utf8",
-  );
+    .map((name) => readFileSync(path.join(MIGRATIONS_DIRECTORY, name), "utf8"))
+    .join("\n");
 }
 
 /**

@@ -48,14 +48,14 @@
       "cache": false,
       "configurations": {
         "ingested": {
-          "command": "pnpm exec nx run caelundas-cli:events-database --args=\"--output=../caelundas-web/output/events.sqlite\""
+          "command": "node scripts/build-events-database.ts --ingested"
         }
       },
-      "description": "Write the SQLite file the static build bundles into output/, through caelundas-cli's events-database command: from the committed seed, or with the ingested configuration from the output/database.sqlite caelundas-cli wrote",
+      "description": "Write the SQLite file the static build bundles into output/, from caelundas-cli's migration and committed seed rows, or with the ingested configuration by copying the output/database.sqlite a caelundas-cli run wrote",
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec nx run caelundas-cli:events-database --args=\"--seed --output=../caelundas-web/output/events.sqlite\"",
-        "cwd": "{workspaceRoot}"
+        "command": "node scripts/build-events-database.ts",
+        "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/output/events.sqlite"]
     },

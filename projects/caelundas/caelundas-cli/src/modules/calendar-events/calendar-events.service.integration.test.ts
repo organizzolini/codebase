@@ -98,6 +98,30 @@ describe("calendar events service integration", () => {
     expect(row?.longitude).toBe("-75.171690");
   });
 
+  it("rewrites the read model caelundas-web queries after every upsert", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [tagged("Read model", "2026-01-13T00:00:00Z", ["Planet", "Sun"])],
+      philadelphia,
+    );
+    const nodes = await repository.manager.query<
+      { is_direct: number; tag_name: string }[]
+    >(
+      `select tag_name, is_direct from calendar_event_tag_nodes n join calendar_events e on e.id = n.calendar_event_id where e.summary = 'Read model' order by tag_name`,
+    );
+    const [derived] = await repository.manager.query<{ temporality: string }[]>(
+      `select temporality from calendar_events_derived where summary = 'Read model'`,
+    );
+    const paths = await repository.manager.query<{ path: string }[]>(
+      `select path from tag_nodes where name = 'Sun'`,
+    );
+
+    expect(nodes.map(({ tag_name: name }) => name)).toContain("Sun");
+    expect(derived?.temporality).toBe("Instant");
+    expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
+  });
+
   it("stores an instant as ISO 8601 UTC text and reads it back as a UTC moment", async () => {
     expect.hasAssertions();
 

@@ -49,15 +49,6 @@
       },
       "outputs": ["{projectRoot}/data/ephemeris"]
     },
-    "events-database": {
-      "cache": false,
-      "description": "Write the SQLite file caelundas-web bundles, from the database a run ingested into, or with --seed from the committed rows. Pass its options with --args",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node --import @swc-node/register/esm-register src/events-database-cli.main.ts events-database {args}",
-        "cwd": "{projectRoot}"
-      }
-    },
     "format-code": {},
     "guard-code": {},
     "knip": {},
@@ -81,6 +72,16 @@
       }
     },
     "spell-check": {},
+    "sqlfluff-format": {
+      "options": {
+        "command": "uv run --project configuration sqlfluff {args} --dialect sqlite --config configuration/pyproject.toml {projectRoot}"
+      }
+    },
+    "sqlfluff-lint": {
+      "options": {
+        "command": "uv run --project configuration sqlfluff {args} --dialect sqlite --config configuration/pyproject.toml {projectRoot}"
+      }
+    },
     "start": {
       "cache": false,
       "configurations": {

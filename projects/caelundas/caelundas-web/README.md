@@ -13,26 +13,27 @@ This serves the committed seed: a handful of events from `data/events-seed.sql`.
 ## Build with real events
 
 The app bundles one SQLite file, `output/events.sqlite`, which is gitignored
-and rebuilt before every build by `caelundas-cli`'s `events-database` command.
-To fill it with the events `caelundas-cli` calculates instead of the seed:
+and rebuilt before every build by `scripts/build-events-database.ts`. To fill
+it with the events `caelundas-cli` calculates instead of the seed:
 
 ```bash
-# 1. Ingest events; the first run creates caelundas-cli/output/database.sqlite
+# 1. Ingest events; the first run creates caelundas-cli/output/database.sqlite,
+#    and every run leaves the read model this app queries up to date in it
 nx run caelundas-cli:download-ephemeris
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 nx run caelundas-cli:start
 
-# 2. Copy that file, derive the app's tables over the copy, and build
+# 2. Copy that file and build
 nx run caelundas-web:build:ingested
 nx run caelundas-web:preview:ingested   # or start:ingested for the dev server
 ```
 
 The `ingested` configuration of `build-database`, which `build`, `start` and
-`preview` pass down, runs `nx run caelundas-cli:events-database` writing to
-`output/events.sqlite` here. It stops, naming the file, when
-`caelundas-cli/output/database.sqlite` does not exist yet. Without the
-configuration the build passes `--seed`, the committed rows in
-`caelundas-cli/data/events-seed.sql`, which tests and CI rely on.
+`preview` pass down, copies `caelundas-cli/output/database.sqlite` to
+`output/events.sqlite`, and stops, naming the file, when it does not exist yet.
+Without it the build creates a database from `caelundas-cli`'s migration and
+the committed rows in `caelundas-cli/data/events-seed.sql`, which tests and CI
+rely on.
 
 ## Test
 

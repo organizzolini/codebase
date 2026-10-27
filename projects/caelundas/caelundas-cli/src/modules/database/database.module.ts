@@ -6,6 +6,7 @@ import { SqliteModule } from "@codebase/persistence";
 import { DATABASE_ENTITIES, DATABASE_PROJECT } from "./database.constants";
 import { DatabaseService } from "./database.service";
 import { Migration1793045891250 } from "./migrations/1793045891250-migration";
+import { Migration1793045891251 } from "./migrations/1793045891251-migration";
 
 /**
  * Connects caelundas to the SQLite file its `CAELUNDAS_SQLITE_DATABASE`
@@ -14,7 +15,7 @@ import { Migration1793045891250 } from "./migrations/1793045891250-migration";
  *
  * `SqliteModule.forRoot` reads that variable through the application's
  * global `ConfigModule`. It never synchronizes the schema, but it runs the
- * initial migration on start, so a run creates the file and its tables when
+ * migrations on start, so a run creates the file and its tables when
  * they are missing: a local file has one writer, so there is no second
  * process to race the DDL.
  */
@@ -24,7 +25,7 @@ import { Migration1793045891250 } from "./migrations/1793045891250-migration";
   imports: [
     SqliteModule.forRoot({
       entities: DATABASE_ENTITIES,
-      migrations: [Migration1793045891250],
+      migrations: [Migration1793045891250, Migration1793045891251],
       project: DATABASE_PROJECT,
     }),
     TypeOrmModule.forFeature(DATABASE_ENTITIES),

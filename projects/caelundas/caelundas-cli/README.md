@@ -235,23 +235,19 @@ compares them exactly; compare them as such. `start` and `end` are ISO 8601
 text in UTC, such as `2026-03-04T15:20:00.000Z`, which sorts as the instants
 it names.
 
-A run creates `output/database.sqlite` and applies the initial migration when the
+A run creates `output/database.sqlite` and applies the migrations when the
 table is missing, and adds to it on later runs: the same event for the same
 place updates its row. The schema comes from a generated migration:
 `nx run caelundas-cli:migration:generate` creates the next one, and
 `migration:run`, `migration:revert` and `migration:show` work on the file
 directly. They read the data source and migrations from
 `src/modules/database/`, the folder the `migration` target's `module` option
-names. The web application, `caelundas-web`, reads this file through a second
-command, `events-database`, which copies it, derives the tables the web
-application reads from the committed `data/events-views.sql`, and writes
-`output/events.sqlite`. Run it directly, or through the web targets:
-
-```bash
-nx run caelundas-cli:events-database --args="--output=output/events.sqlite"
-nx run caelundas-cli:events-database --args="--seed"   # from data/events-seed.sql
-nx run caelundas-web:build:ingested
-```
+names. The same file is what the web application, `caelundas-web`, reads: the
+migration creates the read model it queries (`tag_nodes`,
+`calendar_event_tag_nodes` and the `calendar_events_derived` view), and every
+run ends by rewriting those tables with `data/events-read-model.sql`, so there
+is no separate build step. Build the web application with
+`nx run caelundas-web:build:ingested`, which copies the file.
 
 SQLite takes one writer at a time, so run one ingestion against a file at a
 time; a second waits five seconds and then fails with `SQLITE_BUSY`.

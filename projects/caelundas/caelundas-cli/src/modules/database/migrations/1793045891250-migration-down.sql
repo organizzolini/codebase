@@ -1,7 +1,7 @@
-DROP TABLE "tags_closure";
+drop table "tags_closure";
 
-DROP TABLE "calendar_event_tags";
+drop table "calendar_event_tags";
 
-DROP TABLE "tags";
+drop table "tags";
 
-DROP TABLE "calendar_events";
+drop table "calendar_events";

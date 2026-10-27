@@ -5,6 +5,7 @@ import { Between, Repository } from "typeorm";
 
 import { LoggerService } from "@codebase/observability";
 
+import { DatabaseService } from "../database/database.service";
 import { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
 import { CalendarEvent } from "../database/entities/calendar-event.entity";
 import { TagsService } from "../tags/tags.service";
@@ -50,6 +51,7 @@ export class CalendarEventsService {
     @InjectRepository(CalendarEvent)
     private readonly calendarEventRepository: Repository<CalendarEvent>,
     private readonly tagsService: TagsService,
+    private readonly databaseService: DatabaseService,
   ) {
     this.logger.setContext(CalendarEventsService.name);
   }
@@ -345,7 +347,7 @@ export class CalendarEventsService {
    * Writes events for one observer, with its timezone, updating the row of
    * any event already stored, and replaces each one's tag links with links
    * to the nodes of the tag tree {@link classifyEvent} classifies it under,
-   * inserting any node that is missing. It all runs in one transaction. Rows go in batches that stay under SQLite's
+   * inserting any node that is missing, then rewrites the read model caelundas-web queries. It all runs in one transaction. Rows go in batches that stay under SQLite's
    * bind-parameter limit, and a repeated key within the input keeps its last
    * occurrence, as one statement may not update the same row twice.
    */
@@ -397,6 +399,8 @@ export class CalendarEventsService {
           this.toTagLinks(batch, ids, tagIds),
         );
       }
+
+      await this.databaseService.refreshReadModel(manager);
     });
 
     this.logger.info("💾 Stored events", undefined, {

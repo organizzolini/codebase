@@ -1,4 +1,4 @@
-import { Column, Entity, Unique } from "typeorm";
+import { Column, Entity, Index, Unique } from "typeorm";
 
 import { SqliteUpdatableEntity } from "@codebase/persistence";
 
@@ -29,6 +29,7 @@ import type { Moment } from "moment-timezone";
  * linking it to a node of the `tags` tree.
  */
 @Entity({ name: "calendar_events" })
+@Index("calendar_events_start_end", ["start", "end"])
 @Unique("calendar_events_natural_key", [
   "summary",
   "start",
