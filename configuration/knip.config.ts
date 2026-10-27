@@ -12,12 +12,15 @@ const config: KnipConfig = {
   // beside every project a trace reaches, never imported — so it is named here
   // for the same reason. A project's own codependix.config.ts is optional and
   // resolved the same way — beside every project a run maps, never imported —
-  // so it is named here too.
+  // so it is named here too. A project's coinagerie.config.ts is read the same
+  // way — by name, from the folder a run starts in, never imported — and the
+  // shared configuration it spreads is the only file that imports anything.
   ignore: [
     "**/*.test.ts",
     "**/callidescope.config.ts",
     "**/codependix.config.ts",
     "**/codometer.config.ts",
+    "**/coinagerie.config.ts",
     "notepads/**",
   ],
 

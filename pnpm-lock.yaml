@@ -748,6 +748,12 @@ importers:
       '@codometer/configuration':
         specifier: workspace:*
         version: link:projects/ic-suite/codometer/codometer-configuration
+      '@coinagerie/configuration':
+        specifier: workspace:*
+        version: link:projects/ic-suite/coinagerie/coinagerie-configuration
+      '@coinagerie/languages':
+        specifier: workspace:*
+        version: link:projects/ic-suite/coinagerie/coinagerie-languages
       '@commitlint/cli':
         specifier: 'catalog:'
         version: 21.2.3(@types/node@26.6.2)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
