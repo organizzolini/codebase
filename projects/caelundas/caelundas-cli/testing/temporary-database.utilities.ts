@@ -8,7 +8,6 @@ import { createSqliteDataSource } from "@codebase/persistence";
 
 import { DATABASE_ENTITIES } from "../src/modules/database/database.constants";
 import { Migration1793045891250 } from "../src/modules/database/migrations/1793045891250-migration";
-import { Migration1793045891251 } from "../src/modules/database/migrations/1793045891251-migration";
 
 import type { TemporaryDatabase } from "./temporary-database.types";
 
@@ -29,7 +28,7 @@ export async function createTemporaryDatabase(): Promise<TemporaryDatabase> {
   const dataSource = createSqliteDataSource(
     {
       entities: DATABASE_ENTITIES,
-      migrations: [Migration1793045891250, Migration1793045891251],
+      migrations: [Migration1793045891250],
       project: "caelundas",
     },
     { CAELUNDAS_SQLITE_DATABASE: file },

@@ -235,7 +235,7 @@ compares them exactly; compare them as such. `start` and `end` are ISO 8601
 text in UTC, such as `2026-03-04T15:20:00.000Z`, which sorts as the instants
 it names.
 
-A run creates `output/database.sqlite` and applies the migrations when the
+A run creates `output/database.sqlite` and applies the migration when the
 table is missing, and adds to it on later runs: the same event for the same
 place updates its row. The schema comes from a generated migration:
 `nx run caelundas-cli:migration:generate` creates the next one, and

@@ -4,7 +4,6 @@ import { createSqliteDataSource } from "@codebase/persistence";
 
 import { DATABASE_ENTITIES, DATABASE_PROJECT } from "./database.constants";
 import { Migration1793045891250 } from "./migrations/1793045891250-migration";
-import { Migration1793045891251 } from "./migrations/1793045891251-migration";
 
 import type { DataSource } from "typeorm";
 
@@ -27,7 +26,7 @@ describe("the caelundas schema", () => {
     dataSource = createSqliteDataSource(
       {
         entities: DATABASE_ENTITIES,
-        migrations: [Migration1793045891250, Migration1793045891251],
+        migrations: [Migration1793045891250],
         project: DATABASE_PROJECT,
       },
       { CAELUNDAS_SQLITE_DATABASE: ":memory:" },
