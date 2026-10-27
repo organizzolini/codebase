@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import {
   existsSync,
   mkdirSync,
@@ -10,7 +12,15 @@ import path from "node:path";
 
 import { MalformedGlossaryError } from "@coinagerie/core";
 import { Test } from "@nestjs/testing";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { ComparisonModule } from "../comparison/comparison.module";
 import { JsonModule } from "../json/json.module";
@@ -302,6 +312,36 @@ describe(DeliveryService, () => {
       ).toThrow(MalformedGlossaryError);
       expect(readFileSync(glossary.path, "utf8")).toBe('{ "alpha": 1 }');
       expect(readFileSync(readme.path, "utf8")).toBe("# Readme\n");
+    });
+  });
+
+  describe("deliveryService when its dependencies are not yet defined", () => {
+    afterEach(() => {
+      vi.doUnmock("../comparison/comparison.service");
+      vi.doUnmock("../json/json.service");
+      vi.doUnmock("../markdown/markdown.service");
+      vi.resetModules();
+    });
+
+    it("records Object as each injection type, as a circular import would", async () => {
+      vi.resetModules();
+      vi.doMock("../comparison/comparison.service", () => ({
+        ComparisonService: undefined,
+      }));
+      vi.doMock("../json/json.service", () => ({
+        JsonService: undefined,
+      }));
+      vi.doMock("../markdown/markdown.service", () => ({
+        MarkdownService: undefined,
+      }));
+
+      const { DeliveryService: Reloaded } = await import("./delivery.service");
+
+      expect(Reflect.getMetadata("design:paramtypes", Reloaded)).toStrictEqual([
+        Object,
+        Object,
+        Object,
+      ]);
     });
   });
 });

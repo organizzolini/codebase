@@ -57,7 +57,8 @@ describe(ConfigurationService, () => {
     expect(configuration).toStrictEqual({
       configurationPath: undefined,
       directory,
-      exclude: { paths: [] },
+      exclude: { paths: [], words: [] },
+      fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [],
     });
@@ -97,7 +98,8 @@ describe(ConfigurationService, () => {
     expect(configuration).toStrictEqual({
       configurationPath,
       directory: path.join(directory, "nested"),
-      exclude: { paths: ["**/*.test.ts"] },
+      exclude: { paths: ["**/*.test.ts"], words: [] },
+      fold: undefined,
       include: [...DEFAULT_INCLUDE],
       outputs: [
         {
@@ -108,6 +110,130 @@ describe(ConfigurationService, () => {
       ],
     });
   });
+
+  it("resolves exclude.words written as a list", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      'export default { exclude: { words: ["service", "gate"] } };\n',
+    );
+
+    const configuration = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(configuration.exclude.words).toStrictEqual(["service", "gate"]);
+  });
+
+  it.each([
+    ["a synchronous function", "() => ['service']"],
+    ["an asynchronous function", "async () => ['service']"],
+  ])(
+    "resolves exclude.words written as %s into its list",
+    async (_case, source) => {
+      writeConfiguration(
+        "coinagerie.config.ts",
+        `export default { exclude: { words: ${source} } };\n`,
+      );
+
+      const { exclude } = await service.loadConfiguration({
+        workingDirectory: directory,
+      });
+
+      expect(exclude.words).toStrictEqual(["service"]);
+    },
+  );
+
+  it("keeps a fold function callable", async () => {
+    writeConfiguration(
+      "coinagerie.config.ts",
+      'export default { fold: (word: string) => (word === "configuration" ? "configure" : word) };\n',
+    );
+
+    const { fold } = await service.loadConfiguration({
+      workingDirectory: directory,
+    });
+
+    expect(fold?.("configuration")).toBe("configure");
+    expect(fold?.("aspect")).toBe("aspect");
+  });
+
+  it.each([
+    [
+      "an exclude.words function that throws an error",
+      "exclude: { words: () => { throw new Error('unreadable parent glossary'); } }",
+      "unreadable parent glossary",
+    ],
+    [
+      "an exclude.words function that rejects",
+      "exclude: { words: async () => { throw new Error('unreadable parent glossary'); } }",
+      "unreadable parent glossary",
+    ],
+    [
+      "an exclude.words function that throws something other than an error",
+      "exclude: { words: () => { throw 'unreadable parent glossary'; } }",
+      "unreadable parent glossary",
+    ],
+    [
+      "an exclude.words function that returns a string",
+      "exclude: { words: () => 'service' }",
+      "list of strings",
+    ],
+    [
+      "an exclude.words function that returns nothing",
+      "exclude: { words: () => undefined }",
+      "list of strings",
+    ],
+    [
+      "an exclude.words function that returns a list holding a number",
+      "exclude: { words: () => [1] }",
+      "list of strings",
+    ],
+  ])("refuses %s, naming the file", async (_case, field, reason) => {
+    const configurationPath = writeConfiguration(
+      "coinagerie.config.ts",
+      `export default { ${field} };\n`,
+    );
+
+    const loading = service.loadConfiguration({ workingDirectory: directory });
+
+    await expect(loading).rejects.toThrow(InvalidConfigurationError);
+    await expect(loading).rejects.toThrow(configurationPath);
+    await expect(loading).rejects.toThrow(reason);
+  });
+
+  it.each([
+    [
+      "throws an error",
+      "() => { throw new Error('no mapping'); }",
+      "no mapping",
+    ],
+    [
+      "throws something other than an error",
+      "() => { throw 'no mapping'; }",
+      "no mapping",
+    ],
+    ["returns an empty string", "() => ''", `""`],
+    ["returns text with whitespace", "() => 'two words'", "two words"],
+    ["returns text with an asterisk", "() => 'a*b'", "a*b"],
+    ["returns a number", "() => 42", "type number"],
+    ["returns nothing", "() => undefined", "type undefined"],
+    ["returns a promise", "async () => 'aspect'", "synchronous"],
+  ])(
+    "refuses a fold that %s when it is called, naming the file",
+    async (_case, source, reason) => {
+      const configurationPath = writeConfiguration(
+        "coinagerie.config.ts",
+        `export default { fold: ${source} };\n`,
+      );
+      const { fold } = await service.loadConfiguration({
+        workingDirectory: directory,
+      });
+
+      expect(() => fold?.("aspect")).toThrow(InvalidConfigurationError);
+      expect(() => fold?.("aspect")).toThrow(configurationPath);
+      expect(() => fold?.("aspect")).toThrow(reason);
+    },
+  );
 
   it("leaves a markdown output's description undefined when none is written", async () => {
     writeConfiguration(
@@ -170,6 +296,15 @@ describe(ConfigurationService, () => {
     ["an unknown field", "export default { inputs: [] };\n"],
     ["an unknown exclusion", "export default { exclude: { files: [] } };\n"],
     [
+      "exclude.words that is neither a list nor a function",
+      'export default { exclude: { words: "service" } };\n',
+    ],
+    [
+      "exclude.words holding a non-string",
+      "export default { exclude: { words: [1] } };\n",
+    ],
+    ["a fold that is not a function", 'export default { fold: "aspect" };\n'],
+    [
       "an output of an unknown type",
       'export default { outputs: [{ path: "a.txt", type: "text" }] };\n',
     ],
@@ -211,7 +346,8 @@ describe(ConfigurationService, () => {
   describe("flag overrides", () => {
     const FILE = [
       "export default {",
-      '  exclude: { paths: ["fileExclude"] },',
+      '  exclude: { paths: ["fileExclude"], words: ["fileWord"] },',
+      "  fold: (word: string) => word.toUpperCase(),",
       '  include: ["fileInclude"],',
       "  outputs: [",
       '    { path: "file.json", type: "json" },',
@@ -236,7 +372,11 @@ describe(ConfigurationService, () => {
         workingDirectory: directory,
       });
 
-      expect(configuration.exclude).toStrictEqual({ paths: ["flagExclude"] });
+      expect(configuration.exclude).toStrictEqual({
+        paths: ["flagExclude"],
+        words: ["fileWord"],
+      });
+      expect(configuration.fold?.("word")).toBe("WORD");
       expect(configuration.include).toStrictEqual(["flagInclude", "second"]);
       expect(configuration.outputs).toStrictEqual([
         { path: path.join(directory, "flag.json"), type: "json" },
@@ -307,7 +447,10 @@ describe(ConfigurationService, () => {
 
       expect(configuration.configurationPath).toBeUndefined();
       expect(configuration.include).toStrictEqual([...DEFAULT_INCLUDE]);
-      expect(configuration.exclude).toStrictEqual({ paths: ["dist"] });
+      expect(configuration.exclude).toStrictEqual({
+        paths: ["dist"],
+        words: [],
+      });
       expect(configuration.outputs).toStrictEqual([
         {
           description: undefined,

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { ConfigurationModule } from "@coinagerie/configuration";
@@ -8,7 +8,7 @@ import {
   JsonModule,
   MarkdownModule,
 } from "@coinagerie/output";
-import { VocabularyModule } from "@coinagerie/vocabulary";
+import { VocabularyModule, VocabularyService } from "@coinagerie/vocabulary";
 import { createMock } from "@golevelup/ts-vitest";
 import { Test } from "@nestjs/testing";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -242,4 +242,48 @@ describe(CollectCommand, () => {
       ),
     ).rejects.toThrow("EISDIR");
   });
+
+  it("lets a failure that is not a configuration fault escape while collecting", async () => {
+    vi.spyOn(VocabularyService.prototype, "collect").mockRejectedValue(
+      new Error("disk gone"),
+    );
+
+    await expect(runIn(SOURCE, {})).rejects.toThrow("disk gone");
+  });
+
+  it.each([
+    [
+      "an exclude.words that throws",
+      "exclude: { paths: [], words: () => { throw new Error('unreadable'); } }",
+    ],
+    ["a fold that returns nothing useful", "fold: () => ''"],
+  ])(
+    "aborts on %s, naming the configuration file and writing nothing",
+    async (_case, field) => {
+      const fixture = await runIn(
+        {
+          ...SOURCE,
+          "coinagerie.config.ts": [
+            "export default {",
+            `  ${field},`,
+            '  outputs: [{ path: "GLOSSARY.md", type: "markdown" }],',
+            "};",
+            "",
+          ].join("\n"),
+        },
+        { write: true },
+      );
+
+      expect(process.exitCode).toBe(1);
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining("🪙"),
+        undefined,
+        expect.any(Object),
+      );
+      expect(JSON.stringify(vi.mocked(logger.error).mock.calls)).toContain(
+        path.join(fixture, "coinagerie.config.ts"),
+      );
+      expect(existsSync(path.join(fixture, "GLOSSARY.md"))).toBe(false);
+    },
+  );
 });

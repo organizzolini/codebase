@@ -1,5 +1,8 @@
 import { ConfigurationService } from "@coinagerie/configuration";
-import { MalformedGlossaryError } from "@coinagerie/core";
+import {
+  InvalidConfigurationError,
+  MalformedGlossaryError,
+} from "@coinagerie/core";
 import {
   ComparisonService,
   DeliveryService,
@@ -82,6 +85,27 @@ export class CollectCommand extends CommandRunner {
 
     if (differences.length === 0) {
       this.logger.info("✅ Found every glossary in step with the code");
+    }
+  }
+
+  /**
+   * Collects the vocabulary, or reports the configuration's fault.
+   *
+   * `exclude.words` and `fold` are the configuration's own code, so a fault in
+   * one surfaces here, while the words are collected, naming the file.
+   */
+  private async collectWords(
+    configuration: ResolvedCoinagerieConfiguration,
+  ): Promise<string[] | undefined> {
+    try {
+      return await this.vocabularyService.collect(configuration);
+    } catch (error: unknown) {
+      if (!(error instanceof InvalidConfigurationError)) {
+        throw error;
+      }
+
+      this.fail("🪙 Rejected the configuration", { reason: error.message });
+      return undefined;
     }
   }
 
@@ -324,7 +348,11 @@ export class CollectCommand extends CommandRunner {
       return;
     }
 
-    const words = await this.vocabularyService.collect(configuration);
+    const words = await this.collectWords(configuration);
+
+    if (words === undefined) {
+      return;
+    }
 
     if (mode === "print") {
       this.print(words, options.format);

@@ -9,6 +9,13 @@
 export interface CoinagerieConfiguration {
   exclude?: CoinagerieExclusions | undefined;
   /**
+   * Merges a derivational family into one headword, such as `configuration`
+   * into `configure`. Runs after plurals and inflections have been folded, so
+   * it sees lemmas rather than every surface form, and must return a
+   * non-empty string.
+   */
+  fold?: FoldWord | undefined;
+  /**
    * Globs naming the files the run scans, matched with `path.matchesGlob`.
    * Defaults to every file, dot-files included.
    */
@@ -21,6 +28,13 @@ export interface CoinagerieConfiguration {
 export interface CoinagerieExclusions {
   /** Globs naming files left out of the scan. */
   paths?: string[] | undefined;
+  /**
+   * Words left out of the glossary, as a list or as a function returning one,
+   * synchronously or not — the function is where a configuration reads
+   * whatever else it wants to exclude. Exclusion applies after folding, so
+   * excluding `service` also covers `services`. Defaults to none.
+   */
+  words?: ExcludedWords | undefined;
 }
 
 /**
@@ -70,6 +84,12 @@ export interface ConfigurationOverrides {
   outputMarkdown?: string | undefined;
 }
 
+/** A list of words, or a function that returns one. */
+export type ExcludedWords = (() => Promise<string[]> | string[]) | string[];
+
+/** A function from a word to the headword it is folded into. */
+export type FoldWord = (word: string) => string;
+
 /** What `loadConfiguration` is asked for. */
 export interface LoadConfigurationArguments {
   /**
@@ -84,6 +104,13 @@ export interface LoadConfigurationArguments {
   workingDirectory: string;
 }
 
+/** What reading a configuration file yields: its export and its excluded words. */
+export interface LoadedConfiguration {
+  configuration: CoinagerieConfiguration;
+  /** `exclude.words` once any function in it has been called. */
+  words: string[];
+}
+
 /**
  * A configuration with every default filled in and every path absolute.
  *
@@ -96,7 +123,14 @@ export interface ResolvedCoinagerieConfiguration {
   /** The root the run scans: the configuration file's folder, or the
    * working directory when there is no file. */
   directory: string;
-  exclude: { paths: string[] };
+  /** `words` is the resolved list: a function in the file has been called. */
+  exclude: { paths: string[]; words: string[] };
+  /**
+   * The configured fold, wrapped so that a throw or an empty or non-string
+   * result raises an `InvalidConfigurationError` naming the file; `undefined`
+   * when none is configured.
+   */
+  fold: FoldWord | undefined;
   include: string[];
   outputs: ResolvedCoinagerieOutput[];
 }

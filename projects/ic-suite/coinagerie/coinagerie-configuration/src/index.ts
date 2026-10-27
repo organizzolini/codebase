@@ -15,6 +15,8 @@ export type {
   CoinagerieMarkdownOutput,
   CoinagerieOutput,
   ConfigurationOverrides,
+  ExcludedWords,
+  FoldWord,
   LoadConfigurationArguments,
   ResolvedCoinagerieConfiguration,
   ResolvedCoinagerieJsonOutput,

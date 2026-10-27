@@ -52,5 +52,11 @@
     "target": "ES2025",
     "verbatimModuleSyntax": true // Enforces `import type` for type-only imports
   },
-  "exclude": [".nx", "build", "dist", "node_modules", "tmp"]
+  "exclude": [".nx", "build", "dist", "node_modules", "tmp"],
+  // Ambient declarations for dependencies that ship no types; every project
+  // inherits them, so a package whose source imports one type-checks wherever
+  // it is imported from. Naming `files` switches off the default `include`,
+  // so the default is spelled out.
+  "files": ["./types/wink-lemmatizer/index.d.ts"],
+  "include": ["**/*"]
 }
