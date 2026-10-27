@@ -5,7 +5,12 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 /** The skills this package ships, one directory each. */
-const EXPECTED_SKILLS = ["coinagerie-collect", "coinagerie-configure"];
+const EXPECTED_SKILLS = [
+  "coinagerie-collect",
+  "coinagerie-configure",
+  "coinagerie-define",
+  "coinagerie-triage",
+];
 
 /**
  * What would tie a skill to the repository it was written in, each with the
