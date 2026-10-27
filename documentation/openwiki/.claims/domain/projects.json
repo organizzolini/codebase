@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:cb8aabf5abf1b2efd7e77310994203f85964ca5029054c03ef9370ade4f4b573",
+  "claims": [
+    {
+      "id": "claim_09a652282c6349a0972d10d166897671",
+      "statement": "Every workspace project lives under projects/ with three nesting patterns: direct (projects/<project>), domain-nested (projects/<domain>/<project>), and IC-suite nested (projects/ic-suite/<toolchain>/<project>).",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L146-L151",
+          "version": "repo-lines-v1:sha256:dc93a3bc7d3326945129d6eac33f92ce10492a15177f7705714df61e940a5b33:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzdhMDM1YzBmMDkwOTBmNTUyMjdlNDlmNTZhMGQ2NmE4MTIyZGJhMzFkNzVjMzg2OGJlODBhMDZkOGY5YWIwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjhiYzcyODY1NjgwZGI1YzEwNTg0MWM0ZmM0ZTY4Mzc0YmRhMzc4YTQwMTBkMjFmYjZhMmEzMjc1ZWQ1NWE3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWQ5NDZiNjA4N2ZiYWIzZGExNmI3YWMxNmJjMTM4NTJlZjZhZTMwYTUzYjYyYTEzMzg3ZDZjZmExOTY0ZDgyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGQ0YTk1MTgzZGI4OTM1YjE4YjI5NGFhZDcwMWY1MzUzMTMyNDlhNWIxZDFlMGE1YTIwY2YzZDY3YzEwN2RlZCJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/project.json",
+          "version": "repo-file-v1:sha256:014f3e4afdd5ee216429096cff18a94a084c4a52656aeb1c5b47644948f46cba"
+        },
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/project.json",
+          "version": "repo-file-v1:sha256:47672882f130e2f804c6dbca4b8f9ccc02b0c95ed81a57d26166e8fa046cde20"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/project.json",
+          "version": "repo-file-v1:sha256:b2e78ace9c7c99d9ff160f497172cb7df8938abcce6b180c7da7e555b1b9c349"
+        }
+      ]
+    },
+    {
+      "id": "claim_788cbf1d6a8f4cca9ec4e6e2e8ce8806",
+      "statement": "A project is any directory containing its own package.json; grouping folders without package.json are not projects.",
+      "evidence": [
+        {
+          "resource": "repo://validation/src/modules/readme-projects/readme-projects.constants.ts#L3-L11",
+          "version": "repo-lines-v1:sha256:e6241f826d93b839f4663ad829b74ba0a320dd73b17cb030c9f3ca6da876f93c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJmMGIzOTc1NjI4ODg1MDIzMWY1NjI4ZTk3ZWNiNGEwOWNiMjE0NGFiNmJhNTQyZTZlY2FkMGUwM2JkOGUxNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmEwZTc0N2Q2OGJjZTRkNWJjMDk2YWJjOWJjYjc1OWEzODc4ODM0ZmFiYmJhYjYzNjcxYWI5ZWM2YTBmY2NmMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODBlYWU4MzQ5NmU2MTY0MzRiYTI3MzM3MzZjODY0OTUzZjg3OTIwYjI0NmQ5OWZjODcxNzRiZDNkOThmNzYyYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmRmNjJkYjY0NTA3ZTAyNTY1ZGE1NzNmYTViOTFjNjc0ZTI1M2NhMzRjZTU5NWFmNWQ0NDUzN2UyOGRkMWE0YSJ9"
+        },
+        {
+          "resource": "repo://validation/src/modules/readme-projects/readme-projects.service.ts#L14-L21",
+          "version": "repo-lines-v1:sha256:35a5099324636a25cc8a7dd224a10d066c2b2b8daca867f0e1ad2536b8fa078f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWRlNDcwODZiN2I1MjRjN2Y1YjE5ZGVkNmYwYTdhZjgwMTdlZjdkY2Y3M2IzOGM4MzU0YTY0MzM4NDU4MmE4OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI3ZmZiOTUwNjFmZjI0YjAzNjU3MGE0MDE4ZDQ4ZmJiNDI2OWY5Y2UzNTBhMGJkMGE3NzBlYmViMmZhZmM2NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYxMGIzNjMwNDQ1NTkxNWQ3NmRhNDViN2E5NWZhYjE5YjlmZTNlYTc5MmNlMmU4ZDQyNzIzODhiMTY2ZDE5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE0NDkzZjBhZmQ5NTRmZDFhOTU3OTZjNmRmMjViM2MzMDExOWViNmExMjcwMDgxZGQyOTA0YmY1N2YyNTIyMiJ9"
+        },
+        {
+          "resource": "repo://validation/src/modules/readme-projects/readme-projects.service.ts#L37-L70",
+          "version": "repo-lines-v1:sha256:7524038baedc69a46018b116b7cb662d19114e26c0c00c4715caaaa72e5cbc7f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDBiNzM0MmU3Y2MwNjEzN2RlYjNkN2M2ZDJmZDUwZDg0ZjlkM2YyNzU1YWEwMWVlOTMxZGIyNzQyOWJhNjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1NTVmOTIwNWQ2Y2I3ZTVhOGRiMzQwOGU5MWY0ZmViMjkzYmYwN2IzMWYzOWY4YzUzMzIwZjcyYTBmN2U5NTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d11764caead34b378f1e082cfc260d6f",
+      "statement": "The ESLint rule project-structure (configuration/codebase-structure.json) enforces the project layout with prescribed child folders for codebase-project and documentation-project archetypes.",
+      "evidence": [
+        {
+          "resource": "repo://configuration/codebase-structure.json#L19-L154",
+          "version": "repo-lines-v1:sha256:82e66564c3200a8519d1a174a1339592798abee9196799327c11456a4b163e61:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkNzk0OGE4N2ZiYTE5ZmY5ODExMzRlMzg3ZjAzZDhhYmE4ODI1NzAwY2JiYzdlZTNmNWE0YTM0MDNlNDhlNzdlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxZTY3M2FiZDQ1N2E5N2VlYTE3YTYwMDYyZWIwZmFlYTZiZGYwOTQ4NjhjYzZiOGY4YzBlYmRhMmY2MWVkNDJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4NzdjNTA5ZTI5YmY3NmExNDhiZjZmZWQ2MTNmNzRlNWJlYWY4Y2FmYzZjN2YyYWI0N2U2Y2IwZjc5NWI4YzdiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2ZGJhYWQ5NzlkNjdiZTJhZTFiNjM5NzQ3Zjg5NWQzMTgwMzkzMTQ3MTEwNTgyNGUyMzQwNzI5ZjYxZWNlMWZhIn0"
+        },
+        {
+          "resource": "repo://configuration/codebase-structure.json#L249-L380",
+          "version": "repo-lines-v1:sha256:5454ccf7028580629c4cecae033958ac333acfc2a1938f7e0f1778e19be37528:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkOWMwMGY0NTMxNzM1MGM4YWZiZTRmODdjNmIwYTAzNmMyOGI3YTJkNjU0MDliMTY3MzgxN2VkZmZiNDFjY2VlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxZTY3M2FiZDQ1N2E5N2VlYTE3YTYwMDYyZWIwZmFlYTZiZGYwOTQ4NjhjYzZiOGY4YzBlYmRhMmY2MWVkNDJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1MTkzZDg1NmE3MmNkODc2ZTQ2ZjlkZTk0MTQyMDVhNWY5ZmMxMWM5NmRkY2YxZTQ3MmUzZTk1MGM2YWRiZDE3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2ZGJhYWQ5NzlkNjdiZTJhZTFiNjM5NzQ3Zjg5NWQzMTgwMzkzMTQ3MTEwNTgyNGUyMzQwNzI5ZjYxZWNlMWZhIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_2830bffd10394f0db23707d1a23851e8",
+      "statement": "Whether a project is an application or package is declared by its type tag in project.json (type:application or type:package), not by folder location or nesting depth.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L151-L152",
+          "version": "repo-lines-v1:sha256:98122154e20af1a74552377064c53597af9ebf635634d04b5dae52eb24e65c14:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjhiYzcyODY1NjgwZGI1YzEwNTg0MWM0ZmM0ZTY4Mzc0YmRhMzc4YTQwMTBkMjFmYjZhMmEzMjc1ZWQ1NWE3YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIzNTIzODQ2OGFkMDdlZjYxYTJjNWY0ZDYyZThkNWQ2Y2U3Y2IzZjE4MzM1NTI2ZDRiYmJkYjJjY2VhMjZlNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTEwYjg3NGMzNzBjZTI0OWI3MGI5NDA2NTVhZDllY2Q0MDA0MTIyZjZjOGM3ZGQwZjk3NTAzZjE2Y2Q4YmRhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTQyYTFhMDExYzUzMWM4ZTdmYjY4ZTFjYTA3MTg1OGNhYTUzYWM2YmQ3ZDFhNDcwMGVjMmEzNThkYjFhMzg5OCJ9"
+        },
+        {
+          "resource": "repo://nx.json#L115-L117",
+          "version": "repo-lines-v1:sha256:5952ccc9d7b0a6bf09d31223374ebdf4cb7c83261bd53c2a1791c86199cbb2d5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODkyMDNmOTkxNjE3YTQzYzJmYjQ5N2Q0MmIwM2Y4NmRlODYwY2ZhMDA2NzkxOWQ3NzRlNGRkZmJmYjI5NDE1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDIxOGYzY2JmZWY5OWY4MGM3MTYzYTBlM2FjYzFjMWU2ZTViMmY1NzZjNTVlZThmYmQ4NjBhNDRmZmRhNGJkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM5N2Y1YTFjYWZmMzc0Y2Q5MTU2MmY1MWYxNTBlZGU1MWMzMTJhNTIyNzZhYmQ3MWMwYjcwMDllMzAzYWQ2OSJ9"
+        },
+        {
+          "resource": "repo://projects/common/presentation/project.json#L10-L10",
+          "version": "repo-lines-v1:sha256:2846eebef4faefb3bd3e98e641a3ae48beca2d676df295761670a3be5dde6d6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg0NmVlYmVmNGZhZWZiM2JkM2U5OGU2NDFhM2FlNDhiZWNhMmQ2NzZkZjI5NTc2MTY3MGEzYmU1ZGRlNmQ2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg0NmVlYmVmNGZhZWZiM2JkM2U5OGU2NDFhM2FlNDhiZWNhMmQ2NzZkZjI5NTc2MTY3MGEzYmU1ZGRlNmQ2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzllNmQwNjdiMWQxZmRmNGFjNzNkZTAwYzA1M2VmYjgwZGQ3ODI0MjFkMGE2ZWM2ZmFiNTMzNGUwN2E0ZjRmMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQxZmZlNjViNTFkNjg5YmUxMmZjZTIzOTZlZmExZTk5MjJiZWZlYjlkNGY3ZWQ2MzYyOTg4MWE1MmFlNTVjYyJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/project.json#L12-L12",
+          "version": "repo-lines-v1:sha256:03e27922c91484f091b3f331409be13a9bdf9687ff64c2f572c3eeaca4449646:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNlMjc5MjJjOTE0ODRmMDkxYjNmMzMxNDA5YmUxM2E5YmRmOTY4N2ZmNjRjMmY1NzJjM2VlYWNhNDQ0OTY0NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNlMjc5MjJjOTE0ODRmMDkxYjNmMzMxNDA5YmUxM2E5YmRmOTY4N2ZmNjRjMmY1NzJjM2VlYWNhNDQ0OTY0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGU5MDBjYjE5MTMzZGIwODY3ZWQyYjc3ZWMzZTdhYmQyZWYzOWI5YWQ2OGQ4NTAxMmJlNzVkOTg1ODJmZjdjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQxZmZlNjViNTFkNjg5YmUxMmZjZTIzOTZlZmExZTk5MjJiZWZlYjlkNGY3ZWQ2MzYyOTg4MWE1MmFlNTVjYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a1b868ebd2e1422e9bd996a1134ce2dc",
+      "statement": "nx show projects is the authoritative source of truth for the project list; hand-maintained lists drift and are not gated.",
+      "evidence": [
+        {
+          "resource": "repo://.github/CONTRIBUTING.md#L189-L191",
+          "version": "repo-lines-v1:sha256:90bb834698a3d79575604c7afb5430393a27eb406efd441802d845a0cd70f7f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGEyOWVjMGY4ZGZkMjdlNWJkY2U2ZDU5NTNlNTkyYjE0ODg1MTM5ZjZiYzIxMjBhNmE2ZGZlYjFhMmUxY2FhNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFhMTVkMzg1ZTUzMTVkYTA0YTIxYzZkODk4NDMxODBmODcyYWI1YTFmMDkzMTY1YmM0MGFlY2M1ZjI0NjBhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk3NjU3ZDFlNjg4MDI3MWM5NmZjZWIzY2MzNjI0NGY0YjJlNDAxMGQxNWRkNmFmNTEzMjVkMDZmM2IzZGNlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjVlMjgzM2E5YmYzM2ZlZDZhNzk2ZDYxY2I5ZWFhNThjY2ZjM2I0OGY1MGU1ZjliMWExZDUwNjMyYzliOTE5NCJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L152-L157",
+          "version": "repo-lines-v1:sha256:a91b7dc2c0673108d7d29512699c2af0b28cc8ef988a2d98a8f9afb8fa65c659:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIzNTIzODQ2OGFkMDdlZjYxYTJjNWY0ZDYyZThkNWQ2Y2U3Y2IzZjE4MzM1NTI2ZDRiYmJkYjJjY2VhMjZlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI0Y2Q0MDZjZmZjNDUwMDM0ZTkxMGMwYmM4NWEzYWI5MGUwOGFhMTJjZTAxN2VlOWRhMjk4OGFlYzdiZTNhMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGRiYTRkY2U1MTgxZjQ0YjY1NGNlZjAyNTBiYmM5MmQ0YTU5OTg1ZjU2ODU4OTJmM2FlZDNlYTcwMjNkY2Q2MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7995fb75d2294f7699bf6b975014d558",
+      "statement": "The root README.md carries an annotated project table kept in sync by the validation:readme-projects target, which scans for package.json directories and verifies each appears as a Markdown link in README.md.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L159-L160",
+          "version": "repo-lines-v1:sha256:f5e671c2bc2baeae8d3d09c46aef2d9db5949e60add212149475965e159b69ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZiYjRiMzgwMmE3ZjA3MzZhMjYwYjk3Y2M2ZjUxMmRmODM0ODgyYjcxYWM1N2VjOWNiZTY5OWFhZjlmMTg4YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM5MDliYTg1YjNlZjlmOWViOTk4YTM2MjA4MjkyMGMxZTlkY2UzYjVhMjdiZmQ0ZTEzYTZmOWNlOWZmMDlkNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDgwMzU2ZTI1MzA1NmM5ZWNlOGMwOTc5ZDQwMTVjOGVjODJlNWJhNWUzNTcwYjE4YWVkYzk4N2RmNTY2OTdjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY4MzYyNDYzMTI5NGY5NTVlNTlmNDg2ZTliMWI4ZjFiNjNlYjAzMWY1ZmMyMTdiZGNhMmYwMjMwZTVmZmU5NCJ9"
+        },
+        {
+          "resource": "repo://validation/src/modules/readme-projects/readme-projects.service.ts#L114-L129",
+          "version": "repo-lines-v1:sha256:ccab570e0485454c34b1017298835fc966dd146034661d1a20bd2fc436fb0cde:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZDNkODQxYWMwZGY4Y2M2MzMyNzZkYmFjOGY0MTdhNzU0NGY0MTM0MmU0NjY2ZDU0Y2U3NzczOGY3MmQ3OGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzYTEzOWY3ODc2MTkzNjFmYTVhZDUyODA3NjZhNDUxNWE0MDYwYzUxMTg0NGRiMTFjZjJlNjkyNWZhZDFhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://validation/src/modules/readme-projects/readme-projects.service.ts#L99-L107",
+          "version": "repo-lines-v1:sha256:59f05eb191dd39866c5a48c6185097b24b3966089c445d0e5bb9935e6d46a115:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTk0NzhiOTY0ZjZkNDE1YjQ2MWQzYmQzN2Y4YzVkYzg2YWMwNTNkMGYwMWU4NzY4M2VkNmJkZDZkMTFkNWJiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE0NWJhZDI3MjE2YTBiMzgyZGIzYTY5NTdmODA3ZTdkMDlhMWFjMWY5ZTgxNWQ4NmI0YmJhNWJlNzU0NjU3YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWRhNGI4YTRjMzNkZDU1MmRlZDQ1OWVhZTIxZTdlMzVhN2RiOGFlMWY5Y2JiZjdjYTA0MzIzYTgxMmFkYjIzZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7942f07210d04d8b92377891d55d31a9",
+      "statement": "Commit scopes come from a closed vocabulary in configuration/conventional.config.cjs and collapse each toolchain to a single scope: callidescope-* → callidescope, codependix-* → codependix, codometer-* → codometer, conformetry-* → conformetry.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L162-L167",
+          "version": "repo-lines-v1:sha256:c8a7bafa62cc104cbf2bec86e913219033222d5ae40644853111421458375ada:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzY5YmZiYmNlM2I4NzU5Njg0MmFmYjE5MTI0NmY5ZTg0OGJmODgwNzJlOWViMGI2ZTRlYmNkMGVlOTFmMmJjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmNjODBiZjk3ZmY3NDNkZTkwMmEzOGM0Yjk0ODY3MTEzMDZiN2ZmYmRiYjliNjAyOWFmMjc1NjA4ZWJmYzEyNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGU2YmY2ZTk3Y2VkM2EwMGVmMmZiNmFhZWY1OGY2OTNjYzA3Yjg2YTZkNjA4ZTZmYzMwMzEyMjExNGQyZjMxNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M2MmY3ZmI0MmM1OTlkNWZmMDA1MjZkNjI2OWNlMTI0YTIxMzk3NjFjNjVlOTBmZjIzOTFmYjdlMDY4Njc1MSJ9"
+        },
+        {
+          "resource": "repo://configuration/conventional.config.cjs#L191-L203",
+          "version": "repo-lines-v1:sha256:d13050c0d9873c6d3289351d646e71790ee70ea41aa98df073d0156b87934b2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3ZDI5MjNhZmFlMTg3MzU4ZmExYjZiZTgyYTc4MjlhMDQwZDU3ODkwOTExYjYxYWE4OGJlMTU3YjJiMzNiN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwOWNlMGMzYzc4ZmQ0ZDEyMDJjMTFiNjBhYWYwMGRlNDRmNjVmY2RkMzJjMmE1MDZkMGI5NmVkNDk3OTQ4OTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhNDMyYmNkNTNjNTEzZTY1M2RiZWYxNGYxN2JkNjRlMzgyNjJmMTQwOTY0ZDBkY2E0ODljYzVhNzkyNmUwMjEifQ"
+        },
+        {
+          "resource": "repo://configuration/conventional.config.cjs#L96-L100",
+          "version": "repo-lines-v1:sha256:a1339da1303e332b7f4759c99cefc46866c4a74d02c3115ee9f60376b4c00f0d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNiNzE4NjVkMzkwMDU3NjgwOTg5ZDFlMWQyMWJmOTNhMDg2MTFhYjc3YzJkODhkZDJlZjM3MzI0NzBhZGM1OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMThhOTE3NTk3MmZlMTVlMmE5NjQxYWIxMzFmNTcxZTZjN2NhYmNhMDY4Mzc2MmViYTVmMjM1M2U0ODNjM2Q1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFiNzllM2IyNDEwMjY5NDI1NDhiNmRhYTA2ZjEwNTRmMTBjOTRhN2MwYmNkOTBmZDk3ZTNiMjE1YjkxMDVmNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_84fa409732cd4b66a0dbaeb00958f1f3",
+      "statement": "Never hand-create files or modules; always use conformetry generators via nx g conformetry:<generator>.",
+      "evidence": [
+        {
+          "resource": "repo://.github/CONTRIBUTING.md#L196-L197",
+          "version": "repo-lines-v1:sha256:3b628a38a4ede08e2a37143c86e9cd5f8748a1821ff773e044357373c5fb5bd5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDRiMjdlYjg3MGY4NGExMDc4ZjEwNmZjYTNlZWI4ZWFmMGY3MGYzNDdhZGJjNTViM2ZhMDgzZTFhMzQ0MGJhYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDA2Y2QxMzQ2NmViM2Y3OTdiZGMzZmMyYTNiMTJmMGFmN2NlMDM0MzgzMDk2YjEwYmIyYTBkZjkxZDMxNTgwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTQxMjYwMTBlOGM3MTY2Y2IxOWY5NWEzZWMyNzQ3MzViMmRmMzlhNzRlNjdmNWUwMzUwNzQxZDMxZjk1MGRjMSJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L213-L213",
+          "version": "repo-lines-v1:sha256:8706052c2d16416585e53e568864cf572e27329b545c7c376305178c9d2d05f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODcwNjA1MmMyZDE2NDE2NTg1ZTUzZTU2ODg2NGNmNTcyZTI3MzI5YjU0NWM3YzM3NjMwNTE3OGM5ZDJkMDVmNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODcwNjA1MmMyZDE2NDE2NTg1ZTUzZTU2ODg2NGNmNTcyZTI3MzI5YjU0NWM3YzM3NjMwNTE3OGM5ZDJkMDVmNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmMwOTdjODA4MTgwZWMzYTBlMWFmZWQ3MGY5NGY1NzExOTY0ODViN2VjM2UyMmRkZjE1YjE3OWRmMGJkOWM5NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTEyY2NmZGJjN2QzNjYxZTQ2MWFmYmUzYTBlMmY5N2Q2NzJkMjRmNzZmODhmY2YzNDA4YWIzODllZDc2NDJhYSJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L225-L226",
+          "version": "repo-lines-v1:sha256:27fd4248f68a907c3dc1266d88590e6081cea45017428d38847cec273b817712:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzE1MDNjZTA5MTc2Y2Y4N2RjYmRiMzQ0YzgyZmVkYjEzN2ExOGZiNmM5OTcyMzljYzhmOWU1NjU5YjQ0Y2U0OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGQ2ZGE3NzI1ZTBiNjU3ODdkNWFlN2VhZDRiZDczYTg0OGNkYjFjZjY2YmNhNDQ1OWIyMTkzMjUyOGQ1NWYxZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGE1ZWVmZWNjNDBlZjQ5MjMyYjRiZDliNzk2ODY3MWFmNzhmNDEwZDQyMGZkMTYwZWNjZTBjYTliOTY5MjdhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjQxNWJlMDJmZDczYWNjYjU5NjY2NTRjYjYzODVhYmQyNTA2NGEyYWM1ODIwNWI3ZTAwMDk0ZWQwYjE3NWNjZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_acfbc7e534da48dc986319777a56e6c3",
+      "statement": "Conformetry generators fall into three tiers: project generators (jupyter-notebook-application, nestjs-command-project, nestjs-graphql-application, nestjs-service-project, tanstack-application), module generators (nestjs-command-module, nestjs-dataloader-module, nestjs-graphql-module, nestjs-service-module, tanstack-server-function), and file generators (nestjs-service-file, nestjs-resolver-file, react-component, react-hook, tanstack-route).",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/nx-generate/SKILL.md#L47-L87",
+          "version": "repo-lines-v1:sha256:9b31e440ee4e7e51240b2c8a44b969c7c12082be093d9414c201b180a2824321:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTJmNTMyOGVlNmU4MDUwZThhYWZkOGRjODY5YTA2OWNkOTU4NGVkYWFmNTRmZTU4OWQ3M2MzYjdkY2Q3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhNDNhZjMyYWI3MDcyYzZiMWNmZDY4MmFjODUxNmVjNDlmNDhkMzY3NmZlZDgwYzFhNzMxNDMzMjZhNTk5MTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiM2NlZTkwOTNiM2RjYjUyZmIzZGM0NWRmZjFkMDZhYzRiM2Q1YTI0NGI5OTlhOTEzZDMwNTFmOTRiYTM2ZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5MjE5N2FkY2E4NmFkODg1YzQ2MmMwZTIxMWQyMDg0NWFlYmI1ZDdlNzJiNWE4Njg1YjYyZDJjYzY4OGU2MjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_49b2fb53e7d447f58852ecf35981cd92",
+      "statement": "Conformetry templates live in configuration/conformetry-templates/ and are synced from configuration/conformetry.config.ts by running nx run synchronization:conformetry-generators:write.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L239-L240",
+          "version": "repo-lines-v1:sha256:80abe6de87d22ca3d2541b69cbb13b6d8a95b7a3e2563f8e12ef833771861734:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjJjYTMyOWY3MzlmNGMzZmNjOTY5NmNjY2I2NWNhODk3NWI0MGJmMTc2ZDQxZDYxYThmOGRiMWExZTUyOTFiOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmE1YjliMDhkOTY3ZTI3ZTVjMTNhNjJjNDE1MjM1ZDI5MzZjZjY2NDJkNjYyOWFlZjIxMjI1ODNlMWNkMjYxYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDFmMWFiODY5OGYyZGQxNTQxOWI1ZjBlODFkNDg2ZTJkMjA1MTk4NjkzYWVkYjc0NzMzYzNkMTg0NjkxZGQ4OSJ9"
+        },
+        {
+          "resource": "repo://synchronization/src/modules/conformetry-generators/conformetry-generators.command.ts#L138-L139",
+          "version": "repo-lines-v1:sha256:545a5aba135afe54c881886148da05ef3638d5224706580347cf9e91b17134c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2MxMzQ4OWNiZDRkYWFhMWYyY2FkZmEwMjJmYWZhYWE0MDVmM2VhNjI0Mjg4YTVmNGM0Nzk4ZDkzZjQ0MDcxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjkxY2Y1NWNhMGE4NjVhM2E5MDNiMmRiNjBiMmZlYjk5MDc4Mzk3MjY0YzQ1NWQ5Mzc4NTkzNjhiNjdlMWI4NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTI2NzFjOGU3MzI5MTg4NzgzYjcyYmMzOWIxZjcyMDM2ZmQzYTllZWUxNWM4MDc4OTE2ZDkwNjBlMzQwZWY5NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWQ3NmY0YWFmMzk5YzMwYTg0OTliZTRkYTRhMzc5YjI5ZjUyMmRkN2I3ZTA4NTc0ZmRmM2I5ZDc5MjRjYjMzMiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 import { LoggerService } from "@codebase/observability";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
-import { AspectPhaseEmojiService } from "../aspects/aspect-phase-emoji.service";
 import { CompoundPhaseService } from "../aspects/compound-phase.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -29,7 +28,6 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 const aspectGraphService = new AspectGraphService();
 const composerService = new TripleAspectsComposerService(
   aspectGraphService,
-  new AspectPhaseEmojiService(),
   new LoggerService(),
   new ProgressiveUtilitiesService(new LoggerService()),
 );
@@ -64,16 +62,16 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("T Square");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Moon");
-      expect(events[0]?.categories).toContain("Mars");
-      expect(events[0]?.categories).toContain("Mars Focal");
+      expect(events[0]?.tags).toContain("T Square");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Moon");
+      expect(events[0]?.tags).toContain("Mars");
+      expect(events[0]?.tags).toContain("Mars Focal");
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun t-square forming (Mars focal)",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("⊤");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -100,13 +98,13 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("T Square");
-      expect(events[0]?.categories).toContain("Dissolving");
-      expect(events[0]?.categories).toContain("Mars Focal");
+      expect(events[0]?.tags).toContain("T Square");
+      expect(events[0]?.tags).toContain("Dissolving");
+      expect(events[0]?.tags).toContain("Mars Focal");
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun t-square dissolving (Mars focal)",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
 
@@ -115,7 +113,11 @@ describe("triple-aspects.events integration", () => {
       const dissolvingStart = moment.utc("2024-06-15T16:00:00.000Z");
 
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun t-square forming (Mars focal)",
+        end: formingStart,
+        start: formingStart,
+        summary: "⊤☀️-🌙-♂️ Mars, Moon, Sun t-square (Mars focal)",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -127,14 +129,14 @@ describe("triple-aspects.events integration", () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square forming (Mars focal)",
-        end: formingStart,
-        start: formingStart,
-        summary: "➡️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square forming (Mars focal)",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
+        end: dissolvingStart,
+        start: dissolvingStart,
+        summary: "⊤☀️-🌙-♂️ Mars, Moon, Sun t-square (Mars focal)",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -146,11 +148,6 @@ describe("triple-aspects.events integration", () => {
           "Mars",
           "Mars Focal",
         ],
-        description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
-        end: dissolvingStart,
-        start: dissolvingStart,
-        summary:
-          "⬅️ ⊤ ☀️-🌙-♂️ Mars, Moon, Sun t-square dissolving (Mars focal)",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -161,19 +158,22 @@ describe("triple-aspects.events integration", () => {
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.start).toStrictEqual(formingStart);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolvingStart);
-      expect(progressiveEvents[0]?.categories).toContain("Triple Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("T Square");
-      expect(progressiveEvents[0]?.categories).toContain("Mars");
-      expect(progressiveEvents[0]?.categories).toContain("Moon");
-      expect(progressiveEvents[0]?.categories).toContain("Sun");
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).toContain("Triple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("T Square");
+      expect(progressiveEvents[0]?.tags).toContain("Mars");
+      expect(progressiveEvents[0]?.tags).toContain("Moon");
+      expect(progressiveEvents[0]?.tags).toContain("Sun");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
       expect(progressiveEvents[0]?.description).toBe(
         "Mars, Moon, Sun t-square",
       );
       expect(progressiveEvents[0]?.summary).toContain("⊤");
-      expect(progressiveEvents[0]?.summary).toContain("(focal: Mars)");
-      expect(progressiveEvents[0]?.summary).not.toMatch(/^➡️/);
+      expect(progressiveEvents[0]?.summary).toContain("(Mars focal)");
+      expect(progressiveEvents[0]?.summary).not.toMatch(
+        /forming|perfective|dissolving/u,
+      );
+      expect(progressiveEvents[0]?.summary).toBe(formingEvent.summary);
     });
   });
 
@@ -200,16 +200,16 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Yod");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Venus");
-      expect(events[0]?.categories).toContain("Jupiter");
-      expect(events[0]?.categories).toContain("Saturn");
-      expect(events[0]?.categories).toContain("Saturn Focal");
+      expect(events[0]?.tags).toContain("Yod");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Venus");
+      expect(events[0]?.tags).toContain("Jupiter");
+      expect(events[0]?.tags).toContain("Saturn");
+      expect(events[0]?.tags).toContain("Saturn Focal");
       expect(events[0]?.description).toBe(
         "Jupiter, Saturn, Venus yod forming (Saturn focal)",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("⚛");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -236,13 +236,13 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Yod");
-      expect(events[0]?.categories).toContain("Dissolving");
-      expect(events[0]?.categories).toContain("Saturn Focal");
+      expect(events[0]?.tags).toContain("Yod");
+      expect(events[0]?.tags).toContain("Dissolving");
+      expect(events[0]?.tags).toContain("Saturn Focal");
       expect(events[0]?.description).toBe(
         "Jupiter, Saturn, Venus yod dissolving (Saturn focal)",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
   });
@@ -269,16 +269,16 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Grand Trine");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Sun");
-      expect(events[0]?.categories).toContain("Moon");
-      expect(events[0]?.categories).toContain("Mars");
-      expect(events[0]?.categories).not.toContain("Mars Focal");
+      expect(events[0]?.tags).toContain("Grand Trine");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Sun");
+      expect(events[0]?.tags).toContain("Moon");
+      expect(events[0]?.tags).toContain("Mars");
+      expect(events[0]?.tags).not.toContain("Mars Focal");
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun grand trine forming",
       );
-      expect(events[0]?.summary).toContain("➡️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.summary).toContain("△");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
@@ -304,12 +304,12 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Grand Trine");
-      expect(events[0]?.categories).toContain("Dissolving");
+      expect(events[0]?.tags).toContain("Grand Trine");
+      expect(events[0]?.tags).toContain("Dissolving");
       expect(events[0]?.description).toBe(
         "Mars, Moon, Sun grand trine dissolving",
       );
-      expect(events[0]?.summary).toContain("⬅️");
+      expect(events[0]?.summary).toContain("");
       expect(events[0]?.start).toStrictEqual(currentMinute);
     });
 
@@ -318,7 +318,11 @@ describe("triple-aspects.events integration", () => {
       const dissolvingStart = moment.utc("2024-08-05T12:00:00.000Z");
 
       const formingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun grand trine forming",
+        end: formingStart,
+        start: formingStart,
+        summary: "△☀️-🌙-♂️ Mars, Moon, Sun grand trine",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -329,14 +333,14 @@ describe("triple-aspects.events integration", () => {
           "Moon",
           "Mars",
         ],
-        description: "Mars, Moon, Sun grand trine forming",
-        end: formingStart,
-        start: formingStart,
-        summary: "➡️ △ ☀️-🌙-♂️ Mars, Moon, Sun grand trine forming",
       };
 
       const dissolvingEvent: DetectedCalendarEvent = {
-        categories: [
+        description: "Mars, Moon, Sun grand trine dissolving",
+        end: dissolvingStart,
+        start: dissolvingStart,
+        summary: "△☀️-🌙-♂️ Mars, Moon, Sun grand trine",
+        tags: [
           "Astronomy",
           "Astrology",
           "Compound Aspect",
@@ -347,10 +351,6 @@ describe("triple-aspects.events integration", () => {
           "Moon",
           "Mars",
         ],
-        description: "Mars, Moon, Sun grand trine dissolving",
-        end: dissolvingStart,
-        start: dissolvingStart,
-        summary: "⬅️ △ ☀️-🌙-♂️ Mars, Moon, Sun grand trine dissolving",
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -361,13 +361,13 @@ describe("triple-aspects.events integration", () => {
       expect(progressiveEvents).toHaveLength(1);
       expect(progressiveEvents[0]?.start).toStrictEqual(formingStart);
       expect(progressiveEvents[0]?.end).toStrictEqual(dissolvingStart);
-      expect(progressiveEvents[0]?.categories).toContain("Triple Aspect");
-      expect(progressiveEvents[0]?.categories).toContain("Grand Trine");
-      expect(progressiveEvents[0]?.categories).toContain("Mars");
-      expect(progressiveEvents[0]?.categories).toContain("Moon");
-      expect(progressiveEvents[0]?.categories).toContain("Sun");
-      expect(progressiveEvents[0]?.categories).not.toContain("Forming");
-      expect(progressiveEvents[0]?.categories).not.toContain("Dissolving");
+      expect(progressiveEvents[0]?.tags).toContain("Triple Aspect");
+      expect(progressiveEvents[0]?.tags).toContain("Grand Trine");
+      expect(progressiveEvents[0]?.tags).toContain("Mars");
+      expect(progressiveEvents[0]?.tags).toContain("Moon");
+      expect(progressiveEvents[0]?.tags).toContain("Sun");
+      expect(progressiveEvents[0]?.tags).not.toContain("Forming");
+      expect(progressiveEvents[0]?.tags).not.toContain("Dissolving");
       expect(progressiveEvents[0]?.description).toBe(
         "Mars, Moon, Sun grand trine",
       );
@@ -415,7 +415,7 @@ describe("triple-aspects.events integration", () => {
       });
 
       const grandTrineEvents = events.filter((e) =>
-        e.categories.includes("Grand Trine"),
+        e.tags.includes("Grand Trine"),
       );
 
       expect(grandTrineEvents).toHaveLength(0);
@@ -441,9 +441,7 @@ describe("triple-aspects.events integration", () => {
         previousAspectBodies,
       });
 
-      const tSquareEvents = events.filter((e) =>
-        e.categories.includes("T Square"),
-      );
+      const tSquareEvents = events.filter((e) => e.tags.includes("T Square"));
 
       expect(tSquareEvents).toHaveLength(0);
     });
@@ -469,11 +467,11 @@ describe("triple-aspects.events integration", () => {
       });
 
       expect(events).toHaveLength(1);
-      expect(events[0]?.categories).toContain("Grand Trine");
-      expect(events[0]?.categories).toContain("Forming");
-      expect(events[0]?.categories).toContain("Jupiter");
-      expect(events[0]?.categories).toContain("Saturn");
-      expect(events[0]?.categories).toContain("Neptune");
+      expect(events[0]?.tags).toContain("Grand Trine");
+      expect(events[0]?.tags).toContain("Forming");
+      expect(events[0]?.tags).toContain("Jupiter");
+      expect(events[0]?.tags).toContain("Saturn");
+      expect(events[0]?.tags).toContain("Neptune");
     });
   });
 });

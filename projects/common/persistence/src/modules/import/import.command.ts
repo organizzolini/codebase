@@ -134,12 +134,16 @@ export class ImportCommand extends CommandRunner {
    * Validates every option, resolves the tables, and checks the file
    * exists, so nothing runs against a half-specified command line.
    *
-   * @throws ImportOptionsError naming the first option to fix, or
+   * @throws ImportOptionsError naming the first option to fix, which is
+   * `--sqlite` whenever it was given, or
    * PostgresUriError when `--target-uri` cannot be used, or
    * PostgresTableNameError when a `--table` names no schema and no
    * `--schema` was given.
    */
   private plan(options: ImportCommandOptions): ImportPlan {
+    if (options.sqlite === true) {
+      throw new ImportOptionsError(IMPORT_OPTION_MESSAGES.sqlite);
+    }
     const targetUri = this.requireOption(
       options.targetUri,
       IMPORT_OPTION_MESSAGES.targetUri,
@@ -312,6 +316,19 @@ export class ImportCommand extends CommandRunner {
   })
   parseSchema(value: string): string {
     return value;
+  }
+
+  /**
+   * Parses the boolean `--sqlite` flag, which `export` accepts and `import`
+   * refuses, so the refusal can say why rather than call it unknown.
+   */
+  @Option({
+    description:
+      "Not supported: import cannot read a SQLite file; it is rejected before anything starts",
+    flags: "--sqlite",
+  })
+  parseSqlite(): boolean {
+    return true;
   }
 
   /** Collects each repeated `--table` into one list. */

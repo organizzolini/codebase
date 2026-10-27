@@ -1,4 +1,4 @@
-import { Column, Entity, Index, Unique } from "typeorm";
+import { Column, Entity, Unique } from "typeorm";
 
 import { UpdatableEntity } from "@codebase/persistence";
 
@@ -19,26 +19,24 @@ import type { Moment } from "moment-timezone";
  * exactly; `pg` returns a `numeric` as a string, so read them as such.
  *
  * `start` and `end` are equal for an instantaneous event, and are carried as
- * `Moment`s, read back in UTC, through {@link createMomentTransformer}. `color`
- * and `location` are optional as well as nullable, so a detector may leave
- * them out. `categories` is a Postgres array with a GIN index, so a reader
- * can filter on one in SQL.
+ * `Moment`s, read back in UTC, through {@link createMomentTransformer}: they
+ * stay instants, and `timezone` names the IANA zone of the observer location,
+ * derived from its latitude and longitude, for a reader to render local time
+ * in. `color` and `location` are optional as well as nullable, so a detector
+ * may leave them out.
+ *
+ * An event's tags are not a column: each is a row of `calendar_event_tags`
+ * linking it to a node of the `tags` tree.
  */
 @Entity({ name: "calendar_events" })
-@Index("calendar_events_categories_gin", ["categories"], { type: "gin" })
 @Unique("calendar_events_natural_key", [
   "summary",
   "start",
+  "end",
   "latitude",
   "longitude",
 ])
 export class CalendarEvent extends UpdatableEntity {
-  @Column("text", {
-    array: true,
-    comment: "Category tags for filtering, such as aspects, major, and moon",
-  })
-  categories!: string[];
-
   @Column("text", {
     comment: "Color hint for calendar display",
     nullable: true,
@@ -84,4 +82,9 @@ export class CalendarEvent extends UpdatableEntity {
 
   @Column("text", { comment: "Brief event title shown in calendar views" })
   summary!: string;
+
+  @Column("text", {
+    comment: "IANA timezone of the observer location, such as America/New_York",
+  })
+  timezone!: string;
 }

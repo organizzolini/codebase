@@ -73,10 +73,10 @@ jobs:
             <${{ steps.import-gpg.outputs.email }}>
           sign-commits: true
           base: main
-          branch: docs/codebase-refresh-documentation
+          branch: docs/documentation-refresh
           delete-branch: true
-          commit-message: "docs(documentation): 📝 refresh docs with openwiki"
-          title: "docs(documentation): 📝 refresh docs with OpenWiki"
+          commit-message: "docs(documentation): 📝 refresh OpenWiki"
+          title: "docs(documentation): 📝 refresh OpenWiki"
           body: |
             ## 🌰 Summary
 
@@ -87,7 +87,7 @@ jobs:
             - Install and run OpenWiki in repository code mode
             - Update documentation under `documentation/openwiki/`
             - Reuse the existing scheduled + manual workflow entrypoint
-            - Publish changes on `docs/codebase-refresh-documentation`
+            - Publish changes on `docs/documentation-refresh`
 
             ## 🧪 Testing
 

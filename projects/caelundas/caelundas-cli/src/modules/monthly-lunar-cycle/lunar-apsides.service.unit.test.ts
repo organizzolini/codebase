@@ -28,16 +28,16 @@ describe(LunarApsidesService, () => {
           provide: CalendarService,
           useValue: {
             buildInstantEvent: (args: {
-              categories: string[];
               date: Moment;
               description: string;
               summary: string;
+              tags: string[];
             }): DetectedCalendarEvent => ({
-              categories: args.categories,
               description: args.description,
               end: args.date,
               start: args.date,
               summary: args.summary,
+              tags: args.tags,
             }),
           },
         },
@@ -90,8 +90,8 @@ describe(LunarApsidesService, () => {
     });
 
     expect(events).toHaveLength(1);
-    expect(events[0]?.summary).toBe("🌙 🔥 Lunar Perigee");
-    expect(events[0]?.categories).toContain("Perigee");
+    expect(events[0]?.summary).toBe("🌙🔥 Lunar Perigee");
+    expect(events[0]?.tags).toContain("Perigee");
   });
 
   it("reports a lunar apogee where the radial speed turns non-positive", () => {
@@ -103,18 +103,18 @@ describe(LunarApsidesService, () => {
     });
 
     expect(events).toHaveLength(1);
-    expect(events[0]?.summary).toBe("🌙 ❄️ Lunar Apogee");
-    expect(events[0]?.categories).toContain("Apogee");
+    expect(events[0]?.summary).toBe("🌙❄️ Lunar Apogee");
+    expect(events[0]?.tags).toContain("Apogee");
   });
 
   it("stamps the minute nearer zero, whichever side of the crossing it is", () => {
     expect.hasAssertions();
 
     expect(detectOffsets([-4, -3, -1, 3, 4, 5])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [2],
+      "🌙🔥 Lunar Perigee": [2],
     });
     expect(detectOffsets([-4, -3, -3, 1, 4, 5])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [3],
+      "🌙🔥 Lunar Perigee": [3],
     });
   });
 
@@ -122,7 +122,7 @@ describe(LunarApsidesService, () => {
     expect.hasAssertions();
 
     expect(detectOffsets([-4, -3, -2, 2, 3, 4])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [2],
+      "🌙🔥 Lunar Perigee": [2],
     });
   });
 
@@ -130,7 +130,7 @@ describe(LunarApsidesService, () => {
     expect.hasAssertions();
 
     expect(detectOffsets([-4, -3, -1, 0, 1, 2])).toStrictEqual({
-      "🌙 🔥 Lunar Perigee": [3],
+      "🌙🔥 Lunar Perigee": [3],
     });
   });
 

@@ -1,13 +1,13 @@
 {
-  "absent": ["♀️ → ♎︎⛰️ Venus peak ingress Libra"],
+  "absent": ["♀️→♎︎⛰️ Venus peak ingress Libra"],
   "counts": {
-    "♀️ → ♎︎ Venus ingress Libra": 1
+    "♀️→♎︎ Venus ingress Libra": 1
   },
   "events": [
     {
       "note": "Horizons ObsEcLon crosses 210 degrees backwards at 2026-10-25T09:10:00Z; the re-entry into Libra is a sign ingress, not a peak",
       "start": "2026-10-25T09:10:00Z",
-      "summary": "♀️ → ♎︎ Venus ingress Libra"
+      "summary": "♀️→♎︎ Venus ingress Libra"
     }
   ],
   "name": "Venus re-enters Libra backwards on 25 October 2026",

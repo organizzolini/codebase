@@ -53,9 +53,9 @@ export class SpecialtyAspectsEventService {
   }): DetectedCalendarEvent {
     const { body1, body2, phase, specialtyAspect, timestamp } = args;
     return this.aspectEventFormattingService.assembleSimpleAspectEvent({
-      aspectCategory: "Specialty Aspect",
       aspectName: specialtyAspect,
       aspectSymbol: symbolBySpecialtyAspect[specialtyAspect],
+      aspectTag: "Specialty Aspect",
       body1,
       body2,
       log: (message, data) => {

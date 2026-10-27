@@ -80,6 +80,21 @@ describe("export --dry-run", () => {
     expect(fs.readdirSync(directory)).toStrictEqual([]);
   });
 
+  it("with --sqlite plans a SQLite file and checks no client tool", async () => {
+    const initialize = vi.spyOn(DataSource.prototype, "initialize");
+    const spawned = mockProcesses();
+
+    const result = await run("--data", "--sqlite");
+
+    const output = result.logs.join("\n");
+
+    expect(result.exitCode).toBe(0);
+    expect(output).toContain(`to ${file} as SQLite`);
+    expect(spawned).toStrictEqual([]);
+    expect(initialize).not.toHaveBeenCalled();
+    expect(fs.readdirSync(directory)).toStrictEqual([]);
+  });
+
   it.each([
     [["--data"], "data"],
     [["--ddl"], "DDL"],

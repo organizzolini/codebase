@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:afc7858892a8ae0507fef246167b563a17c40581ffe35060d8a16646cb6b72c8",
+  "claims": [
+    {
+      "id": "claim_d4737afa48094ac1ad9aaeb2cf66a44a",
+      "statement": "The development workflow follows an 8-step process: Clarify → Specify → Decompose → Handoff → Build → Review → Validate → Integrate, with planning steps (1-4) human-gated and implementation steps (5-8) continuous.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L21-L32",
+          "version": "repo-lines-v1:sha256:79b6b604aa5ed9fd5aa1497323573271aa6a48ebc9fd86737cda17f92e36eb3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2RiMjQ2NGZlOWYyNzVmZTI5NjEyN2QyNDcwYTJmNmExNDc5MDYxNmE0MjNiZDNhNWUzOGU1MGNiNmEzY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1YzhiNzM1MGZjN2RiM2I0MjMwNWRkNzg1NDI3Nzc0ODM5YWM2MzQ0NGI1ZGVkNzBjZWI0NWUyMWQzYTY4NDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNjE4YzQ2OTY5ZmQwNWQzNDFmMjdhMzRmNWZjZGI1OWY5NzY4ODM0NjRiZDkwYzk0MzNmZWFlYzM5M2FkNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4MjM2YWIwMTIwYzBmYzM4MWQxZDkzNTEzMDU2NWY0ZWY3ZjVjYWUwNzBhNjMyM2VmYzczZDg2OTFkMTU2ZjcifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L34-L81",
+          "version": "repo-lines-v1:sha256:d4d1ec68ff5fc7a8fa32970ac31b57d01825b7265d9770767bc9be507acc171a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4M2QzOWRiYWU3MTk0NTcyYTQ3NjZjMTM2ZDQ5OTc5NTUxYjI2YjM5ZjFhNjAyNTE3YWFjMDc4MDhkNDI0NzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwMTI4YTBkN2VkOGY0MzNjNmZkMzFjZTM5NWYwNTBkMjhjZDU3NWZiODY1OTQ1MmMzMWE4N2NmZWE3NmYxZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxOWQ0YTUzMDUyMDEyMjZhMjE0ZWQzZmE4YjM4YzUzMTA0NDQ2YTZiOTBjMTViNWU2OWUxM2VmMzU5MzM3ODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyOGUxNGMzYjcyYzBhMzZiYzgxNmQyNGM3MDEzM2FiZDRiYWI1MGRkZmI1ODNmNjdkMjhkMWU5YjFlZjc5NDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3c804ac4c8046738e12028a6b2ef67f",
+      "statement": "Each workflow step maps to a specific agent skill: brainstorming (clarify), to-spec (specify), to-tickets (decompose), handoff (handoff), implement (build), requesting-code-review (review), validate-code (validate), finishing-a-development-branch (integrate).",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/brainstorming/SKILL.md#L1-L12",
+          "version": "repo-lines-v1:sha256:b707d96a7d82f3fb491a1d24d9bfa7bdc1236292f4f2d10ed92556364272cf28:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZWExOWNhNDg1MmJiYjAyZTgzMjg3NDQxMzQzNThmMTczNjFiZjc2NjE1NmM0MTAwYWI0NTUxYjU4ZTg4MWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhZmVhNjMzYzcxZTM4ZTBlMTM0NjhlMmZlMGQ1NDM1MjkxNzA4ZmJkMTI5ZmY0Y2EyMzhkOWFhZmQ0ZjA5YzQifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/finishing-a-development-branch/SKILL.md#L1-L15",
+          "version": "repo-lines-v1:sha256:623107aa691d5d8a8bb84286ca2f290fe3754a6587ae61f0a600481e621bcfa9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5ZTFkYzFmMDI0MDkzYzYwZmZjYWI0NGVkNzQ1YTFmNDAxZGJlMTA3ZTBmN2RlMjlkMmFhYzJlNzE4YjJiMmMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/handoff/SKILL.md#L1-L15",
+          "version": "repo-lines-v1:sha256:15a0230866555de8379360ef597b0e9f5150d0c6eb7cb750b89ba0e8a3944539:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYWE4ZTBjMDNmZTAxMjdiNDc3ZWEwNmNjOWIyY2MyNTAyNmIxMjdmNTQxNjVmZDZiOTljNzAwOTNmOTlkNWYifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/implement/SKILL.md#L1-L15",
+          "version": "repo-lines-v1:sha256:6d3fd9e83b8f36e5213854779db49b256a457a7ebb4a503e53fa7dcff696adc3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNjRmNTFiMTBhM2MzZWNjMjA2N2NiNTJlYjQ0OTdiYThhYjAyNmVjNWRkNjA5NzUwZTdlYTllNDlmZTg5MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/requesting-code-review/SKILL.md#L1-L15",
+          "version": "repo-lines-v1:sha256:8951b6546f8e76d632259353fb5452fbcc8262071438750b1a85c7ab35d74342:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwYWY2MTkwNjBiODFlZTgzMDU1ZjljYWU2MDk3MzcwNzNkYzgzMjVlYTdhNWIzMTUxMDFlYTg5NTk3MjQwZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNjhjYWQ3ZDljYWIzOTk5MWM2MGNlY2ZjZGI5MTRhMDNlMmM3MzRmMzg2YTg0NmFhMDIzNDdhYTJjYWRlZDMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/to-spec/SKILL.md#L1-L20",
+          "version": "repo-lines-v1:sha256:5b61edb060b8b3827adfca3a574731a25198b163bf1e7425cb4a79f77cc452c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhYjA5ZDVlYTA3MzE2NmIwYzQwOWFhODQzZmQ3OTM4ZGJhMjU5YTExNjU0N2NjZTQ1ZTU2YWViNDEwNDZiNGUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/to-tickets/SKILL.md#L1-L10",
+          "version": "repo-lines-v1:sha256:deaadd40a6e1a628537e58b10c0d83632c13350b90f8f264f15863cb41d5a1a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0ZmFlMzE0ZTFkMWM2ODJlNGYxZDc2NGU1ZTRiZGEzMjQwZmRmYzI4M2U5MTU5ZDg0Y2M0MDZiM2ZjZTY1ZWMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L1-L15",
+          "version": "repo-lines-v1:sha256:1c6c699170fcb2aa720acd6a5f5081eadcc002ad7755b085b5906d1a8eef64d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliODExOTQ3OTliNmJlMDQyNmNkNWViNmU4MTk4NzIwMWRlZWU2ZGJhYzA4ZGE3NWFmMjI4ZWRlMjkyYTM3MjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1NDlhN2YwYWY2YTIwZDA2N2NlYjc5ZmEzZjg2N2FlYzFkMTVhY2FjNjk2OThhYzYxNDVmZWI5NmRjZjQ3MDYifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L34-L81",
+          "version": "repo-lines-v1:sha256:d4d1ec68ff5fc7a8fa32970ac31b57d01825b7265d9770767bc9be507acc171a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4M2QzOWRiYWU3MTk0NTcyYTQ3NjZjMTM2ZDQ5OTc5NTUxYjI2YjM5ZjFhNjAyNTE3YWFjMDc4MDhkNDI0NzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwMTI4YTBkN2VkOGY0MzNjNmZkMzFjZTM5NWYwNTBkMjhjZDU3NWZiODY1OTQ1MmMzMWE4N2NmZWE3NmYxZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxOWQ0YTUzMDUyMDEyMjZhMjE0ZWQzZmE4YjM4YzUzMTA0NDQ2YTZiOTBjMTViNWU2OWUxM2VmMzU5MzM3ODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyOGUxNGMzYjcyYzBhMzZiYzgxNmQyNGM3MDEzM2FiZDRiYWI1MGRkZmI1ODNmNjdkMjhkMWU5YjFlZjc5NDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_21185c5f66c74e08b824452f07c90433",
+      "statement": "Project-scoped work is mandatory: focus on one project at a time, complete it end-to-end before starting the next, and avoid mixing unrelated project changes in one context.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L169-L175",
+          "version": "repo-lines-v1:sha256:2d76a3316b9d1d236e24d6170384a347e9ff356b2422e658a73ea78a20058211:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFlZmQ2MTk5NTliMTQ5Zjc4ZGI2Yjg0MTlmNTBmMWY4ZGQ4ZWQ5ZThiZWQ2ZDc5MmVhNjdmZTQ1MTBlODU4MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2JjNTI2MTM1Njk1MzI1YTY1NzIwMzJkYzI1ZDRlZTBkYmFmZjhlNDJkNDY3YjcyZDYyYmJmMDY4MzdhN2U3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzQ3ZGNlODM4YWVkN2E1YjRmNDY0M2QyZGUxOTJlZWZkNWIwNTFhOWVjNTU5OGY1OThjN2ZjOWU3OGU1MDliNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjdhNTYyNzZlMWEzNGFlOWZjZTk3MzU4Y2E1Y2FkNzEzZDg3NmYzYWE3ZDk0MjEwNDZlNWE4NDRiNGZlZWRlYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d207c54da2cd4ea785c62475b3c4eac6",
+      "statement": "Pull requests must include four mandatory sections with specific shapes and limits: Summary (one paragraph, ≤48 words), Details (bulleted list, ≤512 words), Testing (ordered list), Related (leading-dash list). Validation runs via validation/src/validation.main.ts pull-request-body.",
+      "evidence": [
+        {
+          "resource": "repo://.github/CONTRIBUTING.md#L515-L525",
+          "version": "repo-lines-v1:sha256:dfdbd4ab50fe02902db2e67740ca3faa52878e7656746452e4cb1bdb1481ad22:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZjZmMzI5MWI3MTk0ZDE5YTY1NjBlYzYyNzc0NWY5OTFhOTAwOGIwYTgxNTU0MzhiOTJkMjM1ZjU5NTQ5NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNTNlMTdkZmJjNjQ1MTU2Y2ZmYjdiMzAzMTdjNGNkY2QwZWNkYzUxNTNlNWUyMjdlYzQyMjIzNjI2MTA3Y2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYWExMWVlNmJkMjI2NjQ1N2E4NWM1ZTQxNjAyYmQ0NGRkMjM3NTFhMmY2OWE0YmUxMTBmZjY1MTI2NDllOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxMDBjZjk5YzgwNzhiNmY2Mjg5NWMwNWQwOGRjZGQ1Y2E5NzNiZjQ1MmUyYzFjYzc5Nzg3YTE3YWVhYjdlYjAifQ"
+        },
+        {
+          "resource": "repo://validation/src/modules/pull-request-body/pull-request-body.constants.ts#L22-L41",
+          "version": "repo-lines-v1:sha256:de7779fb6c33e31ba6d033918981d51486a9023f9c62af71bd5f3d1c58f2a46f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5NzZiM2RmMWJkMmU2MTYyMTMwMDdlYmQwMjQ4NTViY2ViOGJhZDQ1NDQ4MTMwM2JiNzJhZDI3ZTNiNzQzMDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjMmZkN2I4ZmFiMWNiOTEwMTAzYTRmYmJmZjE0MTI0ZTI0YTZiOTdlODNjMTVkNWE0NjlkMDAxYzQwNzM2MTAifQ"
+        },
+        {
+          "resource": "repo://validation/src/modules/pull-request-body/pull-request-body.constants.ts#L72-L79",
+          "version": "repo-lines-v1:sha256:fe652ea6558df330be75772162239617fab4459346d9bb4ba6036c537e22216c:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTJhNTkzYzY5MmM2M2ViNjY3MTRmZWYyOWVlMTBmMjY1ZThlODk5MGVhMmM2NWNhOWFiNWJlMzdhNmJkOGE0NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAyZDJjMGQ2ZGM1ZTc0ZDkyZmExNGI5MWRiZWEyNjQwOTBiZWIzNWZkYjkxODhkOWIzNDExODFkY2U5ZjRjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmRlZDE1NWE3ZGEyNTU5MDI4MDg3M2IxMzQ2Y2VlNmQ3MzIyY2JjMWNkNmNjNjY0YzM0MDQzZDczNTcxZGU0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzcxNWY2NzczZDc1OWJiMDAwOWNmN2FlNjdlZjMzNzJjMzgwMGNmMDMwNTJkNGZkYjg1ZDNmM2YwM2FkNDc4YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0455e88147bd44249c5e28ec50d6ca9b",
+      "statement": "TDD is mandatory for all new features, bug fixes, refactoring, and behavior changes. The iron law: NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST. The cycle is RED (write failing test) → Verify RED → GREEN (minimal code) → Verify GREEN (full suite) → REFACTOR.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L130-L195",
+          "version": "repo-lines-v1:sha256:2794b491cea3f691a86d21445ba1e489fdaf2f1588b1ac0d5fd232e4d137d8d5:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YzY3NTM0ZGVmNDU0YThlNjVjYTFlNjJhYzNkZDM0ODI1YTljYzcxNzY4NTFjNTg0MDYxMTUxOWRkY2EwOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1YTM1OTYxOTQzMWU1NTdmYjcwZmUxMjg1YzlhMjJlNGQ3MGVmYzQzMGQ2NTY3ZjAwZmM4NTYwMDc3NDNhODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3MTBlYWQ4YjkzMTg2YjAxYWNmYWQwNDM4NGJkNTRjNWI2ZTA5ZTYxMWM1ZThmMTFmZTZkMjA3ODZiNjkyMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmODlmODU0OTJjM2FiYjNkYmNiZTVmODI0OTU2ZDQ3OGVhZWRiMThmMjEzZDUzYTE1ODhmN2RlZWUzNjNlMDIifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L15-L46",
+          "version": "repo-lines-v1:sha256:7958f93dcdf718b92623a8565fc4ca7c12e286d5d56bb1bd90e22d95d17faf52:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MTk0MDEyY2I4MTI2YWE0OWJlYTMzZjVkYzJmNzRjYjhmYjA2YmY1M2M0ZTgyOGE5NWRkMjc5MThmYjk4ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyZTYxODJmNTg5Y2ZkYzVmNTVlN2RiNzFjMjk4OWUyYzg2YzMwYzgxYmIzZmFiYzQwMDdhYzFkYzcwMjdlMzUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L49-L70",
+          "version": "repo-lines-v1:sha256:d9766d34eb3cdb8b74c9df1742e0905760dadbf06da9b7e7fc664c9513f7ce38:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllYzhjMWFhOGE2YzU1M2FjZGU0Y2ZmMTRhMWNmZDk2OWM5NjlkNDI4MmM2N2I2ZThhMDE1NTdiYWJhZjYyNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjNWJiMDQ2Yzg4NzRkYWMzOTUwZjgzNGQ5MmEzMTNlYjM4ZGRiNWFhNWQzMmMxZmNmMDNlZTZmNDJhMTIyMzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNWJjYTcxMDJmNzQ3NTlhNDhkNmQ0ODY3NDdhNjFkYWJjMWM3ZmZkNjkwN2RlM2FjODJjNzJlNzIyNDIzNmMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/test-driven-development/SKILL.md#L71-L130",
+          "version": "repo-lines-v1:sha256:f7d5fa181ea09886078c276616dee3b26f417972c0f5aeffd6d0fd883eb64409:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjMTY2Y2Y1MzQ5NTQxNWEyNmQ0M2UxMjI1NDE2YTljYTg0N2FlZGViODNiMDcxMTEyMGIxM2VhNDUzMjc3NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YzY3NTM0ZGVmNDU0YThlNjVjYTFlNjJhYzNkZDM0ODI1YTljYzcxNzY4NTFjNTg0MDYxMTUxOWRkY2EwOTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4MDkxOGFjNjQzMDcwNDAzMDA0MzI3OGFiYjE2NzAwMWM2ODM0M2ZjNWEzYWRmN2Y4MmI2MTY5NTI5Yjg0YWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkZTkwZjcxNzQ5NzQ2NDM1NzNhMTRlNDYzNjJiZGQ2NDAwNjU3Yzk4MjRiNjQwNGYyMjA1YTRmN2U3ZTNkMTQifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L63-L67",
+          "version": "repo-lines-v1:sha256:cb988e9a3275ea0233ddd1d1dda3eec8f703e56afb36753fc00c54fea6db1c93:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQ1MmEyNTY1OTVkZjUyNDc2MmQxODgwMDRhZWUyY2E1OGNlYzNjYzM2ZTcyNWYwOTM1YTRjNWZiMWY0YjJhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmYxY2QzNTI1ZWIyMDU4OWUyMWEzZTQ1ZGNlZDAwYWU0ZjQ4NzNlODMwMzU3YWIxNzY0NDZiOWJlNjE4OWQyMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTEzYzc5ODQzMjY1OGQyZmUwMGI5ZWIwMmRkYmRlNThmYzJmYzAxYzE2MTQ2YThmNWMxYzdiMmJmODFhYTEwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTczN2JmZTBmZTRhN2MzYjljNzkxNmU0YTIzNzdhNDFkMDEzNTBkOTkyZmZkNDZkMTE5MDIxYWRiNmIyY2JhNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_195d839c7b3f4b61ba1deffdbfb83b7f",
+      "statement": "Code validation runs in two phases: auto-fix with --configuration=write, then verify with --configuration=check. Both must pass cleanly before committing. Commands: nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code with --base=main.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L38-L60",
+          "version": "repo-lines-v1:sha256:c51a010663e3971ef3f32105a263a9227844a260ae6dc4d171d50654d0800f72:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5OTZkNjEwZGRlM2RlY2QxNzY3YTQ1MWQ0MjE1ODUwOTFkNzdjNDhhZGZhMzQxNWFlZmQ4MGUxYTU4YmRmZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0ZWEzZWI2NTZhNTA3Y2IxZDAxNzEyYTBlNTY3YjBhOTVmNDdjNWFjZGY4NTA2NzczOTBmOWJlYmM2YzE4Y2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmMjkxZjExNGZjNmExN2FmOWE2ZmZmZmEzNTE0OTYyZTEzZjhkYTg4N2I0ZTU0YTQ5NWI3NzRiMzRhNzE3N2YifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L54-L70",
+          "version": "repo-lines-v1:sha256:98589fe442a04f8ff7484a9aa700d5b5382541e9cc5bc9a0e26354ce6092aaf9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhNWRiYTkxNDAxYjA5Y2RiMDMzMzZjYjFlNjliODVkNDVlMjk3NzVjMjA4NTM0NzcxOWJmNzk1MjhlZGRiZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0MDIwMzg5MmZmMWI4MTU5MDgyZDU4NjFmNTljMWVlZjQyZDc4MDVhOWZiZThlMmIwZmQ2MzRjN2Q4Mzc2NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzODk4YTQ1NDU4MTQ2NzRkYTUzMmJmOTJlM2I5MTRmMGY5OGU5OGRlZWM2YmRiYjQxNmVmMTA5Y2E1NjBkM2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1NTExYjMwMDU0OWE2NDNjMDdhZTNiYTg3ZDFmNWNhNTM2NGZiZTkyMjZlYzAwODEzZjgzZWFiYWZiNzgzYjUifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L181-L194",
+          "version": "repo-lines-v1:sha256:4c6c2e2c8321ef0c60f10418740bf0328da9519c99d61568b03ebcf5ba8d16c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTJmNTMyOGVlNmU4MDUwZThhYWZkOGRjODY5YTA2OWNkOTU4NGVkYWFmNTRmZTU4OWQ3M2MzYjdkY2Q3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4ZGFhZmZmZWJhNzZjN2FmYjhmNzQzN2RmOTVmNzVlZDI5MTc2ZjI4NmM4ZTM0YTk1MDU0NDk5OGJjOTRhNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhMjRiMzEzM2E5ODU3NTAzODg1ZTI0ZmIxYmYwMGY4ZjYwOWE3NjMzYmQ2YTA3YWZlYjBlNWM1NDBkOGNjZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c540fe9cbb4547c0a2282d162b4b8585",
+      "statement": "Verification before completion requires fresh evidence: identify the proving command, run it completely, read full output and exit code, verify the claim matches output, only then make the claim. No 'should work', 'probably', or 'I'm confident' without running verification.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/verification-before-completion/SKILL.md#L14-L36",
+          "version": "repo-lines-v1:sha256:c7095c4e59d7dbfbd821080bd6776e9e1aa9e113ccc433d161f7b499febafa87:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxOWRhNjBhNjEyOTAwNzkyZTZkNTg0MGU2YWU2OTc3YjhhMTdhZDU0NzVlYzJjNThkNzU5NmM2ZDFkYzIxNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmODIzNjgyMTY0Y2UwNTI4MDExMTExMWRmZjY4OWIwNTQ3YWFlNDdjZTNjZWE3ODIwZjgwYmEyMWVmY2MzZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0YTkzZmQ3NGRlM2Q3YmNjYzVjNDE1NWZkMzYzMGM5MTM0NTcwMzgyNzQyODEyNTUyMWJmNDZjY2YyYWE4YTcifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/verification-before-completion/SKILL.md#L50-L60",
+          "version": "repo-lines-v1:sha256:ae32ac79781d70aefc1edd7e2985e469fbd8cad35da48b46af16fe1ddcd57f3c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MzgzM2ZjNmIzMWMxNzcwZmJjYTg4NzE1ZTYxN2E2Y2JjZWE0YTQ2MjA3NmUxNjBlYWJkNWMyZWJmZTI1YWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkMzNjMzFiYTIwNGE5NDc0ZTZjYTlhZmU4ODk4YzM5OTgyNjliZGVjYThlZDFjOTczMGY2OGM2ODk0ODlmNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMjFkZWVkMTRlOTcyNWQ5MmUwYzk5Y2Y5MDhmNDkwMzM4YWFjYzg4YzllMWZlOGZhYmViM2M2N2EzMWVlMWIifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/verification-before-completion/SKILL.md#L74-L98",
+          "version": "repo-lines-v1:sha256:1dff003886520018d452eda5ce7e768e435b5e22a3748d5573e29dc8bff3e81d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZTk3OTQyNjk5ZjU1YzAwYzFlZWFmNDljYjU0ZDE0YWRlZTBlZTI2OTg1NDQxOTdhNTA2NGRlNmIxYzAxYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1N2E2Y2YwN2JmZjM5OTA3MTYwZDE2OTJiZTlhODljM2M5YjQwMjYzYTI3YjZlNjViNGU1NjU4ZTlkN2YxZWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmNzIzYmFjMTZkMTI0OTk2ODIzMmUzNzM0YTVkY2Y1Y2NhMGIwZWY0MWFkMDExM2FkNzc1MmRjYjA5YWZkNDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a601d3e4e339477ba5d2466d147cb15a",
+      "statement": "Integration uses finishing-a-development-branch: verify tests → detect environment → determine base branch → present 3 options (merge locally, push PR, keep as-is) → execute choice → cleanup worktree. For PR creation, use gh pr create following template conventions.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/finishing-a-development-branch/SKILL.md#L10-L65",
+          "version": "repo-lines-v1:sha256:cf282496211b484436e1a126cd24e8c5de3bbf5f36c579c47755993300122322:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OGNiNTE3ZTk0OTMyOGY1ODNjMjExNWMxNzFlMDQyNmRlNTFiNTE0YjFhYjY3NTc4ZDQ1OGQxMDEyMzNlZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZWQxODAwZjc0NjE2OTk1Njg3Y2Q0ZWM4YWIyYjBmZDZjZGUyNzE1YmMzOGUxMDRjODdjOWY1ZDk3OThhN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NzUwMTk0MjUwNmNiNzRmYmY0YzlhYmExMGI3ZGMyZWM3MzViZWJiNjZiZjVhM2VlOGI4Y2IxOGE0YzVmNDMifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/finishing-a-development-branch/SKILL.md#L84-L130",
+          "version": "repo-lines-v1:sha256:2652aa73a4dc8858df54223161f764aa5fd472f4bcbf8ae926134d5aa8a2e397:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwYzE5ZWIxMzhkNmNhYWY4NzM1MjJjZjVhMDkxMzc0Mzg5ZWM0MDBhNWQ0MWQzNDVkOTQ5YmQyZDhiMGUyYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxZGE1ZDZiY2NhYjczMmViMTY0YTY0ZjFkMzI0NWJlYjQ0ZGU4MzIwNjk2NjY3MjMyYjBlMDkzYjJkZDhmOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyYWI5MzFjNmU4Y2JjOGY4MmFjMGVlYmNhNTZkNmQ4ZGE0M2Y5ODE3MTQ2MDMxMDcxMmQ1YzU5MmU2NDBmMzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExNTBjYmQ3NTc0ODNjMGFjZmYzMjc0Mjg5ZjBmNWE3Yjk4MTUzOWM0YThmNjU2MjU4ZGFkMDc4N2I3ZmJjNDMifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L80-L81",
+          "version": "repo-lines-v1:sha256:37f4dda9268bb43d50e20a69646b55baa065f8418001f371edb9e3743a219c9c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWI1YWRkYmExZGZlYWE1Y2YzMzg5MWY3Y2NjOThmOWM2NTUyY2Y3YjY3YjAzNGZiMDBkMTE4MDU2ZGMzOTZlMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAxMjhhMGQ3ZWQ4ZjQzM2M2ZmQzMWNlMzk1ZjA1MGQyOGNkNTc1ZmI4NjU5NDUyYzMxYTg3Y2ZlYTc2ZjFkMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWZhODE3YjM0ZjUzNDk4Y2YyMjhiNWJlMDVmM2U3ZDIwYmY1MzJhYzg0MmUwZjhlNjlmMDdjN2Y3YThjMjZiYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTI4ZTE0YzNiNzJjMGEzNmJjODE2ZDI0YzcwMTMzYWJkNGJhYjUwZGRmYjU4M2Y2N2QyOGQxZTliMWVmNzk0NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3f754e49e6394b7e8aeaa19109a5d9c6",
+      "statement": "Six CI validation gates run on every PR: Lint Codebase (nx affected --target=lint-code), Test Coverage (nx affected --target=test-code), Secure Code (nx affected --target=secure-code), Make Projects (nx affected --target=build-projects), Comply Code (PR metadata), Enforce Code (validation audit-governance).",
+      "evidence": [
+        {
+          "resource": "repo://.github/CONTRIBUTING.md#L261-L273",
+          "version": "repo-lines-v1:sha256:2935a4e29fee9b15fc9015d4e3ad87e77c20769526c6ee06b8e9f118e2e7d2e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyN2JkZmNiZDE0OGU4M2FjNjg5YTE5YTY5M2MxZWFlZjU5ZjRjYmJmNmRhODM4MjIyYzNhODU3ZWU5YjYyN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzNDBmNjJkM2I1YjU2ZTI5MWIzOTE2ZTUwNTIyZmI3MDQ3MGEzZTI3NWM4MDIzZDgwODUwMmZjMGI4ZWE1ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNzgyNTg1YTdkZmZjYWMzNWE0YjY0N2IwNTYxYjdiMzEwNTg5ZGEzY2Y3ZWZjMjAzNmRlZGY4MjE2NmI4ZDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9994d78e2196470d99e8d60502974250",
+      "statement": "Four IC-suite toolchains gate the codebase: conformetry (scaffold from templates, validate generated instances), codometer (measure against size/count limits), codependix (import graph boundary rules), callidescope (call stack depth/breadth). All run inside guard-code in the Guard check.",
+      "evidence": [
+        {
+          "resource": "repo://.github/CONTRIBUTING.md#L329-L339",
+          "version": "repo-lines-v1:sha256:24c1f81e2de6cd1fdd39b328a6f260bc56bdd37c3968aa2456ae80bb46384ead:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNGUzNGVkYzUyYmM4MTliYjc3NDNlNDQxYmQyNjkzMzQ4Y2ZhZWRkMzM2NGE3N2Y3NTQ0ZDIxZjQ3YTFiNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3NTFlMDkzOWI1Mzg0NDUxNDg1OTAwODJhYzg0ZmVmMTRkNzQxOWY5ZWIyMDFiMDBiY2M3MTBiMzdhMGNmN2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3MDE1N2I4ZjJhNDcyOWVlYjIyMWJjNmI4OTk0ZmFhNDAxOGI3MzM1MWVhMTYzOGM3OGUwZTg3MGFjMzc2ZGIifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L204-L213",
+          "version": "repo-lines-v1:sha256:b014f6fb682b691016252efcd2224e586988a41016ef054889eba236e7a2f828:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYzhlNTViZGU1MDg5N2ZhZDE5M2Q5YmNmYjlkZWRhMDRjNmJlYmRjZThiZTVhMGYzOWFhY2FlZjVjYzRiNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDYwNTJjMmQxNjQxNjU4NWU1M2U1Njg4NjRjZjU3MmUyNzMyOWI1NDVjN2MzNzYzMDUxNzhjOWQyZDA1ZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjZWM1YmU0MDI3Y2JlMmJlNGEyYjVmNjkxZWZjMDZkMjNhZmY5MjZmOGFmZjQxMGVjMDM2Yjk1YWM1MGQxMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMmNjZmRiYzdkMzY2MWU0NjFhZmJlM2EwZTJmOTdkNjcyZDI0Zjc2Zjg4ZmNmMzQwOGFiMzg5ZWQ3NjQyYWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a946e067d8841a6964f01f881f84cdc",
+      "statement": "Multi-ticket specs dispatch each parent issue to a fresh subagent (subagent-driven-development) with independent worktrees. Independent tickets run in parallel; dependent tickets stack via gh-stack. An open PR is a finished ticket — do not wait for review/merge before starting the next.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/subagent-driven-development/SKILL.md#L1-L15",
+          "version": "repo-lines-v1:sha256:896cb84fa83e1cf4f60adca55598241d590d80c211b9a0db12d1e95620ab2b05:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkZmI3Mjk0OWJhNmFiYzhhNWVkN2RjZThmOGIzYzE5NTkyZjE5ZWJlNDRkYjBkMmU5ZmI3NTA2YzY5MTcyYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjMzRmYmZjYzc5MmRhMGQxZGYwYjAzZmU2YzEwMTY3NTI4NjRmYmZiY2IwMWUzMmM1MDQ4NDU3YTJkYzUzYzEifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/subagent-driven-development/SKILL.md#L59-L70",
+          "version": "repo-lines-v1:sha256:7e62f68f20f5014245f4197a54bc149ab4ba636935254c9e67b944e4291bb61f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3NGIyNjk4ZjBiNTUyY2VmODE1YmEzMTNmZTU3ZjU3ZWYyNDE5NzA5NDMzOWZiNjBkMWQ2YzNiOTk3MTBiOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5MjdkYzg3OGEwYmY1NzY3MzU3MGEyMjI0OTg2MWI5ODkxZjU4NDVhZDExZDkyNTk4MTJkOTc2NmFhZGIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3MzQ1ZWYzYzJmODdiYzhhZjMzOGNhYjQ4OTgyNzcwNTY2YTQ0MzJiN2RmZjQ1Y2Y0YWNhMWEzNzhhZGJkMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4OTVjMzNlMzM5OTk1NmFkM2Q0ZDk3MTNhODcxNmQ1ZGI4Y2FjM2Y5NWJlNjg1NDZlNjkwN2E4ZjFiYmUzZjUifQ"
+        },
+        {
+          "resource": "repo://AGENTS.md#L92-L134",
+          "version": "repo-lines-v1:sha256:0098323f1af08654bc222d8617ef9417ce2e01cf0d7dc439d356b808149289e9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MjA4OGQ2NjljMWU1Yzg4Y2RjMzg3ZGQyZDI1NDU0NmY2MmQxZTdmMzQwMTI0MTYyYjI3ZTE4YjRjMWM3OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5ZGE5Y2QxZGE1NzJiYjY5YmViNWVlOGU2NjM3NjVhOTJlMTAyMTEzMGVkZjg5ZGU2MGE5ZWNjYzYyMWI3MzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxYWQ3NmVhMmU0YWU4OGMzNWE4NDljYTBlZDczNWZjMDliZTQ2YjhhOWU3YzZjZDZkYmM0OGIyN2Q1ZGZlZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiM2Q2YzM1MzI0NTRhMjE5ODljMGRlNDc0M2FmNDhlNDZiNjQwYTE0MTY5YjQyOGI3YWI3MWNjOThhOGNhNDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_53b759a71be94331aad0356290c12770",
+      "statement": "Release significance is determined by the PR title (squash-merged). The title's type must be at least as significant as the highest commit on the branch, and must share scope overlap. This is why one project/module per PR is the rule.",
+      "evidence": [
+        {
+          "resource": "repo://.github/CONTRIBUTING.md#L478-L489",
+          "version": "repo-lines-v1:sha256:a46526b0142f73e47dbe7ac8605a9bb78c527cf7ad50d119158d5415e2c928a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExZjQ4YjNiZWQ0ODhjNGI2YjM0MDc4ZmUzYzNkMDVkOTdmYWI0MDc4ODdiMDIzZTU2NzVhNTE3MTQ3NDVjYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NTJjMWFiNGJjMTU5M2QzNzBmZGQyYzRhNjI3Yjg4ZjY4OTY5ZjZiMDgxOTgyZjUyMjdmYjY5YzFkZmRlMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkYjZhZWYyYTRmNjA4MDA1OTBiMTM2YmIxMjFmZjQ5NDE3NjFhZGRlODIzZTBmZWE0MjEzZWY1ZGQ3ODYwNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlMGQwNWJmZTQzZGM4N2I5Njc0OWFjMjIwYzM5YTY3YjZjYWUxOTg0OWMwMzNhMzU1MDE5NWJmN2E3OTgwMjkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

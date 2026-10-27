@@ -5,10 +5,6 @@ import {
   specialtyAspects,
 } from "../caelundas/caelundas.constants";
 import { isBody, isSpecialtyAspect } from "../caelundas/caelundas.types";
-import {
-  symbolByBody,
-  symbolBySpecialtyAspect,
-} from "../caelundas/symbol-caelundas.constants";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
 
@@ -41,8 +37,7 @@ export class SpecialtyAspectsProgressiveService {
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     return this.progressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(
       {
-        aspectCategory: "Specialty Aspect",
-        categoryLabel: "specialty aspect",
+        aspectTag: "Specialty Aspect",
         events,
         getAspectGroupKey: (event) => this.specialtyAspectGroupKey(event),
         getProgressiveEvent: (beginning, ending) =>
@@ -53,6 +48,7 @@ export class SpecialtyAspectsProgressiveService {
             endings,
             label,
           ),
+        tagLabel: "specialty aspect",
       },
     );
   }
@@ -64,16 +60,16 @@ export class SpecialtyAspectsProgressiveService {
     aspectCapitalized: string;
     body1Capitalized: string;
     body2Capitalized: string;
-    categories: string[];
+    tags: string[];
   }): { aspect: SpecialtyAspect; body1: Body; body2: Body } {
     const typedParts =
       this.progressiveAspectService.extractTypedAspectPartsOrThrow({
         aspects: specialtyAspects,
         bodies: specialtyAspectBodies,
-        categories: args.categories,
-        errorMessage: "Could not extract typed values from categories",
+        errorMessage: "Could not extract typed values from tags",
         isAspect: isSpecialtyAspect,
         isBody,
+        tags: args.tags,
       });
 
     return {
@@ -91,15 +87,13 @@ export class SpecialtyAspectsProgressiveService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return this.progressiveAspectService.createSimpleAspectProgressiveEvent({
-      aspectCategory: "Specialty Aspect",
       aspects: specialtyAspects,
+      aspectTag: "Specialty Aspect",
       beginning,
       bodies: specialtyAspectBodies,
       ending,
       isAspect: isSpecialtyAspect,
       isBody,
-      symbolByAspect: symbolBySpecialtyAspect,
-      symbolByBody,
     });
   }
 
@@ -112,8 +106,7 @@ export class SpecialtyAspectsProgressiveService {
   ): DetectedCalendarEvent[] {
     return this.progressiveAspectService.buildSimpleAspectFamilyProgressiveEvents(
       {
-        aspectCategory: "Specialty Aspect",
-        categoryLabel: "specialty aspect",
+        aspectTag: "Specialty Aspect",
         events: aspectGroupEvents,
         fixedAspectGroupKey: aspectGroupKey,
         getAspectGroupKey: () => "",
@@ -125,6 +118,7 @@ export class SpecialtyAspectsProgressiveService {
             endings,
             label,
           ),
+        tagLabel: "specialty aspect",
       },
     );
   }
@@ -133,10 +127,10 @@ export class SpecialtyAspectsProgressiveService {
    * Builds a stable grouping key from sorted bodies plus specialty-aspect label.
    */
   specialtyAspectGroupKey(event: DetectedCalendarEvent): string {
-    return this.progressiveAspectService.buildAspectGroupKeyFromCategories({
+    return this.progressiveAspectService.buildAspectGroupKeyFromTags({
       aspects: specialtyAspects,
       bodies: specialtyAspectBodies,
-      categories: event.categories,
+      tags: event.tags,
     });
   }
 }

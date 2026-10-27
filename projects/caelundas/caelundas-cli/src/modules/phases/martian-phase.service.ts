@@ -8,18 +8,18 @@ import { ProgressiveUtilitiesService } from "../progressive/progressive-utilitie
 
 import { PhaseCalculationService } from "./phase-calculation.service";
 import {
-  EVENING_RISE_CATEGORY,
-  EVENING_SET_CATEGORY,
+  EVENING_RISE_TAG,
+  EVENING_SET_TAG,
   MARS_EVENING_VISIBILITY_DESCRIPTION,
   MARS_EVENING_VISIBILITY_PAIR_LABEL,
   MARS_EVENING_VISIBILITY_SUMMARY,
   MARS_MORNING_VISIBILITY_DESCRIPTION,
   MARS_MORNING_VISIBILITY_PAIR_LABEL,
   MARS_MORNING_VISIBILITY_SUMMARY,
-  MARTIAN_CATEGORY,
-  MORNING_RISE_CATEGORY,
-  MORNING_SET_CATEGORY,
-  PHASE_EVENT_BASE_CATEGORIES,
+  MARTIAN_TAG,
+  MORNING_RISE_TAG,
+  MORNING_SET_TAG,
+  PHASE_EVENT_BASE_TAGS,
   PHASE_EVENT_TIMEZONE,
 } from "./phases.constants";
 
@@ -49,7 +49,7 @@ export class MartianPhaseService {
 
   // 🔐 Private Fields
 
-  private static readonly categories = PHASE_EVENT_BASE_CATEGORIES;
+  private static readonly tags = PHASE_EVENT_BASE_TAGS;
 
   // 🔑 Public Fields
 
@@ -115,15 +115,11 @@ export class MartianPhaseService {
     });
 
     const martianPhaseEvent: DetectedCalendarEvent = {
-      categories: [
-        ...MartianPhaseService.categories,
-        MARTIAN_CATEGORY,
-        phaseCapitalized,
-      ],
       description,
       end: timestamp,
       start: timestamp,
       summary,
+      tags: [...MartianPhaseService.tags, MARTIAN_TAG, phaseCapitalized],
     };
     return martianPhaseEvent;
   }
@@ -136,15 +132,11 @@ export class MartianPhaseService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...MartianPhaseService.categories,
-        MARTIAN_CATEGORY,
-        "Evening Visibility",
-      ],
       description: MARS_EVENING_VISIBILITY_DESCRIPTION,
       end: ending.start,
       start: beginning.start,
       summary: MARS_EVENING_VISIBILITY_SUMMARY,
+      tags: [...MartianPhaseService.tags, MARTIAN_TAG, "Evening Visibility"],
     };
   }
 
@@ -156,15 +148,11 @@ export class MartianPhaseService {
     ending: DetectedCalendarEvent,
   ): DetectedCalendarEvent {
     return {
-      categories: [
-        ...MartianPhaseService.categories,
-        MARTIAN_CATEGORY,
-        "Morning Visibility",
-      ],
       description: MARS_MORNING_VISIBILITY_DESCRIPTION,
       end: ending.start,
       start: beginning.start,
       summary: MARS_MORNING_VISIBILITY_SUMMARY,
+      tags: [...MartianPhaseService.tags, MARTIAN_TAG, "Morning Visibility"],
     };
   }
 
@@ -175,14 +163,8 @@ export class MartianPhaseService {
     events: DetectedCalendarEvent[],
   ): DetectedCalendarEvent[] {
     const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
-      this.phaseCalculationService.filterByCategory(
-        events,
-        EVENING_RISE_CATEGORY,
-      ),
-      this.phaseCalculationService.filterByCategory(
-        events,
-        EVENING_SET_CATEGORY,
-      ),
+      this.phaseCalculationService.filterByTag(events, EVENING_RISE_TAG),
+      this.phaseCalculationService.filterByTag(events, EVENING_SET_TAG),
       MARS_EVENING_VISIBILITY_PAIR_LABEL,
     );
     return pairs.map(([beginning, ending]) =>
@@ -197,14 +179,8 @@ export class MartianPhaseService {
     events: DetectedCalendarEvent[],
   ): DetectedCalendarEvent[] {
     const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
-      this.phaseCalculationService.filterByCategory(
-        events,
-        MORNING_RISE_CATEGORY,
-      ),
-      this.phaseCalculationService.filterByCategory(
-        events,
-        MORNING_SET_CATEGORY,
-      ),
+      this.phaseCalculationService.filterByTag(events, MORNING_RISE_TAG),
+      this.phaseCalculationService.filterByTag(events, MORNING_SET_TAG),
       MARS_MORNING_VISIBILITY_PAIR_LABEL,
     );
     return pairs.map(([beginning, ending]) =>

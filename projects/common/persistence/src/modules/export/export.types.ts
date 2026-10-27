@@ -17,6 +17,7 @@ export interface ExportCommandOptions {
   overwrite?: boolean;
   schema?: string;
   sourceUri?: string;
+  sqlite?: boolean;
   table?: string[];
 }
 
@@ -30,6 +31,9 @@ export interface ExportPlan {
 
   /** `--source-uri` with its password masked, for log lines. */
   readonly source: string;
+
+  /** Write a SQLite file rather than a `pg_dump` custom-format dump. */
+  readonly sqlite: boolean;
 
   /** Schema-qualified, in the order given. */
   readonly tables: readonly string[];

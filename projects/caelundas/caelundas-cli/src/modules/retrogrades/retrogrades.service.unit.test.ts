@@ -181,14 +181,15 @@ describe(RetrogradesService, () => {
         timestamp,
       });
 
-      expect(event.summary).toBe("☿ ↩️ Mercury Stationary Retrograde");
+      expect(event.summary).toBe("☿↩️ Mercury Stationary Retrograde");
       expect(event.description).toBe("Mercury Stationary Retrograde");
       expect(event.start).toStrictEqual(timestamp);
       expect(event.end).toStrictEqual(timestamp);
-      expect(event.categories).toContain("Astronomy");
-      expect(event.categories).toContain("Astrology");
-      expect(event.categories).toContain("Direction");
-      expect(event.categories).toContain("Retrograde");
+      expect(event.tags).toContain("Astronomy");
+      expect(event.tags).toContain("Astrology");
+      expect(event.tags).toContain("Direction");
+      expect(event.tags).toContain("Retrograde");
+      expect(event.tags).toContain("Mercury");
     });
 
     it("creates a direct event with correct structure", () => {
@@ -200,10 +201,10 @@ describe(RetrogradesService, () => {
         timestamp,
       });
 
-      expect(event.summary).toBe("☿ ↪️ Mercury Stationary Direct");
+      expect(event.summary).toBe("☿↪️ Mercury Stationary Direct");
       expect(event.description).toBe("Mercury Stationary Direct");
-      expect(event.categories).toContain("Direct");
-      expect(event.categories).not.toContain("Retrograde");
+      expect(event.tags).toContain("Direct");
+      expect(event.tags).not.toContain("Retrograde");
     });
 
     it("uses correct symbol for Venus", () => {
@@ -215,7 +216,7 @@ describe(RetrogradesService, () => {
         timestamp,
       });
 
-      expect(event.summary).toBe("♀️ ↩️ Venus Stationary Retrograde");
+      expect(event.summary).toBe("♀️↩️ Venus Stationary Retrograde");
     });
 
     it("uses correct symbol for Mars", () => {
@@ -227,7 +228,7 @@ describe(RetrogradesService, () => {
         timestamp,
       });
 
-      expect(event.summary).toBe("♂️ ↩️ Mars Stationary Retrograde");
+      expect(event.summary).toBe("♂️↩️ Mars Stationary Retrograde");
     });
 
     it("uses correct symbol for Jupiter", () => {
@@ -239,7 +240,7 @@ describe(RetrogradesService, () => {
         timestamp,
       });
 
-      expect(event.summary).toBe("♃ ↩️ Jupiter Stationary Retrograde");
+      expect(event.summary).toBe("♃↩️ Jupiter Stationary Retrograde");
     });
 
     it("uses correct symbol for Saturn", () => {
@@ -251,25 +252,25 @@ describe(RetrogradesService, () => {
         timestamp,
       });
 
-      expect(event.summary).toBe("♄ ↩️ Saturn Stationary Retrograde");
+      expect(event.summary).toBe("♄↩️ Saturn Stationary Retrograde");
     });
   });
 
   describe("detectProgressive", () => {
     it("creates progressive event from retrograde to direct", () => {
       const retrogradeEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Retrograde"],
         description: "Mercury Stationary Retrograde",
         end: moment.utc("2024-04-01T12:00:00.000Z"),
         start: moment.utc("2024-04-01T12:00:00.000Z"),
-        summary: "☿ ↩️ Mercury Stationary Retrograde",
+        summary: "☿↩️ Mercury Stationary Retrograde",
+        tags: ["Astronomy", "Astrology", "Direction", "Retrograde"],
       };
       const directEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Direct"],
         description: "Mercury Stationary Direct",
         end: moment.utc("2024-04-25T12:00:00.000Z"),
         start: moment.utc("2024-04-25T12:00:00.000Z"),
-        summary: "☿ ↪️ Mercury Stationary Direct",
+        summary: "☿↪️ Mercury Stationary Direct",
+        tags: ["Astronomy", "Astrology", "Direction", "Direct"],
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -295,7 +296,7 @@ describe(RetrogradesService, () => {
       expect(mercuryDuration?.summary).toContain("Retrograde");
     });
 
-    it("omits the symbol when the source summary is empty", () => {
+    it("draws the body symbol whatever the source summary says", () => {
       const internals = service as unknown as {
         getRetrogradeProgressiveEvent: (
           beginningEvent: DetectedCalendarEvent,
@@ -304,27 +305,28 @@ describe(RetrogradesService, () => {
         ) => DetectedCalendarEvent;
       };
       const beginningEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Retrograde"],
         description: "Mercury Stationary Retrograde",
         end: moment.utc("2024-04-01T12:00:00.000Z"),
         start: moment.utc("2024-04-01T12:00:00.000Z"),
         summary: "",
+        tags: ["Astronomy", "Astrology", "Direction", "Retrograde"],
       };
       const endingEvent: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Direct"],
         description: "Mercury Stationary Direct",
         end: moment.utc("2024-04-25T12:00:00.000Z"),
         start: moment.utc("2024-04-25T12:00:00.000Z"),
-        summary: "☿ ↪️ Mercury Stationary Direct",
+        summary: "☿↪️ Mercury Stationary Direct",
+        tags: ["Astronomy", "Astrology", "Direction", "Direct"],
       };
 
-      expect(
-        internals.getRetrogradeProgressiveEvent(
-          beginningEvent,
-          endingEvent,
-          "mercury",
-        ).summary,
-      ).toBe(" ↩️ Mercury Retrograde");
+      const progressive = internals.getRetrogradeProgressiveEvent(
+        beginningEvent,
+        endingEvent,
+        "mercury",
+      );
+
+      expect(progressive.summary).toBe("☿↩️ Mercury Retrograde");
+      expect(progressive.tags).toContain("Mercury");
     });
 
     it("returns empty array when no direction events provided", () => {
@@ -335,32 +337,32 @@ describe(RetrogradesService, () => {
 
     it("handles multiple planets retrograde periods", () => {
       const mercuryRetrograde: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Retrograde"],
         description: "Mercury Stationary Retrograde",
         end: moment.utc("2024-04-01T12:00:00.000Z"),
         start: moment.utc("2024-04-01T12:00:00.000Z"),
-        summary: "☿ ↩️ Mercury Stationary Retrograde",
+        summary: "☿↩️ Mercury Stationary Retrograde",
+        tags: ["Astronomy", "Astrology", "Direction", "Retrograde"],
       };
       const mercuryDirect: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Direct"],
         description: "Mercury Stationary Direct",
         end: moment.utc("2024-04-25T12:00:00.000Z"),
         start: moment.utc("2024-04-25T12:00:00.000Z"),
-        summary: "☿ ↪️ Mercury Stationary Direct",
+        summary: "☿↪️ Mercury Stationary Direct",
+        tags: ["Astronomy", "Astrology", "Direction", "Direct"],
       };
       const venusRetrograde: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Retrograde"],
         description: "Venus Stationary Retrograde",
         end: moment.utc("2024-07-22T12:00:00.000Z"),
         start: moment.utc("2024-07-22T12:00:00.000Z"),
-        summary: "♀️ ↩️ Venus Stationary Retrograde",
+        summary: "♀️↩️ Venus Stationary Retrograde",
+        tags: ["Astronomy", "Astrology", "Direction", "Retrograde"],
       };
       const venusDirect: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Direct"],
         description: "Venus Stationary Direct",
         end: moment.utc("2024-09-03T12:00:00.000Z"),
         start: moment.utc("2024-09-03T12:00:00.000Z"),
-        summary: "♀️ ↪️ Venus Stationary Direct",
+        summary: "♀️↪️ Venus Stationary Direct",
+        tags: ["Astronomy", "Astrology", "Direction", "Direct"],
       };
 
       const progressiveEvents = service.detectProgressive([
@@ -380,30 +382,30 @@ describe(RetrogradesService, () => {
         {
           end: mercuryDirect.start.toISOString(),
           start: mercuryRetrograde.start.toISOString(),
-          summary: "☿ ↩️ Mercury Retrograde",
+          summary: "☿↩️ Mercury Retrograde",
         },
         {
           end: venusDirect.start.toISOString(),
           start: venusRetrograde.start.toISOString(),
-          summary: "♀️ ↩️ Venus Retrograde",
+          summary: "♀️↩️ Venus Retrograde",
         },
       ]);
     });
 
     it("never pairs one planet's station with another planet's", () => {
       const venusRetrograde: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Retrograde"],
         description: "Venus Stationary Retrograde",
         end: moment.utc("2026-10-03T07:16:00.000Z"),
         start: moment.utc("2026-10-03T07:16:00.000Z"),
-        summary: "♀️ ↩️ Venus Stationary Retrograde",
+        summary: "♀️↩️ Venus Stationary Retrograde",
+        tags: ["Astronomy", "Astrology", "Direction", "Retrograde"],
       };
       const plutoDirect: DetectedCalendarEvent = {
-        categories: ["Astronomy", "Astrology", "Direction", "Direct"],
         description: "Pluto Stationary Direct",
         end: moment.utc("2026-10-16T02:40:00.000Z"),
         start: moment.utc("2026-10-16T02:40:00.000Z"),
-        summary: "♇ ↪️ Pluto Stationary Direct",
+        summary: "♇↪️ Pluto Stationary Direct",
+        tags: ["Astronomy", "Astrology", "Direction", "Direct"],
       };
 
       expect(

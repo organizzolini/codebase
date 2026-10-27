@@ -19,7 +19,7 @@ import { environmentSchema } from "./caelundas-cli.constants";
 import { CalendarService } from "./modules/calendar/calendar.service";
 import { DatabaseModule } from "./modules/database/database.module";
 import { CalendarEvent } from "./modules/database/entities/calendar-event.entity";
-import { Migration1791255787877 } from "./modules/database/migrations/1791255787877-migration";
+import { Migration1792416080531 } from "./modules/database/migrations/1792416080531-migration";
 import { IngressesService } from "./modules/ingresses/ingresses.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { MathService } from "./modules/math/math.service";
@@ -64,7 +64,7 @@ describe("main end-to-end suite", () => {
     describe("iCS file generation", () => {
       it("generates valid ICS file structure", () => {
         const events = [
-          detectable("☀️ → ♈ Sun ingress Aries", "2025-03-20T09:06:00Z"),
+          detectable("☀️→♈ Sun ingress Aries", "2025-03-20T09:06:00Z"),
           detectable("🌕 Full Moon", "2025-03-29T10:58:00Z"),
         ];
 
@@ -134,13 +134,13 @@ describe("main end-to-end suite", () => {
       it("handles events with all optional fields", () => {
         const events = [
           {
-            categories: ["Astronomy", "Eclipse", "Solar"],
             color: "red",
             description: "Total Solar Eclipse visible from North America",
             end: moment.utc("2025-04-08T20:00:00Z"),
             location: "Dallas, Texas, USA",
             start: moment.utc("2025-04-08T18:00:00Z"),
             summary: "Total Solar Eclipse",
+            tags: ["Astronomy", "Eclipse", "Solar"],
           },
         ];
 
@@ -364,7 +364,7 @@ describe("main end-to-end suite", () => {
       database = await startDatabaseTestingModule({
         database: DatabaseModule,
         entities: [CalendarEvent],
-        migrations: [Migration1791255787877],
+        migrations: [Migration1792416080531],
         project: "caelundas",
         validate: (config) => environmentSchema.parse(config),
       });
@@ -382,13 +382,13 @@ describe("main end-to-end suite", () => {
 
       // A row no detector reports can only reach the files through the table.
       await calendarEvents.insert({
-        categories: ["e2e"],
         description: "stored directly",
         end: moment.utc("2026-03-05T00:00:00Z"),
         latitude: "39.949309",
         longitude: "-75.171690",
         start: moment.utc("2026-03-05T00:00:00Z"),
         summary: "Planted",
+        timezone: "America/New_York",
       });
       const { ics, json } = await run(philadelphia, marchFirstHalf);
 

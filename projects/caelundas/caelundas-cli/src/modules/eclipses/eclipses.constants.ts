@@ -14,7 +14,7 @@ export const EARTH_EQUATORIAL_RADIUS_KILOMETERS = 6378.137;
 /** Degrees per radian. */
 export const DEGREES_PER_RADIAN = 180 / Math.PI;
 
-/** Title-case name of each eclipse type, as it appears in summaries and categories. */
+/** Title-case name of each eclipse type, as it appears in summaries and tags. */
 export const eclipseTypeLabelByType: Record<EclipseType, string> = {
   annular: "Annular",
   hybrid: "Hybrid",

@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:abca0069351c50174f486d1848bf343a1a6fd83979458916f5cb2594d6fd633c",
+  "claims": [
+    {
+      "id": "claim_997470689c794ea59b1217d524f13979",
+      "statement": "Lexico uses vitest as the test runner across all four packages (lexico-api, lexico-cli, lexico-entities, lexico-web).",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/setup.ts",
+          "version": "repo-file-v1:sha256:af138c3238c25d187f80d3380ddba7771870f543ec46243b520b10da48add049"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/testing/setup.ts",
+          "version": "repo-file-v1:sha256:5713a431fa459bb4fef4dd47c6f2f69cccf8a82945d86940705628bc83c1d16b"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-entities/testing/setup.ts",
+          "version": "repo-file-v1:sha256:ac6649f3173774ef60ca5189067e288915113323ac5e27fb50cf742bc15804f3"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts",
+          "version": "repo-file-v1:sha256:9154f3c901077ade06f9a2e23bad8a74122ba1a2c71bf8f826ee4d588b97f291"
+        }
+      ]
+    },
+    {
+      "id": "claim_43cdca1d90544c859dfa5d613196784d",
+      "statement": "The lexico-api package provides full application integration tests using startLexicoGraphqlApplication which boots a NestJS application with Apollo GraphQL over Express against a real migrated Postgres container started via testcontainers through @codebase/persistence/testing.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/author-text-application.ts",
+          "version": "repo-file-v1:sha256:3d65ea710d8fe35f6ed8afaff99054e26f56a389dc1729b05580490acd07bcc0"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/database.ts",
+          "version": "repo-file-v1:sha256:f8d3b5bee4aeccc3c7cf546eb59c29414ac2967d1e10d0241c0bd6c6fd475c8d"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/graphql-application.ts",
+          "version": "repo-file-v1:sha256:73b811518a7dfada2c06541e97d7690c81b450eacee38150b42b2f2c8a32b9c5"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/reading-application.ts",
+          "version": "repo-file-v1:sha256:e2325118bebe5e0bab4c68e758c1b8749f89c25aef9664782ad728eeaafded44"
+        }
+      ]
+    },
+    {
+      "id": "claim_e42caecf631b46b398397cc1b33ce7ef",
+      "statement": "The lexico-api package uses graphqlMockServer from @codebase/interface/testing for unit tests that don't need a database, providing MSW handlers that answer GraphQL requests with typed mocks.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/README.md#L30-L36",
+          "version": "repo-lines-v1:sha256:41fb3b65ae26a3125a2abf87b2ce0807d8444c67e1d73d4d0af6e5518ff3d776:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQ3Mjc3ZTJjMmNkYzVkZDVjOWU2MWIxNmE5YTI2NzFhZjc4YTYyYzBiNTJlOWQwYmEyZWFhMjFmZjg4ODA5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE0YWM3MzFmOGVkYzM1MWI0MGNiYzA1NWQyMjQ4NTAyY2E0YmIwZGEyZThiMWEwYzZlY2U0ODExNmY4MzQyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWVkYWI3ZjkzNjgyMTg1MmQyMjA2NjNmMTU3MDEyMmNiOGI0NDcxMjg5MzY5ZjY5YjcwNjI0NWIxNDg5MzIzMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmYxNDZiYzViYzY2NDA5MWRjNzlmYWU1NjgwYzU2NzYwMTMzNDZjY2E5YjFmNGExMDIyZjdjMDIxMDE0ZWU2MCJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L4-L8",
+          "version": "repo-lines-v1:sha256:f091ccf50ec36ee9c93b7d9a7a0b13271cfaad2fe73b68becc66eb498da770ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTgyMDA5NjRhOTc4NjM1NTIyYjJhYjA5MGM2NTA2NWQ4ZWY4ZTg1YzQ3MzBiYjJlYjA0NjBkMzRjNjc3ZGRiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTFkODI4Y2M2Y2NiMWVkMTM1NDM4MGRmZDZiYjA5OGQxMzI0ZWZmYWVhN2YwODYyYmVhMWVjYzNjYTE3MjZmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDNhODA3OWNlNzNkOWI2ZTgxNWVlOGE5YjcxYjY5MzFhMjI4ZGNhNmMzNzIwNjE3ZTViODRkM2E4ODI0NGNkYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDZmNTJiZDFkNjgzZGMyNGFhNGFmZjY4NjZmZjgwZGYwZWE5MzQzYmZkZTE5Y2Y2ZDZmZWZhMDMxMTVjODYzZiJ9"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L50-L57",
+          "version": "repo-lines-v1:sha256:7aaac2896830b71b73edfd7d491222910713960f48df525d29366131002a995b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM1NzZmNGVkNzdhNjQ4ZTFkMGQwNzkzMzFkYzk3MjY2MTY2OGVjZDVlNjIxYzQzODgwN2M4ZGQ4ODI2NGVkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmNWI0MGIxNTg0NTdkMTc4NjRmMjE3OTA3ODZkZDVhMmVjZGI2NGI2NmE2NTFmNzg4ZDRlMjVjZDMzMDNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzY5NDIxNzk0MzY0YjcwMDJlOGI3OGZkNDJkOGJjNTFjOGM2Y2RkNzRmYTk5NDJmMThlZTAzYTRhM2VkYTdhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDEyODYwZGM5YzVlMjg1NTljODM3NGUwYzI2YmE3MDQ4ZWU0ZjJlMDcyOWJkNmQzNDBlMDBhNDZmYmJhOTQ5YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0789321deb8943c880ca880003921fd6",
+      "statement": "The lexico-api testing module provides rich seeding utilities including author-text-catalog.ts (three-level hierarchy of authors, texts, lines), word-lookups.ts (ambiguous word forms and soft-deleted words), reading-passage.ts (literature passages with tokens), literature-services.ts (service and loader instances), and relay-connection-walk.ts (Relay connection helpers).",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/author-text-catalog.ts",
+          "version": "repo-file-v1:sha256:64221e4b138492bd0e9ab2dbf54aa30712b784bf5af41bfd5a53a2ce1306cd9c"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/literature-services.ts",
+          "version": "repo-file-v1:sha256:0ed9d803b8b751028373cb7b45cb55f81b71626ff2f0bac131ff8ad546deac01"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/reading-passage.ts",
+          "version": "repo-file-v1:sha256:06b9654a0dd7b3955f92645fb8108d934e521b19011e8389627260bff537e23e"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/relay-connection-walk.ts",
+          "version": "repo-file-v1:sha256:ad2a28e9614344893b6c8ef6e6a5cc45b5cc63184c85fa92de7c6a5669094c71"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/testing/word-lookups.ts",
+          "version": "repo-file-v1:sha256:913586d5a20fbed84b9e528518795fce16c14a0277edda30ef37de8947bd7be5"
+        }
+      ]
+    },
+    {
+      "id": "claim_e61f2a9397554338bfac211ab5fa690a",
+      "statement": "The lexico-cli package tests commands using NestJS Test.createTestingModule with mocked dependencies via createCommandTestHarness, and provides runCommandLine for executing argv through a real nest-commander runner.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-cli/testing/command-harness.ts#L12-L78",
+          "version": "repo-lines-v1:sha256:cac067ceaa0fc8e8c553b8d71a9cc5343d25d6e85b6b53b25bf695e63fe3b21c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2MTljN2M4ZDdjYjlmNzFjMzBjNTRlNTc2MzM1ZmZjNjE4ODExZjY1ZWVkODA1NjNiYzBkMWRiNThhMjdjYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyMTBjYTFiN2IxYmY0NjlmMjZlODVhMzhhNzBlOGY1ZjVkYTcyZTQyNjljZTIwNjIyZjMyZWU4MGViMDZhOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjN2ZjNzU4MTNhZDExMDYwMzVlNTk2MmQ1Mjc4N2Y1OTI4YTY4M2QyOTY2NmVhMDEwNjhjMWNhMDZjNTcxOGMifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/testing/command-harness.ts#L99-L129",
+          "version": "repo-lines-v1:sha256:6be2e802e35fe13f14c1f5394037dc6abc4f10ef998a9ec579f8f7133da34e0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_77ce75ed46a84fb2b75ffc5a46fd53e9",
+      "statement": "The lexico-cli testing module provides extensive mocks for ingestion pipeline testing including TypeORM repository mocks with fully configured createQueryBuilder chains, prompts mocking utilities (mockDates, mockStandardInputTerminal, setPromptsMockResponse), and Cheerio helpers for HTML/XML parsing (loadCheerioElement, loadCheerioXmlElement, etc.).",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-cli/testing/mocks.ts#L103-L157",
+          "version": "repo-lines-v1:sha256:39faec4f5d1e5e8ecb4ff7d1ef3dece5204ad5828fe425bbb90afe73f2ed3325:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiY2ZiZWQ5NzlmNmFjOWJmZWNiYjVlODBiNDUyNmMwM2I2NmUyMzlhZmFiMmE3NzkzNzRmZDQyZjZiNGU5NzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3Yzg0OGZhZGI0ZmExZTQwZmU0NTk2NWFkMjBiNzVkNGYyNTk3NDVmZWM0ZDI1YjEyYjc0N2Y1ZWRkZGU5MDMifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/testing/mocks.ts#L12-L95",
+          "version": "repo-lines-v1:sha256:1a44a11287cba4ebbe6e94cddfac97fd50ec1ef99bbba7fc6558ca290d4166e3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1YzlkNWYxYTFhNGUyYjdhYmVmYThjMTk3M2IxNzdjNjg4MzY4ZjhlNzI0ZjZlYWIxYjU3YWY5ZWVmOTYwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzZTNjMGE5NmFiYjA4YmUxOTI2ZGI2ODUzNzU1MmJmNTJhYmMzZDEyOTg5OWY3MWI5MzgyZTIyNGE0NThlY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyMWQwZDVhOTczOGNjZTY4ZmE4ZjBhNTVlZDE4MmRmZThiOTU5OTA1YmI3MDY2ODY4ZjM3NDc0NzY0M2U5ZTQifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-cli/testing/mocks.ts#L160-L261",
+          "version": "repo-lines-v1:sha256:2c62e5c8efbbc860c0e91d7b2e917ca3a7dd188a0af322ec5a47f4b9015883f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmMjUyMzJjMjM0Yjk5ZmM5NzBkN2RlODY2NGNmMzMwOTQ5ODlhNTMxOGE4MjRmMjc4NTkyYzI4YWM2ODU4YmUwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_22565e2a3d644ef2bf3e55ca7db7c117",
+      "statement": "The lexico-entities package validates TypeORM entity definitions using entity-definition-assertions.ts which provides compile-time metadata assertions against TypeORM's decorator storage for entity registry matching and relation options (cascade, eager, nullable, onDelete, onUpdate, orphanedRowAction).",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-entities/testing/entity-definition-assertions.ts#L104-L161",
+          "version": "repo-lines-v1:sha256:9904b6320782dd9ef3e2c1cac5de58c87f51b61918d05e45f8a4013e762b48b8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1ZTk3MzM1OTAwMjExMmZkM2E1ZDcxOTQwNDYzMzkwMmEwZGYyY2Q1YjZhOWZiMmFkMjk4N2EyODQyYjc0YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhNjMzYWIwZGRhYzQxMjFlZjczNDc0MmY5YTM4YTA1Yzc1NWUzN2QzYzEzZTJmOWE4MTAzODY2NDA4ODAxY2YifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-entities/testing/entity-definition-assertions.ts#L40-L73",
+          "version": "repo-lines-v1:sha256:faae29d9d3309a8c242b1db38bf5138f4ee748a6bbbf6be63f83c154d9c6db70:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyNDQwOTMzOWNlYTI5NjcwZTdiNWU4YWM2ZTU2NDBlMjY1ZTM0NzQ0YjI5YjBjMzg4MGNlMzRiMmEwNzBjNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiMTI1ODc5ZTgxZGNlOTIwNDVlM2NiNmQ4N2NjN2NmMWZhNmYxOTYyOWFlNGVlN2YyYTcwNzE3MWNhOTNiNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4ZjFkN2NjNTI3ZjAzNmIwY2VkMmZlMGNjMTg5NzgxYjU3NDBiMTU3ZTRhYzY0MTRhOTQ2NzFiZjZmZTY4YzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8cd389c4ae424dd68c89401375793375",
+      "statement": "The lexico-entities package runs integration tests against a real Postgres container via @codebase/persistence/testing, verifying module graph evaluation (each entity imports cleanly under SWC with decorator metadata), service integration, and migration compatibility.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-entities/src/modules/entities/entities.module.integration.test.ts#L18-L62",
+          "version": "repo-lines-v1:sha256:0042c6ede9687971d8950849afc53ee4069cdd80b8e6a02976e727a33e501348:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZTBlYTIyNWQ2MmExMDJjZjNlN2ZhZjQyNTczYjU1ZmEyYWJjZjUwOWQ1MmMwNThlNmI1MzI3M2E3OTI2MmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyMzgyOWIyOTEyZTk2NTBhZDQ4N2ZlNGMzODI1ZjEwZTkyNTc0NDI1Njg5Mzk1ODQ4Yzg1MWY5ZjFkZjU5MjkifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-entities/src/modules/entities/entities.module.integration.test.ts#L64-L75",
+          "version": "repo-lines-v1:sha256:9efaea626c789efcb3d63556fcb8e7abb58f36ee36503c87f64336938f0a1bcb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExYzVlZWJhODUzMWRjYmQ5NmMzOTJkODk4MTcwYzhhZWQ2OWVkYTMwYTA3ZWI4N2NiZDJjMWQ3OTczNzI2YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlNmNjN2YxNGY1ZDI3MjQ4YWViNmE0OGM2MTFmYmE5NTQ3OWQ5NTg2NjAzNzUxNDAwNjRlNzc5M2ZlN2M0N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c2983dee8d1420c8cf161e44d50fcef",
+      "statement": "The lexico-web package tests routes using TanStack Start's router with in-memory history rendered via React Testing Library through the renderRoute harness, with global setup that mocks createServerFn, stubs window.matchMedia, and manages MSW GraphQL mock server lifecycle.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-web/testing/render-route.tsx",
+          "version": "repo-file-v1:sha256:6875fda2e1e7a6d846cd53d1bc8c47a769964236b4fcccf8eaf81279f253e3a5"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L10-L27",
+          "version": "repo-lines-v1:sha256:e7862410cb00d20aeb695c10b94f83cff797f5a8922878fdf548220bfdb975ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiY2I0M2I0ZjQ0YjMxMTk0YjY1ODg4MDVlYTRlNDhjM2E2MmIyNjBmZGFhZjhhMzk2OTZhYzQ4N2NlNWU2OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlNmVkYjZiM2Q0NmU4ZDM4YmM0MGJhMjEyOGRiNzA5Yzg1NTIxNjg5YWI1NTRmNjlhZGI2NjM1MmJmNjg2YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4MTg5MmYyOWM2NDNkZDFhNWE4M2I0YzRiM2IyODk2OTk2NGRjZTM5ZWNlMGZlNTAyNmU0ZjQ1OTNkYTM4YjUifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/testing/setup.ts#L43-L61",
+          "version": "repo-lines-v1:sha256:de43052ba4fcc01b1bdab863e7aa3dd35ed3d5e6ba8ce1cfbf9ce78c2224a767:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMDg3MTkwOWM3NDZkMmFmYTUyM2UzOTIyYzZiYjgwM2VhZGE2N2I4NzhjODRlMjI4YWM5YTlhOTBhZjVhYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwNGViOWE1ZmQ5M2U4ZTU2YTUzY2I0ZTc3MThiZTU4MzYxOWFhOGYyODA2ZTYxOTRlZTUzNDJlNWY1NDZhYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8ad5fd11615442dca5f78ad20960267f",
+      "statement": "The lexico-web integration tests use typed MSW handlers from @codebase/interface/testing (graphqlMockServer) with generated mocks to stub GraphQL responses for route loaders, enabling testing of search routes with Latin and English match merging.",
+      "evidence": [
+        {
+          "resource": "repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx#L3-L15",
+          "version": "repo-lines-v1:sha256:0d862ce375a6927d3173f3531c7700671758ab8b8a43365c19ca1b0f674feb85:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0ODI2N2QzNWIzYTM0ZTgzM2VlNzQ0ODA0NjYxM2ZiZWVkZTU0NTdkM2M0MjI5MmUzMTJmNTM5NzQ2NmUyYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4NjY0NmZlYzA1OGQyNjQ1MWMxMjFkMDgzMDFjZTczZjRkNzc3OGM5MDg2NjA5ODJmOTY0MDVkODdiM2U2Y2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZWZhMjZmNzA4OGY5YWJmMGY4NjA5OTkxNzAxM2M3ZjgxMGVhOGE4ZTEzMjg3OGVkYTMwODA4NDgwNDRmN2MifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx#L69-L131",
+          "version": "repo-lines-v1:sha256:053e6ed5759b7da4c3ffe3af0de3fd0ce72f520f5d1c99c8000da356771a95f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyNTUwYWU0NDZmMWM3MDI0OGVjMTk3MjE3NDAyZDBmN2EzMDNkNjdkMGIzNjA4ZTQzODk1MzY4MmQ3NTE1OTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-24T21:02:40.299Z"
+  }
+}

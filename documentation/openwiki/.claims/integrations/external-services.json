@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:87ea837b40569e66c943630de819e81e4f2e321c997fad4f891646a0c10576b9",
+  "claims": [
+    {
+      "id": "claim_100e4b8c2f8247e5a4e55130e066ce86",
+      "statement": "Ollama uses CPU-only inference with the default model gemma4:e2b (2B parameters) and OLLAMA_KEEP_ALIVE=10m to avoid reloading between requests.",
+      "evidence": [
+        {
+          "resource": "repo://documentation/planning/2026-02-27-feature-affirmations-application-1.plan.md#L111-L111",
+          "version": "repo-lines-v1:sha256:e070d8a5230aaaf270e145c2e2aaa916d3f18a9a30d04931afa18177a86c97e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA3MGQ4YTUyMzBhYWFmMjcwZTE0NWMyZTJhYWE5MTZkM2YxOGE5YTMwZDA0OTMxYWZhMTgxNzdhODZjOTdlNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA3MGQ4YTUyMzBhYWFmMjcwZTE0NWMyZTJhYWE5MTZkM2YxOGE5YTMwZDA0OTMxYWZhMTgxNzdhODZjOTdlNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjhhZjAzMDg1NjhiNDc4MDJhMTdlNzAzMGZlMWNkNmQ4ZjU2YWI5ODdjN2Q1NzUyZjYwMjgyMjEwODk3NzI0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTg3MWRhYWQ0N2I1NWMxYzFkZmJmOTZmODYzODNmZDYyZDQ4ODg4NDU2MmQ3YTQyNGVjN2FhZTEwMDUzZjg4NSJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/README.md#L139-L156",
+          "version": "repo-lines-v1:sha256:322956452d18b8317ca277f1e4a6d270547faeeb43f424f7f6091d79ba659827:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3NTcwMGRmMzliMjA0NjcwODczYTFiNDJhMWJhNjhkZDJjMDA5ZjQ1N2M1M2FjN2FmYWRkODFlODlhNWJiNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxZmQ2N2RkZTEyNDk0YmQzODhjMzExMTE3MmFhMTUzMzJkZjE5NjVhODNlODcyZGUzYzEyMDU3ZTBmZDVhNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2MTUzMzU3M2M2ZTk2OWVhMWM0YmU0MTZkYTNmNDM4YWU4NzAxOWY2OGNkMGIxZWNiOWM1ZjI1MjBmMjA3YjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhOGYzODI3ODMyMWVkNDhhNGRiNGRhYzAwZTNkMDkzZGQ4MDkxMDhjOGQxNTc0OGY4MmI0MmQ2NDQ5MDFjNjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_81f4c1ee24ab4897a4f6bb0d0482deab",
+      "statement": "Additional Ollama models gemma4:e4b and gemma4:e26b are available via pull-medium and pull-large Nx targets.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L150-L152",
+          "version": "repo-lines-v1:sha256:acd0cd4125f63729457fc91b794349f42c84928c9b99bdbde341573e840adaa0:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODljODEyODViZGI3YmUxZTRmYzZkYTQyYTVjYTZkN2EzODMyZWM1YzQ2MzhmNGI1NTA4Y2YzYThkOGViMWJjYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGQ3NjA5Y2FjMGQxYjgyMGIzNWMxMTNjZTFiNTU0YTNkNTk2MjFkZTI4NWJiZjIyMjQ5ZmYxMWViZjRiZTFiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmMwOWJlZDE2YzI0ODZkNDI3MGRkNDZmYjAxM2M0NmFjYTI2YmYwOGVmZGUzMzBkZTNkNWMwOWUwNzY1OGI5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2I1MzFmNGVhNzRkZjlmYzE5MDE3NjZiYjJlZjMxMjdmNzU3MDEwYTY4OGViMGZhYWQ3M2I1ZjNlZjg5N2QzYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0677b61efef1454eaa0efaba5e5b0318",
+      "statement": "Open WebUI provides a browser-based chat interface for Ollama on port 3001, connecting via OLLAMA_BASE_URL=http://host.docker.internal:11434.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/README.md#L36-L38",
+          "version": "repo-lines-v1:sha256:335ae8b843e2c21a2cb8f308299eb3102f7eff918cfb4e6f0179d1c22b271d0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGU4YmVjODE3MzQ5ZjdiZmI5YmQ4NjA0NjJjMDU5ZjY2YTlhNWY4NDIwYzg3YzA5YTU2ZmM1YjU2Mzc5NmIwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjc1OTY5MzMyYzRjNWIwNTljODQzNzg3YzZmNDU0NjU5YzI3N2I3ZDYzMGFkYTZhODViMTI4ZDNhM2E4OWQyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQxOTM4OGVlMjFjY2RkMmNkOTcyN2E3ZTk2OTM0YTExYmY1NDE3ZTkxNzdlYzBjNjRkYTZkZjU2YmI5N2I1MyJ9"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L3-L24",
+          "version": "repo-lines-v1:sha256:ea32107ae636c7ec549a8182188b36006fff5976b5327a91853a3215622563eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwM2UzYTY2MmE0NWM3MmQyMWQ1ZTA0NmI3MDFmNjQwMjRhNzg4NTQ4NzMxNTA4YWRkNzk2Mjc5YmI0YjMwYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzFlMjYwMzk4YWQ2MTA5MTRkZmMyOGYwNDhkMzkyNjRiYTdkNTAzMjc4ZGQyZjhiYjFjNGMxNGI0OTlkOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyM2JlYmEwYmE5NmZjOWVhODYxYzEwNTNhMTM1YmM3MTI4YjVjMTcyNGQ3OGY4NDk1NDc0N2MyNTlhYWViYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1YzY0ZDgzZWJkYzJkMzBmMjEzNzk2NDU5MmJkOTM4NTJkOTFjYmYxNWNkNTQwNjcyYjY3ODAyZjgwOTNmZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7777c93642c64524a4de94daf3ff0fb1",
+      "statement": "SearxNG runs as a self-hosted metasearch service on port 8889 aggregating 135+ engines, configured via projects/affirmancy/searxng.settings.yml mounted read-only.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L50-L70",
+          "version": "repo-lines-v1:sha256:9d074640ef64d506dd96a51c7f59f5f03afd84e2daafb84dbdad54586311a697:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4NDE0YWIyNDMzNDMzMzM0Nzc4MDAxNjEzNTIzOGQwYTQ4YTAwZWY3ZWE3NzI2OTIzODgwMzg4YWMxMzNjNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzFlMjYwMzk4YWQ2MTA5MTRkZmMyOGYwNDhkMzkyNjRiYTdkNTAzMjc4ZGQyZjhiYjFjNGMxNGI0OTlkOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhNjJkMjQwMzA1NzJiZjQwMGQ0M2E1MDY1ODgwOTA0OWM3MDlkNmM3ZWFkYzIxMzQxNjljMDk3ZTNkYjcxZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MTUyYmMyNWJkN2Q5YTQ1MmIwMGViYTMwZjMwZGJhN2NkMDk0YzM2YTYzNWIyNmQyOWIxODBlMmZlNzYzYTAifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L1-L12",
+          "version": "repo-lines-v1:sha256:24782871bfd4c1c925916d8f1a5b1d269367412aa7eda3bcfa43f28dcb7c9391:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhMWU4YWNkMmZhMDk5MTAzY2FmZWMzNjk3NDY1Y2I5MGI0NzliNGI3MWYxZmIzZmFmN2QyOWUyOGRlZjMxYWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjYjA4NDU0YjdkMzUyM2E4OTBlZDRmYWE4MzljMTQyYjdjNDA3NjgxZTgwNTM3ZTQ1NWYyMjkwNDBjZTE0NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzM2NlZTgyNjFkOTFjNzU1NzliZWM4MDBmMjM0MTE4M2U0ZTc3Zjk3YmU2YWIxNGJkYWM5OWMwMzUxMWZjZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f8c432aa7b1a44b08108702a7d771af0",
+      "statement": "SearxNG settings disable safe search (0), rate limiter, and autocomplete; enable hostnames plugin with high-priority domains for spiritual/occult sources and remove list for noise domains.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L14-L41",
+          "version": "repo-lines-v1:sha256:0430793bd10469fb72eba20afb671f322ef1799ae2af10a553ca8031ffef8970:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5M2NjOTZjNmQwMDU4MjU3MTc4ZDk3ZjMzOWUxOTZmYmU0MTI5YjQ1ODRjNGU3NmVjNjZhYWUyMGE4MWYwZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MTZmZDg0ODY5Y2ZkNTIzMDUwOTgzZjZhMGFmYjE2MDljYTg4NTMxYjdhYWM4ZDgwODgzZTYzYmE4NDM4ZmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MmVhNGIwZDg5MGE3Y2FjMWMyODc4Mzk4OGFlYmQyMzM2Y2ZlYjgxMGEyZDgzM2YyNmY5NzhlMGZhMjJmZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNzU3MzVkNzA0M2JmOGVlMzM2ODhkMjgwZTkzZTc2MTgzMDhlN2IzZmNiNDBiZjljYTFiYWI0MjM3MjgzYzMifQ"
+        },
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L61-L239",
+          "version": "repo-lines-v1:sha256:3cc295b75384fab288ed5c30bfb91d9664feb2f02d154636203f277aeeacbac0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5Y2I1Njg2ZjgzN2Q3ZDdkZDdhNTFiYWMxNzhhYjk5NGIxYTcwM2M5ZTFjZDBiZjY5OWM1ZWRkMWM4Yjc5MDc0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjYzllYzljZmMzYTQwZmM0NDEyZDI5OTYzYTllZjVmMmU2ZjZiMTY2Mjg1MmJmMjkzZDk0YjA1OTA0OTc2YTQyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzM2JkMGQ2ZDYwMmFjODNiOWE4NmRmNjhmZjM3YmM0ZDIyNjRiZDAyY2U0OGZkMGY2ZWRhOTNjZjE0ZWY5NzlhIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_7712b9e764fb4a1c9d73e25bd1cc58b5",
+      "statement": "SearxNG engine configuration uses tiered weights: wikisource/openlibrary (2.0), wikipedia/startpage (1.5), reddit (1.2), duckduckgo/brave/bing (1.0/0.9/0.7), with google and wikidata disabled.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/searxng.settings.yml#L246-L363",
+          "version": "repo-lines-v1:sha256:2d2adbea5ce99366698c5482ca03f2f01cb72e976108b58954a1ac6f99d6ffb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiNTlhMWU2OTY2ZGNjMjgyM2NiM2MxYmEwNTBkMjE2MjJlNDBlZTU3Yzg0ODg5YWU2NjI5ZWNmZGY4ZGE2NjQ1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjNmU0ZWJhOTlmMTllODhjODI5NzE4NTQ3OWQxZjlkYzdhMzMxOTU0ZTcwNzllZGY4MDE2NDFlZTgwMGRlMGE2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmYzcwMTQzNWQ3OWM1NzgwODVhZjBiNjA0NjJjNjBlZTc2ZWIxNTRlNGEwMzQ5M2E4OTcxODEyZWU5ZjJkYjVkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_c444b1d5fff24040b19ea9c2543e961b",
+      "statement": "Swiss Ephemeris provides JPL DE431 astronomical data for caelundas, downloaded to data/ephemeris/ via nx run caelundas-cli:download-ephemeris with no network calls at runtime.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/README.md#L55-L63",
+          "version": "repo-lines-v1:sha256:a9f28055e000fd3ec4e77825af63ddb651504c7c40bad95a5dfda2aeda9368b5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY1NzIzYzUyMjBjMWRjN2ZjMThkOTliNmNlNjMwZjAwZDQxMDMzZmRlNzc2ZTY4NjVlYmI2MGU0ZDhiNjg2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1ZDAzNjAxNzYwYmIyZjlhNDU5YTQyMTMzNWQxZjQ3ZmIwMTZiMDg1ZTU4MzkwMjA5ZDY2OTNkODc3MDRkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTVkNzkyNTM1MWNmYzJhN2E2NTY2NWJkNTRkNWZlY2U0YjVhNDk2YzZkOWIwZDViYTliZDFiOTljZjRjMzZhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGZmNDIxMjgwYmNhOWQ0Y2ZkNWRkMThmNTliYjY3NmQ1MzI4OTk2YWVhMjUyNmE1OTcwOGFjYTZlYjI2ZWI1NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_15dcca58d48f42a19bb504a6fcebfb48",
+      "statement": "Ollama runs as a host-managed service (via Homebrew) on port 11434 with CPU-only inference, default model gemma4:e2b, and OLLAMA_KEEP_ALIVE=10m to avoid reloading between requests.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/README.md#L39-L45",
+          "version": "repo-lines-v1:sha256:ad43d8309af91dd37226281a25d2d58a7abc7f4870a34795c769b35dfa9c698f:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGQxMzAzZWExZjdiYzU1ZmQwMGY0YWQ0YTBiMDRjZmZmZmE1NTkyYjA3OWJiN2I2ODRmNjVhMDMxZWQyZWE1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2QzZDQzYzg3NmIyZmEyZDE5ODA4MGY4MjdiMDU0N2Y2ZDg2NTIwYmM3ZDQ2MzU4YThiMzU2ZDE3ZmIyZDBjZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDhlNDU5MDM2NmJiNDcxMjhmNjU5OTgxNjA3MmE2NTk1MDE1ZWUzMmUyNmJlYzViNWVjNDg5ZDFkZDEwNDI3NyJ9"
+        },
+        {
+          "resource": "repo://projects/affirmancy/project.json#L18-L34",
+          "version": "repo-lines-v1:sha256:2577ec3e44c586d08821741b6034dd8617070505f9836911fd518b016179a4f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzNGY5NGIyNzgyOGQ5ZmI4YzQ2ZjhmNTY3OTE1YmQ0ZjI4MzgyNzliMGEwNWZhOGU0YTlmNmM4MTAwZDg5MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiMzMxYzQ3ZjQxODJiY2JmNDQ4N2MyYTc0NGFmNDdkOTRiODExOGU2NjMzOTcwMjQxNGJkNzhhNzYzYTBkNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2OTgzZWFjZmIxYjQwYmY4NjRhM2U5MjkwMWE2MTRmZjY0MDRkYTFhODg2N2M5NWExMWJjZDdiY2ZmZDYyODMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_04dc00de7be3498ab617c4abf8262ddf",
+      "statement": "PostgreSQL runs as a shared Docker container on port 5432 providing isolated databases, schemas, and roles for caelundas, lexico, and meanderaw projects via POSTGRES_PROJECTS list.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/README.md#L40-L52",
+          "version": "repo-lines-v1:sha256:470c46a0dc1fbf2c2cce24cd62faff6ff615b5a3d2f205e4ab881fa53e6e8217:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MDYxNmViMDdlNjdkZjBmZjlhNjAwNmNjMzhiNTI5YmJiMjlhOWM4MjQyNDdjOWI1YTUyY2M4NDUwYjdjZjYifQ"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L48",
+          "version": "repo-lines-v1:sha256:ee4aed3afbddd73bd6536928bd435e4e3b9e4b78abdceb62717c6ced30176e41:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MzFlMjYwMzk4YWQ2MTA5MTRkZmMyOGYwNDhkMzkyNjRiYTdkNTAzMjc4ZGQyZjhiYjFjNGMxNGI0OTlkOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhZDU2ODRmYmRmMmRjMjQ3ZTNlMjNjNDM5ZWY0ZGYyNWU5OGIxYjBiZTEyZjg5YzUyNWYzODBhMmFlMzAwNjMifQ"
+        },
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L87-L100",
+          "version": "repo-lines-v1:sha256:de46c63ed797591c96c91b9071cffe37553bd398850856cad94e4992516fe8db:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjYzAwMjU1MzllZDBiYzc4MzE1NjY5ODI0OTJiYmI2MWUxZDY4ODU0YzVkM2Q0OTIwZDcwZWJiMTFjMjE5YTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdjYTY2MTcxMDZkNmNmNmNlYzhkZjA3MGYzZWQwNzIwNzlmY2ZjOGZhMWFiMDhjZWU5OTkxMjUyMTA1MTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlMmIxOTM3YjM0YmEwZTE0M2I4OTQwZDk0MWU4ZjM2ZmZjMmJhYzFhMWI3MzMwZGNmNGIxZTM1NzkyNzc4NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxZTg1MDkyNjA4ZThjMmE2MDkyNGMyOGIzNTFmNjEyOTcwOWM5NmZkY2QxZDE2YWEzYTFlMDY2ZGM2N2U4ZjAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-26T01:23:39.729Z"
+  }
+}

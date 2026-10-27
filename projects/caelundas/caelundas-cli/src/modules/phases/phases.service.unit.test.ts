@@ -14,15 +14,15 @@ import type { DetectPlanetaryEventsArguments } from "./phases.types";
 
 const createEvent = (
   description: string,
-  categories: string[],
+  tags: string[],
 ): DetectedCalendarEvent => {
   const timestamp = moment.utc("2024-01-01T00:00:00.000Z");
   return {
-    categories,
     description,
     end: timestamp,
     start: timestamp,
     summary: description,
+    tags,
   };
 };
 
@@ -163,7 +163,7 @@ describe(PhasesService, () => {
   });
 
   describe("detectProgressive", () => {
-    it("routes progressive events by planet category", () => {
+    it("routes progressive events by planet tag", () => {
       const venusianProgressiveEvent = createEvent("Venus Morning Star", [
         "Planetary Phase",
         "Venusian",

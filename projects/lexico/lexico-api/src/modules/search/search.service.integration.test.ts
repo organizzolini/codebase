@@ -262,8 +262,101 @@ describe("search service integration suite", () => {
     );
     expect(result.edges[1]?.node.lexeme.translations).toHaveLength(2);
     expect(result.edges[0]?.node.source).toBe(
-      SearchMatchSource.TRANSLATION_FULLTEXT,
+      SearchMatchSource.TRANSLATION_EXACT,
     );
+  });
+
+  it("ranks a misspelled Latin search by edit distance below exact and prefix matches", async () => {
+    expect.hasAssertions();
+
+    const bellum = await seedLexeme({
+      lemma: "bellum",
+      meanings: ["war"],
+      partOfSpeech: "noun",
+    });
+    const bellus = await seedLexeme({
+      lemma: "bellus",
+      meanings: ["pretty"],
+      partOfSpeech: "adjective",
+    });
+    await seedLexeme({
+      lemma: "bellissimus",
+      meanings: ["prettiest"],
+      partOfSpeech: "adjective",
+    });
+
+    const result = await service.searchLatin("bellun");
+    const byLemma = new Map(
+      result.edges.map((edge) => [edge.node.lexeme.lemma, edge.node]),
+    );
+
+    expect(byLemma.get("bellum")).toMatchObject({
+      distance: 1,
+      score: 0.3,
+      source: SearchMatchSource.FUZZY,
+    });
+    expect(byLemma.get("bellus")).toMatchObject({
+      distance: 1,
+      source: SearchMatchSource.FUZZY,
+    });
+    expect(byLemma.has("bellissimus")).toBe(false);
+    expect([bellum.id, bellus.id]).toStrictEqual(
+      result.edges.map((edge) => edge.node.lexeme.id).slice(0, 2),
+    );
+  });
+
+  it("scores a fuzzy match two edits away lower than one a single edit away", async () => {
+    expect.hasAssertions();
+
+    await seedLexeme({
+      lemma: "fortuna",
+      meanings: ["luck"],
+      partOfSpeech: "noun",
+    });
+    await seedLexeme({
+      lemma: "fortunae",
+      meanings: ["of luck"],
+      partOfSpeech: "noun",
+    });
+
+    const result = await service.searchLatin("fortunx");
+
+    expect(
+      result.edges.map((edge) => [edge.node.lexeme.lemma, edge.node.distance]),
+    ).toStrictEqual([
+      ["fortuna", 1],
+      ["fortunae", 2],
+    ]);
+  });
+
+  it("gives English matches an exact, prefix, or full-text source", async () => {
+    expect.hasAssertions();
+
+    await seedLexeme({
+      lemma: "canis",
+      meanings: ["wolf"],
+      partOfSpeech: "noun",
+    });
+    await seedLexeme({
+      lemma: "canicula",
+      meanings: ["wolfish creature"],
+      partOfSpeech: "noun",
+    });
+    await seedLexeme({
+      lemma: "latro",
+      meanings: ["howl like a wolf"],
+      partOfSpeech: "verb",
+    });
+
+    const result = await service.searchEnglish("wolf");
+
+    expect(
+      result.edges.map((edge) => [edge.node.lexeme.lemma, edge.node.source]),
+    ).toStrictEqual([
+      ["canis", SearchMatchSource.TRANSLATION_EXACT],
+      ["canicula", SearchMatchSource.TRANSLATION_PREFIX],
+      ["latro", SearchMatchSource.TRANSLATION_FULLTEXT],
+    ]);
   });
 
   it("handles finite verb morphological identifier resolution in search", async () => {
@@ -418,10 +511,10 @@ describe("search service integration suite", () => {
             seedLexeme({ lemma, meanings: [lemma], partOfSpeech: "noun" }),
           ),
         );
-        const incanto = await seedLexeme({
-          lemma: "incanto",
-          meanings: ["enchant"],
-          partOfSpeech: "verb",
+        const typo = await seedLexeme({
+          lemma: "canti",
+          meanings: ["songs"],
+          partOfSpeech: "noun",
         });
         const untranslated = await seedLexeme({
           lemma: "cantosum",
@@ -439,21 +532,22 @@ describe("search service integration suite", () => {
           canto.id,
           que.id,
           ...prefixed.map((lexeme) => lexeme.id).toSorted(),
-          incanto.id,
+          typo.id,
         ]);
         expect(
           all.edges.map((edge) => [
             edge.node.source,
             edge.node.score,
             edge.node.enclitic,
+            edge.node.distance,
           ]),
         ).toStrictEqual([
-          [SearchMatchSource.LEMMA_EXACT, 1, "que"],
-          [SearchMatchSource.ENCLITIC, 0.8, null],
-          [SearchMatchSource.PREFIX, 0.7, null],
-          [SearchMatchSource.PREFIX, 0.7, null],
-          [SearchMatchSource.PREFIX, 0.7, null],
-          [SearchMatchSource.FUZZY, 0.4, null],
+          [SearchMatchSource.LEMMA_EXACT, 1, "que", null],
+          [SearchMatchSource.ENCLITIC, 0.8, null, null],
+          [SearchMatchSource.PREFIX, 0.7, null, null],
+          [SearchMatchSource.PREFIX, 0.7, null, null],
+          [SearchMatchSource.PREFIX, 0.7, null, null],
+          [SearchMatchSource.FUZZY, 0.3, null, 1],
         ]);
         expect(all.edges[0]?.node.identifiers).toStrictEqual([
           "nominative singular",

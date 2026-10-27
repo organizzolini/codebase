@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import _ from "lodash";
 
 import { AspectGraphService } from "../aspects/aspect-graph.service";
+import { PHASE_WORD_PATTERN } from "../aspects/aspects.constants";
 import { ProgressiveCompoundEventService } from "../aspects/progressive-compound-event.service";
 import { aspectBodies as stelliumBodies } from "../caelundas/caelundas.constants";
 import { bodyDisplayName } from "../caelundas/caelundas.types";
@@ -130,11 +131,14 @@ export class StelliumService {
     const stelliumSymbol = symbolByStellium[stelliumName];
 
     const description = `${_.sortBy([...bodiesCapitalized]).join(", ")} stellium ${phase}`;
-    const phaseEmoji = this.phaseEmojiFor(phase);
-    const summary = `${phaseEmoji}${stelliumSymbol} ${bodySymbols.join("-")} ${description}`;
+    const summary = `${stelliumSymbol}${bodySymbols.join("")} ${description.replace(PHASE_WORD_PATTERN, "")}`;
 
     return {
-      categories: [
+      description,
+      end: timestamp,
+      start: timestamp,
+      summary,
+      tags: [
         "Astronomy",
         "Astrology",
         "Compound Aspect",
@@ -143,10 +147,6 @@ export class StelliumService {
         _.startCase(phase),
         ...bodiesCapitalized,
       ],
-      description,
-      end: timestamp,
-      start: timestamp,
-      summary,
     };
   }
 
@@ -250,23 +250,16 @@ export class StelliumService {
   }
 
   /**
-   * Handles phase emoji for.
-   */
-  private phaseEmojiFor(phase: StelliumPhase): string {
-    return phase === "forming" ? "➡️ " : "⬅️ ";
-  }
-
-  /**
    * Handles stellium group key.
    */
   private stelliumGroupKey(event: DetectedCalendarEvent): string {
     const planets = _.sortBy(
-      event.categories.filter((category) =>
-        stelliumBodies.map((b) => bodyDisplayName(b)).includes(category),
+      event.tags.filter((tag) =>
+        stelliumBodies.map((b) => bodyDisplayName(b)).includes(tag),
       ),
     );
-    const stelliumType = event.categories.find(
-      (category) => category.includes("Body") && category !== "Stellium",
+    const stelliumType = event.tags.find(
+      (tag) => tag.includes("Body") && tag !== "Stellium",
     );
     return `${planets.join("-")}_${stelliumType}`;
   }
@@ -312,7 +305,7 @@ export class StelliumService {
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const stelliumEvents = events.filter((event) =>
-      event.categories.includes("Stellium"),
+      event.tags.includes("Stellium"),
     );
 
     const groupedEvents = _.groupBy(stelliumEvents, (event) =>

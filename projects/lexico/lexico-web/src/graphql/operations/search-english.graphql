@@ -2,6 +2,7 @@ query SearchEnglish($query: String!, $first: Int!) {
   searchEnglish(query: $query, first: $first) {
     edges {
       node {
+        distance
         enclitic
         identifiers
         score

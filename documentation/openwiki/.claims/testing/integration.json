@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4496d3b691d5f50572a896e3f231bd60666a280d0a208af00bf52b4efe877044",
+  "claims": [
+    {
+      "id": "claim_00452796daf5409296e36590726ea511",
+      "statement": "The workspace uses Testcontainers via `startPostgresContainer` from `@codebase/persistence/testing` to start a migrated Postgres 18 container that mirrors the local Docker layout (project-specific role, database, schema) and runs the project's real migrations before tests.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L189-L220",
+          "version": "repo-lines-v1:sha256:b29ff8e67f138e64b366fefa1625c0da80fb956f45c6db51970275b44d906402:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1YTcyMWVmMmNjZjgyZTFmZGVkMGFhMzYwZjQ5YTk3ZmQ0MGMxMDNiNjYzYWI5ZjUyNzhiZjVhMWQwMzAzYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1OTdmYTBhZjczMjgxYzYwOTdhYTMxMmJhMGNlY2YxNzg1YmE1ZGU2ZDliY2U3ZThmY2NlYWQyZGQ4ODdkNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjODExMjVkMWMwMjljYmNjZWU3N2NhMWU5NjAxYzdiZWY1NDIwNDMwNWMxZTcxMmEwYjExMmQ2YTgwYzE1NmEifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql-container.utilities.ts#L23-L80",
+          "version": "repo-lines-v1:sha256:a3fae6435abf2a7ee5e679b45391dc87b064865c02feaa627eb3a1b3276e2c88:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhZGQ3MDMyYTI0OWM4NjlkOTY1M2M5MWEyYjM0NzMzMWNhNzE5NjVkNzVjNmZkOWU2MDhlYzA2MTYyYjUzMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3Y2NmMmVhZWYxNDNlNmU4OWYxZDRiZWFkNzljNmE1MTk1OGFiYzM3YTY5ZjU5NWU1MDk4MzI5YjEyNDEyNzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_203310d397fe47718abf85fce37920e5",
+      "statement": "`startDatabaseTestingModule` wraps `startPostgresContainer` and compiles a Nest testing module with global ConfigModule, PostgresqlModule.forRoot (or the project's own database module), TypeOrmModule.forFeature, and test-provided imports/providers, setting container env vars on process.env for the module's lifetime.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L197-L242",
+          "version": "repo-lines-v1:sha256:b1a82e3916f48aac70b80d6e1027e90d4184921e37bac807b3d507538177beef:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0NTQ0ODc0ZWRhNTliZTg5NGFiNWZjNTcxZjMwMTgzMmRlNjhiMTY5MTIzZTQ0MTg2NjE0NGIxMzgwZjhlNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZWUxODdkOGU1NzYxYmMzMzE2NjdiZjljMjBlY2I4MWYzN2U4ZjgwYWQzMDIwZmMxZjQ2ZjljYmRjYWU2MzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjExZWRiZDgwM2ZjZmJlZmFhOGJiNGY1MjQ0MjEwNGFlM2QyZjQ0Njc0ZGJjNzM0YTdiMTdkY2VkYmI5OTBkYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlODU5NmUyN2E5ODhlMDg3MDJmNzk0MjU1ZDcyYTI4OTc5ZjA4ZmZiZmQwY2JlMmI2M2M2YjA2YjNiOTJhZGIifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/testing/persistence-testing.utilities.ts#L18-L99",
+          "version": "repo-lines-v1:sha256:e47845349be81f60532d404b82c1f1cffb15bc39bdeaa4bbddfebfa184fd2421:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhZGQ3MDMyYTI0OWM4NjlkOTY1M2M5MWEyYjM0NzMzMWNhNzE5NjVkNzVjNmZkOWU2MDhlYzA2MTYyYjUzMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bd8be2904da34f12a53753af4d651ce1",
+      "statement": "Integration tests use the exact same persistence/module wiring as production: PostgresqlModule.forRoot, ConfigModule, TypeORM DataSource, and real migrations — no test-only shortcuts or in-memory substitutes.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L197-L201",
+          "version": "repo-lines-v1:sha256:70bde3c881b22dc37ea948b1162ba8db31daaa18689eb7b9b62d8617f3fa8e4a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQ1NDQ4NzRlZGE1OWJlODk0YWI1ZmM1NzFmMzAxODMyZGU2OGIxNjkxMjNlNDQxODY2MTQ0YjEzODBmOGU2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTgxODk0OTY0NzM0MWMyY2YzZTU3NGEzNWUwNWE0MzlmOGQzNjM0OWQ3M2JjYjc1OTg1OTVlNjVkZTI2ZGQ1NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTFlZGJkODAzZmNmYmVmYWE4YmI0ZjUyNDQyMTA0YWUzZDJmNDQ2NzRkYmM3MzRhN2IxN2RjZWRiYjk5MGRhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTA5MzhiN2VmYmJjMWIwMDY5ZjAxNGU2YzU3YTI3MmU2ODIxNjQwZjhkMjA4YmE3NThiYTgwZTUxOGRiOGE2MyJ9"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L60-L89",
+          "version": "repo-lines-v1:sha256:999583a9d39224bbadb5301b93f0929d512727aa350d7a08f2fde6042d4752f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1MTg1ZDUxYWVlZjFlZTg2MTk0ZGFkZWNkYmRjOGQ2MjIxNmZkNzk0MDllMTk4ZDZiNzEwMDNhMDhiYmI0ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyYmYyMDBjODQyN2U3MTI4ZDlkOGYzMDRmYmFiNGM3MjM2OTQyM2Y3MDZjNGM3OTdhYTliNTk3YzhmYjFjMzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0e9614e949f45f9a6b273f1f5d6eda4",
+      "statement": "The `@codebase/interface/testing` entry exports `graphqlMockServer` (an MSW server) with lifecycle functions `startGraphqlMockServer`, `resetGraphqlMockServer`, and `stopGraphqlMockServer` for client tests to answer GraphQL requests using typed handlers from code generation.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/testing/graphql-mock-server.ts#L1-L31",
+          "version": "repo-lines-v1:sha256:df1743a43798ca8bea1fe75b0ac21c666cc2900c45e9582e99c048b6cfcd6e4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiZGY0ZGVmM2E2YzUxOWQ4ZjkwZDhkZmJkYTEzZTBkYWQwNzE4YWNlZTZhYjU5YzVhNjNkYjM0NDg1ZGE2NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/src/routes/search.integration.test.tsx#L7-L84",
+          "version": "repo-lines-v1:sha256:e68cf04e74c614567225185b05eef8dbed1bf3931d3b33fd9d5c66b46b9c557b:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MmZjYzExOThmZmU0MTI1OGY3NDNjMmIwNzM3MTlkOTA2OGRhNmE5YzE2NjQ1YTgxMTM1MTYxYzg4YzU5YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiMjVhNDhhN2JjM2U1NzE2ZjAxMmZhYzlkNzNlZDQ3ZjE0YjJlNDBhYjdjYThkY2JhNjBkYTY0YzRmMzI3NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3OTQwYTU2YzFjODdhN2RjYWVkNzQ4YWY3Nzk4YTNhZTg3MzA1M2Q5ZjIxYTkwMjkxM2M0ZGU2MjVjZmExZWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d465c5ada3c4cf6b98a26adb949c44f",
+      "statement": "For server-side pagination tests, `@codebase/interface/testing` provides `paginateArray`, `expectedPage`, `paginationMatrix`, and `summarize` as an in-memory oracle that SQL-backed pagination must agree with on every boundary; `paginationMatrix` generates a comprehensive cursor/count combination matrix including edge cases.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/testing/pagination.ts#L68-L170",
+          "version": "repo-lines-v1:sha256:cb45c87866ce191c1ea5d7af804db570e5a381326730c9ba189b4e912686bc61:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmYjYwNmFjZjk1NTEzNGQ1YTc4ZTAwODM4YTUwMTdhOWNmZDhlMjFmZDY2ZDgwYmJkM2U1NTZjZTQ1ODI0YjQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3OTVhNjBiODM0NDBjNzBkMTdhZDNjNWViM2FhNGYwMTI4MTYzMjkwNTA1MTg5YmM4MDg5ODFlYTljYTFjZDkwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxMjRhYWM3MDg1OTIxOTY2YjFiNzhjOTU2ZWFhZThhOWU3ZGYwMzg4ZjJjM2EwZDMyOGYxZmQ3YjI4N2UxYjU2In0"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-api/src/modules/search/search.service.integration.test.ts#L362-L393",
+          "version": "repo-lines-v1:sha256:e559035a124df8f800c0a1dda59bf2d6c55ad740913217aba17c70d65bb2817b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwYjEyM2ExNjU5ODkxYTk4YWNlNzc1MTg1ZWRkYzEwYmI1NWRhY2FjYTQyMzZkMDk4YjM1YmRhZDdmZjU4M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2ZDM5MjQzNjdhMzUxYjU5OGU5NmJiZTZkOGE5NDljYzE2NGZkNmU3NDFiOGI4NDkzZTkzY2EwOWJiZGU5OGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmYzcyZmEwZjUyYTVmNmNjOTA1ZGE5NTFlM2UxMDlmNzY5YzQxOTU4NmQ1NWMwZWI2MWJkZDUyNzg5YTE2MWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5558452ccc5e4c408051ab4d358e7899",
+      "statement": "The workspace standard for running tests is `nx affected --target=vitest --base=main`, which runs all vitest configurations (unit, integration, e2e) for affected projects and their dependents; this command is used in CI, pre-push hooks, and the validate-code skill.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/create-pull-request/SKILL.md#L274-L274",
+          "version": "repo-lines-v1:sha256:be5366e6d00fee89642e1ce630da794c2c149ecabdb43162c012c06f0897367e:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmU1MzY2ZTZkMDBmZWU4OTY0MmUxY2U2MzBkYTc5NGMyYzE0OWVjYWJkYjQzMTYyYzAxMmMwNmYwODk3MzY3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmU1MzY2ZTZkMDBmZWU4OTY0MmUxY2U2MzBkYTc5NGMyYzE0OWVjYWJkYjQzMTYyYzAxMmMwNmYwODk3MzY3ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTY0ODk2MjIyOTJhZWNhZGIwMmE4NGZmYmY0Njc5NzZkN2MyNWE5ZWZiMmQ0OTFlZWNjMzM5MWRmOTg5OTcwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTU0ZDQ1ODk5Zjk5MGRjYzkxNWIxNTFkY2Q5MzMzYzk1YTc0NWFjNmIxYmUwY2Q0ZTQ0ZTc2NmEwMzUyM2YwMyJ9"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L32-L32",
+          "version": "repo-lines-v1:sha256:ac06602188581574a3c33ba4daa716609c6d177a031341eb2784dde8e7801192:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMwNjYwMjE4ODU4MTU3NGEzYzMzYmE0ZGFhNzE2NjA5YzZkMTc3YTAzMTM0MWViMjc4NGRkZThlNzgwMTE5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMwNjYwMjE4ODU4MTU3NGEzYzMzYmE0ZGFhNzE2NjA5YzZkMTc3YTAzMTM0MWViMjc4NGRkZThlNzgwMTE5MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZiMWNhOTgzOTBmN2NhMjM1Y2FlNmQzNWUzNDUxODg3MTRlYzkwOWFhODEwYjljMGU1OTU1M2VkMmNjOGM4MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjA5ZmE0YTkwOWEwOWIwNTg1ODU5NDEyY2U3Nzg1ZTM2ZjY5NTA2NTVlYzZhYTZhYjI5ZGE5OTk4ZWI2MWFmYSJ9"
+        },
+        {
+          "resource": "repo://AGENTS.md#L9-L9",
+          "version": "repo-lines-v1:sha256:ac06602188581574a3c33ba4daa716609c6d177a031341eb2784dde8e7801192:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMwNjYwMjE4ODU4MTU3NGEzYzMzYmE0ZGFhNzE2NjA5YzZkMTc3YTAzMTM0MWViMjc4NGRkZThlNzgwMTE5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMwNjYwMjE4ODU4MTU3NGEzYzMzYmE0ZGFhNzE2NjA5YzZkMTc3YTAzMTM0MWViMjc4NGRkZThlNzgwMTE5MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWRlMGU1Njk4MDFlN2M3Mzc1ZTQ2ZmY2MDlhODUwNzYzZGI2MTkyOTAwZDA1YWZjZTJmOGU5MjMyMjBhMGI2OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjE0ZTNkNDMwYjZhMzM5OTRhZGUwM2E4M2I1Yzg3NTNjN2ZjMmI2MWM0ZDY5MmI5YjljMGI5Y2VmZDc3NjhjMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_780424fd92f5492591aa93faa7f610e6",
+      "statement": "Integration tests combine real Postgres (via Testcontainers) with selective mocking of external services using `@golevelup/ts-vitest`'s `createMock<T>()`; mocks are declared at describe scope and instantiated in beforeAll, with `vi.hoisted()` for mocks needed before import.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L21-L66",
+          "version": "repo-lines-v1:sha256:50947371d9847b6b3816f98d30d8fa4c1b096e9626290e3b5247e81ec8ad2f9a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNmJlOTk1NzkzMWYxZGM1ZjVlYjRkODBjOWFjOTJhNzU4ZmZjZjI1ZjA3MTJkNmQwZDc0NWQ5ZGZmN2EzNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0MjVhNTYwOThjZGMwMWJhMmVkNTJlNmUxMDFmMDY4ODhhNWEyZjNlYjA1MzZmMTJkNGMwMmRjNGNiMzEyZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyN2ZlMTI4OWZhYTI3YjZjZWMzNTM5MmRmNWI1ZTUwMWE2MzJjMjJkNGIzODY3MWEyYjcxZDAzNzA2ZDA2YzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzZmRkMTdjZDJiOTM5ZjY0Yjk4NDg0MjQ2MTJiNGY5MmJiNTE0MTdkYmNkMGZkYTJkMWM5NzRlYmZlOGJiOTgifQ"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L15-L57",
+          "version": "repo-lines-v1:sha256:0af2dd98770f59dca6327479ef39f12011be16709995caf9b7b92551ccccff2d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhNDBjMjBkMzVkYzVmNDEyZDEwMzEwYzlkYmM3OGQ2MjkwOTUyNGJhYTJmNDZmMmM3OGM0MjhmMWNhZjk3ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxNmNhMzU2YmIzNDBlZWYyM2NhOWNlNzNmMzgxYjkyNjAwN2M2NWMwY2MyZjE4YzBiMTcyNzFhNmRmNDA0MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NTQzM2JiNDFhNWZlMTYxMzQ4ZDc5MTJiZDlhMDdjMzg0NmQ2MTgzMmMzZDZmNmMwODBiZTBkMTQ0ZWMzYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c6cf073d02d44f3b3ab30ed79c9b6bd",
+      "statement": "Repository mocks in NestJS DI tests use `getRepositoryToken(Entity)` as the provider token in the providers array (never imports), with the mock created via `createMock<Repository<Entity>>()` annotated as `DeepMocked<Repository<Entity>>` for type safety.",
+      "evidence": [
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L107-L130",
+          "version": "repo-lines-v1:sha256:ea9dd7cb1e82bc1b6e89a3f75759bbf97e7428d487e85e6409c2b4f82cac7c06:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MDUwZDJjN2JmOTM2NTg2ZjM0NTczNTg3MWI3YzYzOWE0YmQ0ZWMzYmY3YWQ1ZGEwODMyMmVhMDc0MmM3MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkNzk3MjNkYmQ5YmZiNTYwOGMxZjA2ZTI2MTc0NzRlMzVlZGNkYjhjMzMwYjRhMmY2ZDlhMTA3ZmM3NjQyOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMjljNGVkZmM4OWQyOTlkMTU2N2RhZTBlODZlMmQ1Mzg3NDk2ZmU2ODgyN2RmZThiYjhhOGU4ZGQwMTAxNGUifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/testing-mocks/SKILL.md#L340-L354",
+          "version": "repo-lines-v1:sha256:fd20a05a494f8c0398fa600cb548fdec403285e94fdb5850d4fd2a86740bb226:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwZTYzYjc0NWVmYmRlZDdmMWFiMjcyMTkyMGY0N2QzYzI1NTE5OTFlM2QzYzI5OGYzZjFjYTljNDk0MDE1NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlY2U5NjA2Y2FmOGI3ZDEyODg4Y2E0YTI4MzUwYTBmNzBiM2E3MjUzYzI3MzUwMmNlMjQxNmVlOTk0MmEwMTgifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-24T21:02:40.299Z"
+  }
+}
