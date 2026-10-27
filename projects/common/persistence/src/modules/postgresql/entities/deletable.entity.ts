@@ -1,13 +1,13 @@
 import { Column, DeleteDateColumn } from "typeorm";
 
-import { UpdatableEntity } from "./updatable.entity";
+import { PostgresqlUpdatableEntity } from "./updatable.entity";
 
 /**
  * Adds soft deletion: when a row was deleted and, optionally, who deleted
- * it. A table without soft deletion extends {@link UpdatableEntity} instead
+ * it. A table without soft deletion extends {@link PostgresqlUpdatableEntity} instead
  * and carries no `deletedAt`.
  */
-export abstract class DeletableEntity extends UpdatableEntity {
+export abstract class PostgresqlDeletableEntity extends PostgresqlUpdatableEntity {
   @DeleteDateColumn({
     comment: "Timestamp when the record was soft-deleted",
     nullable: true,

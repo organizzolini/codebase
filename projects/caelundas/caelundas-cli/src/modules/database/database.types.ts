@@ -1,6 +1,6 @@
 // 🏷️ Types
 import type { CalendarEvent } from "./entities/calendar-event.entity";
-import type { UpdatableEntity } from "@codebase/persistence";
+import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /**
  * A {@link CalendarEvent} as a detector builds it and a writer reads it:
@@ -13,7 +13,7 @@ import type { UpdatableEntity } from "@codebase/persistence";
  */
 export type DetectedCalendarEvent = Omit<
   CalendarEvent,
-  "latitude" | "longitude" | "timezone" | keyof UpdatableEntity
+  "latitude" | "longitude" | "timezone" | keyof PostgresqlUpdatableEntity
 > & {
   /** Raw tag strings, such as `aspects` and `moon`. */
   tags: string[];

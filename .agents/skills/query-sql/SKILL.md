@@ -25,7 +25,6 @@ Use this skill when you need to:
   | ----------- | ----------------------- | ----------- | ------------------------------------------- |
   | `lexico`    | `lexico_development`    | `lexico`    | `lexico_username` / `lexico_password`       |
   | `meanderaw` | `meanderaw_development` | `meanderaw` | `meanderaw_username` / `meanderaw_password` |
-  | `caelundas` | `caelundas_development` | `caelundas` | `caelundas_username` / `caelundas_password` |
 
   Lexico's dictionary and literature tables live in `lexico_development`.`lexico`, not in `postgres`.`public`.
 

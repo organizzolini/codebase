@@ -3,11 +3,14 @@ import type { DetectedCalendarEvent } from "../database/database.types";
 import type { CalendarEventTag } from "../database/entities/calendar-event-tag.entity";
 import type { CalendarEvent } from "../database/entities/calendar-event.entity";
 import type { TagPath } from "../tags/tags.types";
-import type { UpdatableEntity } from "@codebase/persistence";
+import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 
 /** The row an event becomes for one observer, before the database adds its own columns. */
-export type CalendarEventRow = Omit<CalendarEvent, keyof UpdatableEntity>;
+export type CalendarEventRow = Omit<
+  CalendarEvent,
+  keyof PostgresqlUpdatableEntity
+>;
 
 /** One link an upsert writes between an event and a node of the tag tree. */
 export type CalendarEventTagLink = Pick<

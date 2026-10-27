@@ -17,21 +17,21 @@ function withoutPostgresEnvironment(): Record<string, undefined> {
 }
 
 describe(MainModule, () => {
-  it("boots the command line with no Postgres environment and no connection, listing export and import", async () => {
+  it("boots the command line with no Postgres environment and no connection, listing postgresql-export and postgresql-import", async () => {
     const result = await runCliCommandLine({
       argv: ["--help"],
       env: withoutPostgresEnvironment(),
     });
 
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toMatch(/^\s+export\b/mu);
-    expect(result.stdout).toMatch(/^\s+import\b/mu);
+    expect(result.stdout).toMatch(/^\s+postgresql-export\b/mu);
+    expect(result.stdout).toMatch(/^\s+postgresql-import\b/mu);
     expect(result.stderr).toBe("");
   });
 
   it("validates a command's options without opening any connection", async () => {
     const result = await runCliCommandLine({
-      argv: ["export", "--data", "--file", "sample.dump"],
+      argv: ["postgresql-export", "--data", "--file", "sample.dump"],
       env: withoutPostgresEnvironment(),
     });
 

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -13,7 +13,16 @@ import type {
   SqlValue,
 } from "../src/types/events-database.types";
 
-const DATA_DIRECTORY = path.join(import.meta.dirname, "../data");
+// The database belongs to caelundas-cli: its tables are what its migration
+// creates, and its seed rows and the SQL that rewrites its read model are its
+// data files. They
+// are read, never copied, so the web application's tests cannot drift from it.
+const CLI_ROOT = path.join(import.meta.dirname, "../../caelundas-cli");
+const DATA_DIRECTORY = path.join(CLI_ROOT, "data");
+const MIGRATIONS_DIRECTORY = path.join(
+  CLI_ROOT,
+  "src/modules/database/migrations",
+);
 
 /**
  * Which of the committed SQL files build a test's database.
@@ -24,7 +33,7 @@ export interface TestEventsDatabaseOptions {
    */
   empty?: boolean;
   /**
-   * More SQL run after the seed and before the post-export SQL, such as rows
+   * More SQL run after the seed and before the read-model SQL, such as rows
    * for a dimension the seed lacks.
    */
   extraSql?: string;
@@ -121,39 +130,27 @@ export function createTestSqlExecutor(
   options: TestEventsDatabaseOptions = {},
 ): SqlExecutor {
   const database = new DatabaseSync(":memory:");
-  const fileNames = options.empty
-    ? ["events-schema.sql"]
-    : ["events-schema.sql", "events-seed.sql"];
+  database.exec(readTablesSql());
 
-  for (const fileName of fileNames) {
-    database.exec(readFileSync(path.join(DATA_DIRECTORY, fileName), "utf8"));
+  if (options.empty !== true) {
+    database.exec(
+      readFileSync(path.join(DATA_DIRECTORY, "events-seed.sql"), "utf8"),
+    );
   }
 
-  // Extra rows go in with the seed, before the post-export SQL derives its
-  // tables from them, as the export's rows would.
+  // Extra rows go in with the seed, before the read-model SQL derives its
+  // tables from them, as a run's rows would.
   if (options.extraSql !== undefined) {
     database.exec(options.extraSql);
   }
 
   database.exec(
-    readFileSync(path.join(DATA_DIRECTORY, "events-views.sql"), "utf8"),
+    readFileSync(path.join(DATA_DIRECTORY, "events-read-model.sql"), "utf8"),
   );
 
   registerLocalTimeFunctions(database);
 
   return createNodeSqliteExecutor(database);
-}
-
-/**
- * Opens a built SQLite file read-only, the way the browser's worker opens the
- * file the build bundles, and returns the events database over it.
- */
-export function openTestEventsDatabase(file: string): EventsDatabase {
-  const database = new DatabaseSync(file, { readOnly: true });
-
-  registerLocalTimeFunctions(database);
-
-  return createEventsDatabase(createNodeSqliteExecutor(database));
 }
 
 /**
@@ -170,6 +167,18 @@ function createNodeSqliteExecutor(database: DatabaseSync): SqlExecutor {
       });
     },
   };
+}
+
+/**
+ * The SQL that creates the tables and the read model: every migration's
+ * generated `-up.sql`, in order.
+ */
+function readTablesSql(): string {
+  return readdirSync(MIGRATIONS_DIRECTORY)
+    .filter((name) => name.endsWith("-up.sql"))
+    .toSorted()
+    .map((name) => readFileSync(path.join(MIGRATIONS_DIRECTORY, name), "utf8"))
+    .join("\n");
 }
 
 /**

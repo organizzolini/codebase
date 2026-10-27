@@ -1,6 +1,6 @@
 import { Entity, Index, ManyToOne, OneToMany, TableInheritance } from "typeorm";
 
-import { DeletableEntity } from "@codebase/persistence";
+import { PostgresqlDeletableEntity } from "@codebase/persistence";
 
 import type { Lexeme } from "../lexeme.entity";
 import type { WordForm } from "../word-form.entity";
@@ -14,7 +14,7 @@ import type { WordForm } from "../word-form.entity";
   name: "forms",
 })
 @TableInheritance({ column: { name: "type", type: "text" } })
-export class Form extends DeletableEntity {
+export class Form extends PostgresqlDeletableEntity {
   @Index()
   @ManyToOne("Lexeme", "forms", {
     nullable: false,

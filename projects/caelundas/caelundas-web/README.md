@@ -13,33 +13,27 @@ This serves the committed seed: a handful of events from `data/events-seed.sql`.
 ## Build with real events
 
 The app bundles one SQLite file, `output/events.sqlite`, which is gitignored
-and rebuilt before every build. To fill it with the events `caelundas-cli`
-calculates instead of the seed:
+and rebuilt before every build by `scripts/build-events-database.ts`. To fill
+it with the events `caelundas-cli` calculates instead of the seed:
 
 ```bash
-# 1. Start the local Postgres container, which creates the caelundas role,
-#    database and schema on an empty volume (it reads the root .env)
-nx run infrastructure:postgres:up
-
-# 2. Ingest events into the caelundas schema (see caelundas-cli's README)
+# 1. Ingest events; the first run creates caelundas-cli/output/database.sqlite,
+#    and every run leaves the read model this app queries up to date in it
 nx run caelundas-cli:download-ephemeris
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
-nx run caelundas-cli:migration:run
 nx run caelundas-cli:start
 
-# 3. Export those tables, apply the app's views, and build
-nx run caelundas-web:build:export
-nx run caelundas-web:preview:export   # or start:export for the dev server
+# 2. Copy that file and build
+nx run caelundas-web:build:ingested
+nx run caelundas-web:preview:ingested   # or start:ingested for the dev server
 ```
 
-The `export` configuration of `build-database`, which `build`, `start` and
-`preview` pass down, runs `persistence export --sqlite` over the
-`calendar_events`, `tags`, `tags_closure` and `calendar_event_tags` tables
-into `output/events-export.sqlite`, then applies `data/events-views.sql` over
-a copy of it. It connects as ingestion does: the `CAELUNDAS_POSTGRES_*`
-variables in the shell, then those in `caelundas-cli/.env`, then the local
-defaults. When nothing answers at that address it stops, naming it, and the
-last built file is left in place.
+The `ingested` configuration of `build-database`, which `build`, `start` and
+`preview` pass down, copies `caelundas-cli/output/database.sqlite` to
+`output/events.sqlite`, and stops, naming the file, when it does not exist yet.
+Without it the build creates a database from `caelundas-cli`'s migration and
+the committed rows in `caelundas-cli/data/events-seed.sql`, which tests and CI
+rely on.
 
 ## Test
 
@@ -59,13 +53,13 @@ Call stacks traced through `projects/caelundas/caelundas-web`, deepest first. Ea
 
 | Measure | Value |
 | --- | --- |
-| Callables | 502 |
-| Files | 190 |
-| Calls traced | 475 |
-| Call stacks | 81 |
+| Callables | 493 |
+| Files | 189 |
+| Calls traced | 464 |
+| Call stacks | 80 |
 | Deepest stack | 6 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 86 |
+| Unfollowable calls | 85 |
 
 ### Limits
 
@@ -126,7 +120,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>78 more call stacks</summary>
+<summary>77 more call stacks</summary>
 
 **4. `CalendarAgenda`** — depth 6 · orphan-root
 
@@ -223,19 +217,7 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> every(…)(value: EventFacetValue): boolean [projects/caelundas/caelundas-web/src/utilities/event-filter-fields.utilities.ts:91]
 ```
 
-**10. `exportEventsDatabase`** — depth ≥ 5 · orphan-root
-
-```text
-🚀 exportEventsDatabase(file: string): Promise<void> [projects/caelundas/caelundas-web/scripts/export-events-database.ts:64]
-   ↳ Exports the ingested tables to a new SQLite `file`.
-  └─> isReachable({ host, port, }: PostgresConnection): Promise<boolean> [projects/caelundas/caelundas-web/scripts/export-events-database.ts:103]
-     ↳ Whether something accepts a TCP connection at the connection's address.
-    └─> anonymous(resolve: (value: boolean | PromiseLike<boolean>) => void): void [projects/caelundas/caelundas-web/scripts/export-events-database.ts:107]
-      └─> setTimeout(…)(): void [projects/caelundas/caelundas-web/scripts/export-events-database.ts:114]
-        └─> settle(reachable: boolean): void [projects/caelundas/caelundas-web/scripts/export-events-database.ts:109]
-```
-
-**11. `handleQueryChange`** — depth ≥ 5 · orphan-root
+**10. `handleQueryChange`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 handleQueryChange(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:51]
@@ -249,7 +231,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Compiles a numeric comparison over a SQL expression for the events whose number meets it. `neq` and "is not between"…
 ```
 
-**12. `CalendarCollectionPicker`** — depth 5 · orphan-root
+**11. `CalendarCollectionPicker`** — depth 5 · orphan-root
 
 ```text
 🚀 CalendarCollectionPicker(properties: Readonly<CalendarCollectionPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:42]
@@ -264,7 +246,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Compiles a numeric comparison over a SQL expression for the events whose number meets it. `neq` and "is not between"…
 ```
 
-**13. `CalendarColorBy`** — depth 5 · orphan-root
+**12. `CalendarColorBy`** — depth 5 · orphan-root
 
 ```text
 🚀 CalendarColorBy(properties: Readonly<CalendarColorByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-color-by.tsx:44]
@@ -279,7 +261,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Reads what a tag option carries beyond its label, or nothing for an option of another kind.
 ```
 
-**14. `CalendarOverflowList`** — depth 5 · orphan-root
+**13. `CalendarOverflowList`** — depth 5 · orphan-root
 
 ```text
 🚀 CalendarOverflowList(properties: Readonly<CalendarOverflowListProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.tsx:40]
@@ -293,7 +275,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Writes the day an instant falls on in a zone as a `YYYY-MM-DD` search parameter, the way the calendar's navigation…
 ```
 
-**15. `describeDataset`** — depth ≥ 5 · orphan-root
+**14. `describeDataset`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 describeDataset(): Promise<EventsDataset | null> [projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:28]
@@ -306,7 +288,7 @@ What this project is judged against, as declared in its own `callidescope.config
            ↳ Reads a column the schema declares `not null` as text.
 ```
 
-**16. `findEvents`** — depth ≥ 5 · orphan-root
+**15. `findEvents`** — depth ≥ 5 · orphan-root
 
 ```text
 🚀 findEvents(query: EventsQuery): Promise<CalendarEventRecord[]> [projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:34]
@@ -317,7 +299,7 @@ What this project is judged against, as declared in its own `callidescope.config
         └─> replace(…)(): string [projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:161]
 ```
 
-**17. `addEventListener(…)`** — depth 4 · orphan-root
+**16. `addEventListener(…)`** — depth 4 · orphan-root
 
 ```text
 🚀 addEventListener(…)(event: MessageEvent<WorkerRequest>): void [projects/caelundas/caelundas-web/src/events-database.worker.ts:83]
@@ -329,7 +311,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ Every local-time function by the name SQL calls it.
 ```
 
-**18. `GroupLevelRow`** — depth 4 · orphan-root
+**17. `GroupLevelRow`** — depth 4 · orphan-root
 
 ```text
 🚀 GroupLevelRow(properties: Readonly<GroupLevelRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:50]
@@ -340,7 +322,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> find(…)(candidate: FilterOption<unknown>): boolean [projects/caelundas/caelundas-web/src/components/group-level-row.utilities.ts:25]
 ```
 
-**19. `CalendarGroupBy`** — depth 4 · orphan-root
+**18. `CalendarGroupBy`** — depth 4 · orphan-root
 
 ```text
 🚀 CalendarGroupBy(properties: Readonly<CalendarGroupByProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:41]
@@ -352,7 +334,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ What a tag root means, for the list of attributes: its own description, or a plain one from its name for a root added…
 ```
 
-**20. `EventGlyphs`** — depth 4 · orphan-root
+**19. `EventGlyphs`** — depth 4 · orphan-root
 
 ```text
 🚀 EventGlyphs(properties: Readonly<EventGlyphsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/event-glyphs.tsx:26]
@@ -364,7 +346,7 @@ What this project is judged against, as declared in its own `callidescope.config
       └─> filter(…)(character: string): boolean [projects/caelundas/caelundas-web/src/utilities/calendar-icons.utilities.ts:76]
 ```
 
-**21. `measure`** — depth ≥ 4 · orphan-root
+**20. `measure`** — depth ≥ 4 · orphan-root
 
 ```text
 🚀 measure(): void [projects/caelundas/caelundas-web/src/components/calendar-timeline.utilities.ts:38]
@@ -376,7 +358,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ The first row whose bottom edge lies below a pixel, or the row count when none does.
 ```
 
-**22. `colorOf`** — depth 3 · orphan-root
+**21. `colorOf`** — depth 3 · orphan-root
 
 ```text
 🚀 colorOf(event: CalendarEventRecord): string | null [projects/caelundas/caelundas-web/src/utilities/calendar-color-schemes.utilities.ts:57]
@@ -386,7 +368,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The color at a position in the palette, which starts over after its last.
 ```
 
-**23. `close`** — depth ≥ 3 · orphan-root
+**22. `close`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 close(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:112]
@@ -394,7 +376,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> setExpanded(…)(previous: Set<string>): Set<string> [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:70]
 ```
 
-**24. `open`** — depth ≥ 3 · orphan-root
+**23. `open`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 open(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:119]
@@ -402,7 +384,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> setExpanded(…)(previous: Set<string>): Set<string> [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:70]
 ```
 
-**25. `CalendarColorOptions`** — depth 3 · orphan-root
+**24. `CalendarColorOptions`** — depth 3 · orphan-root
 
 ```text
 🚀 CalendarColorOptions(properties: Readonly<CalendarColorOptionsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-color-options.tsx:34]
@@ -413,7 +395,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ What a tag root means, for the list of attributes: its own description, or a plain one from its name for a root added…
 ```
 
-**26. `SkeletonBody`** — depth 3 · orphan-root
+**25. `SkeletonBody`** — depth 3 · orphan-root
 
 ```text
 🚀 SkeletonBody(properties: Readonly<SkeletonBodyProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/skeleton-body.tsx:29]
@@ -422,7 +404,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> map(…)(height: "h-8" | "h-12" | "h-16", index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/skeleton-body.tsx:99]
 ```
 
-**27. `anonymous`** — depth ≥ 3 · orphan-root
+**26. `anonymous`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 anonymous(next: EventGroupLevel | null): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:93]
@@ -430,7 +412,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> flatMap(…)(this: undefined, current: EventGroupLevel, position: number): EventGroupLevel[] [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:59]
 ```
 
-**28. `CalendarViewOptions`** — depth 3 · orphan-root
+**27. `CalendarViewOptions`** — depth 3 · orphan-root
 
 ```text
 🚀 CalendarViewOptions(properties: Readonly<CalendarViewOptionsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-options.tsx:48]
@@ -441,7 +423,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ What a tag root means, for the list of attributes: its own description, or a plain one from its name for a root added…
 ```
 
-**29. `EventTagPills`** — depth 3 · orphan-root
+**28. `EventTagPills`** — depth 3 · orphan-root
 
 ```text
 🚀 EventTagPills(properties: Readonly<EventTagPillsProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/event-tag-pills.tsx:23]
@@ -451,7 +433,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The color of a tag's tree: one for each tag root, so every tag beneath a root shares it.
 ```
 
-**30. `CalendarEventRow`** — depth 3 · orphan-root
+**29. `CalendarEventRow`** — depth 3 · orphan-root
 
 ```text
 🚀 CalendarEventRow(properties: Readonly<CalendarEventRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-row.tsx:40]
@@ -461,7 +443,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> map(…)([count, unit]: [number, DurationUnit]): string [projects/caelundas/caelundas-web/src/utilities/calendar-format.utilities.ts:51]
 ```
 
-**31. `VirtualList`** — depth ≥ 3 · orphan-root
+**30. `VirtualList`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 VirtualList<Row>(properties: Readonly<VirtualListProperties<Row>>): ReactNode [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:55]
@@ -471,7 +453,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Lays rows of the given heights end to end, returning each row's top and, last, the height of them all.
 ```
 
-**32. `handleScroll`** — depth ≥ 3 · orphan-root
+**31. `handleScroll`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 handleScroll(event: UIEvent<HTMLDivElement>): void [projects/caelundas/caelundas-web/src/components/virtual-list.tsx:93]
@@ -481,7 +463,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The first row whose bottom edge lies below a pixel, or the row count when none does.
 ```
 
-**33. `handleEventClick`** — depth ≥ 3 · orphan-root
+**32. `handleEventClick`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 handleEventClick(occurrence: GanttOccurrence<TimelineBar>): void [projects/caelundas/caelundas-web/src/hooks/use-bar-dialog/use-bar-dialog.ts:35]
@@ -491,7 +473,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**34. `anonymous`** — depth ≥ 3 · orphan-root
+**33. `anonymous`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 anonymous(next: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:103]
@@ -500,7 +482,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Reads a value as a view, or nothing when it names none, such as a stale link's or an unpressed toggle's.
 ```
 
-**35. `findFacets`** — depth ≥ 3 · orphan-root
+**34. `findFacets`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 findFacets(window?: EventsWindow | undefined): Promise<EventFacet[]> [projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:56]
@@ -510,7 +492,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Reads a column the schema declares `not null` as text.
 ```
 
-**36. `select`** — depth ≥ 3 · orphan-root
+**35. `select`** — depth ≥ 3 · orphan-root
 
 ```text
 🚀 select(…): Promise<Readonly<Record<string, unknown>>[]> [projects/caelundas/caelundas-web/src/utilities/events-database-browser.utilities.ts:35]
@@ -519,7 +501,7 @@ What this project is judged against, as declared in its own `callidescope.config
     └─> UnsupportedBrowserError.constructor(): UnsupportedBrowserError [projects/caelundas/caelundas-web/src/constants/events-database.constants.ts:131]
 ```
 
-**37. `getRouter`** — depth 3 · orphan-root
+**36. `getRouter`** — depth 3 · orphan-root
 
 ```text
 🚀 getRouter(): Router<typeof routeTree> [projects/caelundas/caelundas-web/src/router.tsx:10]
@@ -530,7 +512,7 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ Builds the events database over any executor.
 ```
 
-**38. `localDate`** — depth 2 · orphan-root
+**37. `localDate`** — depth 2 · orphan-root
 
 ```text
 🚀 localDate(instant: unknown, timeZone: unknown): null | string [projects/caelundas/caelundas-web/src/utilities/events-database-local-time.utilities.ts:27]
@@ -539,7 +521,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
 ```
 
-**39. `localHour`** — depth 2 · orphan-root
+**38. `localHour`** — depth 2 · orphan-root
 
 ```text
 🚀 localHour(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/utilities/events-database-local-time.utilities.ts:34]
@@ -548,7 +530,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
 ```
 
-**40. `localWeekday`** — depth 2 · orphan-root
+**39. `localWeekday`** — depth 2 · orphan-root
 
 ```text
 🚀 localWeekday(instant: unknown, timeZone: unknown): null | number [projects/caelundas/caelundas-web/src/utilities/events-database-local-time.utilities.ts:44]
@@ -557,7 +539,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Writes one part of an instant in a zone, keeping one formatter per part and zone, or `null` when the instant or the…
 ```
 
-**41. `OutsideDataset`** — depth 2 · orphan-root
+**40. `OutsideDataset`** — depth 2 · orphan-root
 
 ```text
 🚀 OutsideDataset(properties: Readonly<OutsideDatasetProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/outside-dataset.tsx:30]
@@ -565,14 +547,14 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> format(date: Date): string [projects/caelundas/caelundas-web/src/components/outside-dataset.tsx:38]
 ```
 
-**42. `transform(…)`** — depth 2 · orphan-root
+**41. `transform(…)`** — depth 2 · orphan-root
 
 ```text
 🚀 transform(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/constants/events-database.constants.ts:157]
   └─> flatMap(…)(…): { key: string; label: string | null; path: string | null; }[] [projects/caelundas/caelundas-web/src/constants/events-database.constants.ts:158]
 ```
 
-**43. `handleCollectionSelect`** — depth ≥ 2 · orphan-root
+**42. `handleCollectionSelect`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 handleCollectionSelect(next: EventFilterQuery): void [projects/caelundas/caelundas-web/src/hooks/use-filter-query/use-filter-query.ts:61]
@@ -580,14 +562,14 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ The filter a link should hold for a tree.
 ```
 
-**44. `handleChange`** — depth ≥ 2 · orphan-root
+**43. `handleChange`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 handleChange(picked: unknown): void [projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:70]
   └─> find(…)(candidate: ResolvedEventFilterCollection): boolean [projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:71]
 ```
 
-**45. `getEventColor`** — depth 2 · orphan-root
+**44. `getEventColor`** — depth 2 · orphan-root
 
 ```text
 🚀 getEventColor(event: CalendarEventRecord): null | string [projects/caelundas/caelundas-web/src/utilities/calendar-colors.utilities.ts:32]
@@ -596,14 +578,14 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ The kind of an event: the most specific rule any of its tags falls under, or none when no rule does.
 ```
 
-**46. `duration`** — depth 2 · orphan-root
+**45. `duration`** — depth 2 · orphan-root
 
 ```text
 🚀 duration(key: string): string [projects/caelundas/caelundas-web/src/constants/event-group-labels.constants.ts:16]
   └─> find(…)(…): boolean [projects/caelundas/caelundas-web/src/constants/event-group-labels.constants.ts:17]
 ```
 
-**47. `week`** — depth 2 · orphan-root
+**46. `week`** — depth 2 · orphan-root
 
 ```text
 🚀 week(key: string): string [projects/caelundas/caelundas-web/src/constants/event-group-labels.constants.ts:35]
@@ -611,7 +593,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Writes a `YYYY-MM-DD` day in full, such as "Wednesday, March 4, 2026".
 ```
 
-**48. `GroupFieldPicker`** — depth 2 · orphan-root
+**47. `GroupFieldPicker`** — depth 2 · orphan-root
 
 ```text
 🚀 GroupFieldPicker(properties: Readonly<GroupFieldPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:50]
@@ -619,14 +601,14 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> find(…)(field: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:72]
 ```
 
-**49. `handleSelect`** — depth ≥ 2 · orphan-root
+**48. `handleSelect`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 handleSelect(picked: string): void [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:75]
   └─> find(…)(field: EventGroupField): boolean [projects/caelundas/caelundas-web/src/components/group-field-picker.tsx:76]
 ```
 
-**50. `handleSearchKeyDown`** — depth ≥ 2 · orphan-root
+**49. `handleSearchKeyDown`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:82]
@@ -634,7 +616,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
 ```
 
-**51. `down`** — depth 2 · orphan-root
+**50. `down`** — depth 2 · orphan-root
 
 ```text
 🚀 down(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:115]
@@ -642,7 +624,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
 ```
 
-**52. `up`** — depth 2 · orphan-root
+**51. `up`** — depth 2 · orphan-root
 
 ```text
 🚀 up(): void [projects/caelundas/caelundas-web/src/hooks/use-tag-picker/use-tag-picker.ts:125]
@@ -650,7 +632,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Moves focus to the row a number of rows from an element, among the rows of its list; from the search box, where the…
 ```
 
-**53. `GroupTagPicker`** — depth 2 · orphan-root
+**52. `GroupTagPicker`** — depth 2 · orphan-root
 
 ```text
 🚀 GroupTagPicker(properties: Readonly<GroupTagPickerProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/group-tag-picker.tsx:35]
@@ -658,7 +640,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> filter(…)(option: FilterOption<unknown>): boolean [projects/caelundas/caelundas-web/src/components/group-tag-picker.tsx:48]
 ```
 
-**54. `anonymous`** — depth ≥ 2 · orphan-root
+**53. `anonymous`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 anonymous(next: EventGroupField): void [projects/caelundas/caelundas-web/src/components/group-level-row.tsx:87]
@@ -666,21 +648,21 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ A field's first level: a tag root's children, or the derived value.
 ```
 
-**55. `anonymous`** — depth ≥ 2 · orphan-root
+**54. `anonymous`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:80]
   └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:46]
 ```
 
-**56. `anonymous`** — depth ≥ 2 · orphan-root
+**55. `anonymous`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 anonymous(event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:92]
   └─> handleChange(index: 0 | 1, day: string): void [projects/caelundas/caelundas-web/src/components/filter-date-range-editor.tsx:46]
 ```
 
-**57. `FilterChipRow`** — depth 2 · orphan-root
+**56. `FilterChipRow`** — depth 2 · orphan-root
 
 ```text
 🚀 FilterChipRow(properties: Readonly<FilterChipRowProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/filter-chip-row.tsx:30]
@@ -688,7 +670,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> map(…)(rule: FilterRule<EventFilterValue>, index: number): React.JSX.Element [projects/caelundas/caelundas-web/src/components/filter-chip-row.tsx:59]
 ```
 
-**58. `subscribeToDesktopViewport`** — depth 2 · orphan-root
+**57. `subscribeToDesktopViewport`** — depth 2 · orphan-root
 
 ```text
 🚀 subscribeToDesktopViewport(onChange: () => void): () => void [projects/caelundas/caelundas-web/src/utilities/calendar-viewport.utilities.ts:25]
@@ -697,7 +679,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Watches a media query, returning how to stop.
 ```
 
-**59. `subscribeToViewport`** — depth 2 · orphan-root
+**58. `subscribeToViewport`** — depth 2 · orphan-root
 
 ```text
 🚀 subscribeToViewport(onChange: () => void): () => void [projects/caelundas/caelundas-web/src/utilities/calendar-viewport.utilities.ts:33]
@@ -706,7 +688,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Watches a media query, returning how to stop.
 ```
 
-**60. `CalendarSkeleton`** — depth 2 · orphan-root
+**59. `CalendarSkeleton`** — depth 2 · orphan-root
 
 ```text
 🚀 CalendarSkeleton(properties: Readonly<CalendarSkeletonProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-skeleton.tsx:37]
@@ -715,7 +697,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ The view to show when the link names none: the agenda, which reads at a phone's width, or the whole month on anything…
 ```
 
-**61. `anonymous`** — depth ≥ 2 · orphan-root
+**60. `anonymous`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 anonymous(): void [projects/caelundas/caelundas-web/src/components/calendar-group-by.tsx:104]
@@ -723,7 +705,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ A field's first level: a tag root's children, or the derived value.
 ```
 
-**62. `CalendarScaleSelect`** — depth 2 · orphan-root
+**61. `CalendarScaleSelect`** — depth 2 · orphan-root
 
 ```text
 🚀 CalendarScaleSelect(properties: Readonly<CalendarScaleSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:29]
@@ -731,7 +713,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> map(…)(option: "day" | "month" | "quarter" | "week" | "year"): React.JSX.Element [projects/caelundas/caelundas-web/src/components/calendar-scale-select.tsx:51]
 ```
 
-**63. `getRowHeight`** — depth 2 · orphan-root
+**62. `getRowHeight`** — depth 2 · orphan-root
 
 ```text
 🚀 getRowHeight(record: CalendarEventRecord, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-cluster-dialog.utilities.ts:15]
@@ -740,7 +722,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
 ```
 
-**64. `getAgendaRowHeight`** — depth 2 · orphan-root
+**63. `getAgendaRowHeight`** — depth 2 · orphan-root
 
 ```text
 🚀 getAgendaRowHeight(row: AgendaListRow, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-agenda.utilities.ts:20]
@@ -749,7 +731,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
 ```
 
-**65. `AgendaRowContent`** — depth 2 · orphan-root
+**64. `AgendaRowContent`** — depth 2 · orphan-root
 
 ```text
 🚀 AgendaRowContent(properties: Readonly<AgendaRowContentProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/agenda-row-content.tsx:35]
@@ -758,7 +740,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Writes a `YYYY-MM-DD` day in full, such as "Wednesday, March 4, 2026".
 ```
 
-**66. `CalendarEventTooltip`** — depth 2 · orphan-root
+**65. `CalendarEventTooltip`** — depth 2 · orphan-root
 
 ```text
 🚀 CalendarEventTooltip(properties: Readonly<CalendarEventTooltipProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-tooltip.tsx:41]
@@ -767,7 +749,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**67. `CalendarEventChip`** — depth 2 · orphan-root
+**66. `CalendarEventChip`** — depth 2 · orphan-root
 
 ```text
 🚀 CalendarEventChip(properties: Readonly<CalendarEventChipProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-event-chip.tsx:34]
@@ -776,7 +758,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Splits an event's summary, which an ingested event writes as its symbols followed by its name in English, into the two.
 ```
 
-**68. `CalendarGridNavigation`** — depth ≥ 2 · orphan-root
+**67. `CalendarGridNavigation`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 CalendarGridNavigation(properties: Readonly<CalendarGridNavigationProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-grid-navigation.tsx:24]
@@ -784,7 +766,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> useLayoutEffect(…)(): void [projects/caelundas/caelundas-web/src/components/calendar-grid-navigation.tsx:40]
 ```
 
-**69. `getRowHeight`** — depth 2 · orphan-root
+**68. `getRowHeight`** — depth 2 · orphan-root
 
 ```text
 🚀 getRowHeight(row: Readonly<{ record: CalendarEventRecord; }>, width: number): number [projects/caelundas/caelundas-web/src/components/calendar-overflow-list.utilities.ts:15]
@@ -793,7 +775,7 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ How tall an event row is drawn in a list `width` pixels wide: as tall as its name and duration, and a line for every…
 ```
 
-**70. `TimelineNavigation`** — depth ≥ 2 · orphan-root
+**69. `TimelineNavigation`** — depth ≥ 2 · orphan-root
 
 ```text
 🚀 TimelineNavigation(properties: Readonly<TimelineNavigationProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/timeline-navigation.tsx:24]
@@ -801,7 +783,7 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> useLayoutEffect(…)(): void [projects/caelundas/caelundas-web/src/components/timeline-navigation.tsx:40]
 ```
 
-**71. `CalendarViewSelect`** — depth 2 · orphan-root
+**70. `CalendarViewSelect`** — depth 2 · orphan-root
 
 ```text
 🚀 CalendarViewSelect(properties: Readonly<CalendarViewSelectProperties>): ReactNode [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:51]
@@ -809,70 +791,70 @@ What this project is judged against, as declared in its own `callidescope.config
   └─> map(…)(…): Element [projects/caelundas/caelundas-web/src/components/calendar-view-select.tsx:108]
 ```
 
-**72. `anonymous`** — depth 2 · orphan-root
+**71. `anonymous`** — depth 2 · orphan-root
 
 ```text
 🚀 anonymous(): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:42]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**73. `handleClustersChange`** — depth 2 · orphan-root
+**72. `handleClustersChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleClustersChange(enabled: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:54]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**74. `handleColorByChange`** — depth 2 · orphan-root
+**73. `handleColorByChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleColorByChange(color: EventGroupLevel | undefined): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:57]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**75. `handleColorsChange`** — depth 2 · orphan-root
+**74. `handleColorsChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleColorsChange(enabled: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:60]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**76. `handleDateChange`** — depth 2 · orphan-root
+**75. `handleDateChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleDateChange(date: Date): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:63]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**77. `handleFilterChange`** — depth 2 · orphan-root
+**76. `handleFilterChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleFilterChange(filter: EventFilterQuery): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:66]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**78. `handleGroupingChange`** — depth 2 · orphan-root
+**77. `handleGroupingChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleGroupingChange(group: EventGrouping): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:69]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**79. `handleScaleChange`** — depth 2 · orphan-root
+**78. `handleScaleChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleScaleChange(scale: "day" | "month" | "quarter" | "week" | "year"): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:72]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**80. `handleSymbolsChange`** — depth 2 · orphan-root
+**79. `handleSymbolsChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleSymbolsChange(symbols: CalendarSymbols): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:75]
   └─> updateSearch(change: Partial<CalendarSearch>, replace?: boolean): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:26]
 ```
 
-**81. `handleViewChange`** — depth 2 · orphan-root
+**80. `handleViewChange`** — depth 2 · orphan-root
 
 ```text
 🚀 handleViewChange(view: "day" | "month" | "week" | "three-day" | "agenda" | "timeline"): void [projects/caelundas/caelundas-web/src/hooks/use-calendar-search/use-calendar-search.ts:81]
@@ -890,7 +872,7 @@ What this project is judged against, as declared in its own `callidescope.config
 | `CalendarTimeline` | 8 | `useBarDialog`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useMemo(…)`, `useCallback(…)`, `useMemo(…)`, `useEffect(…)` | `projects/caelundas/caelundas-web/src/components/calendar-timeline.tsx:91` |
 
 <details>
-<summary>231 more callables</summary>
+<summary>224 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
@@ -918,8 +900,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `findEvents` | 4 | `replace(…)`, `replace(…)`, `flatMap(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:34` |
 | `toEventRecord` | 4 | `readText`, `readRequiredText`, `readDate`, `from(…)` | `projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:106` |
 | `select` | 4 | `startWorker`, `listen`, `addEventListener(…)`, `anonymous` | `projects/caelundas/caelundas-web/src/utilities/events-database-browser.utilities.ts:35` |
-| `exportEventsDatabase` | 3 | `readConnection`, `isReachable`, `toExportArguments` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:64` |
-| `anonymous` | 3 | `setTimeout(…)`, `once(…)`, `once(…)` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:107` |
 | `addEventListener(…)` | 3 | `then(…)`, `then(…)`, `select` | `projects/caelundas/caelundas-web/src/events-database.worker.ts:83` |
 | `CalendarCollectionPicker` | 3 | `compileEventFilter`, `map(…)`, `map(…)` | `projects/caelundas/caelundas-web/src/components/calendar-collection-picker.tsx:42` |
 | `toTagField` | 3 | `isNumericFacet`, `describeRoot`, `createTagOptions` | `projects/caelundas/caelundas-web/src/utilities/event-filter-fields.utilities.ts:98` |
@@ -976,11 +956,6 @@ What this project is judged against, as declared in its own `callidescope.config
 | `loader` | 2 | `loadCalendar`, `validateCalendarSearch` | `projects/caelundas/caelundas-web/src/routes/index.tsx:63` |
 | `toDataset` | 2 | `readDate`, `readRequiredText` | `projects/caelundas/caelundas-web/src/utilities/events-database.utilities.ts:93` |
 | `createBrowserEventsDatabase` | 2 | `createEventsDatabase`, `createWorkerSqlExecutor` | `projects/caelundas/caelundas-web/src/utilities/events-database-browser.utilities.ts:21` |
-| `isReachable` | 1 | `anonymous` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:103` |
-| `setTimeout(…)` | 1 | `settle` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:114` |
-| `once(…)` | 1 | `settle` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:117` |
-| `once(…)` | 1 | `settle` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:120` |
-| `toExportArguments` | 1 | `flatMap(…)` | `projects/caelundas/caelundas-web/scripts/export-events-database.ts:148` |
 | `localDate` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/utilities/events-database-local-time.utilities.ts:27` |
 | `localHour` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/utilities/events-database-local-time.utilities.ts:34` |
 | `localWeekday` | 1 | `formatLocalPart` | `projects/caelundas/caelundas-web/src/utilities/events-database-local-time.utilities.ts:44` |
@@ -1135,36 +1110,36 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### Project
 
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-21535-22c55e?style=flat-square)
-![Repository Size](https://img.shields.io/badge/Repository_Size-794.94_kB-6b7280?style=flat-square)
-![Folders](https://img.shields.io/badge/Folders-15-4a4a4a?style=flat-square)
-![Source Files](https://img.shields.io/badge/Source_Files-160-3178c6?style=flat-square)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-21195-22c55e?style=flat-square)
+![Repository Size](https://img.shields.io/badge/Repository_Size-774.64_kB-6b7280?style=flat-square)
+![Folders](https://img.shields.io/badge/Folders-14-4a4a4a?style=flat-square)
+![Source Files](https://img.shields.io/badge/Source_Files-158-3178c6?style=flat-square)
 
 ### TypeScript
 
-![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-160-3178c6?style=flat-square)
-![Interfaces](https://img.shields.io/badge/Interfaces-98-0ea5e9?style=flat-square)
+![TypeScript Files](https://img.shields.io/badge/TypeScript_Files-158-3178c6?style=flat-square)
+![Interfaces](https://img.shields.io/badge/Interfaces-97-0ea5e9?style=flat-square)
 ![Generic Declarations](https://img.shields.io/badge/Generic_Declarations-2-0369a1?style=flat-square)
 ![Enums](https://img.shields.io/badge/Enums-0-f97316?style=flat-square)
 ![Decorators](https://img.shields.io/badge/Decorators-0-db2777?style=flat-square)
-![Doc Comments](https://img.shields.io/badge/Doc_Comments-511-6366f1?style=flat-square)
+![Doc Comments](https://img.shields.io/badge/Doc_Comments-502-6366f1?style=flat-square)
 ![Static Methods](https://img.shields.io/badge/Static_Methods-0-166534?style=flat-square)
 
 ### JavaScript
 
 ![JavaScript Files](https://img.shields.io/badge/JavaScript_Files-0-f7df1e?style=flat-square)
-![Test Files](https://img.shields.io/badge/Test_Files-62-10b981?style=flat-square)
-![External Packages](https://img.shields.io/badge/External_Packages-20-8b5cf6?style=flat-square)
+![Test Files](https://img.shields.io/badge/Test_Files-61-10b981?style=flat-square)
+![External Packages](https://img.shields.io/badge/External_Packages-17-8b5cf6?style=flat-square)
 ![Classes](https://img.shields.io/badge/Classes-2-7c3aed?style=flat-square)
-![Functions](https://img.shields.io/badge/Functions-1299-16a34a?style=flat-square)
+![Functions](https://img.shields.io/badge/Functions-1281-16a34a?style=flat-square)
 ![Methods](https://img.shields.io/badge/Methods-7-15803d?style=flat-square)
-![Sync Functions](https://img.shields.io/badge/Sync_Functions-1103-4ade80?style=flat-square)
-![Async Functions](https://img.shields.io/badge/Async_Functions-203-059669?style=flat-square)
-![Constants](https://img.shields.io/badge/Constants-1114-dc2626?style=flat-square)
-![Imports](https://img.shields.io/badge/Imports-662-0284c7?style=flat-square)
-![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-295-ea580c?style=flat-square)
-![Comments](https://img.shields.io/badge/Comments-1119-64748b?style=flat-square)
-![Comment Lines](https://img.shields.io/badge/Comment_Lines-2164-475569?style=flat-square)
+![Sync Functions](https://img.shields.io/badge/Sync_Functions-1090-4ade80?style=flat-square)
+![Async Functions](https://img.shields.io/badge/Async_Functions-198-059669?style=flat-square)
+![Constants](https://img.shields.io/badge/Constants-1085-dc2626?style=flat-square)
+![Imports](https://img.shields.io/badge/Imports-647-0284c7?style=flat-square)
+![Exported Symbols](https://img.shields.io/badge/Exported_Symbols-293-ea580c?style=flat-square)
+![Comments](https://img.shields.io/badge/Comments-1099-64748b?style=flat-square)
+![Comment Lines](https://img.shields.io/badge/Comment_Lines-2125-475569?style=flat-square)
 ![TODO Comments](https://img.shields.io/badge/TODO_Comments-1-ca8a04?style=flat-square)
 
 ### Python
@@ -1185,16 +1160,16 @@ What this project is judged against, as declared in its own `callidescope.config
 ### JSON
 
 ![JSON Files](https://img.shields.io/badge/JSON_Files-3-a16207?style=flat-square)
-![JSON Lines](https://img.shields.io/badge/JSON_Lines-171-ca8a04?style=flat-square)
-![JSON Objects](https://img.shields.io/badge/JSON_Objects-46-7c3aed?style=flat-square)
-![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-14-8b5cf6?style=flat-square)
-![JSON Properties](https://img.shields.io/badge/JSON_Properties-114-0284c7?style=flat-square)
-![JSON Strings](https://img.shields.io/badge/JSON_Strings-90-16a34a?style=flat-square)
+![JSON Lines](https://img.shields.io/badge/JSON_Lines-183-ca8a04?style=flat-square)
+![JSON Objects](https://img.shields.io/badge/JSON_Objects-47-7c3aed?style=flat-square)
+![JSON Arrays](https://img.shields.io/badge/JSON_Arrays-15-8b5cf6?style=flat-square)
+![JSON Properties](https://img.shields.io/badge/JSON_Properties-116-0284c7?style=flat-square)
+![JSON Strings](https://img.shields.io/badge/JSON_Strings-98-16a34a?style=flat-square)
 ![JSON Numbers](https://img.shields.io/badge/JSON_Numbers-2-059669?style=flat-square)
 ![JSON Booleans](https://img.shields.io/badge/JSON_Booleans-6-0ea5e9?style=flat-square)
 ![JSON Nulls](https://img.shields.io/badge/JSON_Nulls-0-64748b?style=flat-square)
-![JSON Items](https://img.shields.io/badge/JSON_Items-41-475569?style=flat-square)
-![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-158-dc2626?style=flat-square)
+![JSON Items](https://img.shields.io/badge/JSON_Items-49-475569?style=flat-square)
+![JSON Nodes](https://img.shields.io/badge/JSON_Nodes-168-dc2626?style=flat-square)
 ![JSON Max Depth](https://img.shields.io/badge/JSON_Max_Depth-6-ea580c?style=flat-square)
 
 ### YAML
@@ -1237,17 +1212,17 @@ What this project is judged against, as declared in its own `callidescope.config
 
 ### SQL
 
-![SQL Files](https://img.shields.io/badge/SQL_Files-3-e38c00?style=flat-square)
-![SQL Lines](https://img.shields.io/badge/SQL_Lines-207-f29111?style=flat-square)
-![SQL Statements](https://img.shields.io/badge/SQL_Statements-18-7c3aed?style=flat-square)
-![SQL Selects](https://img.shields.io/badge/SQL_Selects-10-16a34a?style=flat-square)
-![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-5-22c55e?style=flat-square)
+![SQL Files](https://img.shields.io/badge/SQL_Files-0-e38c00?style=flat-square)
+![SQL Lines](https://img.shields.io/badge/SQL_Lines-0-f29111?style=flat-square)
+![SQL Statements](https://img.shields.io/badge/SQL_Statements-0-7c3aed?style=flat-square)
+![SQL Selects](https://img.shields.io/badge/SQL_Selects-0-16a34a?style=flat-square)
+![SQL Inserts](https://img.shields.io/badge/SQL_Inserts-0-22c55e?style=flat-square)
 ![SQL Updates](https://img.shields.io/badge/SQL_Updates-0-0ea5e9?style=flat-square)
 ![SQL Deletes](https://img.shields.io/badge/SQL_Deletes-0-dc2626?style=flat-square)
-![SQL Creates](https://img.shields.io/badge/SQL_Creates-13-0284c7?style=flat-square)
-![SQL Joins](https://img.shields.io/badge/SQL_Joins-3-8b5cf6?style=flat-square)
+![SQL Creates](https://img.shields.io/badge/SQL_Creates-0-0284c7?style=flat-square)
+![SQL Joins](https://img.shields.io/badge/SQL_Joins-0-8b5cf6?style=flat-square)
 ![SQL CTEs](https://img.shields.io/badge/SQL_CTEs-0-059669?style=flat-square)
-![SQL Comments](https://img.shields.io/badge/SQL_Comments-23-64748b?style=flat-square)
+![SQL Comments](https://img.shields.io/badge/SQL_Comments-0-64748b?style=flat-square)
 
 ### HCL
 
@@ -1283,7 +1258,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Utilities Files](https://img.shields.io/badge/Utilities_Files-0-0ea5e9?style=flat-square)
 ![TypeORM Entities](https://img.shields.io/badge/TypeORM_Entities-0-059669?style=flat-square)
 ![Unit Tests](https://img.shields.io/badge/Unit_Tests-26-ca8a04?style=flat-square)
-![Integration Tests](https://img.shields.io/badge/Integration_Tests-1-7c3aed?style=flat-square)
+![Integration Tests](https://img.shields.io/badge/Integration_Tests-0-7c3aed?style=flat-square)
 ![End To End Tests](https://img.shields.io/badge/End_To_End_Tests-0-0284c7?style=flat-square)
 ![CSS Comment Budget](https://img.shields.io/badge/CSS_Comment_Budget-0-16a34a?style=flat-square)
 ![HCL Comment Budget](https://img.shields.io/badge/HCL_Comment_Budget-0-ea580c?style=flat-square)
@@ -1320,7 +1295,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ### Markdown
 
 ![Markdown Files](https://img.shields.io/badge/Markdown_Files-1-083fa1?style=flat-square)
-![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-371-1f6feb?style=flat-square)
+![Markdown Lines](https://img.shields.io/badge/Markdown_Lines-364-1f6feb?style=flat-square)
 ![H1](https://img.shields.io/badge/H1-1-7c3aed?style=flat-square)
 ![H2](https://img.shields.io/badge/H2-6-8b5cf6?style=flat-square)
 ![H3](https://img.shields.io/badge/H3-8-a78bfa?style=flat-square)
@@ -1336,7 +1311,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ![Links](https://img.shields.io/badge/Links-9-059669?style=flat-square)
 ![Images](https://img.shields.io/badge/Images-0-10b981?style=flat-square)
 ![Code Blocks](https://img.shields.io/badge/Code_Blocks-6-dc2626?style=flat-square)
-![Inline Code](https://img.shields.io/badge/Inline_Code-123-ef4444?style=flat-square)
+![Inline Code](https://img.shields.io/badge/Inline_Code-115-ef4444?style=flat-square)
 ![Block Quotes](https://img.shields.io/badge/Block_Quotes-0-ca8a04?style=flat-square)
 ![Thematic Breaks](https://img.shields.io/badge/Thematic_Breaks-0-a16207?style=flat-square)
 <!-- codometer:end -->
