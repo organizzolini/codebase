@@ -139,22 +139,13 @@ updates:
         patterns:
           - "*"
 
-  # infrastructure/terraform pins the linode/linode provider version.
+  # Every Terraform root under infrastructure/terraform pins its providers: the
+  # linode/linode cluster at the top, and one folder per module below it, such
+  # as openrouter. One ecosystem covers them all, so a new module needs no entry.
   - package-ecosystem: terraform
-    directory: /infrastructure/terraform
-    schedule:
-      interval: weekly
-      day: friday
-    commit-message:
-      prefix: "chore(infrastructure): 🔧 "
-    labels:
-      - type:chore
-      - scope:infrastructure
-
-  # infrastructure/terraform/openrouter pins the OpenRouterTeam/openrouter
-  # provider version.
-  - package-ecosystem: terraform
-    directory: /infrastructure/terraform/openrouter
+    directories:
+      - /infrastructure/terraform
+      - /infrastructure/terraform/*
     schedule:
       interval: weekly
       day: friday
