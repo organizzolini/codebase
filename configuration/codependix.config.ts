@@ -389,7 +389,7 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The codependix chain points one way: core is the contracts leaf, configuration resolves the config file and the command line over it, the four analyzers read both, the output renderer reads all of them, and the command-line host composes the lot.",
         name: "codependix-core-is-a-leaf",
-        to: { id: ["!(configuration)"] },
+        to: { id: ["!(configuration|testing)"] },
       },
       {
         from: { tags: ["name:codependix-configuration"] },
@@ -397,7 +397,9 @@ const codependixConfiguration: CodependixConfiguration = {
         message:
           "The codependix chain points one way: core is the contracts leaf, configuration resolves the config file and the command line over it, the four analyzers read both, the output renderer reads all of them, and the command-line host composes the lot.",
         name: "codependix-configuration-layer",
-        to: { tags: ["name:configuration", "name:codependix-core"] },
+        to: {
+          tags: ["name:configuration", "name:codependix-core", "name:testing"],
+        },
       },
       {
         from: {
@@ -417,6 +419,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-configuration",
             "name:codependix-core",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -434,6 +437,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-file-imports",
             "name:codependix-nestjs-modules",
             "name:codependix-nx-projects",
+            "name:testing",
           ],
         },
       },
@@ -453,6 +457,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-nestjs-modules",
             "name:codependix-nx-projects",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -470,6 +475,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:codependix-core",
             "name:codependix-output",
             "name:observability",
+            "name:testing",
           ],
         },
       },
@@ -484,6 +490,7 @@ const codependixConfiguration: CodependixConfiguration = {
             "name:configuration",
             "name:codependix-cli",
             "name:codependix-configuration",
+            "name:testing",
           ],
         },
       },
