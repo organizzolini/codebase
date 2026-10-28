@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@nx/eslint-plugin": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",

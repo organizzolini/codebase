@@ -4,6 +4,7 @@
     "@codometer/core": "workspace:*"
   },
   "devDependencies": {
+    "@codebase/testing": "workspace:*",
     "@nx/eslint-plugin": "catalog:",
     "@swc-node/register": "catalog:",
     "@types/node": "catalog:",
