@@ -1,12 +1,13 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ConfigurationService } from "@codependix/configuration";
 import { PythonService } from "@codependix/file-imports";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 import { DeliveryService } from "../delivery/delivery.service";
@@ -71,24 +72,21 @@ describe(PythonImportsService, () => {
     configurationService = createMock<ConfigurationService>();
     pythonService = createMock<PythonService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(PythonImportsService, {
       providers: [
         AnchorsService,
         DeliveryService,
-        PythonImportsService,
         {
           provide: ConfigurationService,
           useValue: configurationService,
         },
         { provide: PythonService, useValue: pythonService },
       ],
-    }).compile();
-
-    service = await module.resolve(PythonImportsService);
+    }));
   });
 
-  beforeEach(async () => {
-    projectRoot = await mkdtemp(path.join(tmpdir(), "python-imports-service-"));
+  beforeEach(() => {
+    projectRoot = createTemporaryDirectory("python-imports-service");
 
     vi.mocked(pythonService.discoverProjects).mockReturnValue([
       { absoluteRoot: projectRoot, name: "affirmancy" },
@@ -99,8 +97,20 @@ describe(PythonImportsService, () => {
     );
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PythonImportsService, {
+      providers: [
+        AnchorsService,
+        DeliveryService,
+        {
+          provide: ConfigurationService,
+          useValue: configurationService,
+        },
+        { provide: PythonService, useValue: pythonService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(PythonImportsService);
   });
 
   it("skips a project whose resolved target is none", () => {

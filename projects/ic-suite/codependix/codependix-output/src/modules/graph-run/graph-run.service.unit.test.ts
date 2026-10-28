@@ -1,13 +1,9 @@
-import { mkdtemp } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import path from "node:path";
-
 import { NeighborhoodService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { ProjectGraphsService } from "../project-graphs/project-graphs.service";
 import { PythonImportsService } from "../python-imports/python-imports.service";
@@ -85,22 +81,18 @@ describe(GraphRunService, () => {
     pythonImportsService = createMock<PythonImportsService>();
     workspaceGraphsService = createMock<WorkspaceGraphsService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(GraphRunService, {
       providers: [
-        GraphRunService,
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
         { provide: NeighborhoodService, useValue: neighborhoodService },
         { provide: ProjectGraphsService, useValue: projectGraphsService },
         { provide: PythonImportsService, useValue: pythonImportsService },
         { provide: WorkspaceGraphsService, useValue: workspaceGraphsService },
       ],
-    }).compile();
-
-    service = await module.resolve(GraphRunService);
+    }));
   });
 
-  beforeEach(async () => {
-    projectRoot = await mkdtemp(path.join(tmpdir(), "map-service-"));
+  beforeEach(() => {
+    projectRoot = createTemporaryDirectory("map-service");
 
     vi.mocked(neighborhoodService.buildNeighborhoods).mockReturnValue(
       new Map<string, Neighborhood>(),
@@ -127,8 +119,17 @@ describe(GraphRunService, () => {
     vi.mocked(pythonImportsService.runGraphs).mockReturnValue(emptyOutcome());
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(GraphRunService, {
+      providers: [
+        { provide: NeighborhoodService, useValue: neighborhoodService },
+        { provide: ProjectGraphsService, useValue: projectGraphsService },
+        { provide: PythonImportsService, useValue: pythonImportsService },
+        { provide: WorkspaceGraphsService, useValue: workspaceGraphsService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(GraphRunService);
   });
 
   describe("runNxGraphs", () => {

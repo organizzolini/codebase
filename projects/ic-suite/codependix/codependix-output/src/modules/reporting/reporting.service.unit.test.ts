@@ -6,16 +6,20 @@ import {
   type JudgedBoundaryFinding,
 } from "@codependix/boundaries";
 import { InputError } from "@codependix/configuration";
-import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LoggerService } from "@codebase/observability";
+import { captureExitCode } from "@codebase/testing";
+import {
+  buildTestingModule,
+  expectLoggerContext,
+} from "@codebase/testing/nestjs";
 
 import { ReportingService } from "./reporting.service";
 
 import type { MapRunResult } from "../graph-run/graph-run.types";
+import type { LoggerService } from "@codebase/observability";
 import type { GraphRunOutcome } from "@codependix/core";
+import type { DeepMocked } from "@golevelup/ts-vitest";
 
 const VIOLATION: JudgedBoundaryFinding<BoundaryViolation> = {
   cycle: undefined,
@@ -39,48 +43,38 @@ const FAILURE: JudgedBoundaryFinding<BoundaryCheckFailure> = {
 /** The projects the findings above are charged to, judged by the run. */
 const JUDGED_PROJECTS = ["a", "b", "lexico-cli", "lexico-entities"];
 
+const OPTIONS = {
+  providers: [
+    BoundaryOutcomeReportService,
+    { provide: BoundaryReportService, useValue: new BoundaryReportService() },
+  ],
+};
+
 describe(ReportingService, () => {
   let service: ReportingService;
-  let loggerService: LoggerService;
+  let loggerService: DeepMocked<LoggerService>;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ReportingService,
-        BoundaryOutcomeReportService,
-        {
-          provide: BoundaryReportService,
-          useValue: new BoundaryReportService(),
-        },
-        { provide: LoggerService, useValue: createMock<LoggerService>() },
-      ],
-    }).compile();
-
-    service = await module.resolve(ReportingService);
-    loggerService = await module.resolve(LoggerService);
+    ({ instance: service, logger: loggerService } = await buildTestingModule(
+      ReportingService,
+      OPTIONS,
+    ));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
+    captureExitCode();
     process.exitCode = 0;
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(ReportingService, OPTIONS);
+
+    expect(instance).toBeInstanceOf(ReportingService);
   });
 
-  it("sets its own logger context", () => {
-    const freshLogger = createMock<LoggerService>();
-
-    const boundaryReportService = new BoundaryReportService();
-
-    new ReportingService(
-      new BoundaryOutcomeReportService(boundaryReportService),
-      boundaryReportService,
-      freshLogger,
-    );
-
-    expect(freshLogger.setContext).toHaveBeenCalledWith("ReportingService");
+  it("sets its own logger context", async () => {
+    await expectLoggerContext(ReportingService, OPTIONS);
   });
 
   describe("reportBoundaries", () => {

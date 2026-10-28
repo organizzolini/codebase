@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { Test } from "@nestjs/testing";
 import ts from "typescript";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TypescriptProjectService } from "./typescript-project.service";
 import { TypescriptProjectConfigurationError } from "./typescript.constants";
@@ -17,9 +18,7 @@ async function buildProject(args: {
   name: string;
   sources?: Record<string, string>;
 }): Promise<TypescriptProject> {
-  const workspaceRoot = await mkdtemp(
-    path.join(tmpdir(), "codependix-imports-"),
-  );
+  const workspaceRoot = createTemporaryDirectory("codependix-imports");
   const root = path.join(workspaceRoot, "packages", args.name);
 
   await mkdir(path.join(root, "src"), { recursive: true });
@@ -50,19 +49,19 @@ describe(TypescriptProjectService, () => {
   let service: TypescriptProjectService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [TypescriptProjectService],
-    }).compile();
-
-    service = await module.resolve(TypescriptProjectService);
+    ({ instance: service } = await buildTestingModule(
+      TypescriptProjectService,
+    ));
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(TypescriptProjectService);
+
+    expect(instance).toBeInstanceOf(TypescriptProjectService);
   });
 
   it("describes a project by its root and Nx name", () => {

@@ -1,6 +1,7 @@
 import { ConfigurationModule } from "@codependix/configuration";
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PluginService } from "./plugin.service";
 
@@ -8,17 +9,17 @@ describe(PluginService, () => {
   let service: PluginService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(PluginService, {
       imports: [ConfigurationModule],
-      providers: [PluginService],
-    }).compile();
-
-    service = await module.resolve(PluginService);
+    }));
   });
 
-  it("is defined", () => {
-    expect.hasAssertions();
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PluginService, {
+      imports: [ConfigurationModule],
+    });
+
+    expect(instance).toBeInstanceOf(PluginService);
   });
 
   describe("inferTargets", () => {

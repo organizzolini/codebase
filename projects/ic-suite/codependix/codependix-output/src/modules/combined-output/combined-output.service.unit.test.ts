@@ -1,34 +1,27 @@
-import { mkdtemp, readFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   BoundaryOutcomeReportService,
   BoundaryReportService,
 } from "@codependix/boundaries";
-import { Test } from "@nestjs/testing";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { captureOutput, createTemporaryDirectory } from "@codebase/testing";
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorsService } from "../anchors/anchors.service";
 
 import { CombinedOutputService } from "./combined-output.service";
 
 import type { CombinedGraphExports } from "../graph-run/graph-run.types";
+import type { CapturedOutput } from "@codebase/testing";
 import type { BoundaryReportArguments } from "@codependix/boundaries";
-import type { MockInstance } from "vitest";
 
 describe(CombinedOutputService, () => {
   let service: CombinedOutputService;
   let workingDirectory: string;
-  let writeSpy: MockInstance<typeof process.stdout.write>;
+  let output: CapturedOutput;
 
   const GRAPHS: CombinedGraphExports = {
     fileImports: {
@@ -70,31 +63,30 @@ describe(CombinedOutputService, () => {
   };
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(CombinedOutputService, {
       providers: [
         AnchorsService,
         BoundaryOutcomeReportService,
         BoundaryReportService,
-        CombinedOutputService,
       ],
-    }).compile();
-
-    service = await module.resolve(CombinedOutputService);
+    }));
   });
 
-  beforeEach(async () => {
-    workingDirectory = await mkdtemp(
-      path.join(tmpdir(), "combined-output-service-"),
-    );
-    writeSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+  beforeEach(() => {
+    workingDirectory = createTemporaryDirectory("combined-output-service");
+    output = captureOutput();
   });
 
-  afterEach(() => {
-    writeSpy.mockRestore();
-  });
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(CombinedOutputService, {
+      providers: [
+        AnchorsService,
+        BoundaryOutcomeReportService,
+        BoundaryReportService,
+      ],
+    });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+    expect(instance).toBeInstanceOf(CombinedOutputService);
   });
 
   describe("resolveFormat", () => {
@@ -139,12 +131,8 @@ describe(CombinedOutputService, () => {
         workingDirectory,
       });
 
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining('"fileImports"') as string,
-      );
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining('"nxProjects"') as string,
-      );
+      expect(output.stdout()).toContain('"fileImports"');
+      expect(output.stdout()).toContain('"nxProjects"');
     });
 
     it("prints the combined graphs as an anchor-spliced Markdown document when --format markdown", () => {
@@ -156,15 +144,9 @@ describe(CombinedOutputService, () => {
         workingDirectory,
       });
 
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining("## 🕸️ Codependix") as string,
-      );
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining("file-imports") as string,
-      );
-      expect(writeSpy).toHaveBeenCalledWith(
-        expect.stringContaining("nx-projects") as string,
-      );
+      expect(output.stdout()).toContain("## 🕸️ Codependix");
+      expect(output.stdout()).toContain("file-imports");
+      expect(output.stdout()).toContain("nx-projects");
     });
 
     it("writes every active graph type's data to --json-output, keyed by graph type", async () => {
@@ -233,7 +215,7 @@ describe(CombinedOutputService, () => {
         workingDirectory,
       });
 
-      expect(writeSpy).toHaveBeenCalledWith("{}\n");
+      expect(output.stdout()).toBe("{}\n");
 
       const writtenJson = await readFile(
         path.join(workingDirectory, "combined.json"),
@@ -259,9 +241,7 @@ describe(CombinedOutputService, () => {
           workingDirectory,
         });
 
-        const printed = JSON.parse(
-          String(writeSpy.mock.calls[0]?.[0]),
-        ) as Record<string, unknown>;
+        const printed = JSON.parse(output.stdout()) as Record<string, unknown>;
 
         expect(Object.keys(printed)).toStrictEqual([
           "fileImports",
@@ -304,9 +284,7 @@ describe(CombinedOutputService, () => {
           workingDirectory,
         });
 
-        const printed = JSON.parse(
-          String(writeSpy.mock.calls[0]?.[0]),
-        ) as Record<string, unknown>;
+        const printed = JSON.parse(output.stdout()) as Record<string, unknown>;
 
         expect(Object.keys(printed)).toStrictEqual(["boundaries"]);
       });
@@ -321,7 +299,7 @@ describe(CombinedOutputService, () => {
           workingDirectory,
         });
 
-        const printed = String(writeSpy.mock.calls[0]?.[0]);
+        const printed = output.stdout();
 
         expect(printed).toContain("### Boundaries");
         expect(printed).toContain(

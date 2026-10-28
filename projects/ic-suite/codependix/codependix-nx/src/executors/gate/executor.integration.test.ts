@@ -1,19 +1,14 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { captureOutput, overrideEnvironment } from "@codebase/testing";
 
 import gateExecutor from "./executor";
 
 import type { GateExecutorOptions } from "./executor.types";
+import type { CapturedOutput } from "@codebase/testing";
 import type { ExecutorContext } from "@nx/devkit";
 
 /**
@@ -136,7 +131,10 @@ function writeFixtureWorkspace(): string {
 
 describe("gate executor against a fixture workspace", () => {
   let workspaceRoot: string;
-  let printed: string;
+  let output: CapturedOutput;
+
+  /** Everything the command line printed to either stream. */
+  const printed = (): string => output.stdout() + output.stderr();
 
   /** Runs the real executor, collecting everything the command line printed. */
   async function runGate(args: {
@@ -154,19 +152,10 @@ describe("gate executor against a fixture workspace", () => {
   });
 
   beforeEach(() => {
-    printed = "";
     // A spawned process inherits FORCE_COLOR, and the logger would then
     // interleave ANSI codes with the text asserted on below.
-    vi.stubEnv("FORCE_COLOR", "0");
-
-    const collect = (chunk: unknown): boolean => {
-      printed += String(chunk);
-
-      return true;
-    };
-
-    vi.spyOn(process.stdout, "write").mockImplementation(collect);
-    vi.spyOn(process.stderr, "write").mockImplementation(collect);
+    overrideEnvironment({ FORCE_COLOR: "0" });
+    output = captureOutput();
   });
 
   afterAll(() => {
@@ -181,7 +170,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(runGate({ projectName: "a" })).resolves.toStrictEqual({
         success: false,
       });
-      expect(printed).toContain("a-is-a-leaf");
+      expect(printed()).toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
   );
@@ -206,7 +195,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(runGate({ projectName: "c" })).resolves.toStrictEqual({
         success: true,
       });
-      expect(printed).toContain("in dependency a");
+      expect(printed()).toContain("in dependency a");
     },
     RUN_TIMEOUT,
   );
@@ -219,7 +208,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(
         runGate({ options: { dependencies: false }, projectName: "c" }),
       ).resolves.toStrictEqual({ success: true });
-      expect(printed).not.toContain("a-is-a-leaf");
+      expect(printed()).not.toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
   );
@@ -244,7 +233,7 @@ describe("gate executor against a fixture workspace", () => {
       await expect(
         runGate({ options: { tags: ["name:a"] }, projectName: "c" }),
       ).resolves.toStrictEqual({ success: false });
-      expect(printed).toContain("a-is-a-leaf");
+      expect(printed()).toContain("a-is-a-leaf");
     },
     RUN_TIMEOUT,
   );

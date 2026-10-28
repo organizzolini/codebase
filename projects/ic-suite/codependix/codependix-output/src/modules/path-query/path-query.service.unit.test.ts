@@ -10,8 +10,9 @@ import {
 } from "@codependix/nestjs-modules";
 import { WorkspaceGraphService } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { PathQueryService } from "./path-query.service";
 
@@ -77,9 +78,8 @@ describe(PathQueryService, () => {
     nestjsModulesWorkspaceGraphService =
       new NestjsModulesWorkspaceGraphService();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(PathQueryService, {
       providers: [
-        PathQueryService,
         { provide: WorkspaceGraphService, useValue: workspaceGraphService },
         { provide: TypescriptService, useValue: typescriptService },
         { provide: PythonService, useValue: pythonService },
@@ -94,9 +94,7 @@ describe(PathQueryService, () => {
           useValue: nestjsModulesWorkspaceGraphService,
         },
       ],
-    }).compile();
-
-    service = await module.resolve(PathQueryService);
+    }));
   });
 
   beforeEach(() => {
@@ -155,8 +153,26 @@ describe(PathQueryService, () => {
     });
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(PathQueryService, {
+      providers: [
+        { provide: WorkspaceGraphService, useValue: workspaceGraphService },
+        { provide: TypescriptService, useValue: typescriptService },
+        { provide: PythonService, useValue: pythonService },
+        { provide: ModuleGraphService, useValue: moduleGraphService },
+        { provide: NestjsProjectService, useValue: nestjsProjectService },
+        {
+          provide: FileImportsWorkspaceGraphService,
+          useValue: fileImportsWorkspaceGraphService,
+        },
+        {
+          provide: NestjsModulesWorkspaceGraphService,
+          useValue: nestjsModulesWorkspaceGraphService,
+        },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(PathQueryService);
   });
 
   it("finds a direct and indirect path between Nx projects", async () => {

@@ -1,5 +1,6 @@
-import { Test } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AnchorNotFoundError } from "./anchors.constants";
 import { AnchorsService } from "./anchors.service";
@@ -20,15 +21,13 @@ describe(AnchorsService, () => {
   let service: AnchorsService;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      providers: [AnchorsService],
-    }).compile();
-
-    service = await module.resolve(AnchorsService);
+    ({ instance: service } = await buildTestingModule(AnchorsService));
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(AnchorsService);
+
+    expect(instance).toBeInstanceOf(AnchorsService);
   });
 
   describe("extractAnchorContent", () => {
