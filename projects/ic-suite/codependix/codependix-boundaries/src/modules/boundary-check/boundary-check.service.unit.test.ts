@@ -8,8 +8,9 @@ import {
   WorkspaceGraphService,
 } from "@codependix/nx-projects";
 import { createMock } from "@golevelup/ts-vitest";
-import { Test } from "@nestjs/testing";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { BoundariesService } from "../boundaries/boundaries.service";
 
@@ -132,9 +133,8 @@ describe(BoundaryCheckService, () => {
     typescriptService = createMock<TypescriptService>();
     workspaceGraphService = createMock<WorkspaceGraphService>();
 
-    const module = await Test.createTestingModule({
+    ({ instance: service } = await buildTestingModule(BoundaryCheckService, {
       providers: [
-        BoundaryCheckService,
         BoundaryFailureService,
         BoundaryGraphService,
         NeighborhoodService,
@@ -145,9 +145,7 @@ describe(BoundaryCheckService, () => {
         { provide: TypescriptService, useValue: typescriptService },
         { provide: WorkspaceGraphService, useValue: workspaceGraphService },
       ],
-    }).compile();
-
-    service = await module.resolve(BoundaryCheckService);
+    }));
   });
 
   beforeEach(() => {
@@ -172,8 +170,22 @@ describe(BoundaryCheckService, () => {
     vi.mocked(typescriptService.discoverProjects).mockReturnValue([]);
   });
 
-  it("is defined", () => {
-    expect(service).toBeDefined();
+  it("resolves with its dependencies", async () => {
+    const { instance } = await buildTestingModule(BoundaryCheckService, {
+      providers: [
+        BoundaryFailureService,
+        BoundaryGraphService,
+        NeighborhoodService,
+        { provide: BoundariesService, useValue: boundariesService },
+        { provide: ModuleGraphService, useValue: moduleGraphService },
+        { provide: NestjsProjectService, useValue: nestjsProjectService },
+        { provide: PythonService, useValue: pythonService },
+        { provide: TypescriptService, useValue: typescriptService },
+        { provide: WorkspaceGraphService, useValue: workspaceGraphService },
+      ],
+    });
+
+    expect(instance).toBeInstanceOf(BoundaryCheckService);
   });
 
   // The judged projects' edges into their dependencies are part of what
