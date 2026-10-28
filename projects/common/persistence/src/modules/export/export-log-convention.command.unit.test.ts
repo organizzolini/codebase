@@ -1,8 +1,8 @@
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -29,15 +29,9 @@ vi.mock("./export.constants", async (importOriginal) => {
 });
 
 describe("export logging convention", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("export-convention");
 
-  beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-convention-"));
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
+  beforeAll(() => {});
 
   it("fails a run whose log message breaks the convention, as the shipped command line does", async () => {
     mockProcesses();
@@ -51,7 +45,7 @@ describe("export logging convention", () => {
         "fixture.widgets",
         "--data",
         "--file",
-        path.join(directory, "fixture.dump"),
+        path.join(directory(), "fixture.dump"),
         "--dry-run",
       ],
     });

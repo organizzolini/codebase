@@ -1,9 +1,10 @@
 import { execFile } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
@@ -23,11 +24,8 @@ describe("export with missing arguments", () => {
   let directory: string;
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-arguments-"));
+    directory = createTemporaryDirectory("fixture-arguments");
     vi.mocked(execFile).mockClear();
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
   });
 
   async function runExport(

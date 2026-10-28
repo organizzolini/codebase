@@ -1,9 +1,10 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 /** The project root, which `start` runs the command line from. */
 const PROJECT_ROOT = path.resolve(import.meta.dirname, "..");
@@ -84,32 +85,25 @@ describe("main end-to-end suite", () => {
   it(
     "prints a dry run's plan and exits zero, writing no file",
     () => {
-      const directory = fs.mkdtempSync(
-        path.join(os.tmpdir(), "database-main-dry-run-"),
-      );
+      const directory = createTemporaryDirectory("database-main-dry-run");
       const file = path.join(directory, "never.dump");
+      const { output, status } = runMain([
+        "export",
+        "--source-uri",
+        "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",
+        "--table",
+        "fixture.widgets",
+        "--data",
+        "--file",
+        file,
+        "--dry-run",
+      ]);
 
-      try {
-        const { output, status } = runMain([
-          "export",
-          "--source-uri",
-          "postgresql://fixture_username:hunter2-secret@127.0.0.1:1/fixture_development",
-          "--table",
-          "fixture.widgets",
-          "--data",
-          "--file",
-          file,
-          "--dry-run",
-        ]);
-
-        expect(status).toBe(0);
-        expect(output).toContain("Planning to export data of fixture.widgets");
-        expect(output).toContain(`Planning to create ${file}`);
-        expect(output).not.toContain("hunter2-secret");
-        expect(fs.readdirSync(directory)).toStrictEqual([]);
-      } finally {
-        fs.rmSync(directory, { force: true, recursive: true });
-      }
+      expect(status).toBe(0);
+      expect(output).toContain("Planning to export data of fixture.widgets");
+      expect(output).toContain(`Planning to create ${file}`);
+      expect(output).not.toContain("hunter2-secret");
+      expect(fs.readdirSync(directory)).toStrictEqual([]);
     },
     SPAWN_TIMEOUT_MILLISECONDS,
   );

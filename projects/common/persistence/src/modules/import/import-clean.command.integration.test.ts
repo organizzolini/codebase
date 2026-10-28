@@ -1,10 +1,9 @@
-import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { useTemporaryDirectory } from "@codebase/testing";
 import { startPostgresContainer } from "@codebase/testing/postgres";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
@@ -23,7 +22,7 @@ describe("import --clean --ddl", () => {
   let target: StartedPostgresContainer;
   let sourceDataSource: DataSource;
   let targetDataSource: DataSource;
-  let directory: string;
+  const directory = useTemporaryDirectory("import-clean");
   let dump: string;
 
   /** Rows of `sql` run against the target. */
@@ -75,8 +74,7 @@ describe("import --clean --ddl", () => {
     await sourceDataSource.query(
       "CREATE SCHEMA archive; CREATE TABLE archive.notes (id serial PRIMARY KEY, body text NOT NULL UNIQUE); INSERT INTO archive.notes (body) VALUES ('first'), ('second'); CREATE TABLE archive.other (id serial PRIMARY KEY); CREATE TABLE archive.refs (id serial PRIMARY KEY, note_id integer REFERENCES archive.notes (id))",
     );
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-clean-"));
-    dump = path.join(directory, "notes.dump");
+    dump = path.join(directory(), "notes.dump");
     const exported = await runCliCommandLine({
       argv: [
         "export",
@@ -102,7 +100,6 @@ describe("import --clean --ddl", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
-    fs.rmSync(directory, { force: true, recursive: true });
     await Promise.all([sourceDataSource.destroy(), targetDataSource.destroy()]);
     await Promise.all([source.stop(), target.stop()]);
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);

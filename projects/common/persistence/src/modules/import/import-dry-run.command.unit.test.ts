@@ -1,9 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { DataSource } from "typeorm";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { mockProcesses } from "../../../testing/mocks";
@@ -31,7 +32,7 @@ const listing = (...entries: readonly string[]): string =>
   ].join("\n");
 
 describe("import --dry-run", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("import-dry-run-unit");
   let file: string;
 
   /** A dry run importing `fixture.widgets`, plus `extra`. */
@@ -53,13 +54,8 @@ describe("import --dry-run", () => {
     });
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "import-dry-run-unit-"));
-    file = path.join(directory, "fixture.dump");
+    file = path.join(directory(), "fixture.dump");
     fs.writeFileSync(file, "a dump");
-  });
-
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
   });
 
   it("prints the plan and runs nothing but the version check and listing", async () => {

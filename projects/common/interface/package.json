@@ -3,12 +3,10 @@
     "@codebase/testing": "workspace:*",
     "@graphql-codegen/cli": "catalog:",
     "@nestjs/graphql": "catalog:",
-    "reflect-metadata": "catalog:",
     "tslib": "catalog:"
   },
   "devDependencies": {
     "@golevelup/ts-vitest": "catalog:",
-    "@nestjs/testing": "catalog:",
     "@nx/eslint-plugin": "catalog:",
     "@swc/helpers": "catalog:",
     "@types/node": "catalog:",

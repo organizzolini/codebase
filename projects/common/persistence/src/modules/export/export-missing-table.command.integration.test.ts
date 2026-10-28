@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -47,11 +48,8 @@ describe("export of a table that does not exist", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-missing-"));
+    directory = createTemporaryDirectory("fixture-missing");
     file = path.join(directory, "missing.dump");
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
   });
 
   afterAll(async () => {

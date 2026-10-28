@@ -1,8 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+
+import { useTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import { INTEGRATION_TEST_TIMEOUT_MILLISECONDS } from "../../../testing/fixture-persistence";
@@ -13,7 +14,7 @@ const PASSWORD = "hunter2-secret";
 const UNREACHABLE_SOURCE_URI = `postgresql://fixture_username:${PASSWORD}@127.0.0.1:1/fixture_development`;
 
 describe("export --dry-run", () => {
-  let directory: string;
+  const directory = useTemporaryDirectory("export-dry-run");
   let file: string;
   let runs: string;
   let searchPath: string;
@@ -39,10 +40,9 @@ describe("export --dry-run", () => {
   }
 
   beforeAll(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "export-dry-run-"));
-    file = path.join(directory, "fixture.dump");
-    runs = path.join(directory, "runs");
-    const bin = path.join(directory, "bin");
+    file = path.join(directory(), "fixture.dump");
+    runs = path.join(directory(), "runs");
+    const bin = path.join(directory(), "bin");
     fs.mkdirSync(bin);
     // Records each argument list, then hands over to the real pg_dump.
     const script = path.join(bin, "pg_dump");
@@ -60,10 +60,6 @@ describe("export --dry-run", () => {
     searchPath = `${bin}${path.delimiter}${process.env["PATH"] ?? ""}`;
   });
 
-  afterAll(() => {
-    fs.rmSync(directory, { force: true, recursive: true });
-  });
-
   it(
     "prints the plan for an unreachable source, running only pg_dump --version",
     async () => {
@@ -77,7 +73,7 @@ describe("export --dry-run", () => {
       expect(output).toContain(`Planning to create ${file}`);
       expect(`${output}${result.stderr}`).not.toContain(PASSWORD);
       expect(fs.readFileSync(runs, "utf8")).toBe("--version\n");
-      expect(fs.readdirSync(directory).toSorted()).toStrictEqual([
+      expect(fs.readdirSync(directory()).toSorted()).toStrictEqual([
         "bin",
         "runs",
       ]);
@@ -97,7 +93,7 @@ describe("export --dry-run", () => {
       expect(result.logs.join("\n")).toContain(`Planning to overwrite ${file}`);
       expect(fs.readFileSync(file, "utf8")).toBe("an earlier dump");
       expect(fs.statSync(file).mtimeMs).toBe(before);
-      expect(fs.readdirSync(directory).toSorted()).toStrictEqual([
+      expect(fs.readdirSync(directory()).toSorted()).toStrictEqual([
         "bin",
         "fixture.dump",
         "runs",

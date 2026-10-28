@@ -1,9 +1,10 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory } from "@codebase/testing";
 
 import { runCliCommandLine } from "../../../testing/command-line-runner";
 import {
@@ -100,11 +101,8 @@ describe("export --sqlite tables", () => {
   }, FIXTURE_DATABASE_TIMEOUT_MILLISECONDS);
 
   beforeEach(() => {
-    directory = fs.mkdtempSync(path.join(os.tmpdir(), "fixture-sqlite-type-"));
+    directory = createTemporaryDirectory("fixture-sqlite-type");
     file = path.join(directory, "fixture.sqlite");
-    return () => {
-      fs.rmSync(directory, { force: true, recursive: true });
-    };
   });
 
   afterAll(async () => {
